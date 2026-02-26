@@ -1,0 +1,72 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "about": "Quién Soy",
+    "method": "Mi Método",
+    "classes": "Clases / Taller",
+    "course": "Curso de Armonía",
+    "apps": "Apps",
+    "book": "El Libro",
+    "blog": "Blog",
+    "contact": "Contacto"
+  },
+  "language": {
+    "switch": "English",
+    "current": "ES"
+  },
+  "common": {
+    "learnMore": "Conoce más",
+    "download": "Descargar",
+    "viewOnPlayStore": "Ver en Google Play",
+    "viewManual": "Manual Kindle",
+    "contactUs": "Contáctanos",
+    "readMore": "Leer más",
+    "back": "Volver",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "loading": "Cargando...",
+    "error": "Algo salió mal"
+  },
+  "course": {
+    "title": "Curso de Armonía",
+    "subtitle": "Curso gratuito de armonía clásica",
+    "lesson": "Lección",
+    "lessons": "Lecciones",
+    "module": "Módulo",
+    "exercise": "Ejercicio",
+    "uploadMidi": "Subir archivo MIDI",
+    "uploadInstructions": "Arrastra tu archivo MIDI aquí o haz clic para seleccionar",
+    "analyzing": "Analizando tu ejercicio...",
+    "rules": "Reglas de esta lección",
+    "newRules": "Reglas nuevas",
+    "progress": "Tu progreso",
+    "completed": "Completado",
+    "nextLesson": "Siguiente lección",
+    "prevLesson": "Lección anterior"
+  },
+  "blog": {
+    "title": "Blog",
+    "readMore": "Leer artículo completo",
+    "postedBy": "Por",
+    "on": "el",
+    "noPostsFound": "No se encontraron artículos"
+  },
+  "contact": {
+    "title": "Contacto",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "message": "Mensaje",
+    "send": "Enviar mensaje",
+    "sending": "Enviando...",
+    "success": "¡Mensaje enviado! Te responderé pronto.",
+    "error": "Error al enviar. Intenta de nuevo.",
+    "namePlaceholder": "Tu nombre",
+    "emailPlaceholder": "tu@correo.com",
+    "messagePlaceholder": "¿En qué puedo ayudarte?"
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados",
+    "privacy": "Política de Privacidad",
+    "madeWith": "Hecho con"
+  }
+}

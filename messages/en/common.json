@@ -1,0 +1,72 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Me",
+    "method": "My Method",
+    "classes": "Classes / Workshop",
+    "course": "Harmony Course",
+    "apps": "Apps",
+    "book": "The Book",
+    "blog": "Blog",
+    "contact": "Contact"
+  },
+  "language": {
+    "switch": "Español",
+    "current": "EN"
+  },
+  "common": {
+    "learnMore": "Learn more",
+    "download": "Download",
+    "viewOnPlayStore": "View on Google Play",
+    "viewManual": "Kindle Manual",
+    "contactUs": "Contact us",
+    "readMore": "Read more",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "loading": "Loading...",
+    "error": "Something went wrong"
+  },
+  "course": {
+    "title": "Harmony Course",
+    "subtitle": "Free classical harmony course",
+    "lesson": "Lesson",
+    "lessons": "Lessons",
+    "module": "Module",
+    "exercise": "Exercise",
+    "uploadMidi": "Upload MIDI file",
+    "uploadInstructions": "Drag your MIDI file here or click to select",
+    "analyzing": "Analyzing your exercise...",
+    "rules": "Rules for this lesson",
+    "newRules": "New rules",
+    "progress": "Your progress",
+    "completed": "Completed",
+    "nextLesson": "Next lesson",
+    "prevLesson": "Previous lesson"
+  },
+  "blog": {
+    "title": "Blog",
+    "readMore": "Read full article",
+    "postedBy": "By",
+    "on": "on",
+    "noPostsFound": "No articles found"
+  },
+  "contact": {
+    "title": "Contact",
+    "name": "Name",
+    "email": "Email address",
+    "message": "Message",
+    "send": "Send message",
+    "sending": "Sending...",
+    "success": "Message sent! I'll get back to you soon.",
+    "error": "Error sending. Please try again.",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "your@email.com",
+    "messagePlaceholder": "How can I help you?"
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "privacy": "Privacy Policy",
+    "madeWith": "Made with"
+  }
+}

@@ -1,0 +1,122 @@
+/* ─────────────────────────────────────────────────────────────────
+   Storm Studios Learning — Global Styles
+   Importa este archivo en tu app/globals.css:
+   @import './storm-studios.css';
+   ───────────────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap');
+
+/* ── Tokens ── */
+:root {
+  --ss-violet: #8b5cf6;
+  --ss-blue:   #3b82f6;
+  --ss-cyan:   #06b6d4;
+  --ss-green:  #10b981;
+  --ss-bg:     #050508;
+  --ss-text:   #f0eeff;
+}
+
+/* ── Base ── */
+.ss-root {
+  background: var(--ss-bg);
+  color: var(--ss-text);
+  font-family: 'DM Mono', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ── Noise overlay ── */
+.ss-root::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Orbs ── */
+.ss-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(110px);
+  opacity: 0.16;
+  pointer-events: none;
+  animation: ss-drift 14s ease-in-out infinite alternate;
+  z-index: 0;
+}
+.ss-orb-a { width: 700px; height: 700px; background: var(--ss-violet); top: -250px; left: -200px; animation-delay: 0s; }
+.ss-orb-b { width: 550px; height: 550px; background: var(--ss-blue);   top: 35%;   right: -200px; animation-delay: -6s; }
+.ss-orb-c { width: 400px; height: 400px; background: var(--ss-cyan);   bottom: 0;  left: 25%;     animation-delay: -10s; }
+
+@keyframes ss-drift {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(40px, 50px) scale(1.08); }
+}
+
+/* ── Glassmorphism ── */
+.ss-glass {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ── Gradient text ── */
+.ss-text-gradient {
+  background: linear-gradient(135deg, #c4b5fd 0%, #60a5fa 50%, #34d399 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Reveal animation ── */
+.ss-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  animation: ss-rise 0.9s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+@keyframes ss-rise {
+  to { opacity: 1; transform: none; }
+}
+
+/* ── Wave bars ── */
+.ss-bar {
+  width: 6px;
+  border-radius: 3px;
+  transform-origin: bottom;
+  flex-shrink: 0;
+  background: linear-gradient(to top, #8b5cf6, #3b82f6 60%, #06b6d4);
+  animation: ss-pulse var(--ss-dur, 1s) ease-in-out var(--ss-delay, 0s) infinite alternate;
+}
+@keyframes ss-pulse {
+  from { transform: scaleY(0.12); opacity: 0.35; }
+  to   { transform: scaleY(1);    opacity: 1; }
+}
+
+/* ── Badge dot blink ── */
+.ss-blink { animation: ss-blink 2s ease-in-out infinite; }
+@keyframes ss-blink {
+  0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+}
+
+/* ── Serif & Mono font helpers ── */
+.ss-serif { font-family: 'DM Serif Display', Georgia, serif; }
+.ss-mono  { font-family: 'DM Mono', 'Courier New', monospace; }
+
+/* ── Divider glow ── */
+.ss-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139,92,246,0.5), transparent);
+}
+
+/* ── Feature card hover ── */
+.ss-card {
+  transition: transform 0.35s, border-color 0.35s, box-shadow 0.35s;
+}
+.ss-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(139,92,246,0.45) !important;
+  box-shadow: 0 0 50px rgba(139,92,246,0.16), inset 0 0 30px rgba(139,92,246,0.06);
+}

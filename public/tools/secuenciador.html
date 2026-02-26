@@ -1,0 +1,2811 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StormStudios Workstation v3.0</title>
+    <!-- Prevent favicon 404 error with inline SVG -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2310b981'/%3E%3Crect x='4' y='8' width='3' height='16' fill='white'/%3E%3Crect x='10' y='8' width='3' height='16' fill='white'/%3E%3Crect x='16' y='8' width='3' height='16' fill='white'/%3E%3Crect x='22' y='8' width='3' height='16' fill='white'/%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vexflow@4.2.2/releases/vexflow-debug.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #0f172a;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* DAW-style card aesthetic */
+        .daw-card {
+            background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
+            border: 2px solid #475569;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .title-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #output { position: relative; display: inline-block; white-space: nowrap; }
+        #output svg { cursor: default; display: block; }
+        .vf-stavenote { cursor: grab; transition: opacity 0.1s; }
+        .vf-stavenote:active { cursor: grabbing; }
+        .vf-stavenote:hover { opacity: 0.8; }
+
+        #canvas-container {
+            user-select: none;
+            outline: none;
+            overflow-x: auto;
+            position: relative;
+            text-align: left;
+            background: #ffffff;
+            background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        #playback-cursor {
+            position: absolute; top: 50px; left: 0; width: 3px; height: 450px;
+            background: linear-gradient(to bottom, #ef4444, #dc2626);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.8);
+            pointer-events: none; z-index: 50; display: none; transition: left 0.05s linear;
+        }
+
+        input[type=range] { accent-color: #10b981; }
+        .acc-btn { font-family: 'Times New Roman', serif; font-size: 1.5rem; line-height: 1; }
+
+        .custom-scrollbar::-webkit-scrollbar { height: 14px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; border-radius: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 8px; border: 3px solid #1e293b; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            width: 16px; height: 16px; border-radius: 50%;
+            border-left-color: #10b981;
+            animation: spin 1s linear infinite;
+            display: inline-block; vertical-align: middle;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .separator { width: 2px; height: 50px; background: linear-gradient(to bottom, transparent, #475569, transparent); }
+
+        /* Note Icons SVG Container */
+        .note-icon {
+            width: 40px;
+            height: 40px;
+            fill: currentColor;
+        }
+
+        /* Glow effects */
+        .glow-green {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+        .glow-red {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+
+        #cipher-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .cipher-input {
+            position: absolute;
+            width: 70px;
+            padding: 4px 6px;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.9);
+            border: 2px solid #10b981;
+            color: #10b981;
+            border-radius: 6px;
+            outline: none;
+            pointer-events: auto;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.15s;
+        }
+
+        /* Visual connector: line connecting note to cipher input */
+        .cipher-input::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 15px;
+            background: linear-gradient(to bottom, transparent, #10b981);
+            opacity: 0.5;
+        }
+
+        /* Visual connector: dot at top of line */
+        .cipher-input::after {
+            content: '';
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background: #10b981;
+            border-radius: 50%;
+            opacity: 0.7;
+        }
+
+        .cipher-input:focus {
+            border-color: #34d399;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        .cipher-input:focus::before {
+            opacity: 0.8;
+            background: linear-gradient(to bottom, transparent, #34d399);
+        }
+
+        .cipher-input:focus::after {
+            opacity: 1;
+            background: #34d399;
+            width: 6px;
+            height: 6px;
+        }
+
+        .cipher-input:hover {
+            border-color: #34d399;
+        }
+
+        .cipher-input:hover::before {
+            opacity: 0.6;
+        }
+
+        .cipher-input:hover::after {
+            opacity: 0.85;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col p-3 text-slate-100" onkeydown="handleKeyDown(event)">
+
+    <div class="max-w-[2500px] w-full mx-auto bg-slate-900 rounded-2xl shadow-2xl border-4 border-slate-700 overflow-hidden">
+
+        <!-- HEADER ULTRA COMPACTO -->
+        <div class="flex justify-between items-center px-6 py-2 bg-gradient-to-r from-slate-800 to-slate-900 border-b-2 border-slate-700">
+            <div class="flex items-center gap-2">
+                <div class="bg-gradient-to-br from-blue-600 to-blue-800 text-white p-1.5 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-black title-gradient tracking-tight leading-none">StormStudios Workstation v3.0</h1>
+                    <div class="text-[7px] font-medium text-slate-500 uppercase tracking-widest">v2.0</div>
+                </div>
+            </div>
+
+            <button onclick="clearScore()" class="px-3 py-1.5 text-xs font-bold text-red-400 bg-red-950 border-2 border-red-800 rounded-lg hover:bg-red-900 hover:border-red-600 transition-all uppercase tracking-wide">
+                🗑️ Limpiar
+            </button>
+        </div>
+
+        <!-- CONTROLES GLOBALES - 3 CARDS EN UNA FILA -->
+        <div class="grid grid-cols-3 gap-3 p-3 bg-slate-900">
+
+            <!-- CARD 1: PROYECTO -->
+            <div class="daw-card rounded-xl p-4 space-y-3">
+                <div class="flex items-center gap-2 pb-2 border-b-2 border-slate-600">
+                    <div class="w-2 h-2 rounded-full bg-blue-500 shadow-lg shadow-blue-500/50"></div>
+                    <h3 class="text-[10px] font-black text-slate-300 uppercase tracking-wider">Proyecto</h3>
+                </div>
+                <div class="space-y-2">
+                    <div>
+                        <label class="text-[8px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Instrumento</label>
+                        <select id="instrument-select" onchange="handleInstrumentChange()" class="w-full bg-slate-700 border-2 border-slate-600 text-white text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2 outline-none font-semibold transition">
+                            <option value="Sinte">🎹 Sinte (Osc)</option>
+                            <option value="Piano" selected>Piano</option>
+                            <option value="Cello">Cello</option>
+                            <option value="Corno">Corno</option>
+                            <option value="Coro">Coro</option>
+                            <option value="Fagot">Fagot</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[8px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Modo</label>
+                        <select id="mode-select" onchange="handleModeChange()" class="w-full bg-slate-700 border-2 border-slate-600 text-white text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2 outline-none font-medium transition">
+                            <option value="single" selected>Melodía Simple</option>
+                            <option value="quartet">Cuarteto SATB</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 2: NOTACIÓN -->
+            <div class="daw-card rounded-xl p-4 space-y-3">
+                <div class="flex items-center gap-2 pb-2 border-b-2 border-slate-600">
+                    <div class="w-2 h-2 rounded-full bg-purple-500 shadow-lg shadow-purple-500/50"></div>
+                    <h3 class="text-[10px] font-black text-slate-300 uppercase tracking-wider">Notación</h3>
+                </div>
+                <div class="space-y-2">
+                    <div>
+                        <label class="text-[8px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Armadura</label>
+                        <select id="key-sig-select" onchange="updateDraftSettings()" class="w-full bg-slate-700 border-2 border-slate-600 text-white text-sm rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 p-2 outline-none font-medium transition">
+                            <optgroup label="Natural / Sostenidos">
+                                <option value="C" selected>Do (C)</option>
+                                <option value="G">Sol (1#)</option>
+                                <option value="D">Re (2#)</option>
+                                <option value="A">La (3#)</option>
+                                <option value="E">Mi (4#)</option>
+                                <option value="B">Si (5#)</option>
+                                <option value="F#">Fa# (6#)</option>
+                                <option value="C#">Do# (7#)</option>
+                            </optgroup>
+                            <optgroup label="Bemoles">
+                                <option value="F">Fa (1b)</option>
+                                <option value="Bb">Sib (2b)</option>
+                                <option value="Eb">Mib (3b)</option>
+                                <option value="Ab">Lab (4b)</option>
+                                <option value="Db">Reb (5b)</option>
+                                <option value="Gb">Solb (6b)</option>
+                                <option value="Cb">Dob (7b)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[8px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Compás</label>
+                        <select id="time-sig-select" onchange="updateDraftSettings()" class="w-full bg-slate-700 border-2 border-slate-600 text-white text-sm rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 p-2 outline-none font-medium transition">
+                            <option value="4/4">4/4</option>
+                            <option value="3/4">3/4</option>
+                            <option value="2/4">2/4</option>
+                            <option value="6/8">6/8</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 3: PLAYBACK -->
+            <div class="daw-card rounded-xl p-4 space-y-3">
+                <div class="flex items-center gap-2 pb-2 border-b-2 border-slate-600">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50"></div>
+                    <h3 class="text-[10px] font-black text-slate-300 uppercase tracking-wider">Playback</h3>
+                </div>
+                <div class="space-y-3">
+                    <div>
+                        <div class="flex justify-between items-baseline mb-2">
+                            <label class="text-[8px] font-bold text-slate-400 uppercase tracking-wider">Tempo</label>
+                            <span id="tempo-display" class="text-2xl font-black text-emerald-400">100</span>
+                        </div>
+                        <input type="range" id="tempo-slider" min="40" max="220" value="100" oninput="updateTempoDisplay()" class="w-full h-3 bg-slate-700 rounded-lg cursor-pointer accent-emerald-500">
+                        <div class="flex justify-between text-[7px] text-slate-500 mt-1">
+                            <span>40</span>
+                            <span>220 BPM</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-baseline mb-2">
+                            <label class="text-[8px] font-bold text-slate-400 uppercase tracking-wider">Volumen</label>
+                            <span id="volume-display" class="text-2xl font-black text-emerald-400">80</span>
+                        </div>
+                        <input type="range" id="volume-slider" min="0" max="100" value="80" oninput="updateVolumeDisplay()" class="w-full h-3 bg-slate-700 rounded-lg cursor-pointer accent-emerald-500">
+                        <div class="flex justify-between text-[7px] text-slate-500 mt-1">
+                            <span>0</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+                    <!-- METRONOME -->
+                    <div class="pt-3 mt-2 border-t-2 border-slate-600">
+                        <div class="flex justify-between items-baseline mb-2">
+                            <label class="text-[8px] font-bold text-slate-400 uppercase tracking-wider">Metrónomo</label>
+                            <span class="text-[10px] font-black text-emerald-400"><span id="metronome-bpm">100</span> BPM</span>
+                        </div>
+                        <button id="btn-metronome" onclick="toggleMetronome()" class="w-full px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg shadow-lg border-2 border-slate-600 font-bold text-xs uppercase tracking-wide transition-all flex items-center justify-center gap-2" title="Metrónomo">
+                            <span id="metronome-icon" class="text-lg">♩</span>
+                            <span id="metronome-label">Metrónomo OFF</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- MEASURE CONTROLS & VOICES -->
+        <div class="flex flex-wrap gap-2 items-center px-3 pb-3 bg-slate-900">
+            <div class="flex items-center gap-2 bg-slate-800 px-3 py-2 rounded-lg border-2 border-slate-600">
+                <button onclick="applyToSelectedMeasure()" id="btn-apply-measure" class="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 transition">
+                    <span>⚡</span>
+                    <span>Aplicar a Compás</span>
+                </button>
+                <div class="w-px h-4 bg-slate-600"></div>
+                <select id="clef-select" onchange="updateDraftSettings()" class="bg-transparent text-xs font-bold text-slate-300 outline-none cursor-pointer hover:text-white">
+                    <option value="treble">Clave Sol</option>
+                    <option value="bass">Clave Fa</option>
+                </select>
+            </div>
+
+            <div id="voice-controls" class="hidden flex items-center gap-2 bg-slate-800 px-3 py-2 rounded-lg border-2 border-slate-600">
+                <span class="text-[8px] font-black text-slate-400 uppercase tracking-wider">Voz:</span>
+                <div class="flex gap-2">
+                    <button type="button" id="btn-voice-soprano" onclick="setActiveTrack('soprano')" class="px-4 py-2 rounded-lg border-2 text-sm font-black transition-all">S</button>
+                    <button type="button" id="btn-voice-alto" onclick="setActiveTrack('alto')" class="px-4 py-2 rounded-lg border-2 text-sm font-black transition-all">A</button>
+                    <button type="button" id="btn-voice-tenor" onclick="setActiveTrack('tenor')" class="px-4 py-2 rounded-lg border-2 text-sm font-black transition-all">T</button>
+                    <button type="button" id="btn-voice-bass" onclick="setActiveTrack('bass')" class="px-4 py-2 rounded-lg border-2 text-sm font-black transition-all">B</button>
+                </div>
+            </div>
+
+            <div id="loading-indicator" class="hidden text-xs font-medium text-emerald-400 bg-emerald-950 px-3 py-2 rounded-lg border-2 border-emerald-800 animate-pulse">
+                <span class="spinner mr-2"></span> Cargando...
+            </div>
+        </div>
+
+        <!-- VIEW TOGGLE - Piano Roll / Staff -->
+        <div class="flex gap-2 items-center px-3 pb-3 bg-slate-900">
+            <div class="flex items-center gap-2 bg-slate-800 px-1.5 py-1.5 rounded-lg border-2 border-slate-600">
+                <span class="text-[8px] font-black text-slate-400 uppercase tracking-wider px-2">Vista:</span>
+                <button type="button" id="btn-view-staff" onclick="setView('staff')"
+                        class="px-6 py-2 rounded-lg border-2 text-sm font-bold transition-all bg-blue-600 text-white border-blue-400 shadow-lg shadow-blue-500/50">
+                    Pentagrama
+                </button>
+                <button type="button" id="btn-view-pianoroll" onclick="setView('pianoroll')"
+                        class="px-6 py-2 rounded-lg border-2 text-sm font-bold transition-all bg-slate-700 text-slate-300 border-slate-600 hover:bg-slate-600">
+                    Piano Roll
+                </button>
+            </div>
+        </div>
+
+        <!-- CANVAS AREA MÁS GRANDE -->
+        <div id="canvas-container" class="relative flex overflow-x-auto border-y-4 border-slate-700 bg-white p-8 min-h-[580px] shadow-inner custom-scrollbar" tabindex="0">
+            <div id="output" class="m-auto transition-transform duration-200">
+                <div id="playback-cursor"></div>
+            </div>
+            <div id="cipher-overlay" class="absolute inset-0 pointer-events-none"></div>
+        </div>
+
+        <!-- TOOLBARS REDISEÑADAS - FONDO OSCURO -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 bg-gradient-to-b from-slate-800 to-slate-900">
+
+            <!-- 1. DURACIÓN DE NOTAS - BOTONES GIGANTES -->
+            <div class="lg:col-span-5 space-y-2">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-blue-500 shadow-lg shadow-blue-500/50"></div>
+                    <label class="text-xs font-black text-slate-300 uppercase tracking-wide">Duración de Notas</label>
+                </div>
+                <div class="flex gap-2 bg-slate-950 p-3 rounded-xl border-2 border-slate-700">
+                    <button onclick="setDuration('w')" id="btn-w" class="duration-btn flex-1 py-6 rounded-xl shadow-lg flex flex-col items-center justify-center transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border-2 border-slate-600">
+                        <svg class="note-icon" viewBox="0 0 24 24">
+                            <ellipse cx="12" cy="16" rx="5" ry="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                    </button>
+                    <button onclick="setDuration('h')" id="btn-h" class="duration-btn flex-1 py-6 rounded-xl shadow-lg flex flex-col items-center justify-center transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border-2 border-slate-600">
+                        <svg class="note-icon" viewBox="0 0 24 24">
+                            <ellipse cx="10" cy="16" rx="5" ry="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                            <line x1="15" y1="16" x2="15" y2="4" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                    </button>
+                    <button onclick="setDuration('q')" id="btn-q" class="duration-btn flex-1 py-6 rounded-xl shadow-2xl flex flex-col items-center justify-center transition-all bg-blue-600 text-white border-2 border-blue-400 ring-4 ring-blue-500/50">
+                        <svg class="note-icon" viewBox="0 0 24 24">
+                            <ellipse cx="10" cy="16" rx="5" ry="3.5" fill="currentColor"/>
+                            <line x1="15" y1="16" x2="15" y2="4" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                    </button>
+                    <button onclick="setDuration('8')" id="btn-8" class="duration-btn flex-1 py-6 rounded-xl shadow-lg flex flex-col items-center justify-center transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border-2 border-slate-600">
+                        <svg class="note-icon" viewBox="0 0 24 24">
+                            <ellipse cx="10" cy="16" rx="5" ry="3.5" fill="currentColor"/>
+                            <line x1="15" y1="16" x2="15" y2="4" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M 15 4 L 18 6 L 18 8 L 15 6" fill="currentColor"/>
+                        </svg>
+                    </button>
+                    <button onclick="setDuration('16')" id="btn-16" class="duration-btn flex-1 py-6 rounded-xl shadow-lg flex flex-col items-center justify-center transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border-2 border-slate-600">
+                        <svg class="note-icon" viewBox="0 0 24 24">
+                            <ellipse cx="10" cy="16" rx="5" ry="3.5" fill="currentColor"/>
+                            <line x1="15" y1="16" x2="15" y2="4" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M 15 4 L 18 6 L 18 8 L 15 6 M 15 6 L 18 8 L 18 10 L 15 8" fill="currentColor"/>
+                        </svg>
+                    </button>
+                    <button onclick="toggleDottedMode()" id="btn-dot" class="dot-btn w-14 py-6 rounded-xl shadow-lg flex flex-col items-center justify-center transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border-2 border-slate-600" title="Dotted">
+                        <span class="text-2xl font-black leading-none">•</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. ALTERACIONES & ARTICULACIÓN -->
+            <div class="lg:col-span-4 space-y-2">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-purple-500 shadow-lg shadow-purple-500/50"></div>
+                    <label class="text-xs font-black text-slate-300 uppercase tracking-wide">Alteraciones & Articulación</label>
+                </div>
+                <div class="flex gap-3 bg-slate-950 p-3 rounded-xl border-2 border-slate-700 h-[100px] items-center">
+                    <div class="flex gap-2 flex-1">
+                        <button onclick="applyAccidental('#')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white rounded-xl shadow-lg acc-btn border-2 border-slate-600 h-16 transition-all" title="Sostenido">♯</button>
+                        <button onclick="applyAccidental('n')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white rounded-xl shadow-lg acc-btn border-2 border-slate-600 h-16 transition-all" title="Becuadro">♮</button>
+                        <button onclick="applyAccidental('b')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white rounded-xl shadow-lg acc-btn border-2 border-slate-600 h-16 transition-all" title="Bemol">♭</button>
+                    </div>
+                    <div class="separator"></div>
+                    <div class="flex gap-2">
+                        <button onclick="toggleTie()" class="px-4 bg-purple-900 hover:bg-purple-800 text-purple-300 border-2 border-purple-600 rounded-xl shadow-lg font-bold text-2xl h-16 flex items-center justify-center transition-all" title="Ligar">◡</button>
+                        <button onclick="toggleOrnament()" class="px-4 bg-red-900 hover:bg-red-800 text-red-300 border-2 border-red-600 rounded-xl shadow-lg font-bold text-2xl h-16 flex items-center justify-center transition-all" title="Ornamento">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. EDICIÓN & ACCIONES -->
+            <div class="lg:col-span-3 space-y-2">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50"></div>
+                    <label class="text-xs font-black text-slate-300 uppercase tracking-wide">Acciones</label>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <!-- Top row -->
+                    <div class="flex gap-2">
+                        <div class="flex bg-slate-950 p-1.5 rounded-lg gap-1.5 border-2 border-slate-700">
+                            <button onclick="undo()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg shadow-lg border-2 border-slate-600 font-bold text-lg transition-all" title="Deshacer">↶</button>
+                            <button onclick="redo()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg shadow-lg border-2 border-slate-600 font-bold text-lg transition-all" title="Rehacer">↷</button>
+                        </div>
+                        <button onclick="addMeasure()" class="flex-1 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg shadow-lg border-2 border-slate-600 font-bold text-xs uppercase tracking-tight transition-all">+ Compás</button>
+                        <button onclick="toggleCiphers()" id="btn-toggle-ciphers" class="flex-1 px-4 py-2 bg-emerald-800 hover:bg-emerald-700 text-emerald-300 rounded-lg shadow-lg border-2 border-emerald-600 font-bold text-xs uppercase tracking-tight transition-all">Ocultar Cifrados</button>
+                    </div>
+                    <!-- Bottom row -->
+                    <div class="flex gap-2">
+                        <div class="flex bg-slate-950 p-1.5 rounded-lg gap-1.5 border-2 border-slate-700">
+                            <input type="file" id="file-input" accept=".json" class="hidden" onchange="loadProject(this)">
+                            <button onclick="saveProject()" class="px-3 py-2 bg-amber-900 hover:bg-amber-800 text-amber-300 rounded-lg shadow-lg border-2 border-amber-700 transition-all text-lg" title="Guardar">💾</button>
+                            <button onclick="triggerLoad()" class="px-3 py-2 bg-amber-900 hover:bg-amber-800 text-amber-300 rounded-lg shadow-lg border-2 border-amber-700 transition-all text-lg" title="Abrir">📂</button>
+                            <button onclick="downloadMIDI()" class="px-3 py-2 bg-indigo-900 hover:bg-indigo-800 text-indigo-300 rounded-lg shadow-lg border-2 border-indigo-700 font-bold text-xs transition-all" title="MIDI">MIDI</button>
+                        </div>
+                        <div id="chord-monitor" class="hidden lg:flex items-center justify-center flex-1 px-3 py-2 bg-slate-950 text-emerald-400 rounded-lg font-mono text-sm font-bold shadow-lg border-2 border-slate-700 tracking-wider">
+                            ---
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTROLES DE REPRODUCCIÓN GIGANTES -->
+        <div class="flex gap-4 items-center justify-center p-6 bg-gradient-to-t from-slate-900 to-slate-800 border-t-2 border-slate-700">
+            <button onclick="stopPlayback()" class="px-12 py-6 bg-red-600 hover:bg-red-500 text-white rounded-2xl shadow-2xl font-black text-2xl tracking-wide flex items-center justify-center gap-3 transition-all active:scale-95 border-4 border-red-400 glow-red">
+                <span class="text-3xl">⏹</span>
+                <span>STOP</span>
+            </button>
+            <button onclick="playScore()" class="px-16 py-6 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl shadow-2xl font-black text-2xl tracking-wide flex items-center justify-center gap-3 transition-all active:scale-95 border-4 border-emerald-400 glow-green">
+                <span class="text-3xl">▶</span>
+                <span>PLAY</span>
+            </button>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="px-6 py-3 bg-slate-950 border-t-2 border-slate-800 text-center">
+            <p class="text-slate-500 text-[10px] flex justify-center gap-4 flex-wrap">
+                <span class="flex items-center gap-1"><kbd class="bg-slate-800 px-2 py-1 rounded border border-slate-700 font-bold">Click</kbd> Seleccionar</span>
+                <span class="flex items-center gap-1"><kbd class="bg-slate-800 px-2 py-1 rounded border border-slate-700 font-bold">Click Der</kbd> Borrar</span>
+                <span class="flex items-center gap-1"><kbd class="bg-slate-800 px-2 py-1 rounded border border-slate-700 font-bold">T</kbd> Ligar</span>
+                <span class="flex items-center gap-1"><kbd class="bg-slate-800 px-2 py-1 rounded border border-slate-700 font-bold">↑↓</kbd> Pitch</span>
+                <span class="flex items-center gap-1"><kbd class="bg-slate-800 px-2 py-1 rounded border border-slate-700 font-bold">Ctrl+Z</kbd> Undo</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // --- CONSTANTES & CONFIG ---
+        const NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+        const BASE_FREQ_C4 = 261.63;
+        const INSTRUMENTS = ["Piano", "Cello", "Corno", "Coro", "Fagot"];
+        const BASE_URL = "https://stormstudios.com.mx/wp-content/App%20AP%20samples";
+        const SAMPLE_VOLUME = 0.5;
+
+        const TICKS_PER_QUARTER = 4;
+        const DURATION_TICKS = {
+            'w': 16, 'h': 8, 'q': 4, '8': 2, '16': 1,
+            // Aliases (UI/legacy)
+            'd': 2, 's': 1,
+            // Dotted (no dotted sixteenth)
+            'w.': 24, 'h.': 12, 'q.': 6, 'd.': 3,
+            // Alias for dotted eighth
+            '8.': 3
+        };
+        const TICKS_TO_DURATION = { 24: 'w.', 16: 'w', 12: 'h.', 8: 'h', 6: 'q.', 4: 'q', 3: 'd.', 2: '8', 1: '16' };
+
+        const MIN_STAVE_WIDTH = 370;
+        const STAVE_Y_START = 50;
+        const QUARTET_STAFF_GAP = 130;
+        const QUARTET_RENDER_HEIGHT = 680;
+        const SINGLE_RENDER_HEIGHT = 400;
+
+        const TRACK_DEFS = {
+            melody:  { label: 'Melodía',  clef: null, stem: null, ui: { active: 'bg-blue-600 text-white border-blue-400', inactive: 'bg-slate-700 text-slate-300 border-slate-600 hover:bg-slate-600' } },
+            soprano: { label: 'Soprano', clef: 'treble', stem: 'up',   ui: { active: 'bg-red-600 text-white border-red-400 shadow-lg shadow-red-500/50', inactive: 'bg-red-900/50 text-red-300 border-red-800 hover:bg-red-900' } },
+            alto:    { label: 'Alto',    clef: 'treble', stem: 'down', ui: { active: 'bg-orange-600 text-white border-orange-400 shadow-lg shadow-orange-500/50', inactive: 'bg-orange-900/50 text-orange-300 border-orange-800 hover:bg-orange-900' } },
+            tenor:   { label: 'Tenor',   clef: 'bass',   stem: 'up',   ui: { active: 'bg-yellow-600 text-white border-yellow-400 shadow-lg shadow-yellow-500/50', inactive: 'bg-yellow-900/50 text-yellow-300 border-yellow-800 hover:bg-yellow-900' } },
+            bass:    { label: 'Bajo',    clef: 'bass',   stem: 'down', ui: { active: 'bg-blue-600 text-white border-blue-400 shadow-lg shadow-blue-500/50', inactive: 'bg-blue-900/50 text-blue-300 border-blue-800 hover:bg-blue-900' } },
+        };
+
+        // Piano Roll Configuration
+        const PIANO_ROLL_CONFIG = {
+            ROW_HEIGHT: 18,
+            KEYBOARD_WIDTH: 120,
+            MIN_NOTE_WIDTH: 20,
+            NOTE_PADDING: 0.1,
+            PIXELS_PER_TICK: 24, // Uniform spacing: 24 pixels per tick (quarter = 96px, eighth = 48px, sixteenth = 24px)
+
+            // SATB vocal range for display: D2 to C6 (inclusive)
+            MIN_KEY: 'd/2',
+            MAX_KEY: 'c/6',
+            MIN_MIDI: 38, // D2
+            MAX_MIDI: 84, // C6
+            SEMITONES: 47,
+
+            NOTE_COLORS: {
+                melody: '#3b82f6',
+                soprano: '#ef4444',
+                alto: '#f97316',
+                tenor: '#eab308',
+                bass: '#3b82f6'
+            }
+        };
+
+        const SEMITONE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+        // --- ESTADO ---
+        let projectData = {
+            mode: 'single',
+            instrument: 'Piano',
+            tracks: { melody: new Map(), soprano: new Map(), alto: new Map(), tenor: new Map(), bass: new Map() }
+        };
+
+        let measureSettings = { 0: { time: '4/4', key: 'C', clef: 'treble' } };
+        let totalMeasures = 3;
+
+        let draftClef = 'treble';
+        let draftTimeSig = '4/4';
+        let draftKeySig = 'C';
+        let currentDuration = 'q';
+        let activeTrackName = 'melody';
+        let selectedTick = null;
+        let selectedTrackName = null;
+
+        let draggingTick = null;
+        let draggingTrackName = null;
+        let dragStartY = 0;
+        let isDragging = false;
+        let dragHasSavedState = false;
+
+        let generatedStaves = [];
+        let clickTargets = [];
+        let tickXPositions = [];
+
+        let cipherData = {}; // { measureIndex: { localTick: "cipher text" } }
+        let cipherVisible = true; // Toggle state for showing/hiding ciphers
+
+        // Piano Roll state
+        let currentView = 'staff'; // 'staff' or 'pianoroll'
+        let pianoRollDragState = {
+            mode: null,        // null, 'move', 'resize'
+            tick: null,
+            trackName: null,
+            startX: 0,
+            startY: 0,
+            originalKey: null,
+            originalTick: null
+        };
+
+        let audioCtx = null;
+        let masterGain = null;
+        let sampleCache = {};
+        let playbackState = { isPlaying: false, startTime: 0, startTick: 0, animationId: null, activeNodes: [] };
+        let playbackStartTick = 0; // user-defined playback start (absolute tick)
+
+        let currentPreviewNote = null;
+
+        const undoStack = [];
+        const redoStack = [];
+        const MAX_HISTORY = 50;
+
+        const keySignatures = {
+            'C': {}, 'G': { 'f': '#' }, 'D': { 'f': '#', 'c': '#' }, 'A': { 'f': '#', 'c': '#', 'g': '#' },
+            'E': { 'f': '#', 'c': '#', 'g': '#', 'd': '#' }, 'B': { 'f': '#', 'c': '#', 'g': '#', 'd': '#', 'a': '#' },
+            'F#': { 'f': '#', 'c': '#', 'g': '#', 'd': '#', 'a': '#', 'e': '#' },
+            'C#': { 'f': '#', 'c': '#', 'g': '#', 'd': '#', 'a': '#', 'e': '#', 'b': '#' },
+            'F': { 'b': 'b' }, 'Bb': { 'b': 'b', 'e': 'b' }, 'Eb': { 'b': 'b', 'e': 'b', 'a': 'b' },
+            'Ab': { 'b': 'b', 'e': 'b', 'a': 'b', 'd': 'b' }, 'Db': { 'b': 'b', 'e': 'b', 'a': 'b', 'd': 'b', 'g': 'b' },
+            'Gb': { 'b': 'b', 'e': 'b', 'a': 'b', 'd': 'b', 'g': 'b', 'c': 'b' },
+            'Cb': { 'b': 'b', 'e': 'b', 'a': 'b', 'd': 'b', 'g': 'b', 'c': 'b', 'f': 'b' }
+        };
+
+        // --- INIT ---
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof Vex === 'undefined') {
+                document.getElementById('output').innerHTML = "<p class='text-red-500'>Error: VexFlow no cargó.</p>";
+                return;
+            }
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (!masterGain) {
+                masterGain = audioCtx.createGain();
+                masterGain.gain.value = 0.8; // Default volume 80%
+                masterGain.connect(audioCtx.destination);
+            }
+            preloadAllSamples();
+            syncModeUI();
+            renderCurrentView();
+            updateMetronomeBpmDisplay();
+            updateMetronomeUI();
+        });
+
+        document.addEventListener('mousemove', handleGlobalMouseMove);
+        document.addEventListener('mouseup', handleGlobalMouseUp);
+        const container = document.getElementById('canvas-container');
+        container.addEventListener('contextmenu', handleContextMenu);
+
+        // --- AUDIO ENGINE ---
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            if (!masterGain) {
+                masterGain = audioCtx.createGain();
+                masterGain.gain.value = 0.8; // Default volume 80%
+                masterGain.connect(audioCtx.destination);
+            }
+        }
+
+        function handleInstrumentChange() {
+            const sel = document.getElementById('instrument-select');
+            projectData.instrument = sel.value;
+        }
+
+        function preloadAllSamples() {
+            const octaves = [1, 2, 3, 4, 5, 6];
+            const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+            // Silently preload samples in background
+            INSTRUMENTS.forEach(inst => {
+                octaves.forEach(oct => {
+                    notes.forEach(note => {
+                        const sampleKey = `${note}${oct}`;
+                        if (!sampleCache[`${inst}_${sampleKey}`]) {
+                            loadSample(inst, sampleKey).catch(() => {});
+                        }
+                    });
+                });
+            });
+        }
+
+        function getSampleKey(noteKey) {
+            let [key, octaveStr] = noteKey.split('/');
+            let octave = parseInt(octaveStr);
+            let cleanKey = key.toLowerCase();
+            const flatsToSharps = {
+                'db': 'c#', 'eb': 'd#', 'gb': 'f#', 'ab': 'g#', 'bb': 'a#',
+                'cb': 'b', 'fb': 'e'
+            };
+            if (cleanKey === 'cb') octave -= 1;
+            if (cleanKey === 'b#') octave += 1;
+            if (flatsToSharps[cleanKey]) {
+                cleanKey = flatsToSharps[cleanKey];
+            } else if (cleanKey === 'cb') {
+                cleanKey = 'b';
+            } else if (cleanKey === 'fb') {
+                cleanKey = 'e';
+            } else if (cleanKey === 'b#') {
+                cleanKey = 'c';
+            } else if (cleanKey === 'e#') {
+                cleanKey = 'f';
+            } else {
+                cleanKey = cleanKey.replace('n', '');
+            }
+            const notePart = cleanKey.charAt(0).toUpperCase() + cleanKey.slice(1);
+            return `${notePart}${octave}`;
+        }
+
+        function getSampleUrl(instrument, sampleKey) {
+            const safeKey = sampleKey.replace('#', '%23');
+            return `${BASE_URL}/${instrument}/${safeKey}.mp3`;
+        }
+
+        async function loadSample(instrument, sampleKey) {
+            const cacheKey = `${instrument}_${sampleKey}`;
+            if (sampleCache[cacheKey]) return sampleCache[cacheKey];
+            const url = getSampleUrl(instrument, sampleKey);
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const arrayBuffer = await response.arrayBuffer();
+                if (!audioCtx) initAudio();
+                const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+                sampleCache[cacheKey] = audioBuffer;
+                return audioBuffer;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function playSound(noteKey, duration, startTime) {
+            if (projectData.instrument === 'Sinte') {
+                playOscillator(getFrequency(noteKey), duration, startTime);
+            } else {
+                playSampleNote(projectData.instrument, noteKey, duration, startTime);
+            }
+        }
+
+        async function playSampleNote(instrument, noteKey, duration, startTime) {
+            const sampleKey = getSampleKey(noteKey);
+            let buffer = sampleCache[`${instrument}_${sampleKey}`];
+            if (!buffer) {
+                document.getElementById('loading-indicator').classList.remove('hidden');
+                buffer = await loadSample(instrument, sampleKey);
+                document.getElementById('loading-indicator').classList.add('hidden');
+            }
+            if (!buffer) {
+                playOscillator(getFrequency(noteKey), duration, startTime);
+                return;
+            }
+            const source = audioCtx.createBufferSource();
+            source.buffer = buffer;
+            const gainNode = audioCtx.createGain();
+            gainNode.gain.setValueAtTime(SAMPLE_VOLUME, startTime);
+            gainNode.gain.setValueAtTime(SAMPLE_VOLUME, startTime + duration - 0.05);
+            gainNode.gain.linearRampToValueAtTime(0, startTime + duration);
+            source.connect(gainNode);
+            gainNode.connect(masterGain);
+            source.start(startTime);
+            source.stop(startTime + duration + 0.5);
+            playbackState.activeNodes.push(source);
+        }
+
+        function playOscillator(freq, duration, startTime) {
+            if (!freq) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(0.3, startTime + 0.02);
+            gain.gain.linearRampToValueAtTime(0.3, startTime + duration - 0.05);
+            gain.gain.linearRampToValueAtTime(0, startTime + duration);
+            osc.connect(gain);
+            gain.connect(masterGain);
+            osc.start(startTime);
+            osc.stop(startTime + duration + 0.1);
+            playbackState.activeNodes.push(osc);
+        }
+
+        async function startPreviewSound(noteKey) {
+            stopPreviewSound();
+            if (!audioCtx) initAudio();
+            if (projectData.instrument === 'Sinte') {
+                const freq = getFrequency(noteKey);
+                if (!freq) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.05);
+                osc.connect(gain);
+                gain.connect(masterGain);
+                osc.start();
+                currentPreviewNote = { node: osc, gain: gain };
+            } else {
+                const sampleKey = getSampleKey(noteKey);
+                let buffer = sampleCache[`${projectData.instrument}_${sampleKey}`];
+                if (!buffer) {
+                    buffer = await loadSample(projectData.instrument, sampleKey);
+                }
+                if (buffer) {
+                    const source = audioCtx.createBufferSource();
+                    source.buffer = buffer;
+                    const gain = audioCtx.createGain();
+                    gain.gain.setValueAtTime(SAMPLE_VOLUME, audioCtx.currentTime);
+                    source.connect(gain);
+                    gain.connect(masterGain);
+                    source.start();
+                    currentPreviewNote = { node: source, gain: gain };
+                }
+            }
+        }
+
+        function stopPreviewSound() {
+            if (currentPreviewNote) {
+                const { node, gain } = currentPreviewNote;
+                try {
+                    const now = audioCtx.currentTime;
+                    gain.gain.cancelScheduledValues(now);
+                    gain.gain.setValueAtTime(gain.gain.value, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.1);
+                    node.stop(now + 0.1);
+                } catch(e) {}
+                currentPreviewNote = null;
+            }
+        }
+
+        async function playScore() {
+            initAudio();
+            stopPlayback();
+            if (projectData.instrument !== 'Sinte') {
+                 const tracks = (projectData.mode === 'quartet') ? ['soprano', 'alto', 'tenor', 'bass'] : ['melody'];
+                 const uniqueNotes = new Set();
+                 tracks.forEach(trackName => {
+                    const trackMap = getTrackMap(trackName);
+                    for (let note of trackMap.values()) {
+                        if (note.type === 'note') uniqueNotes.add(note.keys[0]);
+                    }
+                 });
+                 const promises = [];
+                 uniqueNotes.forEach(key => {
+                     const sk = getSampleKey(key);
+                     if (!sampleCache[`${projectData.instrument}_${sk}`]) {
+                         promises.push(loadSample(projectData.instrument, sk));
+                     }
+                 });
+                 if (promises.length > 0) {
+                     document.getElementById('loading-indicator').classList.remove('hidden');
+                     await Promise.all(promises);
+                     document.getElementById('loading-indicator').classList.add('hidden');
+                 }
+            }
+
+            const bpm = parseInt(document.getElementById('tempo-slider').value);
+            const secondsPerQuarter = 60 / bpm;
+            const secondsPerTick = secondsPerQuarter / TICKS_PER_QUARTER;
+            const totalTicks = getTotalTicks();
+
+            // Start playback from user-selected tick
+            const startTick = Math.max(0, Math.min(playbackStartTick || 0, Math.max(0, totalTicks - 1)));
+
+            let now = audioCtx.currentTime + 0.2;
+            const tracks = (projectData.mode === 'quartet') ? ['soprano', 'alto', 'tenor', 'bass'] : ['melody'];
+
+            tracks.forEach((trackName) => {
+                const trackMap = getTrackMap(trackName);
+                const sortedTicks = Array.from(trackMap.keys()).sort((a, b) => a - b);
+                const processed = new Set();
+
+                sortedTicks.forEach((tick) => {
+                    if (processed.has(tick)) return;
+                    const note = trackMap.get(tick);
+                    if (!note || note.type !== 'note') return;
+
+                    // Merge tied chains into a single sounding event
+                    let accDur = DURATION_TICKS[note.duration] || 0;
+                    let endTick = tick + accDur;
+
+                    let cTick = tick;
+                    let cNote = note;
+                    while (cNote && cNote.isTied) {
+                        const nxtTick = cTick + (DURATION_TICKS[cNote.duration] || 0);
+                        const nxt = trackMap.get(nxtTick);
+                        if (nxt && nxt.type === 'note' && nxt.keys && nxt.keys[0] === note.keys[0]) {
+                            processed.add(nxtTick);
+                            accDur += DURATION_TICKS[nxt.duration] || 0;
+                            cTick = nxtTick;
+                            cNote = nxt;
+                            endTick = tick + accDur;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Skip notes that fully end before the startTick
+                    if (endTick <= startTick) return;
+
+                    // If a note starts before the startTick and sustains across it, truncate
+                    let playStartTick = tick;
+                    let playDurTicks = accDur;
+                    if (tick < startTick) {
+                        playStartTick = startTick;
+                        playDurTicks = endTick - startTick;
+                    }
+
+                    const startOffsetTicks = playStartTick - startTick;
+                    const durationSecs = playDurTicks * secondsPerTick;
+                    const startSecs = now + (startOffsetTicks * secondsPerTick);
+                    playSound(note.keys[0], durationSecs, startSecs);
+                });
+            });
+
+            // --- METRONOME SCHEDULING (sync to playback cursor) ---
+            scheduleMetronomeClicks(now, secondsPerTick, startTick, totalTicks);
+
+
+            const cursor = document.getElementById('playback-cursor');
+            const container = document.getElementById('canvas-container');
+            cursor.style.display = 'block';
+
+            // Initialize cursor at startTick immediately - use linear position for piano roll
+            const xStart = (currentView === 'pianoroll') ? getLinearXForTick(startTick) : getXForTick(startTick);
+            const displayXStart = (currentView === 'pianoroll') ? xStart + PIANO_ROLL_CONFIG.KEYBOARD_WIDTH : xStart;
+            cursor.style.left = displayXStart + 'px';
+
+            playbackState.startTime = now;
+            playbackState.startTick = startTick;
+            playbackState.isPlaying = true;
+
+            function animate() {
+                if (!playbackState.isPlaying) return;
+                const currentTime = audioCtx.currentTime;
+                const elapsed = currentTime - playbackState.startTime;
+                if (elapsed < 0) {
+                     playbackState.animationId = requestAnimationFrame(animate);
+                     return;
+                }
+
+                const currentTickAbs = playbackState.startTick + (elapsed / secondsPerTick);
+                if (currentTickAbs > totalTicks) {
+                    stopPlayback();
+                    return;
+                }
+
+                updateMonitor(currentTickAbs);
+                // Use linear position for piano roll, VexFlow position for staff
+                const xPos = (currentView === 'pianoroll') ? getLinearXForTick(currentTickAbs) : getXForTick(currentTickAbs);
+
+                // In Piano Roll view, add keyboard width offset
+                const displayXPos = currentView === 'pianoroll' ? xPos + PIANO_ROLL_CONFIG.KEYBOARD_WIDTH : xPos;
+                cursor.style.left = displayXPos + 'px';
+
+                const containerRect = container.getBoundingClientRect();
+                const halfWidth = containerRect.width / 2;
+                if (displayXPos > halfWidth) container.scrollLeft = displayXPos - halfWidth;
+                else container.scrollLeft = 0;
+                playbackState.animationId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function stopPlayback() {
+            playbackState.isPlaying = false;
+            if (playbackState.animationId) cancelAnimationFrame(playbackState.animationId);
+            document.getElementById('chord-monitor').innerText = "---";
+            // Keep the cursor visible at the chosen start position
+            setPlaybackStartTick(playbackStartTick);
+            playbackState.activeNodes.forEach(node => {
+                try { node.stop(); } catch(e) {}
+            });
+            playbackState.activeNodes = [];
+            stopPreviewSound();
+        }
+
+        function updateMonitor(currentTick) {
+            // Find which measure we're in
+            let accumulatedTicks = 0;
+            let currentMeasure = 0;
+            let localTick = 0;
+
+            for (let m = 0; m < totalMeasures; m++) {
+                const measureTicks = getTicksForTimeSig(getSettingsForMeasure(m).time);
+                if (currentTick >= accumulatedTicks && currentTick < accumulatedTicks + measureTicks) {
+                    currentMeasure = m;
+                    localTick = currentTick - accumulatedTicks;
+                    break;
+                }
+                accumulatedTicks += measureTicks;
+            }
+
+            // Find the most recent cipher at or before current position
+            const measureCiphers = cipherData[currentMeasure] || {};
+            let foundText = null;
+            let closestTick = -1;
+
+            for (const [tick, text] of Object.entries(measureCiphers)) {
+                const t = parseInt(tick);
+                if (t <= localTick && t > closestTick && text.trim() !== '') {
+                    closestTick = t;
+                    foundText = text;
+                }
+            }
+
+            document.getElementById('chord-monitor').innerText = foundText || "---";
+        }
+
+        function saveProject() {
+            const json = serializeState();
+            const blob = new Blob([json], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "storm_workstation.json";
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+        }
+
+        function triggerLoad() { document.getElementById('file-input').click(); }
+
+        function loadProject(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    restoreState(e.target.result);
+                    undoStack.length = 0; redoStack.length = 0;
+                } catch (err) { alert("Error cargando proyecto: " + err.message); }
+            };
+            reader.readAsText(file);
+            input.value = '';
+        }
+
+        function serializeState() {
+            const tracksObj = {};
+            for (const [name, map] of Object.entries(projectData.tracks)) {
+                tracksObj[name] = Array.from(map.entries());
+            }
+            return JSON.stringify({
+                projectData: { mode: projectData.mode, instrument: projectData.instrument, tracks: tracksObj },
+                measureSettings: measureSettings,
+                totalMeasures: totalMeasures,
+                cipherData: { ...cipherData }
+            });
+        }
+
+        function restoreState(jsonState) {
+            const state = JSON.parse(jsonState);
+            projectData.mode = state.projectData.mode;
+            projectData.instrument = state.projectData.instrument || 'Sinte';
+            for (const [name, entries] of Object.entries(state.projectData.tracks)) {
+                projectData.tracks[name] = new Map(entries);
+            }
+            measureSettings = state.measureSettings;
+            totalMeasures = state.totalMeasures;
+            cipherData = state.cipherData || {};
+            document.getElementById('mode-select').value = projectData.mode;
+            document.getElementById('instrument-select').value = projectData.instrument;
+            syncModeUI();
+            selectedTick = null; selectedTrackName = null;
+            renderCurrentView();
+        }
+
+        function saveState() {
+            const state = serializeState();
+            if (undoStack.length > 0 && undoStack[undoStack.length - 1] === state) return;
+            undoStack.push(state);
+            if (undoStack.length > MAX_HISTORY) undoStack.shift();
+            redoStack.length = 0;
+        }
+
+        function undo() {
+            if (undoStack.length === 0) return;
+            redoStack.push(serializeState());
+            restoreState(undoStack.pop());
+        }
+
+        function redo() {
+            if (redoStack.length === 0) return;
+            undoStack.push(serializeState());
+            restoreState(redoStack.pop());
+        }
+
+        function getTrackMap(name) { return projectData.tracks[name]; }
+        function getSelectedTrack() { return selectedTrackName || activeTrackName; }
+
+        function getClefForTrack(trackName, measureIndex) {
+            if (projectData.mode === 'quartet') return TRACK_DEFS[trackName].clef;
+            return getSettingsForMeasure(measureIndex).clef;
+        }
+
+        function getStemDirectionForTrack(trackName) {
+            if (projectData.mode === 'quartet') {
+                const stem = TRACK_DEFS[trackName].stem;
+                if (stem === 'up') return Vex.Flow.StaveNote.STEM_UP;
+                if (stem === 'down') return Vex.Flow.StaveNote.STEM_DOWN;
+            }
+            return null;
+        }
+
+        function handleModeChange() {
+            setMode(document.getElementById('mode-select').value);
+        }
+
+        function setMode(mode) {
+            projectData.mode = mode;
+            selectedTick = null;
+            selectedTrackName = null;
+            activeTrackName = (mode === 'single') ? 'melody' : 'soprano';
+            syncModeUI();
+            renderCurrentView();
+        }
+
+        function setActiveTrack(trackName) {
+            if (projectData.mode === 'single') { activeTrackName = 'melody'; return; }
+            activeTrackName = trackName;
+            updateVoiceButtons();
+        }
+
+        function syncModeUI() {
+            const isQuartet = projectData.mode === 'quartet';
+            const voiceControls = document.getElementById('voice-controls');
+            if (voiceControls) {
+                if (isQuartet) {
+                    voiceControls.classList.remove('hidden');
+                    voiceControls.classList.add('flex');
+                } else {
+                    voiceControls.classList.add('hidden');
+                    voiceControls.classList.remove('flex');
+                }
+            }
+            const clefSelect = document.getElementById('clef-select');
+            if (clefSelect) {
+                clefSelect.disabled = isQuartet;
+                clefSelect.parentElement.classList.toggle('opacity-50', isQuartet);
+                clefSelect.classList.toggle('cursor-not-allowed', isQuartet);
+            }
+            const cursor = document.getElementById('playback-cursor');
+            if (cursor) {
+                cursor.style.height = isQuartet ? '580px' : '320px';
+                cursor.style.top = isQuartet ? '50px' : '20px';
+            }
+            updateVoiceButtons();
+        }
+
+        function updateVoiceButtons() {
+            const mapping = {
+                soprano: document.getElementById('btn-voice-soprano'),
+                alto: document.getElementById('btn-voice-alto'),
+                tenor: document.getElementById('btn-voice-tenor'),
+                bass: document.getElementById('btn-voice-bass')
+            };
+            for (const [name, btn] of Object.entries(mapping)) {
+                if (!btn) continue;
+                const defs = TRACK_DEFS[name];
+                btn.className = `px-4 py-2 rounded-lg border-2 text-sm font-black transition-all ${activeTrackName === name ? defs.ui.active : defs.ui.inactive}`;
+            }
+        }
+
+        function getSettingsForMeasure(mIndex) {
+            for (let i = mIndex; i >= 0; i--) {
+                if (measureSettings[i]) return measureSettings[i];
+            }
+            return measureSettings[0];
+        }
+
+        function getTicksForTimeSig(timeSig) {
+            const [num, den] = timeSig.split('/').map(Number);
+            return (4 / den) * num * TICKS_PER_QUARTER;
+        }
+
+        function updateDraftSettings() {
+            draftClef = document.getElementById('clef-select').value;
+            draftTimeSig = document.getElementById('time-sig-select').value;
+            draftKeySig = document.getElementById('key-sig-select').value;
+            if (selectedTick === null) {
+                measureSettings[0] = { time: draftTimeSig, key: draftKeySig, clef: draftClef };
+                renderCurrentView();
+            }
+        }
+
+        function getMeasureIndexForTick(targetTick) {
+            let currentAbsTick = 0;
+            for (let m = 0; m < totalMeasures; m++) {
+                const settings = getSettingsForMeasure(m);
+                const dur = getTicksForTimeSig(settings.time);
+                if (targetTick >= currentAbsTick && targetTick < currentAbsTick + dur) return m;
+                currentAbsTick += dur;
+            }
+            return totalMeasures - 1;
+        }
+
+        function applyToSelectedMeasure() {
+            if (selectedTick === null) {
+                alert("Selecciona una nota para indicar el compás.");
+                return;
+            }
+            saveState();
+            const mIndex = getMeasureIndexForTick(selectedTick);
+            measureSettings[mIndex] = { time: draftTimeSig, key: draftKeySig, clef: draftClef };
+            selectedTick = null;
+            renderCurrentView();
+        }
+
+        function addMeasure() {
+            saveState();
+            totalMeasures++;
+            renderCurrentView();
+        }
+
+        function clearScore() {
+            if(!confirm('¿Borrar todo?')) return;
+            saveState();
+            Object.values(projectData.tracks).forEach(m => m.clear());
+            selectedTick = null; selectedTrackName = null;
+            cipherData = {};
+            totalMeasures = 3;
+            measureSettings = { 0: { time: '4/4', key: 'C', clef: 'treble' } };
+            projectData.mode = 'single';
+            activeTrackName = 'melody';
+            document.getElementById('mode-select').value = 'single';
+            syncModeUI();
+            renderCurrentView();
+        }
+
+        function deleteSelected() {
+            if (selectedTick !== null) {
+                saveState();
+                deleteNoteAt(selectedTick, getSelectedTrack());
+            }
+        }
+
+        function updateTempoDisplay() {
+            document.getElementById('tempo-display').innerText = document.getElementById('tempo-slider').value;
+            updateMetronomeBpmDisplay();
+        }
+
+        function updateVolumeDisplay() {
+            const volumeValue = document.getElementById('volume-slider').value;
+            document.getElementById('volume-display').innerText = volumeValue;
+            if (masterGain) {
+                masterGain.gain.value = volumeValue / 100; // Convert 0-100 to 0-1
+            }
+        }
+
+        // --- DOTTED DURATION MODE ---
+        let dottedMode = false;
+
+        // --- METRONOME ---
+        let metronomeEnabled = false;
+
+        const METRO_BTN_OFF_CLASS = "w-full px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg shadow-lg border-2 border-slate-600 font-bold text-xs uppercase tracking-wide transition-all flex items-center justify-center gap-2";
+        const METRO_BTN_ON_CLASS  = "w-full px-3 py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg shadow-2xl border-2 border-emerald-400 ring-4 ring-emerald-500/30 font-black text-xs uppercase tracking-wide transition-all flex items-center justify-center gap-2";
+
+        function toggleMetronome() {
+            metronomeEnabled = !metronomeEnabled;
+            updateMetronomeUI();
+        }
+
+        function updateMetronomeUI() {
+            const btn = document.getElementById('btn-metronome');
+            const label = document.getElementById('metronome-label');
+            if (btn) btn.className = metronomeEnabled ? METRO_BTN_ON_CLASS : METRO_BTN_OFF_CLASS;
+            if (label) label.textContent = metronomeEnabled ? 'Metrónomo ON' : 'Metrónomo OFF';
+        }
+
+        function updateMetronomeBpmDisplay() {
+            const el = document.getElementById('metronome-bpm');
+            if (el) el.textContent = document.getElementById('tempo-slider').value;
+        }
+
+        function getBeatTicksForTimeSig(timeSig) {
+            const parts = (timeSig || '4/4').split('/').map(Number);
+            const num = parts[0] || 4;
+            const den = parts[1] || 4;
+            const beatTicks = (4 / den) * TICKS_PER_QUARTER;
+            return { beatsPerMeasure: num, beatTicks };
+        }
+
+        function playMetronomeClick(isDownbeat, startTime) {
+            if (!audioCtx) initAudio();
+            const freq = isDownbeat ? 1000 : 800;
+            const vol  = isDownbeat ? 0.30 : 0.15;
+            const dur  = 0.055;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, startTime);
+
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(vol, startTime + 0.005);
+            gain.gain.linearRampToValueAtTime(0, startTime + dur);
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+
+            osc.start(startTime);
+            osc.stop(startTime + dur + 0.02);
+
+            playbackState.activeNodes.push(osc);
+        }
+
+        function scheduleMetronomeClicks(playStartTime, secondsPerTick, startTick, totalTicks) {
+            if (!metronomeEnabled) return;
+
+            let currentAbsTick = 0;
+            for (let m = 0; m < totalMeasures; m++) {
+                const settings = getSettingsForMeasure(m);
+                const measureTicks = getTicksForTimeSig(settings.time);
+                const { beatsPerMeasure, beatTicks } = getBeatTicksForTimeSig(settings.time);
+
+                for (let b = 0; b < beatsPerMeasure; b++) {
+                    const beatAbsTick = currentAbsTick + (b * beatTicks);
+                    if (beatAbsTick < startTick) continue;
+                    if (beatAbsTick > totalTicks) return;
+                    const t = playStartTime + ((beatAbsTick - startTick) * secondsPerTick);
+                    playMetronomeClick(b === 0, t);
+                }
+
+                currentAbsTick += measureTicks;
+            }
+        }
+
+        const DURATION_BTN_INACTIVE_CLASS = "duration-btn flex-1 py-6 rounded-xl shadow-lg flex flex-col items-center justify-center transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border-2 border-slate-600";
+        const DURATION_BTN_ACTIVE_CLASS = "duration-btn flex-1 py-6 rounded-xl shadow-2xl flex flex-col items-center justify-center transition-all bg-blue-600 text-white border-2 border-blue-400 ring-4 ring-blue-500/50";
+
+        const DOT_BTN_INACTIVE_CLASS = "dot-btn w-14 py-6 rounded-xl shadow-lg flex flex-col items-center justify-center transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border-2 border-slate-600";
+        const DOT_BTN_ACTIVE_CLASS = "dot-btn w-14 py-6 rounded-xl shadow-2xl flex flex-col items-center justify-center transition-all bg-blue-600 text-white border-2 border-blue-400 ring-4 ring-blue-500/50";
+
+        function toggleDottedMode() {
+            dottedMode = !dottedMode;
+            updateDotButtonStyle();
+        }
+
+        function updateDotButtonStyle() {
+            const btn = document.getElementById('btn-dot');
+            if (!btn) return;
+            btn.className = dottedMode ? DOT_BTN_ACTIVE_CLASS : DOT_BTN_INACTIVE_CLASS;
+        }
+
+        function getEffectiveDuration(baseDur) {
+            if (!dottedMode) return baseDur;
+            // No dotted sixteenth
+            if (baseDur === '16' || baseDur === 's') return baseDur;
+            // Eighth note (UI uses '8'; alias 'd')
+            if (baseDur === '8' || baseDur === 'd') return 'd.';
+            if (baseDur === 'w' || baseDur === 'h' || baseDur === 'q') return baseDur + '.';
+            return baseDur;
+        }
+
+        function toVexDuration(dur) {
+            if (!dur) return dur;
+            const base = String(dur).endsWith('.') ? String(dur).slice(0, -1) : String(dur);
+            if (base === 'd') return '8';
+            if (base === 's') return '16';
+            return base;
+        }
+
+        function snapDurationTicks(ticks) {
+            const allowed = [24, 16, 12, 8, 6, 4, 3, 2, 1];
+            let best = allowed[allowed.length - 1];
+            let bestDist = 1e9;
+            for (const a of allowed) {
+                const d = Math.abs(ticks - a);
+                if (d < bestDist) { bestDist = d; best = a; }
+            }
+            return best;
+        }
+
+        function setDuration(dur) {
+            currentDuration = dur;
+            document.querySelectorAll('.duration-btn').forEach(btn => {
+                btn.className = DURATION_BTN_INACTIVE_CLASS;
+            });
+            const activeBtn = document.getElementById(`btn-${dur}`);
+            activeBtn.className = DURATION_BTN_ACTIVE_CLASS;
+            updateDotButtonStyle();
+        }
+
+        function setView(view) {
+            currentView = view;
+            updateViewButtons();
+
+            // Hide cipher overlay in Piano Roll view
+            const cipherOverlay = document.getElementById('cipher-overlay');
+            if (cipherOverlay) {
+                if (view === 'pianoroll') {
+                    cipherOverlay.style.display = 'none';
+                } else {
+                    cipherOverlay.style.display = '';
+                    if (cipherVisible) renderCipherInputs();
+                }
+            }
+
+            renderCurrentView();
+        }
+
+        function updateViewButtons() {
+            const staffBtn = document.getElementById('btn-view-staff');
+            const pianoBtn = document.getElementById('btn-view-pianoroll');
+
+            if (currentView === 'staff') {
+                staffBtn.className = "px-6 py-2 rounded-lg border-2 text-sm font-bold transition-all bg-blue-600 text-white border-blue-400 shadow-lg shadow-blue-500/50";
+                pianoBtn.className = "px-6 py-2 rounded-lg border-2 text-sm font-bold transition-all bg-slate-700 text-slate-300 border-slate-600 hover:bg-slate-600";
+            } else {
+                staffBtn.className = "px-6 py-2 rounded-lg border-2 text-sm font-bold transition-all bg-slate-700 text-slate-300 border-slate-600 hover:bg-slate-600";
+                pianoBtn.className = "px-6 py-2 rounded-lg border-2 text-sm font-bold transition-all bg-blue-600 text-white border-blue-400 shadow-lg shadow-blue-500/50";
+            }
+        }
+
+        function toggleTie() {
+            if (selectedTick === null) return;
+            const map = getTrackMap(getSelectedTrack());
+            if (!map.has(selectedTick)) return;
+            saveState();
+            const note = map.get(selectedTick);
+            note.isTied = !note.isTied;
+            renderCurrentView();
+        }
+
+        function toggleOrnament() {
+            if (selectedTick === null) return;
+            const track = getSelectedTrack();
+            const map = getTrackMap(track);
+            if (!map.has(selectedTick)) return;
+            saveState();
+            const note = map.get(selectedTick);
+            note.isOrnament = !note.isOrnament;
+            renderCurrentView();
+        }
+
+        function applyAccidental(type) {
+            if (selectedTick === null) return;
+            const map = getTrackMap(getSelectedTrack());
+            if (!map.has(selectedTick)) return;
+            saveState();
+            const note = map.get(selectedTick);
+            let [keyName, octave] = note.keys[0].split('/');
+            let baseKey = keyName.charAt(0);
+            let newKey = baseKey;
+            if (type === '#') newKey += '#';
+            if (type === 'b') newKey += 'b';
+            if (type === 'n') newKey += 'n';
+            note.keys = [`${newKey}/${octave}`];
+            startPreviewSound(note.keys[0]);
+            setTimeout(stopPreviewSound, 200);
+            renderCurrentView();
+        }
+
+        function insertNote(tick, keys, durationChar, trackName, isTied = false) {
+            const track = trackName || activeTrackName;
+            const trackMap = getTrackMap(track);
+            const mIdx = getMeasureIndexForTick(tick);
+            const settings = getSettingsForMeasure(mIdx);
+            const durTicks = DURATION_TICKS[durationChar];
+            for (let t = tick; t < tick + durTicks; t++) { if (trackMap.has(t)) trackMap.delete(t); }
+            for (let t = tick - 1; t >= tick - 16; t--) {
+                if (trackMap.has(t)) {
+                    const prevNote = trackMap.get(t);
+                    const prevEnd = t + DURATION_TICKS[prevNote.duration];
+                    if (prevEnd > tick) {
+                        const remaining = tick - t;
+                        if (remaining > 0 && TICKS_TO_DURATION[remaining]) {
+                            prevNote.duration = TICKS_TO_DURATION[remaining];
+                            prevNote.isTied = false;
+                        } else {
+                            trackMap.delete(t);
+                        }
+                    }
+                }
+            }
+            const noteClef = (projectData.mode === 'quartet') ? TRACK_DEFS[track].clef : settings.clef;
+            trackMap.set(tick, { keys: keys, duration: durationChar, type: 'note', clef: noteClef, isTied: isTied, isOrnament: false });
+            selectedTick = tick;
+            selectedTrackName = track;
+        }
+
+        function updateNotePitch(tick, newKey, trackName) {
+            const track = trackName || getSelectedTrack();
+            const trackMap = getTrackMap(track);
+            if (!trackMap.has(tick)) return;
+            const note = trackMap.get(tick);
+            if (note.keys[0] !== newKey) {
+                note.keys = [newKey];
+                startPreviewSound(newKey);
+                renderCurrentView();
+            }
+        }
+
+        function deleteNoteAt(tick, trackName) {
+            const track = trackName || getSelectedTrack();
+            const trackMap = getTrackMap(track);
+            if (trackMap.has(tick)) {
+                trackMap.delete(tick);
+                if (selectedTick === tick) {
+                    selectedTick = null;
+                    selectedTrackName = null;
+                }
+                renderCurrentView();
+            }
+        }
+
+        function handleMouseDown(event) {
+            // Branch to piano roll handler if in piano roll view
+            if (currentView === 'pianoroll') {
+                handlePianoRollMouseDown(event);
+                return;
+            }
+
+            if (event.button !== 0) return;
+            initAudio();
+            const svg = document.querySelector("#output svg");
+            if (!svg) return;
+            const svgRect = svg.getBoundingClientRect();
+            const mouseX = event.clientX - svgRect.left;
+            const mouseY = event.clientY - svgRect.top;
+            let detectedTrack = null;
+            for (let m = 0; m < generatedStaves.length; m++) {
+                const staveGroup = generatedStaves[m];
+                const tracksToCheck = (projectData.mode === 'quartet')
+                    ? ['soprano', 'alto', 'tenor', 'bass']
+                    : ['single'];
+                for (let track of tracksToCheck) {
+                    const stave = staveGroup[track];
+                    if (!stave) continue;
+                    const yTop = stave.getYForLine(0) - 40;
+                    const yBottom = stave.getYForLine(4) + 60;
+                    if (mouseY >= yTop && mouseY <= yBottom) {
+                        detectedTrack = (track === 'single') ? 'melody' : track;
+                        break;
+                    }
+                }
+                if (detectedTrack) break;
+            }
+            if (!detectedTrack) {
+                selectedTick = null; selectedTrackName = null;
+                renderCurrentView();
+                return;
+            }
+            if (projectData.mode === 'quartet') setActiveTrack(detectedTrack);
+            const clickedTick = getNearestTickFromX(mouseX);
+            setPlaybackStartTick(clickedTick);
+            let bestTarget = null;
+            let minDistance = 9999;
+            const HORIZONTAL_SNAP = 25;
+            for (let t of clickTargets) {
+                if (t.track !== detectedTrack) continue;
+                if (mouseX >= t.x - HORIZONTAL_SNAP && mouseX <= t.x + t.w + HORIZONTAL_SNAP) {
+                    const dist = Math.abs(mouseX - (t.x + t.w/2));
+                    if (dist < minDistance) { minDistance = dist; bestTarget = t; }
+                }
+            }
+            if (bestTarget) {
+                if (bestTarget.type === 'note') {
+                    setPlaybackStartTick(bestTarget.tick);
+                    selectedTick = bestTarget.tick;
+                    selectedTrackName = bestTarget.track;
+                    draggingTick = bestTarget.tick;
+                    draggingTrackName = bestTarget.track;
+                    dragStartY = mouseY;
+                    isDragging = false;
+                    dragHasSavedState = false;
+                    const trackMap = getTrackMap(bestTarget.track);
+                    if (trackMap.has(bestTarget.tick)) {
+                        const note = trackMap.get(bestTarget.tick);
+                        startPreviewSound(note.keys[0]);
+                    }
+                    const mIdx = getMeasureIndexForTick(bestTarget.tick);
+                    const settings = getSettingsForMeasure(mIdx);
+                    document.getElementById('clef-select').value = settings.clef;
+                    document.getElementById('time-sig-select').value = settings.time;
+                    document.getElementById('key-sig-select').value = settings.key;
+                    updateDraftSettings();
+                    renderCurrentView();
+                } else if (bestTarget.type === 'rest') {
+                    setPlaybackStartTick(bestTarget.tick);
+                    saveState();
+                    const key = getNoteFromY(mouseY, bestTarget.measureIndex, detectedTrack);
+                    if (key) {
+                        insertNote(bestTarget.tick, [key], getEffectiveDuration(currentDuration), detectedTrack);
+                        startPreviewSound(key);
+                        renderCurrentView();
+                    }
+                }
+            } else {
+                selectedTick = null; selectedTrackName = null;
+                renderCurrentView();
+            }
+        }
+
+        function handleContextMenu(event) {
+            event.preventDefault();
+
+            // Piano Roll view: check if right-clicked on a note rect
+            if (currentView === 'pianoroll') {
+                const target = event.target;
+                if (target.tagName === 'rect' && target.dataset.type === 'note') {
+                    const tick = parseInt(target.dataset.tick);
+                setPlaybackStartTick(tick);
+                    const trackName = target.dataset.track;
+                    saveState();
+                    deleteNoteAt(tick, trackName);
+                    return;
+                }
+                return;
+            }
+
+            // Staff view: use clickTargets
+            const svg = document.querySelector("#output svg");
+            if (!svg) return;
+            const svgRect = svg.getBoundingClientRect();
+            const mouseX = event.clientX - svgRect.left;
+            const mouseY = event.clientY - svgRect.top;
+            for (let t of clickTargets) {
+                if (mouseX >= t.x - 20 && mouseX <= t.x + t.w + 20 && mouseY >= t.y - 20 && mouseY <= t.y + t.h + 20) {
+                     if (t.type === 'note') {
+                         saveState();
+                         deleteNoteAt(t.tick, t.track);
+                         return;
+                     }
+                }
+            }
+        }
+
+        function handleGlobalMouseMove(event) {
+            // Piano roll drag handling
+            if (currentView === 'pianoroll' && pianoRollDragState.mode !== null) {
+                handlePianoRollMouseMove(event);
+                return;
+            }
+
+            // Staff view drag handling
+            if (draggingTick === null) return;
+            const svg = document.querySelector("#output svg");
+            if (!svg) return;
+            const svgRect = svg.getBoundingClientRect();
+            const mouseY = event.clientY - svgRect.top;
+            if (!isDragging && Math.abs(mouseY - dragStartY) > 5) isDragging = true;
+            if (isDragging) {
+                if (!dragHasSavedState) { saveState(); dragHasSavedState = true; }
+                const mIdx = getMeasureIndexForTick(draggingTick);
+                const key = getNoteFromY(mouseY, mIdx, draggingTrackName || getSelectedTrack());
+                if (key) updateNotePitch(draggingTick, key, draggingTrackName || getSelectedTrack());
+            }
+        }
+
+        function handleGlobalMouseUp(event) {
+            stopPreviewSound();
+            if (draggingTick !== null) {
+                draggingTick = null; draggingTrackName = null; isDragging = false; dragHasSavedState = false;
+            }
+            // Piano roll drag cleanup
+            pianoRollDragState.mode = null;
+            pianoRollDragState.tick = null;
+            pianoRollDragState.trackName = null;
+        }
+
+        // --- PIANO ROLL INTERACTION HANDLERS ---
+        function handlePianoRollMouseDown(event) {
+            if (event.button !== 0) return; // Left click only
+            initAudio();
+
+            const svg = document.querySelector("#output svg");
+            if (!svg) return;
+
+            const svgRect = svg.getBoundingClientRect();
+            const mouseX = event.clientX - svgRect.left;
+            const mouseY = event.clientY - svgRect.top;
+
+            // Check if clicked on keyboard (ignore)
+            if (mouseX < PIANO_ROLL_CONFIG.KEYBOARD_WIDTH) return;
+
+            // Check if clicked on note
+            const target = event.target;
+            if (target.tagName === 'rect' && target.dataset.type === 'note') {
+                const tick = parseInt(target.dataset.tick);
+                setPlaybackStartTick(tick);
+                const trackName = target.dataset.track;
+
+                // Select note
+                selectedTick = tick;
+                selectedTrackName = trackName;
+
+                // Check if near right edge (resize mode)
+                const rectBounds = target.getBoundingClientRect();
+                const relativeX = event.clientX - rectBounds.left;
+                const isResizeArea = relativeX > rectBounds.width - 10;
+
+                if (isResizeArea) {
+                    // Start resize drag
+                    pianoRollDragState.mode = 'resize';
+                    pianoRollDragState.tick = tick;
+                    pianoRollDragState.trackName = trackName;
+                    pianoRollDragState.startX = mouseX;
+                    pianoRollDragState.originalTick = tick;
+                } else {
+                    // Start move drag
+                    pianoRollDragState.mode = 'move';
+                    pianoRollDragState.tick = tick;
+                    pianoRollDragState.trackName = trackName;
+                    pianoRollDragState.startX = mouseX;
+                    pianoRollDragState.startY = mouseY;
+                    pianoRollDragState.originalTick = tick;
+
+                    const trackMap = getTrackMap(trackName);
+                    const note = trackMap.get(tick);
+                    pianoRollDragState.originalKey = note.keys[0];
+
+                    // Preview sound
+                    startPreviewSound(note.keys[0]);
+                }
+
+                saveState();
+                renderCurrentView();
+                return;
+            }
+
+            // Clicked on empty grid - create note
+            const tick = getPianoRollTickFromX(mouseX);
+            setPlaybackStartTick(tick);
+            const key = getPianoRollNoteFromY(mouseY);
+
+            if (tick !== null && key !== null) {
+                saveState();
+                const track = getSelectedTrack();
+                insertNote(tick, [key], getEffectiveDuration(currentDuration), track);
+                selectedTick = tick;
+                selectedTrackName = track;
+                startPreviewSound(key);
+                renderCurrentView();
+            }
+        }
+
+        function handlePianoRollMouseMove(event) {
+            if (pianoRollDragState.mode === null) return;
+
+            const svg = document.querySelector("#output svg");
+            if (!svg) return;
+
+            const svgRect = svg.getBoundingClientRect();
+            const mouseX = event.clientX - svgRect.left;
+            const mouseY = event.clientY - svgRect.top;
+
+            if (pianoRollDragState.mode === 'move') {
+                // Vertical drag (pitch change)
+                const newKey = getPianoRollNoteFromY(mouseY);
+                if (newKey && newKey !== pianoRollDragState.originalKey) {
+                    updateNotePitch(pianoRollDragState.tick, newKey, pianoRollDragState.trackName);
+                    pianoRollDragState.originalKey = newKey;
+                }
+            } else if (pianoRollDragState.mode === 'resize') {
+                // Calculate new duration based on mouseX
+                const trackMap = getTrackMap(pianoRollDragState.trackName);
+                const note = trackMap.get(pianoRollDragState.tick);
+                if (!note) return;
+
+                const newEndTick = getPianoRollTickFromX(mouseX);
+
+                if (newEndTick > pianoRollDragState.tick) {
+                    const newDurationTicksRaw = newEndTick - pianoRollDragState.tick;
+                    const newDurationTicks = snapDurationTicks(newDurationTicksRaw);
+                    const newDuration = TICKS_TO_DURATION[newDurationTicks];
+
+                    if (newDuration && newDuration !== note.duration) {
+                        note.duration = newDuration;
+                        renderCurrentView();
+                    }
+                }
+            }
+        }
+
+        function handleKeyDown(e) {
+            if (e.target.tagName === 'INPUT') return;
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') { e.preventDefault(); redo(); return; }
+            if (selectedTick === null) return;
+            if (["ArrowUp", "ArrowDown", " "].indexOf(e.code) > -1) e.preventDefault();
+            if (e.key === 'Delete' || e.key === 'Backspace') deleteSelected();
+            if (e.key === 'Escape') {
+                selectedTick = null; selectedTrackName = null;
+                renderCurrentView();
+            }
+            if (e.key === 'ArrowUp') shiftPitchChromatic(1);
+            if (e.key === 'ArrowDown') shiftPitchChromatic(-1);
+            if (e.key.toLowerCase() === 't') toggleTie();
+        }
+
+        function shiftPitchChromatic(direction) {
+            if (selectedTick === null) return;
+            const map = getTrackMap(getSelectedTrack());
+            if (!map.has(selectedTick)) return;
+            saveState();
+            const note = map.get(selectedTick);
+            const [key, octaveStr] = note.keys[0].split('/');
+            let octave = parseInt(octaveStr);
+            const chromaticScale = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b'];
+            let cleanKey = key.toLowerCase();
+            const flatToSharp = { 'db': 'c#', 'eb': 'd#', 'gb': 'f#', 'ab': 'g#', 'bb': 'a#' };
+            if (flatToSharp[cleanKey]) cleanKey = flatToSharp[cleanKey];
+            if (cleanKey === 'cb') { cleanKey = 'b'; octave--; }
+            if (cleanKey === 'fb') cleanKey = 'e';
+            if (cleanKey === 'b#') { cleanKey = 'c'; octave++; }
+            if (cleanKey === 'e#') cleanKey = 'f';
+            cleanKey = cleanKey.replace('n', '');
+            let index = chromaticScale.indexOf(cleanKey);
+            if (index === -1) return;
+            let newIndex = index + direction;
+            if (newIndex > 11) { newIndex = 0; octave++; }
+            if (newIndex < 0) { newIndex = 11; octave--; }
+            note.keys = [`${chromaticScale[newIndex]}/${octave}`];
+            startPreviewSound(note.keys[0]);
+            setTimeout(stopPreviewSound, 200);
+            renderCurrentView();
+        }
+
+        function decomposeTicks(totalTicks) {
+            let remaining = totalTicks;
+            let result = [];
+            const values = [24, 16, 12, 8, 6, 4, 3, 2, 1];
+            for (let val of values) {
+                while (remaining >= val) { result.push(TICKS_TO_DURATION[val]); remaining -= val; }
+            }
+            return result;
+        }
+
+        function getNoteFromY(mouseY, measureIndex, trackName) {
+            if (generatedStaves.length === 0) return null;
+            const settings = getSettingsForMeasure(measureIndex);
+            const clef = getClefForTrack(trackName, measureIndex);
+            const measureStaves = generatedStaves[measureIndex] || generatedStaves[0];
+            let refStave = (projectData.mode === 'single') ? measureStaves.single : measureStaves[trackName];
+            if (!refStave) return null;
+            const yTop = refStave.getYForLine(0);
+            const lineValue = (mouseY - yTop) / 10;
+            const roundedLine = Math.round(lineValue * 2) / 2;
+            const baseIndex = clef === 'bass' ? 21 : 33;
+            const naturalNotes = [
+                { k: 'a', o: 0 }, { k: 'b', o: 0 }, { k: 'c', o: 1 }, { k: 'd', o: 1 }, { k: 'e', o: 1 }, { k: 'f', o: 1 }, { k: 'g', o: 1 }, { k: 'a', o: 1 }, { k: 'b', o: 1 },
+                { k: 'c', o: 2 }, { k: 'd', o: 2 }, { k: 'e', o: 2 }, { k: 'f', o: 2 }, { k: 'g', o: 2 }, { k: 'a', o: 2 }, { k: 'b', o: 2 },
+                { k: 'c', o: 3 }, { k: 'd', o: 3 }, { k: 'e', o: 3 }, { k: 'f', o: 3 }, { k: 'g', o: 3 }, { k: 'a', o: 3 }, { k: 'b', o: 3 },
+                { k: 'c', o: 4 }, { k: 'd', o: 4 }, { k: 'e', o: 4 }, { k: 'f', o: 4 }, { k: 'g', o: 4 }, { k: 'a', o: 4 }, { k: 'b', o: 4 },
+                { k: 'c', o: 5 }, { k: 'd', o: 5 }, { k: 'e', o: 5 }, { k: 'f', o: 5 }, { k: 'g', o: 5 }, { k: 'a', o: 5 }, { k: 'b', o: 5 },
+                { k: 'c', o: 6 }, { k: 'd', o: 6 }, { k: 'e', o: 6 }, { k: 'f', o: 6 }, { k: 'g', o: 6 }, { k: 'a', o: 6 }, { k: 'b', o: 6 }
+            ];
+            const targetIndex = Math.round(baseIndex - (roundedLine * 2));
+            if (targetIndex < 0 || targetIndex >= naturalNotes.length) return null;
+            const rawNote = naturalNotes[targetIndex];
+            const alteration = keySignatures[settings.key][rawNote.k];
+            let finalKey = rawNote.k;
+            if (alteration) finalKey += alteration;
+            return `${finalKey}/${rawNote.o}`;
+        }
+
+        // --- PIANO ROLL HELPER FUNCTIONS ---
+        function midiFromKey(noteKey) {
+            if (!noteKey) return null;
+            const chromatic = { 'c': 0, 'cn': 0, 'c#': 1, 'db': 1, 'd': 2, 'dn': 2, 'd#': 3, 'eb': 3, 'e': 4, 'en': 4, 'fb': 4, 'e#': 5, 'f': 5, 'fn': 5, 'f#': 6, 'gb': 6, 'g': 7, 'gn': 7, 'g#': 8, 'ab': 8, 'a': 9, 'an': 9, 'a#': 10, 'bb': 10, 'b': 11, 'bn': 11, 'b#': 0, 'cb': 11 };
+            const parts = String(noteKey).split('/');
+            if (parts.length !== 2) return null;
+            let key = parts[0].toLowerCase();
+            let octave = parseInt(parts[1]);
+            if (Number.isNaN(octave)) return null;
+
+            // Normalize enharmonics that shift octave
+            if (key === 'cb') octave -= 1;
+            if (key === 'b#') octave += 1;
+
+            key = key.replace('n', '');
+            const semi = chromatic[key];
+            if (semi === undefined) return null;
+
+            // MIDI: C4 = 60 => (octave + 1) * 12 + semitone
+            return (octave + 1) * 12 + semi;
+        }
+
+        function keyFromMidi(midi) {
+            if (midi === null || midi === undefined) return null;
+            const m = Math.round(midi);
+            const octave = Math.floor(m / 12) - 1;
+            const semitone = ((m % 12) + 12) % 12;
+            const noteName = SEMITONE_NAMES[semitone];
+            return `${noteName.toLowerCase()}/${octave}`;
+        }
+
+        function keyToSemitoneIndex(key) {
+            const midi = midiFromKey(key);
+            if (midi === null) return null;
+            if (midi < PIANO_ROLL_CONFIG.MIN_MIDI || midi > PIANO_ROLL_CONFIG.MAX_MIDI) return null;
+            return midi - PIANO_ROLL_CONFIG.MIN_MIDI;
+        }
+
+        function semitoneIndexToKey(index) {
+            if (index < 0 || index >= PIANO_ROLL_CONFIG.SEMITONES) return null;
+            return keyFromMidi(PIANO_ROLL_CONFIG.MIN_MIDI + index);
+        }
+
+        function isBlackKeyMidi(midi) {
+            const inOctave = midi % 12;
+            return [1, 3, 6, 8, 10].includes(inOctave); // C#, D#, F#, G#, A#
+        }
+
+        function getPianoRollNoteFromY(mouseY) {
+            const rowIndex = Math.floor(mouseY / PIANO_ROLL_CONFIG.ROW_HEIGHT);
+            const relIndex = PIANO_ROLL_CONFIG.SEMITONES - 1 - rowIndex;
+            if (relIndex < 0 || relIndex >= PIANO_ROLL_CONFIG.SEMITONES) return null;
+            return semitoneIndexToKey(relIndex);
+        }
+
+        function getPianoRollTickFromX(mouseX) {
+            const adjustedX = mouseX - PIANO_ROLL_CONFIG.KEYBOARD_WIDTH;
+            
+            // Use linear calculation - simple and uniform
+            const tick = getTickFromLinearX(adjustedX);
+            
+            // Clamp to valid range
+            const totalTicks = getTotalTicks();
+            return Math.max(0, Math.min(tick, totalTicks - 1));
+        }
+
+        // --- CIPHER FUNCTIONS ---
+        function setCipher(measureIndex, localTick, text) {
+            if (!cipherData[measureIndex]) cipherData[measureIndex] = {};
+            cipherData[measureIndex][localTick] = text;
+        }
+
+        function getCipher(measureIndex, localTick) {
+            return cipherData[measureIndex]?.[localTick] || '';
+        }
+
+        function clearCipherForMeasure(measureIndex) {
+            delete cipherData[measureIndex];
+        }
+
+        function toggleCiphers() {
+            cipherVisible = !cipherVisible;
+            const btn = document.getElementById('btn-toggle-ciphers');
+            if (cipherVisible) {
+                btn.textContent = 'Ocultar Cifrados';
+                btn.classList.remove('bg-slate-800', 'border-slate-600');
+                btn.classList.add('bg-emerald-800', 'border-emerald-600');
+                renderCipherInputs();
+            } else {
+                btn.textContent = 'Mostrar Cifrados';
+                btn.classList.remove('bg-emerald-800', 'border-emerald-600');
+                btn.classList.add('bg-slate-800', 'border-slate-600');
+                document.getElementById('cipher-overlay').innerHTML = '';
+            }
+        }
+
+        function renderCipherInputs() {
+            if (!cipherVisible) {
+                document.getElementById('cipher-overlay').innerHTML = '';
+                return;
+            }
+
+            const overlay = document.getElementById('cipher-overlay');
+            overlay.innerHTML = '';
+
+            // Get the offset of #output (SVG container) within #canvas-container
+            const container = document.getElementById('canvas-container');
+            const outputDiv = document.getElementById('output');
+            if (!container || !outputDiv) return;
+
+            const containerRect = container.getBoundingClientRect();
+            const outputRect = outputDiv.getBoundingClientRect();
+
+            // Calculate offset: how far #output is from the left/top edge of #canvas-container
+            const offsetX = outputRect.left - containerRect.left + container.scrollLeft;
+            const offsetY = outputRect.top - containerRect.top + container.scrollTop;
+
+            // Fixed cipher grid: 4 inputs per measure at quarter-note beats (4/4 => ticks 0,4,8,12)
+            const viewXOffset = (currentView === 'pianoroll') ? PIANO_ROLL_CONFIG.KEYBOARD_WIDTH : 0;
+
+            // Y position: below staves (staff view) or below the piano roll grid (piano roll view)
+            let yPos;
+            if (currentView === 'pianoroll') {
+                yPos = offsetY + (PIANO_ROLL_CONFIG.SEMITONES * PIANO_ROLL_CONFIG.ROW_HEIGHT) + 24;
+            } else {
+                if (projectData.mode === 'quartet') {
+                    yPos = offsetY + STAVE_Y_START + (QUARTET_STAFF_GAP * 4) + 40;
+                } else {
+                    yPos = offsetY + STAVE_Y_START + 130;
+                }
+            }
+
+            let accumulatedTicks = 0;
+            for (let m = 0; m < totalMeasures; m++) {
+                const settings = getSettingsForMeasure(m);
+                const measureTicks = getTicksForTimeSig(settings.time);
+
+                // Quarter positions (beats 1-4). Only include those inside the current time signature length.
+                const quarterPositions = [0, 1, 2, 3].map(b => b * TICKS_PER_QUARTER).filter(t => t < measureTicks);
+
+                quarterPositions.forEach((localTick) => {
+                    const absTick = accumulatedTicks + localTick;
+                    // Use linear position for piano roll, VexFlow position for staff
+                    const tickX = (currentView === 'pianoroll') ? getLinearXForTick(absTick) : getXForTick(absTick);
+                    const xPos = offsetX + viewXOffset + tickX;
+
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'cipher-input';
+                    input.dataset.measure = m;
+                    input.dataset.localTick = localTick;
+                    input.value = getCipher(m, localTick) || '';
+
+                    // center 70px input on beat position
+                    input.style.left = `${xPos - 35}px`;
+                    input.style.top = `${yPos}px`;
+
+                    input.addEventListener('input', (e) => {
+                        setCipher(
+                            parseInt(e.target.dataset.measure),
+                            parseInt(e.target.dataset.localTick),
+                            e.target.value
+                        );
+                    });
+
+                    overlay.appendChild(input);
+                });
+
+                accumulatedTicks += measureTicks;
+            }
+        }
+
+        function renderCurrentView() {
+            if (currentView === 'staff') {
+                renderScore();
+            } else if (currentView === 'pianoroll') {
+                renderPianoRoll();
+            }
+        }
+
+        function renderPianoRoll() {
+            const div = document.getElementById("output");
+
+            // Remove playback cursor temporarily
+            let cursor = document.getElementById('playback-cursor');
+            if (cursor && cursor.parentNode) {
+                cursor.parentNode.removeChild(cursor);
+            }
+
+            // Clear container
+            div.innerHTML = "";
+
+            // No need to render staff first - piano roll uses linear positioning
+            sanitizeNotesToPianoRollRange();
+
+            // Calculate dimensions using linear tick positions
+            const totalTicks = getTotalTicks();
+            const totalHeight = PIANO_ROLL_CONFIG.SEMITONES * PIANO_ROLL_CONFIG.ROW_HEIGHT;
+            const totalWidth = PIANO_ROLL_CONFIG.KEYBOARD_WIDTH + getLinearXForTick(totalTicks) + 100;
+
+            // Create SVG
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("width", totalWidth);
+            svg.setAttribute("height", totalHeight + 100);
+            svg.style.display = "block";
+
+            // Dark background
+            const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            bg.setAttribute("width", totalWidth);
+            bg.setAttribute("height", totalHeight + 100);
+            bg.setAttribute("fill", "#f8fafc");
+            svg.appendChild(bg);
+
+            // Render components
+            renderPianoRollGrid(svg);
+            renderPianoKeyboard(svg);
+            renderPianoRollNotes(svg);
+
+            // Add to DOM
+            div.appendChild(svg);
+
+            // Attach event listeners
+            svg.addEventListener('mousedown', handleMouseDown);
+
+            // Re-add playback cursor
+            if (cursor) {
+                cursor.style.height = totalHeight + "px";
+                div.appendChild(cursor);
+            }
+
+            setTimeout(() => renderCipherInputs(), 0);
+        }
+
+        function renderScore() {
+            if (typeof Vex === 'undefined') return;
+            projectData.mode === 'quartet' ? renderQuartet() : renderSingle();
+        }
+
+        function renderSingle() {
+            const VF = Vex.Flow;
+            const div = document.getElementById("output");
+            let cursor = document.getElementById('playback-cursor');
+            if (cursor && cursor.parentNode) {
+                cursor.parentNode.removeChild(cursor);
+            }
+            div.innerHTML = "";
+            clickTargets = []; generatedStaves = []; tickXPositions = [];
+            const renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
+            renderer.resize(100, SINGLE_RENDER_HEIGHT);
+            const context = renderer.getContext();
+            let currentX = 10;
+            let currentAbsTick = 0;
+            let pendingSplitNote = null;
+            let allRenderedNotes = [];
+            const scoreNotes = getTrackMap('melody');
+            for (let m = 0; m < totalMeasures; m++) {
+                const settings = getSettingsForMeasure(m);
+                const measureTicks = getTicksForTimeSig(settings.time);
+                let currentMeasureContent = [];
+                let currentMeasureTicksUsed = 0;
+                while (currentMeasureTicksUsed < measureTicks) {
+                    let atom = null;
+                    if (pendingSplitNote) {
+                        atom = { ...pendingSplitNote }; pendingSplitNote = null;
+                    } else if (scoreNotes.has(currentAbsTick)) {
+                        const n = scoreNotes.get(currentAbsTick);
+                        atom = { keys: n.keys, durationTicks: DURATION_TICKS[n.duration], type: 'note', clef: settings.clef, isTied: n.isTied, sourceTick: currentAbsTick, text: n.text, isOrnament: n.isOrnament };
+                    } else {
+                        let distToNext = measureTicks - currentMeasureTicksUsed;
+                        for (let t = currentAbsTick + 1; t < currentAbsTick + distToNext; t++) {
+                            if (scoreNotes.has(t)) { distToNext = t - currentAbsTick; break; }
+                        }
+                        let fillTicks = 1;
+                        if (distToNext >= 16) fillTicks = 16; else if (distToNext >= 8) fillTicks = 8; else if (distToNext >= 4) fillTicks = 4; else if (distToNext >= 2) fillTicks = 2;
+                        atom = { keys: [settings.clef === 'bass' ? 'd/3' : 'b/4'], durationTicks: fillTicks, type: 'rest', clef: settings.clef, sourceTick: currentAbsTick };
+                    }
+                    const space = measureTicks - currentMeasureTicksUsed;
+                    const ticksToWrite = Math.min(atom.durationTicks, space);
+                    const components = decomposeTicks(ticksToWrite);
+                    components.forEach((durChar, idx) => {
+                        const compTicks = DURATION_TICKS[durChar];
+                        let shouldTie = false;
+                        if (atom.type === 'note') {
+                            if (idx < components.length - 1) shouldTie = true;
+                            else if (atom.durationTicks > space) shouldTie = true;
+                            else shouldTie = atom.isTied;
+                        }
+                        const vexDur = toVexDuration(durChar);
+                        const vfNote = new VF.StaveNote({
+                            keys: atom.keys, duration: vexDur + (atom.type === 'rest' ? 'r' : ''), clef: settings.clef, auto_stem: true
+                        });
+                        if (String(durChar).endsWith('.')) { try { vfNote.addDotToAll(); } catch (e) {} }
+                        if (atom.type === 'rest') {
+                            vfNote.setStyle({ fillStyle: "#94a3b8" });
+                        } else {
+                            vfNote.setStyle({ fillStyle: "#1e293b", strokeStyle: "#1e293b" });
+                        }
+                        if (atom.type === 'note') {
+                            if (atom.isOrnament) {
+                                vfNote.setStyle({ fillStyle: "#ef4444", strokeStyle: "#ef4444" });
+                            }
+                            if (selectedTick === atom.sourceTick) {
+                                vfNote.setStyle({ fillStyle: "#2563eb", strokeStyle: "#2563eb" });
+                            }
+                        }
+                        const item = { vfNote, tick: currentAbsTick, type: atom.type, duration: durChar, isTied: shouldTie, measureIndex: m, sourceTick: atom.sourceTick, track: 'melody', staffClef: settings.clef };
+                        currentMeasureContent.push(item);
+                        allRenderedNotes.push(item);
+                        currentAbsTick += compTicks;
+                        currentMeasureTicksUsed += compTicks;
+                    });
+                    if (atom.durationTicks > space) {
+                        pendingSplitNote = { keys: atom.keys, durationTicks: atom.durationTicks - space, type: atom.type, clef: settings.clef, isTied: atom.isTied, isTiedFromPrev: true, sourceTick: atom.sourceTick, isOrnament: atom.isOrnament };
+                    }
+                }
+                const vfNotes = currentMeasureContent.map(n => n.vfNote);
+                const [num, den] = settings.time.split('/').map(Number);
+                const voice = new VF.Voice({ num_beats: num, beat_value: den }).setStrict(false).addTickables(vfNotes);
+                VF.Accidental.applyAccidentals([voice], settings.key);
+                const beams = VF.Beam.generateBeams(vfNotes);
+                const formatter = new VF.Formatter().joinVoices([voice]);
+                const minWidth = formatter.preCalculateMinTotalWidth([voice]);
+                const padding = (m === 0) ? 120 : 30;
+                const staveWidth = Math.max(MIN_STAVE_WIDTH, minWidth + padding + 80);
+                const stave = new VF.Stave(currentX, STAVE_Y_START, staveWidth);
+                if (m === 0) stave.addClef(settings.clef).addTimeSignature(settings.time).addKeySignature(settings.key);
+                else {
+                    const prev = getSettingsForMeasure(m - 1);
+                    if (settings.clef !== prev.clef) stave.addClef(settings.clef);
+                    if (settings.key !== prev.key) { stave.addKeySignature(settings.key); stave.setBegBarType(VF.Barline.type.SINGLE); }
+                    if (settings.time !== prev.time) stave.addTimeSignature(settings.time);
+                }
+                stave.setContext(context).draw();
+                generatedStaves.push({ single: stave });
+                const availWidth = staveWidth - (stave.getNoteStartX() - stave.getX()) - 20;
+                formatter.format([voice], availWidth);
+                voice.draw(context, stave);
+                beams.forEach(b => b.setContext(context).draw());
+                currentMeasureContent.forEach((item) => {
+                    try {
+                        if (!item.vfNote.getTickContext()) return;
+                        const bb = item.vfNote.getBoundingBox();
+                        if (bb) clickTargets.push({ x: bb.getX(), y: bb.getY(), w: bb.getW(), h: bb.getH(), tick: item.sourceTick, type: item.type, duration: item.duration, measureIndex: m, track: 'melody', staffClef: settings.clef });
+                        tickXPositions.push({ tick: item.tick, x: item.vfNote.getAbsoluteX() });
+                    } catch (e) {}
+                });
+                currentX += staveWidth;
+            }
+            allRenderedNotes.forEach((note, i) => {
+                try {
+                    if (note.isTied) {
+                         let next = null;
+                         for (let j = i + 1; j < allRenderedNotes.length; j++) {
+                             if (allRenderedNotes[j].type === 'note') { next = allRenderedNotes[j]; break; }
+                         }
+                         if (next && note.vfNote.getTickContext() && next.vfNote.getTickContext()) {
+                             new VF.StaveTie({ first_note: note.vfNote, last_note: next.vfNote }).setContext(context).draw();
+                         }
+                    }
+                } catch (e) { /* Silently ignore tie drawing errors */ }
+            });
+            renderer.resize(currentX + 20, SINGLE_RENDER_HEIGHT);
+            tickXPositions = compressTickPositions(tickXPositions.sort((a,b)=>a.tick-b.tick));
+            const svgElement = div.querySelector('svg');
+            if(svgElement) {
+                svgElement.addEventListener('mousedown', handleMouseDown);
+                if (cursor) div.appendChild(cursor);
+            }
+            setTimeout(() => renderCipherInputs(), 0);
+        }
+
+        function renderQuartet() {
+            const VF = Vex.Flow;
+            const div = document.getElementById("output");
+            let cursor = document.getElementById('playback-cursor');
+            if (cursor && cursor.parentNode) {
+                cursor.parentNode.removeChild(cursor);
+            }
+            div.innerHTML = "";
+            clickTargets = []; generatedStaves = []; tickXPositions = [];
+            const renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
+            renderer.resize(100, QUARTET_RENDER_HEIGHT);
+            const context = renderer.getContext();
+            const measureStarts = []; let acc = 0;
+            for (let m = 0; m < totalMeasures; m++) { measureStarts[m] = acc; acc += getTicksForTimeSig(getSettingsForMeasure(m).time); }
+            const pendingSplit = { soprano: null, alto: null, tenor: null, bass: null };
+            const renderedByTrack = { soprano: [], alto: [], tenor: [], bass: [] };
+            let currentX = 10;
+            for (let m = 0; m < totalMeasures; m++) {
+                const settings = getSettingsForMeasure(m);
+                const measureTicks = getTicksForTimeSig(settings.time);
+                const [num, den] = settings.time.split('/').map(Number);
+                const mStart = measureStarts[m];
+                const build = (tr, clef) => buildMeasureContent(tr, getTrackMap(tr), m, mStart, measureTicks, settings, clef, pendingSplit, renderedByTrack);
+                const sopItems = build('soprano', 'treble');
+                const altoItems = build('alto', 'treble');
+                const tenItems = build('tenor', 'bass');
+                const bassItems = build('bass', 'bass');
+                const vS = new VF.Voice({num_beats: num, beat_value: den}).setStrict(false).addTickables(sopItems.map(i=>i.vfNote));
+                const vA = new VF.Voice({num_beats: num, beat_value: den}).setStrict(false).addTickables(altoItems.map(i=>i.vfNote));
+                const vT = new VF.Voice({num_beats: num, beat_value: den}).setStrict(false).addTickables(tenItems.map(i=>i.vfNote));
+                const vB = new VF.Voice({num_beats: num, beat_value: den}).setStrict(false).addTickables(bassItems.map(i=>i.vfNote));
+                VF.Accidental.applyAccidentals([vS,vA,vT,vB], settings.key);
+                let measureBeams = [];
+                [sopItems, altoItems, tenItems, bassItems].forEach(arr => {
+                    const notes = arr.map(i=>i.vfNote);
+                    if(notes.length) {
+                        const beams = VF.Beam.generateBeams(notes);
+                        measureBeams.push(...beams);
+                    }
+                });
+                // Calculate minimum width first with a temporary formatter
+                const tempFormatter = new VF.Formatter();
+                const minWidth = tempFormatter.preCalculateMinTotalWidth([vS,vA,vT,vB]);
+                const width = Math.max(MIN_STAVE_WIDTH, minWidth + (m===0?180:30) + 80);
+                
+                const yS = STAVE_Y_START, yA = yS + QUARTET_STAFF_GAP, yT = yA + QUARTET_STAFF_GAP, yB = yT + QUARTET_STAFF_GAP;
+                const ss = new VF.Stave(currentX, yS, width);
+                const sa = new VF.Stave(currentX, yA, width);
+                const st = new VF.Stave(currentX, yT, width);
+                const sb = new VF.Stave(currentX, yB, width);
+                if (m === 0) {
+                     [ss,sa].forEach(s=>s.addClef('treble').addTimeSignature(settings.time).addKeySignature(settings.key));
+                     [st,sb].forEach(s=>s.addClef('bass').addTimeSignature(settings.time).addKeySignature(settings.key));
+                     new VF.StaveConnector(ss, sb).setType(VF.StaveConnector.type.BRACKET).setContext(context).draw();
+                     new VF.StaveConnector(ss, sb).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(context).draw();
+                } else {
+                     const prev = getSettingsForMeasure(m-1);
+                     if (settings.key !== prev.key) { [ss,sa,st,sb].forEach(s=>{s.addKeySignature(settings.key); s.setBegBarType(VF.Barline.type.SINGLE);}); }
+                     if (settings.time !== prev.time) [ss,sa,st,sb].forEach(s=>s.addTimeSignature(settings.time));
+                }
+                new VF.StaveConnector(ss, sb).setType(VF.StaveConnector.type.SINGLE_RIGHT).setContext(context).draw();
+                const startX = Math.max(ss.getNoteStartX(), sa.getNoteStartX(), st.getNoteStartX(), sb.getNoteStartX());
+                [ss,sa,st,sb].forEach(s=>{ s.setNoteStartX(startX); s.setContext(context).draw(); });
+                generatedStaves.push({ soprano: ss, alto: sa, tenor: st, bass: sb });
+                
+                // FIX: Use formatToStave which properly aligns all voices to the same reference stave
+                const formatter = new VF.Formatter();
+                formatter.formatToStave([vS, vA, vT, vB], ss, { align_rests: false });
+                
+                vS.draw(context, ss);
+                vA.draw(context, sa);
+                vT.draw(context, st);
+                vB.draw(context, sb);
+                measureBeams.forEach(b => b.setContext(context).draw());
+                [sopItems, altoItems, tenItems, bassItems].forEach(items => {
+                    items.forEach(i => {
+                        try {
+                            if (!i.vfNote.getTickContext()) return;
+                            const bb = i.vfNote.getBoundingBox();
+                            clickTargets.push({x:bb.getX(), y:bb.getY(), w:bb.getW(), h:bb.getH(), tick: i.sourceTick, type: i.type, duration: i.duration, measureIndex: m, track: i.track, staffClef: i.staffClef});
+                            tickXPositions.push({tick: i.tick, x: i.vfNote.getAbsoluteX()});
+                        } catch(e){}
+                    });
+                });
+                currentX += width;
+            }
+            Object.values(renderedByTrack).forEach(items => {
+                items.forEach((note, i) => {
+                    try {
+                        if (note.isTied) {
+                            let next = null;
+                            for (let j = i + 1; j < items.length; j++) { if (items[j].type === 'note') { next = items[j]; break; } }
+                            if (next && note.vfNote.getTickContext() && next.vfNote.getTickContext()) {
+                                new VF.StaveTie({ first_note: note.vfNote, last_note: next.vfNote }).setContext(context).draw();
+                            }
+                        }
+                    } catch (e) { /* Silently ignore tie drawing errors */ }
+                });
+            });
+            renderer.resize(currentX + 20, QUARTET_RENDER_HEIGHT);
+            tickXPositions = compressTickPositions(tickXPositions.sort((a,b)=>a.tick-b.tick));
+            const svgElement = div.querySelector('svg');
+            if(svgElement) {
+                svgElement.addEventListener('mousedown', handleMouseDown);
+                if (cursor) div.appendChild(cursor);
+            }
+            setTimeout(() => renderCipherInputs(), 0);
+        }
+
+        function buildMeasureContent(track, map, mIdx, startTick, len, settings, clef, pending, rendered) {
+            const VF = Vex.Flow;
+            let used = 0; let absTick = startTick;
+            const res = [];
+            while(used < len) {
+                let atom = null;
+                if(pending[track]) { atom = {...pending[track]}; pending[track]=null; }
+                else if(map.has(absTick)) {
+                    const n = map.get(absTick);
+                    atom = { keys: n.keys, durationTicks: DURATION_TICKS[n.duration], type: 'note', clef: clef, isTied: n.isTied, sourceTick: absTick, text: n.text, isOrnament: n.isOrnament };
+                } else {
+                     let dist = len - used;
+                     for(let t=absTick+1; t<absTick+dist; t++) if(map.has(t)) { dist = t-absTick; break; }
+                     let fill = 1;
+                     if (dist>=16) fill=16; else if(dist>=8) fill=8; else if(dist>=4) fill=4; else if(dist>=2) fill=2;
+                     atom = { keys: [clef==='bass'?'d/3':'b/4'], durationTicks: fill, type: 'rest', clef: clef, sourceTick: absTick };
+                }
+                const space = len - used;
+                const write = (ticks, forceTie) => {
+                    decomposeTicks(ticks).forEach((durChar, idx, arr) => {
+                        const compTicks = DURATION_TICKS[durChar];
+                        let tie = false;
+                        if(atom.type==='note') { if(forceTie || idx<arr.length-1) tie=true; else tie=atom.isTied; }
+                        const stem = getStemDirectionForTrack(track);
+                        const vexDur = toVexDuration(durChar);
+                        const vfNote = new VF.StaveNote({ keys: atom.keys, duration: vexDur + (atom.type==='rest'?'r':''), clef: clef, auto_stem: stem===null, stem_direction: stem });
+                        if (String(durChar).endsWith('.')) { try { vfNote.addDotToAll(); } catch (e) {} }
+                        if(atom.type==='rest') {
+                            vfNote.setStyle({ fillStyle: "#94a3b8" });
+                        } else {
+                            vfNote.setStyle({ fillStyle: "#1e293b", strokeStyle: "#1e293b" });
+                        }
+                        if(atom.type==='note') {
+                            if(atom.isOrnament) {
+                                vfNote.setStyle({ fillStyle: "#ef4444", strokeStyle: "#ef4444" });
+                            }
+                            if(selectedTick===atom.sourceTick && selectedTrackName===track) {
+                                vfNote.setStyle({ fillStyle: "#f97316", strokeStyle: "#f97316" });
+                            }
+                        }
+                        const item = { vfNote, tick: absTick, type: atom.type, duration: durChar, isTied: tie, measureIndex: mIdx, sourceTick: atom.sourceTick, track: track, staffClef: clef };
+                        res.push(item); rendered[track].push(item);
+                        absTick += compTicks; used += compTicks;
+                    });
+                };
+                if (atom.durationTicks <= space) write(atom.durationTicks, false);
+                else {
+                    const rem = atom.durationTicks - space;
+                    write(space, true);
+                    pending[track] = { keys: atom.keys, durationTicks: rem, type: atom.type, clef: clef, isTied: atom.isTied, isTiedFromPrev: true, sourceTick: atom.sourceTick, isOrnament: atom.isOrnament };
+                }
+            }
+            return res;
+        }
+
+        function compressTickPositions(arr) {
+            if (!arr.length) return arr;
+            const out = []; let lastTick = null; let bestX = null;
+            for (const p of arr) {
+                if (lastTick === null || p.tick !== lastTick) {
+                    if (lastTick !== null) out.push({ tick: lastTick, x: bestX });
+                    lastTick = p.tick; bestX = p.x;
+                } else { if (p.x < bestX) bestX = p.x; }
+            }
+            out.push({ tick: lastTick, x: bestX });
+            return out;
+        }
+
+        function getFrequency(noteKey) {
+            const chromatic = { 'c': 0, 'cn': 0, 'c#': 1, 'db': 1, 'd': 2, 'dn': 2, 'd#': 3, 'eb': 3, 'e': 4, 'en': 4, 'fb': 4, 'e#': 5, 'f': 5, 'fn': 5, 'f#': 6, 'gb': 6, 'g': 7, 'gn': 7, 'g#': 8, 'ab': 8, 'a': 9, 'an': 9, 'a#': 10, 'bb': 10, 'b': 11, 'bn': 11, 'b#': 0, 'cb': 11 };
+            const [key, octaveStr] = noteKey.split('/');
+            let octave = parseInt(octaveStr);
+            const lowerKey = key.toLowerCase();
+            if (lowerKey === 'cb') octave -= 1;
+            if (lowerKey === 'b#') octave += 1;
+            if (chromatic[lowerKey] === undefined) return null;
+            const semi = chromatic[lowerKey];
+            const semitones = semi + (octave - 4) * 12;
+            return BASE_FREQ_C4 * Math.pow(2, semitones / 12);
+        }
+        function getXForTick(targetTick) {
+            if (tickXPositions.length === 0) return 0;
+            for (let i = 0; i < tickXPositions.length - 1; i++) {
+                const p1 = tickXPositions[i]; const p2 = tickXPositions[i + 1];
+                if (targetTick >= p1.tick && targetTick <= p2.tick) {
+                    const range = p2.tick - p1.tick;
+                    if (range === 0) return p1.x;
+                    return p1.x + (p2.x - p1.x) * ((targetTick - p1.tick) / range);
+                }
+            }
+            const last = tickXPositions[tickXPositions.length - 1];
+            return targetTick > last.tick ? last.x + (targetTick - last.tick) * 10 : tickXPositions[0].x;
+        }
+
+        // Linear X position for piano roll - uniform spacing regardless of note content
+        function getLinearXForTick(targetTick) {
+            return targetTick * PIANO_ROLL_CONFIG.PIXELS_PER_TICK;
+        }
+
+        // Get tick from X position in piano roll (inverse of getLinearXForTick)
+        function getTickFromLinearX(x) {
+            return Math.round(x / PIANO_ROLL_CONFIG.PIXELS_PER_TICK);
+        }
+
+        function getTotalTicks() {
+            let totalTicks = 0;
+            for (let m = 0; m < totalMeasures; m++) {
+                totalTicks += getTicksForTimeSig(getSettingsForMeasure(m).time);
+            }
+            return totalTicks;
+        }
+
+        function getNearestTickFromX(mouseX) {
+            if (!tickXPositions.length) return 0;
+            let best = tickXPositions[0];
+            let bestDist = Math.abs(best.x - mouseX);
+            for (const p of tickXPositions) {
+                const d = Math.abs(p.x - mouseX);
+                if (d < bestDist) { best = p; bestDist = d; }
+            }
+            return Math.round(best.tick);
+        }
+
+        function setPlaybackStartTick(tick) {
+            const total = getTotalTicks();
+            const clamped = Math.max(0, Math.min(Math.round(tick || 0), Math.max(0, total - 1)));
+            playbackStartTick = clamped;
+
+            const cursor = document.getElementById('playback-cursor');
+            const container = document.getElementById('canvas-container');
+            if (!cursor || !container) return;
+
+            cursor.style.display = 'block';
+            // Use linear position for piano roll, VexFlow position for staff
+            const xPos = (currentView === 'pianoroll') ? getLinearXForTick(clamped) : getXForTick(clamped);
+            const displayXPos = (currentView === 'pianoroll') ? xPos + PIANO_ROLL_CONFIG.KEYBOARD_WIDTH : xPos;
+            cursor.style.left = displayXPos + 'px';
+
+            const containerRect = container.getBoundingClientRect();
+            const halfWidth = containerRect.width / 2;
+            if (displayXPos > halfWidth) container.scrollLeft = displayXPos - halfWidth;
+            else container.scrollLeft = 0;
+
+            updateMonitor(clamped);
+        }
+
+        // --- PIANO ROLL RENDERING FUNCTIONS ---
+        function renderPianoKeyboard(svg) {
+            const keyboardGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+            // Background panel
+            const panel = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            panel.setAttribute("x", 0);
+            panel.setAttribute("y", 0);
+            panel.setAttribute("width", PIANO_ROLL_CONFIG.KEYBOARD_WIDTH);
+            panel.setAttribute("height", PIANO_ROLL_CONFIG.SEMITONES * PIANO_ROLL_CONFIG.ROW_HEIGHT);
+            panel.setAttribute("fill", "#1e293b");
+            keyboardGroup.appendChild(panel);
+
+            // Draw keys from top to bottom (MAX to MIN)
+            for (let i = 0; i < PIANO_ROLL_CONFIG.SEMITONES; i++) {
+                const relIndex = PIANO_ROLL_CONFIG.SEMITONES - 1 - i; // high notes at top
+                const midi = PIANO_ROLL_CONFIG.MIN_MIDI + relIndex;
+                const y = i * PIANO_ROLL_CONFIG.ROW_HEIGHT;
+                const isBlack = isBlackKeyMidi(midi);
+
+                // Key background
+                const keyRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                keyRect.setAttribute("x", 0);
+                keyRect.setAttribute("y", y);
+                keyRect.setAttribute("width", PIANO_ROLL_CONFIG.KEYBOARD_WIDTH);
+                keyRect.setAttribute("height", PIANO_ROLL_CONFIG.ROW_HEIGHT);
+                keyRect.setAttribute("fill", isBlack ? "#334155" : "#475569");
+                keyRect.setAttribute("stroke", "#1e293b");
+                keyRect.setAttribute("stroke-width", "1");
+                keyboardGroup.appendChild(keyRect);
+
+                // Note label
+                const noteKey = keyFromMidi(midi);
+                const [noteName, octave] = noteKey.split('/');
+                const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                label.setAttribute("x", 10);
+                label.setAttribute("y", y + PIANO_ROLL_CONFIG.ROW_HEIGHT / 2 + 4);
+                label.setAttribute("font-size", "11");
+                label.setAttribute("font-family", "Inter, sans-serif");
+                label.setAttribute("font-weight", "600");
+                label.setAttribute("fill", isBlack ? "#cbd5e1" : "#e2e8f0");
+                label.textContent = `${noteName.toUpperCase()}${octave}`;
+                keyboardGroup.appendChild(label);
+
+                // Octave separator (thicker line at C notes)
+                if (noteName.toLowerCase() === 'c') {
+                    const separator = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    separator.setAttribute("x1", 0);
+                    separator.setAttribute("y1", y);
+                    separator.setAttribute("x2", PIANO_ROLL_CONFIG.KEYBOARD_WIDTH);
+                    separator.setAttribute("y2", y);
+                    separator.setAttribute("stroke", "#64748b");
+                    separator.setAttribute("stroke-width", "2");
+                    keyboardGroup.appendChild(separator);
+                }
+            }
+
+            svg.appendChild(keyboardGroup);
+        }
+
+        function renderPianoRollGrid(svg) {
+            const gridGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            const xOffset = PIANO_ROLL_CONFIG.KEYBOARD_WIDTH;
+            const totalTicks = getTotalTicks();
+            const gridWidth = getLinearXForTick(totalTicks) + 100;
+
+            // Horizontal lines (note rows)
+            for (let i = 0; i <= PIANO_ROLL_CONFIG.SEMITONES; i++) {
+                const semitoneIndex = PIANO_ROLL_CONFIG.SEMITONES - 1 - i;
+                const y = i * PIANO_ROLL_CONFIG.ROW_HEIGHT;
+                const isBlack = isBlackKeyMidi(PIANO_ROLL_CONFIG.MIN_MIDI + semitoneIndex);
+
+                // Row background
+                if (i < PIANO_ROLL_CONFIG.SEMITONES) {
+                    const rowBg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                    rowBg.setAttribute("x", xOffset);
+                    rowBg.setAttribute("y", y);
+                    rowBg.setAttribute("width", gridWidth);
+                    rowBg.setAttribute("height", PIANO_ROLL_CONFIG.ROW_HEIGHT);
+                    rowBg.setAttribute("fill", isBlack ? "#f1f5f9" : "#ffffff");
+                    gridGroup.appendChild(rowBg);
+                }
+
+                // Horizontal grid line
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", xOffset);
+                line.setAttribute("y1", y);
+                line.setAttribute("x2", xOffset + gridWidth);
+                line.setAttribute("y2", y);
+                line.setAttribute("stroke", "#e2e8f0");
+                line.setAttribute("stroke-width", "1");
+                gridGroup.appendChild(line);
+            }
+
+            // Vertical lines (measure boundaries) - using LINEAR positioning
+            let currentAbsTick = 0;
+            for (let m = 0; m < totalMeasures; m++) {
+                const settings = getSettingsForMeasure(m);
+                const measureTicks = getTicksForTimeSig(settings.time);
+
+                // Measure start line
+                const x = xOffset + getLinearXForTick(currentAbsTick);
+                const measureLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                measureLine.setAttribute("x1", x);
+                measureLine.setAttribute("y1", 0);
+                measureLine.setAttribute("x2", x);
+                measureLine.setAttribute("y2", PIANO_ROLL_CONFIG.SEMITONES * PIANO_ROLL_CONFIG.ROW_HEIGHT);
+                measureLine.setAttribute("stroke", "#94a3b8");
+                measureLine.setAttribute("stroke-width", "2");
+                gridGroup.appendChild(measureLine);
+
+                // Measure number
+                const measureLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                measureLabel.setAttribute("x", x + 5);
+                measureLabel.setAttribute("y", 15);
+                measureLabel.setAttribute("font-size", "12");
+                measureLabel.setAttribute("font-family", "Inter, sans-serif");
+                measureLabel.setAttribute("font-weight", "700");
+                measureLabel.setAttribute("fill", "#64748b");
+                measureLabel.textContent = `M${m + 1}`;
+                gridGroup.appendChild(measureLabel);
+
+                // Beat lines (quarter note subdivisions)
+                const beatsPerMeasure = parseInt(settings.time.split('/')[0]);
+                for (let beat = 1; beat < beatsPerMeasure; beat++) {
+                    const beatTick = currentAbsTick + (beat * TICKS_PER_QUARTER);
+                    const beatX = xOffset + getLinearXForTick(beatTick);
+                    const beatLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    beatLine.setAttribute("x1", beatX);
+                    beatLine.setAttribute("y1", 0);
+                    beatLine.setAttribute("x2", beatX);
+                    beatLine.setAttribute("y2", PIANO_ROLL_CONFIG.SEMITONES * PIANO_ROLL_CONFIG.ROW_HEIGHT);
+                    beatLine.setAttribute("stroke", "#cbd5e1");
+                    beatLine.setAttribute("stroke-width", "1");
+                    beatLine.setAttribute("stroke-dasharray", "4,4");
+                    gridGroup.appendChild(beatLine);
+                }
+
+                currentAbsTick += measureTicks;
+            }
+
+            svg.appendChild(gridGroup);
+        }
+
+        
+        function sanitizeNotesToPianoRollRange() {
+            const tracks = (projectData.mode === 'quartet') ? ['soprano', 'alto', 'tenor', 'bass'] : ['melody'];
+            tracks.forEach(trackName => {
+                const trackMap = getTrackMap(trackName);
+                for (const [tick, note] of Array.from(trackMap.entries())) {
+                    if (!note || note.type !== 'note') continue;
+                    const inRange = (note.keys || []).every(k => {
+                        const midi = midiFromKey(k);
+                        return midi !== null && midi >= PIANO_ROLL_CONFIG.MIN_MIDI && midi <= PIANO_ROLL_CONFIG.MAX_MIDI;
+                    });
+                    if (!inRange) trackMap.delete(tick);
+                }
+            });
+        }
+
+function renderPianoRollNotes(svg) {
+            const notesGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            const xOffset = PIANO_ROLL_CONFIG.KEYBOARD_WIDTH;
+
+            // Get active tracks
+            const tracks = (projectData.mode === 'quartet')
+                ? ['soprano', 'alto', 'tenor', 'bass']
+                : ['melody'];
+
+            // Render notes for each track
+            tracks.forEach(trackName => {
+                const trackMap = getTrackMap(trackName);
+                const color = PIANO_ROLL_CONFIG.NOTE_COLORS[trackName];
+
+                trackMap.forEach((note, tick) => {
+                    if (note.type !== 'note') return;
+
+                    // Calculate position using LINEAR spacing
+                    const semitoneIndex = keyToSemitoneIndex(note.keys[0]);
+                    if (semitoneIndex === null) return;
+
+                    const x = xOffset + getLinearXForTick(tick);
+                    const y = (PIANO_ROLL_CONFIG.SEMITONES - 1 - semitoneIndex) * PIANO_ROLL_CONFIG.ROW_HEIGHT;
+                    const width = Math.max(
+                        PIANO_ROLL_CONFIG.MIN_NOTE_WIDTH,
+                        getLinearXForTick(tick + DURATION_TICKS[note.duration]) - getLinearXForTick(tick) - 2
+                    );
+                    const height = PIANO_ROLL_CONFIG.ROW_HEIGHT * (1 - PIANO_ROLL_CONFIG.NOTE_PADDING * 2);
+                    const yPadded = y + PIANO_ROLL_CONFIG.ROW_HEIGHT * PIANO_ROLL_CONFIG.NOTE_PADDING;
+
+                    // Note rectangle
+                    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                    rect.setAttribute("x", x);
+                    rect.setAttribute("y", yPadded);
+                    rect.setAttribute("width", width);
+                    rect.setAttribute("height", height);
+                    rect.setAttribute("rx", "4");
+
+                    // Color and styling
+                    let fillColor = color;
+                    let strokeColor = color;
+                    let strokeWidth = 2;
+                    let opacity = 0.8;
+
+                    // Selected state
+                    if (selectedTick === tick && selectedTrackName === trackName) {
+                        strokeColor = "#2563eb";
+                        strokeWidth = 3;
+                        opacity = 1;
+                    }
+
+                    // Ornament state
+                    if (note.isOrnament) {
+                        fillColor = "#ef4444";
+                        strokeColor = "#ef4444";
+                    }
+
+                    rect.setAttribute("fill", fillColor);
+                    rect.setAttribute("stroke", strokeColor);
+                    rect.setAttribute("stroke-width", strokeWidth);
+                    rect.setAttribute("opacity", opacity);
+
+                    // Store metadata
+                    rect.dataset.tick = tick;
+                    rect.dataset.track = trackName;
+                    rect.dataset.type = 'note';
+
+                    // Hover effect
+                    rect.style.cursor = "grab";
+                    rect.addEventListener('mouseenter', function() {
+                        if (selectedTick !== tick || selectedTrackName !== trackName) {
+                            rect.setAttribute("opacity", 0.9);
+                        }
+                    });
+                    rect.addEventListener('mouseleave', function() {
+                        if (selectedTick !== tick || selectedTrackName !== trackName) {
+                            rect.setAttribute("opacity", 0.8);
+                        }
+                    });
+
+                    notesGroup.appendChild(rect);
+
+                    // Dotted note indicator
+                    if (String(note.duration).endsWith('.')) {
+                        const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        dot.setAttribute("cx", x + Math.max(10, width - 8));
+                        dot.setAttribute("cy", yPadded + (height / 2));
+                        dot.setAttribute("r", "3");
+                        dot.setAttribute("fill", strokeColor);
+                        dot.setAttribute("opacity", opacity);
+                        dot.setAttribute("pointer-events", "none");
+                        dot.setAttribute("data-dotted-indicator", "1");
+                        notesGroup.appendChild(dot);
+                    }
+                });
+            });
+
+            svg.appendChild(notesGroup);
+        }
+
+        function downloadMIDI() {
+            try {
+                const isQuartet = projectData.mode === 'quartet';
+                const trackNames = isQuartet ? ['soprano', 'alto', 'tenor', 'bass'] : ['melody'];
+                const PPQ = 128; const TICKS_TO_MIDI = PPQ / TICKS_PER_QUARTER;
+                const bpm = parseInt(document.getElementById('tempo-slider').value);
+                const microsecondsPerQuarter = Math.round(60000000 / bpm);
+                const channelByTrack = { melody: 0, soprano: 0, alto: 1, tenor: 2, bass: 3 };
+                let allTrackChunks = [];
+                const strToBytes = (s) => s.split('').map(c => c.charCodeAt(0));
+                trackNames.forEach((trackName, index) => {
+                    let trackEvents = [];
+                    if (index === 0) {
+                        trackEvents.push({ tickMidi: 0, type: 'meta', data: [0xFF, 0x51, 0x03, (microsecondsPerQuarter >> 16) & 0xFF, (microsecondsPerQuarter >> 8) & 0xFF, microsecondsPerQuarter & 0xFF] });
+                    }
+                    const trackMap = getTrackMap(trackName);
+                    const processed = new Set();
+                    Array.from(trackMap.keys()).sort((a,b)=>a-b).forEach(tick => {
+                        if (processed.has(tick)) return;
+                        const note = trackMap.get(tick);
+                        if (note.type !== 'note') return;
+                        let totalDur = DURATION_TICKS[note.duration];
+                        let curr = note, currTick = tick;
+                        while(curr.isTied) {
+                             const nxtTick = currTick + DURATION_TICKS[curr.duration];
+                             if(trackMap.has(nxtTick)) {
+                                 const nxt = trackMap.get(nxtTick);
+                                 if(nxt.type==='note' && nxt.keys[0]===curr.keys[0]) { totalDur+=DURATION_TICKS[nxt.duration]; processed.add(nxtTick); curr=nxt; currTick=nxtTick; } else break;
+                             } else break;
+                        }
+                        const [key, oct] = note.keys[0].split('/');
+                        const pitch = getMidiPitch(key, oct);
+                        const ch = channelByTrack[trackName] ?? 0;
+                        trackEvents.push({ tickMidi: tick * TICKS_TO_MIDI, type: 'on', ch, pitch, vel: 100 });
+                        trackEvents.push({ tickMidi: (tick + totalDur) * TICKS_TO_MIDI, type: 'off', ch, pitch, vel: 0 });
+                    });
+                    trackEvents.sort((a, b) => (a.tickMidi - b.tickMidi) || ((a.type === 'off') ? -1 : 1));
+                    let trackBytes = [];
+                    const addByte = (b) => trackBytes.push(b & 0xFF);
+                    const addVLQ = (val) => {
+                        let buffer = val & 0x7F;
+                        while ((val >>= 7)) { buffer <<= 8; buffer |= ((val & 0x7F) | 0x80); }
+                        while (true) { addByte(buffer); if (buffer & 0x80) buffer >>= 8; else break; }
+                    };
+                    let lastTick = 0;
+                    trackEvents.forEach(ev => {
+                        addVLQ(ev.tickMidi - lastTick); lastTick = ev.tickMidi;
+                        if (ev.type === 'meta') ev.data.forEach(addByte);
+                        else { addByte((ev.type === 'on' ? 0x90 : 0x80) + (ev.ch & 0x0F)); addByte(ev.pitch & 0x7F); addByte(ev.vel & 0x7F); }
+                    });
+                    addVLQ(0); addByte(0xFF); addByte(0x2F); addByte(0x00);
+                    const len = trackBytes.length;
+                    allTrackChunks.push(...strToBytes('MTrk'), (len >> 24) & 0xFF, (len >> 16) & 0xFF, (len >> 8) & 0xFF, len & 0xFF, ...trackBytes);
+                });
+                const numTracks = trackNames.length;
+                const header = [...strToBytes('MThd'), 0,0,0,6, 0,1, (numTracks>>8)&0xFF, numTracks&0xFF, (PPQ>>8)&0xFF, PPQ&0xFF];
+                const blob = new Blob([new Uint8Array([...header, ...allTrackChunks])], { type: "audio/midi" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a'); a.href = url; a.download = isQuartet ? 'composition_quartet.mid' : 'composition_single.mid';
+                document.body.appendChild(a); a.click();
+                setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+            } catch (err) { alert("Error MIDI: " + err.message); }
+        }
+
+        function getMidiPitch(key, octaveStr) {
+            const noteMap = { 'c': 0, 'cn': 0, 'c#': 1, 'db': 1, 'd': 2, 'dn': 2, 'd#': 3, 'eb': 3, 'e': 4, 'en': 4, 'e#': 5, 'fb': 4, 'f': 5, 'fn': 5, 'f#': 6, 'gb': 6, 'g': 7, 'gn': 7, 'g#': 8, 'ab': 8, 'a': 9, 'an': 9, 'a#': 10, 'bb': 10, 'b': 11, 'bn': 11, 'b#': 0, 'cb': 11 };
+            const cleanKey = key.toLowerCase();
+            let octave = parseInt(octaveStr);
+            if (cleanKey === 'cb') octave -= 1;
+            if (cleanKey === 'b#') octave += 1;
+            return (octave + 1) * 12 + (noteMap[cleanKey] ?? 0);
+        }
+    </script>
+</body>
+</html>
