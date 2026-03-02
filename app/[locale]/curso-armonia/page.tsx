@@ -8,10 +8,10 @@ type Props = { params: Promise<{ locale: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   return {
-    title: locale === "es" ? "Curso de Armonía — Storm Studios Learning" : "Harmony Course — Storm Studios Learning",
+    title: locale === "es" ? "Curso de Armonía" : "Harmony Course",
     description: locale === "es"
-      ? "Curso completo gratuito de Armonía Tradicional — Storm Studios Learning"
-      : "Complete free Traditional Harmony course — Storm Studios Learning",
+      ? "Curso completo y gratuito de Armonía Tradicional con el método Shostakovich."
+      : "Complete free Traditional Harmony course using the Shostakovich method.",
   };
 }
 

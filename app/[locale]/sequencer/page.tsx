@@ -5,10 +5,10 @@ type Props = { params: Promise<{ locale: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   return {
-    title: "Storm Sequencer v3.0 — Storm Studios Learning",
+    title: "Storm Sequencer v3.0",
     description: locale === "es"
-      ? "Secuenciador musical online gratuito con notación en tiempo real — Storm Studios Learning"
-      : "Free online music sequencer with real-time notation — Storm Studios Learning",
+      ? "Secuenciador musical online gratuito con notación en tiempo real."
+      : "Free online music sequencer with real-time notation.",
   };
 }
 

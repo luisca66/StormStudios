@@ -6,6 +6,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   return {
     title: locale === "es" ? "Política de Privacidad" : "Privacy Policy",
+    description: locale === "es"
+      ? "Política de privacidad de Storm Studios Learning — cómo protegemos y manejamos tu información personal."
+      : "Storm Studios Learning privacy policy — how we protect and handle your personal information.",
   };
 }
 

@@ -108,7 +108,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
 export function generateMetadata({ params }: BlogPageProps) {
   return params.then(({ locale }) => ({
-    title: locale === "es" ? "Blog — Storm Studios Learning" : "Blog — Storm Studios Learning",
+    title: locale === "es" ? "Blog" : "Blog",
     description:
       locale === "es"
         ? "Artículos sobre armonía, teoría musical y el método Shostakovich."
