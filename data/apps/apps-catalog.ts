@@ -8,202 +8,163 @@ export type AppEntry = {
   longDescription?: BilingualText;
   playStoreUrl?: string;
   kindleManualUrl?: string;
-  webUrl?: string; // si tiene versión web
-  icon?: string; // ruta en /public/images/apps/
+  webUrl?: string;
+  icon?: string;
   screenshots?: string[];
   features?: BilingualText[];
-  isWeb?: boolean; // true si es app web (no Android)
+  isWeb?: boolean;
 };
 
-/**
- * Catálogo de las 10 apps educativas de Storm Studios Learning.
- *
- * TODO: Completar URLs de Google Play, manuales Kindle, iconos e
- * imágenes de capturas de pantalla para cada app.
- */
 export const APPS: AppEntry[] = [
   {
-    slug: "desglose-auditivo",
-    name: {
-      es: "Desglose Auditivo",
-      en: "Auditory Breakdown",
-    },
-    category: "ear-training",
-    description: {
-      es: "Entrena tu oído para reconocer e identificar los componentes del sonido musical.",
-      en: "Train your ear to recognize and identify the components of musical sound.",
-    },
-    playStoreUrl: undefined, // TODO: agregar URL de Google Play
-    kindleManualUrl: undefined, // TODO: agregar URL de manual Kindle
-    icon: "/images/apps/desglose-auditivo.png",
-    features: [
-      {
-        es: "Entrenamiento multi-tímbrico (Cello, Corno Francés, Coro, Cuerdas, Piano)",
-        en: "Multi-timbral training (Cello, French Horn, Choir, Strings, Piano)",
-      },
-    ],
-  },
-  {
     slug: "matematicas-mentales",
-    name: {
-      es: "Matemáticas Mentales",
-      en: "Mental Math",
-    },
+    name: { es: "Matemáticas Mentales", en: "Mental Math" },
     category: "cognitive",
     description: {
-      es: "Ejercicios de cálculo mental inspirados en el método Dr. Kawashima para potenciar el cerebro.",
-      en: "Mental calculation exercises inspired by the Dr. Kawashima method to boost brain power.",
+      es: "Inspirada en la investigación del Dr. Kawashima, activa el córtex prefrontal con ejercicios aritméticos cronometrados en niveles progresivos.",
+      en: "Inspired by Dr. Kawashima's research, activates the prefrontal cortex with timed arithmetic exercises at progressive levels.",
     },
-    playStoreUrl: undefined, // TODO
-    kindleManualUrl: undefined, // TODO
-    icon: "/images/apps/matematicas-mentales.png",
     features: [
-      { es: "Niveles progresivos", en: "Progressive levels" },
-      { es: "Estadísticas de mejora", en: "Improvement statistics" },
+      { es: "Operaciones básicas cronometradas", en: "Timed basic operations" },
+      { es: "Niveles progresivos de dificultad", en: "Progressive difficulty levels" },
     ],
+    icon: "/images/app-matematicas-mentales.png",
   },
   {
-    slug: "dictado-ritmico",
-    name: {
-      es: "Dictado Rítmico",
-      en: "Rhythmic Dictation",
-    },
-    category: "ear-training",
+    slug: "memoria",
+    name: { es: "Memoria", en: "Memory" },
+    category: "cognitive",
     description: {
-      es: "Desarrolla tu sentido rítmico transcribiendo patrones que escuchas.",
-      en: "Develop your rhythmic sense by transcribing patterns you hear.",
+      es: "Fortalece tu memoria con juegos nemotécnicos de letras y números. Refuerza técnicas de codificación y recuerdo con un clásico juego de parejas.",
+      en: "Strengthen your memory with mnemonic games using letters and numbers. Reinforce coding and recall techniques with a classic matching card game.",
     },
-    playStoreUrl: undefined, // TODO
-    kindleManualUrl: undefined, // TODO
-    icon: "/images/apps/dictado-ritmico.png",
-    features: [],
+    features: [
+      { es: "Juego de parejas de cartas", en: "Matching card game" },
+      { es: "Técnicas nemotécnicas", en: "Mnemonic techniques" },
+    ],
+    icon: "/images/app-memoria.png",
   },
   {
-    slug: "intervalos",
-    name: {
-      es: "Intervalos",
-      en: "Intervals",
-    },
+    slug: "desglose-auditivo",
+    name: { es: "Desglose Auditivo", en: "Auditory Breakdown" },
     category: "ear-training",
     description: {
-      es: "Aprende a identificar y cantar todos los intervalos musicales.",
-      en: "Learn to identify and sing all musical intervals.",
+      es: "Entrena tu oído para aislar e identificar notas individuales dentro de acordes o texturas densas. La app reproduce de 2 a 5 notas simultáneas — tu objetivo es cantar cada una.",
+      en: "Train your ear to isolate and identify individual notes within chords or dense textures. The app plays 2 to 5 simultaneous notes — your goal is to sing each one.",
     },
-    playStoreUrl: undefined, // TODO
-    kindleManualUrl: undefined, // TODO
+    features: [
+      { es: "Dificultad ajustable (2 a 5 notas)", en: "Adjustable difficulty (2 to 5 notes)" },
+      { es: "Rango seleccionable C2–C7", en: "Selectable range C2–C7" },
+      { es: "Distintos timbres", en: "Multiple timbres" },
+    ],
+    icon: "/images/apps/desglose-auditivo.png",
+  },
+  {
+    slug: "intervalos-reconocimiento",
+    name: { es: "Intervalos – Reconocimiento", en: "Intervals – Recognition" },
+    category: "ear-training",
+    description: {
+      es: "Entrena el reconocimiento de distancias relativas entre notas. Identifica los intervalos que reproduce la app.",
+      en: "Train the recognition of relative distances between notes. Identify the intervals the app plays.",
+    },
+    features: [
+      { es: "Multi-tímbrica (5 timbres)", en: "Multi-timbral (5 timbres)" },
+      { es: "Niveles progresivos (quintas a séptimas mayores)", en: "Progressive levels (fifths to major sevenths)" },
+    ],
     icon: "/images/apps/intervalos.png",
-    features: [],
+  },
+  {
+    slug: "intervalos-cantados",
+    name: { es: "Intervalos – Cantados", en: "Intervals – Sung" },
+    category: "ear-training",
+    description: {
+      es: "Refuerza la comprensión y producción vocal precisa de intervalos. Canta el intervalo que te solicita la app.",
+      en: "Reinforce the understanding and precise vocal production of intervals. Sing the interval the app requests.",
+    },
+    features: [
+      { es: "Niveles progresivos (quintas a séptimas mayores)", en: "Progressive levels (fifths to major sevenths)" },
+    ],
+    icon: "/images/apps/intervalos-cantados.png",
   },
   {
     slug: "acordes",
-    name: {
-      es: "Acordes",
-      en: "Chords",
-    },
+    name: { es: "Reconocimiento de Acordes", en: "Chord Recognition" },
     category: "ear-training",
     description: {
-      es: "Identifica tríadas y acordes de séptima al oído.",
-      en: "Identify triads and seventh chords by ear.",
+      es: "Entrena la habilidad de identificar acordes y sus cualidades armónicas, desde tríadas hasta acordes complejos con 13ª.",
+      en: "Train your ability to identify chords and their harmonic qualities, from triads to complex 13th chords.",
     },
-    playStoreUrl: undefined, // TODO
-    kindleManualUrl: undefined, // TODO
+    features: [
+      { es: "Multi-tímbrica (5 timbres)", en: "Multi-timbral (5 timbres)" },
+      { es: "Rango seleccionable", en: "Selectable range" },
+      { es: "Dificultad progresiva hasta acordes con 13ª", en: "Progressive difficulty up to 13th chords" },
+    ],
     icon: "/images/apps/acordes.png",
-    features: [],
   },
   {
-    slug: "escalas",
-    name: {
-      es: "Escalas",
-      en: "Scales",
-    },
-    category: "theory",
-    description: {
-      es: "Estudia y practica escalas mayores, menores y modales.",
-      en: "Study and practice major, minor and modal scales.",
-    },
-    playStoreUrl: undefined, // TODO
-    kindleManualUrl: undefined, // TODO
-    icon: "/images/apps/escalas.png",
-    features: [],
-  },
-  {
-    slug: "solfeo",
-    name: {
-      es: "Solfeo",
-      en: "Solfège",
-    },
+    slug: "grados-mayores",
+    name: { es: "Grados de la Escala – Mayor", en: "Scale Degrees – Major" },
     category: "ear-training",
     description: {
-      es: "Practica la lectura musical a primera vista con solfeo melódico.",
-      en: "Practice sight-reading with melodic solfège.",
+      es: "Desarrolla la percepción de la función tonal de cada nota en tonalidades mayores. Reconoce grados diatónicos y cromáticos en contexto.",
+      en: "Develop perception of the tonal function of each note in major keys. Recognize diatonic and chromatic degrees in context.",
     },
-    playStoreUrl: undefined, // TODO
-    kindleManualUrl: undefined, // TODO
-    icon: "/images/apps/solfeo.png",
-    features: [],
+    features: [
+      { es: "Grados diatónicos y cromáticos", en: "Diatonic and chromatic degrees" },
+      { es: "Contexto tonal mayor", en: "Major tonal context" },
+    ],
+    icon: "/images/apps/grados-mayores.png",
   },
   {
-    slug: "progresiones",
-    name: {
-      es: "Progresiones",
-      en: "Progressions",
-    },
-    category: "theory",
-    description: {
-      es: "Comprende y escucha progresiones armónicas en contexto musical.",
-      en: "Understand and hear harmonic progressions in musical context.",
-    },
-    playStoreUrl: undefined, // TODO
-    kindleManualUrl: undefined, // TODO
-    icon: "/images/apps/progresiones.png",
-    features: [],
-  },
-  {
-    slug: "ritmo-corporal",
-    name: {
-      es: "Ritmo Corporal",
-      en: "Body Rhythm",
-    },
+    slug: "grados-menores",
+    name: { es: "Grados de la Escala – Menor", en: "Scale Degrees – Minor" },
     category: "ear-training",
     description: {
-      es: "Internaliza el ritmo a través del movimiento corporal consciente.",
-      en: "Internalize rhythm through conscious body movement.",
+      es: "Desarrolla la percepción de la función tonal de cada nota en tonalidades menores. Reconoce grados diatónicos y cromáticos en contexto.",
+      en: "Develop perception of the tonal function of each note in minor keys. Recognize diatonic and chromatic degrees in context.",
     },
-    playStoreUrl: undefined, // TODO
-    kindleManualUrl: undefined, // TODO
-    icon: "/images/apps/ritmo-corporal.png",
-    features: [],
+    features: [
+      { es: "Grados diatónicos y cromáticos", en: "Diatonic and chromatic degrees" },
+      { es: "Contexto tonal menor", en: "Minor tonal context" },
+    ],
+    icon: "/images/apps/grados-menores.png",
+  },
+  {
+    slug: "oido-absoluto",
+    name: { es: "Oído Absoluto", en: "Absolute Pitch" },
+    category: "ear-training",
+    description: {
+      es: "Entrena la habilidad de reconocer notas específicas sin referencia previa. Disponible en versión multi-tímbrica (5 timbres) y versión especializada en Guitarra Clásica.",
+      en: "Train the ability to recognize specific notes without prior reference. Available in multi-timbral version (5 timbres) and a specialized Classical Guitar version.",
+    },
+    features: [
+      { es: "Versión multi-tímbrica (5 timbres)", en: "Multi-timbral version (5 timbres)" },
+      { es: "Versión especializada Guitarra Clásica", en: "Specialized Classical Guitar version" },
+    ],
+    icon: "/images/apps/oido-absoluto.png",
   },
   {
     slug: "storm-sequencer",
-    name: {
-      es: "Storm Sequencer v3.0",
-      en: "Storm Sequencer v3.0",
-    },
+    name: { es: "Storm Sequencer v3.0", en: "Storm Sequencer v3.0" },
     category: "sequencer",
     description: {
-      es: "Secuenciador musical online para componer y experimentar con armonía.",
-      en: "Online music sequencer for composing and experimenting with harmony.",
+      es: "Secuenciador musical online para componer tus ejercicios y exportarlos como MIDI para el Maestro Virtual.",
+      en: "Online music sequencer to compose your exercises and export them as MIDI for the Virtual Teacher.",
     },
-    webUrl: "/sequencer", // es una app web
+    webUrl: "/sequencer",
     isWeb: true,
-    icon: "/images/apps/storm-sequencer.png",
     features: [
       { es: "Disponible en el navegador, sin descarga", en: "Available in browser, no download needed" },
+      { es: "Exporta a MIDI para el Maestro Virtual", en: "Export to MIDI for the Virtual Teacher" },
     ],
+    icon: "/images/apps/storm-sequencer.png",
   },
 ];
 
-/**
- * Obtiene una app por su slug
- */
 export function getAppBySlug(slug: string): AppEntry | undefined {
   return APPS.find((app) => app.slug === slug);
 }
 
-/**
- * Obtiene todas las apps por categoría
- */
 export function getAppsByCategory(category: AppEntry["category"]): AppEntry[] {
   return APPS.filter((app) => app.category === category);
 }
