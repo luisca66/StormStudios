@@ -171,7 +171,7 @@ export const APPS: AppEntry[] = [
       { es: "Disponible en el navegador, sin descarga", en: "Available in browser, no download needed" },
       { es: "Exporta a MIDI para el Maestro Virtual", en: "Export to MIDI for the Virtual Teacher" },
     ],
-    icon: "/images/apps/storm-sequencer.png",
+    icon: "/images/secuenciador.png",
   },
 ];
 
