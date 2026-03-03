@@ -141,7 +141,7 @@ export default async function HomePage({ params }: Props) {
       tag: es ? "Entrenamiento Auditivo" : "Ear Training",
       tagColor: "#93c5fd",
       accentHex: "#3b82f6",
-      title: es ? "9 Apps Educativas" : "9 Educational Apps",
+      title: es ? "10 Apps Educativas" : "10 Educational Apps",
       description: es
         ? "Suite de apps gratuitas dentro del website y para Android: matemáticas mentales, memoria y entrenamiento auditivo total."
         : "Free app suite on the website and for Android: mental math, memory and total ear training.",
@@ -336,7 +336,7 @@ export default async function HomePage({ params }: Props) {
         >
           <StatItem value="60" label={es ? "Lecciones" : "Lessons"} />
           <div className="ss-divider" style={{ width: "1px", alignSelf: "stretch" }} />
-          <StatItem value="9" label={es ? "Apps Gratis" : "Free Apps"} />
+          <StatItem value="10" label={es ? "Apps Gratis" : "Free Apps"} />
           <div className="ss-divider" style={{ width: "1px", alignSelf: "stretch" }} />
           <StatItem value="IA" label={es ? "Evaluación" : "Evaluation"} />
           <div className="ss-divider" style={{ width: "1px", alignSelf: "stretch" }} />

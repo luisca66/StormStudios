@@ -46,7 +46,7 @@ export const APPS: AppEntry[] = [
   },
   {
     slug: "desglose-auditivo",
-    name: { es: "Desglose Auditivo", en: "Auditory Breakdown" },
+    name: { es: "Desglose", en: "Unlocking" },
     category: "ear-training",
     description: {
       es: "Entrena tu oído para aislar e identificar notas individuales dentro de acordes o texturas densas. La app reproduce de 2 a 5 notas simultáneas — tu objetivo es cantar cada una.",
@@ -57,7 +57,7 @@ export const APPS: AppEntry[] = [
       { es: "Rango seleccionable C2–C7", en: "Selectable range C2–C7" },
       { es: "Distintos timbres", en: "Multiple timbres" },
     ],
-    icon: "/images/apps/desglose-auditivo.png",
+    icon: "/images/app-unlocking.jpeg",
   },
   {
     slug: "intervalos-reconocimiento",
@@ -71,7 +71,7 @@ export const APPS: AppEntry[] = [
       { es: "Multi-tímbrica (5 timbres)", en: "Multi-timbral (5 timbres)" },
       { es: "Niveles progresivos (quintas a séptimas mayores)", en: "Progressive levels (fifths to major sevenths)" },
     ],
-    icon: "/images/apps/intervalos.png",
+    icon: "/images/app-intervals-listening.jpeg",
   },
   {
     slug: "intervalos-cantados",
@@ -84,7 +84,7 @@ export const APPS: AppEntry[] = [
     features: [
       { es: "Niveles progresivos (quintas a séptimas mayores)", en: "Progressive levels (fifths to major sevenths)" },
     ],
-    icon: "/images/apps/intervalos-cantados.png",
+    icon: "/images/app-intervalos-cantados.png",
   },
   {
     slug: "acordes",
@@ -99,11 +99,11 @@ export const APPS: AppEntry[] = [
       { es: "Rango seleccionable", en: "Selectable range" },
       { es: "Dificultad progresiva hasta acordes con 13ª", en: "Progressive difficulty up to 13th chords" },
     ],
-    icon: "/images/apps/acordes.png",
+    icon: "/images/app-acordes.jpeg",
   },
   {
     slug: "grados-mayores",
-    name: { es: "Grados de la Escala – Mayor", en: "Scale Degrees – Major" },
+    name: { es: "Grados Escala Mayor", en: "Major Scale Degrees" },
     category: "ear-training",
     description: {
       es: "Desarrolla la percepción de la función tonal de cada nota en tonalidades mayores. Reconoce grados diatónicos y cromáticos en contexto.",
@@ -113,11 +113,11 @@ export const APPS: AppEntry[] = [
       { es: "Grados diatónicos y cromáticos", en: "Diatonic and chromatic degrees" },
       { es: "Contexto tonal mayor", en: "Major tonal context" },
     ],
-    icon: "/images/apps/grados-mayores.png",
+    icon: "/images/app-grados-mayores.jpg",
   },
   {
     slug: "grados-menores",
-    name: { es: "Grados de la Escala – Menor", en: "Scale Degrees – Minor" },
+    name: { es: "Grados Escala Menor", en: "Minor Scale Degrees" },
     category: "ear-training",
     description: {
       es: "Desarrolla la percepción de la función tonal de cada nota en tonalidades menores. Reconoce grados diatónicos y cromáticos en contexto.",
@@ -127,21 +127,35 @@ export const APPS: AppEntry[] = [
       { es: "Grados diatónicos y cromáticos", en: "Diatonic and chromatic degrees" },
       { es: "Contexto tonal menor", en: "Minor tonal context" },
     ],
-    icon: "/images/apps/grados-menores.png",
+    icon: "/images/app-grados-menores.jpeg",
   },
   {
-    slug: "oido-absoluto",
-    name: { es: "Oído Absoluto", en: "Absolute Pitch" },
+    slug: "oido-absoluto-multi",
+    name: { es: "Oído Absoluto Multi-tímbrico", en: "Perfect Pitch Multi-timbral" },
     category: "ear-training",
     description: {
-      es: "Entrena la habilidad de reconocer notas específicas sin referencia previa. Disponible en versión multi-tímbrica (5 timbres) y versión especializada en Guitarra Clásica.",
-      en: "Train the ability to recognize specific notes without prior reference. Available in multi-timbral version (5 timbres) and a specialized Classical Guitar version.",
+      es: "Entrena la habilidad de reconocer notas específicas sin referencia previa, con 5 timbres distintos para un entrenamiento más completo.",
+      en: "Train the ability to recognize specific notes without prior reference, using 5 different timbres for more complete training.",
     },
     features: [
-      { es: "Versión multi-tímbrica (5 timbres)", en: "Multi-timbral version (5 timbres)" },
-      { es: "Versión especializada Guitarra Clásica", en: "Specialized Classical Guitar version" },
+      { es: "5 timbres disponibles", en: "5 available timbres" },
+      { es: "Entrenamiento de pitch absoluto", en: "Absolute pitch training" },
     ],
-    icon: "/images/apps/oido-absoluto.png",
+    icon: "/images/app-ap-multi.png",
+  },
+  {
+    slug: "oido-absoluto-guitarra",
+    name: { es: "Oído Absoluto Guitarra Clásica", en: "Perfect Pitch Classical Guitar" },
+    category: "ear-training",
+    description: {
+      es: "Versión especializada del entrenamiento de oído absoluto con timbre de Guitarra Clásica, ideal para guitarristas.",
+      en: "Specialized version of absolute pitch training using Classical Guitar timbre, ideal for guitarists.",
+    },
+    features: [
+      { es: "Timbre de Guitarra Clásica", en: "Classical Guitar timbre" },
+      { es: "Entrenamiento de pitch absoluto", en: "Absolute pitch training" },
+    ],
+    icon: "/images/app-ap-guitar.jpeg",
   },
   {
     slug: "storm-sequencer",
