@@ -75,6 +75,31 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
 
           <div className="ss-divider mb-8" />
 
+          {/* Videos de la lección */}
+          {lesson.videos && lesson.videos.length > 0 && (
+            <div className="mb-10">
+              {lesson.videos.map((video) => (
+                <div key={video.youtubeId} className="mb-6">
+                  {video.title && (
+                    <p className="ss-mono text-sm font-semibold mb-3"
+                      style={{ color: "rgba(240,238,255,0.7)" }}>
+                      {video.title[locale as "es" | "en"]}
+                    </p>
+                  )}
+                  <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, borderRadius: "12px", overflow: "hidden", border: "1px solid rgba(139,92,246,0.2)" }}>
+                    <iframe
+                      src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                      title={video.title?.[locale as "es" | "en"] ?? "Video"}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* MDX content */}
           <div className="blog-prose">{children}</div>
 

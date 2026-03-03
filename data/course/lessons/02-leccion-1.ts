@@ -19,7 +19,10 @@ export const lesson: LessonConfig = {
   prerequisites: ["01-propedeutico"],
 
   videos: [
-    // TODO: agregar youtubeId
+    {
+      youtubeId: "QZ_D8zNQ3Nk",
+      title: { es: "Escala mayor y círculo de quintas", en: "Major scale and circle of fifths" },
+    },
   ],
 
   activeRules: [
