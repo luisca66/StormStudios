@@ -2,10 +2,12 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import AudioPlayer from "@/components/media/AudioPlayer";
 import YouTubeEmbed from "@/components/media/YouTubeEmbed";
+import VimeoEmbed from "@/components/media/VimeoEmbed";
 
 const components = {
   AudioPlayer,
   YouTubeEmbed,
+  VimeoEmbed,
   img: ({ src, alt }: { src?: string; alt?: string }) => (
     <Image
       src={src || ""}

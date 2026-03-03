@@ -63,13 +63,13 @@ export default async function CursoArmoniaPage({ params }: Props) {
         <div className="flex justify-center gap-10 mb-14 ss-reveal" style={{ animationDelay: "0.15s" }}>
           {[
             { src: "/images/shostakovich.jpg", name: "Dmitri Shostakovich" },
-            { src: "",                          name: "Humberto Hernández Medrano" },
+            { src: "/images/medrano.jpg",         name: "Humberto Hernández Medrano" },
           ].map((p) => (
             <div key={p.name} className="text-center">
-              <div className="w-24 h-24 rounded-full overflow-hidden mx-auto mb-3 ss-glass flex items-center justify-center"
+              <div className="w-40 h-40 rounded-full overflow-hidden mx-auto mb-3 ss-glass flex items-center justify-center"
                 style={{ border: "1px solid rgba(255,255,255,0.12)" }}>
                 {p.src
-                  ? <Image src={p.src} alt={p.name} width={96} height={96} className="object-cover w-full h-full" />
+                  ? <Image src={p.src} alt={p.name} width={160} height={160} className="object-cover w-full h-full" />
                   : <span style={{ fontSize: "2rem" }}>🎓</span>}
               </div>
               <p className="ss-mono text-xs" style={{ color: "rgba(240,238,255,0.5)" }}>{p.name}</p>

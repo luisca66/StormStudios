@@ -131,8 +131,8 @@ export default async function HomePage({ params }: Props) {
       accentHex: "#8b5cf6",
       title: es ? "Curso de Armonía Tradicional" : "Traditional Harmony Course",
       description: es
-        ? "El método Shostakovich–Hernández Medrano: análisis armónico profundo, voice leading y escritura coral. 60 lecciones, completamente gratis."
-        : "The Shostakovich–Hernández Medrano method: deep harmonic analysis, voice leading and chorale writing. 60 lessons, completely free.",
+        ? "El método Shostakovich-Medrano-Cárdenas: armonía y análisis, cuarteto vocal armónico. 60+ lecciones, completamente gratis."
+        : "The Shostakovich-Medrano-Cárdenas method: harmony and analysis, harmonic vocal quartet. 60+ lessons, completely free.",
       delay: "0.1s",
       href: "/curso-armonia",
     },
@@ -141,10 +141,10 @@ export default async function HomePage({ params }: Props) {
       tag: es ? "Entrenamiento Auditivo" : "Ear Training",
       tagColor: "#93c5fd",
       accentHex: "#3b82f6",
-      title: es ? `${APPS.length} Apps Educativas` : `${APPS.length} Educational Apps`,
+      title: es ? "9 Apps Educativas" : "9 Educational Apps",
       description: es
-        ? "Suite de apps gratuitas para Android: intervalos, acordes, dictado rítmico, escalas y más. Algoritmos adaptativos a tus errores."
-        : "Free Android app suite: intervals, chords, rhythmic dictation, scales and more. Algorithms that adapt to your mistakes.",
+        ? "Suite de apps gratuitas dentro del website y para Android: matemáticas mentales, memoria y entrenamiento auditivo total."
+        : "Free app suite on the website and for Android: mental math, memory and total ear training.",
       delay: "0.25s",
       href: "/apps",
     },
@@ -155,8 +155,8 @@ export default async function HomePage({ params }: Props) {
       accentHex: "#06b6d4",
       title: es ? "Maestro Virtual" : "Virtual Teacher",
       description: es
-        ? "Sube tu ejercicio MIDI. La IA valida tu armonía contra las reglas de cada lección y genera retroalimentación específica por compás."
-        : "Upload your MIDI exercise. AI validates your harmony against each lesson's rules and generates specific feedback by measure.",
+        ? "Escribe tu tarea como midi file en nuestro secuenciador y el Maestro Virtual te guiará hacia la perfección."
+        : "Write your assignment as a midi file in our sequencer and the Virtual Teacher will guide you toward perfection.",
       delay: "0.4s",
       href: "/curso-armonia",
     },
@@ -167,8 +167,8 @@ export default async function HomePage({ params }: Props) {
       accentHex: "#10b981",
       title: es ? "Los Seres Musicales" : "The Musical Beings",
       description: es
-        ? "El método integral de Storm Studios en un solo libro. Partituras, ejemplos históricos y ejercicios graduados para acompañar el curso."
-        : "Storm Studios' integral method in one book. Scores, historical examples and graded exercises to accompany the course.",
+        ? "El libro que comparte los principios sobre los cuales está desarrollado este método de enseñanza."
+        : "The book that shares the principles upon which this teaching method is developed.",
       delay: "0.55s",
       href: "/el-libro",
     },
@@ -222,7 +222,7 @@ export default async function HomePage({ params }: Props) {
               display: "inline-block",
             }}
           />
-          {es ? "Método Shostakovich · Potenciado por IA" : "Shostakovich Method · Powered by AI"}
+          {es ? "Método Shostakovich · Medrano · Cárdenas" : "Shostakovich · Medrano · Cárdenas Method"}
         </div>
 
         {/* Headline */}
@@ -255,8 +255,8 @@ export default async function HomePage({ params }: Props) {
           }}
         >
           {es
-            ? "Donde la tradición de Shostakovich converge con la inteligencia artificial. Aprende análisis armónico profundo, valida tus composiciones con IA y lleva tu oído musical al siguiente nivel."
-            : "Where Shostakovich's tradition converges with artificial intelligence. Learn deep harmonic analysis, validate your compositions with AI, and take your musical ear to the next level."}
+            ? "La inteligencia artificial está transformando la música.\nQuienes dominen la armonía tradicional tendrán la ventaja.\nSumérgete en la tradición de Shostakovich y del Conservatorio de Moscú,\ncontrasta tus obras con el Maestro Virtual y desarrolla un oído verdaderamente profesional."
+            : "Artificial intelligence is transforming music.\nThose who master traditional harmony will have the advantage.\nImmerse yourself in the tradition of Shostakovich and the Moscow Conservatory,\ncontrast your works with the Virtual Teacher and develop a truly professional ear."}
         </p>
 
         {/* CTAs */}
@@ -336,7 +336,7 @@ export default async function HomePage({ params }: Props) {
         >
           <StatItem value="60" label={es ? "Lecciones" : "Lessons"} />
           <div className="ss-divider" style={{ width: "1px", alignSelf: "stretch" }} />
-          <StatItem value={`${APPS.length}`} label={es ? "Apps Gratis" : "Free Apps"} />
+          <StatItem value="9" label={es ? "Apps Gratis" : "Free Apps"} />
           <div className="ss-divider" style={{ width: "1px", alignSelf: "stretch" }} />
           <StatItem value="IA" label={es ? "Evaluación" : "Evaluation"} />
           <div className="ss-divider" style={{ width: "1px", alignSelf: "stretch" }} />
