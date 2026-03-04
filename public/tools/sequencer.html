@@ -2748,6 +2748,20 @@ function renderPianoRollNotes(svg) {
                     let trackEvents = [];
                     if (index === 0) {
                         trackEvents.push({ tickMidi: 0, type: 'meta', data: [0xFF, 0x51, 0x03, (microsecondsPerQuarter >> 16) & 0xFF, (microsecondsPerQuarter >> 8) & 0xFF, microsecondsPerQuarter & 0xFF] });
+                        // Emit key_signature meta-messages at measure boundaries where key changes
+                        const measureStartTicks = {};
+                        let keySigAcc = 0;
+                        for (let m = 0; m < totalMeasures; m++) {
+                            measureStartTicks[keySigAcc * TICKS_TO_MIDI] = getSettingsForMeasure(m).key;
+                            keySigAcc += getTicksForTimeSig(getSettingsForMeasure(m).time);
+                        }
+                        let lastKey = null;
+                        for (const [tickStr, key] of Object.entries(measureStartTicks).sort((a, b) => Number(a[0]) - Number(b[0]))) {
+                            if (key !== lastKey) {
+                                trackEvents.push({ tickMidi: Number(tickStr), type: 'meta', data: buildKeySignatureBytes(key) });
+                                lastKey = key;
+                            }
+                        }
                     }
                     const trackMap = getTrackMap(trackName);
                     const processed = new Set();
@@ -2805,6 +2819,18 @@ function renderPianoRollNotes(svg) {
             if (cleanKey === 'cb') octave -= 1;
             if (cleanKey === 'b#') octave += 1;
             return (octave + 1) * 12 + (noteMap[cleanKey] ?? 0);
+        }
+
+        function buildKeySignatureBytes(key) {
+            // MIDI key signature meta-message: FF 59 02 sf mi
+            // sf = number of sharps (positive) or flats (negative, as two's complement)
+            // mi = 0 (major)
+            const sfMap = {
+                'Cb': -7, 'Gb': -6, 'Db': -5, 'Ab': -4, 'Eb': -3, 'Bb': -2, 'F': -1,
+                'C': 0, 'G': 1, 'D': 2, 'A': 3, 'E': 4, 'B': 5, 'F#': 6, 'C#': 7
+            };
+            const sf = sfMap[key] ?? 0;
+            return [0xFF, 0x59, 0x02, sf < 0 ? (256 + sf) : sf, 0x00];
         }
     </script>
 </body>
