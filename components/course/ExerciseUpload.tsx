@@ -34,14 +34,14 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
     setState({ status: "uploading" });
 
     try {
-      const buffer = await file.arrayBuffer();
-      const bytes = new Uint8Array(buffer);
-      const midiBase64 = btoa(String.fromCharCode(...bytes));
+      const formData = new FormData();
+      formData.append("midi", file);
+      formData.append("lessonId", lessonId);
+      formData.append("locale", locale);
 
       const response = await fetch("/api/maestro-virtual/check", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lessonId, midiBase64 }),
+        body: formData,
       });
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -86,6 +86,38 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
       </div>
 
       <div className="p-5">
+        {/* Referencia visual para lección 1 */}
+        {lessonId === "leccion-1" && (
+          <div className="mb-4 p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs font-mono space-y-1">
+            <p className="text-gray-600 font-semibold mb-1">
+              {es ? "Orden del ejercicio:" : "Exercise order:"}
+            </p>
+            <p className="text-gray-500">
+              ↑{" "}
+              <span className="text-purple-700">
+                Do · Sol · Re · La · Mi · Si · Fa# · Do#
+              </span>
+              <span className="text-gray-400 ml-2">
+                {es ? "(quintas ascendentes)" : "(ascending fifths)"}
+              </span>
+            </p>
+            <p className="text-gray-500">
+              ↓{" "}
+              <span className="text-blue-700">
+                Fa · Sib · Mib · Lab · Reb · Solb · Dob
+              </span>
+              <span className="text-gray-400 ml-2">
+                {es ? "(quintas descendentes)" : "(descending fifths)"}
+              </span>
+            </p>
+            <p className="text-gray-400 mt-1">
+              {es
+                ? "8 notas por escala (I→I′) · 120 notas total · 1 canal (Soprano)"
+                : "8 notes per scale (I→I′) · 120 notes total · 1 channel (Soprano)"}
+            </p>
+          </div>
+        )}
+
         {/* Estado: idle / uploading */}
         {(state.status === "idle" || state.status === "uploading") && (
           <>
@@ -219,9 +251,9 @@ function FeedbackDisplay({
               <span className="font-semibold text-red-700">
                 {v.ruleName[locale as "es" | "en"]}
               </span>
-              {v.measure && (
+              {v.measure > 0 && (
                 <span className="text-red-500 ml-2 text-xs">
-                  ({es ? "compás" : "measure"} {v.measure})
+                  ({es ? "escala" : "scale"} {v.measure})
                 </span>
               )}
               <p className="text-red-600 mt-1">

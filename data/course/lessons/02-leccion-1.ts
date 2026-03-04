@@ -25,12 +25,7 @@ export const lesson: LessonConfig = {
     },
   ],
 
-  activeRules: [
-    "voice-range-satb",
-    "voice-crossing",
-    "no-parallel-fifths",
-    "no-parallel-octaves",
-  ],
+  activeRules: [],
 
   exercise: {
     type: "four-voice-chorale",

@@ -1,68 +1,101 @@
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-
-const CheckSchema = z.object({
-  lessonId: z.string().min(1),
-  // El archivo MIDI llega como base64
-  midiBase64: z.string().min(1),
-});
+import { NextRequest, NextResponse } from 'next/server';
+import { parseMidiBuffer } from '@/lib/maestro-virtual/midi-parser';
+import { validateLesson1Scales } from '@/lib/maestro-virtual/scale-validator';
+import { runRuleEngine } from '@/lib/maestro-virtual/rule-engine';
+import { getLessonConfig } from '@/data/course/lessons/lesson-configs';
 
 /**
  * POST /api/maestro-virtual/check
  *
- * Recibe un archivo MIDI (base64) y el ID de la lección,
- * ejecuta el motor de reglas y devuelve el feedback al estudiante.
+ * Recibe un archivo MIDI vía FormData, lo parsea y ejecuta
+ * el validador correcto según la lección:
+ *   - voiceCount === 1 → validateLesson1Scales (escalas mayores)
+ *   - voiceCount === 4 → runRuleEngine (SATB, Fase 6)
  *
- * TODO (Fase 5): Implementar el motor de reglas completo con:
- * - lib/maestro-virtual/midi-parser.ts
- * - lib/maestro-virtual/rule-engine.ts
- * - lib/maestro-virtual/feedback-generator.ts
+ * Devuelve MaestroFeedback compatible con ExerciseUpload.tsx.
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const parsed = CheckSchema.safeParse(body);
+    const formData = await request.formData();
+    const file     = formData.get('midi') as File | null;
+    const lessonId = formData.get('lessonId') as string | null;
+    const locale   = (formData.get('locale') as string) ?? 'es';
 
-    if (!parsed.success) {
+    if (!file || !lessonId) {
       return NextResponse.json(
-        { error: "Datos inválidos", details: parsed.error.issues },
+        { error: 'Faltan parámetros: midi y lessonId' },
+        { status: 400 }
+      );
+    }
+    if (!file.name.match(/\.(mid|midi)$/i)) {
+      return NextResponse.json(
+        { error: 'El archivo debe ser .mid o .midi' },
+        { status: 400 }
+      );
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: 'Archivo demasiado grande (máx 2 MB)' },
         { status: 400 }
       );
     }
 
-    const { lessonId, midiBase64 } = parsed.data;
+    const lessonConfig = getLessonConfig(lessonId);
+    if (!lessonConfig) {
+      return NextResponse.json(
+        { error: `Lección desconocida: ${lessonId}` },
+        { status: 404 }
+      );
+    }
 
-    // STUB: respuesta simulada hasta que se implemente el motor real
-    console.log(`[MAESTRO VIRTUAL] Checking lesson: ${lessonId}, MIDI size: ${midiBase64.length} chars`);
+    const buffer    = await file.arrayBuffer();
+    const voiceData = parseMidiBuffer(buffer);
 
-    const stubResponse = {
-      lessonId,
-      score: 85,
-      passed: true,
-      violations: [],
-      suggestions: [
-        {
-          ruleId: "stub",
-          ruleName: { es: "Revisión pendiente", en: "Pending review" },
-          severity: "suggestion",
-          measure: 1,
-          message: {
-            es: "El motor de corrección estará disponible pronto. ¡Sigue practicando!",
-            en: "The correction engine will be available soon. Keep practicing!",
-          },
-        },
-      ],
-      summary: {
-        es: "Tu ejercicio fue recibido. El Maestro Virtual estará operativo en la Fase 5 del desarrollo.",
-        en: "Your exercise was received. The Virtual Teacher will be operational in Phase 5 of development.",
-      },
+    // ── Enrutar al validador correcto ──────────────────────────────────────
+    const rawErrors =
+      lessonConfig.voiceCount === 1
+        ? validateLesson1Scales(voiceData)
+        : runRuleEngine(voiceData, lessonConfig.activeRules);
+
+    // ── Traducir al formato MaestroFeedback ────────────────────────────────
+    const violations = rawErrors
+      .filter(e => e.severity === 'error')
+      .map(e => ({
+        ruleId:   e.rule,
+        ruleName: { es: e.titleEs, en: e.titleEn },
+        severity: 'error' as const,
+        measure:  e.position,
+        message:  { es: e.detailEs, en: e.detailEn },
+      }));
+
+    const errorCount = violations.length;
+    const score      = Math.max(0, Math.round(100 - errorCount * 15));
+    const passed     = errorCount === 0;
+
+    const summary = {
+      es: passed
+        ? `¡Excelente! Tu ejercicio está correcto (${score}/100).`
+        : `Se encontraron ${errorCount} error${errorCount !== 1 ? 'es' : ''}. Puntuación: ${score}/100.`,
+      en: passed
+        ? `Excellent! Your exercise is correct (${score}/100).`
+        : `Found ${errorCount} error${errorCount !== 1 ? 's' : ''}. Score: ${score}/100.`,
     };
 
-    return NextResponse.json(stubResponse);
-  } catch (error) {
-    console.error("[MAESTRO VIRTUAL ERROR]", error);
+    console.log(`[Maestro Virtual] lessonId=${lessonId} locale=${locale} errors=${errorCount} score=${score}`);
+
+    return NextResponse.json({
+      lessonId,
+      score,
+      passed,
+      violations,
+      suggestions: [],
+      summary,
+    });
+
+  } catch (err) {
+    console.error('[Maestro Virtual]', err);
     return NextResponse.json(
-      { error: "Error interno del servidor" },
+      { error: err instanceof Error ? err.message : 'Error interno del servidor' },
       { status: 500 }
     );
   }
