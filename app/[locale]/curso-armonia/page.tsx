@@ -16,13 +16,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const CURRENT_LESSONS = [
-  { slug: "00-introduccion", order: 0, title: { es: "Introducción al Curso", en: "Course Introduction" } },
-  { slug: "01-propedeutico",  order: 1, title: { es: "Módulo Propedéutico",   en: "Preparatory Module" } },
-  { slug: "02-leccion-1",    order: 2, title: { es: "Lección 1",              en: "Lesson 1" } },
-  { slug: "03-leccion-2",    order: 3, title: { es: "Lección 2",              en: "Lesson 2" } },
-  { slug: "04-leccion-3",    order: 4, title: { es: "Lección 3",              en: "Lesson 3" } },
-  { slug: "05-leccion-4",    order: 5, title: { es: "Lección 4",              en: "Lesson 4" } },
-  { slug: "06-leccion-5",    order: 6, title: { es: "Lección 5",              en: "Lesson 5" } },
+  { slug: "00-introduccion", lessonNumber: null, title: { es: "Introducción al Curso", en: "Course Introduction" } },
+  { slug: "01-propedeutico", lessonNumber: null, title: { es: "Módulo Propedéutico",   en: "Preparatory Module" } },
+  { slug: "02-leccion-1",    lessonNumber: 1,    title: { es: "Lección 1",              en: "Lesson 1" } },
+  { slug: "03-leccion-2",    lessonNumber: 2,    title: { es: "Lección 2",              en: "Lesson 2" } },
+  { slug: "04-leccion-3",    lessonNumber: 3,    title: { es: "Lección 3",              en: "Lesson 3" } },
+  { slug: "05-leccion-4",    lessonNumber: 4,    title: { es: "Lección 4",              en: "Lesson 4" } },
+  { slug: "06-leccion-5",    lessonNumber: 5,    title: { es: "Lección 5",              en: "Lesson 5" } },
 ];
 
 export default async function CursoArmoniaPage({ params }: Props) {
@@ -93,7 +93,7 @@ export default async function CursoArmoniaPage({ params }: Props) {
             >
               <div className="w-10 h-10 rounded-full flex items-center justify-center ss-mono text-sm font-bold flex-shrink-0"
                 style={{ background: "rgba(139,92,246,0.15)", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.25)" }}>
-                {lesson.order}
+                {lesson.lessonNumber ?? "·"}
               </div>
               <span className="ss-mono text-sm" style={{ color: "rgba(240,238,255,0.8)" }}>
                 {lesson.title[locale as "es" | "en"] || lesson.title.es}

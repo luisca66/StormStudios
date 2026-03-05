@@ -29,12 +29,25 @@ const VALIDATOR_CONFIGS: Record<string, ValidatorConfig> = {
     ],
   },
 
-  // ── Lecciones SATB (4 voces) ──────────────────────────────────────────────
+  // ── Lección 2: Escalas Menores (1 voz) ───────────────────────────────────
+  'leccion-2': {
+    id: 'leccion-2',
+    voiceCount: 1,
+    activeRules: [
+      'MINOR_COUNT', 'MINOR_ORDER', 'MINOR_NOTE_COUNT',
+      'MINOR_WRONG_NOTE', 'MINOR_DIRECTION',
+    ],
+  },
   '03-leccion-2': {
     id: '03-leccion-2',
-    voiceCount: 4,
-    activeRules: ['voice-range-satb', 'voice-crossing', 'no-parallel-fifths', 'no-parallel-octaves'],
+    voiceCount: 1,
+    activeRules: [
+      'MINOR_COUNT', 'MINOR_ORDER', 'MINOR_NOTE_COUNT',
+      'MINOR_WRONG_NOTE', 'MINOR_DIRECTION',
+    ],
   },
+
+  // ── Lecciones SATB (4 voces) ──────────────────────────────────────────────
   '04-leccion-3': {
     id: '04-leccion-3',
     voiceCount: 4,

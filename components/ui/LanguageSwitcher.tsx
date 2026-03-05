@@ -1,22 +1,22 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useTransition } from "react";
-import type { Pathnames } from "@/i18n/routing";
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
   const t = useTranslations("language");
   const router = useRouter();
-  const pathname = usePathname() as Pathnames;
+  const pathname = usePathname(); // e.g. /es/curso-armonia/02-leccion-1
   const [isPending, startTransition] = useTransition();
 
   const handleSwitch = () => {
     const nextLocale = locale === "es" ? "en" : "es";
+    // Swap the locale prefix in the raw pathname
+    const newPath = pathname.replace(`/${locale}`, `/${nextLocale}`);
     startTransition(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      router.replace(pathname as any, { locale: nextLocale });
+      router.push(newPath);
     });
   };
 

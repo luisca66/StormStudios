@@ -113,6 +113,7 @@ export type ValidationContext = {
 // ─── Ejercicio de la Lección ──────────────────────────────────────────────────
 
 export type ExerciseType =
+  | "major-scales"
   | "four-voice-chorale"
   | "two-voice"
   | "melody-harmonization"
@@ -121,7 +122,7 @@ export type ExerciseType =
 
 export type ExerciseConfig = {
   type: ExerciseType;
-  voiceCount: 2 | 3 | 4;
+  voiceCount: 1 | 2 | 3 | 4;
   voices?: VoiceName[];
   keySignatures?: string[]; // tonalidades permitidas, ej: ['C', 'G', 'F']
   chordTypes?: string[]; // tipos de acorde, ej: ['major', 'minor']
@@ -134,7 +135,8 @@ export type ExerciseConfig = {
 // ─── Video ────────────────────────────────────────────────────────────────────
 
 export type LessonVideo = {
-  youtubeId: string;
+  youtubeId: string;       // used for 'es' (or both when no EN-specific video)
+  youtubeIdEn?: string;    // optional override for the English version
   title: BilingualText;
   description?: BilingualText;
   durationMinutes?: number;
@@ -145,7 +147,8 @@ export type LessonVideo = {
 export type LessonConfig = {
   id: string;
   slug: string;
-  order: number;
+  order: number;         // sort order (includes intro/propedeutico)
+  lessonNumber?: number; // display number shown to student (1, 2, 3…)
   module?: string;
 
   // Metadata

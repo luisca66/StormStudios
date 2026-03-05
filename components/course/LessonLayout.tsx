@@ -52,11 +52,11 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full flex items-center justify-center ss-mono text-sm font-bold flex-shrink-0"
                 style={{ background: "rgba(139,92,246,0.2)", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.3)" }}>
-                {lesson.order}
+                {lesson.lessonNumber ?? lesson.order}
               </div>
               <p className="ss-mono text-xs uppercase tracking-widest"
                 style={{ color: "rgba(139,92,246,0.8)" }}>
-                {es ? "Lección" : "Lesson"} {lesson.order}
+                {es ? "Lección" : "Lesson"} {lesson.lessonNumber ?? lesson.order}
               </p>
               {lesson.estimatedMinutes && (
                 <span className="ss-mono text-xs ml-auto" style={{ color: "rgba(240,238,255,0.3)" }}>
@@ -80,15 +80,9 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
             <div className="mb-10">
               {lesson.videos.map((video) => (
                 <div key={video.youtubeId} className="mb-6">
-                  {video.title && (
-                    <p className="ss-mono text-sm font-semibold mb-3"
-                      style={{ color: "rgba(240,238,255,0.7)" }}>
-                      {video.title[locale as "es" | "en"]}
-                    </p>
-                  )}
                   <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, borderRadius: "12px", overflow: "hidden", border: "1px solid rgba(139,92,246,0.2)" }}>
                     <iframe
-                      src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                      src={`https://www.youtube.com/embed/${locale === "en" && video.youtubeIdEn ? video.youtubeIdEn : video.youtubeId}`}
                       title={video.title?.[locale as "es" | "en"] ?? "Video"}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen

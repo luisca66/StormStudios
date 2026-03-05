@@ -87,7 +87,7 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
 
       <div className="p-5">
         {/* Referencia visual para lección 1 */}
-        {lessonId === "leccion-1" && (
+        {lessonId === "02-leccion-1" && (
           <div className="mb-4 p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs font-mono space-y-1">
             <p className="text-gray-600 font-semibold mb-1">
               {es ? "Orden del ejercicio:" : "Exercise order:"}
@@ -114,6 +114,38 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
               {es
                 ? "8 notas por escala (I→I′) · 120 notas total · 1 canal (Soprano)"
                 : "8 notes per scale (I→I′) · 120 notes total · 1 channel (Soprano)"}
+            </p>
+          </div>
+        )}
+
+        {/* Referencia visual para lección 2 */}
+        {lessonId === "03-leccion-2" && (
+          <div className="mb-4 p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs font-mono space-y-1">
+            <p className="text-gray-600 font-semibold mb-1">
+              {es ? "Orden del ejercicio:" : "Exercise order:"}
+            </p>
+            <p className="text-gray-500">
+              ↑{" "}
+              <span className="text-purple-700">
+                Am · Em · Bm · F#m · C#m · G#m · D#m · A#m
+              </span>
+              <span className="text-gray-400 ml-2">
+                {es ? "(quintas ascendentes)" : "(ascending fifths)"}
+              </span>
+            </p>
+            <p className="text-gray-500">
+              ↓{" "}
+              <span className="text-blue-700">
+                Dm · Gm · Cm · Fm · Bbm · Ebm · Abm
+              </span>
+              <span className="text-gray-400 ml-2">
+                {es ? "(quintas descendentes)" : "(descending fifths)"}
+              </span>
+            </p>
+            <p className="text-gray-400 mt-1">
+              {es
+                ? "Por tonalidad: natural (8) + armónica (8) + melódica↑ (8) + melódica↓ (7) = 31 notas · 465 total · 1 canal (Soprano)"
+                : "Per key: natural (8) + harmonic (8) + melodic↑ (8) + melodic↓ (7) = 31 notes · 465 total · 1 channel (Soprano)"}
             </p>
           </div>
         )}

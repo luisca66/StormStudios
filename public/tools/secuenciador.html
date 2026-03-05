@@ -422,9 +422,11 @@
                 </div>
                 <div class="flex gap-3 bg-slate-950 p-3 rounded-xl border-2 border-slate-700 h-[100px] items-center">
                     <div class="flex gap-2 flex-1">
+                        <button onclick="applyAccidental('##')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white rounded-xl shadow-lg acc-btn border-2 border-slate-600 h-16 transition-all text-sm font-bold" title="Doble sostenido">𝄪</button>
                         <button onclick="applyAccidental('#')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white rounded-xl shadow-lg acc-btn border-2 border-slate-600 h-16 transition-all" title="Sostenido">♯</button>
                         <button onclick="applyAccidental('n')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white rounded-xl shadow-lg acc-btn border-2 border-slate-600 h-16 transition-all" title="Becuadro">♮</button>
                         <button onclick="applyAccidental('b')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white rounded-xl shadow-lg acc-btn border-2 border-slate-600 h-16 transition-all" title="Bemol">♭</button>
+                        <button onclick="applyAccidental('bb')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white rounded-xl shadow-lg acc-btn border-2 border-slate-600 h-16 transition-all text-sm font-bold" title="Doble bemol">𝄫</button>
                     </div>
                     <div class="separator"></div>
                     <div class="flex gap-2">
@@ -676,16 +678,26 @@
             let [key, octaveStr] = noteKey.split('/');
             let octave = parseInt(octaveStr);
             let cleanKey = key.toLowerCase();
+            // Single accidentals: flats → sharps
             const flatsToSharps = {
                 'db': 'c#', 'eb': 'd#', 'gb': 'f#', 'ab': 'g#', 'bb': 'a#',
                 'cb': 'b', 'fb': 'e'
             };
+            // Double accidentals → nearest natural/sharp (with octave corrections for boundary cases)
+            const doubleToNatural = {
+                'c##': 'd', 'd##': 'e', 'e##': 'f#', 'f##': 'g',
+                'g##': 'a', 'a##': 'b', 'b##': 'c#',  // b## crosses octave up
+                'dbb': 'c', 'ebb': 'd', 'fbb': 'd#', 'gbb': 'f',
+                'abb': 'g', 'bbb': 'a', 'cbb': 'a#'   // cbb crosses octave down
+            };
+            if (cleanKey === 'cbb') octave -= 1;
+            if (cleanKey === 'b##') octave += 1;
             if (cleanKey === 'cb') octave -= 1;
             if (cleanKey === 'b#') octave += 1;
-            if (flatsToSharps[cleanKey]) {
+            if (doubleToNatural[cleanKey]) {
+                cleanKey = doubleToNatural[cleanKey];
+            } else if (flatsToSharps[cleanKey]) {
                 cleanKey = flatsToSharps[cleanKey];
-            } else if (cleanKey === 'cb') {
-                cleanKey = 'b';
             } else if (cleanKey === 'fb') {
                 cleanKey = 'e';
             } else if (cleanKey === 'b#') {
@@ -1434,10 +1446,23 @@
             const note = map.get(selectedTick);
             let [keyName, octave] = note.keys[0].split('/');
             let baseKey = keyName.charAt(0);
-            let newKey = baseKey;
-            if (type === '#') newKey += '#';
-            if (type === 'b') newKey += 'b';
-            if (type === 'n') newKey += 'n';
+            let currentAcc = keyName.slice(1); // existing accidental(s)
+            let newKey;
+            if (type === '##') {
+                newKey = baseKey + '##';
+            } else if (type === 'bb') {
+                newKey = baseKey + 'bb';
+            } else if (type === '#') {
+                // # on a # → ## (double sharp); anything else → single #
+                newKey = (currentAcc === '#') ? baseKey + '##' : baseKey + '#';
+            } else if (type === 'b') {
+                // b on a b → bb (double flat); anything else → single b
+                newKey = (currentAcc === 'b') ? baseKey + 'bb' : baseKey + 'b';
+            } else if (type === 'n') {
+                newKey = baseKey + 'n';
+            } else {
+                newKey = baseKey;
+            }
             note.keys = [`${newKey}/${octave}`];
             startPreviewSound(note.keys[0]);
             setTimeout(stopPreviewSound, 200);
@@ -1851,7 +1876,7 @@
         // --- PIANO ROLL HELPER FUNCTIONS ---
         function midiFromKey(noteKey) {
             if (!noteKey) return null;
-            const chromatic = { 'c': 0, 'cn': 0, 'c#': 1, 'db': 1, 'd': 2, 'dn': 2, 'd#': 3, 'eb': 3, 'e': 4, 'en': 4, 'fb': 4, 'e#': 5, 'f': 5, 'fn': 5, 'f#': 6, 'gb': 6, 'g': 7, 'gn': 7, 'g#': 8, 'ab': 8, 'a': 9, 'an': 9, 'a#': 10, 'bb': 10, 'b': 11, 'bn': 11, 'b#': 0, 'cb': 11 };
+            const chromatic = { 'c': 0, 'cn': 0, 'c#': 1, 'db': 1, 'd': 2, 'dn': 2, 'd#': 3, 'eb': 3, 'e': 4, 'en': 4, 'fb': 4, 'e#': 5, 'f': 5, 'fn': 5, 'f#': 6, 'gb': 6, 'g': 7, 'gn': 7, 'g#': 8, 'ab': 8, 'a': 9, 'an': 9, 'a#': 10, 'bb': 10, 'b': 11, 'bn': 11, 'b#': 0, 'cb': 11, 'c##': 2, 'd##': 4, 'e##': 6, 'f##': 7, 'g##': 9, 'a##': 11, 'b##': 1, 'cbb': 10, 'dbb': 0, 'ebb': 2, 'fbb': 3, 'gbb': 5, 'abb': 7, 'bbb': 9 };
             const parts = String(noteKey).split('/');
             if (parts.length !== 2) return null;
             let key = parts[0].toLowerCase();
@@ -1861,6 +1886,8 @@
             // Normalize enharmonics that shift octave
             if (key === 'cb') octave -= 1;
             if (key === 'b#') octave += 1;
+            if (key === 'cbb') octave -= 1;
+            if (key === 'b##') octave += 1;
 
             key = key.replace('n', '');
             const semi = chromatic[key];
@@ -2397,12 +2424,14 @@
         }
 
         function getFrequency(noteKey) {
-            const chromatic = { 'c': 0, 'cn': 0, 'c#': 1, 'db': 1, 'd': 2, 'dn': 2, 'd#': 3, 'eb': 3, 'e': 4, 'en': 4, 'fb': 4, 'e#': 5, 'f': 5, 'fn': 5, 'f#': 6, 'gb': 6, 'g': 7, 'gn': 7, 'g#': 8, 'ab': 8, 'a': 9, 'an': 9, 'a#': 10, 'bb': 10, 'b': 11, 'bn': 11, 'b#': 0, 'cb': 11 };
+            const chromatic = { 'c': 0, 'cn': 0, 'c#': 1, 'db': 1, 'd': 2, 'dn': 2, 'd#': 3, 'eb': 3, 'e': 4, 'en': 4, 'fb': 4, 'e#': 5, 'f': 5, 'fn': 5, 'f#': 6, 'gb': 6, 'g': 7, 'gn': 7, 'g#': 8, 'ab': 8, 'a': 9, 'an': 9, 'a#': 10, 'bb': 10, 'b': 11, 'bn': 11, 'b#': 0, 'cb': 11, 'c##': 2, 'd##': 4, 'e##': 6, 'f##': 7, 'g##': 9, 'a##': 11, 'b##': 1, 'cbb': 10, 'dbb': 0, 'ebb': 2, 'fbb': 3, 'gbb': 5, 'abb': 7, 'bbb': 9 };
             const [key, octaveStr] = noteKey.split('/');
             let octave = parseInt(octaveStr);
             const lowerKey = key.toLowerCase();
             if (lowerKey === 'cb') octave -= 1;
             if (lowerKey === 'b#') octave += 1;
+            if (lowerKey === 'cbb') octave -= 1;
+            if (lowerKey === 'b##') octave += 1;
             if (chromatic[lowerKey] === undefined) return null;
             const semi = chromatic[lowerKey];
             const semitones = semi + (octave - 4) * 12;
@@ -2813,11 +2842,13 @@ function renderPianoRollNotes(svg) {
         }
 
         function getMidiPitch(key, octaveStr) {
-            const noteMap = { 'c': 0, 'cn': 0, 'c#': 1, 'db': 1, 'd': 2, 'dn': 2, 'd#': 3, 'eb': 3, 'e': 4, 'en': 4, 'e#': 5, 'fb': 4, 'f': 5, 'fn': 5, 'f#': 6, 'gb': 6, 'g': 7, 'gn': 7, 'g#': 8, 'ab': 8, 'a': 9, 'an': 9, 'a#': 10, 'bb': 10, 'b': 11, 'bn': 11, 'b#': 0, 'cb': 11 };
+            const noteMap = { 'c': 0, 'cn': 0, 'c#': 1, 'db': 1, 'd': 2, 'dn': 2, 'd#': 3, 'eb': 3, 'e': 4, 'en': 4, 'e#': 5, 'fb': 4, 'f': 5, 'fn': 5, 'f#': 6, 'gb': 6, 'g': 7, 'gn': 7, 'g#': 8, 'ab': 8, 'a': 9, 'an': 9, 'a#': 10, 'bb': 10, 'b': 11, 'bn': 11, 'b#': 0, 'cb': 11, 'c##': 2, 'd##': 4, 'e##': 6, 'f##': 7, 'g##': 9, 'a##': 11, 'b##': 1, 'cbb': 10, 'dbb': 0, 'ebb': 2, 'fbb': 3, 'gbb': 5, 'abb': 7, 'bbb': 9 };
             const cleanKey = key.toLowerCase();
             let octave = parseInt(octaveStr);
             if (cleanKey === 'cb') octave -= 1;
             if (cleanKey === 'b#') octave += 1;
+            if (cleanKey === 'cbb') octave -= 1;
+            if (cleanKey === 'b##') octave += 1;
             return (octave + 1) * 12 + (noteMap[cleanKey] ?? 0);
         }
 

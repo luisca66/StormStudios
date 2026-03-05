@@ -133,7 +133,7 @@ function LessonLink({
           ${isActive ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-500"}
         `}
       >
-        {lesson.order}
+        {lesson.lessonNumber ?? "·"}
       </span>
       <span className="line-clamp-2">
         {lesson.title[locale as "es" | "en"]}

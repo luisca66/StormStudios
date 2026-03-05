@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { parseMidiBuffer } from '@/lib/maestro-virtual/midi-parser';
 import { validateLesson1Scales } from '@/lib/maestro-virtual/scale-validator';
+import { validateLesson2Scales } from '@/lib/maestro-virtual/minor-scale-validator';
 import { runRuleEngine } from '@/lib/maestro-virtual/rule-engine';
 import { getLessonConfig } from '@/data/course/lessons/lesson-configs';
 
@@ -9,8 +10,9 @@ import { getLessonConfig } from '@/data/course/lessons/lesson-configs';
  *
  * Recibe un archivo MIDI vía FormData, lo parsea y ejecuta
  * el validador correcto según la lección:
- *   - voiceCount === 1 → validateLesson1Scales (escalas mayores)
- *   - voiceCount === 4 → runRuleEngine (SATB, Fase 6)
+ *   - leccion-1 (voiceCount 1) → validateLesson1Scales (escalas mayores)
+ *   - leccion-2 (voiceCount 1) → validateLesson2Scales (escalas menores)
+ *   - voiceCount === 4         → runRuleEngine (SATB)
  *
  * Devuelve MaestroFeedback compatible con ExerciseUpload.tsx.
  */
@@ -52,10 +54,14 @@ export async function POST(request: NextRequest) {
     const voiceData = parseMidiBuffer(buffer);
 
     // ── Enrutar al validador correcto ──────────────────────────────────────
-    const rawErrors =
-      lessonConfig.voiceCount === 1
-        ? validateLesson1Scales(voiceData)
-        : runRuleEngine(voiceData, lessonConfig.activeRules);
+    let rawErrors;
+    if (lessonConfig.voiceCount === 1 && lessonId.includes('leccion-2')) {
+      rawErrors = validateLesson2Scales(voiceData);
+    } else if (lessonConfig.voiceCount === 1) {
+      rawErrors = validateLesson1Scales(voiceData);
+    } else {
+      rawErrors = runRuleEngine(voiceData, lessonConfig.activeRules);
+    }
 
     // ── Traducir al formato MaestroFeedback ────────────────────────────────
     const violations = rawErrors

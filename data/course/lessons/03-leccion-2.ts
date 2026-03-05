@@ -4,64 +4,75 @@ export const lesson: LessonConfig = {
   id: "03-leccion-2",
   slug: "03-leccion-2",
   order: 3,
+  lessonNumber: 2,
   module: "triadas-satb",
 
   title: {
-    es: "Lección 2 — Conducción de Voces",
-    en: "Lesson 2 — Voice Leading",
+    es: "Lección 2 — Escalas Menores",
+    en: "Lesson 2 — Minor Scales",
   },
   description: {
-    es: "Movimiento contrario, paralelo y oblicuo. Superposición de voces. Introducción a la conducción melódica de las voces internas.",
-    en: "Contrary, parallel and oblique motion. Voice overlap. Introduction to melodic voice leading of inner voices.",
+    es: "Las 15 tonalidades menores en el orden del círculo de quintas. Natural, armónica y melódica para cada tonalidad.",
+    en: "The 15 minor keys in circle-of-fifths order. Natural, harmonic and melodic for each key.",
   },
   estimatedMinutes: 60,
 
   prerequisites: ["02-leccion-1"],
 
   videos: [
-    // TODO: agregar youtubeId
+    {
+      youtubeId: "Yq4CVkp_dzE",
+      youtubeIdEn: "UdQt0vl7ftA",
+      title: { es: "Escalas menores y círculo de quintas", en: "Minor scales and circle of fifths" },
+    },
   ],
 
-  activeRules: [
-    "voice-range-satb",
-    "voice-crossing",
-    "voice-overlap",
-    "no-parallel-fifths",
-    "no-parallel-octaves",
-    "no-hidden-fifths",
-    "contrary-motion-preferred",
-    "stepwise-motion-preference",
-  ],
+  activeRules: [],
 
   exercise: {
-    type: "four-voice-chorale",
-    voiceCount: 4,
-    voices: ["soprano", "alto", "tenor", "bass"],
-    keySignatures: ["C", "G"],
-    chordTypes: ["major", "minor"],
-    inversions: ["root"],
-    minChords: 4,
-    maxChords: 6,
+    type: "major-scales", // reusing type slot — validated by minor-scale-validator
+    voiceCount: 1,
+    voices: ["soprano"],
+    keySignatures: [
+      "Am","Em","Bm","F#m","C#m","G#m","D#m","A#m",
+      "Dm","Gm","Cm","Fm","Bbm","Ebm","Abm",
+    ],
+    chordTypes: [],
+    inversions: [],
+    minChords: 15,
+    maxChords: 15,
     description: {
-      es: "Escribe un coral a 4 voces en Do Mayor o Sol Mayor aplicando conducción de voces correcta.",
-      en: "Write a 4-voice chorale in C Major or G Major applying correct voice leading.",
+      es: "Toca las 15 tonalidades menores en el secuenciador: quintas ascendentes (Am·Em·Bm·F#m·C#m·G#m·D#m·A#m) y quintas descendentes (Dm·Gm·Cm·Fm·Bbm·Ebm·Abm). Por cada tonalidad: natural (8 notas) + armónica (8) + melódica ascendente (8) + melódica descendente (7) = 31 notas. Exporta el MIDI y súbelo aquí.",
+      en: "Play all 15 minor keys in the sequencer: ascending fifths (Am·Em·Bm·F#m·C#m·G#m·D#m·A#m) then descending fifths (Dm·Gm·Cm·Fm·Bbm·Ebm·Abm). For each key: natural (8 notes) + harmonic (8) + melodic ascending (8) + melodic descending (7) = 31 notes. Export the MIDI and upload it here.",
     },
   },
 
   feedback: {
-    "voice-overlap": {
-      es: "Superposición de voces en el compás {measure}. Una voz sobrepasó la nota que tenía la voz superior en el acorde anterior.",
-      en: "Voice overlap in measure {measure}. A voice exceeded the note the upper voice had in the previous chord.",
+    "MINOR_MISSING_KEYSIG": {
+      es: "El archivo MIDI no contiene información de tonalidad. Exporta desde el secuenciador Storm Studios.",
+      en: "The MIDI file contains no key signature info. Export from the Storm Studios sequencer.",
     },
-    "no-hidden-fifths": {
-      es: "Quintas ocultas en soprano y bajo, compás {measure}. El soprano y el bajo no deben alcanzar una quinta por movimiento directo.",
-      en: "Hidden fifths in soprano and bass, measure {measure}. Soprano and bass should not reach a fifth by direct motion.",
+    "MINOR_COUNT": {
+      es: "Se esperan exactamente 15 tonalidades menores.",
+      en: "Exactly 15 minor keys are expected.",
     },
-    "contrary-motion-preferred": {
-      es: "Las voces se mueven casi siempre en paralelo, compás {measure}. Busca más movimiento contrario u oblicuo.",
-      en: "Voices move almost always in parallel, measure {measure}. Look for more contrary or oblique motion.",
+    "MINOR_ORDER": {
+      es: "Las tonalidades deben ir en el orden del círculo de quintas. Posición {measure}.",
+      en: "Keys must follow circle-of-fifths order. Position {measure}.",
+    },
+    "MINOR_NOTE_COUNT": {
+      es: "Cada tonalidad debe tener 31 notas: natural(8)+armónica(8)+melódica↑(8)+melódica↓(7). Tonalidad {measure}.",
+      en: "Each key must have 31 notes: natural(8)+harmonic(8)+melodic↑(8)+melodic↓(7). Key {measure}.",
+    },
+    "MINOR_WRONG_NOTE": {
+      es: "Nota incorrecta en la tonalidad {measure}. Revisa la armadura y las alteraciones.",
+      en: "Wrong note in key {measure}. Check the key signature and accidentals.",
+    },
+    "MINOR_DIRECTION": {
+      es: "Dirección incorrecta en la tonalidad {measure}. Natural, armónica y melódica↑ ascienden; melódica↓ desciende.",
+      en: "Wrong direction in key {measure}. Natural, harmonic and melodic↑ ascend; melodic↓ descends.",
     },
   },
 
-  tags: ["conducción de voces", "movimiento contrario", "superposición"],
+  tags: ["escalas", "menores", "natural", "armónica", "melódica", "círculo de quintas"],
 };
