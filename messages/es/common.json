@@ -68,5 +68,68 @@
     "rights": "Todos los derechos reservados",
     "privacy": "Política de Privacidad",
     "madeWith": "Hecho con"
+  },
+  "home": {
+    "hero": {
+      "badge": "Método Shostakovich · Medrano · Cárdenas",
+      "titlePrefix": "Domina la",
+      "titleEmphasis": "Armonía",
+      "titleSuffix": "del Futuro",
+      "description": "La inteligencia artificial está transformando la música.\nQuienes dominen la armonía tradicional tendrán la ventaja.\nSumérgete en la tradición de Shostakovich y del Conservatorio de Moscú,\ncontrasta tus obras con el Maestro Virtual y desarrolla un oído verdaderamente profesional.",
+      "primaryCta": "Explorar el Curso →",
+      "secondaryCta": "Ver Apps ▶",
+      "analysisLabel": "análisis · sonata op. 64 nº 2 — shostakovich",
+      "stats": {
+        "lessons": "Lecciones",
+        "freeApps": "Apps Gratis",
+        "evaluation": "Evaluación",
+        "access": "Acceso"
+      }
+    },
+    "features": {
+      "badge": "Lo que incluye",
+      "titleLine1": "Todo lo que necesitas",
+      "titleLine2": "en un solo lugar",
+      "description": "Un ecosistema completo: teoría clásica, práctica auditiva y retroalimentación inteligente.",
+      "exploreCta": "Explorar →",
+      "items": {
+        "course": {
+          "tag": "Armonía Clásica",
+          "title": "Curso de Armonía Tradicional",
+          "description": "El método Shostakovich-Medrano-Cárdenas: armonía y análisis, cuarteto vocal armónico. 60+ lecciones, completamente gratis."
+        },
+        "apps": {
+          "tag": "Entrenamiento Auditivo",
+          "title": "10 Apps Educativas",
+          "description": "Suite de apps gratuitas dentro del website y para Android: matemáticas mentales, memoria y entrenamiento auditivo total."
+        },
+        "virtualTeacher": {
+          "tag": "IA + Pedagogía",
+          "title": "Maestro Virtual",
+          "description": "Escribe tu tarea como midi file en nuestro secuenciador y el Maestro Virtual te guiará hacia la perfección."
+        },
+        "book": {
+          "tag": "Libro Digital",
+          "title": "Los Seres Musicales",
+          "description": "El libro que comparte los principios sobre los cuales está desarrollado este método de enseñanza."
+        }
+      }
+    },
+    "cta": {
+      "titleLine1": "Comienza tu viaje",
+      "titleLine2": "armónico hoy",
+      "description": "Acceso gratuito completo. Sin tarjeta de crédito.",
+      "button": "Acceder gratis →"
+    },
+    "structuredData": {
+      "organization": {
+        "name": "Storm Studios Learning"
+      },
+      "website": {
+        "name": "Storm Studios Learning",
+        "description": "Aprende armonía musical con inteligencia artificial — cursos, apps y maestro virtual",
+        "inLanguage": "es-MX"
+      }
+    }
   }
 }

@@ -37,7 +37,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       locale: es ? "es_MX" : "en_US",
       alternateLocale: es ? "en_US" : "es_MX",
-      url: `https://www.stormstudios.com.mx/${locale}`,
       images: [{ url: "/images/og-default.jpg", width: 1200, height: 630, alt: title }],
     },
     twitter: {
@@ -46,13 +45,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       images: ["/images/og-default.jpg"],
       creator: "@StormStudiosLearning",
-    },
-    alternates: {
-      canonical: `https://www.stormstudios.com.mx/${locale}`,
-      languages: {
-        "es-MX": "https://www.stormstudios.com.mx/es",
-        "en-US": "https://www.stormstudios.com.mx/en",
-      },
     },
     robots: {
       index: true,
