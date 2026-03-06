@@ -1,5 +1,7 @@
 import { getBlogPosts } from "@/lib/mdx";
 import { BlogCard } from "@/components/blog/BlogCard";
+import { type Locale } from "@/i18n/routing";
+import { getMainPageAlternates } from "@/lib/seo/page-alternates";
 
 interface BlogPageProps {
   params: Promise<{ locale: string }>;
@@ -113,5 +115,6 @@ export function generateMetadata({ params }: BlogPageProps) {
       locale === "es"
         ? "Artículos sobre armonía, teoría musical y el método Shostakovich."
         : "Articles about harmony, music theory, and the Shostakovich method.",
+    alternates: getMainPageAlternates("/blog", locale as Locale),
   }));
 }

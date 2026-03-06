@@ -4,6 +4,8 @@ import Image from "next/image";
 import { getPageContent } from "@/lib/mdx";
 import DarkMDXRenderer from "@/components/DarkMDXRenderer";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
+import { type Locale } from "@/i18n/routing";
+import { getMainPageAlternates } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -13,7 +15,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const page = await getPageContent(locale, SLUG_MAP[locale] || SLUG_MAP["es"]);
   if (!page) return {};
-  return { title: page.frontmatter.title, description: page.frontmatter.description };
+  return {
+    title: page.frontmatter.title,
+    description: page.frontmatter.description,
+    alternates: getMainPageAlternates("/mi-metodo", locale as Locale),
+  };
 }
 
 export default async function MiMetodoPage({ params }: Props) {
