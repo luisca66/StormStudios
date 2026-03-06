@@ -68,5 +68,68 @@
     "rights": "All rights reserved",
     "privacy": "Privacy Policy",
     "madeWith": "Made with"
+  },
+  "home": {
+    "hero": {
+      "badge": "Shostakovich · Medrano · Cárdenas Method",
+      "titlePrefix": "Master the",
+      "titleEmphasis": "Harmony",
+      "titleSuffix": "of the Future",
+      "description": "Artificial intelligence is transforming music.\nThose who master traditional harmony will have the advantage.\nImmerse yourself in the tradition of Shostakovich and the Moscow Conservatory,\ncontrast your works with the Virtual Teacher and develop a truly professional ear.",
+      "primaryCta": "Explore the Course →",
+      "secondaryCta": "See Apps ▶",
+      "analysisLabel": "analysis · sonata op. 64 nº 2 — shostakovich",
+      "stats": {
+        "lessons": "Lessons",
+        "freeApps": "Free Apps",
+        "evaluation": "Evaluation",
+        "access": "Access"
+      }
+    },
+    "features": {
+      "badge": "What's included",
+      "titleLine1": "Everything you need",
+      "titleLine2": "in one place",
+      "description": "A complete ecosystem: classical theory, ear training, and intelligent feedback.",
+      "exploreCta": "Explore →",
+      "items": {
+        "course": {
+          "tag": "Classical Harmony",
+          "title": "Traditional Harmony Course",
+          "description": "The Shostakovich-Medrano-Cárdenas method: harmony and analysis, harmonic vocal quartet. 60+ lessons, completely free."
+        },
+        "apps": {
+          "tag": "Ear Training",
+          "title": "10 Educational Apps",
+          "description": "Free app suite on the website and for Android: mental math, memory and total ear training."
+        },
+        "virtualTeacher": {
+          "tag": "AI + Pedagogy",
+          "title": "Virtual Teacher",
+          "description": "Write your assignment as a midi file in our sequencer and the Virtual Teacher will guide you toward perfection."
+        },
+        "book": {
+          "tag": "Digital Book",
+          "title": "The Musical Beings",
+          "description": "The book that shares the principles upon which this teaching method is developed."
+        }
+      }
+    },
+    "cta": {
+      "titleLine1": "Start your journey",
+      "titleLine2": "in harmony today",
+      "description": "Full free access. No credit card required.",
+      "button": "Access for free →"
+    },
+    "structuredData": {
+      "organization": {
+        "name": "Storm Studios Learning"
+      },
+      "website": {
+        "name": "Storm Studios Learning",
+        "description": "Learn music harmony with artificial intelligence — courses, apps and virtual teacher",
+        "inLanguage": "en-US"
+      }
+    }
   }
 }
