@@ -25,7 +25,7 @@ export default async function JugarPage({ params }: Props) {
       {/* Top bar */}
       <div className="flex items-center gap-4 px-4 py-3 bg-white border-b border-gray-200 flex-shrink-0">
         <Link
-          href="/apps/matematicas-mentales"
+          href={{ pathname: "/apps/[slug]", params: { slug: "matematicas-mentales" } }}
           className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 transition-colors"
         >
           ← {es ? "Volver a la app" : "Back to app"}
