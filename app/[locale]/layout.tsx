@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     : "Master Traditional Harmony with the Shostakovich method. Free course, educational apps, and AI feedback.";
 
   return {
-    metadataBase: new URL("https://www.stormstudios.com.mx"),
+    metadataBase: new URL("https://storm-studios.vercel.app"),
     title: { default: title, template: `%s — ${title}` },
     description,
     keywords: es
