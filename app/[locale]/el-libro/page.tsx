@@ -4,6 +4,8 @@ import Image from "next/image";
 import { getPageContent } from "@/lib/mdx";
 import DarkMDXRenderer from "@/components/DarkMDXRenderer";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
+import { type Locale } from "@/i18n/routing";
+import { getMainPageAlternates } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getBlogPosts } from "@/lib/mdx";
 import { BlogCard } from "@/components/blog/BlogCard";
+import { type Locale } from "@/i18n/routing";
+import { getMainPageAlternates } from "@/lib/seo/page-alternates";
 
 interface BlogPageProps {
   params: Promise<{ locale: string }>;

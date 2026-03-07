@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { type Locale } from "@/i18n/routing";
 import { JsonLd } from "@/components/JsonLd";
+import { getMainPageAlternates } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
