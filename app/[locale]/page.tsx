@@ -15,7 +15,9 @@ export async function generateMetadata(
   const description = es
     ? "Aprende armonía tradicional, desarrolla tu oído musical y explora herramientas de entrenamiento auditivo con Storm Studios Learning."
     : "Learn traditional harmony, develop your ear, and explore ear-training tools with Storm Studios Learning.";
-  const image = es ? "/og/home-es.jpg" : "/og/home-en.jpg";
+  const image = es
+    ? "https://storm-studios.vercel.app/og/home-es.jpg"
+    : "https://storm-studios.vercel.app/og/home-en.jpg";
 
   return {
     title,
