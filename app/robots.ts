@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/_next/"],
+        disallow: ["/api/", "/_next/", "/privacidad"],
       },
     ],
     sitemap: "https://www.stormstudios.com.mx/sitemap.xml",

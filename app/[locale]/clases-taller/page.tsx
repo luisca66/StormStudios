@@ -4,8 +4,6 @@ import { getPageContent } from "@/lib/mdx";
 import DarkMDXRenderer from "@/components/DarkMDXRenderer";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
 import { Link } from "@/i18n/navigation";
-import { type Locale } from "@/i18n/routing";
-import { getMainPageAlternates } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -15,11 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const page = await getPageContent(locale, SLUG_MAP[locale] || SLUG_MAP["es"]);
   if (!page) return {};
-  return {
-    title: page.frontmatter.title,
-    description: page.frontmatter.description,
-    alternates: getMainPageAlternates("/clases-taller", locale as Locale),
-  };
+  return { title: page.frontmatter.title, description: page.frontmatter.description };
 }
 
 export default async function ClasesTallerPage({ params }: Props) {

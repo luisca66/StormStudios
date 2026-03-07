@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { APPS } from "@/data/apps/apps-catalog";
 import AppCard from "@/components/apps/AppCard";
-import { type Locale } from "@/i18n/routing";
-import { getMainPageAlternates } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -13,7 +11,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: locale === "es"
       ? "Suite de aplicaciones gratuitas para entrenamiento auditivo y musical"
       : "Free suite of apps for auditory and musical training",
-    alternates: getMainPageAlternates("/apps", locale as Locale),
   };
 }
 

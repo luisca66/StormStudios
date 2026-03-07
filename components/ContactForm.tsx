@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 type Props = { locale: string };
 
@@ -34,7 +34,6 @@ const LABELS = {
 export default function ContactForm({ locale }: Props) {
   const l = LABELS[locale as "es" | "en"] || LABELS.es;
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
-  const startedAtRef = useRef<number>(Date.now());
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,8 +43,6 @@ export default function ContactForm({ locale }: Props) {
       name: (form.elements.namedItem("name") as HTMLInputElement).value,
       email: (form.elements.namedItem("email") as HTMLInputElement).value,
       message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
-      website: (form.elements.namedItem("website") as HTMLInputElement).value,
-      startedAt: Number((form.elements.namedItem("startedAt") as HTMLInputElement).value),
     };
 
     try {
@@ -75,23 +72,6 @@ export default function ContactForm({ locale }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          left: "-10000px",
-          top: "auto",
-          width: "1px",
-          height: "1px",
-          overflow: "hidden",
-        }}
-      >
-        <label htmlFor="website">Website</label>
-        <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
-      </div>
-
-      <input type="hidden" id="startedAt" name="startedAt" value={startedAtRef.current} readOnly />
-
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
           {l.name}
@@ -132,7 +112,9 @@ export default function ContactForm({ locale }: Props) {
         />
       </div>
 
-      {status === "error" && <p className="text-red-600 text-sm">{l.error}</p>}
+      {status === "error" && (
+        <p className="text-red-600 text-sm">{l.error}</p>
+      )}
 
       <button
         type="submit"
