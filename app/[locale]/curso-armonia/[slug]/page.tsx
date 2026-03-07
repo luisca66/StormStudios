@@ -4,6 +4,8 @@ import { getAllLessonSlugs, getLessonBySlug, getLessonNav } from "@/lib/course";
 import { getLessonContent } from "@/lib/mdx";
 import LessonLayout from "@/components/course/LessonLayout";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { type Locale } from "@/i18n/routing";
+import { getDynamicPageAlternates } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -20,6 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: lesson.title[locale as "es" | "en"],
     description: lesson.description[locale as "es" | "en"],
+    alternates: getDynamicPageAlternates("/curso-armonia/[slug]", locale as Locale, slug),
     openGraph: {
       title: lesson.title[locale as "es" | "en"],
       description: lesson.description[locale as "es" | "en"],

@@ -1,17 +1,34 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { type Locale } from "@/i18n/routing";
 import { JsonLd } from "@/components/JsonLd";
+import { getMainPageAlternates } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  const title = locale === "es" ? "Curso de Armonía" : "Harmony Course";
+  const description = locale === "es"
+    ? "Curso completo y gratuito de Armonía Tradicional con el método Shostakovich."
+    : "Complete free Traditional Harmony course using the Shostakovich method.";
+  const image = locale === "es" ? "/og/course-es.jpg" : "/og/course-en.jpg";
+
   return {
-    title: locale === "es" ? "Curso de Armonía" : "Harmony Course",
-    description: locale === "es"
-      ? "Curso completo y gratuito de Armonía Tradicional con el método Shostakovich."
-      : "Complete free Traditional Harmony course using the Shostakovich method.",
+    title,
+    description,
+    alternates: getMainPageAlternates("/curso-armonia", locale as Locale),
+    openGraph: {
+      title,
+      description,
+      images: [{ url: image, width: 1200, height: 630 }],
+    },
+    twitter: {
+      title,
+      description,
+      images: [image],
+    },
   };
 }
 

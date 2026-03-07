@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import { getBlogPosts } from "@/lib/mdx";
 import { BlogCard } from "@/components/blog/BlogCard";
+import { type Locale } from "@/i18n/routing";
+import { getMainPageAlternates } from "@/lib/seo/page-alternates";
 
 interface BlogPageProps {
   params: Promise<{ locale: string }>;
@@ -106,12 +109,27 @@ export default async function BlogPage({ params }: BlogPageProps) {
   );
 }
 
-export function generateMetadata({ params }: BlogPageProps) {
-  return params.then(({ locale }) => ({
-    title: locale === "es" ? "Blog" : "Blog",
-    description:
-      locale === "es"
-        ? "Artículos sobre armonía, teoría musical y el método Shostakovich."
-        : "Articles about harmony, music theory, and the Shostakovich method.",
-  }));
+export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const title = locale === "es" ? "Blog" : "Blog";
+  const description = locale === "es"
+    ? "Artículos sobre armonía, teoría musical y el método Shostakovich."
+    : "Articles about harmony, music theory, and the Shostakovich method.";
+  const image = locale === "es" ? "/og/blog-es.jpg" : "/og/blog-en.jpg";
+
+  return {
+    title,
+    description,
+    alternates: getMainPageAlternates("/blog", locale as Locale),
+    openGraph: {
+      title,
+      description,
+      images: [{ url: image, width: 1200, height: 630 }],
+    },
+    twitter: {
+      title,
+      description,
+      images: [image],
+    },
+  };
 }

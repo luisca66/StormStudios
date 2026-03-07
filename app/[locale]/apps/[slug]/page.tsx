@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { APPS, getAppBySlug } from "@/data/apps/apps-catalog";
 import { Link } from "@/i18n/navigation";
+import { type Locale } from "@/i18n/routing";
+import { getDynamicPageAlternates } from "@/lib/seo/page-alternates";
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
@@ -19,6 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: app.name[locale as "es" | "en"] || app.name.es,
     description: app.description[locale as "es" | "en"] || app.description.es,
+    alternates: getDynamicPageAlternates("/apps/[slug]", locale as Locale, slug),
   };
 }
 

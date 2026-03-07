@@ -4,6 +4,8 @@ import Image from "next/image";
 import { getPageContent } from "@/lib/mdx";
 import DarkMDXRenderer from "@/components/DarkMDXRenderer";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
+import { type Locale } from "@/i18n/routing";
+import { getMainPageAlternates } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -13,7 +15,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const page = await getPageContent(locale, SLUG_MAP[locale] || SLUG_MAP["es"]);
   if (!page) return {};
-  return { title: page.frontmatter.title, description: page.frontmatter.description };
+
+  const title = page.frontmatter.title;
+  const description = page.frontmatter.description;
+  const image = locale === "es" ? "/og/book-es.jpg" : "/og/book-en.jpg";
+
+  return {
+    title,
+    description,
+    alternates: getMainPageAlternates("/el-libro", locale as Locale),
+    openGraph: {
+      title,
+      description,
+      images: [{ url: image, width: 1200, height: 630 }],
+    },
+    twitter: {
+      title,
+      description,
+      images: [image],
+    },
+  };
 }
 
 export default async function ElLibroPage({ params }: Props) {

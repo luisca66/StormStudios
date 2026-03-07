@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
 import ContactForm from "@/components/ContactForm";
+import { type Locale } from "@/i18n/routing";
+import { getMainPageAlternates } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -9,6 +11,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: locale === "es" ? "Contacto" : "Contact",
     description: locale === "es" ? "Contáctanos para clases, talleres o cualquier pregunta." : "Contact us for classes, workshops, or any question.",
+    alternates: getMainPageAlternates("/contacto", locale as Locale),
   };
 }
 
