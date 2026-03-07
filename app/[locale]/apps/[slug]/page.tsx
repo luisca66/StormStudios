@@ -66,6 +66,25 @@ export default async function AppDetailPage({ params }: Props) {
 
           {/* Botones de descarga */}
           <div className="flex flex-wrap gap-3">
+            {app.webUrl && (
+              <Link
+                href={app.webUrl as Parameters<typeof Link>[0]["href"]}
+                className="inline-flex items-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition font-medium shadow-md"
+              >
+                🎮 {locale === "es" ? "Jugar en el navegador" : "Play in browser"}
+              </Link>
+            )}
+            {app.apkUrl && (
+              <a
+                href={app.apkUrl}
+                className="inline-flex items-center gap-2 px-5 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition font-medium shadow-md"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.523 15.341l-1.86-1.055A6.95 6.95 0 0 0 17 11a7 7 0 0 0-7-7 7 7 0 0 0-7 7 7 7 0 0 0 7 7c1.657 0 3.179-.578 4.373-1.532l1.873 1.064A9 9 0 0 1 10 20a9 9 0 0 1-9-9 9 9 0 0 1 9-9 9 9 0 0 1 9 9 8.964 8.964 0 0 1-1.477 4.341zM14 11l-4 4-4-4h2.5V7h3v4H14z"/>
+                </svg>
+                {locale === "es" ? "Descargar para Android" : "Download for Android"}
+              </a>
+            )}
             {app.playStoreUrl && (
               <a
                 href={app.playStoreUrl}
@@ -88,14 +107,6 @@ export default async function AppDetailPage({ params }: Props) {
               >
                 📖 {locale === "es" ? "Manual Kindle" : "Kindle Manual"}
               </a>
-            )}
-            {app.isWeb && app.webUrl && (
-              <Link
-                href="/sequencer"
-                className="inline-flex items-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition font-medium"
-              >
-                🌐 {locale === "es" ? "Abrir en navegador" : "Open in browser"}
-              </Link>
             )}
           </div>
         </div>

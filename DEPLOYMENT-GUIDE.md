@@ -159,7 +159,8 @@ Vercel detecta el push automáticamente y publica el sitio actualizado en ~2 min
 - **Internacionalización:** next-intl (rutas `/es/` y `/en/`)
 - **Estilos:** Tailwind CSS + CSS custom (`storm-studios.css`)
 - **Contenido:** MDX en `content/` (blog y lecciones del curso)
-- **Herramientas:** Secuenciador en `public/tools/` (archivos HTML estáticos)
+- **Herramientas web:** Secuenciador en `public/tools/` (archivos HTML estáticos)
+- **Apps web:** Juegos y apps en `public/apps/` (archivos HTML estáticos)
 - **Sin variables de entorno:** El proyecto no requiere ningún `.env`
 - **Sin base de datos:** Todo el contenido está en archivos MDX
 

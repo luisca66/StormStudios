@@ -7,6 +7,7 @@ export type AppEntry = {
   description: BilingualText;
   longDescription?: BilingualText;
   playStoreUrl?: string;
+  apkUrl?: string;
   kindleManualUrl?: string;
   webUrl?: string;
   icon?: string;
@@ -18,15 +19,24 @@ export type AppEntry = {
 export const APPS: AppEntry[] = [
   {
     slug: "matematicas-mentales",
-    name: { es: "Matemáticas Mentales", en: "Mental Math" },
+    name: { es: "Elefantito Matemático", en: "Mental Math Elephant" },
     category: "cognitive",
     description: {
-      es: "Inspirada en la investigación del Dr. Kawashima, activa el córtex prefrontal con ejercicios aritméticos cronometrados en niveles progresivos.",
-      en: "Inspired by Dr. Kawashima's research, activates the prefrontal cortex with timed arithmetic exercises at progressive levels.",
+      es: "Entrena tu mente con aritmética cronometrada. Llena la repisa del elefantito resolviendo problemas antes de que se acabe el tiempo.",
+      en: "Train your mind with timed arithmetic. Fill the elephant's shelf by solving problems before time runs out.",
     },
+    longDescription: {
+      es: "Inspirada en la investigación del Dr. Kawashima sobre activación del córtex prefrontal, esta app te desafía a resolver operaciones aritméticas contra el reloj. Con 8 niveles de dificultad —incluyendo el modo 💀 Imposible— y tiempo ajustable por pregunta, el Elefantito Matemático se adapta tanto a niños que aprenden las sumas básicas como a adultos que quieren llevar su mente al límite.",
+      en: "Inspired by Dr. Kawashima's research on prefrontal cortex activation, this app challenges you to solve arithmetic operations against the clock. With 8 difficulty levels — including the 💀 Impossible mode — and adjustable time per question, the Math Elephant adapts to children learning basic addition as well as adults looking to push their minds to the limit.",
+    },
+    apkUrl: "https://stormstudios.com.mx/wp-content/APKs_Apps/elefantitomatematico.apk",
+    webUrl: "/apps/matematicas-mentales/jugar",
     features: [
-      { es: "Operaciones básicas cronometradas", en: "Timed basic operations" },
-      { es: "Niveles progresivos de dificultad", en: "Progressive difficulty levels" },
+      { es: "8 niveles de dificultad, hasta el modo 💀 Imposible", en: "8 difficulty levels, up to 💀 Impossible mode" },
+      { es: "Tiempo por pregunta ajustable (3–30 s)", en: "Adjustable time per question (3–30 s)" },
+      { es: "Las cuatro operaciones: +, −, ×, ÷", en: "All four operations: +, −, ×, ÷" },
+      { es: "Récord diario guardado localmente", en: "Daily record saved locally" },
+      { es: "Juega en el navegador o descarga la app Android", en: "Play in browser or download the Android app" },
     ],
     icon: "/images/app-matematicas-mentales.png",
   },

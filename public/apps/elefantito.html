@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elefantito Matemático</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #1a2e1a;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      height: 100vh;
+      overflow: hidden;
+      padding: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="elefantito-matematico-container">
+  <style>
+    #elefantito-matematico-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: 'Arial', sans-serif;
+      background-image: url('https://stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Selva.png');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: #a8e0b0;
+      padding: 10px;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 1000px;
+      height: 100%;
+      margin: 0 auto;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    #elefantito-matematico-container h1 {
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+      text-align: center;
+      font-size: 1.6em;
+      margin-bottom: 4px;
+      flex-shrink: 0;
+    }
+    #elefantito-matematico-container #record-display {
+      font-size: 0.85em;
+      color: #37474f;
+      background-color: rgba(236, 239, 241, 0.9);
+      padding: 4px 10px;
+      border-radius: 5px;
+      margin-bottom: 8px;
+      border: 1px solid #b0bec5;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+    #elefantito-matematico-container #main-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: stretch;
+      gap: 12px;
+      width: 100%;
+      flex: 1 1 0;
+      overflow: hidden;
+      min-height: 0;
+    }
+    #elefantito-matematico-container #game-area {
+      width: 100%;
+      max-width: 550px;
+      height: auto;
+      flex: 1 1 0;
+      border: 4px solid #5d4037;
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      order: 1;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+      box-sizing: border-box;
+      background-color: rgba(46, 125, 50, 0.5);
+      display: flex;
+      min-height: 180px;
+    }
+    #elefantito-matematico-container #control-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 300px;
+      padding: 12px 16px;
+      background-color: rgba(255, 253, 231, 0.9);
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      border: 2px solid #fbc02d;
+      order: 2;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+    #elefantito-matematico-container #setup-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      padding: 20px;
+      background-color: rgba(255, 236, 179, 0.9);
+      border: 2px dashed #ffa000;
+      border-radius: 8px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      margin-bottom: 20px;
+      order: 0;
+      box-sizing: border-box;
+    }
+    #elefantito-matematico-container #setup-section h2 { color: #bf360c; margin-bottom: 10px; }
+    #elefantito-matematico-container #setup-section label { font-weight: bold; color: #795548; margin-bottom: 5px; display: block; }
+    #elefantito-matematico-container #time-input,
+    #elefantito-matematico-container #difficulty-level {
+      padding: 8px 12px;
+      border: 1px solid #ffa000;
+      border-radius: 4px;
+      background-color: #fff;
+      font-size: 1em;
+      cursor: pointer;
+      min-width: 100px;
+      margin-bottom: 10px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #elefantito-matematico-container #start-button,
+    #elefantito-matematico-container #reset-button,
+    #elefantito-matematico-container #mute-button {
+      padding: 12px 25px;
+      font-size: 1.1em;
+      font-weight: bold;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      color: white;
+      transition: background-color 0.3s, transform 0.1s;
+      text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      margin-top: 10px;
+    }
+    #elefantito-matematico-container #start-button { background-color: #4caf50; margin-top: 15px; }
+    #elefantito-matematico-container #reset-button { background-color: #ff7043; }
+    #elefantito-matematico-container #mute-button { background-color: #607d8b; }
+    #elefantito-matematico-container #volume-control {
+      display: flex; align-items: center; gap: 8px; width: 100%;
+      background-color: rgba(255,253,231,0.7); padding: 6px 10px;
+      border-radius: 20px; border: 1px solid #fbc02d;
+    }
+    #elefantito-matematico-container #volume-control span { font-size: 1.1em; flex-shrink: 0; }
+    #elefantito-matematico-container #volume-slider {
+      flex: 1; -webkit-appearance: none; appearance: none;
+      height: 6px; border-radius: 3px; background: #a5d6a7; outline: none; cursor: pointer;
+    }
+    #elefantito-matematico-container #volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #388e3c; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    #elefantito-matematico-container #volume-slider::-moz-range-thumb {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: #388e3c; cursor: pointer; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    #elefantito-matematico-container #start-button:hover { background-color: #388e3c; }
+    #elefantito-matematico-container #reset-button:hover { background-color: #f4511e; }
+    #elefantito-matematico-container #mute-button:hover { background-color: #455a64; }
+    #elefantito-matematico-container #start-button:active,
+    #elefantito-matematico-container #reset-button:active,
+    #elefantito-matematico-container #mute-button:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+    }
+    #elefantito-matematico-container.playing #game-area,
+    #elefantito-matematico-container.playing #control-panel { display: flex; }
+    #elefantito-matematico-container.playing #setup-section { display: none; }
+    #elefantito-matematico-container.game-over #keypad button {
+      opacity: 0.6;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+    #elefantito-matematico-container #game-area,
+    #elefantito-matematico-container #control-panel { display: none; }
+    #elefantito-matematico-container #problem-display,
+    #elefantito-matematico-container #timer-display {
+      font-size: 1.6em; font-weight: bold; color: #004d40;
+      background-color: #c8e6c9; padding: 12px 18px; border-radius: 8px;
+      min-height: 35px; text-align: center; width: 100%;
+      border: 2px solid #a5d6a7; box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+    }
+    #elefantito-matematico-container #timer-display {
+      font-size: 1.3em; color: #d84315; background-color: #ffccbc; border-color: #ffab91;
+    }
+    #elefantito-matematico-container #answer-input {
+      font-size: 1.5em; font-weight: bold; color: #37474f;
+      background-color: #eceff1; padding: 10px 15px; border-radius: 8px;
+      border: 2px solid #b0bec5; min-height: 30px; width: 100%;
+      text-align: right; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); box-sizing: border-box;
+    }
+    #elefantito-matematico-container #keypad {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+      width: 100%; max-width: 260px;
+    }
+    #elefantito-matematico-container #keypad button {
+      padding: 18px 0; font-size: 1.4em; font-weight: bold;
+      border: 1px solid #795548; border-radius: 8px;
+      background: linear-gradient(to bottom, #fff9c4, #fdd835);
+      color: #5d4037; cursor: pointer; transition: all 0.15s ease;
+      box-shadow: 0 5px 0 #c6a700, 0 6px 8px rgba(0,0,0,0.3);
+      text-shadow: 0 1px 1px rgba(255,255,255,0.5);
+    }
+    #elefantito-matematico-container #keypad button:hover { background: linear-gradient(to bottom, #fffde7, #ffeb3b); }
+    #elefantito-matematico-container #keypad button:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #c6a700, 0 3px 4px rgba(0,0,0,0.3);
+      background: linear-gradient(to top, #fff9c4, #fdd835);
+    }
+    #elefantito-matematico-container #enter-button {
+      grid-column: span 3;
+      background: linear-gradient(to bottom, #66bb6a, #388e3c);
+      color: white; border-color: #2e7d32;
+      box-shadow: 0 5px 0 #1b5e20, 0 6px 8px rgba(0,0,0,0.3);
+      text-shadow: 0 -1px 1px rgba(0,0,0,0.4);
+    }
+    #elefantito-matematico-container #enter-button:hover { background: linear-gradient(to bottom, #81c784, #4caf50); }
+    #elefantito-matematico-container #enter-button:active {
+      box-shadow: 0 2px 0 #1b5e20, 0 3px 4px rgba(0,0,0,0.3);
+      background: linear-gradient(to top, #66bb6a, #388e3c);
+    }
+    #elefantito-matematico-container #keypad button[data-key="Backspace"] {
+      background: linear-gradient(to bottom, #ffccbc, #ff8a65);
+      color: #bf360c; border-color: #f4511e;
+      box-shadow: 0 5px 0 #d84315, 0 6px 8px rgba(0,0,0,0.3);
+      font-size: 1.6em;
+    }
+    #elefantito-matematico-container #keypad button[data-key="Backspace"]:hover { background: linear-gradient(to bottom, #ffddc1, #ffab91); }
+    #elefantito-matematico-container #keypad button[data-key="Backspace"]:active {
+      box-shadow: 0 2px 0 #d84315, 0 3px 4px rgba(0,0,0,0.3);
+      background: linear-gradient(to top, #ffccbc, #ff8a65);
+    }
+    #elefantito-matematico-container #gorilla {
+      width: 85px; height: 95px; position: absolute;
+      bottom: 10px; left: 30px; cursor: default;
+      user-select: none; z-index: 1;
+    }
+    #elefantito-matematico-container #gorilla img {
+      display: block; width: 100%; height: 100%;
+      object-fit: contain; position: absolute; top: 0; left: 0;
+    }
+    #elefantito-matematico-container #gorilla-aire { display: none; }
+    #elefantito-matematico-container #shelf {
+      position: absolute; bottom: 350px; width: 395px;
+      max-width: 90%; left: 75px; height: 25px;
+      background-color: #795548; border: 3px solid #4e342e;
+      border-radius: 5px; box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+      z-index: 0; transform: none;
+    }
+    #elefantito-matematico-container .barrel {
+      position: absolute; width: 35px; height: 45px;
+      background-image: url('https://stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Barril.png');
+      background-size: contain; background-repeat: no-repeat;
+      background-position: center; background-color: transparent;
+      border: none; box-shadow: none; border-radius: 0;
+      box-sizing: border-box;
+      transition: bottom 0.7s cubic-bezier(0.25, 0.1, 0.5, 1), left 0.7s ease-in-out, transform 0.3s ease, opacity 0.3s ease;
+      z-index: 10;
+    }
+    #elefantito-matematico-container #message-box {
+      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      padding: 10px 20px; background-color: rgba(0, 61, 0, 0.85);
+      color: #f1f8e9; border-radius: 5px; z-index: 100;
+      text-align: center; display: none; font-size: 1em;
+      border: 1px solid #a5d6a7;
+    }
+    #elefantito-matematico-container #skull-badge {
+      display: none; align-items: center; justify-content: center; gap: 6px;
+      background: linear-gradient(135deg, #212121, #4a0000);
+      color: #ff1744; font-weight: bold; font-size: 1em;
+      padding: 5px 14px; border-radius: 20px;
+      border: 2px solid #ff1744;
+      box-shadow: 0 0 10px rgba(255,23,68,0.5), inset 0 0 6px rgba(0,0,0,0.4);
+      letter-spacing: 1px; text-shadow: 0 0 6px #ff1744;
+      flex-shrink: 0; margin-bottom: 4px;
+      animation: skull-pulse 1.5s ease-in-out infinite;
+    }
+    #elefantito-matematico-container #skull-badge.visible { display: flex; }
+    @keyframes skull-pulse {
+      0%, 100% { box-shadow: 0 0 10px rgba(255,23,68,0.5), inset 0 0 6px rgba(0,0,0,0.4); }
+      50%       { box-shadow: 0 0 20px rgba(255,23,68,0.9), inset 0 0 6px rgba(0,0,0,0.4); }
+    }
+    @media (max-width: 700px) {
+      #elefantito-matematico-container { padding: 5px; }
+      #elefantito-matematico-container #main-container {
+        flex-direction: column; align-items: center; gap: 10px; flex-grow: 1; width: 100%;
+      }
+      #elefantito-matematico-container #game-area {
+        order: 2; height: auto; max-width: 95%;
+        box-sizing: border-box; flex-grow: 1; width: 100%; min-height: 200px;
+      }
+      #elefantito-matematico-container #control-panel {
+        order: 1; max-width: 95%; padding: 10px; gap: 8px;
+        box-sizing: border-box; width: 100%; flex-shrink: 0; height: auto;
+      }
+      #elefantito-matematico-container #setup-section { max-width: 95%; width: 100%; }
+      #elefantito-matematico-container #gorilla { width: 60px; height: 70px; left: 10px; bottom: 3px; }
+      #elefantito-matematico-container #shelf { left: 50%; transform: translateX(-50%); height: 15px; width: 395px; max-width: 95%; }
+      #elefantito-matematico-container .barrel { width: 30px; height: 38px; }
+      #elefantito-matematico-container h1 { font-size: 1.4em; margin-bottom: 3px; }
+      #elefantito-matematico-container #record-display { font-size: 0.8em; margin-bottom: 8px; }
+      #elefantito-matematico-container #problem-display,
+      #elefantito-matematico-container #timer-display,
+      #elefantito-matematico-container #answer-input { font-size: 1.1em; padding: 6px 10px; }
+      #elefantito-matematico-container #timer-display { font-size: 1em; }
+      #elefantito-matematico-container #answer-input { font-size: 1.2em; }
+      #elefantito-matematico-container #keypad button { font-size: 1em; padding: 8px 0; box-shadow: 0 3px 0 #c6a700, 0 4px 5px rgba(0,0,0,0.3); }
+      #elefantito-matematico-container #keypad button:active { transform: translateY(1px); box-shadow: 0 2px 0 #c6a700, 0 3px 4px rgba(0,0,0,0.3); }
+      #elefantito-matematico-container #keypad button[data-key="Backspace"] { font-size: 1.2em; box-shadow: 0 3px 0 #d84315, 0 4px 5px rgba(0,0,0,0.3); }
+      #elefantito-matematico-container #keypad button[data-key="Backspace"]:active { box-shadow: 0 2px 0 #d84315, 0 3px 4px rgba(0,0,0,0.3); }
+      #elefantito-matematico-container #enter-button { box-shadow: 0 3px 0 #1b5e20, 0 4px 5px rgba(0,0,0,0.3); }
+      #elefantito-matematico-container #enter-button:active { box-shadow: 0 2px 0 #1b5e20, 0 3px 4px rgba(0,0,0,0.3); }
+      #elefantito-matematico-container #keypad { gap: 5px; }
+      #elefantito-matematico-container #reset-button,
+      #elefantito-matematico-container #mute-button { padding: 8px 18px; font-size: 0.9em; }
+      #elefantito-matematico-container #time-input,
+      #elefantito-matematico-container #difficulty-level { font-size: 0.9em; padding: 6px 10px; }
+    }
+    @media (max-height: 450px) and (max-width: 700px) {
+      #elefantito-matematico-container h1 { font-size: 1.2em; margin-bottom: 2px; }
+      #elefantito-matematico-container #record-display { font-size: 0.7em; margin-bottom: 5px; padding: 3px 8px; }
+      #elefantito-matematico-container #control-panel { padding: 8px; gap: 5px; }
+      #elefantito-matematico-container #problem-display,
+      #elefantito-matematico-container #timer-display,
+      #elefantito-matematico-container #answer-input { font-size: 1em; padding: 5px 8px; min-height: 25px; }
+      #elefantito-matematico-container #timer-display { font-size: 0.9em; }
+      #elefantito-matematico-container #answer-input { font-size: 1em; }
+      #elefantito-matematico-container #keypad { gap: 4px; }
+      #elefantito-matematico-container #keypad button { padding: 6px 0; font-size: 0.9em; }
+      #elefantito-matematico-container #keypad button[data-key="Backspace"] { font-size: 1.1em; }
+      #elefantito-matematico-container #reset-button,
+      #elefantito-matematico-container #mute-button { padding: 6px 15px; font-size: 0.8em; margin-top: 5px; }
+      #elefantito-matematico-container #game-area { min-height: 150px; }
+      #elefantito-matematico-container #gorilla { width: 50px; height: 60px; left: 5px; bottom: 2px; }
+      #elefantito-matematico-container .barrel { width: 25px; height: 32px; }
+      #elefantito-matematico-container #shelf { height: 12px; }
+    }
+  </style>
+
+  <div id="setup-section">
+    <h2 id="setup-title"></h2>
+    <label id="diff-label" for="difficulty-level"></label>
+    <select id="difficulty-level">
+      <option value="1"></option>
+      <option value="2" selected></option>
+      <option value="3"></option>
+      <option value="4"></option>
+      <option value="5"></option>
+      <option value="6"></option>
+      <option value="7"></option>
+      <option value="8"></option>
+    </select>
+    <label id="time-label" for="time-input"></label>
+    <select id="time-input">
+      <option value="3">3 s</option><option value="4">4 s</option><option value="5">5 s</option>
+      <option value="6">6 s</option><option value="7">7 s</option><option value="8">8 s</option>
+      <option value="9">9 s</option><option value="10" selected>10 s</option><option value="11">11 s</option>
+      <option value="12">12 s</option><option value="13">13 s</option><option value="14">14 s</option>
+      <option value="15">15 s</option><option value="16">16 s</option><option value="17">17 s</option>
+      <option value="18">18 s</option><option value="19">19 s</option><option value="20">20 s</option>
+      <option value="25">25 s</option><option value="30">30 s</option>
+    </select>
+    <button id="start-button"></button>
+  </div>
+
+  <h1 id="game-title"></h1>
+  <div id="record-display"></div>
+
+  <div id="main-container">
+    <div id="control-panel">
+      <div id="skull-badge">&#128128; IMPOSIBLE &#128128;</div>
+      <div id="timer-display"></div>
+      <div id="problem-display"></div>
+      <div id="answer-input"></div>
+      <div id="keypad">
+        <button data-key="7">7</button> <button data-key="8">8</button> <button data-key="9">9</button>
+        <button data-key="4">4</button> <button data-key="5">5</button> <button data-key="6">6</button>
+        <button data-key="1">1</button> <button data-key="2">2</button> <button data-key="3">3</button>
+        <button data-key="Backspace">&#8592;</button>
+        <button data-key="0">0</button>
+        <button id="enter-button" data-key="Enter" style="grid-column: span 2;">Enter</button>
+      </div>
+      <button id="reset-button"></button>
+      <button id="mute-button"></button>
+      <div id="volume-control">
+        <span>&#128264;</span>
+        <input type="range" id="volume-slider" min="0" max="100" value="60" />
+        <span>&#128266;</span>
+      </div>
+    </div>
+    <div id="game-area">
+      <div id="gorilla">
+        <img id="gorilla-piso" src="https://stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Elefantito%20piso.png" alt="Elefante en piso">
+        <img id="gorilla-aire" src="https://stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Elefantito%20aire.png" alt="Elefante lanzando">
+      </div>
+      <div id="shelf"></div>
+      <div id="message-box"></div>
+    </div>
+  </div>
+
+  <audio id="correctSound" src="https://www.stormstudios.com.mx/wp-content/Music/acierto.mp3" preload="auto"></audio>
+  <audio id="errorSound" src="https://www.stormstudios.com.mx/wp-content/Music/error.mp3" preload="auto"></audio>
+
+  <script>
+    // --- Internacionalización ---
+    const lang = new URLSearchParams(window.location.search).get('lang') === 'en' ? 'en' : 'es';
+    const STRINGS = {
+      es: {
+        title:           'Elefantito Matemático',
+        recordLabel:     'Récord de hoy:',
+        setupTitle:      'Configuración del Juego',
+        diffLabel:       'Nivel de Dificultad:',
+        levels: [
+          'Nivel 1 – Solo sumas y restas sencillas',
+          'Nivel 2 – Sumas, restas y multiplicaciones',
+          'Nivel 3 – Las cuatro operaciones',
+          'Nivel 4 – Difícil',
+          'Nivel 5 – Muy Difícil',
+          'Nivel 6 – Todas las Operaciones',
+          'Nivel 7 – Operaciones Avanzadas',
+          'Nivel 8 – 💀 IMPOSIBLE',
+        ],
+        timeLabel:       'Segundos por pregunta:',
+        startBtn:        '¡Empezar!',
+        resetBtn:        'Reiniciar Juego',
+        soundOn:         '🔊 Sonido ON',
+        soundOff:        '🔇 Sonido OFF',
+        timerPrefix:     'Tiempo:',
+        loading:         'Cargando...',
+        problemHere:     'Problema aquí',
+        msgCorrect:      '¡Correcto! ¡Lanza barril!',
+        msgCorrectLast:  '¡Correcto! ¡Último barril!',
+        msgTimeout:      '¡Tiempo fuera! Se quita un barril.',
+        msgWrong:        (ans) => `Incorrecto. La respuesta era ${ans}. Se quita un barril.`,
+        msgWin:          (t) => `¡Felicidades! Llenaste la repisa en ${t}.`,
+        msgNewRecord:    ' ¡Nuevo Récord de hoy!',
+        youWin:          '¡GANASTE!',
+        yourTime:        'Tu tiempo:',
+      },
+      en: {
+        title:           'Math Elephant',
+        recordLabel:     "Today's record:",
+        setupTitle:      'Game Setup',
+        diffLabel:       'Difficulty Level:',
+        levels: [
+          'Level 1 – Addition & subtraction only',
+          'Level 2 – Addition, subtraction & multiplication',
+          'Level 3 – All four operations',
+          'Level 4 – Hard',
+          'Level 5 – Very Hard',
+          'Level 6 – Mixed Operations',
+          'Level 7 – Advanced Operations',
+          'Level 8 – 💀 IMPOSSIBLE',
+        ],
+        timeLabel:       'Seconds per question:',
+        startBtn:        'Start!',
+        resetBtn:        'Restart Game',
+        soundOn:         '🔊 Sound ON',
+        soundOff:        '🔇 Sound OFF',
+        timerPrefix:     'Time:',
+        loading:         'Loading...',
+        problemHere:     'Problem here',
+        msgCorrect:      'Correct! Barrel launched!',
+        msgCorrectLast:  'Correct! Last barrel!',
+        msgTimeout:      "Time's up! One barrel removed.",
+        msgWrong:        (ans) => `Wrong. The answer was ${ans}. One barrel removed.`,
+        msgWin:          (t) => `Congratulations! You filled the shelf in ${t}.`,
+        msgNewRecord:    ' New daily record!',
+        youWin:          'YOU WIN!',
+        yourTime:        'Your time:',
+      },
+    };
+    const T = STRINGS[lang];
+
+    const gameContainer = document.getElementById('elefantito-matematico-container');
+    const skullBadge = gameContainer.querySelector('#skull-badge');
+    const setupSection = gameContainer.querySelector('#setup-section');
+    const timeInput = gameContainer.querySelector('#time-input');
+    const difficultyLevelInput = gameContainer.querySelector('#difficulty-level');
+    const startButton = gameContainer.querySelector('#start-button');
+    const resetButton = gameContainer.querySelector('#reset-button');
+    const muteButton = gameContainer.querySelector('#mute-button');
+    const recordDisplay = gameContainer.querySelector('#record-display');
+    const gameArea = gameContainer.querySelector('#game-area');
+    const controlPanel = gameContainer.querySelector('#control-panel');
+    const gorillaContainer = gameContainer.querySelector('#gorilla');
+    const gorillaPisoImg = gameContainer.querySelector('#gorilla-piso');
+    const gorillaAireImg = gameContainer.querySelector('#gorilla-aire');
+    const shelf = gameContainer.querySelector('#shelf');
+    const messageBox = gameContainer.querySelector('#message-box');
+    const problemDisplay = gameContainer.querySelector('#problem-display');
+    const timerDisplay = gameContainer.querySelector('#timer-display');
+    const answerInputDisplay = gameContainer.querySelector('#answer-input');
+    const keypad = gameContainer.querySelector('#keypad');
+    const enterButton = gameContainer.querySelector('#enter-button');
+    const correctSound = gameContainer.querySelector('#correctSound');
+    const errorSound = gameContainer.querySelector('#errorSound');
+    const volumeSlider = gameContainer.querySelector('#volume-slider');
+
+    // --- Sistema de playlist aleatoria ---
+    const MUSIC_BASE = 'https://www.stormstudios.com.mx/wp-content/Music/mate/';
+    const MUSIC_TRACKS = Array.from({length: 15}, (_, i) => {
+      const n = i + 1;
+      return `${MUSIC_BASE}mate-${String(n).padStart(2, '0')}.mp3`;
+    });
+    let musicPlayer = null;
+    let shuffledPlaylist = [];
+    let playlistIndex = 0;
+    let musicVolume = 0.6; // 0.0 – 1.0
+
+    const MAX_BARRELS = 10;
+    let BARREL_WIDTH = 35;
+    let BARREL_HEIGHT = 45;
+    const BARREL_SPACING = 5;
+    let barrelsOnShelf = 0;
+    let currentProblem = { num1: 0, num2: 0, operator: '+', answer: 0 };
+    let currentAnswer = '';
+    let timerInterval;
+    let timeLeft = 0;
+    let timePerQuestion = 10;
+    let difficultyLevel = 2;
+    let shelfStartX = 0;
+    let shelfLandingY = 0;
+    let isGameOver = false;
+    let isMuted = false;
+    let gameStartTime = 0;
+    let recordTimeToday = Infinity;
+    let gorillaThrowTimeout;
+
+    function formatTime(totalSeconds) {
+      if (totalSeconds === Infinity || totalSeconds === null || isNaN(totalSeconds)) return "--:--";
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = Math.floor(totalSeconds % 60);
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+    function loadRecord() {
+      const savedDate = localStorage.getItem('elefantitoRecordDate');
+      const today = new Date().toLocaleDateString();
+      if (savedDate === today) {
+        const savedTime = localStorage.getItem('elefantitoRecordTime');
+        recordTimeToday = savedTime ? parseFloat(savedTime) : Infinity;
+      } else {
+        recordTimeToday = Infinity;
+        localStorage.removeItem('elefantitoRecordTime');
+        localStorage.setItem('elefantitoRecordDate', today);
+      }
+      recordDisplay.textContent = `${T.recordLabel} ${formatTime(recordTimeToday)}`;
+    }
+    function saveRecord(newRecordTime) {
+      const today = new Date().toLocaleDateString();
+      localStorage.setItem('elefantitoRecordTime', newRecordTime);
+      localStorage.setItem('elefantitoRecordDate', today);
+      recordTimeToday = newRecordTime;
+      recordDisplay.textContent = `${T.recordLabel} ${formatTime(recordTimeToday)}`;
+    }
+    function playSound(soundElement) {
+      if (soundElement && !isMuted) {
+        soundElement.currentTime = 0;
+        soundElement.play().catch(e => {});
+      }
+    }
+    function shufflePlaylist() {
+      shuffledPlaylist = [...MUSIC_TRACKS];
+      for (let i = shuffledPlaylist.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledPlaylist[i], shuffledPlaylist[j]] = [shuffledPlaylist[j], shuffledPlaylist[i]];
+      }
+      playlistIndex = 0;
+    }
+    function playNextTrack() {
+      if (musicPlayer) { musicPlayer.pause(); musicPlayer.onended = null; musicPlayer = null; }
+      if (playlistIndex >= shuffledPlaylist.length) shufflePlaylist();
+      const track = shuffledPlaylist[playlistIndex++];
+      musicPlayer = new Audio(track);
+      musicPlayer.volume = isMuted ? 0 : musicVolume;
+      musicPlayer.play().catch(e => {});
+      musicPlayer.onended = () => { if (gameContainer.classList.contains('playing') && !isGameOver) playNextTrack(); };
+    }
+    function startBackgroundMusic() {
+      if (shuffledPlaylist.length === 0) shufflePlaylist();
+      playNextTrack();
+    }
+    function stopBackgroundMusic() {
+      if (musicPlayer) { musicPlayer.pause(); musicPlayer.onended = null; musicPlayer = null; }
+    }
+    function toggleMute() {
+      isMuted = !isMuted;
+      if (musicPlayer) musicPlayer.volume = isMuted ? 0 : musicVolume;
+      [correctSound, errorSound].forEach(s => { if (s) s.muted = isMuted; });
+      muteButton.textContent = isMuted ? T.soundOff : T.soundOn;
+      if (!isMuted && gameContainer.classList.contains('playing') && !isGameOver && !musicPlayer) startBackgroundMusic();
+    }
+    function startGame() {
+      timePerQuestion = parseInt(timeInput.value);
+      difficultyLevel = parseInt(difficultyLevelInput.value);
+      // Skull badge for level 8
+      if (difficultyLevel === 8) skullBadge.classList.add('visible');
+      else skullBadge.classList.remove('visible');
+      gameContainer.classList.add('playing');
+      gameContainer.classList.remove('game-over');
+      isGameOver = false;
+      gorillaPisoImg.style.display = 'block';
+      gorillaAireImg.style.display = 'none';
+      clearTimeout(gorillaThrowTimeout);
+      gameStartTime = Date.now();
+      loadRecord();
+      requestAnimationFrame(() => { setTimeout(calculatePositions, 50); });
+      startBackgroundMusic();
+      resetGame();
+    }
+    function resetGame() {
+      barrelsOnShelf = 0;
+      clearTimeout(timerInterval);
+      gameArea.querySelectorAll('.barrel').forEach(b => gameArea.removeChild(b));
+      problemDisplay.textContent = T.loading;
+      answerInputDisplay.textContent = '';
+      timerDisplay.textContent = `${T.timerPrefix} ${timePerQuestion}`;
+      currentAnswer = '';
+      keypad.querySelectorAll('button').forEach(btn => {
+        btn.disabled = false; btn.style.opacity = ''; btn.style.pointerEvents = ''; btn.style.cursor = '';
+      });
+      gameContainer.classList.remove('game-over');
+      generateProblem();
+      startTimer();
+    }
+    function calculatePositions() {
+      if (shelf.offsetParent === null || gameArea.offsetParent === null) return;
+      const gameAreaRect = gameArea.getBoundingClientRect();
+      const shelfRect = shelf.getBoundingClientRect();
+      shelfStartX = shelfRect.left - gameAreaRect.left;
+      shelfLandingY = shelfRect.top - gameAreaRect.top;
+      const shelfBottom = gameAreaRect.height - shelfLandingY - shelfRect.height;
+      shelf.style.bottom = `${shelfBottom}px`;
+      const tempBarrel = document.createElement('div');
+      tempBarrel.classList.add('barrel');
+      tempBarrel.style.visibility = 'hidden';
+      gameArea.appendChild(tempBarrel);
+      const barrelStyle = window.getComputedStyle(tempBarrel);
+      BARREL_WIDTH = parseFloat(barrelStyle.width) || 35;
+      BARREL_HEIGHT = parseFloat(barrelStyle.height) || 45;
+      gameArea.removeChild(tempBarrel);
+    }
+    function generateProblem() {
+      if (isGameOver) return;
+      let num1, num2, operator, answer;
+      const difficulty = difficultyLevel;
+      switch (difficulty) {
+        case 1:
+          operator = ['+','-'][Math.floor(Math.random()*2)];
+          if (operator==='+') { num1=Math.floor(Math.random()*10); num2=Math.floor(Math.random()*(10-num1)); answer=num1+num2; }
+          else { num1=Math.floor(Math.random()*10); num2=Math.floor(Math.random()*(num1+1)); answer=num1-num2; }
+          break;
+        case 2:
+          operator = ['+','-','*','/'][Math.floor(Math.random()*4)];
+          if (operator==='+') { num1=Math.floor(Math.random()*11)+5; num2=Math.floor(Math.random()*11)+5; answer=num1+num2; }
+          else if (operator==='-') { num1=Math.floor(Math.random()*11)+10; num2=Math.floor(Math.random()*num1); answer=num1-num2; }
+          else if (operator==='*') { num1=Math.floor(Math.random()*6)+2; num2=Math.floor(Math.random()*6)+2; answer=num1*num2; }
+          else { answer=Math.floor(Math.random()*5)+2; num2=Math.floor(Math.random()*5)+2; num1=answer*num2; }
+          break;
+        case 3:
+          operator = ['+','-','*','/'][Math.floor(Math.random()*4)];
+          if (operator==='+') { num1=Math.floor(Math.random()*41)+10; num2=Math.floor(Math.random()*41)+10; answer=num1+num2; }
+          else if (operator==='-') { num1=Math.floor(Math.random()*41)+10; num2=Math.floor(Math.random()*num1); answer=num1-num2; }
+          else if (operator==='*') { num1=Math.floor(Math.random()*9)+2; num2=Math.floor(Math.random()*9)+2; answer=num1*num2; }
+          else { do { answer=Math.floor(Math.random()*8)+2; num2=Math.floor(Math.random()*8)+2; num1=answer*num2; } while(num1>50); }
+          break;
+        case 4:
+          operator = ['+','-','*','/'][Math.floor(Math.random()*4)];
+          if (operator==='+') { num1=Math.floor(Math.random()*90)+10; num2=Math.floor(Math.random()*90)+10; answer=num1+num2; }
+          else if (operator==='-') { num1=Math.floor(Math.random()*90)+10; num2=Math.floor(Math.random()*num1); answer=num1-num2; }
+          else if (operator==='*') { num1=Math.floor(Math.random()*90)+10; num2=Math.floor(Math.random()*8)+2; answer=num1*num2; }
+          else { do { answer=Math.floor(Math.random()*10)+2; num2=Math.floor(Math.random()*8)+2; num1=answer*num2; } while(num1>99); }
+          break;
+        case 5:
+          operator = ['+','-','*','/'][Math.floor(Math.random()*4)];
+          if (operator==='+') { num1=Math.floor(Math.random()*90)+10; num2=Math.floor(Math.random()*90)+10; answer=num1+num2; }
+          else if (operator==='-') { num1=Math.floor(Math.random()*90)+10; num2=Math.floor(Math.random()*90)+10; if(num1<num2)[num1,num2]=[num2,num1]; answer=num1-num2; }
+          else if (operator==='*') { do { num1=Math.floor(Math.random()*21)+10; num2=Math.floor(Math.random()*8)+5; answer=num1*num2; } while(answer>200); }
+          else { do { answer=Math.floor(Math.random()*15)+5; num2=Math.floor(Math.random()*8)+5; num1=answer*num2; } while(num1>150); }
+          break;
+        case 6:
+          // Todas las Operaciones: 4 ops con 25% cada una, números de 2 cifras
+          operator = ['+','-','*','/'][Math.floor(Math.random()*4)];
+          if (operator==='+') { num1=Math.floor(Math.random()*90)+10; num2=Math.floor(Math.random()*90)+10; answer=num1+num2; }
+          else if (operator==='-') { num1=Math.floor(Math.random()*80)+20; num2=Math.floor(Math.random()*(num1-10+1))+10; answer=num1-num2; }
+          else if (operator==='*') { num1=Math.floor(Math.random()*11)+2; num2=Math.floor(Math.random()*11)+2; answer=num1*num2; }
+          else { const q6=Math.floor(Math.random()*11)+2; const d6=Math.floor(Math.random()*11)+2; num1=q6*d6; num2=d6; answer=q6; }
+          break;
+        case 7:
+          // Operaciones Avanzadas: números más grandes
+          operator = ['+','-','*','/'][Math.floor(Math.random()*4)];
+          if (operator==='+') { num1=Math.floor(Math.random()*400)+100; num2=Math.floor(Math.random()*400)+100; answer=num1+num2; }
+          else if (operator==='-') { num1=Math.floor(Math.random()*400)+100; num2=Math.floor(Math.random()*(num1-50+1))+50; answer=num1-num2; }
+          else if (operator==='*') { num1=Math.floor(Math.random()*13)+3; num2=Math.floor(Math.random()*13)+3; answer=num1*num2; }
+          else { const q7=Math.floor(Math.random()*19)+2; const d7=Math.floor(Math.random()*19)+2; num1=q7*d7; num2=d7; answer=q7; }
+          break;
+        case 8:
+          // Imposible: números muy grandes
+          operator = ['+','-','*','/'][Math.floor(Math.random()*4)];
+          if (operator==='+') { num1=Math.floor(Math.random()*4000)+1000; num2=Math.floor(Math.random()*4000)+1000; answer=num1+num2; }
+          else if (operator==='-') { num1=Math.floor(Math.random()*4000)+1000; num2=Math.floor(Math.random()*(num1-100+1))+100; answer=num1-num2; }
+          else if (operator==='*') { num1=Math.floor(Math.random()*31)+20; num2=Math.floor(Math.random()*31)+20; answer=num1*num2; }
+          else { const q8=Math.floor(Math.random()*90)+10; const d8=Math.floor(Math.random()*90)+10; num1=q8*d8; num2=d8; answer=q8; }
+          break;
+        default:
+          operator='+'; num1=Math.floor(Math.random()*5); num2=Math.floor(Math.random()*5); answer=num1+num2;
+      }
+      if (operator!='/') {
+        if (operator==='+') answer=num1+num2;
+        else if (operator==='-') answer=num1-num2;
+        else if (operator==='*') answer=num1*num2;
+      }
+      currentProblem = { num1, num2, operator, answer };
+      const displayOp = operator === '*' ? '×' : operator === '/' ? '÷' : operator;
+      problemDisplay.textContent = `${num1} ${displayOp} ${num2} = ?`;
+      answerInputDisplay.textContent = '';
+      currentAnswer = '';
+    }
+    function startTimer() {
+      if (isGameOver) return;
+      timeLeft = timePerQuestion;
+      timerDisplay.textContent = `${T.timerPrefix} ${timeLeft}`;
+      clearTimeout(timerInterval);
+      timerInterval = setInterval(() => {
+        if (isGameOver) { clearInterval(timerInterval); return; }
+        timeLeft--;
+        timerDisplay.textContent = `${T.timerPrefix} ${timeLeft}`;
+        if (timeLeft <= 0) { clearInterval(timerInterval); handleTimeout(); }
+      }, 1000);
+    }
+    function handleTimeout() {
+      if (isGameOver) return;
+      playSound(errorSound);
+      displayMessage(T.msgTimeout);
+      removeBarrel();
+      setTimeout(() => { if (!isGameOver) { generateProblem(); startTimer(); } }, 500);
+    }
+    function appendAnswer(action) {
+      if (isGameOver) return;
+      if (action === 'Backspace') currentAnswer = currentAnswer.slice(0, -1);
+      else if (action >= '0' && action <= '9') { if (currentAnswer.length < 5) currentAnswer += action; }
+      answerInputDisplay.textContent = currentAnswer;
+    }
+    function checkAnswer() {
+      if (isGameOver || currentAnswer === '') return;
+      clearInterval(timerInterval);
+      const userAnswer = parseInt(currentAnswer);
+      if (isNaN(userAnswer)) return;
+      if (userAnswer === currentProblem.answer) {
+        playSound(correctSound);
+        if (barrelsOnShelf < MAX_BARRELS - 1) {
+          displayMessage(T.msgCorrect);
+          throwBarrel();
+          setTimeout(() => { if (!isGameOver) { generateProblem(); startTimer(); } }, 800);
+        } else if (barrelsOnShelf === MAX_BARRELS - 1) {
+          displayMessage(T.msgCorrectLast);
+          throwBarrel();
+          setTimeout(endGameWin, 1000);
+        }
+      } else {
+        playSound(errorSound);
+        displayMessage(T.msgWrong(currentProblem.answer));
+        removeBarrel();
+        setTimeout(() => { if (!isGameOver) { generateProblem(); startTimer(); } }, 500);
+      }
+    }
+    function endGameWin() {
+      if (isGameOver) return;
+      isGameOver = true;
+      clearTimeout(timerInterval);
+      const elapsed = (Date.now() - gameStartTime) / 1000;
+      const formatted = formatTime(elapsed);
+      let msg = T.msgWin(formatted);
+      if (elapsed < recordTimeToday) { msg += T.msgNewRecord; saveRecord(elapsed); }
+      timerDisplay.textContent = T.youWin;
+      problemDisplay.textContent = `${T.yourTime} ${formatted}`;
+      displayMessage(msg);
+      gameContainer.classList.add('game-over');
+      keypad.querySelectorAll('button').forEach(btn => { btn.disabled = true; });
+    }
+    function throwBarrel() {
+      if (barrelsOnShelf >= MAX_BARRELS) return;
+      gorillaPisoImg.style.display = 'none';
+      gorillaAireImg.style.display = 'block';
+      clearTimeout(gorillaThrowTimeout);
+      setTimeout(() => {
+        barrelsOnShelf++;
+        const barrel = document.createElement('div');
+        barrel.classList.add('barrel');
+        barrel.dataset.barrelIndex = barrelsOnShelf;
+        const gorillaRect = gorillaContainer.getBoundingClientRect();
+        const gameAreaRect = gameArea.getBoundingClientRect();
+        const gorillaLeftInArea = gorillaRect.left - gameAreaRect.left;
+        const gorillaBottomInArea = gameAreaRect.height - (gorillaRect.bottom - gameAreaRect.top);
+        const startX = gorillaLeftInArea + gorillaContainer.offsetWidth * 0.5 - BARREL_WIDTH / 2;
+        const startBottom = gorillaBottomInArea + gorillaContainer.offsetHeight * 0.7;
+        barrel.style.left = `${startX}px`;
+        barrel.style.bottom = `${startBottom}px`;
+        gameArea.appendChild(barrel);
+        const targetBottom = gameAreaRect.height - shelfLandingY - BARREL_HEIGHT;
+        const targetX = shelfStartX + ((barrelsOnShelf - 1) * (BARREL_WIDTH + BARREL_SPACING));
+        barrel.offsetHeight;
+        requestAnimationFrame(() => { barrel.style.left = `${targetX}px`; barrel.style.bottom = `${targetBottom}px`; });
+        gorillaThrowTimeout = setTimeout(() => { gorillaPisoImg.style.display = 'block'; gorillaAireImg.style.display = 'none'; }, 300);
+      }, 50);
+    }
+    function removeBarrel() {
+      if (isGameOver || barrelsOnShelf <= 0) return;
+      const idx = barrelsOnShelf;
+      barrelsOnShelf--;
+      const lastBarrel = gameArea.querySelector(`.barrel[data-barrel-index="${idx}"]`);
+      if (lastBarrel) {
+        lastBarrel.style.opacity = '0';
+        lastBarrel.style.transform = 'translateY(50px) rotate(15deg)';
+        setTimeout(() => { if (lastBarrel.parentNode === gameArea) gameArea.removeChild(lastBarrel); }, 300);
+      }
+    }
+    let messageTimeout;
+    function displayMessage(message) {
+      if (messageTimeout) clearTimeout(messageTimeout);
+      messageBox.innerHTML = message;
+      messageBox.style.display = 'block';
+      messageTimeout = setTimeout(() => { messageBox.style.display = 'none'; }, message.includes(T.msgNewRecord.trim()) ? 4000 : 2500);
+    }
+
+    // Keypad click handler
+    keypad.addEventListener('click', (e) => {
+      if (isGameOver || !e.target.closest('button')) return;
+      const button = e.target.closest('button');
+      if (button.disabled) return;
+      const key = button.dataset.key;
+      if (key >= '0' && key <= '9') appendAnswer(key);
+      else if (key === 'Enter') checkAnswer();
+      else if (key === 'Backspace') appendAnswer('Backspace');
+    });
+
+    // Physical keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (!gameContainer.classList.contains('playing') || isGameOver) return;
+      if (e.key >= '0' && e.key <= '9') { appendAnswer(e.key); e.preventDefault(); }
+      else if (e.key === 'Enter') { checkAnswer(); e.preventDefault(); }
+      else if (e.key === 'Backspace') { appendAnswer('Backspace'); e.preventDefault(); }
+    });
+
+    startButton.addEventListener('click', startGame);
+    resetButton.addEventListener('click', () => {
+      gameContainer.classList.remove('playing', 'game-over');
+      skullBadge.classList.remove('visible');
+      clearTimeout(timerInterval);
+      stopBackgroundMusic();
+      isGameOver = true;
+      gameArea.querySelectorAll('.barrel').forEach(b => { if (b.parentNode === gameArea) gameArea.removeChild(b); });
+      barrelsOnShelf = 0;
+      gorillaPisoImg.style.display = 'block';
+      gorillaAireImg.style.display = 'none';
+      clearTimeout(gorillaThrowTimeout);
+      loadRecord();
+    });
+    muteButton.addEventListener('click', toggleMute);
+
+    volumeSlider.addEventListener('input', () => {
+      musicVolume = parseInt(volumeSlider.value) / 100;
+      if (musicPlayer && !isMuted) musicPlayer.volume = musicVolume;
+      // Si el usuario sube el volumen estando muteado, desmutea automáticamente
+      if (musicVolume > 0 && isMuted) {
+        isMuted = false;
+        [correctSound, errorSound].forEach(s => { if (s) s.muted = false; });
+        muteButton.textContent = T.soundOn;
+        if (musicPlayer) musicPlayer.volume = musicVolume;
+      }
+    });
+
+    window.addEventListener('load', () => {
+      // Populate translated text
+      document.querySelector('#game-title').textContent = T.title;
+      document.querySelector('#setup-title').textContent = T.setupTitle;
+      document.querySelector('#diff-label').textContent = T.diffLabel;
+      document.querySelector('#time-label').textContent = T.timeLabel;
+      document.querySelector('#start-button').textContent = T.startBtn;
+      resetButton.textContent = T.resetBtn;
+      timerDisplay.textContent = `${T.timerPrefix} --`;
+      problemDisplay.textContent = T.problemHere;
+      // Populate level options
+      const opts = difficultyLevelInput.querySelectorAll('option');
+      T.levels.forEach((label, i) => { if (opts[i]) opts[i].textContent = label; });
+      // Skull badge label
+      skullBadge.textContent = `💀 ${lang === 'en' ? 'IMPOSSIBLE' : 'IMPOSIBLE'} 💀`;
+
+      const setupStyle = window.getComputedStyle(setupSection);
+      if (setupStyle.display === 'none') calculatePositions();
+      loadRecord();
+      muteButton.textContent = isMuted ? T.soundOff : T.soundOn;
+      [correctSound, errorSound].forEach(s => { if (s) s.muted = isMuted; });
+    });
+    window.addEventListener('resize', () => {
+      if (gameContainer.classList.contains('playing')) calculatePositions();
+    });
+  </script>
+</div>
+
+</body>
+</html>
