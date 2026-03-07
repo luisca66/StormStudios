@@ -1,6 +1,8 @@
 // app/[locale]/page.tsx — Storm Studios Learning
 // RSC + Client Island (WaveVisualizer) para la ola animada
 
+
+import type { Metadata } from "next";
 import { WaveVisualizer } from "@/components/WaveVisualizer";
 import { MusicPlayer } from "@/components/MusicPlayer";
 import { JsonLd } from "@/components/JsonLd";
@@ -8,6 +10,28 @@ import { Link } from "@/i18n/navigation";
 import { APPS } from "@/data/apps/apps-catalog";
 
 type Props = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const title = locale === "es" ? "Storm Studios" : "Storm Studios";
+  const description = locale === "es"
+    ? "Composición, armonía y tecnología musical para aprender, crear y compartir."
+    : "Composition, harmony, and music technology to learn, create, and share.";
+  const image = locale === "es" ? "/og/home-es.jpg" : "/og/home-en.jpg";
+
+  return {
+    openGraph: {
+      title,
+      description,
+      images: [{ url: image, width: 1200, height: 630 }],
+    },
+    twitter: {
+      title,
+      description,
+      images: [image],
+    },
+  };
+}
 
 // ─── Sub-components (Server) ──────────────────────────────────────────────────
 
