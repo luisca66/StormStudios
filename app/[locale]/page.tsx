@@ -1,38 +1,42 @@
-import type { Metadata } from "next";
-
 import { MusicPlayer } from "@/components/MusicPlayer";
 import { HomeCTA } from "@/components/home/HomeCTA";
 import { HomeFeatures } from "@/components/home/HomeFeatures";
 import { HomeHero } from "@/components/home/HomeHero";
 import { HomeStructuredData } from "@/components/home/HomeStructuredData";
 
-export const metadata: Metadata = {
-  title: "Storm Studios Learning",
-  description:
-    "Aprende armonía tradicional, desarrolla tu oído musical y explora herramientas de entrenamiento auditivo con Storm Studios Learning.",
+export async function generateMetadata(
+  { params }: { params: { locale: string } }
+) {
+  void params;
 
-  openGraph: {
+  return {
     title: "Storm Studios Learning",
     description:
       "Aprende armonía tradicional, desarrolla tu oído musical y explora herramientas de entrenamiento auditivo con Storm Studios Learning.",
-    images: [
-      {
-        url: "/og/home-es.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Storm Studios Learning"
-      }
-    ]
-  },
 
-  twitter: {
-    card: "summary_large_image",
-    title: "Storm Studios Learning",
-    description:
-      "Aprende armonía tradicional, desarrolla tu oído musical y explora herramientas de entrenamiento auditivo con Storm Studios Learning.",
-    images: ["/og/home-es.jpg"]
-  }
-};
+    openGraph: {
+      title: "Storm Studios Learning",
+      description:
+        "Aprende armonía tradicional, desarrolla tu oído musical y explora herramientas de entrenamiento auditivo con Storm Studios Learning.",
+      images: [
+        {
+          url: "/og/home-es.jpg",
+          width: 1200,
+          height: 630,
+          alt: "Storm Studios Learning"
+        }
+      ]
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: "Storm Studios Learning",
+      description:
+        "Aprende armonía tradicional, desarrolla tu oído musical y explora herramientas de entrenamiento auditivo con Storm Studios Learning.",
+      images: ["/og/home-es.jpg"]
+    }
+  };
+}
 
 export default function HomePage() {
   return (
