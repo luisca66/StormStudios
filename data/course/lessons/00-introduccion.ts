@@ -19,7 +19,17 @@ export const lesson: LessonConfig = {
   prerequisites: [],
 
   videos: [
-    // TODO: agregar youtubeId cuando el video esté publicado
+    {
+      youtubeId: "Myzo9sN_Yys",
+      title: {
+        es: "Presentación del Maestro Hernández Medrano",
+        en: "Introduction by Maestro Hernández Medrano",
+      },
+      description: {
+        es: "El maestro Humberto Hernández Medrano presenta el método y lo que aprenderás en este curso.",
+        en: "Maestro Humberto Hernández Medrano introduces the method and what you will learn in this course.",
+      },
+    },
   ],
 
   // Esta lección es introductoria, no tiene ejercicio ni reglas activas

@@ -62,33 +62,22 @@ export default async function CursoArmoniaPage({ params }: Props) {
             : "The Shostakovich–Hernández Medrano Legacy, now accessible online with AI feedback."}
         </p>
 
-        {/* Retrato + Video */}
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-8 mb-14 ss-reveal" style={{ animationDelay: "0.15s" }}>
-          {/* Shostakovich portrait */}
-          <div className="text-center flex-shrink-0">
-            <div className="w-40 h-40 rounded-full overflow-hidden mx-auto mb-3 ss-glass flex items-center justify-center"
-              style={{ border: "1px solid rgba(255,255,255,0.12)" }}>
-              <Image src="/images/shostakovich.jpg" alt="Dmitri Shostakovich" width={160} height={160} className="object-cover w-full h-full" />
+        {/* Retratos */}
+        <div className="flex justify-center gap-10 mb-14 ss-reveal" style={{ animationDelay: "0.15s" }}>
+          {[
+            { src: "/images/shostakovich.jpg", name: "Dmitri Shostakovich" },
+            { src: "/images/medrano.jpg",       name: "Humberto Hernández Medrano" },
+          ].map((p) => (
+            <div key={p.name} className="text-center">
+              <div className="w-40 h-40 rounded-full overflow-hidden mx-auto mb-3 ss-glass flex items-center justify-center"
+                style={{ border: "1px solid rgba(255,255,255,0.12)" }}>
+                {p.src
+                  ? <Image src={p.src} alt={p.name} width={160} height={160} className="object-cover w-full h-full" />
+                  : <span style={{ fontSize: "2rem" }}>🎓</span>}
+              </div>
+              <p className="ss-mono text-xs" style={{ color: "rgba(240,238,255,0.5)" }}>{p.name}</p>
             </div>
-            <p className="ss-mono text-xs" style={{ color: "rgba(240,238,255,0.5)" }}>Dmitri Shostakovich</p>
-          </div>
-
-          {/* Medrano video */}
-          <div className="text-center w-full" style={{ maxWidth: "360px" }}>
-            <div className="rounded-xl overflow-hidden ss-glass" style={{ border: "1px solid rgba(255,255,255,0.12)", aspectRatio: "16/9" }}>
-              <iframe
-                width="100%"
-                height="100%"
-                src="https://www.youtube.com/embed/Myzo9sN_Yys?si=Uuq4qQSYLCYk32y8"
-                title="Humberto Hernández Medrano"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-                style={{ display: "block" }}
-              />
-            </div>
-            <p className="ss-mono text-xs mt-3" style={{ color: "rgba(240,238,255,0.5)" }}>Humberto Hernández Medrano</p>
-          </div>
+          ))}
         </div>
 
         <div className="ss-divider mb-12" />
