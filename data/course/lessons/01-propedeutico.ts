@@ -56,7 +56,7 @@ export const lesson: LessonConfig = {
         es: "Explora intervalos en el piano: selecciona dos notas y escucha el intervalo melódico o armónico.",
         en: "Explore intervals on the piano: select two notes and listen melodically or harmonically.",
       },
-      url: "/apps/intervalos.html",
+      url: "/intervalos",
       icon: "🎵",
     },
   ],
