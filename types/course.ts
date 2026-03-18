@@ -142,6 +142,26 @@ export type LessonVideo = {
   durationMinutes?: number;
 };
 
+// ─── Herramienta / App de la lección ─────────────────────────────────────────
+
+export type LessonToolKind =
+  | "sequencer"   // Storm Sequencer
+  | "app"         // app web embebida (HTML)
+  | "tool"        // herramienta web genérica
+  | "link";       // enlace externo o interno
+
+export type LessonTool = {
+  kind: LessonToolKind;
+  title: BilingualText;
+  description: BilingualText;
+  /** Ruta interna (/sequencer) o URL completa */
+  url: string;
+  /** Emoji o ruta a imagen para el ícono */
+  icon?: string;
+  /** Si true, abre en pestaña nueva */
+  external?: boolean;
+};
+
 // ─── Lección ──────────────────────────────────────────────────────────────────
 
 export type LessonConfig = {
@@ -161,6 +181,7 @@ export type LessonConfig = {
 
   // Contenido multimedia
   videos?: LessonVideo[];
+  tools?: LessonTool[];
 
   // ============================================================
   // LO MÁS IMPORTANTE: reglas activas para el Maestro Virtual

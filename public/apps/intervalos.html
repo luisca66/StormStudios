@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intervalos · C3–C6</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold:  #c8a96e;
+      --teal:  #5bbfb5;
+      --bg:    #090806;
+    }
+    body {
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      padding: 40px 20px;
+      gap: 0;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse 70% 40% at 50% 0%,
+        rgba(200,169,110,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    header {
+      font-size: 1rem;
+      letter-spacing: 0.6em;
+      color: var(--gold);
+      opacity: 0.6;
+      text-transform: uppercase;
+      margin-bottom: 44px;
+    }
+    /* ─────────────────────────────────────
+       INFO PANEL  (above piano)
+    ───────────────────────────────────── */
+    #info-panel {
+      width: 100%;
+      max-width: 920px;
+      margin-bottom: 40px;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+    #hint {
+      font-size: 1rem;
+      letter-spacing: 0.22em;
+      color: rgba(200,169,110,0.45);
+      text-transform: uppercase;
+      transition: opacity 0.3s;
+    }
+    #hint.hidden { opacity: 0; pointer-events: none; }
+    /* Three-column display: root — interval — note */
+    #display {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.25s, transform 0.25s;
+    }
+    #display.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .d-note {
+      text-align: center;
+      min-width: 130px;
+    }
+    .d-note .d-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      margin-bottom: 8px;
+    }
+    .d-note .d-name {
+      font-size: 5rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+    #d-root  .d-name { color: var(--gold); }
+    #d-itvl  .d-name { color: var(--teal); }
+    .d-name.swappable {
+      cursor: pointer;
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-decoration-color: rgba(255,255,255,0.25);
+      text-underline-offset: 8px;
+    }
+    .d-name.swappable:hover { opacity: 0.72; }
+    .d-arrow {
+      font-size: 2rem;
+      color: rgba(255,255,255,0.13);
+    }
+    .d-interval {
+      text-align: center;
+      min-width: 280px;
+    }
+    .d-interval .d-iname {
+      font-size: 2.8rem;
+      font-style: italic;
+      color: #ede6d8;
+      letter-spacing: 0.02em;
+      line-height: 1.15;
+    }
+    .d-interval .d-iname-alt {
+      font-size: 1rem;
+      font-style: normal;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.05em;
+      margin-top: 10px;
+      display: none;
+    }
+    .d-interval .d-details {
+      margin-top: 8px;
+      font-size: 0.82rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+    }
+    .d-direction {
+      font-size: 1.6rem;
+      margin-left: 6px;
+    }
+    .up   { color: var(--teal); }
+    .down { color: #d08060; }
+    .uni  { color: rgba(255,255,255,0.3); }
+    /* Buttons */
+    #btns {
+      display: flex;
+      gap: 10px;
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    #btns.show { opacity: 1; }
+    #btn-reset-wrap {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    #btn-reset-wrap.show { opacity: 1; pointer-events: auto; }
+    .btn {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 11px 28px;
+      border-radius: 4px;
+      border: 1px solid;
+      cursor: pointer;
+      background: transparent;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-mel {
+      color: var(--gold);
+      border-color: rgba(200,169,110,0.35);
+    }
+    .btn-mel:hover { background: rgba(200,169,110,0.12); }
+    .btn-harm {
+      color: var(--teal);
+      border-color: rgba(91,191,181,0.35);
+    }
+    .btn-harm:hover { background: rgba(91,191,181,0.10); }
+    .btn-reset {
+      color: rgba(255,255,255,0.22);
+      border-color: rgba(255,255,255,0.1);
+    }
+    .btn-reset:hover {
+      color: rgba(255,255,255,0.45);
+      border-color: rgba(255,255,255,0.2);
+    }
+    /* ─────────────────────────────────────
+       PIANO CASE
+    ───────────────────────────────────── */
+    .case {
+      background: linear-gradient(180deg, #2c1608 0%, #1a0d04 50%, #100802 100%);
+      border-radius: 10px 10px 22px 22px;
+      padding: 24px 32px 40px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.035),
+        0 50px 120px rgba(0,0,0,0.97),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      position: relative;
+    }
+    .case::before {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      background: repeating-linear-gradient(
+        91deg, transparent, transparent 60px,
+        rgba(0,0,0,0.025) 60px, rgba(0,0,0,0.025) 61px
+      );
+      pointer-events: none;
+    }
+    .lid {
+      text-align: center;
+      font-size: 0.72rem;
+      letter-spacing: 0.4em;
+      color: rgba(200,169,110,0.3);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .scroll {
+      overflow-x: auto;
+      overflow-y: visible;
+      padding-bottom: 6px;
+    }
+    .scroll::-webkit-scrollbar { height: 3px; }
+    .scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
+    .scroll::-webkit-scrollbar-thumb { background: rgba(200,169,110,0.25); border-radius: 2px; }
+    /* ─────────────────────────────────────
+       KEYBOARD
+    ───────────────────────────────────── */
+    .keyboard {
+      position: relative;
+      display: flex;
+      user-select: none;
+    }
+    /* ── WHITE KEYS ── */
+    .kw {
+      flex-shrink: 0;
+      width: 52px;
+      height: 200px;
+      background: linear-gradient(175deg,
+        #ddd7ca 0%, #eae4d8 12%, #f8f4ed 50%, #eae4d8 88%, #ddd7ca 100%
+      );
+      border-left:   1px solid rgba(0,0,0,0.10);
+      border-right:  1px solid rgba(0,0,0,0.18);
+      border-bottom: 2px solid rgba(0,0,0,0.28);
+      border-bottom-left-radius:  5px;
+      border-bottom-right-radius: 5px;
+      box-shadow:
+        inset 1px 0 0 rgba(255,255,255,0.55),
+        inset 0 -8px 16px rgba(0,0,0,0.07),
+        3px 6px 14px rgba(0,0,0,0.45);
+      cursor: pointer;
+      position: relative;
+      transition: background 0.08s, box-shadow 0.08s, transform 0.04s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .kw:hover {
+      background: linear-gradient(175deg,
+        #e6e0d4 0%, #f0eae0 12%, #fff 50%, #f0eae0 88%, #e6e0d4 100%
+      );
+    }
+    .kw.dn {
+      transform: scaleY(0.982) translateY(2px);
+      transform-origin: top center;
+    }
+    .kw.root {
+      background: linear-gradient(175deg,
+        #b8862a 0%, #d4a040 20%, #e8c060 50%, #d4a040 80%, #b8862a 100%
+      );
+      box-shadow:
+        inset 1px 0 0 rgba(255,255,255,0.3),
+        0 0 18px rgba(200,169,80,0.55),
+        3px 6px 14px rgba(0,0,0,0.45);
+    }
+    .kw.root:hover {
+      background: linear-gradient(175deg,
+        #c8962a 0%, #e4b040 20%, #f8d070 50%, #e4b040 80%, #c8962a 100%
+      );
+    }
+    .kw.itvl {
+      background: linear-gradient(175deg,
+        #2a7a75 0%, #3a9e98 20%, #55c0b8 50%, #3a9e98 80%, #2a7a75 100%
+      );
+      box-shadow:
+        inset 1px 0 0 rgba(255,255,255,0.3),
+        0 0 18px rgba(80,190,180,0.45),
+        3px 6px 14px rgba(0,0,0,0.45);
+    }
+    .kw.itvl:hover {
+      background: linear-gradient(175deg,
+        #358a85 0%, #48b0a8 20%, #65d0c8 50%, #48b0a8 80%, #358a85 100%
+      );
+    }
+    .kw .lbl {
+      position: absolute;
+      bottom: 10px; left: 0; right: 0;
+      text-align: center;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.6rem;
+      color: rgba(0,0,0,0.25);
+      pointer-events: none;
+      transition: color 0.08s;
+    }
+    .kw.root .lbl, .kw.itvl .lbl { color: rgba(0,0,0,0.4); }
+    /* ── BLACK KEYS ── */
+    .kb {
+      position: absolute;
+      top: 0;
+      width: 32px;
+      height: 128px;
+      z-index: 2;
+      border-radius: 0 0 5px 5px;
+      background: linear-gradient(180deg,
+        #302b27 0%, #1c1816 20%, #0f0d0c 55%, #1c1816 100%
+      );
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.10),
+        inset 1px 0 0 rgba(255,255,255,0.04),
+        0 10px 24px rgba(0,0,0,0.90),
+        0 4px 8px rgba(0,0,0,0.60);
+      cursor: pointer;
+      transition: background 0.08s, box-shadow 0.08s, transform 0.04s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .kb::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 4px; right: 4px;
+      height: 52%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 100%);
+      border-radius: 0 0 2px 2px;
+      pointer-events: none;
+    }
+    .kb:hover {
+      background: linear-gradient(180deg,
+        #3d3733 0%, #282420 20%, #1c1918 55%, #282420 100%
+      );
+    }
+    .kb.dn {
+      transform: translateY(4px);
+      box-shadow:
+        inset 0 4px 10px rgba(0,0,0,0.70),
+        0 4px 8px rgba(0,0,0,0.80);
+    }
+    .kb.root {
+      background: linear-gradient(180deg,
+        #6a4c10 0%, #8a6418 30%, #a07820 60%, #8a6418 100%
+      );
+      box-shadow:
+        inset 0 1px 0 rgba(255,220,100,0.2),
+        0 0 16px rgba(200,169,80,0.6),
+        0 10px 20px rgba(0,0,0,0.8);
+    }
+    .kb.itvl {
+      background: linear-gradient(180deg,
+        #1a5a55 0%, #256860 30%, #2e7870 60%, #256860 100%
+      );
+      box-shadow:
+        inset 0 1px 0 rgba(100,220,210,0.2),
+        0 0 16px rgba(80,190,180,0.55),
+        0 10px 20px rgba(0,0,0,0.8);
+    }
+  </style>
+</head>
+<body>
+<header id="header-title">Intervalos</header>
+<!-- Info panel -->
+<div id="info-panel">
+  <p id="hint">Haz clic en cualquier tecla para fijar la raíz</p>
+  <div id="display">
+    <div class="d-note" id="d-root">
+      <div class="d-label" id="label-root">Raíz</div>
+      <div class="d-name" id="d-root-name">—</div>
+    </div>
+    <span class="d-arrow">›</span>
+    <div class="d-interval">
+      <div class="d-iname" id="d-iname">—</div>
+      <div class="d-iname-alt" id="d-iname-alt"></div>
+      <div class="d-details" id="d-details"></div>
+    </div>
+    <span class="d-arrow">›</span>
+    <div class="d-note" id="d-itvl">
+      <div class="d-label" id="label-note">Nota</div>
+      <div class="d-name" id="d-itvl-name">—</div>
+    </div>
+  </div>
+  <div id="btns">
+    <button class="btn btn-mel"  id="btn-mel"  onclick="playMelodic()">▶ Melódico</button>
+    <button class="btn btn-harm" id="btn-harm" onclick="playHarmonic()">♦ Armónico</button>
+  </div>
+  <div id="btn-reset-wrap">
+    <button class="btn btn-reset" id="btn-reset" onclick="reset()">✕ Cambiar raíz</button>
+  </div>
+</div>
+<!-- Piano -->
+<div class="case">
+  <div class="lid">C3 — C6</div>
+  <div class="scroll">
+    <div class="keyboard" id="kb"></div>
+  </div>
+</div>
+<script>
+  // ─── i18n ────────────────────────────────────────────────────────────────────
+  const lang = new URLSearchParams(window.location.search).get('lang') === 'en' ? 'en' : 'es';
+  const T = {
+    es: {
+      title:       'Intervalos',
+      hint:        'Haz clic en cualquier tecla para fijar la raíz',
+      labelRoot:   'Raíz',
+      labelNote:   'Nota',
+      btnMel:      '▶ Melódico',
+      btnHarm:     '♦ Armónico',
+      btnReset:    '✕ Cambiar raíz',
+      also:        'también: ',
+      semitone:    (n) => n === 1 ? '1 semitono' : `${n} semitonos`,
+      ordinals:    ['','1ª','2ª','3ª','4ª','5ª','6ª','7ª','8ª'],
+      qualities:   { Justa:'Justa', Mayor:'Mayor', Menor:'Menor', Aumentada:'Aumentada', Disminuida:'Disminuida', 'Doble aumentada':'Doble aumentada', 'Doble disminuida':'Doble disminuida' },
+      octave:      (n) => n === 1 ? 'Octava' : `${n} octavas`,
+      format:      (ord, q) => `${ord} ${q}`,
+    },
+    en: {
+      title:       'Intervals',
+      hint:        'Click any key to set the root',
+      labelRoot:   'Root',
+      labelNote:   'Note',
+      btnMel:      '▶ Melodic',
+      btnHarm:     '♦ Harmonic',
+      btnReset:    '✕ Change root',
+      also:        'also: ',
+      semitone:    (n) => n === 1 ? '1 semitone' : `${n} semitones`,
+      ordinals:    ['','unison','2nd','3rd','4th','5th','6th','7th','octave'],
+      qualities:   { Justa:'Perfect', Mayor:'Major', Menor:'Minor', Aumentada:'Augmented', Disminuida:'Diminished', 'Doble aumentada':'Doubly Aug.', 'Doble disminuida':'Doubly Dim.' },
+      octave:      (n) => n === 1 ? 'Octave' : `${n} octaves`,
+      format:      (ord, q, isPerfType) => {
+        if (ord === 'unison') return isPerfType ? 'Perfect Unison' : `${q} Unison`;
+        if (ord === 'octave') return isPerfType ? 'Perfect Octave' : `${q} Octave`;
+        return `${q} ${ord}`;
+      },
+    },
+  }[lang];
+
+  // Apply static UI strings
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('header-title').textContent = T.title;
+    document.title = `${T.title} · C3–C6`;
+    document.getElementById('hint').textContent         = T.hint;
+    document.getElementById('label-root').textContent   = T.labelRoot;
+    document.getElementById('label-note').textContent   = T.labelNote;
+    document.getElementById('btn-mel').textContent      = T.btnMel;
+    document.getElementById('btn-harm').textContent     = T.btnHarm;
+    document.getElementById('btn-reset').textContent    = T.btnReset;
+  });
+
+  // ─── Audio & keyboard layout ─────────────────────────────────────────────────
+  const BASE = 'https://stormstudios.com.mx/wp-content/App%20AP%20samples/Piano/';
+  const W = 52, H = 200, BW = 32, BH = 128;
+  const BL = {
+    'C#': 1 * W - BW / 2,
+    'D#': 2 * W - BW / 2,
+    'F#': 4 * W - BW / 2,
+    'G#': 5 * W - BW / 2,
+    'A#': 6 * W - BW / 2,
+  };
+  const notes = [];
+  for (let o = 3; o <= 6; o++) {
+    const ns = o < 6
+      ? ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
+      : ['C'];
+    for (const n of ns) notes.push([n, o]);
+  }
+
+  // ─── Interval calculation ────────────────────────────────────────────────────
+  const NOTE_ORDER = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  function semiIdx(n, o) { return o * 12 + NOTE_ORDER.indexOf(n); }
+
+  const LETTERS_TH   = ['C','D','E','F','G','A','B'];
+  const NAT_PITCH_TH = { C:0, D:2, E:4, F:5, G:7, A:9, B:11 };
+  const PERF_TYPE_TH = new Set([1, 4, 5, 8]);
+  const PERF_ST_TH   = { 1:0, 4:5, 5:7, 8:12 };
+  const MAJOR_ST_TH  = { 2:2, 3:4, 6:9, 7:11 };
+
+  const SPELL_CYCLES = {
+    'C' : ['C',  'B#',  'Dbb'],
+    'C#': ['C#', 'Db',  'B##'],
+    'D' : ['D',  'C##', 'Ebb'],
+    'D#': ['D#', 'Eb',  'Fbb'],
+    'E' : ['E',  'Fb',  'D##'],
+    'F' : ['F',  'E#',  'Gbb'],
+    'F#': ['F#', 'Gb',  'E##'],
+    'G' : ['G',  'F##', 'Abb'],
+    'G#': ['G#', 'Ab'],
+    'A' : ['A',  'G##', 'Bbb'],
+    'A#': ['A#', 'Bb',  'Cbb'],
+    'B' : ['B',  'Cb',  'A##'],
+  };
+  const ROOT_CYCLES = Object.fromEntries(
+    Object.entries(SPELL_CYCLES).map(([k, cyc]) =>
+      [k, cyc.filter(n => n.slice(1).length <= 1)]
+    )
+  );
+
+  function nextSpelling(canonical, currentDisplay, isRoot) {
+    const cyc = (isRoot ? ROOT_CYCLES : SPELL_CYCLES)[canonical];
+    if (!cyc || cyc.length <= 1) return null;
+    const idx  = cyc.indexOf(currentDisplay);
+    const next = cyc[(idx === -1 ? 0 : idx + 1) % cyc.length];
+    return next === currentDisplay ? null : next;
+  }
+
+  function thParse(name) {
+    const L = name[0].toUpperCase();
+    let p = NAT_PITCH_TH[L];
+    for (let i = 1; i < name.length; i++) {
+      if (name[i] === '#') p++;
+      else if (name[i] === 'b') p--;
+    }
+    return { L, p: ((p % 12) + 12) % 12 };
+  }
+
+  function thClassify(noteA, noteB) {
+    const { L: la, p: pa } = thParse(noteA);
+    const { L: lb, p: pb } = thParse(noteB);
+    const iA = LETTERS_TH.indexOf(la), iB = LETTERS_TH.indexOf(lb);
+    let gen = ((iB - iA + 7) % 7) + 1;
+    let st  = (pb - pa + 12) % 12;
+    if (gen === 1 && st >= 6) gen = 8;
+    const isPerfect = PERF_TYPE_TH.has(gen);
+    let qKey;
+    if (isPerfect) {
+      const d = st - (PERF_ST_TH[gen] ?? 0);
+      if      (d ===  0) qKey = 'Justa';
+      else if (d ===  1) qKey = 'Aumentada';
+      else if (d === -1) qKey = 'Disminuida';
+      else if (d >=   2) qKey = 'Doble aumentada';
+      else               qKey = 'Doble disminuida';
+    } else {
+      const d = st - (MAJOR_ST_TH[gen] ?? 0);
+      if      (d ===  0) qKey = 'Mayor';
+      else if (d === -1) qKey = 'Menor';
+      else if (d ===  1) qKey = 'Aumentada';
+      else if (d === -2) qKey = 'Disminuida';
+      else if (d >=   2) qKey = 'Doble aumentada';
+      else               qKey = 'Doble disminuida';
+    }
+    const ord = T.ordinals[gen] ?? gen + (lang === 'en' ? 'th' : 'ª');
+    const q   = T.qualities[qKey] ?? qKey;
+    const name = typeof T.format === 'function'
+      ? T.format(ord, q, isPerfect)
+      : `${ord} ${q}`;
+    return { name, quality: qKey };
+  }
+
+  const COMMON_Q = new Set(['Justa','Mayor','Menor','Aumentada','Disminuida']);
+
+  function getIntervalNames(dispLow, dispHigh, canonLow, canonHigh) {
+    const primary = thClassify(dispLow, dispHigh);
+    const results = [primary.name];
+    const cycLow  = SPELL_CYCLES[canonLow]  ?? [dispLow];
+    const cycHigh = SPELL_CYCLES[canonHigh] ?? [dispHigh];
+    for (const al of cycLow) {
+      for (const ah of cycHigh) {
+        if (al === dispLow && ah === dispHigh) continue;
+        try {
+          const r = thClassify(al, ah);
+          if (COMMON_Q.has(r.quality) && !results.includes(r.name))
+            results.push(r.name);
+        } catch (e) { /* skip */ }
+      }
+    }
+    return results;
+  }
+
+  // ─── Audio ───────────────────────────────────────────────────────────────────
+  const audioCache = {};
+  function playNote(n, o) {
+    const key = n + o;
+    if (!audioCache[key]) {
+      audioCache[key] = new Audio(BASE + key.replace('#', '%23') + '.mp3');
+    }
+    const a = audioCache[key];
+    a.currentTime = 0;
+    a.play().catch(() => {});
+  }
+  function playMelodic() {
+    if (!state.root) return;
+    playNote(state.root.n, state.root.o);
+    if (state.itvl) setTimeout(() => playNote(state.itvl.n, state.itvl.o), 700);
+  }
+  function playHarmonic() {
+    if (!state.root) return;
+    playNote(state.root.n, state.root.o);
+    if (state.itvl) playNote(state.itvl.n, state.itvl.o);
+  }
+
+  // ─── State ───────────────────────────────────────────────────────────────────
+  const state = { root: null, itvl: null };
+
+  function reset() {
+    if (state.root) { state.root.el.classList.remove('root'); state.root = null; }
+    if (state.itvl) { state.itvl.el.classList.remove('itvl'); state.itvl = null; }
+    document.getElementById('hint').classList.remove('hidden');
+    document.getElementById('display').classList.remove('show');
+    document.getElementById('btns').classList.remove('show');
+    document.getElementById('btn-reset-wrap').classList.remove('show');
+  }
+
+  function updateDisplay() {
+    const { root, itvl } = state;
+    if (!root) return;
+    document.getElementById('hint').classList.add('hidden');
+
+    const rootNameEl = document.getElementById('d-root-name');
+    rootNameEl.textContent = root.displayN + root.o;
+    rootNameEl.classList.toggle('swappable', !!nextSpelling(root.n, root.displayN, true));
+
+    if (!itvl) {
+      document.getElementById('d-iname').innerHTML      = '—';
+      document.getElementById('d-iname-alt').style.display = 'none';
+      document.getElementById('d-details').textContent  = '';
+      const itNameEl0 = document.getElementById('d-itvl-name');
+      itNameEl0.textContent = '—';
+      itNameEl0.classList.remove('swappable');
+      document.getElementById('display').classList.add('show');
+      document.getElementById('btns').classList.remove('show');
+      document.getElementById('btn-reset-wrap').classList.add('show');
+      return;
+    }
+
+    const diff    = semiIdx(itvl.n, itvl.o) - semiIdx(root.n, root.o);
+    const abs     = Math.abs(diff);
+    const octaves = Math.floor(abs / 12);
+    const simple  = abs % 12;
+    let dir = '', dirCls = '';
+    if (diff > 0)      { dir = '↑'; dirCls = 'up'; }
+    else if (diff < 0) { dir = '↓'; dirCls = 'down'; }
+    else               { dir = '·'; dirCls = 'uni'; }
+
+    const itNameEl = document.getElementById('d-itvl-name');
+    itNameEl.textContent = itvl.displayN + itvl.o;
+    itNameEl.classList.toggle('swappable', !!nextSpelling(itvl.n, itvl.displayN, false));
+
+    const [dLow, dHigh, cLow, cHigh] = diff >= 0
+      ? [root.displayN, itvl.displayN, root.n, itvl.n]
+      : [itvl.displayN, root.displayN, itvl.n, root.n];
+
+    let names;
+    if (abs === 0) {
+      names = [lang === 'en' ? 'Perfect Unison' : '1ª Justa'];
+    } else if (simple === 0) {
+      names = [T.octave(octaves)];
+    } else {
+      names = getIntervalNames(dLow, dHigh, cLow, cHigh);
+    }
+
+    const iname = document.getElementById('d-iname');
+    iname.innerHTML = `${names[0]} <span class="d-direction ${dirCls}">${dir}</span>`;
+
+    const altEl = document.getElementById('d-iname-alt');
+    if (names.length > 1) {
+      altEl.textContent   = T.also + names.slice(1).join(' / ');
+      altEl.style.display = 'block';
+    } else {
+      altEl.style.display = 'none';
+    }
+
+    const stLabel  = T.semitone(abs);
+    const octLabel = octaves > 0 && simple !== 0
+      ? ` · ${octaves === 1 ? '+8va' : `+${octaves} oct.`}` : '';
+    document.getElementById('d-details').textContent = stLabel + octLabel;
+
+    document.getElementById('display').classList.add('show');
+    document.getElementById('btns').classList.add('show');
+    document.getElementById('btn-reset-wrap').classList.add('show');
+  }
+
+  function handleClick(n, o, el) {
+    const isRoot = state.root && state.root.n === n && state.root.o === o;
+    if (!state.root) {
+      state.root = { n, o, el, displayN: n };
+      el.classList.add('root');
+      playNote(n, o);
+      updateDisplay();
+    } else if (isRoot) {
+      reset();
+    } else {
+      if (state.itvl) state.itvl.el.classList.remove('itvl');
+      state.itvl = { n, o, el, displayN: n };
+      el.classList.add('itvl');
+      playNote(n, o);
+      updateDisplay();
+    }
+  }
+
+  document.getElementById('d-root-name').addEventListener('click', () => {
+    if (!state.root) return;
+    const next = nextSpelling(state.root.n, state.root.displayN, true);
+    if (!next) return;
+    state.root.displayN = next;
+    updateDisplay();
+  });
+  document.getElementById('d-itvl-name').addEventListener('click', () => {
+    if (!state.itvl) return;
+    const next = nextSpelling(state.itvl.n, state.itvl.displayN, false);
+    if (!next) return;
+    state.itvl.displayN = next;
+    updateDisplay();
+  });
+
+  // ─── Build keyboard ───────────────────────────────────────────────────────────
+  const kb = document.getElementById('kb');
+  const octStart = {};
+  let wLeft = 0;
+  for (const [n, o] of notes) {
+    if (n.includes('#')) continue;
+    if (n === 'C') octStart[o] = wLeft;
+    const el = document.createElement('div');
+    el.className = 'kw';
+    if (n === 'C') {
+      const s = document.createElement('span');
+      s.className = 'lbl';
+      s.textContent = `C${o}`;
+      el.appendChild(s);
+    }
+    el.addEventListener('mousedown',  e => { e.preventDefault(); el.classList.add('dn'); });
+    el.addEventListener('mouseup',    () => el.classList.remove('dn'));
+    el.addEventListener('mouseleave', () => el.classList.remove('dn'));
+    el.addEventListener('touchstart', e => { e.preventDefault(); el.classList.add('dn'); }, { passive: false });
+    el.addEventListener('touchend',   () => el.classList.remove('dn'));
+    el.addEventListener('click', () => handleClick(n, o, el));
+    kb.appendChild(el);
+    wLeft += W;
+  }
+  kb.style.width  = wLeft + 'px';
+  kb.style.height = H + 'px';
+  for (const [n, o] of notes) {
+    if (!n.includes('#')) continue;
+    const el = document.createElement('div');
+    el.className = 'kb';
+    el.style.left = (octStart[o] + BL[n]) + 'px';
+    el.addEventListener('mousedown',  e => { e.preventDefault(); e.stopPropagation(); el.classList.add('dn'); });
+    el.addEventListener('mouseup',    () => el.classList.remove('dn'));
+    el.addEventListener('mouseleave', () => el.classList.remove('dn'));
+    el.addEventListener('touchstart', e => { e.preventDefault(); e.stopPropagation(); el.classList.add('dn'); }, { passive: false });
+    el.addEventListener('touchend',   () => el.classList.remove('dn'));
+    el.addEventListener('click', e => { e.stopPropagation(); handleClick(n, o, el); });
+    kb.appendChild(el);
+  }
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-import type { LessonConfig } from "@/types/course";
+import type { LessonConfig, LessonTool } from "@/types/course";
 import LessonNav from "./LessonNav";
 import LessonSidebar from "./LessonSidebar";
 import RulesReference from "./RulesReference";
@@ -79,7 +79,14 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
           {lesson.videos && lesson.videos.length > 0 && (
             <div className="mb-10">
               {lesson.videos.map((video) => (
-                <div key={video.youtubeId} className="mb-6">
+                <div key={video.youtubeId} className="mb-8">
+                  {/* Título del video */}
+                  {video.title && (
+                    <h3 className="ss-mono font-semibold mb-3" style={{ color: "#c4b5fd", fontSize: "1rem" }}>
+                      🎬 {video.title[locale as "es" | "en"]}
+                    </h3>
+                  )}
+                  {/* Embed 16:9 */}
                   <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, borderRadius: "12px", overflow: "hidden", border: "1px solid rgba(139,92,246,0.2)" }}>
                     <iframe
                       src={`https://www.youtube.com/embed/${locale === "en" && video.youtubeIdEn ? video.youtubeIdEn : video.youtubeId}`}
@@ -89,8 +96,51 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
                       style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
                     />
                   </div>
+                  {/* Descripción del video */}
+                  {video.description && (
+                    <p className="ss-mono text-xs mt-2" style={{ color: "rgba(240,238,255,0.4)", lineHeight: 1.6 }}>
+                      {video.description[locale as "es" | "en"]}
+                    </p>
+                  )}
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* Herramientas de la lección */}
+          {lesson.tools && lesson.tools.length > 0 && (
+            <div className="mb-10">
+              <h3 className="ss-mono font-semibold mb-4 uppercase tracking-widest text-xs"
+                style={{ color: "rgba(52,211,153,0.7)" }}>
+                🛠 {es ? "Herramientas de esta lección" : "Lesson Tools"}
+              </h3>
+              <div className="flex flex-col gap-3">
+                {lesson.tools.map((tool: LessonTool) => (
+                  <div key={tool.url} className="ss-glass rounded-xl p-4 flex items-center gap-4"
+                    style={{ border: "1px solid rgba(16,185,129,0.18)" }}>
+                    {tool.icon && (
+                      <span style={{ fontSize: "1.6rem", flexShrink: 0, lineHeight: 1 }}>{tool.icon}</span>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="ss-mono text-sm font-semibold mb-0.5" style={{ color: "#f0eeff" }}>
+                        {tool.title[locale as "es" | "en"]}
+                      </p>
+                      <p className="ss-mono text-xs" style={{ color: "rgba(240,238,255,0.4)", lineHeight: 1.55 }}>
+                        {tool.description[locale as "es" | "en"]}
+                      </p>
+                    </div>
+                    <Link
+                      href={tool.url as Parameters<typeof Link>[0]["href"]}
+                      target={tool.external ? "_blank" : undefined}
+                      rel={tool.external ? "noopener noreferrer" : undefined}
+                      className="ss-mono text-xs px-4 py-2 rounded-lg flex-shrink-0 transition-colors"
+                      style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "rgba(52,211,153,0.9)" }}
+                    >
+                      {es ? "Abrir →" : "Open →"}
+                    </Link>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -110,27 +160,6 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
           {/* Progreso */}
           <div className="mt-8 pt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
             <ProgressTracker lessonSlug={lesson.slug} locale={locale} />
-          </div>
-
-          {/* Acceso rápido al Secuenciador */}
-          <div className="ss-glass rounded-xl p-4 mt-6 flex items-center gap-4"
-            style={{ border: "1px solid rgba(16,185,129,0.18)" }}>
-            <span style={{ fontSize: "1.5rem", flexShrink: 0 }}>🎹</span>
-            <div className="flex-1 min-w-0">
-              <p className="ss-mono text-xs font-medium" style={{ color: "#f0eeff" }}>
-                Storm Sequencer v3.0
-              </p>
-              <p className="ss-mono text-xs" style={{ color: "rgba(240,238,255,0.4)" }}>
-                {es ? "Compón y exporta MIDI para el Maestro Virtual" : "Compose and export MIDI for the Virtual Teacher"}
-              </p>
-            </div>
-            <Link
-              href="/sequencer"
-              className="ss-mono text-xs px-4 py-2 rounded-lg flex-shrink-0"
-              style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "rgba(52,211,153,0.9)" }}
-            >
-              {es ? "Abrir →" : "Open →"}
-            </Link>
           </div>
 
           {/* Navegación prev/next */}

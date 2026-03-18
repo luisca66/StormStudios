@@ -19,7 +19,46 @@ export const lesson: LessonConfig = {
   prerequisites: ["00-introduccion"],
 
   videos: [
-    // TODO: agregar youtubeId cuando los videos estén publicados
+    {
+      youtubeId: "2YBUqVs08VY",
+      title: {
+        es: "Cómo usar el Secuenciador Storm Studios",
+        en: "How to use the Storm Studios Sequencer",
+      },
+      description: {
+        es: "Aprende a escribir melodías y ejercicios de armonía en el secuenciador antes de comenzar el curso.",
+        en: "Learn to write melodies and harmony exercises in the sequencer before starting the course.",
+      },
+    },
+  ],
+
+  tools: [
+    {
+      kind: "sequencer",
+      title: {
+        es: "Storm Sequencer v3.0",
+        en: "Storm Sequencer v3.0",
+      },
+      description: {
+        es: "El secuenciador musical que usarás para todos los ejercicios del curso. Escribe, escucha y exporta tus partituras.",
+        en: "The music sequencer you'll use for all course exercises. Write, listen to, and export your scores.",
+      },
+      url: "/sequencer",
+      icon: "🎹",
+    },
+    {
+      kind: "app",
+      title: {
+        es: "Piano de Intervalos",
+        en: "Interval Piano",
+      },
+      description: {
+        es: "Explora intervalos en el piano: selecciona dos notas y escucha el intervalo melódico o armónico.",
+        en: "Explore intervals on the piano: select two notes and listen melodically or harmonically.",
+      },
+      url: "/apps/intervalos.html",
+      icon: "🎵",
+    },
   ],
 
   // Módulo propedéutico: solo lectura y repaso, sin ejercicio MIDI
