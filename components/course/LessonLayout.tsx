@@ -129,15 +129,25 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
                         {tool.description[locale as "es" | "en"]}
                       </p>
                     </div>
-                    <Link
-                      href={tool.url as Parameters<typeof Link>[0]["href"]}
-                      target={tool.external ? "_blank" : undefined}
-                      rel={tool.external ? "noopener noreferrer" : undefined}
-                      className="ss-mono text-xs px-4 py-2 rounded-lg flex-shrink-0 transition-colors"
-                      style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "rgba(52,211,153,0.9)" }}
-                    >
-                      {es ? "Abrir →" : "Open →"}
-                    </Link>
+                    {tool.url.endsWith(".html") || tool.external ? (
+                      <a
+                        href={tool.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ss-mono text-xs px-4 py-2 rounded-lg flex-shrink-0 transition-colors"
+                        style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "rgba(52,211,153,0.9)" }}
+                      >
+                        {es ? "Abrir →" : "Open →"}
+                      </a>
+                    ) : (
+                      <Link
+                        href={tool.url as Parameters<typeof Link>[0]["href"]}
+                        className="ss-mono text-xs px-4 py-2 rounded-lg flex-shrink-0 transition-colors"
+                        style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "rgba(52,211,153,0.9)" }}
+                      >
+                        {es ? "Abrir →" : "Open →"}
+                      </Link>
+                    )}
                   </div>
                 ))}
               </div>
