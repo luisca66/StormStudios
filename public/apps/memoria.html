@@ -10,77 +10,24 @@
   <style>
     /* ── Base ───────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #0f172a;
-      color: #f0eeff;
-      min-height: 100vh;
-    }
+    body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f0eeff; min-height: 100vh; }
 
-    /* ── Tab Switcher ───────────────────────────────────────── */
-    #tab-bar {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 1rem 1rem 0;
-    }
-    .tab-btn {
-      font-family: 'Inter', monospace, sans-serif;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.55rem 1.4rem;
-      border-radius: 999px;
-      border: 1px solid rgba(139,92,246,0.3);
-      background: transparent;
-      color: rgba(240,238,255,0.5);
-      cursor: pointer;
-      letter-spacing: 0.04em;
-      transition: all 0.2s;
-    }
+    /* ── Tab Bar ────────────────────────────────────────────── */
+    #tab-bar { display: flex; justify-content: center; gap: 0.5rem; padding: 1rem 1rem 0; }
+    .tab-btn { font-family: 'Inter', monospace, sans-serif; font-size: 0.8rem; font-weight: 600; padding: 0.55rem 1.4rem; border-radius: 999px; border: 1px solid rgba(139,92,246,0.3); background: transparent; color: rgba(240,238,255,0.5); cursor: pointer; letter-spacing: 0.04em; transition: all 0.2s; }
     .tab-btn:hover { color: rgba(240,238,255,0.85); border-color: rgba(139,92,246,0.6); }
-    .tab-btn.active {
-      background: rgba(139,92,246,0.2);
-      border-color: rgba(139,92,246,0.7);
-      color: #c4b5fd;
-    }
-
-    /* ── Tab Panels ─────────────────────────────────────────── */
+    .tab-btn.active { background: rgba(139,92,246,0.2); border-color: rgba(139,92,246,0.7); color: #c4b5fd; }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
     /* ═══════════════════════════════════════════════════════════
-       JUEGO DE MEMORIA — estilos originales encapsulados
+       JUEGO DE MEMORIA — estilos encapsulados
     ═══════════════════════════════════════════════════════════ */
-    #nemotecnia-memory-game-app {
-      font-family: 'Inter', sans-serif;
-      box-sizing: border-box;
-      width: 100%;
-      max-width: 900px;
-      margin: 1.5rem auto;
-      padding: 1.5rem;
-      color: #333;
-      background-image: url('https://www.stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Fondo%20app%20memoria.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-color: #f0f4f8;
-      border-radius: 15px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    }
+    #nemotecnia-memory-game-app { font-family: 'Inter', sans-serif; box-sizing: border-box; width: 100%; max-width: 900px; margin: 1.5rem auto; padding: 1.5rem; color: #333; background-image: url('https://www.stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Fondo%20app%20memoria.png'); background-size: cover; background-position: center; background-repeat: no-repeat; background-color: #f0f4f8; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
     #nemotecnia-memory-game-app *, #nemotecnia-memory-game-app *::before, #nemotecnia-memory-game-app *::after { box-sizing: inherit; }
-    #nemotecnia-memory-game-app #selection-screen {
-      background-color: rgba(255,255,255,0.95);
-      padding: 2rem; border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-      text-align: center; width: 100%; max-width: 750px; margin: 0 auto;
-    }
+    #nemotecnia-memory-game-app #selection-screen { background-color: rgba(255,255,255,0.95); padding: 2rem; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); text-align: center; width: 100%; max-width: 750px; margin: 0 auto; }
     #nemotecnia-memory-game-app #selection-screen h2 { margin-bottom: 1.5rem; color: #1f2937; font-size: 1.6rem; font-weight: 600; }
-    #nemotecnia-memory-game-app .selection-button {
-      padding: 0.8rem 1.6rem; border-radius: 8px; color: white; font-weight: 600;
-      cursor: pointer; transition: background-color 0.3s, transform 0.1s;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1); background-color: #4f46e5;
-      margin: 0.5rem; display: inline-block; border: none; min-width: 150px;
-    }
+    #nemotecnia-memory-game-app .selection-button { padding: 0.8rem 1.6rem; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; transition: background-color 0.3s, transform 0.1s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background-color: #4f46e5; margin: 0.5rem; display: inline-block; border: none; min-width: 150px; }
     #nemotecnia-memory-game-app .selection-button:hover { background-color: #4338ca; transform: translateY(-1px); }
     #nemotecnia-memory-game-app #game-container { display: none; width: 100%; flex-direction: column; align-items: center; background-color: rgba(255,255,255,0.7); padding: 1rem; border-radius: 10px; margin-top: 1rem; }
     #nemotecnia-memory-game-app #game-container.visible { display: flex; }
@@ -95,6 +42,7 @@
     #nemotecnia-memory-game-app #message-box.success { background-color: #dcfce7; color: #166534; }
     #nemotecnia-memory-game-app #message-box.error { background-color: #fee2e2; color: #991b1b; }
     #nemotecnia-memory-game-app #message-box.final { background-color: #fef9c3; color: #854d0e; }
+    #nemotecnia-memory-game-app #message-box.loading { background-color: #e5e7eb; color: #4b5563; }
     #nemotecnia-memory-game-app .game-button-container { margin-top: 1.5rem; display: flex; justify-content: center; flex-wrap: wrap; gap: 0.75rem; }
     #nemotecnia-memory-game-app .game-button { padding: 0.75rem 1.5rem; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; transition: background-color 0.3s, transform 0.1s, filter 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; min-width: 120px; }
     #nemotecnia-memory-game-app .game-button:hover { filter: brightness(110%); transform: translateY(-1px); }
@@ -106,35 +54,29 @@
     #nemotecnia-memory-game-app .game-info { display: flex; justify-content: space-around; align-items: center; width: 100%; max-width: 320px; margin: 1rem auto 0; padding: 0.6rem 1rem; background-color: rgba(255,255,255,0.9); border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); font-size: 1.1rem; color: #374151; }
     #nemotecnia-memory-game-app .game-info > div { flex-basis: 50%; text-align: center; }
     #nemotecnia-memory-game-app .game-info span { font-weight: bold; color: #1f2937; margin-left: 0.3rem; }
+    /* Modal */
     #nemotecnia-memory-game-app .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s 0.3s linear; }
     #nemotecnia-memory-game-app .modal-overlay.is-visible { opacity: 1; visibility: visible; transition: opacity 0.3s ease; }
-    #nemotecnia-memory-game-app .modal-content { background-color: white; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 90%; width: 450px; position: relative; transform: translateY(-20px); transition: transform 0.3s ease; color: #1f2937; }
+    #nemotecnia-memory-game-app .modal-content { background-color: white; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 90%; width: 500px; position: relative; transform: translateY(-20px); transition: transform 0.3s ease; color: #1f2937; }
     #nemotecnia-memory-game-app .modal-overlay.is-visible .modal-content { transform: translateY(0); }
     #nemotecnia-memory-game-app .modal-close-button { position: absolute; top: 0.8rem; right: 0.8rem; background: #e5e7eb; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: #4b5563; line-height: 32px; text-align: center; transition: background-color 0.2s, color 0.2s; }
     #nemotecnia-memory-game-app .modal-close-button:hover { background-color: #d1d5db; color: #1f2937; }
-    #nemotecnia-memory-game-app .modal-content h2 { margin-top: 0; margin-bottom: 1.5rem; color: #111827; font-size: 1.4rem; font-weight: 600; }
-    #nemotecnia-memory-game-app .mnemonic-list { list-style: none; padding: 0; margin: 0; max-height: 300px; overflow-y: auto; }
-    #nemotecnia-memory-game-app .mnemonic-list li { padding: 0.6rem 0.2rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 1rem; color: #1f2937; }
+    #nemotecnia-memory-game-app .modal-content h2 { margin-top: 0; margin-bottom: 1rem; color: #111827; font-size: 1.4rem; font-weight: 600; }
+    #nemotecnia-memory-game-app .mnemonic-list { list-style: none; padding: 0.5rem; margin: 0; max-height: 300px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; }
+    #nemotecnia-memory-game-app .mnemonic-list li { padding: 0.6rem 0.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 1rem; color: #1f2937; }
     #nemotecnia-memory-game-app .mnemonic-list li:last-child { border-bottom: none; }
     #nemotecnia-memory-game-app .mnemonic-list li span:first-child { font-weight: bold; margin-right: 1rem; flex-shrink: 0; }
-    #nemotecnia-memory-game-app .mnemonic-list li span:last-child { text-align: right; }
+    #nemotecnia-memory-game-app .word-value { text-align: right; padding: 4px 6px; border-radius: 4px; transition: background-color 0.2s; min-width: 80px; }
+    #nemotecnia-memory-game-app .modal-content.is-editing .word-value { background-color: #eef2ff; outline: 2px solid #4f46e5; cursor: text; }
+    #nemotecnia-memory-game-app .modal-button-container { margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; }
     #nemotecnia-memory-game-app .mnemonic-list::-webkit-scrollbar { width: 6px; }
     #nemotecnia-memory-game-app .mnemonic-list::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
     #nemotecnia-memory-game-app .mnemonic-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 
     /* ═══════════════════════════════════════════════════════════
-       MODO DE PRÁCTICA — estilos originales encapsulados
+       MODO DE PRÁCTICA — estilos encapsulados
     ═══════════════════════════════════════════════════════════ */
-    #nemotecnia-practice-app {
-      font-family: 'Inter', sans-serif;
-      box-sizing: border-box;
-      width: 100%; max-width: 700px;
-      margin: 1.5rem auto; padding: 2rem;
-      background-image: url('https://www.stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Fondo%20app%20memoria.png');
-      background-size: cover; background-position: center; background-repeat: no-repeat;
-      background-color: #121212;
-      border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    }
+    #nemotecnia-practice-app { font-family: 'Inter', sans-serif; box-sizing: border-box; width: 100%; max-width: 700px; margin: 1.5rem auto; padding: 2rem; background-image: url('https://www.stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Fondo%20app%20memoria.png'); background-size: cover; background-position: center; background-repeat: no-repeat; background-color: #121212; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
     #nemotecnia-practice-app *, #nemotecnia-practice-app *::before, #nemotecnia-practice-app *::after { box-sizing: inherit; }
     #nemotecnia-practice-app h2 { text-align: center; color: #1f2937; font-size: 1.8rem; font-weight: 700; margin-top: 0; margin-bottom: 1.5rem; background-color: rgba(255,255,255,0.92); padding: 1rem; border-radius: 12px; }
     #score-container, #settings-container, #practice-container { background-color: rgba(255,255,255,0.92); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; }
@@ -175,7 +117,7 @@
     #nemotecnia-practice-app .modal-overlay.is-visible { opacity: 1; visibility: visible; }
     #nemotecnia-practice-app .modal-content { background-color: white; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 90%; width: 500px; position: relative; transform: translateY(-20px); transition: transform 0.3s ease; }
     #nemotecnia-practice-app .modal-overlay.is-visible .modal-content { transform: translateY(0); }
-    #nemotecnia-practice-app .modal-close-button { position: absolute; top: 0.8rem; right: 0.8rem; background: #e5e7eb; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: #4b5563; line-height: 32px; text-align: center; transition: background-color 0.2s, color 0.2s; }
+    #nemotecnia-practice-app .modal-close-button { position: absolute; top: 0.8rem; right: 0.8rem; background: #e5e7eb; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: #4b5563; line-height: 32px; text-align: center; }
     #nemotecnia-practice-app .modal-close-button:hover { background-color: #d1d5db; color: #1f2937; }
     #nemotecnia-practice-app .modal-content h3 { margin-top: 0; margin-bottom: 1rem; color: #111827; }
     #nemotecnia-practice-app .mnemonic-list { list-style: none; padding: 0.5rem; margin: 0; max-height: 300px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; color: #1f2937; }
@@ -202,7 +144,7 @@
   <div id="nemotecnia-memory-game-app">
     <div id="selection-screen">
       <h2 id="mem-selection-title">¿Qué números quieres trabajar?</h2>
-      <button class="selection-button" data-range="Código">Código (Letras)</button>
+      <button class="selection-button" data-range="Código" id="btn-code">Código (Letras)</button>
       <button class="selection-button" data-range="0-9">0 - 9 (Palabras)</button>
       <button class="selection-button" data-range="10-19">10 - 19 (Palabras)</button>
       <button class="selection-button" data-range="20-29">20 - 29 (Palabras)</button>
@@ -229,11 +171,18 @@
         <button id="mute-button" class="game-button">Silenciar Música</button>
       </div>
     </div>
+    <!-- Modal del juego -->
     <div id="code-modal-overlay" class="modal-overlay">
       <div class="modal-content">
         <button id="modal-close-btn" class="modal-close-button">&times;</button>
         <h2 id="mem-modal-title">Código Nemotécnico</h2>
-        <ul id="mnemonic-code-list"></ul>
+        <ul id="mnemonic-code-list" class="mnemonic-list"></ul>
+        <!-- Botones de edición (solo visibles en EN) -->
+        <div class="modal-button-container" id="mem-modal-edit-btns" style="display:none;">
+          <button id="mem-edit-btn" class="game-button" style="background-color:#f97316;">Edit</button>
+          <button id="mem-save-btn" class="game-button" style="background-color:#16a34a;display:none;">Save</button>
+          <button id="mem-cancel-btn" class="game-button" style="background-color:#6b7280;display:none;">Cancel</button>
+        </div>
       </div>
     </div>
     <audio id="background-music" loop preload="auto">
@@ -309,15 +258,16 @@
         <span id="feedback-text">Configura tu práctica y presiona "Comenzar" para empezar.</span>
       </div>
     </div>
+    <!-- Modal edición práctica -->
     <div id="edit-modal-overlay" class="modal-overlay">
       <div class="modal-content">
         <button id="modal-close-btn-practice" class="modal-close-button">&times;</button>
         <h3 id="edit-modal-title">Editar Palabras</h3>
         <ul class="mnemonic-list" id="edit-mnemonic-list"></ul>
         <div class="modal-button-container">
-          <button id="edit-mode-btn" class="practice-button" style="background-color:#f97316;">Editar</button>
-          <button id="save-words-btn" class="practice-button" style="background-color:#16a34a;display:none;">Guardar</button>
-          <button id="cancel-edit-btn" class="practice-button" style="background-color:#6b7280;display:none;">Cancelar</button>
+          <button id="edit-mode-btn" class="practice-button" style="background-color:#f97316;color:white;">Editar</button>
+          <button id="save-words-btn" class="practice-button" style="background-color:#16a34a;color:white;display:none;">Guardar</button>
+          <button id="cancel-edit-btn" class="practice-button" style="background-color:#6b7280;color:white;display:none;">Cancelar</button>
         </div>
       </div>
     </div>
@@ -342,354 +292,117 @@
 
 <!-- i18n + Tab switcher -->
 <script>
-  const lang = new URLSearchParams(window.location.search).get('lang') === 'en' ? 'en' : 'es';
+  var MEMORIA_LANG = new URLSearchParams(window.location.search).get('lang') === 'en' ? 'en' : 'es';
+  var isEN = MEMORIA_LANG === 'en';
 
-  const T = {
-    es: {
-      tabGame: '🃏 Juego de Memoria',
-      tabPractice: '📝 Modo de Práctica',
-      selectionTitle: '¿Qué números quieres trabajar?',
-      gameTitle: 'App Memoria (nemotecnia)',
-      movesLabel: 'Movimientos:',
-      timeLabel: 'Tiempo:',
-      resetBtn: 'Reiniciar Juego',
-      viewCode: 'Ver Código',
-      changeRange: 'Cambiar Rango',
-      muteMusic: 'Silenciar Música',
-      unmuteMusic: 'Activar Música',
-      modalTitle: 'Código Nemotécnico',
-      pracTitle: 'Modo de Práctica',
-      correctLabel: 'Correctas',
-      streakLabel: 'Racha',
-      timeSelectLabel: '1. Selecciona el tiempo para responder:',
-      rangeLabel: '2. Selecciona los rangos que quieres practicar:',
-      selectAll: 'Seleccionar Todo',
-      deselectAll: 'Deseleccionar Todo',
-      editWords: 'Editar Palabras',
-      verify: 'Verificar',
-      start: 'Comenzar',
-      reset: 'Reset',
-      placeholder: 'Escribe tu respuesta aquí',
-      initMsg: 'Configura tu práctica y presiona "Comenzar" para empezar.',
-      questionLabel: 'Pregunta',
-      wordToNumber: '¿Qué número es esta palabra?',
-      numberToWord: '¿Qué palabra es este número?',
-      noRangeSelected: 'Por favor, selecciona al menos un rango para practicar.',
-      noWords: 'No hay palabras en los rangos seleccionados.',
-      onlyOneRange: 'Selecciona solo UN rango a la vez para editar.',
-      selectRangeFirst: 'Selecciona un rango para poder editarlo.',
-      correct: '¡Correcto!',
-      incorrect: 'Incorrecto. La respuesta para',
-      is: 'es',
-      timeout: '¡Se acabó el tiempo! La respuesta para',
-      was: 'era',
-      updatedWords: '¡Palabras actualizadas!',
-      saveError: 'Error al guardar. Revisa la consola para detalles.',
-      editTitle: 'Editar Palabras del Rango:',
-      memPairFound: '¡Correcto!',
-      memTryAgain: 'Intenta de nuevo.',
-      memFindPairs: 'Encuentra los pares.',
-      memCongrats: '¡Felicidades',
-      memCompletedIn: 'Completaste en',
-      memMovements: 'movimientos y',
-      unlimited: 'Sin Límite',
-      seconds: 'Segundos',
-    },
-    en: {
-      tabGame: '🃏 Memory Game',
-      tabPractice: '📝 Practice Mode',
-      selectionTitle: 'Which numbers do you want to work with?',
-      gameTitle: 'Memory App (Mnemonics)',
-      movesLabel: 'Moves:',
-      timeLabel: 'Time:',
-      resetBtn: 'Restart Game',
-      viewCode: 'View Code',
-      changeRange: 'Change Range',
-      muteMusic: 'Mute Music',
-      unmuteMusic: 'Unmute Music',
-      modalTitle: 'Mnemonic Code',
-      pracTitle: 'Practice Mode',
-      correctLabel: 'Correct',
-      streakLabel: 'Streak',
-      timeSelectLabel: '1. Select the time limit to answer:',
-      rangeLabel: '2. Select the ranges you want to practice:',
-      selectAll: 'Select All',
-      deselectAll: 'Deselect All',
-      editWords: 'Edit Words',
-      verify: 'Check',
-      start: 'Start',
-      reset: 'Reset',
-      placeholder: 'Type your answer here',
-      initMsg: 'Configure your practice and press "Start" to begin.',
-      questionLabel: 'Question',
-      wordToNumber: 'What number is this word?',
-      numberToWord: 'What word is this number?',
-      noRangeSelected: 'Please select at least one range to practice.',
-      noWords: 'No words in the selected ranges.',
-      onlyOneRange: 'Select only ONE range at a time to edit.',
-      selectRangeFirst: 'Select a range to edit it.',
-      correct: 'Correct!',
-      incorrect: 'Incorrect. The answer for',
-      is: 'is',
-      timeout: 'Time\'s up! The answer for',
-      was: 'was',
-      updatedWords: 'Words updated!',
-      saveError: 'Error saving. Check the console for details.',
-      editTitle: 'Edit Words for Range:',
-      memPairFound: 'Correct!',
-      memTryAgain: 'Try again.',
-      memFindPairs: 'Find the pairs.',
-      memCongrats: 'Congratulations',
-      memCompletedIn: 'Completed in',
-      memMovements: 'moves and',
-      unlimited: 'No Limit',
-      seconds: 'Seconds',
-    }
-  }[lang];
+  document.addEventListener('DOMContentLoaded', function() {
+    // Tab labels
+    document.getElementById('tab-game').textContent    = isEN ? '🃏 Memory Game'    : '🃏 Juego de Memoria';
+    document.getElementById('tab-practice').textContent = isEN ? '📝 Practice Mode'  : '📝 Modo de Práctica';
 
-  // Apply i18n to static labels
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('tab-game').textContent = T.tabGame;
-    document.getElementById('tab-practice').textContent = T.tabPractice;
-    document.getElementById('mem-selection-title').textContent = T.selectionTitle;
-    document.getElementById('mem-game-title').textContent = T.gameTitle;
-    document.getElementById('mem-modal-title').textContent = T.modalTitle;
-    document.getElementById('prac-title').textContent = T.pracTitle;
-    document.getElementById('prac-correct-label').textContent = T.correctLabel;
-    document.getElementById('prac-streak-label').textContent = T.streakLabel;
-    document.getElementById('prac-time-label').textContent = T.timeSelectLabel;
-    document.getElementById('prac-range-label').textContent = T.rangeLabel;
-    document.getElementById('select-all-btn').textContent = T.selectAll;
-    document.getElementById('deselect-all-btn').textContent = T.deselectAll;
-    document.getElementById('edit-words-btn').textContent = T.editWords;
-    document.getElementById('check-answer-btn').textContent = T.verify;
-    document.getElementById('start-practice-btn').textContent = T.start;
-    document.getElementById('reset-practice-btn').textContent = T.reset;
-    document.getElementById('answer-input').placeholder = T.placeholder;
-    document.getElementById('feedback-text').textContent = T.initMsg;
-    document.getElementById('question-type').textContent = T.questionLabel;
-    document.getElementById('reset-button').textContent = T.resetBtn;
-    document.getElementById('show-code-button').textContent = T.viewCode;
-    document.getElementById('back-button').textContent = T.changeRange;
-    document.getElementById('mute-button').textContent = T.muteMusic;
-    document.getElementById('mute-practice-btn').textContent = T.muteMusic;
-    // Translate time select options
-    const timeSelect = document.getElementById('time-select');
-    timeSelect.options[0].textContent = T.unlimited;
-    for (let i = 1; i < timeSelect.options.length; i++) {
-      timeSelect.options[i].textContent = `${timeSelect.options[i].value} ${T.seconds}`;
+    // Game tab labels
+    document.getElementById('mem-selection-title').textContent = isEN ? 'Which numbers do you want to practice?' : '¿Qué números quieres trabajar?';
+    document.getElementById('mem-game-title').textContent      = isEN ? 'Mnemonic Memory App'     : 'App Memoria (nemotecnia)';
+    document.getElementById('mem-modal-title').textContent     = isEN ? 'Mnemonic Code'            : 'Código Nemotécnico';
+    document.getElementById('reset-button').textContent        = isEN ? 'Reset Game'               : 'Reiniciar Juego';
+    document.getElementById('show-code-button').textContent    = isEN ? 'View/Edit Code'           : 'Ver Código';
+    document.getElementById('back-button').textContent         = isEN ? 'Change Range'             : 'Cambiar Rango';
+    document.getElementById('mute-button').textContent         = isEN ? 'Mute Music'               : 'Silenciar Música';
+
+    // Code button: different key for EN vs ES
+    var codeBtn = document.getElementById('btn-code');
+    if (isEN) {
+      codeBtn.dataset.range = 'Code';
+      codeBtn.textContent   = 'Code (Letters)';
     }
-    if (lang === 'en') {
-      // Translate range buttons in selection screen
-      document.querySelectorAll('.selection-button').forEach(btn => {
-        const range = btn.dataset.range;
-        btn.textContent = range === 'Código' ? 'Code (Letters)' : `${range} (Words)`;
+
+    // Show edit buttons in game modal for EN
+    if (isEN) {
+      document.getElementById('mem-modal-edit-btns').style.display = 'flex';
+    }
+
+    // Translate word buttons in selection screen
+    if (isEN) {
+      document.querySelectorAll('#selection-screen .selection-button').forEach(function(btn) {
+        if (btn.id !== 'btn-code') btn.textContent = btn.dataset.range + ' (Words)';
       });
+    }
+
+    // Practice tab labels
+    document.getElementById('prac-title').textContent         = isEN ? 'Practice Mode'                          : 'Modo de Práctica';
+    document.getElementById('prac-correct-label').textContent = isEN ? 'Correct'                                : 'Correctas';
+    document.getElementById('prac-streak-label').textContent  = isEN ? 'Streak'                                 : 'Racha';
+    document.getElementById('prac-time-label').textContent    = isEN ? '1. Select response time:'               : '1. Selecciona el tiempo para responder:';
+    document.getElementById('prac-range-label').textContent   = isEN ? '2. Select ranges to practice:'          : '2. Selecciona los rangos que quieres practicar:';
+    document.getElementById('select-all-btn').textContent     = isEN ? 'Select All'                             : 'Seleccionar Todo';
+    document.getElementById('deselect-all-btn').textContent   = isEN ? 'Deselect All'                           : 'Deseleccionar Todo';
+    document.getElementById('edit-words-btn').textContent     = isEN ? 'Edit Words'                             : 'Editar Palabras';
+    document.getElementById('check-answer-btn').textContent   = isEN ? 'Check'                                  : 'Verificar';
+    document.getElementById('start-practice-btn').textContent = isEN ? 'Start'                                  : 'Comenzar';
+    document.getElementById('mute-practice-btn').textContent  = isEN ? 'Mute Music'                             : 'Silenciar Música';
+    document.getElementById('feedback-text').textContent      = isEN ? 'Set up your practice and press "Start" to begin.' : 'Configura tu práctica y presiona "Comenzar" para empezar.';
+    document.getElementById('answer-input').placeholder       = isEN ? 'Type your answer here'                  : 'Escribe tu respuesta aquí';
+    document.getElementById('question-type').textContent      = isEN ? 'Question'                               : 'Pregunta';
+    document.getElementById('edit-mode-btn').textContent      = isEN ? 'Edit'                                   : 'Editar';
+    document.getElementById('save-words-btn').textContent     = isEN ? 'Save'                                   : 'Guardar';
+    document.getElementById('cancel-edit-btn').textContent    = isEN ? 'Cancel'                                 : 'Cancelar';
+
+    // Translate time-select options
+    var ts = document.getElementById('time-select');
+    ts.options[0].textContent = isEN ? 'No Limit' : 'Sin Límite';
+    for (var i = 1; i < ts.options.length; i++) {
+      ts.options[i].textContent = ts.options[i].value + (isEN ? ' Seconds' : ' Segundos');
     }
   });
 
   // Tab switcher
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
       btn.classList.add('active');
       document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
     });
   });
 </script>
 
-<!-- Memory Game Logic -->
-<script>
-(function() {
-  const appContainer = document.getElementById('nemotecnia-memory-game-app');
-  if (!appContainer) return;
-  const selectionScreen = appContainer.querySelector('#selection-screen');
-  const gameContainer = appContainer.querySelector('#game-container');
-  const gameBoard = appContainer.querySelector('#game-board');
-  const movesCountSpan = appContainer.querySelector('#moves-count');
-  const messageBox = appContainer.querySelector('#message-box');
-  const resetButton = appContainer.querySelector('#reset-button');
-  const timerSpan = appContainer.querySelector('#timer');
-  const showCodeButton = appContainer.querySelector('#show-code-button');
-  const modalOverlay = appContainer.querySelector('#code-modal-overlay');
-  const modalCloseBtn = appContainer.querySelector('#modal-close-btn');
-  const mnemonicList = appContainer.querySelector('#mnemonic-code-list');
-  const backButton = appContainer.querySelector('#back-button');
-  const muteButton = appContainer.querySelector('#mute-button');
-  const backgroundMusic = appContainer.querySelector('#background-music');
-  const flipSound = appContainer.querySelector('#flip-sound');
-
-  const allMnemonicSets = {
-    "Código": { '0':'S, Z, Cs','1':'T, D','2':'N','3':'M','4':'R, RR','5':'L','6':'J, CH, Gf','7':'Cf, K, Q','8':'V, F','9':'P, B' },
-    "0-9":   { '0':'Oso','1':'auTo','2':'aNillo','3':'huMo','4':'Río','5':'oLa','6':'hiJo','7':'Casa','8':'aVe','9':'Pie' },
-    "10-19": { '10':'TaZa','11':'TiTo','12':'TiNa','13':'ToMo','14':'ToRo','15':'TeLa','16':'TeCHo','17':'ToCayo','18':'TiFo','19':'TuBo' },
-    "20-29": { '20':'NueZ','21':'NoTa','22':'NeNa','23':'gNoMo','24':'NuRia','25':'NiLo','26':'NiCHo','27':'NuCa','28':'NieVe','29':'NuBe' },
-    "30-39": { '30':'MeSa','31':'MoTa','32':'MaNo','33':'MaMá','34':'MaR','35':'MieL','36':'MaCHo','37':'MueCa','38':'MaFia','39':'MaPa' },
-    "40-49": { '40':'RoSa','41':'RaTa','42':'RaNa','43':'RaMa','44':'heRReRo','45':'RieL','46':'ReJa','47':'RoCa','48':'RiFa','49':'RoPa' },
-    "50-59": { '50':'LoZa','51':'LaTa','52':'LaNa','53':'LiMa','54':'LoRo','55':'LiLa','56':'LeCHe','57':'LaCa','58':'LaVa','59':'LoBo' },
-    "60-69": { '60':'ChoZa','61':'JaDe','62':'JuaN','63':'GeMa','64':'JaRRo','65':'CheLa','66':'ChoCho','67':'JaCa','68':'CheF','69':'CHaPa' },
-    "70-79": { '70':'CaSa','71':'GaTo','72':'CuNa','73':'CaMa','74':'CaRa','75':'KiLo','76':'CaJa','77':'CaCa','78':'CaFé','79':'CaPa' },
-    "80-89": { '80':'FoSa','81':'FoTo','82':'ViNo','83':'FaMa','84':'FaRo','85':'VeLa','86':'FaJa','87':'FoCo','88':'FoFo','89':'FoBia' },
-    "90-99": { '90':'PeZ','91':'PaTo','92':'PiNo','93':'PuMa','94':'PeRRo','95':'PaLo','96':'PaJa','97':'PiCo','98':'PuF','99':'PiPa' }
-  };
-
-  let currentRange='', cardsData=[], firstCard=null, secondCard=null;
-  let lockBoard=false, matchedPairs=0, moves=0;
-  let timerInterval=null, startTime=null, elapsedTime=0;
-  let isMuted=false, musicStarted=false;
-
-  function playSound(el) { el.currentTime=0; el.play().catch(()=>{}); }
-  function toggleMute() {
-    isMuted=!isMuted; backgroundMusic.muted=isMuted;
-    muteButton.textContent = isMuted ? T.unmuteMusic : T.muteMusic;
-    muteButton.classList.toggle('muted', isMuted);
-    if (!isMuted && musicStarted && backgroundMusic.paused) playSound(backgroundMusic);
-  }
-  function shuffle(arr) { for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];} }
-  function formatTime(s) { return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`; }
-
-  function startTimer() {
-    if (timerInterval) clearInterval(timerInterval);
-    if (!startTime) { startTime=Date.now(); elapsedTime=0; }
-    else { startTime=Date.now()-(elapsedTime*1000); }
-    timerSpan.textContent=formatTime(elapsedTime);
-    timerInterval=setInterval(()=>{ elapsedTime=Math.floor((Date.now()-startTime)/1000); timerSpan.textContent=formatTime(elapsedTime); },1000);
-  }
-  function stopTimer() {
-    if (timerInterval){ clearInterval(timerInterval); timerInterval=null; elapsedTime=Math.floor((Date.now()-startTime)/1000); timerSpan.textContent=formatTime(elapsedTime); }
-  }
-  function startGame(range) {
-    currentRange=range;
-    selectionScreen.style.display='none';
-    gameContainer.classList.add('visible');
-    musicStarted=false; backgroundMusic.muted=isMuted;
-    createBoard();
-  }
-  function createBoard() {
-    gameBoard.innerHTML=''; matchedPairs=0; moves=0; movesCountSpan.textContent=0;
-    setMessage(`${T.memFindPairs}`, 'info');
-    firstCard=null; secondCard=null; lockBoard=false;
-    stopTimer(); elapsedTime=0; startTime=null; timerSpan.textContent=formatTime(0);
-    if (!backgroundMusic.paused){ backgroundMusic.pause(); backgroundMusic.currentTime=0; }
-    musicStarted=false; cardsData=[];
-    const ds=allMnemonicSets[currentRange];
-    for (const key in ds) {
-      if (Object.prototype.hasOwnProperty.call(ds,key)){
-        cardsData.push({id:key,text:key});
-        cardsData.push({id:key,text:ds[key]});
-      }
-    }
-    shuffle(cardsData);
-    cardsData.forEach(item=>{
-      const el=document.createElement('div');
-      el.classList.add('card'); el.dataset.id=item.id; el.dataset.text=item.text;
-      let fs=item.text.length>10?'0.85rem':item.text.length>6?'1rem':'1.2rem';
-      el.innerHTML=`<div class="card-face card-front">?</div><div class="card-face card-back" style="font-size:${fs}">${item.text}</div>`;
-      el.addEventListener('click', handleCardClick);
-      gameBoard.appendChild(el);
-    });
-  }
-  function handleCardClick() {
-    const card=this;
-    if (lockBoard||card.classList.contains('is-flipped')||card===firstCard) return;
-    if (!timerInterval&&startTime===null) startTimer();
-    if (!musicStarted&&!isMuted){ playSound(backgroundMusic); musicStarted=true; }
-    playSound(flipSound);
-    card.classList.add('is-flipped');
-    if (!firstCard){ firstCard=card; return; }
-    secondCard=card; lockBoard=true; moves++; movesCountSpan.textContent=moves;
-    checkForMatch();
-  }
-  function checkForMatch() {
-    const isMatch=firstCard.dataset.id===secondCard.dataset.id;
-    if (isMatch) {
-      const t1=firstCard.dataset.text, t2=secondCard.dataset.text;
-      const numText=/^\d+$/.test(t1)||(currentRange==="Código"&&t1.length<=2)?t1:t2;
-      const letText=numText===t1?t2:t1;
-      setMessage(`${T.memPairFound} ${numText} = ${letText}`, 'success');
-      firstCard.removeEventListener('click',handleCardClick);
-      secondCard.removeEventListener('click',handleCardClick);
-      matchedPairs++;
-      if (matchedPairs===cardsData.length/2){
-        stopTimer();
-        setTimeout(()=>setMessage(`${T.memCongrats} (${currentRange})! ${T.memCompletedIn} ${moves} ${T.memMovements} ${formatTime(elapsedTime)}.`,'final'),500);
-      } else { resetBoardState(false); }
-    } else {
-      setMessage(T.memTryAgain, 'error');
-      setTimeout(()=>{ firstCard.classList.remove('is-flipped'); secondCard.classList.remove('is-flipped'); resetBoardState(true); },1200);
-    }
-  }
-  function resetBoardState(clearMsg) { [firstCard,secondCard]=[null,null]; lockBoard=false; if(clearMsg) setTimeout(()=>{ if(messageBox.dataset.messageType!=='final'&&messageBox.dataset.messageType!=='success') setMessage(T.memFindPairs,'info'); },1500); }
-  function setMessage(text,type) { messageBox.textContent=text; messageBox.dataset.messageType=type; messageBox.className='message-box'; if(type!=='info') messageBox.classList.add(type); }
-
-  function populateModal() {
-    mnemonicList.innerHTML='';
-    const ds=allMnemonicSets[currentRange];
-    Object.keys(ds).sort((a,b)=>parseInt(a)-parseInt(b)||a.localeCompare(b)).forEach(key=>{
-      const li=document.createElement('li');
-      li.innerHTML=`<span>${key}</span><span>${ds[key]}</span>`;
-      mnemonicList.appendChild(li);
-    });
-  }
-
-  selectionScreen.querySelectorAll('.selection-button').forEach(btn=>{
-    btn.addEventListener('click',()=>startGame(btn.dataset.range));
-  });
-  resetButton.addEventListener('click', createBoard);
-  showCodeButton.addEventListener('click', ()=>{ populateModal(); modalOverlay.classList.add('is-visible'); });
-  modalCloseBtn.addEventListener('click', ()=>modalOverlay.classList.remove('is-visible'));
-  modalOverlay.addEventListener('click', e=>{ if(e.target===modalOverlay) modalOverlay.classList.remove('is-visible'); });
-  backButton.addEventListener('click', ()=>{
-    stopTimer();
-    if (!backgroundMusic.paused){ backgroundMusic.pause(); backgroundMusic.currentTime=0; }
-    musicStarted=false;
-    gameContainer.classList.remove('visible');
-    selectionScreen.style.display='block';
-    gameBoard.innerHTML=''; currentRange='';
-    setMessage('Selecciona un rango para empezar.','info');
-    movesCountSpan.textContent='0'; timerSpan.textContent='00:00';
-    startTime=null; elapsedTime=0;
-  });
-  muteButton.addEventListener('click', toggleMute);
-  selectionScreen.style.display='block';
-  gameContainer.classList.remove('visible');
-})();
-</script>
-
-<!-- Practice Mode Logic (Firebase) -->
+<!-- ── Memory Game Script (module — handles ES static + EN Firebase) ── -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
   import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
   (async function() {
-    const rangeCheckboxesContainer = document.getElementById('range-checkboxes');
-    const timeSelect = document.getElementById('time-select');
-    const questionTypeText = document.getElementById('question-type');
-    const questionText = document.getElementById('question-text');
-    const answerInput = document.getElementById('answer-input');
-    const checkAnswerBtn = document.getElementById('check-answer-btn');
-    const startPracticeBtn = document.getElementById('start-practice-btn');
-    const mutePracticeBtn = document.getElementById('mute-practice-btn');
-    const resetPracticeBtn = document.getElementById('reset-practice-btn');
-    const feedbackContainer = document.getElementById('feedback-container');
-    const feedbackText = document.getElementById('feedback-text');
-    const timerBarContainer = document.getElementById('timer-bar-container');
-    const timerBar = document.getElementById('timer-bar');
-    const scoreCorrectSpan = document.getElementById('score-correct');
-    const scoreStreakSpan = document.getElementById('score-streak');
-    const editWordsBtn = document.getElementById('edit-words-btn');
-    const selectAllBtn = document.getElementById('select-all-btn');
-    const deselectAllBtn = document.getElementById('deselect-all-btn');
-    const editModalOverlay = document.getElementById('edit-modal-overlay');
-    const editModalTitle = document.getElementById('edit-modal-title');
-    const editMnemonicList = document.getElementById('edit-mnemonic-list');
-    const modalButtonContainer = editModalOverlay.querySelector('.modal-button-container');
-    const backgroundMusic = document.getElementById('background-music-practice');
-    const correctSound = document.getElementById('correct-sound');
-    const errorSound = document.getElementById('error-sound');
-    const nextSound = document.getElementById('next-sound');
+    const lang = window.MEMORIA_LANG || 'es';
+    const isEN = lang === 'en';
+
+    // ── Data ────────────────────────────────────────────────
+    const DATA_ES = {
+      "Código": { '0':'S, Z, Cs','1':'T, D','2':'N','3':'M','4':'R, RR','5':'L','6':'J, CH, Gf','7':'Cf, K, Q','8':'V, F','9':'P, B' },
+      "0-9":   { '0':'Oso','1':'auTo','2':'aNillo','3':'huMo','4':'Río','5':'oLa','6':'hiJo','7':'Casa','8':'aVe','9':'Pie' },
+      "10-19": { '10':'TaZa','11':'TiTo','12':'TiNa','13':'ToMo','14':'ToRo','15':'TeLa','16':'TeCHo','17':'ToCayo','18':'TiFo','19':'TuBo' },
+      "20-29": { '20':'NueZ','21':'NoTa','22':'NeNa','23':'gNoMo','24':'NuRia','25':'NiLo','26':'NiCHo','27':'NuCa','28':'NieVe','29':'NuBe' },
+      "30-39": { '30':'MeSa','31':'MoTa','32':'MaNo','33':'MaMá','34':'MaR','35':'MieL','36':'MaCHo','37':'MueCa','38':'MaFia','39':'MaPa' },
+      "40-49": { '40':'RoSa','41':'RaTa','42':'RaNa','43':'RaMa','44':'heRReRo','45':'RieL','46':'ReJa','47':'RoCa','48':'RiFa','49':'RoPa' },
+      "50-59": { '50':'LoZa','51':'LaTa','52':'LaNa','53':'LiMa','54':'LoRo','55':'LiLa','56':'LeCHe','57':'LaCa','58':'LaVa','59':'LoBo' },
+      "60-69": { '60':'ChoZa','61':'JaDe','62':'JuaN','63':'GeMa','64':'JaRRo','65':'CheLa','66':'ChoCho','67':'JaCa','68':'CheF','69':'CHaPa' },
+      "70-79": { '70':'CaSa','71':'GaTo','72':'CuNa','73':'CaMa','74':'CaRa','75':'KiLo','76':'CaJa','77':'CaCa','78':'CaFé','79':'CaPa' },
+      "80-89": { '80':'FoSa','81':'FoTo','82':'ViNo','83':'FaMa','84':'FaRo','85':'VeLa','86':'FaJa','87':'FoCo','88':'FoFo','89':'FoBia' },
+      "90-99": { '90':'PeZ','91':'PaTo','92':'PiNo','93':'PuMa','94':'PeRRo','95':'PaLo','96':'PaJa','97':'PiCo','98':'PuF','99':'PiPa' }
+    };
+    const DATA_EN_DEFAULT = {
+      "Code":  { '0':'s, z','1':'t, d, th','2':'n','3':'m','4':'r','5':'l','6':'j, sh, ch, g','7':'k, c, g, q','8':'f, v, ph','9':'p, b' },
+      "0-9":   { '0':'Saw','1':'Tea','2':'Noah','3':'Me','4':'Ray','5':'Law','6':'Jaw','7':'Key','8':'Fee','9':'Bee' },
+      "10-19": { '10':'Toes','11':'Dad','12':'Tin','13':'Team','14':'Tire','15':'Towel','16':'Dish','17':'Duck','18':'TV','19':'Tape' },
+      "20-29": { '20':'Nose','21':'Net','22':'Nun','23':'Name','24':'Nero','25':'Nail','26':'Hinge','27':'Neck','28':'Knife','29':'Knob' },
+      "30-39": { '30':'Mouse','31':'Mat','32':'Moon','33':'Mom','34':'Mower','35':'Mail','36':'Match','37':'Mike','38':'Movie','39':'Map' },
+      "40-49": { '40':'Rose','41':'Rat','42':'Rain','43':'Ram','44':'Warrior','45':'Rail','46':'Roach','47':'Rock','48':'Roof','49':'Robe' },
+      "50-59": { '50':'Lace','51':'Light','52':'Lion','53':'Lime','54':'Lawyer','55':'Lily','56':'Leash','57':'Lock','58':'Leaf','59':'Lip' },
+      "60-69": { '60':'Cheese','61':'Sheet','62':'Chain','63':'Jam','64':'Chair','65':'Jail','66':'Judge','67':'Shake','68':'Chef','69':'Ship' },
+      "70-79": { '70':'Case','71':'Cat','72':'Can','73':'Comb','74':'Car','75':'Coal','76':'Cash','77':'Cake','78':'Coffee','79':'Cap' },
+      "80-89": { '80':'Face','81':'Fat','82':'Fan','83':'Foam','84':'Fire','85':'File','86':'Fish','87':'Fake','88':'Fife','89':'Fob' },
+      "90-99": { '90':'Bus','91':'Bat','92':'Pen','93':'Bomb','94':'Bear','95':'Ball','96':'Beach','97':'Book','98':'Beef','99':'Pope' }
+    };
 
     const firebaseConfig = {
       apiKey: "AIzaSyCstpJcQhCQqhp_jidbRyCcmIcScQ5UDhs",
@@ -700,7 +413,223 @@
       appId: "1:171586710079:web:e7ece3564ca31ab570a68a"
     };
 
-    const defaultMnemonicSets = {
+    // ── Firebase init (EN only) ──────────────────────────────
+    let db = null, userId = null;
+    let userMnemonicSets = JSON.parse(JSON.stringify(isEN ? DATA_EN_DEFAULT : DATA_ES));
+
+    if (isEN) {
+      try {
+        const app = getApps().find(a => a.name === 'mem-game') ?? initializeApp(firebaseConfig, 'mem-game');
+        db = getFirestore(app);
+        const auth = getAuth(app);
+        const user = await new Promise((res, rej) => { const u = onAuthStateChanged(auth, u => { u(); res(u); }, rej); });
+        userId = user ? user.uid : (await signInAnonymously(auth)).user.uid;
+        // Load user words
+        const snap = await getDoc(doc(db, 'mnemonic_words_en', userId));
+        if (snap.exists()) {
+          const d = snap.data();
+          Object.keys(userMnemonicSets).forEach(r => { if (d[r]) userMnemonicSets[r] = { ...DATA_EN_DEFAULT[r], ...d[r] }; });
+        } else {
+          await setDoc(doc(db, 'mnemonic_words_en', userId), DATA_EN_DEFAULT);
+        }
+      } catch(e) { console.warn('Memory game Firebase error:', e); }
+    }
+
+    // ── DOM ──────────────────────────────────────────────────
+    const app        = document.getElementById('nemotecnia-memory-game-app');
+    const selScreen  = app.querySelector('#selection-screen');
+    const gameCont   = app.querySelector('#game-container');
+    const gameBoard  = app.querySelector('#game-board');
+    const movesSpan  = app.querySelector('#moves-count');
+    const msgBox     = app.querySelector('#message-box');
+    const timerSpan  = app.querySelector('#timer');
+    const modalOverlay = app.querySelector('#code-modal-overlay');
+    const modalContent = app.querySelector('.modal-content');
+    const mnemonicList = app.querySelector('#mnemonic-code-list');
+    const bgMusic    = app.querySelector('#background-music');
+    const flipSound  = app.querySelector('#flip-sound');
+    const editBtns   = app.querySelector('#mem-modal-edit-btns');
+    const memEditBtn = app.querySelector('#mem-edit-btn');
+    const memSaveBtn = app.querySelector('#mem-save-btn');
+    const memCancelBtn = app.querySelector('#mem-cancel-btn');
+
+    // ── State ────────────────────────────────────────────────
+    let currentRange='', cardsData=[], firstCard=null, secondCard=null;
+    let lockBoard=false, matchedPairs=0, moves=0;
+    let timerInterval=null, startTime=null, elapsedTime=0;
+    let isMuted=false, musicStarted=false;
+
+    const codeRangeKey = isEN ? 'Code' : 'Código';
+    const T = {
+      findPairs:   isEN ? 'Find the pairs.' : 'Encuentra los pares.',
+      correct:     isEN ? 'Correct!'        : '¡Correcto!',
+      tryAgain:    isEN ? 'Try again.'      : 'Intenta de nuevo.',
+      congrats:    isEN ? 'Congratulations!' : '¡Felicidades!',
+      completedIn: isEN ? 'Completed in'    : 'Completaste en',
+      moves:       isEN ? 'moves and'       : 'movimientos y',
+      muteMusic:   isEN ? 'Mute Music'      : 'Silenciar Música',
+      unmuteMusic: isEN ? 'Unmute Music'    : 'Activar Música',
+    };
+
+    function playSound(el) { el.currentTime=0; el.play().catch(()=>{}); }
+    function shuffle(arr) { for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];} }
+    function formatTime(s) { return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`; }
+    function setMsg(text,type) { msgBox.textContent=text; msgBox.className='message-box'; if(type!=='info')msgBox.classList.add(type); msgBox.dataset.messageType=type; }
+
+    function toggleMute() {
+      isMuted=!isMuted; bgMusic.muted=isMuted;
+      app.querySelector('#mute-button').textContent = isMuted ? T.unmuteMusic : T.muteMusic;
+      app.querySelector('#mute-button').classList.toggle('muted', isMuted);
+      if (!isMuted && musicStarted && bgMusic.paused) playSound(bgMusic);
+    }
+    function startTimer() {
+      if(timerInterval) clearInterval(timerInterval);
+      startTime = startTime ? Date.now()-(elapsedTime*1000) : Date.now();
+      timerInterval=setInterval(()=>{ elapsedTime=Math.floor((Date.now()-startTime)/1000); timerSpan.textContent=formatTime(elapsedTime); },1000);
+    }
+    function stopTimer() { clearInterval(timerInterval); timerInterval=null; }
+
+    function createBoard() {
+      gameBoard.innerHTML=''; matchedPairs=0; moves=0; movesSpan.textContent=0;
+      setMsg(T.findPairs,'info');
+      firstCard=null; secondCard=null; lockBoard=false;
+      stopTimer(); elapsedTime=0; startTime=null; timerSpan.textContent=formatTime(0);
+      if(!bgMusic.paused){bgMusic.pause();bgMusic.currentTime=0;} musicStarted=false; cardsData=[];
+      const ds=userMnemonicSets[currentRange];
+      for(const key in ds){ cardsData.push({id:key,text:key}); cardsData.push({id:key,text:ds[key]}); }
+      shuffle(cardsData);
+      cardsData.forEach(item=>{
+        const el=document.createElement('div'); el.classList.add('card'); el.dataset.id=item.id; el.dataset.text=item.text;
+        const fs=item.text.length>10?'0.85rem':item.text.length>6?'1rem':'1.2rem';
+        el.innerHTML=`<div class="card-face card-front">?</div><div class="card-face card-back" style="font-size:${fs}">${item.text}</div>`;
+        el.addEventListener('click', handleCardClick);
+        gameBoard.appendChild(el);
+      });
+    }
+    function startGame(range) {
+      currentRange=range; selScreen.style.display='none'; gameCont.classList.add('visible');
+      musicStarted=false; bgMusic.muted=isMuted; createBoard();
+    }
+    function handleCardClick() {
+      const card=this;
+      if(lockBoard||card.classList.contains('is-flipped')||card===firstCard) return;
+      if(!timerInterval) startTimer();
+      if(!musicStarted&&!isMuted){playSound(bgMusic);musicStarted=true;}
+      playSound(flipSound); card.classList.add('is-flipped');
+      if(!firstCard){firstCard=card;return;}
+      secondCard=card; lockBoard=true; moves++; movesSpan.textContent=moves; checkForMatch();
+    }
+    function checkForMatch() {
+      const isMatch=firstCard.dataset.id===secondCard.dataset.id;
+      const t1=firstCard.dataset.text, t2=secondCard.dataset.text;
+      const numText=/^\d+$/.test(t1)||(currentRange===codeRangeKey&&t1.length<=2)?t1:t2;
+      const wordText=numText===t1?t2:t1;
+      if(isMatch){
+        setMsg(`${T.correct} ${numText} = ${wordText}`,'success');
+        firstCard.removeEventListener('click',handleCardClick); secondCard.removeEventListener('click',handleCardClick);
+        matchedPairs++;
+        if(matchedPairs===cardsData.length/2){ stopTimer(); setTimeout(()=>setMsg(`${T.congrats} ${T.completedIn} ${moves} ${T.moves} ${formatTime(elapsedTime)}.`,'final'),500); }
+        resetBoardState(false);
+      } else {
+        setMsg(isEN?'Try again.':'Intenta de nuevo.','error');
+        setTimeout(()=>{ firstCard.classList.remove('is-flipped'); secondCard.classList.remove('is-flipped'); resetBoardState(true); },1200);
+      }
+    }
+    function resetBoardState(clearMsg) {
+      [firstCard,secondCard]=[null,null]; lockBoard=false;
+      if(clearMsg) setTimeout(()=>{ if(msgBox.dataset.messageType==='error') setMsg(T.findPairs,'info'); },1500);
+    }
+
+    // ── Modal ────────────────────────────────────────────────
+    function populateModal() {
+      mnemonicList.innerHTML='';
+      const ds=userMnemonicSets[currentRange]||{};
+      Object.keys(ds).sort((a,b)=>parseInt(a)-parseInt(b)||a.localeCompare(b)).forEach(key=>{
+        const li=document.createElement('li'); li.dataset.key=key;
+        li.innerHTML=`<span>${key}</span><span class="word-value">${ds[key]}</span>`;
+        mnemonicList.appendChild(li);
+      });
+    }
+    function toggleModalEdit(isEditing) {
+      modalContent.classList.toggle('is-editing', isEditing);
+      memEditBtn.style.display  = isEditing ? 'none'         : 'inline-block';
+      memSaveBtn.style.display  = isEditing ? 'inline-block' : 'none';
+      memCancelBtn.style.display= isEditing ? 'inline-block' : 'none';
+      mnemonicList.querySelectorAll('.word-value').forEach(s=>s.setAttribute('contenteditable',isEditing));
+    }
+    async function saveModalWords() {
+      if(!db||!userId) return;
+      const orig=memSaveBtn.textContent; memSaveBtn.disabled=true; memSaveBtn.textContent='...';
+      try {
+        const newSet={...userMnemonicSets[currentRange]}; let hasChanges=false;
+        mnemonicList.querySelectorAll('li').forEach(item=>{
+          const k=item.dataset.key, v=item.querySelector('.word-value').textContent.trim();
+          if(v&&newSet[k]!==v){newSet[k]=v;hasChanges=true;}
+        });
+        if(!hasChanges){toggleModalEdit(false);return;}
+        await setDoc(doc(db,'mnemonic_words_en',userId),{[currentRange]:newSet},{merge:true});
+        userMnemonicSets[currentRange]=newSet;
+        toggleModalEdit(false); setTimeout(()=>modalOverlay.classList.remove('is-visible'),600);
+      } catch(e){console.error(e);}
+      finally{memSaveBtn.disabled=false;memSaveBtn.textContent=orig;}
+    }
+
+    // ── Events ───────────────────────────────────────────────
+    selScreen.querySelectorAll('.selection-button').forEach(btn=>{
+      btn.addEventListener('click',()=>startGame(btn.dataset.range));
+    });
+    app.querySelector('#reset-button').addEventListener('click', createBoard);
+    app.querySelector('#show-code-button').addEventListener('click', ()=>{ populateModal(); toggleModalEdit(false); modalOverlay.classList.add('is-visible'); });
+    app.querySelector('#modal-close-btn').addEventListener('click', ()=>modalOverlay.classList.remove('is-visible'));
+    modalOverlay.addEventListener('click', e=>{ if(e.target===modalOverlay) modalOverlay.classList.remove('is-visible'); });
+    app.querySelector('#back-button').addEventListener('click', ()=>{
+      stopTimer(); if(!bgMusic.paused){bgMusic.pause();bgMusic.currentTime=0;} musicStarted=false;
+      gameCont.classList.remove('visible'); selScreen.style.display='block';
+      gameBoard.innerHTML=''; currentRange=''; movesSpan.textContent='0'; timerSpan.textContent='00:00'; startTime=null; elapsedTime=0;
+    });
+    app.querySelector('#mute-button').addEventListener('click', toggleMute);
+    if(isEN) {
+      memEditBtn.addEventListener('click', ()=>toggleModalEdit(true));
+      memSaveBtn.addEventListener('click', saveModalWords);
+      memCancelBtn.addEventListener('click', ()=>{ populateModal(); toggleModalEdit(false); });
+    }
+
+    selScreen.style.display='block'; gameCont.classList.remove('visible');
+  })();
+</script>
+
+<!-- ── Practice Mode Script (module — ES mnemonic_words / EN mnemonic_words_en) ── -->
+<script type="module">
+  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+  (async function() {
+    const lang = window.MEMORIA_LANG || 'es';
+    const isEN = lang === 'en';
+    const COLLECTION = isEN ? 'mnemonic_words_en' : 'mnemonic_words';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCstpJcQhCQqhp_jidbRyCcmIcScQ5UDhs",
+      authDomain: "app-memoria-storm.firebaseapp.com",
+      projectId: "app-memoria-storm",
+      storageBucket: "app-memoria-storm.firebasestorage.app",
+      messagingSenderId: "171586710079",
+      appId: "1:171586710079:web:e7ece3564ca31ab570a68a"
+    };
+
+    const defaultMnemonicSets = isEN ? {
+      "0-9":   { '0':'Saw','1':'Tea','2':'Noah','3':'Me','4':'Ray','5':'Law','6':'Jaw','7':'Key','8':'Fee','9':'Bee' },
+      "10-19": { '10':'Toes','11':'Dad','12':'Tin','13':'Team','14':'Tire','15':'Towel','16':'Dish','17':'Duck','18':'TV','19':'Tape' },
+      "20-29": { '20':'Nose','21':'Net','22':'Nun','23':'Name','24':'Nero','25':'Nail','26':'Hinge','27':'Neck','28':'Knife','29':'Knob' },
+      "30-39": { '30':'Mouse','31':'Mat','32':'Moon','33':'Mom','34':'Mower','35':'Mail','36':'Match','37':'Mike','38':'Movie','39':'Map' },
+      "40-49": { '40':'Rose','41':'Rat','42':'Rain','43':'Ram','44':'Warrior','45':'Rail','46':'Roach','47':'Rock','48':'Roof','49':'Robe' },
+      "50-59": { '50':'Lace','51':'Light','52':'Lion','53':'Lime','54':'Lawyer','55':'Lily','56':'Leash','57':'Lock','58':'Leaf','59':'Lip' },
+      "60-69": { '60':'Cheese','61':'Sheet','62':'Chain','63':'Jam','64':'Chair','65':'Jail','66':'Judge','67':'Shake','68':'Chef','69':'Ship' },
+      "70-79": { '70':'Case','71':'Cat','72':'Can','73':'Comb','74':'Car','75':'Coal','76':'Cash','77':'Cake','78':'Coffee','79':'Cap' },
+      "80-89": { '80':'Face','81':'Fat','82':'Fan','83':'Foam','84':'Fire','85':'File','86':'Fish','87':'Fake','88':'Fife','89':'Fob' },
+      "90-99": { '90':'Bus','91':'Bat','92':'Pen','93':'Bomb','94':'Bear','95':'Ball','96':'Beach','97':'Book','98':'Beef','99':'Pope' }
+    } : {
       "0-9":   { '0':'Oso','1':'auTo','2':'aNillo','3':'huMo','4':'Río','5':'oLa','6':'hiJo','7':'Calle','8':'aVe','9':'Pie' },
       "10-19": { '10':'TaZa','11':'TiTo','12':'TiNa','13':'ToMo','14':'ToRo','15':'TeLa','16':'TeCHo','17':'ToCayo','18':'TiFo','19':'TuBo' },
       "20-29": { '20':'NueZ','21':'NoTa','22':'NeNa','23':'NoMo','24':'NuRia','25':'NiLo','26':'NiCHo','27':'NuCa','28':'NieVe','29':'NuBe' },
@@ -713,164 +642,207 @@
       "90-99": { '90':'PoZo','91':'PaTo','92':'PiNo','93':'PuMa','94':'PeRRo','95':'PaLa','96':'PaJa','97':'PiCo','98':'PaVo','99':'PaPá' }
     };
 
+    const T = {
+      wordToNumber:  isEN ? 'What number is this word?'        : '¿Qué número es esta palabra?',
+      numberToWord:  isEN ? 'What word is this number?'        : '¿Qué palabra es este número?',
+      noRange:       isEN ? 'Please select at least one range.' : 'Por favor, selecciona al menos un rango.',
+      correct:       isEN ? 'Correct!'                         : '¡Correcto!',
+      incorrect:     isEN ? 'Incorrect. The answer for'        : 'Incorrecto. La respuesta para',
+      is:            isEN ? 'is'                               : 'es',
+      timeout:       isEN ? "Time's up! The answer for"        : '¡Se acabó el tiempo! La respuesta para',
+      was:           isEN ? 'was'                              : 'era',
+      initMsg:       isEN ? 'Set up your practice and press "Start" to begin.' : 'Configura tu práctica y presiona "Comenzar" para empezar.',
+      updated:       isEN ? 'Words updated!'                   : '¡Palabras actualizadas!',
+      question:      isEN ? 'Question'                         : 'Pregunta',
+      editTitle:     isEN ? 'Edit Words for Range:'            : 'Editar Palabras del Rango:',
+      selectOne:     isEN ? 'Select only ONE range to edit.'   : 'Selecciona solo UN rango a la vez para editar.',
+      selectFirst:   isEN ? 'Select a range to edit it.'       : 'Selecciona un rango para poder editarlo.',
+      muteMusic:     isEN ? 'Mute Music'                       : 'Silenciar Música',
+      unmuteMusic:   isEN ? 'Unmute Music'                     : 'Activar Música',
+    };
+
     let db, auth, userId;
     let userMnemonicSets = JSON.parse(JSON.stringify(defaultMnemonicSets));
     let currentQuestion=null, isMuted=false, musicStarted=false, audioUnlocked=false;
     let countdownInterval=null, correctAnswers=0, totalQuestions=0, consecutiveStreak=0, practiceInProgress=false;
 
-    function unlockAudio() { if(!audioUnlocked){[backgroundMusic,correctSound,errorSound,nextSound].forEach(s=>{s.play().then(()=>s.pause()).catch(()=>{})});audioUnlocked=true;} }
-    function playSound(el) { if(isMuted&&el===backgroundMusic)return; el.currentTime=0; el.play().catch(()=>{}); }
-    function toggleMute() {
-      isMuted=!isMuted; backgroundMusic.muted=isMuted;
-      mutePracticeBtn.textContent=isMuted?T.unmuteMusic:T.muteMusic;
-      mutePracticeBtn.classList.toggle('muted',isMuted);
-      if(!isMuted&&musicStarted&&backgroundMusic.paused)playSound(backgroundMusic);
-    }
-    function showEditModal(){editModalOverlay.classList.add('is-visible');}
-    function hideEditModal(){editModalOverlay.classList.remove('is-visible');}
+    // DOM
+    const rangeBoxes     = document.getElementById('range-checkboxes');
+    const timeSelect     = document.getElementById('time-select');
+    const qTypeText      = document.getElementById('question-type');
+    const qText          = document.getElementById('question-text');
+    const answerInput    = document.getElementById('answer-input');
+    const checkBtn       = document.getElementById('check-answer-btn');
+    const startBtn       = document.getElementById('start-practice-btn');
+    const muteBtn        = document.getElementById('mute-practice-btn');
+    const resetBtn       = document.getElementById('reset-practice-btn');
+    const feedbackCont   = document.getElementById('feedback-container');
+    const feedbackTxt    = document.getElementById('feedback-text');
+    const timerBarCont   = document.getElementById('timer-bar-container');
+    const timerBar       = document.getElementById('timer-bar');
+    const scoreCorrect   = document.getElementById('score-correct');
+    const scoreStreak    = document.getElementById('score-streak');
+    const editWordsBtn   = document.getElementById('edit-words-btn');
+    const selectAllBtn   = document.getElementById('select-all-btn');
+    const deselectAllBtn = document.getElementById('deselect-all-btn');
+    const editModalOvl   = document.getElementById('edit-modal-overlay');
+    const editModalTitle = document.getElementById('edit-modal-title');
+    const editMnList     = document.getElementById('edit-mnemonic-list');
+    const modalBtnCont   = editModalOvl.querySelector('.modal-button-container');
+    const bgMusic        = document.getElementById('background-music-practice');
+    const correctSound   = document.getElementById('correct-sound');
+    const errorSound     = document.getElementById('error-sound');
+    const nextSound      = document.getElementById('next-sound');
 
-    function initializeFirebase() {
+    // Firebase
+    function initFirebase() {
       try {
-        const app=initializeApp(firebaseConfig);
-        db=getFirestore(app); auth=getAuth(app);
-        onAuthStateChanged(auth, async user=>{
-          if(user){userId=user.uid;await loadUserWords();populateCheckboxes();}
-          else{try{const uc=await signInAnonymously(auth);userId=uc.user.uid;await loadUserWords();populateCheckboxes();}catch(e){console.error(e);populateCheckboxes();}}
+        const fbApp = getApps().find(a=>a.name==='prac-app') ?? initializeApp(firebaseConfig,'prac-app');
+        db   = getFirestore(fbApp);
+        auth = getAuth(fbApp);
+        onAuthStateChanged(auth, async user => {
+          if(user){ userId=user.uid; await loadWords(); populateCheckboxes(); }
+          else { try { userId=(await signInAnonymously(auth)).user.uid; await loadWords(); populateCheckboxes(); } catch(e){populateCheckboxes();} }
         });
-      } catch(e){console.error(e);populateCheckboxes();}
+      } catch(e){ console.error(e); populateCheckboxes(); }
     }
-    async function loadUserWords() {
-      if(!db||!userId)return;
+    async function loadWords() {
+      if(!db||!userId) return;
       try {
-        const snap=await getDoc(doc(db,"mnemonic_words",userId));
+        const snap=await getDoc(doc(db,COLLECTION,userId));
         if(snap.exists()){const d=snap.data();Object.keys(userMnemonicSets).forEach(r=>{if(d[r])userMnemonicSets[r]={...defaultMnemonicSets[r],...d[r]};});}
-        else{await setDoc(doc(db,"mnemonic_words",userId),defaultMnemonicSets);}
+        else{await setDoc(doc(db,COLLECTION,userId),defaultMnemonicSets);}
       }catch(e){console.error(e);}
     }
     function populateCheckboxes() {
-      rangeCheckboxesContainer.innerHTML='';
+      rangeBoxes.innerHTML='';
       Object.keys(userMnemonicSets).forEach(range=>{
-        const div=document.createElement('div');
-        div.className='checkbox-label';
-        div.innerHTML=`<input type="checkbox" id="range-${range}" value="${range}"><label for="range-${range}">${range}</label>`;
-        rangeCheckboxesContainer.appendChild(div);
+        const div=document.createElement('div'); div.className='checkbox-label';
+        div.innerHTML=`<input type="checkbox" id="prac-range-${range}" value="${range}"><label for="prac-range-${range}">${range}</label>`;
+        rangeBoxes.appendChild(div);
       });
     }
-    function updateScoreDisplay(){scoreCorrectSpan.textContent=`${correctAnswers} / ${totalQuestions}`;scoreStreakSpan.textContent=consecutiveStreak;}
-    function startTimer(duration){
-      clearInterval(countdownInterval);timerBarContainer.style.display='block';
-      let timeLeft=duration;
-      countdownInterval=setInterval(()=>{timeLeft-=0.1;timerBar.style.width=`${(timeLeft/duration)*100}%`;if(timeLeft<=0){clearInterval(countdownInterval);handleTimeout();}},100);
+
+    // Audio
+    function unlockAudio(){if(!audioUnlocked){[bgMusic,correctSound,errorSound,nextSound].forEach(s=>{s.play().then(()=>s.pause()).catch(()=>{})});audioUnlocked=true;}}
+    function playSound(el){if(isMuted&&el===bgMusic)return;el.currentTime=0;el.play().catch(()=>{});}
+    function toggleMute(){isMuted=!isMuted;bgMusic.muted=isMuted;muteBtn.textContent=isMuted?T.unmuteMusic:T.muteMusic;muteBtn.classList.toggle('muted',isMuted);if(!isMuted&&musicStarted&&bgMusic.paused)playSound(bgMusic);}
+
+    // Practice logic
+    function updateScore(){scoreCorrect.textContent=`${correctAnswers} / ${totalQuestions}`;scoreStreak.textContent=consecutiveStreak;}
+    function setFeedback(msg,type){feedbackTxt.textContent=msg;feedbackCont.className='feedback-container '+type;}
+
+    function startCountdown(duration){
+      clearInterval(countdownInterval);timerBarCont.style.display='block';let tl=duration;
+      countdownInterval=setInterval(()=>{tl-=0.1;timerBar.style.width=`${(tl/duration)*100}%`;if(tl<=0){clearInterval(countdownInterval);handleTimeout();}},100);
     }
     function handleTimeout(){
       if(!practiceInProgress)return;
-      totalQuestions++;consecutiveStreak=0;updateScoreDisplay();
-      setFeedback(`${T.timeout} "${currentQuestion.question}" ${T.was} "${currentQuestion.answer}".`,"incorrect");
+      totalQuestions++;consecutiveStreak=0;updateScore();
+      setFeedback(`${T.timeout} "${currentQuestion.question}" ${T.was} "${currentQuestion.answer}".`,'incorrect');
       playSound(errorSound);currentQuestion=null;setTimeout(()=>generateQuestion(),1500);
     }
     function generateQuestion(isInitial=false){
       unlockAudio();
-      if(isInitial){playSound(nextSound);practiceInProgress=true;startPracticeBtn.disabled=true;}
-      if(!musicStarted){playSound(backgroundMusic);musicStarted=true;}
-      const selectedRanges=Array.from(rangeCheckboxesContainer.querySelectorAll('input:checked')).map(cb=>cb.value);
-      if(selectedRanges.length===0){setFeedback(T.noRangeSelected,"info");resetPractice();return;}
-      const pool=selectedRanges.flatMap(r=>Object.entries(userMnemonicSets[r]).map(([number,word])=>({number,word})));
-      if(pool.length===0){setFeedback(T.noWords,"info");resetPractice();return;}
+      if(isInitial){playSound(nextSound);practiceInProgress=true;startBtn.disabled=true;}
+      if(!musicStarted){playSound(bgMusic);musicStarted=true;}
+      const selected=Array.from(rangeBoxes.querySelectorAll('input:checked')).map(c=>c.value);
+      if(!selected.length){setFeedback(T.noRange,'info');resetPractice();return;}
+      const pool=selected.flatMap(r=>Object.entries(userMnemonicSets[r]).map(([number,word])=>({number,word})));
       const pair=pool[Math.floor(Math.random()*pool.length)];
       currentQuestion=Math.random()>0.5?{type:'word-to-number',question:pair.word,answer:pair.number}:{type:'number-to-word',question:pair.number,answer:pair.word};
-      questionTypeText.textContent=currentQuestion.type==='word-to-number'?T.wordToNumber:T.numberToWord;
-      questionText.textContent=currentQuestion.question;
-      answerInput.value='';answerInput.disabled=false;checkAnswerBtn.disabled=false;answerInput.focus();
-      setFeedback(`${T.verify}...`,"info");
+      qTypeText.textContent=currentQuestion.type==='word-to-number'?T.wordToNumber:T.numberToWord;
+      qText.textContent=currentQuestion.question;
+      answerInput.value='';answerInput.disabled=false;checkBtn.disabled=false;answerInput.focus();
+      setFeedback(isEN?"Type your answer and press 'Check'.":"Escribe tu respuesta.",'info');
       const tl=parseInt(timeSelect.value,10);
-      if(tl>0){startTimer(tl);}else{timerBarContainer.style.display='none';}
+      if(tl>0){startCountdown(tl);}else{timerBarCont.style.display='none';}
     }
     function checkAnswer(){
       if(!currentQuestion||!practiceInProgress)return;
-      clearInterval(countdownInterval);answerInput.disabled=true;checkAnswerBtn.disabled=true;totalQuestions++;
+      clearInterval(countdownInterval);answerInput.disabled=true;checkBtn.disabled=true;totalQuestions++;
       const ua=answerInput.value.trim();
       if(ua.toLowerCase()===String(currentQuestion.answer).toLowerCase()){
-        correctAnswers++;consecutiveStreak++;setFeedback(T.correct,"correct");playSound(correctSound);
+        correctAnswers++;consecutiveStreak++;setFeedback(T.correct,'correct');playSound(correctSound);
       }else{
-        consecutiveStreak=0;setFeedback(`${T.incorrect} "${currentQuestion.question}" ${T.is} "${currentQuestion.answer}".`,"incorrect");playSound(errorSound);
+        consecutiveStreak=0;setFeedback(`${T.incorrect} "${currentQuestion.question}" ${T.is} "${currentQuestion.answer}".`,'incorrect');playSound(errorSound);
       }
-      updateScoreDisplay();currentQuestion=null;setTimeout(()=>generateQuestion(),1500);
+      updateScore();currentQuestion=null;setTimeout(()=>generateQuestion(),1500);
     }
     function resetPractice(){
-      if(musicStarted){backgroundMusic.pause();backgroundMusic.currentTime=0;musicStarted=false;}
+      if(musicStarted){bgMusic.pause();bgMusic.currentTime=0;musicStarted=false;}
       clearInterval(countdownInterval);practiceInProgress=false;
-      correctAnswers=0;totalQuestions=0;consecutiveStreak=0;updateScoreDisplay();
-      rangeCheckboxesContainer.querySelectorAll('input:checked').forEach(cb=>cb.checked=false);
-      timeSelect.value="0";questionTypeText.textContent=T.questionLabel;questionText.textContent='...';
-      answerInput.value='';answerInput.disabled=false;checkAnswerBtn.disabled=false;startPracticeBtn.disabled=false;
-      timerBarContainer.style.display='none';
-      setFeedback(T.initMsg,"info");
+      correctAnswers=0;totalQuestions=0;consecutiveStreak=0;updateScore();
+      rangeBoxes.querySelectorAll('input:checked').forEach(c=>c.checked=false);
+      timeSelect.value='0';qTypeText.textContent=T.question;qText.textContent='...';
+      answerInput.value='';answerInput.disabled=false;checkBtn.disabled=false;startBtn.disabled=false;
+      timerBarCont.style.display='none';setFeedback(T.initMsg,'info');
     }
-    function setFeedback(msg,type){feedbackText.textContent=msg;feedbackContainer.className='feedback-container '+type;}
 
+    // Edit modal
     function populateEditModal(range){
-      editModalOverlay.dataset.range=range;
+      editModalOvl.dataset.range=range;
       editModalTitle.textContent=`${T.editTitle} ${range}`;
-      editMnemonicList.innerHTML='';
+      editMnList.innerHTML='';
       const ds=userMnemonicSets[range];
       Object.keys(ds).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(key=>{
         const li=document.createElement('li');li.dataset.key=key;
         li.innerHTML=`<span>${key}</span><span class="word-value">${ds[key]}</span>`;
-        editMnemonicList.appendChild(li);
+        editMnList.appendChild(li);
       });
     }
-    function toggleModalEditMode(isEditing){
-      const mc=editModalOverlay.querySelector('.modal-content');
-      const editBtn=modalButtonContainer.querySelector('#edit-mode-btn');
-      const saveBtn=modalButtonContainer.querySelector('#save-words-btn');
-      const cancelBtn=modalButtonContainer.querySelector('#cancel-edit-btn');
+    function toggleEditMode(isEditing){
+      const mc=editModalOvl.querySelector('.modal-content');
+      const eb=modalBtnCont.querySelector('#edit-mode-btn');
+      const sb=modalBtnCont.querySelector('#save-words-btn');
+      const cb=modalBtnCont.querySelector('#cancel-edit-btn');
       mc.classList.toggle('is-editing',isEditing);
-      editBtn.style.display=isEditing?'none':'inline-block';
-      saveBtn.style.display=isEditing?'inline-block':'none';
-      cancelBtn.style.display=isEditing?'inline-block':'none';
-      editMnemonicList.querySelectorAll('.word-value').forEach(s=>s.setAttribute('contenteditable',isEditing));
+      eb.style.display=isEditing?'none':'inline-block';
+      sb.style.display=isEditing?'inline-block':'none';
+      cb.style.display=isEditing?'inline-block':'none';
+      editMnList.querySelectorAll('.word-value').forEach(s=>s.setAttribute('contenteditable',isEditing));
     }
     async function saveWordsFromModal(range){
-      const saveBtn=modalButtonContainer.querySelector('#save-words-btn');
-      const orig=saveBtn.textContent;
+      const sb=modalBtnCont.querySelector('#save-words-btn');
+      const orig=sb.textContent;sb.disabled=true;sb.textContent=isEN?'Saving...':'Guardando...';
       try{
-        if(!userId)throw new Error("Not authenticated");
-        saveBtn.disabled=true;saveBtn.textContent='...';
+        if(!userId)throw new Error('Not authenticated');
         const newSet={...userMnemonicSets[range]};let hasChanges=false;
-        editMnemonicList.querySelectorAll('li').forEach(item=>{
-          const key=item.dataset.key,val=item.querySelector('.word-value').textContent.trim();
-          if(val&&newSet[key]!==val){newSet[key]=val;hasChanges=true;}
+        editMnList.querySelectorAll('li').forEach(item=>{
+          const k=item.dataset.key,v=item.querySelector('.word-value').textContent.trim();
+          if(v&&newSet[k]!==v){newSet[k]=v;hasChanges=true;}
         });
-        if(!hasChanges){toggleModalEditMode(false);return;}
-        await setDoc(doc(db,"mnemonic_words",userId),{[range]:newSet},{merge:true});
-        userMnemonicSets[range]=newSet;setFeedback(T.updatedWords,"correct");
-        toggleModalEditMode(false);setTimeout(hideEditModal,800);
-      }catch(e){console.error(e);setFeedback(T.saveError,"incorrect");}
-      finally{saveBtn.disabled=false;saveBtn.textContent=orig;}
+        if(!hasChanges){toggleEditMode(false);return;}
+        await setDoc(doc(db,COLLECTION,userId),{[range]:newSet},{merge:true});
+        userMnemonicSets[range]=newSet;setFeedback(T.updated,'correct');
+        toggleEditMode(false);setTimeout(()=>editModalOvl.classList.remove('is-visible'),800);
+      }catch(e){console.error(e);setFeedback(isEN?'Error saving.':'Error al guardar.','incorrect');}
+      finally{sb.disabled=false;sb.textContent=orig;}
     }
 
-    startPracticeBtn.addEventListener('click',()=>{if(!practiceInProgress)generateQuestion(true);});
-    checkAnswerBtn.addEventListener('click',checkAnswer);
-    mutePracticeBtn.addEventListener('click',toggleMute);
-    resetPracticeBtn.addEventListener('click',resetPractice);
+    // Events
+    startBtn.addEventListener('click',()=>{if(!practiceInProgress)generateQuestion(true);});
+    checkBtn.addEventListener('click',checkAnswer);
+    muteBtn.addEventListener('click',toggleMute);
+    resetBtn.addEventListener('click',resetPractice);
     answerInput.addEventListener('keyup',e=>{if(e.key==='Enter')checkAnswer();});
-    selectAllBtn.addEventListener('click',()=>rangeCheckboxesContainer.querySelectorAll('input').forEach(cb=>cb.checked=true));
-    deselectAllBtn.addEventListener('click',()=>rangeCheckboxesContainer.querySelectorAll('input').forEach(cb=>cb.checked=false));
+    selectAllBtn.addEventListener('click',()=>rangeBoxes.querySelectorAll('input').forEach(c=>c.checked=true));
+    deselectAllBtn.addEventListener('click',()=>rangeBoxes.querySelectorAll('input').forEach(c=>c.checked=false));
     editWordsBtn.addEventListener('click',()=>{
-      const sel=Array.from(rangeCheckboxesContainer.querySelectorAll('input:checked')).map(cb=>cb.value);
-      if(sel.length===0){setFeedback(T.selectRangeFirst,"incorrect");return;}
-      if(sel.length>1){setFeedback(T.onlyOneRange,"incorrect");return;}
-      populateEditModal(sel[0]);toggleModalEditMode(false);showEditModal();
+      const sel=Array.from(rangeBoxes.querySelectorAll('input:checked')).map(c=>c.value);
+      if(!sel.length){setFeedback(T.selectFirst,'incorrect');return;}
+      if(sel.length>1){setFeedback(T.selectOne,'incorrect');return;}
+      populateEditModal(sel[0]);toggleEditMode(false);editModalOvl.classList.add('is-visible');
     });
-    editModalOverlay.addEventListener('click',e=>{
-      const range=editModalOverlay.dataset.range;
-      if(e.target.id==='modal-close-btn-practice'||e.target===editModalOverlay)hideEditModal();
-      else if(e.target.id==='edit-mode-btn')toggleModalEditMode(true);
-      else if(e.target.id==='cancel-edit-btn'){populateEditModal(range);toggleModalEditMode(false);}
-      else if(e.target.id==='save-words-btn'&&range)saveWordsFromModal(range);
+    editModalOvl.addEventListener('click',e=>{
+      const range=editModalOvl.dataset.range;
+      if(e.target.id==='modal-close-btn-practice'||e.target===editModalOvl) editModalOvl.classList.remove('is-visible');
+      else if(e.target.id==='edit-mode-btn') toggleEditMode(true);
+      else if(e.target.id==='cancel-edit-btn'){populateEditModal(range);toggleEditMode(false);}
+      else if(e.target.id==='save-words-btn'&&range) saveWordsFromModal(range);
     });
 
-    initializeFirebase();
+    initFirebase();
   })();
 </script>
 
