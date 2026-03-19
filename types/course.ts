@@ -137,7 +137,7 @@ export type ExerciseConfig = {
 export type LessonVideo = {
   youtubeId: string;       // used for 'es' (or both when no EN-specific video)
   youtubeIdEn?: string;    // optional override for the English version
-  title: BilingualText;
+  title?: BilingualText;
   description?: BilingualText;
   durationMinutes?: number;
 };
