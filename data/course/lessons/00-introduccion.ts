@@ -11,7 +11,7 @@ export const lesson: LessonConfig = {
     en: "Course Introduction",
   },
   description: {
-    es: "Bienvenida, presentación del método Shostakovich-Hernández Medrano y lo que aprenderás en el curso.",
+    es: "Bienvenida, bienvenido. El método Shostakovich-Hernández Medrano-Cárdenas y lo que aprenderás en el curso.",
     en: "Welcome, introduction to the Shostakovich-Hernández Medrano method and what you will learn in the course.",
   },
   estimatedMinutes: 15,
