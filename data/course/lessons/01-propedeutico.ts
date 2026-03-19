@@ -21,6 +21,7 @@ export const lesson: LessonConfig = {
   videos: [
     {
       youtubeId: "2YBUqVs08VY",
+      youtubeIdEn: "AuSL-6cBoI4",
       title: {
         es: "Cómo usar el Secuenciador Storm Studios",
         en: "How to use the Storm Studios Sequencer",

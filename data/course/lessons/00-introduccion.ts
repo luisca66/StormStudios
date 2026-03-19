@@ -21,7 +21,7 @@ export const lesson: LessonConfig = {
   videos: [
     {
       youtubeId: "Myzo9sN_Yys",
-      youtubeIdEn: "AuSL-6cBoI4",
+      youtubeIdEn: "QbnoExMC6g8",
     },
   ],
 
