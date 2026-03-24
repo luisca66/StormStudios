@@ -87,15 +87,25 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
                     </h3>
                   )}
                   {/* Embed 16:9 */}
+                  {(() => {
+                    const embedSrc =
+                      locale === "en"
+                        ? (video.embedUrlEn ?? (video.youtubeIdEn ? `https://www.youtube.com/embed/${video.youtubeIdEn}` : video.embedUrl ?? `https://www.youtube.com/embed/${video.youtubeId}`))
+                        : (video.embedUrl ?? `https://www.youtube.com/embed/${video.youtubeId}`);
+
+                    return (
                   <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, borderRadius: "12px", overflow: "hidden", border: "1px solid rgba(139,92,246,0.2)" }}>
                     <iframe
-                      src={`https://www.youtube.com/embed/${locale === "en" && video.youtubeIdEn ? video.youtubeIdEn : video.youtubeId}`}
+                      src={embedSrc}
                       title={video.title?.[locale as "es" | "en"] ?? "Video"}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
                       allowFullScreen
                       style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
                     />
                   </div>
+                    );
+                  })()}
                   {/* Descripción del video */}
                   {video.description && (
                     <p className="ss-mono text-xs mt-2" style={{ color: "rgba(240,238,255,0.4)", lineHeight: 1.6 }}>

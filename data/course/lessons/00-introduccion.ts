@@ -20,7 +20,8 @@ export const lesson: LessonConfig = {
 
   videos: [
     {
-      youtubeId: "Myzo9sN_Yys",
+      youtubeId: "0I2h_Z6ytiM",
+      embedUrl: "https://www.youtube.com/embed/0I2h_Z6ytiM?si=saoa1y9StKrtLn1v",
       youtubeIdEn: "QbnoExMC6g8",
     },
   ],
