@@ -116,10 +116,37 @@
       }
     },
     "cta": {
-      "titleLine1": "Start your journey",
-      "titleLine2": "in harmony today",
-      "description": "Full free access. No credit card required.",
-      "button": "Access for free →"
+      "titleLine1": "Start today",
+      "titleLine2": "and come back soon",
+      "description": "Full free access. New lessons, tools, and publications will keep appearing here over time.",
+      "button": "Explore now →"
+    },
+    "growth": {
+      "badge": "Live project · expanding",
+      "titleLine1": "Storm Studios is growing",
+      "titleLine2": "and worth revisiting",
+      "description": "You can already explore the course, the apps, and the method, but this space will keep evolving with new lessons, tools, and content. The goal is not to apologize for being unfinished. It is to invite visitors to follow the process and discover each new step as it arrives.",
+      "items": {
+        "available": {
+          "eyebrow": "Available now",
+          "title": "Start with what is already here",
+          "description": "The course, the apps, and the core materials are already ready to be explored today.",
+          "cta": "Enter the course →"
+        },
+        "building": {
+          "eyebrow": "In progress",
+          "title": "New resources are on the way",
+          "description": "More lessons, music tools, and interactive experiences will keep being published as the project grows.",
+          "cta": "See apps and progress →"
+        },
+        "return": {
+          "eyebrow": "Come back",
+          "title": "Each visit may bring something new",
+          "description": "Check back regularly for fresh posts, improvements, and upcoming stages of Storm Studios Learning.",
+          "cta": "Follow the project →"
+        }
+      },
+      "footer": "If this project resonates with you, come back soon. Storm Studios Learning is being built in public, step by step."
     },
     "structuredData": {
       "organization": {

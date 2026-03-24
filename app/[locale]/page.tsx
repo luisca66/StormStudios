@@ -1,6 +1,7 @@
 import { MusicPlayer } from "@/components/MusicPlayer";
 import { HomeCTA } from "@/components/home/HomeCTA";
 import { HomeFeatures } from "@/components/home/HomeFeatures";
+import { HomeGrowthSection } from "@/components/home/HomeGrowthSection";
 import { HomeHero } from "@/components/home/HomeHero";
 import { HomeStructuredData } from "@/components/home/HomeStructuredData";
 import type { Metadata } from "next";
@@ -53,6 +54,8 @@ export default function HomePage() {
       <div className="ss-orb ss-orb-c" />
 
       <HomeHero />
+
+      <HomeGrowthSection />
 
       <div
         className="ss-divider"

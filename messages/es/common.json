@@ -116,10 +116,37 @@
       }
     },
     "cta": {
-      "titleLine1": "Comienza tu viaje",
-      "titleLine2": "armónico hoy",
-      "description": "Acceso gratuito completo. Sin tarjeta de crédito.",
-      "button": "Acceder gratis →"
+      "titleLine1": "Empieza hoy",
+      "titleLine2": "y vuelve pronto",
+      "description": "Acceso gratuito completo. Nuevas lecciones, herramientas y publicaciones irán apareciendo aquí periódicamente.",
+      "button": "Explorar ahora →"
+    },
+    "growth": {
+      "badge": "Proyecto vivo · en expansión",
+      "titleLine1": "Storm Studios está creciendo",
+      "titleLine2": "y vale la pena volver",
+      "description": "Ya puedes explorar el curso, las apps y el método, pero este espacio seguirá cambiando con nuevas lecciones, herramientas y contenidos. La idea no es pedir paciencia: es invitarte a acompañar el proceso y descubrir cada avance conforme aparezca.",
+      "items": {
+        "available": {
+          "eyebrow": "Disponible ahora",
+          "title": "Empieza con lo que ya existe",
+          "description": "El curso, las apps y los materiales base ya están listos para explorarse desde hoy.",
+          "cta": "Entrar al curso →"
+        },
+        "building": {
+          "eyebrow": "En desarrollo",
+          "title": "Nuevos recursos irán llegando",
+          "description": "Seguiremos publicando lecciones, herramientas musicales y experiencias interactivas a medida que el proyecto crece.",
+          "cta": "Ver apps y avances →"
+        },
+        "return": {
+          "eyebrow": "Vuelve al sitio",
+          "title": "Cada visita puede traerte algo nuevo",
+          "description": "Regresa periódicamente para encontrar publicaciones, mejoras y próximas etapas de Storm Studios Learning.",
+          "cta": "Seguir el proyecto →"
+        }
+      },
+      "footer": "Si este proyecto resuena contigo, vuelve pronto. Storm Studios Learning se está construyendo en público, paso a paso."
     },
     "structuredData": {
       "organization": {
