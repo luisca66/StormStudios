@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Props = { locale: string };
 
@@ -34,7 +34,13 @@ const LABELS = {
 export default function ContactForm({ locale }: Props) {
   const l = LABELS[locale as "es" | "en"] || LABELS.es;
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
-  const startedAtRef = useRef<number>(Date.now());
+  const startedAtRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (startedAtRef.current) {
+      startedAtRef.current.value = String(Date.now());
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -90,7 +96,7 @@ export default function ContactForm({ locale }: Props) {
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <input type="hidden" id="startedAt" name="startedAt" value={startedAtRef.current} readOnly />
+      <input ref={startedAtRef} type="hidden" id="startedAt" name="startedAt" defaultValue="" readOnly />
 
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">

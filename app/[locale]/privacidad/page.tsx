@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
+import type { Locale } from "@/i18n/routing";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return {
-    title: locale === "es" ? "Política de Privacidad" : "Privacy Policy",
-    description: locale === "es"
-      ? "Política de privacidad de Storm Studios Learning — cómo protegemos y manejamos tu información personal."
-      : "Storm Studios Learning privacy policy — how we protect and handle your personal information.",
-  };
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getLocalizedRouteUrls("/privacidad"),
+    title: locale === "es" ? "Politica de Privacidad" : "Privacy Policy",
+    description:
+      locale === "es"
+        ? "Politica de privacidad de Storm Studios Learning y tratamiento basico de datos de contacto."
+        : "Storm Studios Learning privacy policy and basic information about contact data handling.",
+    noIndex: true,
+  });
 }
 
 export default async function PrivacidadPage({ params }: Props) {

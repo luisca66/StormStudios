@@ -3,47 +3,49 @@ import { HomeCTA } from "@/components/home/HomeCTA";
 import { HomeFeatures } from "@/components/home/HomeFeatures";
 import { HomeGrowthSection } from "@/components/home/HomeGrowthSection";
 import { HomeHero } from "@/components/home/HomeHero";
+import { HomeResourcesSection } from "@/components/home/HomeResourcesSection";
 import { HomeStructuredData } from "@/components/home/HomeStructuredData";
 import type { Metadata } from "next";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
+import type { Locale } from "@/i18n/routing";
 
 export async function generateMetadata(
   { params }: { params: Promise<{ locale: string }> }
 ): Promise<Metadata> {
   const { locale } = await params;
-  const es = locale === "es";
 
-  const title = "Storm Studios Learning";
-  const description = es
-    ? "Aprende armonía tradicional, desarrolla tu oído musical y explora herramientas de entrenamiento auditivo con Storm Studios Learning."
-    : "Learn traditional harmony, develop your ear, and explore ear-training tools with Storm Studios Learning.";
-  const image = es
-    ? "https://storm-studios.vercel.app/og/home-es.jpg"
-    : "https://storm-studios.vercel.app/og/home-en.jpg";
-
-  return {
-    title,
-    description,
-
-    openGraph: {
-      title,
-      description,
-      images: [
-        {
-          url: image,
-          width: 1200,
-          height: 630,
-          alt: title
-        }
-      ]
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [image]
-    }
-  };
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getLocalizedRouteUrls("/"),
+    xDefault: "/es",
+    title:
+      locale === "es"
+        ? "Curso de Armonía Tradicional, Entrenamiento Auditivo y Teoría Musical"
+        : "Traditional Harmony Course, Ear Training and Music Theory",
+    description:
+      locale === "es"
+        ? "Storm Studios Learning ofrece curso de armonía tradicional, entrenamiento auditivo, teoría musical, lecciones gratis y apps educativas con el linaje Shostakovich-Medrano-Cárdenas."
+        : "Storm Studios Learning offers a traditional harmony course, ear training, music theory, free harmony lessons and music education apps rooted in the Shostakovich-Medrano-Cardenas lineage.",
+    keywords:
+      locale === "es"
+        ? [
+            "curso de armonía",
+            "curso de armonía tradicional",
+            "entrenamiento auditivo",
+            "teoría musical",
+            "curso de armonía gratis",
+            "apps de entrenamiento auditivo",
+          ]
+        : [
+            "traditional harmony course",
+            "ear training",
+            "music theory course",
+            "free harmony lessons",
+            "music education apps",
+            "harmony lessons",
+          ],
+    image: locale === "es" ? "/og/home-es.jpg" : "/og/home-en.jpg",
+  });
 }
 
 export default function HomePage() {
@@ -63,6 +65,8 @@ export default function HomePage() {
       />
 
       <HomeFeatures />
+
+      <HomeResourcesSection />
 
       <HomeCTA />
 

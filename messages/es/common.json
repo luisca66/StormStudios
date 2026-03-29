@@ -6,13 +6,18 @@
     "classes": "Clases / Taller",
     "course": "Curso de Armonía",
     "apps": "Apps",
+    "resources": "Guías",
     "book": "El Libro",
     "blog": "Blog",
-    "contact": "Contacto"
+    "contact": "Contacto",
+    "ariaLabel": "Navegación principal",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú"
   },
   "language": {
     "switch": "English",
-    "current": "ES"
+    "current": "ES",
+    "ariaLabel": "Cambiar idioma a"
   },
   "common": {
     "learnMore": "Conoce más",
@@ -67,46 +72,50 @@
   "footer": {
     "rights": "Todos los derechos reservados",
     "privacy": "Política de Privacidad",
-    "madeWith": "Hecho con"
+    "madeWith": "Hecho con",
+    "madeWithLocation": "Hecho con cuidado en",
+    "description": "Plataforma educativa musical de Luis Cárdenas.",
+    "location": "Ciudad de México",
+    "legal": "Blog y Legal"
   },
   "home": {
     "hero": {
-      "badge": "Método Shostakovich · Medrano · Cárdenas",
-      "titlePrefix": "Domina la",
+      "badge": "Linaje Shostakovich · Medrano · Cárdenas",
+      "titlePrefix": "Curso de",
       "titleEmphasis": "Armonía",
-      "titleSuffix": "del Futuro",
-      "description": "La inteligencia artificial está transformando la música.\nQuienes dominen la armonía tradicional tendrán la ventaja.\nSumérgete en la tradición de Shostakovich y del Conservatorio de Moscú,\ncontrasta tus obras con el Maestro Virtual y desarrolla un oído verdaderamente profesional.",
-      "primaryCta": "Explorar el Curso →",
-      "secondaryCta": "Ver Apps ▶",
+      "titleSuffix": "Tradicional con Entrenamiento Auditivo y Teoría Musical",
+      "description": "Estudia armonía tradicional, entrenamiento auditivo y teoría musical dentro del linaje Shostakovich-Medrano-Cárdenas.\nEmpieza con lecciones gratis de armonía, practica con apps educativas\ny usa el Maestro Virtual como apoyo para revisar tu trabajo escrito.",
+      "primaryCta": "Empezar lecciones gratis →",
+      "secondaryCta": "Explorar apps auditivas →",
       "analysisLabel": "análisis · sonata op. 64 nº 2 — shostakovich",
       "stats": {
         "lessons": "Lecciones",
-        "freeApps": "Apps Gratis",
-        "evaluation": "Evaluación",
-        "access": "Acceso"
+        "freeApps": "Apps Musicales",
+        "evaluation": "Apoyo con IA",
+        "access": "Acceso Gratis"
       }
     },
     "features": {
-      "badge": "Lo que incluye",
-      "titleLine1": "Todo lo que necesitas",
-      "titleLine2": "en un solo lugar",
-      "description": "Un ecosistema completo: teoría clásica, práctica auditiva y retroalimentación inteligente.",
+      "badge": "Rutas de estudio",
+      "titleLine1": "Aprende armonía,",
+      "titleLine2": "entrena el oído",
+      "description": "Lecciones gratis, apps educativas, guías de estudio y herramientas de retroalimentación para estudiantes serios de música.",
       "exploreCta": "Explorar →",
       "items": {
         "course": {
           "tag": "Armonía Clásica",
           "title": "Curso de Armonía Tradicional",
-          "description": "El método Shostakovich-Medrano-Cárdenas: armonía y análisis, cuarteto vocal armónico. 60+ lecciones, completamente gratis."
+          "description": "Lecciones de armonía tradicional basadas en el enfoque Shostakovich-Medrano-Cárdenas: conducción de voces, análisis y materiales gratuitos."
         },
         "apps": {
           "tag": "Entrenamiento Auditivo",
-          "title": "10 Apps Educativas",
-          "description": "Suite de apps gratuitas dentro del website y para Android: matemáticas mentales, memoria y entrenamiento auditivo total."
+          "title": "Apps de Educación Musical",
+          "description": "Apps para reconocimiento de intervalos, escucha, memoria y práctica auditiva en web y Android."
         },
         "virtualTeacher": {
           "tag": "IA + Pedagogía",
           "title": "Maestro Virtual",
-          "description": "Escribe tu tarea como midi file en nuestro secuenciador y el Maestro Virtual te guiará hacia la perfección."
+          "description": "Sube ejercicios MIDI desde el secuenciador y recibe retroalimentación con IA que acompaña al método, no lo sustituye."
         },
         "book": {
           "tag": "Libro Digital",
@@ -116,10 +125,10 @@
       }
     },
     "cta": {
-      "titleLine1": "Empieza hoy",
-      "titleLine2": "y vuelve pronto",
-      "description": "Acceso gratuito completo. Nuevas lecciones, herramientas y publicaciones irán apareciendo aquí periódicamente.",
-      "button": "Explorar ahora →"
+      "titleLine1": "Empieza con el curso gratis",
+      "titleLine2": "y profundiza después",
+      "description": "Comienza con las lecciones de armonía, sigue con las apps y las guías temáticas, y vuelve para descubrir nuevo material conforme crece el proyecto.",
+      "button": "Abrir el curso →"
     },
     "growth": {
       "badge": "Proyecto vivo · en expansión",
@@ -154,7 +163,7 @@
       },
       "website": {
         "name": "Storm Studios Learning",
-        "description": "Aprende armonía musical con inteligencia artificial — cursos, apps y maestro virtual",
+        "description": "Armonía tradicional, entrenamiento auditivo, teoría musical y apps de educación musical",
         "inLanguage": "es-MX"
       }
     }

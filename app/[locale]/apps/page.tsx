@@ -2,19 +2,29 @@ import type { Metadata } from "next";
 import { APPS } from "@/data/apps/apps-catalog";
 import AppCard from "@/components/apps/AppCard";
 import { type Locale } from "@/i18n/routing";
-import { getMainPageAlternates } from "@/lib/seo/page-alternates";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
+import { Link } from "@/i18n/navigation";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return {
-    title: locale === "es" ? "Apps" : "Apps",
-    description: locale === "es"
-      ? "Suite de aplicaciones gratuitas para entrenamiento auditivo y musical"
-      : "Free suite of apps for auditory and musical training",
-    alternates: getMainPageAlternates("/apps", locale as Locale),
-  };
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getLocalizedRouteUrls("/apps"),
+    title:
+      locale === "es"
+        ? "Apps de Entrenamiento Auditivo y Educación Musical"
+        : "Ear Training Apps and Music Education Tools",
+    description:
+      locale === "es"
+        ? "Explora apps gratis de entrenamiento auditivo, memoria musical, teoría y secuenciación dentro de Storm Studios Learning."
+        : "Explore free ear training apps, music memory tools, theory practice and sequencing tools inside Storm Studios Learning.",
+    keywords:
+      locale === "es"
+        ? ["apps de entrenamiento auditivo", "apps de teoría musical", "apps educativas musicales", "entrenamiento auditivo"]
+        : ["ear training apps", "music education apps", "music theory apps", "interval training apps"],
+  });
 }
 
 export default async function AppsPage({ params }: Props) {
@@ -40,12 +50,12 @@ export default async function AppsPage({ params }: Props) {
           </span>
           <h1 className="ss-serif mb-4"
             style={{ fontSize: "clamp(2.5rem,6vw,4rem)", lineHeight: 1.05, color: "#f0eeff" }}>
-            {es ? <>Nuestras <span className="ss-text-gradient">Apps</span></> : <>Our <span className="ss-text-gradient">Apps</span></>}
+            {es ? <>Apps de <span className="ss-text-gradient">Entrenamiento Auditivo</span></> : <>Ear Training <span className="ss-text-gradient">Apps</span></>}
           </h1>
           <p className="ss-mono" style={{ fontSize: "1rem", color: "rgba(240,238,255,0.5)", maxWidth: "520px", margin: "0 auto", lineHeight: 1.7 }}>
             {es
-              ? "Herramientas gratuitas para potenciar tu oído y tu mente — basadas en nuestra metodología integral."
-              : "Free tools to sharpen your ear and mind — based on our integral methodology."}
+              ? "Herramientas gratis para entrenamiento auditivo, teoría musical, memoria y práctica musical dentro del ecosistema de Storm Studios Learning."
+              : "Free tools for ear training, music theory, memory and practical musicianship inside the Storm Studios Learning ecosystem."}
           </p>
         </div>
 
@@ -97,6 +107,30 @@ export default async function AppsPage({ params }: Props) {
               : "Following our commitment to accessible training, these apps are available completely free — based on the method's principles, including multi-timbral training."}
           </p>
         </div>
+
+        <section className="mt-12">
+          <div className="ss-glass rounded-2xl p-8" style={{ border: "1px solid rgba(59,130,246,0.15)" }}>
+            <h2 className="ss-serif mb-3" style={{ fontSize: "1.4rem", color: "#f0eeff" }}>
+              {es ? "Conecta estas apps con tu curso" : "Connect these apps with your course"}
+            </h2>
+            <p className="ss-mono text-sm mb-6" style={{ color: "rgba(240,238,255,0.5)", lineHeight: 1.7 }}>
+              {es
+                ? "Las apps rinden mejor cuando se combinan con el curso de armonía, el método y nuestras guías temáticas de estudio."
+                : "The apps work best when combined with the harmony course, the method and our topic guides."}
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/curso-armonia" className="ss-mono text-sm px-5 py-3 rounded-xl" style={{ background: "rgba(139,92,246,0.15)", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.3)" }}>
+                {es ? "Ver curso de armonia" : "See the harmony course"}
+              </Link>
+              <Link href="/resources" className="ss-mono text-sm px-5 py-3 rounded-xl" style={{ background: "rgba(59,130,246,0.15)", color: "#93c5fd", border: "1px solid rgba(59,130,246,0.3)" }}>
+                {es ? "Explorar guias de estudio" : "Explore study guides"}
+              </Link>
+              <Link href="/mi-metodo" className="ss-mono text-sm px-5 py-3 rounded-xl" style={{ background: "rgba(16,185,129,0.15)", color: "#86efac", border: "1px solid rgba(16,185,129,0.3)" }}>
+                {es ? "Leer sobre el metodo" : "Read about the method"}
+              </Link>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

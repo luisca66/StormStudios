@@ -21,7 +21,7 @@ export default function Navigation({ mobile = false }: { mobile?: boolean }) {
 
   return (
     <nav
-      aria-label="Navegación principal"
+      aria-label={t("ariaLabel")}
       className={cn(mobile ? "flex flex-col gap-1" : "hidden md:flex items-center gap-1")}
     >
       {navLinks.map(({ key, href }) => {

@@ -5,7 +5,7 @@ import { getPageContent } from "@/lib/mdx";
 import DarkMDXRenderer from "@/components/DarkMDXRenderer";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
 import { type Locale } from "@/i18n/routing";
-import { getMainPageAlternates } from "@/lib/seo/page-alternates";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -15,11 +15,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const page = await getPageContent(locale, SLUG_MAP[locale] || SLUG_MAP["es"]);
   if (!page) return {};
-  return {
-    title: page.frontmatter.title,
-    description: page.frontmatter.description,
-    alternates: getMainPageAlternates("/quien-soy", locale as Locale),
-  };
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getLocalizedRouteUrls("/quien-soy"),
+    title:
+      locale === "es"
+        ? "Luis Cárdenas | Músico, compositor y educador"
+        : "Luis Cardenas | Musician, composer and educator",
+    description:
+      locale === "es"
+        ? "Conoce la trayectoria de Luis Cárdenas: músico, compositor, educador y fundador de Storm Studios Learning."
+        : "Meet Luis Cardenas: musician, composer, educator and founder of Storm Studios Learning.",
+    keywords:
+      locale === "es"
+        ? ["Luis Cárdenas", "Storm Studios Learning", "profesor de música", "armonía"]
+        : ["Luis Cardenas", "Storm Studios Learning", "music educator", "traditional harmony"],
+    image: page.frontmatter.image as string | undefined,
+  });
 }
 
 export default async function QuienSoyPage({ params }: Props) {

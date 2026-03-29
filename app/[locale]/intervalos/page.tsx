@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
+import type { Locale } from "@/i18n/routing";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return {
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getLocalizedRouteUrls("/intervalos"),
     title: locale === "es" ? "Piano de Intervalos" : "Interval Piano",
-    description: locale === "es"
-      ? "Explora intervalos musicales en el piano: selecciona dos notas y escucha el intervalo melódico o armónico."
-      : "Explore musical intervals on the piano: select two notes and listen melodically or harmonically.",
-  };
+    description:
+      locale === "es"
+        ? "Herramienta interactiva para explorar intervalos musicales en el piano."
+        : "Interactive tool for exploring musical intervals on the piano.",
+    noIndex: true,
+  });
 }
 
 export default async function IntervalosPage({ params }: Props) {

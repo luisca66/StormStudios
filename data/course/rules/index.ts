@@ -9,12 +9,12 @@
  * funcione antes de que el motor esté completo.
  */
 
-import type { HarmonyRule, ParsedMidi, ValidationContext } from "@/types/course";
+import type { HarmonyRule } from "@/types/course";
 
 // ─── Helpers internos ─────────────────────────────────────────────────────────
 
 function stub(): HarmonyRule["validate"] {
-  return (_midi: ParsedMidi, _ctx: ValidationContext) => [];
+  return () => [];
 }
 
 // ─── Catálogo ─────────────────────────────────────────────────────────────────

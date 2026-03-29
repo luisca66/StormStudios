@@ -5,7 +5,7 @@ import { getPageContent } from "@/lib/mdx";
 import DarkMDXRenderer from "@/components/DarkMDXRenderer";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
 import { type Locale } from "@/i18n/routing";
-import { getMainPageAlternates } from "@/lib/seo/page-alternates";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -15,11 +15,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const page = await getPageContent(locale, SLUG_MAP[locale] || SLUG_MAP["es"]);
   if (!page) return {};
-  return {
-    title: page.frontmatter.title,
-    description: page.frontmatter.description,
-    alternates: getMainPageAlternates("/el-libro", locale as Locale),
-  };
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getLocalizedRouteUrls("/el-libro"),
+    title:
+      locale === "es"
+        ? "Los Seres Musicales | Libro de Luis Cárdenas"
+        : "The Musical Beings | Book by Luis Cardenas",
+    description:
+      locale === "es"
+        ? "Descubre el libro Los Seres Musicales y la visión de Storm Studios Learning sobre armonía, escucha y transformación musical."
+        : "Discover The Musical Beings and the Storm Studios Learning vision of harmony, listening and musical transformation.",
+    keywords:
+      locale === "es"
+        ? ["libro de música", "Luis Cárdenas", "Los Seres Musicales", "armonía"]
+        : ["music book", "Luis Cardenas", "The Musical Beings", "traditional harmony"],
+    image: locale === "es" ? "/og/book-es.jpg" : "/og/book-en.jpg",
+  });
 }
 
 export default async function ElLibroPage({ params }: Props) {

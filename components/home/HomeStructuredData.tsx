@@ -10,7 +10,7 @@ export async function HomeStructuredData() {
         "@context": "https://schema.org",
         "@graph": [
           {
-            "@type": "Organization",
+            "@type": "EducationalOrganization",
             "@id": "https://www.stormstudios.com.mx/#organization",
             name: t("organization.name"),
             url: "https://www.stormstudios.com.mx",
@@ -19,6 +19,7 @@ export async function HomeStructuredData() {
               "https://www.youtube.com/@StormStudiosLearning",
               "https://www.instagram.com/stormstudioslearning",
             ],
+            areaServed: "MX",
             contactPoint: {
               "@type": "ContactPoint",
               contactType: "customer support",
@@ -32,7 +33,7 @@ export async function HomeStructuredData() {
             name: t("website.name"),
             description: t("website.description"),
             publisher: { "@id": "https://www.stormstudios.com.mx/#organization" },
-            inLanguage: [t("website.inLanguage")],
+            inLanguage: ["es-MX", "en-US"],
           },
         ],
       }}

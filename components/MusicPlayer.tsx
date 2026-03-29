@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLocale } from "next-intl";
 
 export function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
-  const [ready, setReady] = useState(false);
   const [visible, setVisible] = useState(false);
+  const locale = useLocale();
+  const es = locale === "es";
 
   // Aparece con un pequeño retardo para no distraer al cargar
   useEffect(() => {
@@ -20,7 +22,6 @@ export function MusicPlayer() {
     audio.loop = true;
     audio.volume = 0.25;
     audio.preload = "metadata";
-    audio.addEventListener("canplaythrough", () => setReady(true));
     audioRef.current = audio;
     return () => {
       audio.pause();
@@ -42,8 +43,8 @@ export function MusicPlayer() {
   return (
     <button
       onClick={toggle}
-      title={playing ? "Pausar música" : "Reproducir música de ambiente"}
-      aria-label={playing ? "Pausar música de fondo" : "Reproducir música de fondo"}
+      title={playing ? (es ? "Pausar música" : "Pause music") : (es ? "Reproducir música de ambiente" : "Play ambient music")}
+      aria-label={playing ? (es ? "Pausar música de fondo" : "Pause background music") : (es ? "Reproducir música de fondo" : "Play background music")}
       style={{
         position: "fixed",
         bottom: "1.5rem",

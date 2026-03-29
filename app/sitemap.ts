@@ -1,17 +1,21 @@
 import type { MetadataRoute } from "next";
-import { getBlogPosts } from "@/lib/mdx";
+import { APPS } from "@/data/apps/apps-catalog";
+import { BLOG_POST_TRANSLATIONS } from "@/data/seo/blog-post-translations";
+import { getAllResources, getResourceUrls } from "@/data/resources/resources-catalog";
+import { getBlogPosts, getLessonContent, getPageContent, getBlogPost } from "@/lib/mdx";
 import { getAllLessonSlugs } from "@/lib/course";
-import { routing } from "@/i18n/routing";
+import { getLocalizedRouteUrls, BASE_URL } from "@/lib/seo/page-alternates";
+import { routing, type Locale } from "@/i18n/routing";
 
-const BASE_URL = "https://www.stormstudios.com.mx";
 const LOCALES = routing.locales;
 const STATIC_LAST_MODIFIED = process.env.VERCEL_GIT_COMMIT_DATE
   ? new Date(process.env.VERCEL_GIT_COMMIT_DATE)
-  : new Date("2025-01-01T00:00:00.000Z");
+  : new Date("2026-03-29T00:00:00.000Z");
 
 const STATIC_ROUTES = [
   { route: "/", priority: 1.0, changeFrequency: "weekly" },
   { route: "/blog", priority: 0.9, changeFrequency: "weekly" },
+  { route: "/resources", priority: 0.88, changeFrequency: "weekly" },
   { route: "/curso-armonia", priority: 0.9, changeFrequency: "monthly" },
   { route: "/apps", priority: 0.8, changeFrequency: "monthly" },
   { route: "/el-libro", priority: 0.8, changeFrequency: "monthly" },
@@ -22,38 +26,69 @@ const STATIC_ROUTES = [
 ] as const;
 
 type KnownStaticRoute = (typeof STATIC_ROUTES)[number]["route"];
+const CONTENT_PAGE_SLUGS: Partial<Record<KnownStaticRoute, Record<Locale, string>>> = {
+  "/quien-soy": { es: "quien-soy", en: "about-me" },
+  "/mi-metodo": { es: "mi-metodo", en: "my-method" },
+  "/clases-taller": { es: "clases-taller", en: "classes-workshop" },
+  "/el-libro": { es: "el-libro", en: "the-book" },
+};
 
-function getLocalizedPath(route: KnownStaticRoute, locale: (typeof LOCALES)[number]): string {
-  const mapping = routing.pathnames[route];
-
-  if (typeof mapping === "string") {
-    return mapping;
-  }
-
-  return mapping[locale];
+function buildLanguageAlternates(urls: Record<Locale, string>) {
+  return {
+    "es-MX": `${BASE_URL}${urls.es}`,
+    "en-US": `${BASE_URL}${urls.en}`,
+  };
 }
 
-function buildLanguageAlternates(route: KnownStaticRoute): Record<string, string> {
-  return Object.fromEntries(
-    LOCALES.map((locale) => [locale === "es" ? "es-MX" : "en-US", `${BASE_URL}/${locale}${getLocalizedPath(route, locale)}`])
-  );
+function getMostRecentDate(dates: Array<Date | undefined>) {
+  const validDates = dates.filter((date): date is Date => Boolean(date));
+  if (validDates.length === 0) {
+    return STATIC_LAST_MODIFIED;
+  }
+
+  return new Date(Math.max(...validDates.map((date) => date.getTime())));
+}
+
+async function getStaticRouteLastModified(route: KnownStaticRoute) {
+  if (route === "/blog") {
+    const posts = await Promise.all(LOCALES.map((locale) => getBlogPosts(locale)));
+    return getMostRecentDate(posts.flat().map((post) => post.lastModified));
+  }
+
+  if (route === "/curso-armonia") {
+    const lessons = await Promise.all(
+      getAllLessonSlugs().flatMap((slug) => LOCALES.map((locale) => getLessonContent(locale, slug)))
+    );
+    return getMostRecentDate(lessons.map((lesson) => lesson?.lastModified));
+  }
+
+  const slugMap = CONTENT_PAGE_SLUGS[route];
+  if (slugMap) {
+    const pages = await Promise.all(
+      LOCALES.map((locale) => getPageContent(locale, slugMap[locale]))
+    );
+    return getMostRecentDate(pages.map((page) => page?.lastModified));
+  }
+
+  return STATIC_LAST_MODIFIED;
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   // 1. Rutas estáticas por locale usando pathnames localizados
-  for (const locale of LOCALES) {
-    for (const route of STATIC_ROUTES) {
-      const localizedPath = getLocalizedPath(route.route, locale);
+  for (const route of STATIC_ROUTES) {
+    const urls = getLocalizedRouteUrls(route.route);
+    const lastModified = await getStaticRouteLastModified(route.route);
 
+    for (const locale of LOCALES) {
       entries.push({
-        url: `${BASE_URL}/${locale}${localizedPath}`,
-        lastModified: STATIC_LAST_MODIFIED,
+        url: `${BASE_URL}${urls[locale]}`,
+        lastModified,
         changeFrequency: route.changeFrequency as MetadataRoute.Sitemap[number]["changeFrequency"],
         priority: route.priority,
         alternates: {
-          languages: buildLanguageAlternates(route.route),
+          languages: buildLanguageAlternates(urls),
         },
       });
     }
@@ -61,48 +96,86 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // 2. Lecciones del curso con ruta localizada
   const lessonSlugs = getAllLessonSlugs();
-  const lessonRoute = routing.pathnames["/curso-armonia/[slug]"];
 
-  for (const locale of LOCALES) {
-    for (const slug of lessonSlugs) {
-      const localizedTemplate = typeof lessonRoute === "string" ? lessonRoute : lessonRoute[locale];
-      const localizedPath = localizedTemplate.replace("[slug]", slug);
+  for (const slug of lessonSlugs) {
+    const urls = getLocalizedRouteUrls("/curso-armonia/[slug]", { slug });
+    const lessonVariants = await Promise.all(LOCALES.map((locale) => getLessonContent(locale, slug)));
+    const lastModified = getMostRecentDate(lessonVariants.map((lesson) => lesson?.lastModified));
 
+    for (const locale of LOCALES) {
       entries.push({
-        url: `${BASE_URL}/${locale}${localizedPath}`,
-        lastModified: STATIC_LAST_MODIFIED,
+        url: `${BASE_URL}${urls[locale]}`,
+        lastModified,
         changeFrequency: "monthly",
         priority: 0.7,
         alternates: {
-          languages: Object.fromEntries(
-            LOCALES.map((l) => {
-              const template = typeof lessonRoute === "string" ? lessonRoute : lessonRoute[l];
-              return [l === "es" ? "es-MX" : "en-US", `${BASE_URL}/${l}${template.replace("[slug]", slug)}`];
-            })
-          ),
+          languages: buildLanguageAlternates(urls),
         },
       });
     }
   }
 
-  // 3. Posts del blog (usamos ES como fuente de verdad)
-  const blogPosts = await getBlogPosts("es");
-  const blogRoute = getLocalizedPath("/blog", "es");
-  const blogRouteEn = getLocalizedPath("/blog", "en");
+  // 3. Detalles de apps indexables
+  for (const app of APPS) {
+    const urls = getLocalizedRouteUrls("/apps/[slug]", { slug: app.slug });
 
-  for (const post of blogPosts) {
-    entries.push({
-      url: `${BASE_URL}/es${blogRoute}/${post.slug}`,
-      lastModified: post.frontmatter.date ? new Date(post.frontmatter.date) : STATIC_LAST_MODIFIED,
-      changeFrequency: "monthly",
-      priority: 0.75,
-      alternates: {
-        languages: {
-          "es-MX": `${BASE_URL}/es${blogRoute}/${post.slug}`,
-          "en-US": `${BASE_URL}/en${blogRouteEn}/${post.slug}`,
+    for (const locale of LOCALES) {
+      entries.push({
+        url: `${BASE_URL}${urls[locale]}`,
+        lastModified: STATIC_LAST_MODIFIED,
+        changeFrequency: "monthly",
+        priority: 0.72,
+        alternates: {
+          languages: buildLanguageAlternates(urls),
         },
-      },
-    });
+      });
+    }
+  }
+
+  // 4. Posts del blog con slugs traducidos reales
+  for (const translation of BLOG_POST_TRANSLATIONS) {
+    const postEs = await getBlogPost("es", translation.slugs.es);
+    const postEn = await getBlogPost("en", translation.slugs.en);
+    const lastModified = getMostRecentDate([
+      postEs?.lastModified,
+      postEn?.lastModified,
+      postEs?.frontmatter.date ? new Date(postEs.frontmatter.date) : undefined,
+      postEn?.frontmatter.date ? new Date(postEn.frontmatter.date) : undefined,
+    ]);
+
+    const urls = {
+      es: `/es/blog/${translation.slugs.es}`,
+      en: `/en/blog/${translation.slugs.en}`,
+    };
+
+    for (const locale of LOCALES) {
+      entries.push({
+        url: `${BASE_URL}${urls[locale]}`,
+        lastModified,
+        changeFrequency: "monthly",
+        priority: 0.76,
+        alternates: {
+          languages: buildLanguageAlternates(urls),
+        },
+      });
+    }
+  }
+
+  // 5. Guías temáticas indexables
+  for (const resource of getAllResources()) {
+    const urls = getResourceUrls(resource);
+
+    for (const locale of LOCALES) {
+      entries.push({
+        url: `${BASE_URL}${urls[locale]}`,
+        lastModified: STATIC_LAST_MODIFIED,
+        changeFrequency: "monthly",
+        priority: 0.74,
+        alternates: {
+          languages: buildLanguageAlternates(urls),
+        },
+      });
+    }
   }
 
   return entries;

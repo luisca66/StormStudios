@@ -3,19 +3,26 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { type Locale } from "@/i18n/routing";
 import { JsonLd } from "@/components/JsonLd";
-import { getMainPageAlternates } from "@/lib/seo/page-alternates";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return {
-    title: locale === "es" ? "Curso de Armonía" : "Harmony Course",
-    description: locale === "es"
-      ? "Curso completo y gratuito de Armonía Tradicional con el método Shostakovich."
-      : "Complete free Traditional Harmony course using the Shostakovich method.",
-    alternates: getMainPageAlternates("/curso-armonia", locale as Locale),
-  };
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getLocalizedRouteUrls("/curso-armonia"),
+    title: locale === "es" ? "Curso de Armonía Tradicional Gratis" : "Free Traditional Harmony Course",
+    description:
+      locale === "es"
+        ? "Curso gratuito de armonía tradicional con el linaje Shostakovich-Medrano-Cárdenas, ejercicios MIDI, conducción de voces y entrenamiento auditivo."
+        : "Free traditional harmony course rooted in the Shostakovich-Medrano-Cardenas lineage, with MIDI exercises, voice leading and ear training.",
+    keywords:
+      locale === "es"
+        ? ["curso de armonía", "curso de armonía gratis", "armonía tradicional", "conducción de voces", "entrenamiento auditivo"]
+        : ["traditional harmony course", "free harmony lessons", "voice leading course", "ear training", "music theory course"],
+    image: locale === "es" ? "/og/course-es.jpg" : "/og/course-en.jpg",
+  });
 }
 
 const CURRENT_LESSONS = [
@@ -133,6 +140,30 @@ export default async function CursoArmoniaPage({ params }: Props) {
           </Link>
         </div>
 
+        <section className="mt-12">
+          <div className="ss-glass rounded-2xl p-8" style={{ border: "1px solid rgba(59,130,246,0.15)" }}>
+            <h2 className="ss-serif mb-3" style={{ fontSize: "1.35rem", color: "#f0eeff" }}>
+              {es ? "Sigue estudiando por tema" : "Keep studying by topic"}
+            </h2>
+            <p className="ss-mono text-sm mb-6" style={{ color: "rgba(240,238,255,0.5)", lineHeight: 1.7 }}>
+              {es
+                ? "Complementa el curso con guias sobre armonia tradicional, teoria musical, intervalos y entrenamiento auditivo."
+                : "Complement the course with guides on traditional harmony, music theory, intervals and ear training."}
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/resources" className="ss-mono text-sm px-5 py-3 rounded-xl" style={{ background: "rgba(59,130,246,0.15)", color: "#93c5fd", border: "1px solid rgba(59,130,246,0.3)" }}>
+                {es ? "Ver guias de estudio" : "View study guides"}
+              </Link>
+              <Link href="/apps" className="ss-mono text-sm px-5 py-3 rounded-xl" style={{ background: "rgba(139,92,246,0.15)", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.3)" }}>
+                {es ? "Practicar con apps" : "Practice with apps"}
+              </Link>
+              <Link href="/blog" className="ss-mono text-sm px-5 py-3 rounded-xl" style={{ background: "rgba(16,185,129,0.15)", color: "#86efac", border: "1px solid rgba(16,185,129,0.3)" }}>
+                {es ? "Leer articulos" : "Read articles"}
+              </Link>
+            </div>
+          </div>
+        </section>
+
       </div>
 
       {/* JSON-LD — Course */}
@@ -143,7 +174,7 @@ export default async function CursoArmoniaPage({ params }: Props) {
         "description": es
           ? "Curso completo y gratuito de Armonía Tradicional con el método Shostakovich. Incluye Maestro Virtual con IA para corrección de ejercicios MIDI."
           : "Complete free Traditional Harmony course using the Shostakovich method. Includes AI-powered Virtual Teacher for MIDI exercise feedback.",
-        "url": `https://www.stormstudios.com.mx/${es ? "es" : "en"}/curso-armonia`,
+        "url": `https://www.stormstudios.com.mx${es ? "/es/curso-armonia" : "/en/harmony-course"}`,
         "provider": {
           "@type": "Organization",
           "@id": "https://www.stormstudios.com.mx/#organization",

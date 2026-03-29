@@ -3,6 +3,9 @@ import { getBlogPost, getBlogPosts } from "@/lib/mdx";
 import { BlogLayout } from "@/components/blog/BlogLayout";
 import { JsonLd } from "@/components/JsonLd";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { createPageMetadata } from "@/lib/seo/page-alternates";
+import { getBlogPostUrls } from "@/data/seo/blog-post-translations";
+import type { Locale } from "@/i18n/routing";
 
 interface BlogPostPageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -67,16 +70,16 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
 
   if (!post) return {};
 
-  return {
-    title: `${post.frontmatter.title} — Storm Studios Learning`,
-    description: post.frontmatter.description,
-    openGraph: {
-      title: post.frontmatter.title,
-      description: post.frontmatter.description,
-      type: "article",
-      publishedTime: post.frontmatter.date,
-      authors: post.frontmatter.author ? [post.frontmatter.author] : undefined,
-      tags: post.frontmatter.tags,
-    },
-  };
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getBlogPostUrls(locale as Locale, slug),
+    title: post.frontmatter.title,
+    description: post.frontmatter.description ?? post.frontmatter.title,
+    keywords: post.frontmatter.tags,
+    type: "article",
+    publishedTime: post.frontmatter.date,
+    modifiedTime: post.frontmatter.date,
+    authors: post.frontmatter.author ? [post.frontmatter.author] : undefined,
+    tags: post.frontmatter.tags,
+  });
 }

@@ -2,17 +2,25 @@ import type { Metadata } from "next";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
 import ContactForm from "@/components/ContactForm";
 import { type Locale } from "@/i18n/routing";
-import { getMainPageAlternates } from "@/lib/seo/page-alternates";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return {
-    title: locale === "es" ? "Contacto" : "Contact",
-    description: locale === "es" ? "Contáctanos para clases, talleres o cualquier pregunta." : "Contact us for classes, workshops, or any question.",
-    alternates: getMainPageAlternates("/contacto", locale as Locale),
-  };
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getLocalizedRouteUrls("/contacto"),
+    title: locale === "es" ? "Contacto para Clases y Colaboraciones" : "Contact for Lessons and Collaborations",
+    description:
+      locale === "es"
+        ? "Contacta a Storm Studios Learning para clases, armonía tradicional, entrenamiento auditivo o colaboraciones."
+        : "Contact Storm Studios Learning for classes, traditional harmony, ear training or collaborations.",
+    keywords:
+      locale === "es"
+        ? ["contacto Storm Studios Learning", "clases de música", "armonía tradicional"]
+        : ["contact Storm Studios Learning", "music classes", "traditional harmony lessons"],
+  });
 }
 
 export default async function ContactoPage({ params }: Props) {
@@ -23,7 +31,7 @@ export default async function ContactoPage({ params }: Props) {
     <DarkPageLayout maxWidth="900px">
       <h1 className="ss-serif ss-reveal mb-4"
         style={{ fontSize: "clamp(2rem,5vw,3rem)", color: "#f0eeff", lineHeight: 1.1 }}>
-        {es ? "Hablemos" : "Let's Talk"}
+        {es ? "Contacto Storm Studios Learning" : "Contact Storm Studios Learning"}
       </h1>
       <p className="ss-mono ss-reveal mb-10"
         style={{ fontSize: "1rem", color: "rgba(240,238,255,0.5)", animationDelay: "0.1s" }}>

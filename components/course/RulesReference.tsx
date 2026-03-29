@@ -80,7 +80,6 @@ function RuleItem({
   locale: string;
   isNew?: boolean;
 }) {
-  const es = locale === "es";
   return (
     <div
       className={`

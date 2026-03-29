@@ -5,6 +5,7 @@ import { getMessages } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { BASE_URL, SITE_NAME, TWITTER_HANDLE } from "@/lib/seo/page-alternates";
 
 type Props = {
   children: React.ReactNode;
@@ -12,39 +13,16 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-  const es = locale === "es";
-
-  const title = "Storm Studios Learning";
-  const description = es
-    ? "Domina la Armonía Tradicional con el método Shostakovich. Curso gratuito, apps educativas y retroalimentación de IA."
-    : "Master Traditional Harmony with the Shostakovich method. Free course, educational apps, and AI feedback.";
+  await params;
 
   return {
-    metadataBase: new URL("https://www.stormstudios.com.mx"),
-    title: { default: title, template: `%s — ${title}` },
-    description,
-    keywords: es
-      ? ["armonía", "música", "Shostakovich", "teoría musical", "SATB", "curso de armonía", "IA", "contrapunto"]
-      : ["harmony", "music", "Shostakovich", "music theory", "SATB", "harmony course", "AI", "counterpoint"],
-    authors: [{ name: "Luis Cárdenas", url: "https://www.stormstudios.com.mx" }],
+    metadataBase: new URL(BASE_URL),
+    title: { default: SITE_NAME, template: `%s | ${SITE_NAME}` },
+    authors: [{ name: "Luis Cárdenas", url: BASE_URL }],
     creator: "Storm Studios Learning",
     publisher: "Storm Studios Learning",
-    openGraph: {
-      type: "website",
-      siteName: title,
-      title,
-      description,
-      locale: es ? "es_MX" : "en_US",
-      alternateLocale: es ? "en_US" : "es_MX",
-      images: [{ url: "/images/og-default.jpg", width: 1200, height: 630, alt: title }],
-    },
     twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: ["/images/og-default.jpg"],
-      creator: "@StormStudiosLearning",
+      creator: TWITTER_HANDLE,
     },
     robots: {
       index: true,

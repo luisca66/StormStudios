@@ -5,7 +5,7 @@ import DarkMDXRenderer from "@/components/DarkMDXRenderer";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
 import { Link } from "@/i18n/navigation";
 import { type Locale } from "@/i18n/routing";
-import { getMainPageAlternates } from "@/lib/seo/page-alternates";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -15,11 +15,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const page = await getPageContent(locale, SLUG_MAP[locale] || SLUG_MAP["es"]);
   if (!page) return {};
-  return {
-    title: page.frontmatter.title,
-    description: page.frontmatter.description,
-    alternates: getMainPageAlternates("/clases-taller", locale as Locale),
-  };
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getLocalizedRouteUrls("/clases-taller"),
+    title:
+      locale === "es"
+        ? "Clases de Armonía, Entrenamiento Auditivo y Taller Musical"
+        : "Harmony Classes, Ear Training and Music Workshop",
+    description:
+      locale === "es"
+        ? "Conoce las modalidades de formación de Storm Studios Learning: clases presenciales, acompañamiento y herramientas digitales para armonía y entrenamiento auditivo."
+        : "Explore Storm Studios Learning training options: in-person classes, guided study and digital tools for harmony and ear training.",
+    keywords:
+      locale === "es"
+        ? ["clases de armonía", "entrenamiento auditivo", "taller musical", "clases de música ciudad de méxico"]
+        : ["harmony classes", "ear training classes", "music workshop", "music lessons Mexico City"],
+  });
 }
 
 export default async function ClasesTallerPage({ params }: Props) {

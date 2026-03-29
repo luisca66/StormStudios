@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
+import type { Locale } from "@/i18n/routing";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return {
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getLocalizedRouteUrls("/sequencer"),
     title: "Storm Sequencer v3.0",
-    description: locale === "es"
-      ? "Secuenciador musical online gratuito con notación en tiempo real."
-      : "Free online music sequencer with real-time notation.",
-  };
+    description:
+      locale === "es"
+        ? "Secuenciador musical online para ejercicios MIDI del curso."
+        : "Online music sequencer for course MIDI exercises.",
+    noIndex: true,
+  });
 }
 
 export default async function SequencerPage({ params }: Props) {

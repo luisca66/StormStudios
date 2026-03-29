@@ -18,6 +18,8 @@ export type MDXContent = {
   frontmatter: MDXFrontmatter;
   content: string;
   slug: string;
+  sourcePath: string;
+  lastModified: Date;
 };
 
 /**
@@ -97,11 +99,14 @@ export async function getBlogPost(
 function readMDXFile(filePath: string, slug: string): MDXContent | null {
   try {
     const raw = fs.readFileSync(filePath, "utf-8");
+    const stats = fs.statSync(filePath);
     const { data, content } = matter(raw);
     return {
       frontmatter: data as MDXFrontmatter,
       content,
       slug,
+      sourcePath: filePath,
+      lastModified: stats.mtime,
     };
   } catch {
     return null;

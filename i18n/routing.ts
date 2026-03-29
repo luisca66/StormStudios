@@ -3,6 +3,8 @@ import { defineRouting } from "next-intl/routing";
 export const routing = defineRouting({
   locales: ["es", "en"],
   defaultLocale: "es",
+  localeDetection: false,
+  alternateLinks: false,
 
   // Mapeo de rutas por idioma
   pathnames: {
@@ -43,7 +45,18 @@ export const routing = defineRouting({
       es: "/privacidad",
       en: "/privacy",
     },
+    "/resources": {
+      es: "/recursos",
+      en: "/resources",
+    },
+    "/resources/[slug]": {
+      es: "/recursos/[slug]",
+      en: "/resources/[slug]",
+    },
+    "/intervalos": "/intervalos",
+    "/memoria": "/memoria",
     "/sequencer": "/sequencer",
+    "/apps/matematicas-mentales/jugar": "/apps/matematicas-mentales/jugar",
   },
 });
 

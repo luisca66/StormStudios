@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { APPS, getAppBySlug } from "@/data/apps/apps-catalog";
 import { Link } from "@/i18n/navigation";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
+import type { Locale } from "@/i18n/routing";
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
@@ -16,10 +18,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const app = getAppBySlug(slug);
   if (!app) return {};
-  return {
-    title: app.name[locale as "es" | "en"] || app.name.es,
-    description: app.description[locale as "es" | "en"] || app.description.es,
-  };
+
+  const appName = app.name[locale as "es" | "en"] || app.name.es;
+  const appDescription = app.description[locale as "es" | "en"] || app.description.es;
+
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getLocalizedRouteUrls("/apps/[slug]", { slug }),
+    title: appName,
+    description: appDescription,
+    keywords:
+      locale === "es"
+        ? [appName, "app musical", "entrenamiento auditivo", "educacion musical"]
+        : [appName, "music education app", "ear training app", "music practice tool"],
+    image: app.icon ?? undefined,
+  });
 }
 
 export default async function AppDetailPage({ params }: Props) {

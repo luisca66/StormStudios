@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
+import type { Locale } from "@/i18n/routing";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return {
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getLocalizedRouteUrls("/memoria"),
     title: locale === "es" ? "App Memoria – Nemotecnia" : "Memory App – Mnemonics",
-    description: locale === "es"
-      ? "Memoriza números con el sistema nemotécnico. Juego de pares y modo de práctica con cronómetro."
-      : "Memorize numbers with the mnemonic system. Pairs memory game and timed practice mode.",
-  };
+    description:
+      locale === "es"
+        ? "Herramienta interactiva de memoria y nemotecnia para practica musical y cognitiva."
+        : "Interactive memory and mnemonic tool for musical and cognitive practice.",
+    noIndex: true,
+  });
 }
 
 export default async function MemoriaPage({ params }: Props) {

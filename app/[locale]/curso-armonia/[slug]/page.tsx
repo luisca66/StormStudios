@@ -4,6 +4,8 @@ import { getAllLessonSlugs, getLessonBySlug, getLessonNav } from "@/lib/course";
 import { getLessonContent } from "@/lib/mdx";
 import LessonLayout from "@/components/course/LessonLayout";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
+import type { Locale } from "@/i18n/routing";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -17,14 +19,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const lesson = getLessonBySlug(slug);
   if (!lesson) return {};
-  return {
+
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getLocalizedRouteUrls("/curso-armonia/[slug]", { slug }),
     title: lesson.title[locale as "es" | "en"],
     description: lesson.description[locale as "es" | "en"],
-    openGraph: {
-      title: lesson.title[locale as "es" | "en"],
-      description: lesson.description[locale as "es" | "en"],
-    },
-  };
+    keywords: lesson.tags,
+    image: locale === "es" ? "/og/course-es.jpg" : "/og/course-en.jpg",
+  });
 }
 
 export default async function LessonPage({ params }: Props) {

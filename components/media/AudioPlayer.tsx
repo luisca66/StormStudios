@@ -10,6 +10,7 @@ type Props = {
 };
 
 export default function AudioPlayer({ src, title, composer, coverImage }: Props) {
+  void coverImage;
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);

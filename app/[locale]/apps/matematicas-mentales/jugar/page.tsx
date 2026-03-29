@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/routing";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -7,13 +9,16 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  return {
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getLocalizedRouteUrls("/apps/matematicas-mentales/jugar"),
     title: locale === "es" ? "Elefantito Matemático – Jugar" : "Math Elephant – Play",
     description:
       locale === "es"
-        ? "Entrena tu mente con aritmética cronometrada. Llena la repisa del elefantito antes de que se acabe el tiempo."
-        : "Train your mind with timed arithmetic. Fill the elephant's shelf before time runs out.",
-  };
+        ? "Versión jugable de Elefantito Matemático dentro del navegador."
+        : "Browser play version of Math Elephant.",
+    noIndex: true,
+  });
 }
 
 export default async function JugarPage({ params }: Props) {

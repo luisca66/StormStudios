@@ -1,7 +1,7 @@
 import { getBlogPosts } from "@/lib/mdx";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { type Locale } from "@/i18n/routing";
-import { getMainPageAlternates } from "@/lib/seo/page-alternates";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 interface BlogPageProps {
   params: Promise<{ locale: string }>;
@@ -34,7 +34,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
               color: "rgba(196,181,253,0.8)",
             }}
           >
-            {es ? "• Artículos" : "• Articles"}
+            {es ? "• Artículos y guías" : "• Articles and guides"}
           </span>
 
           <h1
@@ -48,13 +48,11 @@ export default async function BlogPage({ params }: BlogPageProps) {
           >
             {es ? (
               <>
-                Ideas sobre{" "}
-                <span className="ss-text-gradient">Armonía</span>
+                <span className="ss-text-gradient">Armonía</span>, teoría musical y oído
               </>
             ) : (
               <>
-                Ideas about{" "}
-                <span className="ss-text-gradient">Harmony</span>
+                <span className="ss-text-gradient">Harmony</span>, music theory and ear training
               </>
             )}
           </h1>
@@ -69,8 +67,8 @@ export default async function BlogPage({ params }: BlogPageProps) {
             }}
           >
             {es
-              ? "Análisis, técnica y reflexiones sobre el método Shostakovich y la armonía tonal."
-              : "Analysis, technique, and reflections on the Shostakovich method and tonal harmony."}
+              ? "Análisis, técnica y reflexiones sobre armonía tonal, entrenamiento auditivo y el método Shostakovich."
+              : "Analysis, technique and reflections on tonal harmony, ear training and the Shostakovich method."}
           </p>
         </div>
 
@@ -109,12 +107,20 @@ export default async function BlogPage({ params }: BlogPageProps) {
 }
 
 export function generateMetadata({ params }: BlogPageProps) {
-  return params.then(({ locale }) => ({
-    title: locale === "es" ? "Blog" : "Blog",
-    description:
-      locale === "es"
-        ? "Artículos sobre armonía, teoría musical y el método Shostakovich."
-        : "Articles about harmony, music theory, and the Shostakovich method.",
-    alternates: getMainPageAlternates("/blog", locale as Locale),
-  }));
+  return params.then(({ locale }) =>
+    createPageMetadata({
+      locale: locale as Locale,
+      urls: getLocalizedRouteUrls("/blog"),
+      title: locale === "es" ? "Blog de Armonía, Teoría Musical y Método" : "Harmony, Ear Training and Music Theory Blog",
+      description:
+        locale === "es"
+          ? "Artículos sobre armonía, teoría musical, entrenamiento auditivo y el método Shostakovich dentro de Storm Studios Learning."
+          : "Articles on harmony, music theory, ear training and the Shostakovich method inside Storm Studios Learning.",
+      keywords:
+        locale === "es"
+          ? ["blog de armonía", "teoría musical", "entrenamiento auditivo", "método shostakovich"]
+          : ["harmony blog", "music theory articles", "ear training blog", "Shostakovich method"],
+      image: locale === "es" ? "/og/blog-es.jpg" : "/og/blog-en.jpg",
+    })
+  );
 }

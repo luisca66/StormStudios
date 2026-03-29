@@ -16,9 +16,9 @@ export default function Footer() {
               Storm Studios Learning
             </h2>
             <p className="text-sm text-gray-400 leading-relaxed">
-              Plataforma educativa musical de Luis Cárdenas.
+              {t("description")}
               <br />
-              Ciudad de México
+              {t("location")}
             </p>
             <div className="mt-4 space-y-1 text-sm text-gray-400">
               <p>📞 55 5103 1758</p>
@@ -37,6 +37,7 @@ export default function Footer() {
               <Link href="/clases-taller" className="hover:text-white transition-colors">{nav("classes")}</Link>
               <Link href="/curso-armonia" className="hover:text-white transition-colors">{nav("course")}</Link>
               <Link href="/apps" className="hover:text-white transition-colors">{nav("apps")}</Link>
+              <Link href="/resources" className="hover:text-white transition-colors">{nav("resources")}</Link>
               <Link href="/el-libro" className="hover:text-white transition-colors">{nav("book")}</Link>
             </nav>
           </div>
@@ -44,7 +45,7 @@ export default function Footer() {
           {/* Columna 3: Legal */}
           <div>
             <h3 className="text-white font-semibold mb-3">
-              {nav("blog")} & Legal
+              {t("legal")}
             </h3>
             <nav className="flex flex-col gap-2 text-sm">
               <Link href="/blog" className="hover:text-white transition-colors">{nav("blog")}</Link>
@@ -59,7 +60,7 @@ export default function Footer() {
           <p>
             © {currentYear} Storm Studios Learning. {t("rights")}.
           </p>
-          <p>{t("madeWith")} ♥ en Ciudad de México</p>
+          <p>{t("madeWithLocation")} ♥ {t("location")}</p>
         </div>
       </div>
     </footer>

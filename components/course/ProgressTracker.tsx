@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "stormstudios_course_progress";
+const STORAGE_EVENT = "stormstudios-course-progress-change";
 
 type Progress = {
   completed: Record<string, boolean>; // slug → completed
@@ -26,32 +27,45 @@ function saveProgress(p: Progress) {
   }
 }
 
+function subscribe(callback: () => void) {
+  if (typeof window === "undefined") {
+    return () => undefined;
+  }
+
+  const handler = () => callback();
+  window.addEventListener("storage", handler);
+  window.addEventListener(STORAGE_EVENT, handler);
+
+  return () => {
+    window.removeEventListener("storage", handler);
+    window.removeEventListener(STORAGE_EVENT, handler);
+  };
+}
+
+function getCompletionSnapshot(lessonSlug: string) {
+  return !!loadProgress().completed[lessonSlug];
+}
+
 type Props = {
   lessonSlug: string;
   locale: string;
 };
 
 export default function ProgressTracker({ lessonSlug, locale }: Props) {
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const isCompleted = useSyncExternalStore(
+    subscribe,
+    () => getCompletionSnapshot(lessonSlug),
+    () => false
+  );
   const es = locale === "es";
-
-  useEffect(() => {
-    setMounted(true);
-    const p = loadProgress();
-    setIsCompleted(!!p.completed[lessonSlug]);
-  }, [lessonSlug]);
 
   function toggle() {
     const p = loadProgress();
     const newVal = !isCompleted;
     p.completed[lessonSlug] = newVal;
     saveProgress(p);
-    setIsCompleted(newVal);
+    window.dispatchEvent(new Event(STORAGE_EVENT));
   }
-
-  // No renderizar en SSR para evitar hydration mismatch
-  if (!mounted) return null;
 
   return (
     <button

@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Navigation from "./Navigation";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const t = useTranslations("nav");
 
   return (
     <>
@@ -14,7 +16,7 @@ export default function MobileMenu() {
         onClick={() => setIsOpen(!isOpen)}
         className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
         aria-expanded={isOpen}
-        aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
+        aria-label={isOpen ? t("closeMenu") : t("openMenu")}
       >
         <svg
           className="w-6 h-6"

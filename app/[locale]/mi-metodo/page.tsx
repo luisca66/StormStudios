@@ -5,7 +5,7 @@ import { getPageContent } from "@/lib/mdx";
 import DarkMDXRenderer from "@/components/DarkMDXRenderer";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
 import { type Locale } from "@/i18n/routing";
-import { getMainPageAlternates } from "@/lib/seo/page-alternates";
+import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -15,11 +15,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const page = await getPageContent(locale, SLUG_MAP[locale] || SLUG_MAP["es"]);
   if (!page) return {};
-  return {
-    title: page.frontmatter.title,
-    description: page.frontmatter.description,
-    alternates: getMainPageAlternates("/mi-metodo", locale as Locale),
-  };
+  return createPageMetadata({
+    locale: locale as Locale,
+    urls: getLocalizedRouteUrls("/mi-metodo"),
+    title:
+      locale === "es"
+        ? "Método Integral para Armonía, Oído y Músicos"
+        : "An Integral Method for Harmony, Ear Training and Musicianship",
+    description:
+      locale === "es"
+        ? "Descubre el método de Storm Studios Learning: armonía tradicional, entrenamiento auditivo, cuerpo, memoria y enfoque musical integrados."
+        : "Discover the Storm Studios Learning method: traditional harmony, ear training, body awareness, memory and musical focus in one integrated approach.",
+    keywords:
+      locale === "es"
+        ? ["método de armonía", "entrenamiento auditivo", "teoría musical", "Storm Studios Learning"]
+        : ["harmony method", "ear training method", "music theory", "Storm Studios Learning"],
+  });
 }
 
 export default async function MiMetodoPage({ params }: Props) {
