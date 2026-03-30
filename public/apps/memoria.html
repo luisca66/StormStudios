@@ -418,7 +418,7 @@
         const app = getApps().find(a => a.name === 'mem-game') ?? initializeApp(firebaseConfig, 'mem-game');
         db = getFirestore(app);
         const auth = getAuth(app);
-        const user = await new Promise((res, rej) => { const u = onAuthStateChanged(auth, u => { u(); res(u); }, rej); });
+        const user = await new Promise((res, rej) => { const unsub = onAuthStateChanged(auth, u => { unsub(); res(u); }, rej); });
         userId = user ? user.uid : (await signInAnonymously(auth)).user.uid;
         // Load user words
         const snap = await getDoc(doc(db, 'mnemonic_words_en', userId));
@@ -690,6 +690,7 @@
     const bgMusic        = document.getElementById('background-music-practice');
     const MEMORIA_TRACKS_P = ['memoria-01','memoria-02','memoria-03','memoria-04','memoria-05'];
     bgMusic.src = `https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/music/memoria/${MEMORIA_TRACKS_P[Math.floor(Math.random()*MEMORIA_TRACKS_P.length)]}.mp3`;
+    bgMusic.load();
     const correctSound   = document.getElementById('correct-sound');
     const errorSound     = document.getElementById('error-sound');
     const nextSound      = document.getElementById('next-sound');
@@ -724,7 +725,7 @@
     }
 
     // Audio
-    function unlockAudio(){if(!audioUnlocked){[bgMusic,correctSound,errorSound,nextSound].forEach(s=>{s.play().then(()=>s.pause()).catch(()=>{})});audioUnlocked=true;}}
+    function unlockAudio(){if(!audioUnlocked){[correctSound,errorSound,nextSound].forEach(s=>{s.play().then(()=>s.pause()).catch(()=>{})});bgMusic.play().catch(()=>{});audioUnlocked=true;}}
     function playSound(el){if(isMuted&&el===bgMusic)return;el.currentTime=0;el.play().catch(()=>{});}
     function toggleMute(){isMuted=!isMuted;bgMusic.muted=isMuted;muteBtn.textContent=isMuted?T.unmuteMusic:T.muteMusic;muteBtn.classList.toggle('muted',isMuted);if(!isMuted&&musicStarted&&bgMusic.paused)playSound(bgMusic);}
 
