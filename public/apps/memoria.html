@@ -185,9 +185,7 @@
         </div>
       </div>
     </div>
-    <audio id="background-music" loop preload="auto">
-      <source src="https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/App%20Memoria%20nemotecnia.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="background-music" loop preload="auto"></audio>
     <audio id="flip-sound" preload="auto">
       <source src="https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/sfx.mp3" type="audio/mpeg">
     </audio>
@@ -271,9 +269,7 @@
         </div>
       </div>
     </div>
-    <audio id="background-music-practice" loop preload="auto">
-      <source src="https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/App%20Memoria%20nemotecnia.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="background-music-practice" loop preload="auto"></audio>
     <audio id="correct-sound" preload="auto">
       <source src="https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/acierto.mp3" type="audio/mpeg">
     </audio>
@@ -447,6 +443,8 @@
     const modalContent = app.querySelector('.modal-content');
     const mnemonicList = app.querySelector('#mnemonic-code-list');
     const bgMusic    = app.querySelector('#background-music');
+    const MEMORIA_TRACKS = ['memoria-01','memoria-02','memoria-03','memoria-04','memoria-05'];
+    bgMusic.src = `https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/music/memoria/${MEMORIA_TRACKS[Math.floor(Math.random()*MEMORIA_TRACKS.length)]}.mp3`;
     const flipSound  = app.querySelector('#flip-sound');
     const editBtns   = app.querySelector('#mem-modal-edit-btns');
     const memEditBtn = app.querySelector('#mem-edit-btn');
@@ -690,6 +688,8 @@
     const editMnList     = document.getElementById('edit-mnemonic-list');
     const modalBtnCont   = editModalOvl.querySelector('.modal-button-container');
     const bgMusic        = document.getElementById('background-music-practice');
+    const MEMORIA_TRACKS_P = ['memoria-01','memoria-02','memoria-03','memoria-04','memoria-05'];
+    bgMusic.src = `https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/music/memoria/${MEMORIA_TRACKS_P[Math.floor(Math.random()*MEMORIA_TRACKS_P.length)]}.mp3`;
     const correctSound   = document.getElementById('correct-sound');
     const errorSound     = document.getElementById('error-sound');
     const nextSound      = document.getElementById('next-sound');
