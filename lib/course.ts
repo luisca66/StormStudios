@@ -14,7 +14,10 @@ import { COURSE_CONFIG } from "@/data/course/course-config";
 // y generateStaticParams funcione en build time.
 
 import { lesson as l00 } from "@/data/course/lessons/00-introduccion";
-import { lesson as l01 } from "@/data/course/lessons/01-propedeutico";
+import { lesson as lP01 } from "@/data/course/lessons/p01-notas";
+import { lesson as lP02 } from "@/data/course/lessons/p02-ritmica";
+import { lesson as lP03 } from "@/data/course/lessons/p03-intervalos";
+import { lesson as lP04 } from "@/data/course/lessons/p04-secuenciador";
 import { lesson as l02 } from "@/data/course/lessons/02-leccion-1";
 import { lesson as l03 } from "@/data/course/lessons/03-leccion-2";
 import { lesson as l04 } from "@/data/course/lessons/04-leccion-3";
@@ -28,7 +31,7 @@ import { lesson as l06 } from "@/data/course/lessons/06-leccion-5";
  * Para agregar una lección nueva: importarla arriba y añadirla aquí.
  */
 const ALL_LESSONS: LessonConfig[] = [
-  l00, l01, l02, l03, l04, l05, l06,
+  l00, lP01, lP02, lP03, lP04, l02, l03, l04, l05, l06,
 ].sort((a, b) => a.order - b.order);
 
 // ─── API pública ──────────────────────────────────────────────────────────────

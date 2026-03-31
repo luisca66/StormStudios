@@ -25,14 +25,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-const CURRENT_LESSONS = [
-  { slug: "00-introduccion", lessonNumber: null, title: { es: "Introducción al Curso", en: "Course Introduction" } },
-  { slug: "01-propedeutico", lessonNumber: null, title: { es: "Módulo Propedéutico",   en: "Preparatory Module" } },
-  { slug: "02-leccion-1",    lessonNumber: 1,    title: { es: "Lección 1",              en: "Lesson 1" } },
-  { slug: "03-leccion-2",    lessonNumber: 2,    title: { es: "Lección 2",              en: "Lesson 2" } },
-  { slug: "04-leccion-3",    lessonNumber: 3,    title: { es: "Lección 3",              en: "Lesson 3" } },
-  { slug: "05-leccion-4",    lessonNumber: 4,    title: { es: "Lección 4",              en: "Lesson 4" } },
-  { slug: "06-leccion-5",    lessonNumber: 5,    title: { es: "Lección 5",              en: "Lesson 5" } },
+const INTRO_LESSON = { slug: "00-introduccion", lessonNumber: null, title: { es: "Introducción al Curso", en: "Course Introduction" } };
+
+const PROPEDEUTICO_LESSONS = [
+  { slug: "p01-notas",        title: { es: "P01 – Escritura de las Notas Musicales",  en: "P01 – Writing Musical Notes" } },
+  { slug: "p02-ritmica",      title: { es: "P02 – Escritura de la Rítmica Musical",   en: "P02 – Writing Musical Rhythm" } },
+  { slug: "p03-intervalos",   title: { es: "P03 – Intervalos",                        en: "P03 – Intervals" } },
+  { slug: "p04-secuenciador", title: { es: "P04 – Uso del Secuenciador",              en: "P04 – Using the Sequencer" } },
+];
+
+const MAIN_LESSONS = [
+  { slug: "02-leccion-1", lessonNumber: 1, title: { es: "Lección 1", en: "Lesson 1" } },
+  { slug: "03-leccion-2", lessonNumber: 2, title: { es: "Lección 2", en: "Lesson 2" } },
+  { slug: "04-leccion-3", lessonNumber: 3, title: { es: "Lección 3", en: "Lesson 3" } },
+  { slug: "05-leccion-4", lessonNumber: 4, title: { es: "Lección 4", en: "Lesson 4" } },
+  { slug: "06-leccion-5", lessonNumber: 5, title: { es: "Lección 5", en: "Lesson 5" } },
 ];
 
 export default async function CursoArmoniaPage({ params }: Props) {
@@ -94,7 +101,55 @@ export default async function CursoArmoniaPage({ params }: Props) {
           {es ? "Lecciones del Curso" : "Course Lessons"}
         </h2>
         <div className="flex flex-col gap-3">
-          {CURRENT_LESSONS.map((lesson) => (
+
+          {/* Introducción */}
+          <Link
+            href={{ pathname: "/curso-armonia/[slug]", params: { slug: INTRO_LESSON.slug } }}
+            className="ss-glass ss-card flex items-center gap-4 p-4 rounded-xl group"
+            style={{ border: "1px solid rgba(255,255,255,0.07)" }}
+          >
+            <div className="w-10 h-10 rounded-full flex items-center justify-center ss-mono text-sm font-bold flex-shrink-0"
+              style={{ background: "rgba(139,92,246,0.15)", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.25)" }}>
+              ·
+            </div>
+            <span className="ss-mono text-sm" style={{ color: "rgba(240,238,255,0.8)" }}>
+              {INTRO_LESSON.title[locale as "es" | "en"]}
+            </span>
+            <span className="ml-auto ss-mono text-sm" style={{ color: "rgba(139,92,246,0.7)" }}>→</span>
+          </Link>
+
+          {/* Módulo Propedéutico — acordeón */}
+          <details className="ss-glass rounded-xl group" style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
+            <summary className="flex items-center gap-4 p-4 cursor-pointer list-none select-none">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center ss-mono text-sm font-bold flex-shrink-0"
+                style={{ background: "rgba(139,92,246,0.15)", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.25)" }}>
+                ·
+              </div>
+              <span className="ss-mono text-sm flex-1" style={{ color: "rgba(240,238,255,0.8)" }}>
+                {es ? "Módulo Propedéutico" : "Preparatory Module"}
+              </span>
+              <span className="ss-mono text-xs" style={{ color: "rgba(139,92,246,0.6)" }}>
+                4 {es ? "lecciones" : "lessons"} ▾
+              </span>
+            </summary>
+            <div className="flex flex-col gap-1 px-4 pb-3 pt-1">
+              {PROPEDEUTICO_LESSONS.map((lesson) => (
+                <Link
+                  key={lesson.slug}
+                  href={{ pathname: "/curso-armonia/[slug]", params: { slug: lesson.slug } }}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors"
+                  style={{ color: "rgba(240,238,255,0.65)" }}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "rgba(139,92,246,0.5)" }} />
+                  <span className="ss-mono text-sm">{lesson.title[locale as "es" | "en"]}</span>
+                  <span className="ml-auto ss-mono text-xs" style={{ color: "rgba(139,92,246,0.5)" }}>→</span>
+                </Link>
+              ))}
+            </div>
+          </details>
+
+          {/* Lecciones principales */}
+          {MAIN_LESSONS.map((lesson) => (
             <Link
               key={lesson.slug}
               href={{ pathname: "/curso-armonia/[slug]", params: { slug: lesson.slug } }}
@@ -103,14 +158,15 @@ export default async function CursoArmoniaPage({ params }: Props) {
             >
               <div className="w-10 h-10 rounded-full flex items-center justify-center ss-mono text-sm font-bold flex-shrink-0"
                 style={{ background: "rgba(139,92,246,0.15)", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.25)" }}>
-                {lesson.lessonNumber ?? "·"}
+                {lesson.lessonNumber}
               </div>
               <span className="ss-mono text-sm" style={{ color: "rgba(240,238,255,0.8)" }}>
-                {lesson.title[locale as "es" | "en"] || lesson.title.es}
+                {lesson.title[locale as "es" | "en"]}
               </span>
               <span className="ml-auto ss-mono text-sm" style={{ color: "rgba(139,92,246,0.7)" }}>→</span>
             </Link>
           ))}
+
           <div className="rounded-xl p-4 text-center ss-mono text-sm"
             style={{ border: "1px dashed rgba(255,255,255,0.12)", color: "rgba(240,238,255,0.3)" }}>
             {es ? "📚 Más lecciones próximamente (hasta 60 en total)" : "📚 More lessons coming soon (up to 60 total)"}

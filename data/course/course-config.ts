@@ -38,13 +38,13 @@ export const COURSE_CONFIG: CourseConfig = {
         es: "Notación musical, claves, escalas y fundamentos para el curso.",
         en: "Music notation, clefs, scales and fundamentals for the course.",
       },
-      lessons: ["01-propedeutico"],
+      lessons: ["p01-notas", "p02-ritmica", "p03-intervalos", "p04-secuenciador"],
     },
     {
       id: "triadas-satb",
       slug: "triadas-satb",
       order: 2,
-      title: { es: "Tríadas en SATB", en: "Triads in SATB" },
+      title: { es: "Curso de Armonía", en: "Harmony Course" },
       description: {
         es: "Escritura coral a 4 voces con tríadas en estado fundamental e inversiones.",
         en: "Four-voice chorale writing with triads in root position and inversions.",

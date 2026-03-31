@@ -68,9 +68,6 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
               style={{ fontSize: "clamp(1.8rem,4vw,2.8rem)", color: "#f0eeff", lineHeight: 1.1 }}>
               {lesson.title[locale as "es" | "en"]}
             </h1>
-            <p className="ss-mono" style={{ fontSize: "1rem", color: "rgba(240,238,255,0.5)", lineHeight: 1.65 }}>
-              {lesson.description[locale as "es" | "en"]}
-            </p>
           </header>
 
           <div className="ss-divider mb-8" />
