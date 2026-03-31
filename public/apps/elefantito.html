@@ -26,7 +26,7 @@
       flex-direction: column;
       align-items: center;
       font-family: 'Arial', sans-serif;
-      background-image: url('https://stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Selva.png');
+      background-image: url('https://pub-2de970e8bf224791a9ab6d06fa62ce19.r2.dev/texturas/elefantito/selva.png');
       background-size: cover;
       background-position: center center;
       background-repeat: no-repeat;
@@ -270,7 +270,7 @@
     }
     #elefantito-matematico-container .barrel {
       position: absolute; width: 35px; height: 45px;
-      background-image: url('https://stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Barril.png');
+      background-image: url('https://pub-2de970e8bf224791a9ab6d06fa62ce19.r2.dev/texturas/elefantito/barril.png');
       background-size: contain; background-repeat: no-repeat;
       background-position: center; background-color: transparent;
       border: none; box-shadow: none; border-radius: 0;
@@ -411,8 +411,8 @@
     </div>
     <div id="game-area">
       <div id="gorilla">
-        <img id="gorilla-piso" src="https://stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Elefantito%20piso.png" alt="Elefante en piso">
-        <img id="gorilla-aire" src="https://stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Elefantito%20aire.png" alt="Elefante lanzando">
+        <img id="gorilla-piso" src="https://pub-2de970e8bf224791a9ab6d06fa62ce19.r2.dev/texturas/elefantito/elefantito_piso.png" alt="Elefantito en reposo">
+        <img id="gorilla-aire" src="https://pub-2de970e8bf224791a9ab6d06fa62ce19.r2.dev/texturas/elefantito/elefantito_aire.png" alt="Elefantito lanzando barril">
       </div>
       <div id="shelf"></div>
       <div id="message-box"></div>
@@ -444,6 +444,7 @@
         timeLabel:       'Segundos por pregunta:',
         startBtn:        '¡Empezar!',
         resetBtn:        'Reiniciar Juego',
+        enterBtn:        'Aceptar',
         soundOn:         '🔊 Sonido ON',
         soundOff:        '🔇 Sonido OFF',
         timerPrefix:     'Tiempo:',
@@ -476,6 +477,7 @@
         timeLabel:       'Seconds per question:',
         startBtn:        'Start!',
         resetBtn:        'Restart Game',
+        enterBtn:        'Enter',
         soundOn:         '🔊 Sound ON',
         soundOff:        '🔇 Sound OFF',
         timerPrefix:     'Time:',
@@ -519,8 +521,8 @@
     const volumeSlider = gameContainer.querySelector('#volume-slider');
 
     // --- Sistema de playlist aleatoria ---
-    const MUSIC_BASE = 'https://www.stormstudios.com.mx/wp-content/Music/mate/';
-    const MUSIC_TRACKS = Array.from({length: 15}, (_, i) => {
+    const MUSIC_BASE = 'https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/music/elefantito/';
+    const MUSIC_TRACKS = Array.from({length: 11}, (_, i) => {
       const n = i + 1;
       return `${MUSIC_BASE}mate-${String(n).padStart(2, '0')}.mp3`;
     });
@@ -594,6 +596,9 @@
       const track = shuffledPlaylist[playlistIndex++];
       musicPlayer = new Audio(track);
       musicPlayer.volume = isMuted ? 0 : musicVolume;
+      musicPlayer.onerror = () => {
+        if (gameContainer.classList.contains('playing') && !isGameOver) playNextTrack();
+      };
       musicPlayer.play().catch(e => {});
       musicPlayer.onended = () => { if (gameContainer.classList.contains('playing') && !isGameOver) playNextTrack(); };
     }
@@ -894,10 +899,12 @@
     window.addEventListener('load', () => {
       // Populate translated text
       document.querySelector('#game-title').textContent = T.title;
+      document.title = T.title;
       document.querySelector('#setup-title').textContent = T.setupTitle;
       document.querySelector('#diff-label').textContent = T.diffLabel;
       document.querySelector('#time-label').textContent = T.timeLabel;
       document.querySelector('#start-button').textContent = T.startBtn;
+      enterButton.textContent = T.enterBtn;
       resetButton.textContent = T.resetBtn;
       timerDisplay.textContent = `${T.timerPrefix} --`;
       problemDisplay.textContent = T.problemHere;
