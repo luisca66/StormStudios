@@ -519,10 +519,10 @@
     }
     if (STAFF.bass) {
       // Bravura: baseline del F-clef en la línea de Fa (F3) = bass[3]
-      // font-size = 5 × staff-space
+      // font-size = 6 × staff-space — igual que clave de Sol
       const bc = createSvg('text', {
         x: 154, y: STAFF.bass[3],
-        fill: '#533313', 'font-size': STAFF.step * 5,
+        fill: '#533313', 'font-size': STAFF.step * 6,
         'font-family': "'Bravura', 'Segoe UI Symbol', 'Apple Symbols', 'Times New Roman', serif",
       });
       bc.textContent = '\uD834\uDD22';
