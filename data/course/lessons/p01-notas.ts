@@ -30,6 +30,7 @@ export const lesson: LessonConfig = {
         en: "Play the piano and see each note appear on the staff in treble clef, bass clef, or grand staff.",
       },
       url: "/apps/piano-notas.html",
+      urlEn: "/apps/piano-notas-en.html",
       icon: "🎹",
       embed: true,
       embedHeight: 760,

@@ -128,7 +128,7 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
                     <div key={tool.url} className="rounded-2xl overflow-hidden"
                       style={{ border: "1px solid rgba(16,185,129,0.2)" }}>
                       <iframe
-                        src={tool.url}
+                        src={locale === "en" ? (tool.urlEn ?? tool.url) : tool.url}
                         title={tool.title[locale as "es" | "en"]}
                         width="100%"
                         height={tool.embedHeight ?? 720}

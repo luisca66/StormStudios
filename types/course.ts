@@ -158,6 +158,8 @@ export type LessonTool = {
   description: BilingualText;
   /** Ruta interna (/sequencer) o URL completa */
   url: string;
+  /** URL override for the English version (falls back to url if omitted) */
+  urlEn?: string;
   /** Emoji o ruta a imagen para el ícono */
   icon?: string;
   /** Si true, abre en pestaña nueva */
