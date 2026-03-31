@@ -348,7 +348,7 @@
       </div>
     </div>
     <div class="score-stage">
-      <svg id="scoreSvg" viewBox="0 0 980 320" role="img" aria-label="Partitura en clave de sol y fa"></svg>
+      <svg id="scoreSvg" viewBox="0 -30 980 390" role="img" aria-label="Partitura en clave de sol y fa"></svg>
     </div>
     <div class="legend" id="scoreLegend">
       Toca una tecla para mostrar su lugar en el pentagrama.
@@ -470,18 +470,20 @@
       const h = bY - tY;
       const mY = (tY + bY) / 2;
       const bx = 92;
-      // Llave — forma correcta: S-curva con nudo central
-      const w = 20, c = 8, tk = 6, kH = 8;
+      // Llave musical — S-curva suave, grosor variable (ancha en bulto, estrecha en cintura)
+      const q = h / 4;
+      const Wo = 44;  // extensión exterior máxima desde bx
+      const Wi = 30;  // extensión interior máxima (grosor máximo = Wo-Wi = 14px)
+      const wo = 6;   // cintura exterior (bx-wo)
+      const wi = 9;   // cintura interior (grosor en cintura = wi-wo = 3px)
       const braceD = [
         `M ${bx},${tY}`,
-        `C ${bx-2},${tY+5} ${bx-w},${tY+h*0.22} ${bx-w},${mY-kH}`,
-        `L ${bx+c},${mY}`,
-        `L ${bx-w},${mY+kH}`,
-        `C ${bx-w},${bY-h*0.22} ${bx-2},${bY-5} ${bx},${bY}`,
-        `C ${bx-1},${bY-4} ${bx-w+tk},${bY-h*0.22} ${bx-w+tk},${mY+kH}`,
-        `L ${bx+c-tk},${mY}`,
-        `L ${bx-w+tk},${mY-kH}`,
-        `C ${bx-w+tk},${tY+h*0.22} ${bx-1},${tY+4} ${bx},${tY}`,
+        // Borde exterior: punta → bulto → cintura → bulto → punta
+        `C ${bx-Wo*0.28},${tY+6} ${bx-Wo},${mY-q*0.6} ${bx-wo},${mY}`,
+        `C ${bx-Wo},${mY+q*0.6} ${bx-Wo*0.28},${bY-6} ${bx},${bY}`,
+        // Borde interior: punta → bulto → cintura → bulto → punta (subiendo)
+        `C ${bx-Wi*0.24},${bY-5} ${bx-Wi},${mY+q*0.6} ${bx-wi},${mY}`,
+        `C ${bx-Wi},${mY-q*0.6} ${bx-Wi*0.24},${tY+5} ${bx},${tY}`,
         `Z`,
       ].join(' ');
       scoreSvg.appendChild(createSvg('path', { d: braceD, fill: '#533313', stroke: 'none' }));
@@ -505,21 +507,22 @@
       stroke: '#533313', 'stroke-width': 4.5,
     }));
     if (STAFF.treble) {
-      // Bravura: baseline del G-clef se ancla en la línea de Sol (G4) = treble[1]
-      // font-size = 4 × staff-space para escala correcta
+      // Bravura: baseline del G-clef en la línea de Sol (G4) = treble[1]
+      // font-size = 6 × staff-space — escala visual prominente para pantalla
       const tc = createSvg('text', {
         x: 154, y: STAFF.treble[1],
-        fill: '#533313', 'font-size': STAFF.step * 4,
+        fill: '#533313', 'font-size': STAFF.step * 6,
         'font-family': "'Bravura', 'Segoe UI Symbol', 'Apple Symbols', 'Times New Roman', serif",
       });
       tc.textContent = '\uD834\uDD1E';
       scoreSvg.appendChild(tc);
     }
     if (STAFF.bass) {
-      // Bravura: baseline del F-clef se ancla en la línea de Fa (F3) = bass[3]
+      // Bravura: baseline del F-clef en la línea de Fa (F3) = bass[3]
+      // font-size = 5 × staff-space
       const bc = createSvg('text', {
         x: 154, y: STAFF.bass[3],
-        fill: '#533313', 'font-size': STAFF.step * 4,
+        fill: '#533313', 'font-size': STAFF.step * 5,
         'font-family': "'Bravura', 'Segoe UI Symbol', 'Apple Symbols', 'Times New Roman', serif",
       });
       bc.textContent = '\uD834\uDD22';
