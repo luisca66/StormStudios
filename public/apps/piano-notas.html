@@ -586,10 +586,15 @@
       ledger(STAFF.middleC);
     }
     drawAccidental(acc, STAFF.noteX, y);
-    scoreSvg.appendChild(createSvg('ellipse', {
+    const noteEl = createSvg('ellipse', {
       cx: STAFF.noteX, cy: y, rx: 17, ry: 11.5,
       fill: '#533313', transform: `rotate(-18 ${STAFF.noteX} ${y})`,
-    }));
+      style: 'cursor:pointer',
+    });
+    noteEl.addEventListener('click', () => {
+      if (currentNote) playAudio(currentNote.canonical, currentNote.o);
+    });
+    scoreSvg.appendChild(noteEl);
     const up = stemGoesUp(y);
     const sx = STAFF.noteX + (up ? 15 : -15);
     scoreSvg.appendChild(createSvg('line', {
@@ -609,7 +614,7 @@
       cycleSpellBtn.style.display = 'none';
     }
   }
-  function play(n, o) {
+  function playAudio(n, o) {
     const key = n + o;
     if (!audioCache[key]) {
       audioCache[key] = new Audio(BASE + key.replace('#', '%23') + '.mp3');
@@ -617,10 +622,13 @@
     const a = audioCache[key];
     a.currentTime = 0;
     a.play().catch(() => {});
-    ind.textContent = key;
     ind.classList.add('on');
     clearTimeout(ind._t);
     ind._t = setTimeout(() => ind.classList.remove('on'), 1800);
+  }
+  function play(n, o) {
+    ind.textContent = n + o;
+    playAudio(n, o);
     currentNote = { canonical: n, o, spelling: n };
     drawNote(n, n, o);
   }
@@ -684,6 +692,7 @@
     const { spelling, canonical, o } = currentNote;
     drawNote(spelling, canonical, o);
     ind.textContent = spelling + computeDisplayOctave(spelling, canonical, o);
+    playAudio(canonical, o);
   });
   toggleNameBtn.addEventListener('click', () => {
     showName = !showName;
