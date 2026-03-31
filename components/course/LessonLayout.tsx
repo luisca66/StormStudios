@@ -121,42 +121,58 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
                 style={{ color: "rgba(52,211,153,0.7)" }}>
                 🛠 {es ? "Herramientas de esta lección" : "Lesson Tools"}
               </h3>
-              <div className="flex flex-col gap-3">
-                {lesson.tools.map((tool: LessonTool) => (
-                  <div key={tool.url} className="ss-glass rounded-xl p-4 flex items-center gap-4"
-                    style={{ border: "1px solid rgba(16,185,129,0.18)" }}>
-                    {tool.icon && (
-                      <span style={{ fontSize: "1.6rem", flexShrink: 0, lineHeight: 1 }}>{tool.icon}</span>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="ss-mono text-sm font-semibold mb-0.5" style={{ color: "#f0eeff" }}>
-                        {tool.title[locale as "es" | "en"]}
-                      </p>
-                      <p className="ss-mono text-xs" style={{ color: "rgba(240,238,255,0.4)", lineHeight: 1.55 }}>
-                        {tool.description[locale as "es" | "en"]}
-                      </p>
+              <div className="flex flex-col gap-4">
+                {lesson.tools.map((tool: LessonTool) =>
+                  tool.embed ? (
+                    /* ── App embebida inline ── */
+                    <div key={tool.url} className="rounded-2xl overflow-hidden"
+                      style={{ border: "1px solid rgba(16,185,129,0.2)" }}>
+                      <iframe
+                        src={tool.url}
+                        title={tool.title[locale as "es" | "en"]}
+                        width="100%"
+                        height={tool.embedHeight ?? 720}
+                        style={{ display: "block", border: "none" }}
+                        allow="autoplay"
+                      />
                     </div>
-                    {tool.url.endsWith(".html") || tool.external ? (
-                      <a
-                        href={tool.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="ss-mono text-xs px-4 py-2 rounded-lg flex-shrink-0 transition-colors"
-                        style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "rgba(52,211,153,0.9)" }}
-                      >
-                        {es ? "Abrir →" : "Open →"}
-                      </a>
-                    ) : (
-                      <Link
-                        href={tool.url as Parameters<typeof Link>[0]["href"]}
-                        className="ss-mono text-xs px-4 py-2 rounded-lg flex-shrink-0 transition-colors"
-                        style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "rgba(52,211,153,0.9)" }}
-                      >
-                        {es ? "Abrir →" : "Open →"}
-                      </Link>
-                    )}
-                  </div>
-                ))}
+                  ) : (
+                    /* ── Herramienta con botón ── */
+                    <div key={tool.url} className="ss-glass rounded-xl p-4 flex items-center gap-4"
+                      style={{ border: "1px solid rgba(16,185,129,0.18)" }}>
+                      {tool.icon && (
+                        <span style={{ fontSize: "1.6rem", flexShrink: 0, lineHeight: 1 }}>{tool.icon}</span>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="ss-mono text-sm font-semibold mb-0.5" style={{ color: "#f0eeff" }}>
+                          {tool.title[locale as "es" | "en"]}
+                        </p>
+                        <p className="ss-mono text-xs" style={{ color: "rgba(240,238,255,0.4)", lineHeight: 1.55 }}>
+                          {tool.description[locale as "es" | "en"]}
+                        </p>
+                      </div>
+                      {tool.url.endsWith(".html") || tool.external ? (
+                        <a
+                          href={tool.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="ss-mono text-xs px-4 py-2 rounded-lg flex-shrink-0 transition-colors"
+                          style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "rgba(52,211,153,0.9)" }}
+                        >
+                          {es ? "Abrir →" : "Open →"}
+                        </a>
+                      ) : (
+                        <Link
+                          href={tool.url as Parameters<typeof Link>[0]["href"]}
+                          className="ss-mono text-xs px-4 py-2 rounded-lg flex-shrink-0 transition-colors"
+                          style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "rgba(52,211,153,0.9)" }}
+                        >
+                          {es ? "Abrir →" : "Open →"}
+                        </Link>
+                      )}
+                    </div>
+                  )
+                )}
               </div>
             </div>
           )}

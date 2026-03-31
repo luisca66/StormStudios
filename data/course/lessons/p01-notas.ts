@@ -31,7 +31,8 @@ export const lesson: LessonConfig = {
       },
       url: "/apps/piano-notas.html",
       icon: "🎹",
-      external: true,
+      embed: true,
+      embedHeight: 760,
     },
   ],
 

@@ -7,6 +7,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
   <style>
+    @font-face {
+      font-family: 'Bravura';
+      src: url('https://cdn.jsdelivr.net/gh/steinbergmedia/bravura@master/redist/BravuraText.woff2') format('woff2'),
+           url('https://cdn.jsdelivr.net/gh/steinbergmedia/bravura@master/redist/BravuraText.woff') format('woff');
+      font-display: swap;
+    }
+  </style>
+  <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --gold: #c8a96e;
@@ -458,15 +466,25 @@
     const staffTop    = STAFF.treble ? STAFF.treble[4] : STAFF.bass[4];
     const staffBottom = STAFF.bass   ? STAFF.bass[0]   : STAFF.treble[0];
     if (STAFF.treble && STAFF.bass) {
-      const [tY, bY] = [staffTop, staffBottom];
-      const mY = (tY + bY) / 2, q1 = (tY + mY) / 2, q3 = (mY + bY) / 2;
-      scoreSvg.appendChild(createSvg('path', {
-        d: `M 92 ${tY} C 62 ${tY} 62 ${q1} 86 ${q1+14} C 100 ${q1+22} 100 ${mY-5} 80 ${mY}
-            C 63 ${mY+12} 63 ${q3-2} 92 ${mY}
-            M 92 ${mY} C 62 ${mY} 62 ${q3} 86 ${q3+14} C 100 ${q3+22} 100 ${bY-5} 80 ${bY}
-            C 63 ${bY+8} 63 ${bY+10} 92 ${bY}`,
-        fill: 'none', stroke: '#533313', 'stroke-width': 4.5, 'stroke-linecap': 'round',
-      }));
+      const tY = staffTop, bY = staffBottom;
+      const h = bY - tY;
+      const mY = (tY + bY) / 2;
+      const bx = 92;
+      // Llave — forma correcta: S-curva con nudo central
+      const w = 20, c = 8, tk = 6, kH = 8;
+      const braceD = [
+        `M ${bx},${tY}`,
+        `C ${bx-2},${tY+5} ${bx-w},${tY+h*0.22} ${bx-w},${mY-kH}`,
+        `L ${bx+c},${mY}`,
+        `L ${bx-w},${mY+kH}`,
+        `C ${bx-w},${bY-h*0.22} ${bx-2},${bY-5} ${bx},${bY}`,
+        `C ${bx-1},${bY-4} ${bx-w+tk},${bY-h*0.22} ${bx-w+tk},${mY+kH}`,
+        `L ${bx+c-tk},${mY}`,
+        `L ${bx-w+tk},${mY-kH}`,
+        `C ${bx-w+tk},${tY+h*0.22} ${bx-1},${tY+4} ${bx},${tY}`,
+        `Z`,
+      ].join(' ');
+      scoreSvg.appendChild(createSvg('path', { d: braceD, fill: '#533313', stroke: 'none' }));
     }
     scoreSvg.appendChild(createSvg('line', {
       x1: 148, y1: staffTop, x2: 148, y2: staffBottom,
@@ -487,17 +505,22 @@
       stroke: '#533313', 'stroke-width': 4.5,
     }));
     if (STAFF.treble) {
+      // Bravura: baseline del G-clef se ancla en la línea de Sol (G4) = treble[1]
+      // font-size = 4 × staff-space para escala correcta
       const tc = createSvg('text', {
-        x: 158, y: STAFF.treble[0] - 13,
-        fill: '#533313', 'font-size': 88, 'font-family': '"Times New Roman", serif',
+        x: 154, y: STAFF.treble[1],
+        fill: '#533313', 'font-size': STAFF.step * 4,
+        'font-family': "'Bravura', 'Segoe UI Symbol', 'Apple Symbols', 'Times New Roman', serif",
       });
       tc.textContent = '\uD834\uDD1E';
       scoreSvg.appendChild(tc);
     }
     if (STAFF.bass) {
+      // Bravura: baseline del F-clef se ancla en la línea de Fa (F3) = bass[3]
       const bc = createSvg('text', {
-        x: 160, y: STAFF.bass[2] + 25,
-        fill: '#533313', 'font-size': 80, 'font-family': '"Times New Roman", serif',
+        x: 154, y: STAFF.bass[3],
+        fill: '#533313', 'font-size': STAFF.step * 4,
+        'font-family': "'Bravura', 'Segoe UI Symbol', 'Apple Symbols', 'Times New Roman', serif",
       });
       bc.textContent = '\uD834\uDD22';
       scoreSvg.appendChild(bc);

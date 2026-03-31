@@ -162,6 +162,10 @@ export type LessonTool = {
   icon?: string;
   /** Si true, abre en pestaña nueva */
   external?: boolean;
+  /** Si true, muestra la app embebida inline con iframe en lugar de botón */
+  embed?: boolean;
+  /** Alto del iframe en px cuando embed=true (default: 720) */
+  embedHeight?: number;
 };
 
 // ─── Lección ──────────────────────────────────────────────────────────────────
