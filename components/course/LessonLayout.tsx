@@ -122,13 +122,15 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
                 🛠 {es ? "Herramientas de esta lección" : "Lesson Tools"}
               </h3>
               <div className="flex flex-col gap-4">
-                {lesson.tools.map((tool: LessonTool) =>
-                  tool.embed ? (
+                {lesson.tools.map((tool: LessonTool) => {
+                  const toolHref = locale === "en" ? (tool.urlEn ?? tool.url) : tool.url;
+
+                  return tool.embed ? (
                     /* ── App embebida inline ── */
                     <div key={tool.url} className="rounded-2xl overflow-hidden"
                       style={{ border: "1px solid rgba(16,185,129,0.2)" }}>
                       <iframe
-                        src={locale === "en" ? (tool.urlEn ?? tool.url) : tool.url}
+                        src={toolHref}
                         title={tool.title[locale as "es" | "en"]}
                         width="100%"
                         height={tool.embedHeight ?? 720}
@@ -153,7 +155,7 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
                       </div>
                       {tool.url.endsWith(".html") || tool.external ? (
                         <a
-                          href={tool.url}
+                          href={toolHref}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="ss-mono text-xs px-4 py-2 rounded-lg flex-shrink-0 transition-colors"
@@ -163,7 +165,7 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
                         </a>
                       ) : (
                         <Link
-                          href={tool.url as Parameters<typeof Link>[0]["href"]}
+                          href={toolHref as Parameters<typeof Link>[0]["href"]}
                           className="ss-mono text-xs px-4 py-2 rounded-lg flex-shrink-0 transition-colors"
                           style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "rgba(52,211,153,0.9)" }}
                         >
@@ -171,8 +173,8 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
                         </Link>
                       )}
                     </div>
-                  )
-                )}
+                  );
+                })}
               </div>
             </div>
           )}

@@ -47,7 +47,7 @@ function buildGoneResponse() {
   });
 }
 
-export default function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const pathname = normalizePathname(request.nextUrl.pathname);
   const redirectTarget = PERMANENT_REDIRECTS[pathname];
 
@@ -63,9 +63,6 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Aplica el middleware a todas las rutas excepto:
-  // - Archivos estáticos (_next/static, _next/image, favicon, etc.)
-  // - API routes
   matcher: [
     "/((?!_next|api|favicon.ico|robots.txt|sitemap.xml|tools|apps|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|mp3|mp4|pdf|html)).*)",
   ],
