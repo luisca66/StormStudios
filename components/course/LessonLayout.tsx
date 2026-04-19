@@ -18,6 +18,7 @@ type Props = {
 export default function LessonLayout({ lesson, prev, next, locale, children }: Props) {
   const es = locale === "es";
   const course = getCourseConfig();
+  const lessonVideos = lesson.videosByLocale?.[locale as "es" | "en"] ?? lesson.videos;
 
   return (
     <div className="ss-root" style={{ minHeight: "100vh" }}>
@@ -73,9 +74,9 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
           <div className="ss-divider mb-8" />
 
           {/* Videos de la lección */}
-          {lesson.videos && lesson.videos.length > 0 && (
+          {lessonVideos && lessonVideos.length > 0 && (
             <div className="mb-10">
-              {lesson.videos.map((video) => (
+              {lessonVideos.map((video) => (
                 <div key={video.youtubeId} className="mb-8">
                   {/* Título del video */}
                   {video.title && (

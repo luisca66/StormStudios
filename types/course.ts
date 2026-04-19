@@ -189,6 +189,7 @@ export type LessonConfig = {
 
   // Contenido multimedia
   videos?: LessonVideo[];
+  videosByLocale?: Partial<Record<"es" | "en", LessonVideo[]>>;
   tools?: LessonTool[];
 
   // ============================================================
