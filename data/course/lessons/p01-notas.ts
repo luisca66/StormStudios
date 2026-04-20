@@ -21,8 +21,8 @@ export const lesson: LessonConfig = {
   videosByLocale: {
     es: [
       {
-        youtubeId: "oql8dxOHYS0",
-        embedUrl: "https://www.youtube.com/embed/oql8dxOHYS0?si=lQvV-NfD6HOr26OM",
+        youtubeId: "B8vrBuiDqjU",
+        embedUrl: "https://www.youtube.com/embed/B8vrBuiDqjU?si=rvj9JGs7KxJgd5cg",
       },
     ],
   },
