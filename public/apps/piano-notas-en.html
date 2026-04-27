@@ -6,326 +6,186 @@
   <title>Piano · C3–C6</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
-  <style>
-    @font-face {
-      font-family: 'Bravura';
-      src: url('https://cdn.jsdelivr.net/gh/steinbergmedia/bravura@master/redist/BravuraText.woff2') format('woff2'),
-           url('https://cdn.jsdelivr.net/gh/steinbergmedia/bravura@master/redist/BravuraText.woff') format('woff');
-      font-display: swap;
-    }
-  </style>
+  <script src="https://unpkg.com/vexflow@4.2.2/releases/vexflow-debug.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --gold: #c8a96e;
-      --bg: #090806;
-    }
+    :root { --gold: #c8a96e; --bg: #090806; --brown: #533313; }
+
     body {
       background: var(--bg);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
       font-family: 'Playfair Display', serif;
       padding: 40px 20px;
     }
     body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background: radial-gradient(ellipse 70% 40% at 50% 0%,
-        rgba(200,169,110,0.07) 0%, transparent 70%);
+      content: ''; position: fixed; inset: 0;
+      background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(200,169,110,0.07) 0%, transparent 70%);
       pointer-events: none;
     }
     header {
-      font-size: 0.75rem;
-      letter-spacing: 0.7em;
-      color: var(--gold);
-      opacity: 0.55;
-      text-transform: uppercase;
-      margin-bottom: 48px;
+      font-size: 0.75rem; letter-spacing: 0.7em;
+      color: var(--gold); opacity: 0.55;
+      text-transform: uppercase; margin-bottom: 48px;
     }
-    /* ── Piano case (wood frame) ── */
+    .layout { width: min(100%, 1080px); display: flex; flex-direction: column; gap: 24px; }
+
+    .score-shell {
+      position: relative; width: min(100%, 980px);
+      padding: 28px 28px 22px; border-radius: 20px;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,169,110,0.13) 0%, transparent 70%),
+        linear-gradient(165deg, #fdf9ee 0%, #f9f2e2 35%, #f4ead2 100%);
+      box-shadow:
+        0 4px 0 rgba(180,140,70,0.18), 0 28px 70px rgba(0,0,0,0.52),
+        inset 0 0 0 1px rgba(100,65,20,0.13), inset 0 1px 0 rgba(255,255,255,0.7);
+      overflow: hidden;
+    }
+    .score-shell::before {
+      content: ''; position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        180deg, transparent 0px, transparent 27px,
+        rgba(150,100,40,0.055) 27px, rgba(150,100,40,0.055) 28px
+      );
+      pointer-events: none;
+    }
+    .score-head {
+      position: relative; z-index: 1;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 16px; margin-bottom: 14px; color: var(--brown);
+    }
+    .score-title { font-size: 0.9rem; letter-spacing: 0.18em; text-transform: uppercase; }
+    .score-sub   { font-size: 0.78rem; letter-spacing: 0.08em; opacity: 0.7; margin-top: 4px; }
+
+    .score-controls { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+    .score-actions  { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+
+    .acc-row {
+      display: flex; gap: 6px; align-items: center; justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+    .acc-btn {
+      border: 1px solid rgba(83,51,19,0.25);
+      background: rgba(255,250,240,0.8);
+      color: var(--brown);
+      border-radius: 8px;
+      padding: 6px 11px;
+      font-family: 'Times New Roman', serif;
+      font-size: 1.1rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: transform 0.12s, background 0.12s, border-color 0.12s;
+      min-width: 34px; text-align: center;
+    }
+    .acc-btn:hover { transform: translateY(-1px); background: rgba(255,255,255,0.95); border-color: rgba(83,51,19,0.4); }
+    .acc-btn:disabled { opacity: 0.3; cursor: default; transform: none; }
+    .acc-btn.active { background: rgba(83,51,19,0.92); color: #f5ecdb; border-color: rgba(83,51,19,0.92); }
+
+    .score-btn {
+      border: 1px solid rgba(83,51,19,0.22); background: rgba(255,250,240,0.74);
+      color: var(--brown); border-radius: 999px; padding: 9px 14px;
+      font: inherit; font-size: 0.8rem; letter-spacing: 0.06em; cursor: pointer;
+      transition: transform 0.16s, background 0.16s, border-color 0.16s;
+    }
+    .score-btn:hover { transform: translateY(-1px); background: rgba(255,255,255,0.95); border-color: rgba(83,51,19,0.36); }
+    .score-btn.active { background: rgba(83,51,19,0.92); color: #f5ecdb; border-color: rgba(83,51,19,0.92); }
+
+    .score-stage { position: relative; z-index: 1; }
+
+    #vf-output { width: 100%; }
+    #vf-output svg { width: 100%; height: auto; display: block; }
+    #vf-output svg path,
+    #vf-output svg rect,
+    #vf-output svg polygon,
+    #vf-output svg circle { fill: #533313 !important; }
+    #vf-output svg line,
+    #vf-output svg polyline { stroke: #6c4823 !important; }
+    #vf-output svg text { fill: #533313 !important; }
+
+    .legend {
+      position: relative; z-index: 1; margin-top: 10px;
+      text-align: center; min-height: 40px;
+      color: var(--brown); font-size: 1.5rem; letter-spacing: 0.1em;
+    }
+    .legend small { display: block; margin-top: 4px; font-size: 0.78rem; letter-spacing: 0.08em; opacity: 0.72; }
+
     .case {
       position: relative;
       background: linear-gradient(180deg, #2c1608 0%, #1a0d04 50%, #100802 100%);
       border-radius: 10px 10px 22px 22px;
       padding: 24px 32px 40px;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.035),
-        0 50px 120px rgba(0,0,0,0.97),
-        inset 0 1px 0 rgba(255,255,255,0.06);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.035), 0 50px 120px rgba(0,0,0,0.97), inset 0 1px 0 rgba(255,255,255,0.06);
     }
-    /* Wood grain */
     .case::before {
-      content: '';
-      position: absolute; inset: 0;
-      border-radius: inherit;
-      background: repeating-linear-gradient(
-        91deg, transparent, transparent 60px,
-        rgba(0,0,0,0.025) 60px, rgba(0,0,0,0.025) 61px
-      );
+      content: ''; position: absolute; inset: 0; border-radius: inherit;
+      background: repeating-linear-gradient(91deg, transparent, transparent 60px, rgba(0,0,0,0.025) 60px, rgba(0,0,0,0.025) 61px);
       pointer-events: none;
     }
-    .lid {
-      text-align: center;
-      font-size: 0.5rem;
-      letter-spacing: 0.45em;
-      color: rgba(200,169,110,0.28);
-      text-transform: uppercase;
-      margin-bottom: 18px;
-    }
-    .layout {
-      width: min(100%, 1080px);
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-    .score-shell {
-      position: relative;
-      width: min(100%, 980px);
-      padding: 28px 28px 22px;
-      border-radius: 20px;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,169,110,0.13) 0%, transparent 70%),
-        linear-gradient(165deg, #fdf9ee 0%, #f9f2e2 35%, #f4ead2 100%);
-      box-shadow:
-        0 4px 0 rgba(180,140,70,0.18),
-        0 28px 70px rgba(0,0,0,0.52),
-        inset 0 0 0 1px rgba(100,65,20,0.13),
-        inset 0 1px 0 rgba(255,255,255,0.7);
-      overflow: hidden;
-    }
-    /* Subtle manuscript lines */
-    .score-shell::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        repeating-linear-gradient(
-          180deg,
-          transparent 0px, transparent 27px,
-          rgba(150,100,40,0.055) 27px, rgba(150,100,40,0.055) 28px
-        );
-      pointer-events: none;
-    }
-    .score-head {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 14px;
-      color: #533313;
-    }
-    .score-title {
-      font-size: 0.9rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-    }
-    .score-sub {
-      font-size: 0.78rem;
-      letter-spacing: 0.08em;
-      opacity: 0.7;
-      margin-top: 4px;
-    }
-    .score-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-    .score-btn {
-      border: 1px solid rgba(83,51,19,0.22);
-      background: rgba(255,250,240,0.74);
-      color: #533313;
-      border-radius: 999px;
-      padding: 9px 14px;
-      font: inherit;
-      font-size: 0.8rem;
-      letter-spacing: 0.06em;
-      cursor: pointer;
-      transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
-    }
-    .score-btn:hover {
-      transform: translateY(-1px);
-      background: rgba(255,255,255,0.95);
-      border-color: rgba(83,51,19,0.36);
-    }
-    .score-btn.active {
-      background: rgba(83,51,19,0.92);
-      color: #f5ecdb;
-      border-color: rgba(83,51,19,0.92);
-    }
-    .score-stage {
-      position: relative;
-      z-index: 1;
-    }
-    #scoreSvg {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-    .legend {
-      position: relative;
-      z-index: 1;
-      margin-top: 10px;
-      text-align: center;
-      min-height: 32px;
-      color: #533313;
-      font-size: 1rem;
-      letter-spacing: 0.1em;
-    }
-    .legend small {
-      display: block;
-      margin-top: 4px;
-      font-size: 0.72rem;
-      letter-spacing: 0.08em;
-      opacity: 0.72;
-    }
-    .scroll {
-      overflow-x: auto;
-      overflow-y: visible;
-      padding-bottom: 12px;
-    }
+    .lid { text-align: center; font-size: 0.5rem; letter-spacing: 0.45em; color: rgba(200,169,110,0.28); text-transform: uppercase; margin-bottom: 18px; }
+
+    .scroll { overflow-x: auto; overflow-y: visible; padding-bottom: 12px; }
     .scroll::-webkit-scrollbar { height: 10px; }
     .scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.06); border-radius: 5px; }
     .scroll::-webkit-scrollbar-thumb { background: rgba(200,169,110,0.55); border-radius: 5px; }
     .scroll::-webkit-scrollbar-thumb:hover { background: rgba(200,169,110,0.80); }
-    /* ── Keyboard container ── */
-    .keyboard {
-      position: relative;
-      display: flex;
-      user-select: none;
-    }
-    /* ── WHITE KEYS ── */
+
+    .keyboard { position: relative; display: flex; user-select: none; }
     .kw {
-      flex-shrink: 0;
-      width: 52px;
-      height: 200px;
-      background: linear-gradient(175deg,
-        #ddd7ca 0%, #eae4d8 12%,
-        #f8f4ed 50%,
-        #eae4d8 88%, #ddd7ca 100%
-      );
-      border-left:   1px solid rgba(0,0,0,0.10);
-      border-right:  1px solid rgba(0,0,0,0.18);
+      flex-shrink: 0; width: 52px; height: 200px;
+      background: linear-gradient(175deg, #ddd7ca 0%, #eae4d8 12%, #f8f4ed 50%, #eae4d8 88%, #ddd7ca 100%);
+      border-left: 1px solid rgba(0,0,0,0.10); border-right: 1px solid rgba(0,0,0,0.18);
       border-bottom: 2px solid rgba(0,0,0,0.28);
-      border-bottom-left-radius:  5px;
-      border-bottom-right-radius: 5px;
-      box-shadow:
-        inset 1px 0 0 rgba(255,255,255,0.55),
-        inset 0 -8px 16px rgba(0,0,0,0.07),
-        3px 6px 14px rgba(0,0,0,0.45);
-      cursor: pointer;
-      position: relative;
+      border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;
+      box-shadow: inset 1px 0 0 rgba(255,255,255,0.55), inset 0 -8px 16px rgba(0,0,0,0.07), 3px 6px 14px rgba(0,0,0,0.45);
+      cursor: pointer; position: relative;
       transition: background 0.04s, transform 0.04s, box-shadow 0.04s;
       -webkit-tap-highlight-color: transparent;
     }
-    .kw:hover {
-      background: linear-gradient(175deg,
-        #e6e0d4 0%, #f0eae0 12%,
-        #fff 50%,
-        #f0eae0 88%, #e6e0d4 100%
-      );
-    }
+    .kw:hover { background: linear-gradient(175deg, #e6e0d4 0%, #f0eae0 12%, #fff 50%, #f0eae0 88%, #e6e0d4 100%); }
     .kw.dn {
       background: linear-gradient(180deg, #bfaf90 0%, #cfc0a0 50%, #bfaf90 100%);
-      transform: scaleY(0.982) translateY(2px);
-      transform-origin: top center;
-      box-shadow:
-        inset 0 4px 12px rgba(0,0,0,0.20),
-        1px 2px 5px rgba(0,0,0,0.4);
+      transform: scaleY(0.982) translateY(2px); transform-origin: top center;
+      box-shadow: inset 0 4px 12px rgba(0,0,0,0.20), 1px 2px 5px rgba(0,0,0,0.4);
     }
     .kw .lbl {
-      position: absolute;
-      bottom: 9px; left: 0; right: 0;
-      text-align: center;
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.48rem;
-      color: rgba(0,0,0,0.22);
-      pointer-events: none;
+      position: absolute; bottom: 9px; left: 0; right: 0;
+      text-align: center; font-family: 'Courier Prime', monospace;
+      font-size: 0.48rem; color: rgba(0,0,0,0.22); pointer-events: none;
     }
-    /* ── BLACK KEYS ── */
     .kb {
-      position: absolute;
-      top: 0;
-      width: 32px;
-      height: 128px;
-      z-index: 2;
+      position: absolute; top: 0; width: 32px; height: 128px; z-index: 2;
       border-radius: 0 0 5px 5px;
-      background: linear-gradient(180deg,
-        #302b27 0%, #1c1816 20%,
-        #0f0d0c 55%, #1c1816 100%
-      );
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.10),
-        inset 1px 0 0 rgba(255,255,255,0.04),
-        0 10px 24px rgba(0,0,0,0.90),
-        0 4px 8px rgba(0,0,0,0.60);
-      cursor: pointer;
-      transition: background 0.04s, transform 0.04s, box-shadow 0.04s;
+      background: linear-gradient(180deg, #302b27 0%, #1c1816 20%, #0f0d0c 55%, #1c1816 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), inset 1px 0 0 rgba(255,255,255,0.04),
+        0 10px 24px rgba(0,0,0,0.90), 0 4px 8px rgba(0,0,0,0.60);
+      cursor: pointer; transition: background 0.04s, transform 0.04s, box-shadow 0.04s;
       -webkit-tap-highlight-color: transparent;
     }
-    /* Gloss streak */
     .kb::after {
-      content: '';
-      position: absolute;
-      top: 3px; left: 4px; right: 4px;
-      height: 52%;
-      background: linear-gradient(180deg,
-        rgba(255,255,255,0.07) 0%, transparent 100%
-      );
-      border-radius: 0 0 2px 2px;
-      pointer-events: none;
+      content: ''; position: absolute; top: 3px; left: 4px; right: 4px; height: 52%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 100%);
+      border-radius: 0 0 2px 2px; pointer-events: none;
     }
-    .kb:hover {
-      background: linear-gradient(180deg,
-        #3d3733 0%, #282420 20%,
-        #1c1918 55%, #282420 100%
-      );
-    }
-    .kb.dn {
-      background: linear-gradient(180deg, #050403 0%, #080706 100%);
-      transform: translateY(4px);
-      box-shadow:
-        inset 0 4px 10px rgba(0,0,0,0.70),
-        0 4px 8px rgba(0,0,0,0.80);
-    }
-    /* ── Note indicator ── */
+    .kb:hover { background: linear-gradient(180deg, #3d3733 0%, #282420 20%, #1c1918 55%, #282420 100%); }
+    .kb.dn { background: linear-gradient(180deg, #050403 0%, #080706 100%); transform: translateY(4px);
+      box-shadow: inset 0 4px 10px rgba(0,0,0,0.70), 0 4px 8px rgba(0,0,0,0.80); }
+
     #ind {
-      margin-top: 32px;
-      height: 32px;
-      text-align: center;
-      font-style: italic;
-      font-size: 1.4rem;
-      color: var(--gold);
-      opacity: 0;
-      transition: opacity 0.1s;
-      letter-spacing: 0.12em;
+      margin-top: 32px; height: 32px; text-align: center;
+      font-style: italic; font-size: 1.4rem; color: var(--gold);
+      opacity: 0; transition: opacity 0.1s; letter-spacing: 0.12em;
     }
     #ind.on { opacity: 1; }
+
     @media (max-width: 820px) {
-      body {
-        justify-content: flex-start;
-      }
-      header {
-        margin-bottom: 28px;
-      }
-      .case {
-        padding-inline: 18px;
-      }
-      .score-shell {
-        padding-inline: 16px;
-      }
-      .score-head {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .score-actions {
-        justify-content: flex-start;
-      }
+      body { justify-content: flex-start; }
+      header { margin-bottom: 28px; }
+      .case { padding-inline: 18px; }
+      .score-shell { padding-inline: 16px; }
+      .score-head { flex-direction: column; align-items: flex-start; }
+      .score-controls { align-items: flex-start; }
+      .score-actions, .acc-row { justify-content: flex-start; }
     }
   </style>
 </head>
@@ -338,24 +198,35 @@
         <div class="score-title">Score</div>
         <div class="score-sub">The note you play on the piano appears on the staff.</div>
       </div>
-      <div class="score-actions">
-        <button class="score-btn active" id="modePiano"  type="button">Piano</button>
-        <button class="score-btn"        id="modeTreble" type="button">Treble</button>
-        <button class="score-btn"        id="modeBass"   type="button">Bass</button>
-        <span style="width:1px;background:rgba(83,51,19,0.2);margin:2px 4px;align-self:stretch"></span>
-        <button class="score-btn active" id="toggleName" type="button">Name visible</button>
-        <button class="score-btn" id="cycleSpell" type="button" style="display:none">⇄ —</button>
-        <button class="score-btn" id="clearScore" type="button">Clear</button>
+      <div class="score-controls">
+        <div class="score-actions">
+          <button class="score-btn active" id="modePiano" type="button">Piano</button>
+          <button class="score-btn" id="modeTreble" type="button">Treble</button>
+          <button class="score-btn" id="modeBass" type="button">Bass</button>
+          <span style="width:1px;background:rgba(83,51,19,0.2);margin:2px 2px;align-self:stretch"></span>
+          <button class="score-btn active" id="toggleName" type="button">Name visible</button>
+          <button class="score-btn" id="cycleSpell" type="button" style="display:none">⇄ —</button>
+          <button class="score-btn" id="clearScore" type="button">Clear</button>
+        </div>
+        <div class="acc-row">
+          <span style="font-size:0.7rem;letter-spacing:0.05em;opacity:0.6;margin-right:4px;">Alter:</span>
+          <button class="acc-btn" id="accNat" type="button" disabled title="Natural">♮</button>
+          <button class="acc-btn" id="accFlat" type="button" disabled title="Flat">♭</button>
+          <button class="acc-btn" id="accBbFlat" type="button" disabled title="Double flat">𝄫</button>
+          <button class="acc-btn" id="accSharp" type="button" disabled title="Sharp">♯</button>
+          <button class="acc-btn" id="accDSharp" type="button" disabled title="Double sharp">𝄪</button>
+        </div>
       </div>
     </div>
     <div class="score-stage">
-      <svg id="scoreSvg" viewBox="0 -30 980 390" role="img" aria-label="Score in treble and bass clef"></svg>
+      <div id="vf-output"></div>
     </div>
     <div class="legend" id="scoreLegend">
       Play a key to show its place on the staff.
       <small>Available range: C3 to C6</small>
     </div>
   </section>
+
   <div class="case">
     <div class="lid">C3 — C6</div>
     <div class="scroll">
@@ -364,342 +235,375 @@
   </div>
 </div>
 <div id="ind">—</div>
+
 <script>
-  const BASE = 'https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/Piano/';
-  const W = 52, H = 200, BW = 32;
-  const BL = { 'C#': 1*W-BW/2, 'D#': 2*W-BW/2, 'F#': 4*W-BW/2, 'G#': 5*W-BW/2, 'A#': 6*W-BW/2 };
-  const notes = [];
-  for (let o = 3; o <= 6; o++) {
-    const ns = o < 6 ? ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'] : ['C'];
-    for (const n of ns) notes.push([n, o]);
+const BASE = 'https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/Piano/';
+const audioCache = {};
+
+const W = 52, H = 200;
+const BL = { 'C#': W-16, 'D#': 2*W-16, 'F#': 4*W-16, 'G#': 5*W-16, 'A#': 6*W-16 };
+const allNotes = [];
+for (let o = 3; o <= 6; o++) {
+  const ns = o < 6 ? ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'] : ['C'];
+  for (const n of ns) allNotes.push([n, o]);
+}
+
+const NOTE_ORDER = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const NAT_SEMI = { C:0, D:2, E:4, F:5, G:7, A:9, B:11 };
+
+const SPELL_CYCLES = {
+  'C': ['C', 'B#', 'Dbb'],
+  'C#': ['C#', 'Db', 'B##'],
+  'D': ['D', 'C##', 'Ebb'],
+  'D#': ['D#', 'Eb', 'Fbb'],
+  'E': ['E', 'Fb', 'D##'],
+  'F': ['F', 'E#', 'Gbb'],
+  'F#': ['F#', 'Gb', 'E##'],
+  'G': ['G', 'F##', 'Abb'],
+  'G#': ['G#', 'Ab'],
+  'A': ['A', 'G##', 'Bbb'],
+  'A#': ['A#', 'Bb', 'Cbb'],
+  'B': ['B', 'Cb', 'A##'],
+};
+
+const ACC_NAMES = {
+  '': 'natural', '#': '♯ sharp', '##': '𝄪 double sharp',
+  'b': '♭ flat', 'bb': '𝄫 double flat', 'n': '♮ natural',
+};
+
+function computeDisplayOctave(spelling, canonicalN, canonicalO) {
+  const P = canonicalO * 12 + NOTE_ORDER.indexOf(canonicalN);
+  const letter = spelling[0];
+  let accOff = 0;
+  for (const ch of spelling.slice(1)) {
+    if (ch === '#') accOff++;
+    else if (ch === 'b') accOff--;
   }
-  const kb            = document.getElementById('kb');
-  const ind           = document.getElementById('ind');
-  const scoreSvg      = document.getElementById('scoreSvg');
-  const scoreLegend   = document.getElementById('scoreLegend');
-  const toggleNameBtn  = document.getElementById('toggleName');
-  const clearScoreBtn  = document.getElementById('clearScore');
-  const cycleSpellBtn  = document.getElementById('cycleSpell');
-  const modePianoBtn   = document.getElementById('modePiano');
-  const modeTrebleBtn  = document.getElementById('modeTreble');
-  const modeBassBtn    = document.getElementById('modeBass');
-  const audioCache    = {};
-  const NS = 'http://www.w3.org/2000/svg';
-  let showName = true;
-  let currentNote = null;
-  const NOTE_ORDER = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-  const NAT_SEMI   = { C:0, D:2, E:4, F:5, G:7, A:9, B:11 };
-  function computeDisplayOctave(spelling, canonicalN, canonicalO) {
-    const P      = canonicalO * 12 + NOTE_ORDER.indexOf(canonicalN);
-    const letter = spelling[0];
-    let   accOff = 0;
-    for (const ch of spelling.slice(1)) {
-      if (ch === '#') accOff++;
-      else if (ch === 'b') accOff--;
+  return (P - (NAT_SEMI[letter] + accOff)) / 12;
+}
+
+function nextSpelling(canonical, current) {
+  const c = SPELL_CYCLES[canonical] || [canonical];
+  return c[(c.indexOf(current) + 1) % c.length];
+}
+
+function applyAccidental(canonicalN, canonicalO, accSuffix) {
+  const semi = canonicalO * 12 + NOTE_ORDER.indexOf(canonicalN);
+  const letters = ['C','D','E','F','G','A','B'];
+  for (const letter of letters) {
+    const base = NAT_SEMI[letter];
+    let offset = 0;
+    for (const ch of accSuffix) {
+      if (ch === '#') offset++;
+      else if (ch === 'b') offset--;
     }
-    return (P - (NAT_SEMI[letter] + accOff)) / 12;
-  }
-  const SPELL_CYCLES = {
-    'C':  ['C',  'B#',  'Dbb'],
-    'C#': ['C#', 'Db',  'B##'],
-    'D':  ['D',  'C##', 'Ebb'],
-    'D#': ['D#', 'Eb',  'Fbb'],
-    'E':  ['E',  'Fb',  'D##'],
-    'F':  ['F',  'E#',  'Gbb'],
-    'F#': ['F#', 'Gb',  'E##'],
-    'G':  ['G',  'F##', 'Abb'],
-    'G#': ['G#', 'Ab'],
-    'A':  ['A',  'G##', 'Bbb'],
-    'A#': ['A#', 'Bb',  'Cbb'],
-    'B':  ['B',  'Cb',  'A##'],
-  };
-  function nextSpelling(canonical, current) {
-    const c = SPELL_CYCLES[canonical] || [canonical];
-    return c[(c.indexOf(current) + 1) % c.length];
-  }
-  const ACC_NAMES = {
-    '':   'natural',
-    '#':  '♯ sharp',
-    '##': '𝄪 double sharp',
-    'x':  '𝄪 double sharp',
-    'b':  '♭ flat',
-    'bb': '𝄫 double flat',
-  };
-  const STAFF_CONFIGS = {
-    piano: {
-      middleC: 138, noteX: 686, left: 118, right: 920, step: 11,
-      treble: [116,  94,  72,  50,  28],
-      bass:   [248, 226, 204, 182, 160],
-    },
-    treble: {
-      middleC: 182, noteX: 686, left: 118, right: 920, step: 11,
-      treble: [160, 138, 116,  94,  72],
-      bass: null,
-    },
-    bass: {
-      middleC: 82,  noteX: 686, left: 118, right: 920, step: 11,
-      treble: null,
-      bass:   [192, 170, 148, 126, 104],
-    },
-  };
-  let STAFF = STAFF_CONFIGS.piano;
-  const LETTER_INDEX = { C:0, D:1, E:2, F:3, G:4, A:5, B:6 };
-  function createSvg(tag, attrs = {}) {
-    const el = document.createElementNS(NS, tag);
-    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
-    return el;
-  }
-  function noteYByLetter(letter, o) {
-    const c4 = 4 * 7 + LETTER_INDEX.C;
-    return STAFF.middleC - ((o * 7 + LETTER_INDEX[letter]) - c4) * STAFF.step;
-  }
-  function stemGoesUp(y) {
-    if (STAFF.treble && STAFF.bass) {
-      if (y <= STAFF.treble[0]) return y >= STAFF.treble[2];
-      if (y >= STAFF.bass[4])   return y >= STAFF.bass[2];
-      return true;
-    }
-    const midLine = STAFF.treble ? STAFF.treble[2] : STAFF.bass[2];
-    return y >= midLine;
-  }
-  function buildScore() {
-    scoreSvg.innerHTML = '';
-    const staffTop    = STAFF.treble ? STAFF.treble[4] : STAFF.bass[4];
-    const staffBottom = STAFF.bass   ? STAFF.bass[0]   : STAFF.treble[0];
-    if (STAFF.treble && STAFF.bass) {
-      const tY = staffTop, bY = staffBottom;
-      const h = bY - tY;
-      const mY = (tY + bY) / 2;
-      const bx = 92;
-      const q = h / 4;
-      const Wo = 44;
-      const Wi = 30;
-      const wo = 6;
-      const wi = 9;
-      const braceD = [
-        `M ${bx},${tY}`,
-        `C ${bx-Wo*0.28},${tY+6} ${bx-Wo},${mY-q*0.6} ${bx-wo},${mY}`,
-        `C ${bx-Wo},${mY+q*0.6} ${bx-Wo*0.28},${bY-6} ${bx},${bY}`,
-        `C ${bx-Wi*0.24},${bY-5} ${bx-Wi},${mY+q*0.6} ${bx-wi},${mY}`,
-        `C ${bx-Wi},${mY-q*0.6} ${bx-Wi*0.24},${tY+5} ${bx},${tY}`,
-        `Z`,
-      ].join(' ');
-      scoreSvg.appendChild(createSvg('path', { d: braceD, fill: '#533313', stroke: 'none' }));
-    }
-    scoreSvg.appendChild(createSvg('line', {
-      x1: 148, y1: staffTop, x2: 148, y2: staffBottom,
-      stroke: '#533313', 'stroke-width': 3,
-    }));
-    for (const y of [...(STAFF.treble || []), ...(STAFF.bass || [])]) {
-      scoreSvg.appendChild(createSvg('line', {
-        x1: STAFF.left, y1: y, x2: STAFF.right, y2: y,
-        stroke: '#6c4823', 'stroke-width': 1.7,
-      }));
-    }
-    scoreSvg.appendChild(createSvg('line', {
-      x1: STAFF.right-9, y1: staffTop, x2: STAFF.right-9, y2: staffBottom,
-      stroke: '#533313', 'stroke-width': 1.6,
-    }));
-    scoreSvg.appendChild(createSvg('line', {
-      x1: STAFF.right, y1: staffTop, x2: STAFF.right, y2: staffBottom,
-      stroke: '#533313', 'stroke-width': 4.5,
-    }));
-    if (STAFF.treble) {
-      const tc = createSvg('text', {
-        x: 154, y: STAFF.treble[1],
-        fill: '#533313', 'font-size': STAFF.step * 6,
-        'font-family': "'Bravura', 'Segoe UI Symbol', 'Apple Symbols', 'Times New Roman', serif",
-      });
-      tc.textContent = '\uD834\uDD1E';
-      scoreSvg.appendChild(tc);
-    }
-    if (STAFF.bass) {
-      const bc = createSvg('text', {
-        x: 154, y: STAFF.bass[3],
-        fill: '#533313', 'font-size': STAFF.step * 6,
-        'font-family': "'Bravura', 'Segoe UI Symbol', 'Apple Symbols', 'Times New Roman', serif",
-      });
-      bc.textContent = '\uD834\uDD22';
-      scoreSvg.appendChild(bc);
-    }
-    if (STAFF.treble && STAFF.bass) {
-      scoreSvg.appendChild(createSvg('line', {
-        x1: 190, y1: STAFF.middleC, x2: 265, y2: STAFF.middleC,
-        stroke: '#6c4823', 'stroke-width': 1.7, opacity: 0.6,
-      }));
+    const noteVal = base + offset;
+    for (const tryOct of [canonicalO - 1, canonicalO, canonicalO + 1]) {
+      if (tryOct * 12 + noteVal === semi) {
+        return { spelling: letter + accSuffix, displayO: tryOct };
+      }
     }
   }
-  function drawAccidental(acc, nx, y) {
-    if (!acc) return;
-    const ax = nx - 38;
-    const seg = (x1, y1, x2, y2, sw = 2.1) =>
-      scoreSvg.appendChild(createSvg('line', {
-        x1, y1, x2, y2, stroke: '#533313', 'stroke-width': sw, 'stroke-linecap': 'round',
-      }));
-    const drawSharp = cx => {
-      seg(cx-5, y-13, cx-5, y+11, 2);
-      seg(cx+5, y-11, cx+5, y+13, 2);
-      seg(cx-9, y-3,  cx+9, y-6,  2.6);
-      seg(cx-9, y+5,  cx+9, y+2,  2.6);
-    };
-    const drawFlat = cx => {
-      seg(cx, y-20, cx, y+11, 2.1);
-      scoreSvg.appendChild(createSvg('path', {
-        d: `M ${cx},${y-2} C ${cx+15},${y-4} ${cx+15},${y+11} ${cx},${y+9}`,
-        stroke: '#533313', 'stroke-width': 2.1, fill: 'none', 'stroke-linecap': 'round',
-      }));
-    };
-    if      (acc === '#')              { drawSharp(ax); }
-    else if (acc === '##' || acc === 'x') {
-      seg(ax-9, y-9, ax+9, y+9, 3.2);
-      seg(ax+9, y-9, ax-9, y+9, 3.2);
-    }
-    else if (acc === 'b')              { drawFlat(ax); }
-    else if (acc === 'bb')             { drawFlat(ax-10); drawFlat(ax+7); }
-  }
-  function drawNote(spelling, canonicalN, canonicalO) {
-    buildScore();
-    const letter   = spelling[0];
-    const acc      = spelling.slice(1);
-    const displayO = computeDisplayOctave(spelling, canonicalN, canonicalO);
-    const y        = noteYByLetter(letter, displayO);
-    const step2  = STAFF.step * 2;
-    const minY   = STAFF.treble ? STAFF.treble[4] : STAFF.bass[4];
-    const maxY   = STAFF.bass   ? STAFF.bass[0]   : STAFF.treble[0];
-    const ledger = y1 =>
-      scoreSvg.appendChild(createSvg('line', {
-        x1: STAFF.noteX-30, y1, x2: STAFF.noteX+30, y2: y1,
-        stroke: '#533313', 'stroke-width': 1.9,
-      }));
-    if (y < minY) {
-      for (let ly = minY - step2; ly >= y - 1; ly -= step2) ledger(ly);
-    } else if (y > maxY) {
-      for (let ly = maxY + step2; ly <= y + 1; ly += step2) ledger(ly);
-    } else if (STAFF.treble && STAFF.bass && Math.abs(y - STAFF.middleC) < 0.5) {
-      ledger(STAFF.middleC);
-    }
-    drawAccidental(acc, STAFF.noteX, y);
-    const noteEl = createSvg('ellipse', {
-      cx: STAFF.noteX, cy: y, rx: 17, ry: 11.5,
-      fill: '#533313', transform: `rotate(-18 ${STAFF.noteX} ${y})`,
-      style: 'cursor:pointer',
+  return null;
+}
+
+const VF = Vex.Flow;
+
+function toVfKey(spelling, canonicalN, canonicalO) {
+  const letter = spelling[0].toLowerCase();
+  const rawAcc = spelling.slice(1);
+  const oct = computeDisplayOctave(spelling, canonicalN, canonicalO);
+  return `${letter}${rawAcc}/${oct}`;
+}
+
+const LETTER_TO_INDEX = { C:0, D:1, E:2, F:3, G:4, A:5, B:6 };
+
+function stepPosition(spelling, canonicalN, canonicalO) {
+  const oct = computeDisplayOctave(spelling, canonicalN, canonicalO);
+  return oct * 7 + LETTER_TO_INDEX[spelling[0]];
+}
+
+const TREBLE_MID = 4 * 7 + LETTER_TO_INDEX['B'];
+const BASS_MID = 3 * 7 + LETTER_TO_INDEX['D'];
+
+function stemDirection(spelling, canonicalN, canonicalO, clef) {
+  const step = stepPosition(spelling, canonicalN, canonicalO);
+  const mid = clef === 'treble' ? TREBLE_MID : BASS_MID;
+  return step > mid ? -1 : 1;
+}
+
+function noteClef(spelling, canonicalN, canonicalO) {
+  const oct = computeDisplayOctave(spelling, canonicalN, canonicalO);
+  if (oct < 4) return 'bass';
+  if (oct > 4) return 'treble';
+  return 'treble';
+}
+
+let currentMode = 'piano';
+let showName = true;
+let currentNote = null;
+
+function renderScore(noteInfo) {
+  const container = document.getElementById('vf-output');
+  container.innerHTML = '';
+
+  const isPiano = currentMode === 'piano';
+  const W_SVG = Math.max(container.clientWidth || 900, 400);
+  const H_SVG = isPiano ? 290 : 165;
+
+  const renderer = new VF.Renderer(container, VF.Renderer.Backends.SVG);
+  renderer.resize(W_SVG, H_SVG);
+  const ctx = renderer.getContext();
+
+  const staveX = 20;
+  const staveW = W_SVG - 50;
+
+  function makeNote(spelling, canonicalN, canonicalO, clef) {
+    const vfKey = toVfKey(spelling, canonicalN, canonicalO);
+    const dir = stemDirection(spelling, canonicalN, canonicalO, clef);
+    return new VF.StaveNote({
+      clef, keys: [vfKey], duration: 'q',
+      stem_direction: dir,
+      auto_stem: false,
     });
-    noteEl.addEventListener('click', () => {
-      if (currentNote) playAudio(currentNote.canonical, currentNote.o);
-    });
-    scoreSvg.appendChild(noteEl);
-    const up = stemGoesUp(y);
-    const sx = STAFF.noteX + (up ? 15 : -15);
-    scoreSvg.appendChild(createSvg('line', {
-      x1: sx, y1: y, x2: sx, y2: up ? y - 64 : y + 64,
-      stroke: '#533313', 'stroke-width': 2.4,
-    }));
-    const label = showName ? `<strong>${spelling}${displayO}</strong>` : '●';
-    const accLabel = acc ? ` &nbsp;·&nbsp; <em>${ACC_NAMES[acc] ?? acc}</em>` : '';
-    scoreLegend.innerHTML = label + accLabel;
-    const cycle = SPELL_CYCLES[canonicalN] || [];
-    if (cycle.length > 1) {
-      const next  = nextSpelling(canonicalN, spelling);
-      const nextO = computeDisplayOctave(next, canonicalN, canonicalO);
-      cycleSpellBtn.textContent = `⇄ ${next}${nextO}`;
-      cycleSpellBtn.style.display = '';
-    } else {
-      cycleSpellBtn.style.display = 'none';
+  }
+
+  function drawVoice(note, stave) {
+    const v = new VF.Voice({ num_beats:1, beat_value:4 }).setStrict(false);
+    v.addTickables([note]);
+    VF.Accidental.applyAccidentals([v], 'C');
+    new VF.Formatter().joinVoices([v]).format([v], staveW - 140);
+    v.draw(ctx, stave);
+  }
+
+  function makeRest(clef, stave) {
+    const key = clef === 'treble' ? 'b/4' : 'd/3';
+    const rn = new VF.StaveNote({ clef, keys:[key], duration:'qr' });
+    const rv = new VF.Voice({ num_beats:1, beat_value:4 }).setStrict(false);
+    rv.addTickables([rn]);
+    new VF.Formatter().joinVoices([rv]).format([rv], staveW - 140);
+    rv.draw(ctx, stave);
+  }
+
+  if (isPiano) {
+    const yTreble = 30, yBass = 160;
+    const staveTreble = new VF.Stave(staveX, yTreble, staveW).addClef('treble');
+    const staveBass = new VF.Stave(staveX, yBass, staveW).addClef('bass');
+    staveTreble.setContext(ctx).draw();
+    staveBass.setContext(ctx).draw();
+
+    const brace = new VF.StaveConnector(staveTreble, staveBass);
+    brace.setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw();
+    new VF.StaveConnector(staveTreble, staveBass)
+      .setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw();
+    new VF.StaveConnector(staveTreble, staveBass)
+      .setType(VF.StaveConnector.type.BOLD_DOUBLE_RIGHT).setContext(ctx).draw();
+
+    if (noteInfo) {
+      const clef = noteClef(noteInfo.spelling, noteInfo.canonicalN, noteInfo.canonicalO);
+      const activeStave = clef === 'treble' ? staveTreble : staveBass;
+      const otherStave = clef === 'treble' ? staveBass : staveTreble;
+      const otherClef = clef === 'treble' ? 'bass' : 'treble';
+
+      drawVoice(makeNote(noteInfo.spelling, noteInfo.canonicalN, noteInfo.canonicalO, clef), activeStave);
+      makeRest(otherClef, otherStave);
+    }
+  } else {
+    const clef = currentMode;
+    const stave = new VF.Stave(staveX, 30, staveW).addClef(clef);
+    stave.setEndBarType(VF.Barline.type.END);
+    stave.setContext(ctx).draw();
+
+    if (noteInfo) {
+      drawVoice(makeNote(noteInfo.spelling, noteInfo.canonicalN, noteInfo.canonicalO, clef), stave);
     }
   }
-  function playAudio(n, o) {
-    const key = n + o;
-    if (!audioCache[key]) {
-      audioCache[key] = new Audio(BASE + key.replace('#', '%23') + '.mp3');
-    }
-    const a = audioCache[key];
-    a.currentTime = 0;
-    a.play().catch(() => {});
-    ind.classList.add('on');
-    clearTimeout(ind._t);
-    ind._t = setTimeout(() => ind.classList.remove('on'), 1800);
+}
+
+const ACC_SYMBOLS = { '#':'♯', 'b':'♭', '##':'𝄪', 'bb':'𝄫', 'n':'♮', '':'' };
+
+function updateLegend() {
+  if (!currentNote) {
+    document.getElementById('scoreLegend').innerHTML =
+      'Play a key to show its place on the staff.<small>Available range: C3 to C6</small>';
+    return;
   }
-  function play(n, o) {
-    ind.textContent = n + o;
-    playAudio(n, o);
-    currentNote = { canonical: n, o, spelling: n };
-    drawNote(n, n, o);
+  const { spelling, canonical, o } = currentNote;
+  const rawAcc = spelling.slice(1);
+  const oct = computeDisplayOctave(spelling, canonical, o);
+  if (showName) {
+    const accLabel = rawAcc ? ` &nbsp;·&nbsp; <em>${ACC_NAMES[rawAcc] ?? rawAcc}</em>` : '';
+    document.getElementById('scoreLegend').innerHTML =
+      `<strong>${spelling}${oct}</strong>${accLabel}`;
+  } else {
+    document.getElementById('scoreLegend').innerHTML = '●';
   }
-  function clearScore() {
-    buildScore();
-    currentNote = null;
-    cycleSpellBtn.style.display = 'none';
-    scoreLegend.innerHTML = 'Play a key to show its place on the staff.<small>Available range: C3 to C6</small>';
-  }
-  function bind(el, n, o) {
-    const add = () => { el.classList.add('dn'); play(n, o); };
-    const rem = () => el.classList.remove('dn');
-    el.addEventListener('mousedown',  e => { e.preventDefault(); add(); });
-    el.addEventListener('mouseup',    rem);
-    el.addEventListener('mouseleave', rem);
-    el.addEventListener('touchstart', e => { e.preventDefault(); add(); }, { passive: false });
-    el.addEventListener('touchend',   rem);
-    el.addEventListener('touchcancel', rem);
-  }
-  const octStart = {};
-  let wLeft = 0;
-  for (const [n, o] of notes) {
-    if (n.includes('#')) continue;
-    if (n === 'C') octStart[o] = wLeft;
-    const el = document.createElement('div');
-    el.className = 'kw';
-    if (n === 'C') {
-      const s = document.createElement('span');
-      s.className = 'lbl';
-      s.textContent = `C${o}`;
-      el.appendChild(s);
-    }
-    bind(el, n, o);
-    kb.appendChild(el);
-    wLeft += W;
-  }
-  kb.style.width  = wLeft + 'px';
-  kb.style.height = H + 'px';
-  for (const [n, o] of notes) {
-    if (!n.includes('#')) continue;
-    const el = document.createElement('div');
-    el.className = 'kb';
-    el.style.left = (octStart[o] + BL[n]) + 'px';
-    bind(el, n, o);
-    kb.appendChild(el);
-  }
-  function setMode(mode) {
-    STAFF = STAFF_CONFIGS[mode];
-    modePianoBtn.classList.toggle('active',  mode === 'piano');
-    modeTrebleBtn.classList.toggle('active', mode === 'treble');
-    modeBassBtn.classList.toggle('active',   mode === 'bass');
-    if (currentNote) drawNote(currentNote.spelling, currentNote.canonical, currentNote.o);
-    else clearScore();
-  }
-  modePianoBtn.addEventListener('click',  () => setMode('piano'));
-  modeTrebleBtn.addEventListener('click', () => setMode('treble'));
-  modeBassBtn.addEventListener('click',   () => setMode('bass'));
-  cycleSpellBtn.addEventListener('click', () => {
-    if (!currentNote) return;
-    currentNote.spelling = nextSpelling(currentNote.canonical, currentNote.spelling);
-    const { spelling, canonical, o } = currentNote;
-    drawNote(spelling, canonical, o);
-    ind.textContent = spelling + computeDisplayOctave(spelling, canonical, o);
-    playAudio(canonical, o);
+}
+
+function enableAccButtons(enabled) {
+  ['accNat','accFlat','accBbFlat','accSharp','accDSharp'].forEach((id) => {
+    document.getElementById(id).disabled = !enabled;
   });
-  toggleNameBtn.addEventListener('click', () => {
-    showName = !showName;
-    toggleNameBtn.classList.toggle('active', showName);
-    toggleNameBtn.textContent = showName ? 'Name visible' : 'Name hidden';
-    if (currentNote) drawNote(currentNote.spelling, currentNote.canonical, currentNote.o);
-    else clearScore();
-  });
-  clearScoreBtn.addEventListener('click', () => {
-    ind.textContent = '—';
-    ind.classList.remove('on');
-    clearScore();
-  });
+}
+
+function updateCycleBtn() {
+  const btn = document.getElementById('cycleSpell');
+  if (!currentNote) { btn.style.display = 'none'; return; }
+  const { canonical, spelling, o } = currentNote;
+  const cycle = SPELL_CYCLES[canonical] || [];
+  if (cycle.length > 1) {
+    const next = nextSpelling(canonical, spelling);
+    const nextO = computeDisplayOctave(next, canonical, o);
+    btn.textContent = `⇄ ${next}${nextO}`;
+    btn.style.display = '';
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
+function drawNote() {
+  if (!currentNote) return;
+  const { spelling, canonical, o } = currentNote;
+  renderScore({ spelling, canonicalN: canonical, canonicalO: o });
+  updateLegend();
+  updateCycleBtn();
+}
+
+function clearScore() {
+  currentNote = null;
+  document.getElementById('cycleSpell').style.display = 'none';
+  enableAccButtons(false);
+  renderScore(null);
+  document.getElementById('scoreLegend').innerHTML =
+    'Play a key to show its place on the staff.<small>Available range: C3 to C6</small>';
+}
+
+function applyAcc(accSuffix) {
+  if (!currentNote) return;
+  const letter = currentNote.spelling[0];
+  let accOff = 0;
+  for (const ch of accSuffix) {
+    if (ch === '#') accOff++;
+    else if (ch === 'b') accOff--;
+  }
+  const displayO = computeDisplayOctave(currentNote.spelling, currentNote.canonical, currentNote.o);
+  const totalSemi = displayO * 12 + NAT_SEMI[letter] + accOff;
+  if (totalSemi < 36 || totalSemi > 84) return;
+  const semiMod = ((totalSemi % 12) + 12) % 12;
+  const newCanonical = NOTE_ORDER[semiMod];
+  const newO = Math.floor(totalSemi / 12);
+  currentNote.canonical = newCanonical;
+  currentNote.o = newO;
+  currentNote.spelling = letter + accSuffix;
+  playAudio(newCanonical, newO);
+  drawNote();
+}
+
+function playAudio(n, o) {
+  const key = n + o;
+  if (!audioCache[key]) audioCache[key] = new Audio(BASE + key.replace('#','%23') + '.mp3');
+  const a = audioCache[key];
+  a.currentTime = 0; a.play().catch(() => {});
+  ind.classList.add('on');
+  clearTimeout(ind._t);
+  ind._t = setTimeout(() => ind.classList.remove('on'), 1800);
+}
+
+function play(n, o) {
+  ind.textContent = n + o;
+  playAudio(n, o);
+  currentNote = { canonical: n, o, spelling: n };
+  enableAccButtons(true);
+  drawNote();
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('modePiano').classList.toggle('active', mode === 'piano');
+  document.getElementById('modeTreble').classList.toggle('active', mode === 'treble');
+  document.getElementById('modeBass').classList.toggle('active', mode === 'bass');
+  if (currentNote) drawNote();
+  else clearScore();
+}
+
+const kb = document.getElementById('kb');
+const ind = document.getElementById('ind');
+
+function bindKey(el, n, o) {
+  const dn = () => { el.classList.add('dn'); play(n, o); };
+  const up = () => { el.classList.remove('dn'); };
+  el.addEventListener('mousedown', (e) => { e.preventDefault(); dn(); });
+  el.addEventListener('mouseup', up);
+  el.addEventListener('mouseleave', up);
+  el.addEventListener('touchstart', (e) => { e.preventDefault(); dn(); }, { passive:false });
+  el.addEventListener('touchend', up);
+  el.addEventListener('touchcancel', up);
+}
+
+const octStart = {};
+let wLeft = 0;
+for (const [n, o] of allNotes) {
+  if (n.includes('#')) continue;
+  if (n === 'C') octStart[o] = wLeft;
+  const el = document.createElement('div');
+  el.className = 'kw';
+  if (n === 'C') {
+    const s = document.createElement('span');
+    s.className = 'lbl'; s.textContent = `C${o}`;
+    el.appendChild(s);
+  }
+  bindKey(el, n, o);
+  kb.appendChild(el);
+  wLeft += W;
+}
+kb.style.width = wLeft + 'px';
+kb.style.height = H + 'px';
+for (const [n, o] of allNotes) {
+  if (!n.includes('#')) continue;
+  const el = document.createElement('div');
+  el.className = 'kb';
+  el.style.left = (octStart[o] + BL[n]) + 'px';
+  bindKey(el, n, o);
+  kb.appendChild(el);
+}
+
+document.getElementById('modePiano').addEventListener('click', () => setMode('piano'));
+document.getElementById('modeTreble').addEventListener('click', () => setMode('treble'));
+document.getElementById('modeBass').addEventListener('click', () => setMode('bass'));
+
+document.getElementById('cycleSpell').addEventListener('click', () => {
+  if (!currentNote) return;
+  currentNote.spelling = nextSpelling(currentNote.canonical, currentNote.spelling);
+  drawNote();
+  ind.textContent = currentNote.spelling + computeDisplayOctave(currentNote.spelling, currentNote.canonical, currentNote.o);
+  playAudio(currentNote.canonical, currentNote.o);
+});
+
+document.getElementById('accNat').addEventListener('click', () => applyAcc(''));
+document.getElementById('accFlat').addEventListener('click', () => applyAcc('b'));
+document.getElementById('accBbFlat').addEventListener('click', () => applyAcc('bb'));
+document.getElementById('accSharp').addEventListener('click', () => applyAcc('#'));
+document.getElementById('accDSharp').addEventListener('click', () => applyAcc('##'));
+
+document.getElementById('toggleName').addEventListener('click', function() {
+  showName = !showName;
+  this.classList.toggle('active', showName);
+  this.textContent = showName ? 'Name visible' : 'Name hidden';
+  if (currentNote) drawNote();
+  else clearScore();
+});
+
+document.getElementById('clearScore').addEventListener('click', () => {
+  ind.textContent = '—'; ind.classList.remove('on');
   clearScore();
+});
+
+window.addEventListener('resize', () => {
+  if (currentNote) drawNote();
+  else clearScore();
+});
+
+clearScore();
 </script>
 </body>
 </html>
