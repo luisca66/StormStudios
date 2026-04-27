@@ -25,6 +25,12 @@ export const lesson: LessonConfig = {
         embedUrl: "https://www.youtube.com/embed/B8vrBuiDqjU?si=rvj9JGs7KxJgd5cg",
       },
     ],
+    en: [
+      {
+        youtubeId: "vYZ2fqp8ZWY",
+        embedUrl: "https://www.youtube.com/embed/vYZ2fqp8ZWY?si=R9xqZ9p9JOcxG5t7",
+      },
+    ],
   },
 
   tools: [
