@@ -18,6 +18,54 @@ export const lesson: LessonConfig = {
 
   prerequisites: ["p01-notas"],
 
+  videosByLocale: {
+    es: [
+      {
+        youtubeId: "eSh6LBMKT4M",
+        embedUrl: "https://www.youtube.com/embed/eSh6LBMKT4M?si=CdHYXW8CnLrm7-27",
+      },
+    ],
+    en: [
+      {
+        youtubeId: "NQB4oav_5iQ",
+        embedUrl: "https://www.youtube.com/embed/NQB4oav_5iQ?si=gwpEexKtjGtW_H1v",
+      },
+    ],
+  },
+
+  toolsByLocale: {
+    es: [
+      {
+        kind: "app",
+        title: {
+          es: "Lecto-escritura de Batería",
+          en: "Drum Reading and Writing",
+        },
+        description: {
+          es: "Practica patrones rítmicos de batería con notación, reproducción y controles interactivos.",
+          en: "Practice drum rhythm patterns with notation, playback, and interactive controls.",
+        },
+        url: "/apps/storm-bateria-v9.5.html",
+        icon: "🥁",
+      },
+    ],
+    en: [
+      {
+        kind: "app",
+        title: {
+          es: "Lecto-escritura de Batería",
+          en: "Drum Reading and Writing",
+        },
+        description: {
+          es: "Practica patrones rítmicos de batería con notación, reproducción y controles interactivos.",
+          en: "Practice drum rhythm patterns with notation, playback, and interactive controls.",
+        },
+        url: "/apps/storm-bateria-v9.5-en.html",
+        icon: "🥁",
+      },
+    ],
+  },
+
   activeRules: [],
 
   tags: ["rítmica", "figuras", "compás", "propedéutico"],

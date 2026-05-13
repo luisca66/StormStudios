@@ -191,6 +191,7 @@ export type LessonConfig = {
   videos?: LessonVideo[];
   videosByLocale?: Partial<Record<"es" | "en", LessonVideo[]>>;
   tools?: LessonTool[];
+  toolsByLocale?: Partial<Record<"es" | "en", LessonTool[]>>;
 
   // ============================================================
   // LO MÁS IMPORTANTE: reglas activas para el Maestro Virtual

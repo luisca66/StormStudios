@@ -47,8 +47,6 @@ export const lesson: LessonConfig = {
       url: "/apps/piano-notas.html",
       urlEn: "/apps/piano-notas-en.html",
       icon: "🎹",
-      embed: true,
-      embedHeight: 760,
     },
   ],
 

@@ -19,6 +19,7 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
   const es = locale === "es";
   const course = getCourseConfig();
   const lessonVideos = lesson.videosByLocale?.[locale as "es" | "en"] ?? lesson.videos;
+  const lessonTools = lesson.toolsByLocale?.[locale as "es" | "en"] ?? lesson.tools;
 
   return (
     <div className="ss-root" style={{ minHeight: "100vh" }}>
@@ -116,15 +117,17 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
           )}
 
           {/* Herramientas de la lección */}
-          {lesson.tools && lesson.tools.length > 0 && (
+          {lessonTools && lessonTools.length > 0 && (
             <div className="mb-10">
               <h3 className="ss-mono font-semibold mb-4 uppercase tracking-widest text-xs"
                 style={{ color: "rgba(52,211,153,0.7)" }}>
                 🛠 {es ? "Herramientas de esta lección" : "Lesson Tools"}
               </h3>
               <div className="flex flex-col gap-4">
-                {lesson.tools.map((tool: LessonTool) => {
+                {lessonTools.map((tool: LessonTool) => {
                   const toolHref = locale === "en" ? (tool.urlEn ?? tool.url) : tool.url;
+                  const opensExternally = tool.external || /^https?:\/\//.test(toolHref);
+                  const isPublicHtml = toolHref.endsWith(".html");
 
                   return tool.embed ? (
                     /* ── App embebida inline ── */
@@ -154,11 +157,19 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
                           {tool.description[locale as "es" | "en"]}
                         </p>
                       </div>
-                      {tool.url.endsWith(".html") || tool.external ? (
+                      {opensExternally ? (
                         <a
                           href={toolHref}
                           target="_blank"
                           rel="noopener noreferrer"
+                          className="ss-mono text-xs px-4 py-2 rounded-lg flex-shrink-0 transition-colors"
+                          style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "rgba(52,211,153,0.9)" }}
+                        >
+                          {es ? "Abrir →" : "Open →"}
+                        </a>
+                      ) : isPublicHtml ? (
+                        <a
+                          href={toolHref}
                           className="ss-mono text-xs px-4 py-2 rounded-lg flex-shrink-0 transition-colors"
                           style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: "rgba(52,211,153,0.9)" }}
                         >
