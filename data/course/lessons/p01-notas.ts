@@ -48,6 +48,19 @@ export const lesson: LessonConfig = {
       urlEn: "/apps/piano-notas-en.html",
       icon: "🎹",
     },
+    {
+      kind: "app",
+      title: {
+        es: "Juego de Lectura Musical",
+        en: "Music Reading Game",
+      },
+      description: {
+        es: "Reconoce notas naturales en clave de Sol y Fa con niveles progresivos, audio y progreso local.",
+        en: "Recognize natural notes in treble and bass clef with progressive levels, audio, and local progress.",
+      },
+      url: "/herramientas/lectura-musical",
+      icon: "🎼",
+    },
   ],
 
   activeRules: [],

@@ -18,6 +18,28 @@ export type AppEntry = {
 
 export const APPS: AppEntry[] = [
   {
+    slug: "lectura-musical",
+    name: { es: "Lectura Musical", en: "Music Reading" },
+    category: "theory",
+    description: {
+      es: "Practica la lectura de notas naturales en clave de sol y clave de fa con niveles progresivos.",
+      en: "Practice reading natural notes in treble clef and bass clef with progressive levels.",
+    },
+    longDescription: {
+      es: "Este juego acompaña el módulo propedéutico del curso de armonía. Presenta notas en el pentagrama, reproduce el sonido y guarda tu progreso local para avanzar por niveles.",
+      en: "This game supports the preparatory harmony-course module. It shows notes on the staff, plays their sound, and saves local progress as you move through levels.",
+    },
+    webUrl: "/herramientas/lectura-musical",
+    isWeb: true,
+    features: [
+      { es: "12 niveles progresivos", en: "12 progressive levels" },
+      { es: "Clave de sol y clave de fa", en: "Treble clef and bass clef" },
+      { es: "Nombres Do-Re-Mi o C-D-E", en: "Do-Re-Mi or C-D-E note names" },
+      { es: "Progreso guardado en el navegador", en: "Progress saved in the browser" },
+    ],
+    icon: "/images/emoji-score.svg",
+  },
+  {
     slug: "matematicas-mentales",
     name: { es: "Elefantito Matemático", en: "Mental Math Elephant" },
     category: "cognitive",

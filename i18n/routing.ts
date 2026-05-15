@@ -53,6 +53,10 @@ export const routing = defineRouting({
       es: "/recursos/[slug]",
       en: "/resources/[slug]",
     },
+    "/herramientas/lectura-musical": {
+      es: "/herramientas/lectura-musical",
+      en: "/tools/music-reading",
+    },
     "/intervalos": "/intervalos",
     "/memoria": "/memoria",
     "/sequencer": "/sequencer",
