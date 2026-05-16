@@ -18,6 +18,28 @@ export type AppEntry = {
 
 export const APPS: AppEntry[] = [
   {
+    slug: "lectura-ritmica",
+    name: { es: "Lectura Rítmica", en: "Rhythm Reading" },
+    category: "theory",
+    description: {
+      es: "Practica patrones rítmicos generados con metrónomo, tap interactivo y evaluación de precisión.",
+      en: "Practice generated rhythm patterns with a metronome, interactive tapping, and timing evaluation.",
+    },
+    longDescription: {
+      es: "Este juego acompaña la lección P02 del propedéutico. Genera patrones rítmicos por nivel, reproduce un metrónomo, captura tus taps y evalúa si mantienes la precisión necesaria por rondas consecutivas.",
+      en: "This game supports lesson P02 of the preparatory module. It generates level-based rhythm patterns, plays a metronome, captures your taps, and evaluates whether you maintain the required accuracy across consecutive rounds.",
+    },
+    webUrl: "/herramientas/lectura-ritmica",
+    isWeb: true,
+    features: [
+      { es: "5 niveles progresivos", en: "5 progressive levels" },
+      { es: "Metrónomo y tempo ajustable", en: "Metronome with adjustable tempo" },
+      { es: "Evaluación de precisión por ventana móvil", en: "Rolling-window timing evaluation" },
+      { es: "Timbres de percusión para el tap", en: "Percussion sounds for tap feedback" },
+    ],
+    icon: "/images/emoji-music.svg",
+  },
+  {
     slug: "lectura-musical",
     name: { es: "Lectura Musical", en: "Music Reading" },
     category: "theory",

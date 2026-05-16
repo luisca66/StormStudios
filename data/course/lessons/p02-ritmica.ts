@@ -38,6 +38,19 @@ export const lesson: LessonConfig = {
       {
         kind: "app",
         title: {
+          es: "Juego de Lectura Rítmica",
+          en: "Rhythm Reading Game",
+        },
+        description: {
+          es: "Practica patrones rítmicos con metrónomo, tap de precisión y evaluación por rondas.",
+          en: "Practice rhythm patterns with a metronome, precision tapping, and round-based evaluation.",
+        },
+        url: "/herramientas/lectura-ritmica",
+        icon: "🎵",
+      },
+      {
+        kind: "app",
+        title: {
           es: "Lecto-escritura de Batería",
           en: "Drum Reading and Writing",
         },
@@ -50,6 +63,19 @@ export const lesson: LessonConfig = {
       },
     ],
     en: [
+      {
+        kind: "app",
+        title: {
+          es: "Juego de Lectura Rítmica",
+          en: "Rhythm Reading Game",
+        },
+        description: {
+          es: "Practica patrones rítmicos con metrónomo, tap de precisión y evaluación por rondas.",
+          en: "Practice rhythm patterns with a metronome, precision tapping, and round-based evaluation.",
+        },
+        url: "/herramientas/lectura-ritmica",
+        icon: "🎵",
+      },
       {
         kind: "app",
         title: {

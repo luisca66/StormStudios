@@ -18,6 +18,7 @@ const STATIC_ROUTES = [
   { route: "/resources", priority: 0.88, changeFrequency: "weekly" },
   { route: "/curso-armonia", priority: 0.9, changeFrequency: "monthly" },
   { route: "/herramientas/lectura-musical", priority: 0.78, changeFrequency: "monthly" },
+  { route: "/herramientas/lectura-ritmica", priority: 0.78, changeFrequency: "monthly" },
   { route: "/apps", priority: 0.8, changeFrequency: "monthly" },
   { route: "/el-libro", priority: 0.8, changeFrequency: "monthly" },
   { route: "/quien-soy", priority: 0.7, changeFrequency: "monthly" },
