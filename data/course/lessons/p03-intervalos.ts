@@ -41,6 +41,32 @@ export const lesson: LessonConfig = {
       url: "/intervalos",
       icon: "🎵",
     },
+    {
+      kind: "app",
+      title: {
+        es: "Intervalos – Reconocimiento",
+        en: "Intervals – Recognition",
+      },
+      description: {
+        es: "Entrena diariamente la identificación auditiva de intervalos con niveles progresivos.",
+        en: "Train daily interval recognition with progressive levels.",
+      },
+      url: "/apps/intervalos-reconocimiento",
+      icon: "🎧",
+    },
+    {
+      kind: "app",
+      title: {
+        es: "Intervalos – Cantados",
+        en: "Intervals – Sung",
+      },
+      description: {
+        es: "Practica la producción vocal precisa de intervalos y fortalece tu oído interno.",
+        en: "Practice precise vocal interval production and strengthen your inner ear.",
+      },
+      url: "/apps/intervalos-cantados",
+      icon: "🎤",
+    },
   ],
 
   activeRules: [],
