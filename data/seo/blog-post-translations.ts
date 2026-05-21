@@ -7,24 +7,10 @@ type BlogPostTranslation = {
 
 export const BLOG_POST_TRANSLATIONS: BlogPostTranslation[] = [
   {
-    key: "parallel-fifths",
+    key: "welcome",
     slugs: {
-      en: "2024-01-parallel-fifths",
-      es: "2024-01-quintas-paralelas",
-    },
-  },
-  {
-    key: "chord-doubling",
-    slugs: {
-      en: "2024-02-chord-doubling",
-      es: "2024-02-duplicacion-acordes",
-    },
-  },
-  {
-    key: "shostakovich-method",
-    slugs: {
-      en: "2024-03-shostakovich-method",
-      es: "2024-03-metodo-shostakovich",
+      en: "2026-05-21-welcome",
+      es: "2026-05-21-bienvenida",
     },
   },
 ];
