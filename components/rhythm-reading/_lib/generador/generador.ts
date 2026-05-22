@@ -106,16 +106,21 @@ function generarCompas(
   regla: ReglaNivel,
   tipo: CompasType,
   achievable: Set<number>[],
-): Compas {
+  silenciosUsados: number,
+  maxSilencios: number,
+): { compas: Compas; silenciosUsados: number } {
   const totalUnits = compasToUnits(tipo);
   const notas: Duracion[] = [];
   let restante = totalUnits;
+  let silencios = silenciosUsados;
 
   while (restante > 0) {
     const slotsRestantes = regla.densidadMaxPorCompas - notas.length;
+    const silenciosBloqueados = silencios >= maxSilencios;
 
     // Figuras válidas: caben Y dejan un restante alcanzable en los slots que quedan
     const posibles = regla.figurasPermitidas.filter((f) => {
+      if (silenciosBloqueados && esSilencio(f)) return false; // límite de silencios
       const dur = durToUnits(f);
       if (dur > restante) return false;           // no cabe
       const nuevo = restante - dur;
@@ -127,20 +132,22 @@ function generarCompas(
     if (posibles.length > 0) {
       const figura = rng.pick(posibles);
       notas.push(figura);
+      if (esSilencio(figura)) silencios++;
       restante -= durToUnits(figura);
     } else {
       // Fallback de seguridad: no debería ocurrir con reglas bien formadas,
-      // pero si ocurre, elegir la figura más grande que quepa para minimizar notas.
+      // pero si ocurre, elegir la figura más grande que quepa (sin silencio si bloqueado).
       const fallback = regla.figurasPermitidas
-        .filter((f) => durToUnits(f) <= restante)
+        .filter((f) => durToUnits(f) <= restante && !(silenciosBloqueados && esSilencio(f)))
         .sort((a, b) => durToUnits(b) - durToUnits(a));
       if (fallback.length === 0) break;
+      if (esSilencio(fallback[0])) silencios++;
       notas.push(fallback[0]);
       restante -= durToUnits(fallback[0]);
     }
   }
 
-  return notas;
+  return { compas: notas, silenciosUsados: silencios };
 }
 
 // ── API pública ───────────────────────────────────────────────────────────────
@@ -163,9 +170,13 @@ export function generarEjercicio(seed: number, regla: ReglaNivel): PatronRitmico
   // Elegir el tipo de compás (una vez por ejercicio)
   const compas = rng.pick(regla.compasesPermitidos);
 
+  const maxSilencios = regla.maxSilenciosPorEjercicio ?? Infinity;
+  let silenciosUsados = 0;
   const compases: Compas[] = [];
   for (let i = 0; i < regla.longitudCompases; i++) {
-    compases.push(generarCompas(rng, regla, compas, achievable));
+    const result = generarCompas(rng, regla, compas, achievable, silenciosUsados, maxSilencios);
+    compases.push(result.compas);
+    silenciosUsados = result.silenciosUsados;
   }
 
   // Garantizar que no todo el ejercicio sea silencio.

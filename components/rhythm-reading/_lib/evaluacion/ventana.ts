@@ -17,10 +17,11 @@ export const VENTANA_RONDAS = 2;
 /** Umbral de aciertos (%) por nivel para cerrar el ejercicio. */
 export const UMBRAL_POR_NIVEL: Record<number, number> = {
   1: 90,
-  2: 92,
-  3: 94,
-  4: 96,
-  5: 98,
+  2: 90,
+  3: 90,
+  4: 92,
+  5: 94,
+  6: 96,
 };
 
 /**

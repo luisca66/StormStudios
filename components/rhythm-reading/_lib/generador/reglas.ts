@@ -29,6 +29,11 @@ export interface ReglaNivel {
    * Debe ser ≥ ceil(tiemposDelCompas / max_figura_dur) para que sea alcanzable.
    */
   densidadMaxPorCompas: number;
+  /**
+   * Máximo de silencios en todo el ejercicio (suma de todos los compases).
+   * undefined = sin límite.
+   */
+  maxSilenciosPorEjercicio?: number;
   /** Fracción del beat usada en calcularVentana (p. ej. 0.35 = 35%). */
   porcentajeToleranacia: number;
   /** Porcentaje de aciertos necesario para cerrar el ejercicio (0-100). */
@@ -42,55 +47,69 @@ export interface ReglaNivel {
 export const REGLAS_V1: ReglaNivel[] = [
   {
     nivel: 1,
-    nombre: 'Iniciación',
+    nombre: 'Iniciación',           // EN: Getting Started
     compasesPermitidos: ['2/4', '3/4', '4/4'],
-    figurasPermitidas: ['hd', 'hdr', 'h', 'hr', 'q', 'qr'],
+    figurasPermitidas: ['hd', 'h', 'q'],   // solo notas, sin silencios
     longitudCompases: 2,
-    densidadMaxPorCompas: 4,   // hd llena 3/4 sola; el generador respeta la suma exacta
+    densidadMaxPorCompas: 4,
     porcentajeToleranacia: 0.35,
     umbralCierre: 90,
     bpmDefault: 60,
   },
   {
     nivel: 2,
-    nombre: 'Básico',
-    compasesPermitidos: ['4/4'],
-    figurasPermitidas: ['h', 'q'],
+    nombre: 'Básico',               // EN: Basic
+    compasesPermitidos: ['2/4', '3/4', '4/4'],
+    figurasPermitidas: ['hd', 'hdr', 'h', 'hr', 'q', 'qr'],
     longitudCompases: 2,
-    densidadMaxPorCompas: 4,   // 2 blancas (min) a 4 negras (max)
+    densidadMaxPorCompas: 4,
+    maxSilenciosPorEjercicio: 1,
+    porcentajeToleranacia: 0.35,
+    umbralCierre: 90,
+    bpmDefault: 60,
+  },
+  {
+    nivel: 3,
+    nombre: 'Corcheas',             // EN: Eighth Notes
+    compasesPermitidos: ['4/4', '3/4'],
+    figurasPermitidas: ['h', 'q', '8'],
+    longitudCompases: 2,
+    densidadMaxPorCompas: 6,
     porcentajeToleranacia: 0.28,
     umbralCierre: 90,
     bpmDefault: 70,
   },
   {
-    nivel: 3,
-    nombre: 'Corcheas',
+    nivel: 4,
+    nombre: 'Mixto',                // EN: Mixed
     compasesPermitidos: ['4/4', '3/4'],
-    figurasPermitidas: ['h', 'q', '8'],
+    figurasPermitidas: ['h', 'hr', 'q', 'qr', '8', '8r'],
     longitudCompases: 2,
-    densidadMaxPorCompas: 6,   // máx 6 notas por compás
+    densidadMaxPorCompas: 6,
+    maxSilenciosPorEjercicio: 2,
     porcentajeToleranacia: 0.22,
     umbralCierre: 92,
     bpmDefault: 80,
   },
   {
-    nivel: 4,
-    nombre: 'Mixto',
-    compasesPermitidos: ['2/4', '3/4', '4/4'],
-    figurasPermitidas: ['q', '8'],
-    longitudCompases: 3,
+    nivel: 5,
+    nombre: 'Avanzado',             // EN: Advanced
+    compasesPermitidos: ['4/4', '3/4'],
+    figurasPermitidas: ['h', 'q', '8', '16'],
+    longitudCompases: 2,
     densidadMaxPorCompas: 8,
     porcentajeToleranacia: 0.16,
     umbralCierre: 94,
     bpmDefault: 85,
   },
   {
-    nivel: 5,
-    nombre: 'Avanzado',
-    compasesPermitidos: ['2/4', '3/4', '4/4'],
-    figurasPermitidas: ['h', 'q', '8', '16'],
-    longitudCompases: 3,
-    densidadMaxPorCompas: 10,
+    nivel: 6,
+    nombre: 'Experto',              // EN: Expert
+    compasesPermitidos: ['4/4', '3/4'],
+    figurasPermitidas: ['h', 'q', '8', '16', '16r'],
+    longitudCompases: 2,
+    densidadMaxPorCompas: 8,
+    maxSilenciosPorEjercicio: 3,
     porcentajeToleranacia: 0.10,
     umbralCierre: 96,
     bpmDefault: 90,

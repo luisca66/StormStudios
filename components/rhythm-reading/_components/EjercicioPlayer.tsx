@@ -114,6 +114,7 @@ const LEVEL_NAMES_EN: Record<number, string> = {
   3: 'Eighth Notes',
   4: 'Mixed',
   5: 'Advanced',
+  6: 'Expert',
 };
 
 const TIMBRE_LABELS_EN: Partial<Record<TimbreId, string>> = {
