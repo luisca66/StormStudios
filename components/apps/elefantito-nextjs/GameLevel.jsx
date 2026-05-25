@@ -3,22 +3,19 @@ import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "./LanguageContext";
 
 const MAX_BARRELS = 20;
+const MUSIC_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/music/elefantito/";
+const MUSIC_TRACKS = Array.from({ length: 24 }, (_, i) => `${MUSIC_BASE}mate-${String(i + 1).padStart(2, "0")}.mp3`);
 
-// Random playlist helper
-const MUSIC_BASE = 'https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/music/elefantito/';
-const MUSIC_TRACKS = Array.from({length: 24}, (_, i) => `${MUSIC_BASE}mate-${String(i + 1).padStart(2, '0')}.mp3`);
+export default function GameLevel({ level, problemTypes, onComplete }) {
+  const { t, lang } = useLanguage();
 
-export default function GameLevel1({ onComplete }) {
-  const { t } = useLanguage();
-  
   const [timePerQuestion, setTimePerQuestion] = useState(10);
-  const [gameState, setGameState] = useState("setup"); // setup, playing, won
-  const [problem, setProblem] = useState({ num1: 0, num2: 0, answer: 0, operator: '+' });
+  const [gameState, setGameState] = useState("setup");
+  const [problem, setProblem] = useState({ num1: 0, num2: 0, answer: 0, operator: "+" });
   const [input, setInput] = useState("");
   const [timeLeft, setTimeLeft] = useState(10);
-  const [barrels, setBarrels] = useState([]); // array of { id }
+  const [barrels, setBarrels] = useState([]);
   const [flyingBarrel, setFlyingBarrel] = useState(null);
-  
   const [isThrowing, setIsThrowing] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(60);
@@ -29,17 +26,15 @@ export default function GameLevel1({ onComplete }) {
   const timerRef = useRef(null);
   const startTimeRef = useRef(0);
   const usedProblemsRef = useRef(new Set());
-  
   const gameAreaRef = useRef(null);
   const bottomShelfRef = useRef(null);
   const topShelfRef = useRef(null);
   const elephantRef = useRef(null);
-
+  const flyingBarrelRef = useRef(null);
   const correctSoundRef = useRef(null);
   const errorSoundRef = useRef(null);
   const musicPlayerRef = useRef(null);
 
-  // Cleanup audio on unmount
   useEffect(() => {
     return () => {
       if (musicPlayerRef.current) {
@@ -50,39 +45,32 @@ export default function GameLevel1({ onComplete }) {
     };
   }, []);
 
-  // Keyboard support
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (gameState !== "playing") return;
-      if (e.key >= '0' && e.key <= '9') {
-        appendInput(e.key);
-      } else if (e.key === 'Backspace') {
-        appendInput('DEL');
-      } else if (e.key === 'Enter') {
-        checkAnswer();
-      }
+      if (e.key >= "0" && e.key <= "9") appendInput(e.key);
+      else if (e.key === "Backspace") appendInput("DEL");
+      else if (e.key === "Enter") checkAnswer();
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [gameState, input, problem, barrels]);
 
-  // Timer logic
   useEffect(() => {
     if (gameState === "playing") {
       timerRef.current = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
             handleTimeout();
-            return timePerQuestion; // reset immediately for next
+            return timePerQuestion;
           }
           return prev - 1;
         });
       }, 1000);
     }
     return () => clearInterval(timerRef.current);
-  }, [gameState, problem, timePerQuestion]); // re-run if problem changes to reset timer properly
+  }, [gameState, problem, timePerQuestion]);
 
-  // Audio volume and mute sync
   useEffect(() => {
     if (musicPlayerRef.current) musicPlayerRef.current.volume = isMuted ? 0 : volume / 100;
     if (correctSoundRef.current) correctSoundRef.current.muted = isMuted;
@@ -99,9 +87,7 @@ export default function GameLevel1({ onComplete }) {
         playMusic();
       };
     }
-    if (!isMuted) {
-      musicPlayerRef.current.play().catch(e => console.log("Audio play prevented:", e));
-    }
+    if (!isMuted) musicPlayerRef.current.play().catch((e) => console.log("Audio play prevented:", e));
   };
 
   const playSound = (type) => {
@@ -109,9 +95,10 @@ export default function GameLevel1({ onComplete }) {
     const sound = type === "correct" ? correctSoundRef.current : errorSoundRef.current;
     if (sound) {
       sound.currentTime = 0;
-      sound.play().catch(e => console.log("Audio play prevented:", e));
+      sound.play().catch((e) => console.log("Audio play prevented:", e));
     }
   };
+
   const showMessage = (msg) => {
     setMessage(msg);
     setTimeout(() => setMessage(""), 2500);
@@ -119,11 +106,11 @@ export default function GameLevel1({ onComplete }) {
 
   const getOperatorColor = (op) => {
     switch (op) {
-      case '+': return 'text-[#00eeff] drop-shadow-[0_0_8px_rgba(0,238,255,0.8)]'; // Cyan
-      case '-': return 'text-[#ff2244] drop-shadow-[0_0_8px_rgba(255,34,68,0.8)]'; // Rosa/Rojo
-      case '×': return 'text-[#ffe600] drop-shadow-[0_0_8px_rgba(255,230,0,0.8)]'; // Amarillo
-      case '÷': return 'text-[#b026ff] drop-shadow-[0_0_12px_rgba(176,38,255,0.9)]'; // Morado Neon
-      default: return 'text-[#00eeff] drop-shadow-[0_0_8px_rgba(0,238,255,0.6)]';
+      case "+": return "text-[#00eeff] drop-shadow-[0_0_8px_rgba(0,238,255,0.8)]";
+      case "-": return "text-[#ff2244] drop-shadow-[0_0_8px_rgba(255,34,68,0.8)]";
+      case "×": return "text-[#ffe600] drop-shadow-[0_0_8px_rgba(255,230,0,0.8)]";
+      case "÷": return "text-[#b026ff] drop-shadow-[0_0_12px_rgba(176,38,255,0.9)]";
+      default:  return "text-[#00eeff] drop-shadow-[0_0_8px_rgba(0,238,255,0.6)]";
     }
   };
 
@@ -135,60 +122,63 @@ export default function GameLevel1({ onComplete }) {
 
     while (!isUnique && attempts < 100) {
       attempts++;
-      const allowedTypes = [0, 2, 4];
-      const type = allowedTypes[Math.floor(Math.random() * allowedTypes.length)];
+      const type = problemTypes[Math.floor(Math.random() * problemTypes.length)];
 
       switch (type) {
         case 0:
-          operator = '+';
+          operator = "+";
           num1 = Math.floor(Math.random() * 9) + 1;
           num2 = Math.floor(Math.random() * 9) + 1;
           answer = num1 + num2;
           break;
         case 1:
-          operator = '+';
-          num1 = Math.floor(Math.random() * 90) + 10; // 10 to 99
-          num2 = Math.floor(Math.random() * 9) + 1;   // 1 to 9
+          operator = "+";
+          num1 = Math.floor(Math.random() * 90) + 10;
+          num2 = Math.floor(Math.random() * 9) + 1;
           if (Math.random() > 0.5) [num1, num2] = [num2, num1];
           answer = num1 + num2;
           break;
         case 2:
-          operator = '-';
+          operator = "-";
           num1 = Math.floor(Math.random() * 9) + 1;
           num2 = Math.floor(Math.random() * 9) + 1;
           if (num1 < num2) [num1, num2] = [num2, num1];
           answer = num1 - num2;
           break;
         case 3:
-          operator = '-';
+          operator = "-";
           num1 = Math.floor(Math.random() * 90) + 10;
           num2 = Math.floor(Math.random() * 9) + 1;
           answer = num1 - num2;
           break;
         case 4:
-          operator = '×';
+          operator = "×";
           num1 = Math.floor(Math.random() * 9) + 1;
           num2 = Math.floor(Math.random() * 9) + 1;
           answer = num1 * num2;
           break;
         case 5:
-          operator = '÷';
+          operator = "÷";
           num2 = Math.floor(Math.random() * 9) + 1;
           answer = Math.floor(Math.random() * 9) + 1;
           num1 = num2 * answer;
           break;
+        case 6:
+          operator = "+";
+          num1 = Math.floor(Math.random() * 79) + 11; // 11–89
+          num2 = Math.floor(Math.random() * 79) + 11; // 11–89
+          while (num2 % 10 === 0) num2 = Math.floor(Math.random() * 79) + 11;
+          answer = num1 + num2;
+          break;
         default:
-          operator = '+'; num1 = 1; num2 = 1; answer = 2;
+          operator = "+"; num1 = 1; num2 = 1; answer = 2;
       }
 
       problemStr = `${num1}${operator}${num2}`;
-      if (!usedProblemsRef.current.has(problemStr)) {
-        isUnique = true;
-      }
+      if (!usedProblemsRef.current.has(problemStr)) isUnique = true;
     }
 
     usedProblemsRef.current.add(problemStr);
-
     setProblem({ num1, num2, answer, operator });
     setInput("");
     setTimeLeft(timePerQuestion);
@@ -206,9 +196,8 @@ export default function GameLevel1({ onComplete }) {
 
   const throwBarrel = () => {
     setIsThrowing(true);
-    
     let startX = 70, startY = 70;
-    let targetX = '50%', targetY = '65%';
+    let targetX = "50%", targetY = "65%";
 
     const gameArea = gameAreaRef.current;
     const bottomShelf = bottomShelfRef.current;
@@ -218,8 +207,6 @@ export default function GameLevel1({ onComplete }) {
     if (gameArea && bottomShelf && topShelf && elephant) {
       const gRect = gameArea.getBoundingClientRect();
       const eRect = elephant.getBoundingClientRect();
-      
-      // Calculate start relative to gameArea bottom-left
       startX = eRect.left - gRect.left + 68;
       startY = gRect.bottom - eRect.bottom + 76;
 
@@ -227,49 +214,47 @@ export default function GameLevel1({ onComplete }) {
       const activeShelf = isTopShelf ? topShelf : bottomShelf;
       const sRect = activeShelf.getBoundingClientRect();
       const barrelIndex = isTopShelf ? barrels.length - 10 : barrels.length;
-      
-      // Calculate target relative to gameArea bottom-left
-      targetX = sRect.left - gRect.left + 8 + (barrelIndex * 53);
+      targetX = sRect.left - gRect.left + 8 + barrelIndex * 53;
       targetY = gRect.bottom - sRect.bottom + 4;
     }
 
-    // 1. Initial position
-    setFlyingBarrel({ left: `${startX}px`, bottom: `${startY}px`, transform: 'rotate(0deg)' });
-    
-    // 2. Trigger animation to target
+    // Mount the barrel element at the start position so flyingBarrelRef gets attached,
+    // then use WAAPI in a RAF (after React commits) to animate both keyframes explicitly.
+    // This avoids CSS transition timing issues caused by React 18 batching.
+    setFlyingBarrel({ left: `${startX}px`, bottom: `${startY}px` });
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setFlyingBarrel({ left: `${targetX}px`, bottom: `${targetY}px`, transform: 'rotate(360deg)' });
-      });
+      flyingBarrelRef.current?.animate(
+        [
+          { left: `${startX}px`, bottom: `${startY}px`, transform: "rotate(0deg)" },
+          { left: `${targetX}px`, bottom: `${targetY}px`, transform: "rotate(360deg)" },
+        ],
+        { duration: 1400, easing: "ease-out", fill: "forwards" }
+      );
     });
 
     setTimeout(() => {
-      setBarrels(prev => [...prev, { id: Date.now() + Math.random().toString() }]);
+      setBarrels((prev) => [...prev, { id: Date.now() + Math.random().toString() }]);
       setIsThrowing(false);
       setFlyingBarrel(null);
-      
       if (barrels.length + 1 >= MAX_BARRELS) {
         clearInterval(timerRef.current);
         const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
         setGameTime(elapsed);
         setGameState("won");
-        showMessage(t('msg_win'));
+        showMessage(t("msg_win"));
       } else {
         setTimeout(generateProblem, 800);
       }
-    }, 400); // 400ms duration
+    }, 1450);
   };
 
   const removeBarrel = () => {
-    setBarrels(prev => {
-      if (prev.length === 0) return prev;
-      return prev.slice(0, -1);
-    });
+    setBarrels((prev) => (prev.length === 0 ? prev : prev.slice(0, -1)));
   };
 
   const handleTimeout = () => {
     playSound("error");
-    showMessage(t('msg_timeout'));
+    showMessage(t("msg_timeout"));
     removeBarrel();
     generateProblem();
   };
@@ -277,165 +262,110 @@ export default function GameLevel1({ onComplete }) {
   const checkAnswer = () => {
     if (input === "" || isProcessingRef.current) return;
     isProcessingRef.current = true;
-    
     if (parseInt(input) === problem.answer) {
       playSound("correct");
-      if (barrels.length === MAX_BARRELS - 1) {
-        showMessage(t('msg_correct_last'));
-      } else {
-        showMessage(t('msg_correct'));
-      }
-      clearInterval(timerRef.current); // pause timer while animating
+      showMessage(barrels.length === MAX_BARRELS - 1 ? t("msg_correct_last") : t("msg_correct"));
+      clearInterval(timerRef.current);
       throwBarrel();
     } else {
       playSound("error");
-      showMessage(t('msg_wrong'));
+      showMessage(t("msg_wrong"));
       removeBarrel();
       generateProblem();
     }
   };
 
   const appendInput = (val) => {
-    if (val === 'DEL') {
-      setInput(prev => prev.slice(0, -1));
-    } else if (input.length < 3) {
-      setInput(prev => prev + val);
-    }
+    if (val === "DEL") setInput((prev) => prev.slice(0, -1));
+    else if (input.length < 3) setInput((prev) => prev + val);
   };
 
-  const keys = [
-    "7", "8", "9",
-    "4", "5", "6",
-    "1", "2", "3",
-    "DEL", "0", "ENTER"
-  ];
+  const keys = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "DEL", "0", "ENTER"];
+  const hudLabel   = lang === "en" ? `LEVEL ${level}`         : `NIVEL ${level}`;
+  const winTitle   = lang === "en" ? `LEVEL ${level}\nCOMPLETED!` : `¡NIVEL ${level}\nCOMPLETADO!`;
+  const nextLabel  = lang === "en" ? "NEXT LEVEL →"           : "SIGUIENTE NIVEL →";
 
   return (
     <div className="w-full flex flex-col md:flex-row gap-3 h-[80vh] min-h-[550px] relative font-[family-name:var(--font-press-start-2p)]">
-      
       <audio ref={correctSoundRef} src="https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/acierto.mp3" preload="auto" />
-      <audio ref={errorSoundRef} src="https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/error.mp3" preload="auto" />
+      <audio ref={errorSoundRef}   src="https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/error.mp3"   preload="auto" />
 
-      {/* GAME AREA (Left Side) */}
-      <div 
-        ref={gameAreaRef}
-        className="flex-1 relative bg-[#060810] border-[3px] border-[#14161e] rounded-sm overflow-hidden flex flex-col"
-      >
+      {/* GAME AREA */}
+      <div ref={gameAreaRef} className="flex-1 relative bg-[#060810] border-[3px] border-[#14161e] rounded-sm overflow-hidden flex flex-col">
         <div className="absolute inset-0 bg-jungle" />
-        
-        {/* Vignette & Scanlines for the jungle specifically */}
-        <div className="absolute inset-0 pointer-events-none z-10" style={{ background: 'radial-gradient(circle at center, transparent 30%, #060810 120%)' }} />
-        <div className="absolute inset-0 pointer-events-none z-10" style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.2) 2px, rgba(0,0,0,0.2) 4px)' }} />
+        <div className="absolute inset-0 pointer-events-none z-10" style={{ background: "radial-gradient(circle at center, transparent 30%, #060810 120%)" }} />
+        <div className="absolute inset-0 pointer-events-none z-10" style={{ background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.2) 2px, rgba(0,0,0,0.2) 4px)" }} />
 
-        {/* HUD Top Bar */}
+        {/* HUD */}
         <div className="absolute top-0 left-0 right-0 p-3 flex justify-between z-20">
           <div className="bg-[#08090f] border-2 border-[#00eeff] text-[#00eeff] px-3 py-2 text-[0.45rem] shadow-[0_0_8px_rgba(0,238,255,0.25)] rounded-sm">
-            {t('lv1')}
+            {hudLabel}
           </div>
           <div className="bg-[#08090f] border-2 border-[#39ff14] text-[#39ff14] px-3 py-2 text-[0.45rem] shadow-[0_0_8px_rgba(57,255,20,0.25)] rounded-sm">
-            {t('barrels')} {barrels.length}/{MAX_BARRELS}
+            {t("barrels")} {barrels.length}/{MAX_BARRELS}
           </div>
         </div>
 
         {/* Top Shelf */}
-        <div 
-          ref={topShelfRef}
-          className="absolute w-[566px] max-w-[95%] h-[12px] left-1/2 -translate-x-1/2 md:translate-x-0 md:left-[40px] bottom-[75%] bg-[#0d0f1a] border-b-[3px] border-[#191c2b] shadow-[0_4px_12px_rgba(57,255,20,0.1),inset_0_1px_0_rgba(57,255,20,0.1)] rounded-sm flex items-end px-2 gap-1 z-10"
-        >
+        <div ref={topShelfRef} className="absolute w-[566px] max-w-[95%] h-[12px] left-1/2 -translate-x-1/2 md:translate-x-0 md:left-[40px] bottom-[75%] bg-[#0d0f1a] border-b-[3px] border-[#191c2b] shadow-[0_4px_12px_rgba(57,255,20,0.1),inset_0_1px_0_rgba(57,255,20,0.1)] rounded-sm flex items-end px-2 gap-1 z-10">
           {barrels.slice(10, 20).map((b) => (
-            <div 
-              key={b.id} 
-              className="w-[73px] h-[94px] bg-contain bg-center bg-no-repeat mb-1 -ml-6 first:ml-0 transition-all drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]"
-              style={{ backgroundImage: "url('/barril.png')" }}
-            />
+            <div key={b.id} className="w-[73px] h-[94px] bg-contain bg-center bg-no-repeat mb-1 -ml-6 first:ml-0 transition-all drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]" style={{ backgroundImage: "url('/barril.png')" }} />
           ))}
         </div>
 
         {/* Bottom Shelf */}
-        <div 
-          ref={bottomShelfRef}
-          className="absolute w-[566px] max-w-[95%] h-[12px] left-1/2 -translate-x-1/2 md:translate-x-0 md:left-[40px] bottom-[48%] bg-[#0d0f1a] border-b-[3px] border-[#191c2b] shadow-[0_4px_12px_rgba(57,255,20,0.1),inset_0_1px_0_rgba(57,255,20,0.1)] rounded-sm flex items-end px-2 gap-1 z-10"
-        >
+        <div ref={bottomShelfRef} className="absolute w-[566px] max-w-[95%] h-[12px] left-1/2 -translate-x-1/2 md:translate-x-0 md:left-[40px] bottom-[48%] bg-[#0d0f1a] border-b-[3px] border-[#191c2b] shadow-[0_4px_12px_rgba(57,255,20,0.1),inset_0_1px_0_rgba(57,255,20,0.1)] rounded-sm flex items-end px-2 gap-1 z-10">
           {barrels.slice(0, 10).map((b) => (
-            <div 
-              key={b.id} 
-              className="w-[73px] h-[94px] bg-contain bg-center bg-no-repeat mb-1 -ml-6 first:ml-0 transition-all drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]"
-              style={{ backgroundImage: "url('/barril.png')" }}
-            />
+            <div key={b.id} className="w-[73px] h-[94px] bg-contain bg-center bg-no-repeat mb-1 -ml-6 first:ml-0 transition-all drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]" style={{ backgroundImage: "url('/barril.png')" }} />
           ))}
         </div>
 
-        {/* Gorilla/Elephant */}
+        {/* Elephant */}
         <div ref={elephantRef} className="absolute w-[136px] h-[152px] bottom-[15px] left-[35px] z-20">
-          <img 
-            src="/elefantito_piso.png" 
-            className={`w-full h-full object-contain absolute drop-shadow-[0_0_12px_rgba(0,238,255,0.4)] ${isThrowing ? 'opacity-0' : 'opacity-100'}`}
-            alt="Idle"
-          />
-          <img 
-            src="/elefantito_aire.png" 
-            className={`w-full h-full object-contain absolute drop-shadow-[0_0_12px_rgba(0,238,255,0.4)] origin-bottom scale-[1.3] ${isThrowing ? 'opacity-100' : 'opacity-0'}`}
-            alt="Throwing"
-          />
+          <img src="/elefantito_piso.png" className={`w-full h-full object-contain absolute drop-shadow-[0_0_12px_rgba(0,238,255,0.4)] ${isThrowing ? "opacity-0" : "opacity-100"}`} alt="Idle" />
+          <img src="/elefantito_aire.png" className={`w-full h-full object-contain absolute drop-shadow-[0_0_12px_rgba(0,238,255,0.4)] origin-bottom scale-[1.3] ${isThrowing ? "opacity-100" : "opacity-0"}`} alt="Throwing" />
         </div>
 
         {/* Flying Barrel */}
         {flyingBarrel && (
-          <div 
-            className="absolute w-[73px] h-[94px] bg-contain bg-center bg-no-repeat z-30 transition-all duration-300 ease-out drop-shadow-[0_0_12px_rgba(57,255,20,0.6)]"
-            style={{ 
-              backgroundImage: "url('/barril.png')",
-              left: flyingBarrel.left,
-              bottom: flyingBarrel.bottom,
-              transform: flyingBarrel.transform
-            }}
+          <div
+            ref={flyingBarrelRef}
+            className="absolute w-[73px] h-[94px] bg-contain bg-center bg-no-repeat z-30 drop-shadow-[0_0_12px_rgba(57,255,20,0.6)]"
+            style={{ backgroundImage: "url('/barril.png')", left: flyingBarrel.left, bottom: flyingBarrel.bottom }}
           />
         )}
 
-        {/* Message Box overlay */}
+        {/* Message */}
         {message && (
-          <div className="absolute top-[35%] left-1/2 -translate-x-1/2 bg-[#0a0b14]/90 text-white px-5 py-3 rounded-sm border-2 font-[family-name:var(--font-press-start-2p)] text-[0.55rem] text-center z-50 animate-[slideDown_0.3s_ease-out] shadow-2xl backdrop-blur-sm"
-               style={{ 
-                 borderColor: message.includes('−1') ? '#ff2244' : '#39ff14',
-                 color: message.includes('−1') ? '#ff2244' : '#39ff14',
-                 textShadow: message.includes('−1') ? '0 0 10px rgba(255,34,68,0.4)' : '0 0 10px rgba(57,255,20,0.4)'
-               }}>
+          <div className="absolute top-[35%] left-1/2 -translate-x-1/2 bg-[#0a0b14]/90 px-5 py-3 rounded-sm border-2 font-[family-name:var(--font-press-start-2p)] text-[0.55rem] text-center z-50 animate-[slideDown_0.3s_ease-out] shadow-2xl backdrop-blur-sm"
+            style={{
+              borderColor: message.includes("−1") ? "#ff2244" : "#39ff14",
+              color:       message.includes("−1") ? "#ff2244" : "#39ff14",
+              textShadow:  message.includes("−1") ? "0 0 10px rgba(255,34,68,0.4)" : "0 0 10px rgba(57,255,20,0.4)",
+            }}>
             {message}
           </div>
         )}
-        
+
         {/* Setup overlay */}
         {gameState === "setup" && (
           <div className="absolute inset-0 bg-[#000000d0] backdrop-blur-sm flex items-center justify-center z-40 p-4">
             <div className="bg-[#060810] p-6 rounded-sm border-2 border-[#00eeff] text-center max-w-sm w-full shadow-[0_0_0_4px_#000,0_0_20px_rgba(0,238,255,0.25)]">
-              <h2 className="text-[#00eeff] text-[0.8rem] mb-6 drop-shadow-[0_0_8px_rgba(0,238,255,0.4)] leading-relaxed">{t('game_setup_title')}</h2>
-              
+              <h2 className="text-[#00eeff] text-[0.8rem] mb-6 drop-shadow-[0_0_8px_rgba(0,238,255,0.4)] leading-relaxed">{t("game_setup_title")}</h2>
               <div className="bg-[#08090f] p-4 rounded-sm border border-[#14161e] mb-6 text-left">
                 <label className="block text-[#a0a0a0] text-[0.45rem] mb-3 leading-loose">
-                  {t('setup_time')} <span className="text-[#39ff14] drop-shadow-[0_0_5px_rgba(57,255,20,0.4)]">{timePerQuestion}s</span>
+                  {t("setup_time")} <span className="text-[#39ff14] drop-shadow-[0_0_5px_rgba(57,255,20,0.4)]">{timePerQuestion}s</span>
                 </label>
-                <input 
-                  type="range" 
-                  min="3" max="25" 
-                  value={timePerQuestion}
-                  onChange={(e) => {
-                    const v = parseInt(e.target.value);
-                    setTimePerQuestion(v);
-                    setTimeLeft(v);
-                  }}
+                <input type="range" min="3" max="25" value={timePerQuestion}
+                  onChange={(e) => { const v = parseInt(e.target.value); setTimePerQuestion(v); setTimeLeft(v); }}
                   className="w-full accent-[#39ff14]"
                 />
                 <div className="flex justify-between text-[0.35rem] text-[#555] mt-2">
-                  <span>3s</span>
-                  <span>25s</span>
+                  <span>3s</span><span>25s</span>
                 </div>
               </div>
-              
-              <button 
-                onClick={startGame}
-                className="bg-[#0c0e1a] hover:bg-[#151930] text-[#39ff14] border-2 border-[#39ff14] text-[0.6rem] py-4 px-6 cursor-pointer shadow-[0_0_0_2px_#000,0_0_12px_rgba(57,255,20,0.25)] active:scale-95 transition-all w-full"
-              >
-                {t('game_start')}
+              <button onClick={startGame} className="bg-[#0c0e1a] hover:bg-[#151930] text-[#39ff14] border-2 border-[#39ff14] text-[0.6rem] py-4 px-6 cursor-pointer shadow-[0_0_0_2px_#000,0_0_12px_rgba(57,255,20,0.25)] active:scale-95 transition-all w-full">
+                {t("game_start")}
               </button>
             </div>
           </div>
@@ -445,31 +375,30 @@ export default function GameLevel1({ onComplete }) {
         {gameState === "won" && (
           <div className="absolute inset-0 bg-[#000000e0] backdrop-blur-sm flex items-center justify-center z-40 p-4">
             <div className="bg-[#060810] p-8 rounded-sm border-2 border-[#39ff14] text-center max-w-sm w-full animate-[winGlow_2s_infinite]">
-              <h2 className="text-[1rem] text-[#39ff14] mb-6 leading-relaxed drop-shadow-[0_0_10px_rgba(57,255,20,0.5)]">¡NIVEL 1<br/>COMPLETADO!</h2>
-              <p className="text-[#00eeff] text-[0.6rem] mb-8 leading-loose">{t('game_time')} <br/><br/><span className="text-white text-[0.8rem]">{Math.floor(gameTime / 60)}:{(gameTime % 60).toString().padStart(2, '0')}</span></p>
-              <button 
-                onClick={onComplete}
-                className="bg-[#0c0e1a] hover:bg-[#151930] text-[#39ff14] border-2 border-[#39ff14] text-[0.5rem] py-4 px-6 cursor-pointer shadow-[0_0_0_2px_#000,0_0_12px_rgba(57,255,20,0.25)] active:scale-95 transition-all w-full"
-              >
-                SIGUIENTE NIVEL →
+              <h2 className="text-[1rem] text-[#39ff14] mb-6 leading-relaxed drop-shadow-[0_0_10px_rgba(57,255,20,0.5)] whitespace-pre-line">{winTitle}</h2>
+              <p className="text-[#00eeff] text-[0.6rem] mb-8 leading-loose">
+                {t("game_time")}<br /><br />
+                <span className="text-white text-[0.8rem]">{Math.floor(gameTime / 60)}:{(gameTime % 60).toString().padStart(2, "0")}</span>
+              </p>
+              <button onClick={onComplete} className="bg-[#0c0e1a] hover:bg-[#151930] text-[#39ff14] border-2 border-[#39ff14] text-[0.5rem] py-4 px-6 cursor-pointer shadow-[0_0_0_2px_#000,0_0_12px_rgba(57,255,20,0.25)] active:scale-95 transition-all w-full">
+                {nextLabel}
               </button>
             </div>
           </div>
         )}
       </div>
 
-      {/* CONTROL PANEL (Right Side) */}
+      {/* CONTROL PANEL */}
       <div className="w-full md:w-[260px] bg-[#0a0b14] border-l-2 md:border-l-[3px] border-[#14161e] p-3 flex flex-col gap-3 shrink-0 relative z-20">
-        
         {/* Timer */}
         <div className="bg-[#060810] border-[3px] border-[#ff2244] rounded-sm p-3 shadow-[0_0_0_3px_#000,0_0_10px_rgba(255,34,68,0.15)] flex flex-col items-center justify-center shrink-0 h-[65px] relative overflow-hidden">
-          <div className={`text-[1.85rem] text-[#ff2244] z-10 transition-all ${timeLeft <= 4 && gameState === 'playing' ? 'animate-[pulseR_0.5s_infinite]' : 'drop-shadow-[0_0_8px_rgba(255,34,68,0.45)]'}`}>
+          <div className={`text-[1.85rem] text-[#ff2244] z-10 transition-all ${timeLeft <= 4 && gameState === "playing" ? "animate-[pulseR_0.5s_infinite]" : "drop-shadow-[0_0_8px_rgba(255,34,68,0.45)]"}`}>
             {timeLeft}
           </div>
           <div className="absolute bottom-0 left-0 h-[4px] bg-[#ff2244] shadow-[0_0_8px_#ff2244] transition-all duration-1000 ease-linear" style={{ width: `${(timeLeft / timePerQuestion) * 100}%` }} />
         </div>
 
-        {/* Problem Display */}
+        {/* Problem */}
         <div className="bg-[#060810] border-[4px] border-[#00eeff] shadow-[0_0_0_4px_#000,0_0_12px_rgba(0,238,255,0.14)] rounded-sm p-2 min-h-[54px] flex items-center justify-center shrink-0">
           <div className="text-[1rem] text-[#00eeff] text-center drop-shadow-[0_0_10px_rgba(0,238,255,0.45)] tracking-[0.1em] flex items-center gap-2">
             {gameState === "playing" ? (
@@ -482,63 +411,40 @@ export default function GameLevel1({ onComplete }) {
           </div>
         </div>
 
-        {/* Answer Input */}
+        {/* Answer */}
         <div className="bg-[#060810] border-[4px] border-[#ffe600] shadow-[0_0_0_4px_#000,0_0_12px_rgba(255,230,0,0.14)] rounded-sm py-2 px-3 min-h-[54px] flex items-center justify-end shrink-0">
           <div className="text-[1.85rem] text-[#ffe600] drop-shadow-[0_0_10px_rgba(255,230,0,0.45)] min-w-[20px]">
             {input || <span className="opacity-0">_</span>}
           </div>
-          {gameState === 'playing' && (
-            <div className="w-[3px] h-[1.6rem] bg-[#ffe600] ml-1 shadow-[0_0_6px_#ffe600] animate-[blink_0.9s_infinite]" />
-          )}
+          {gameState === "playing" && <div className="w-[3px] h-[1.6rem] bg-[#ffe600] ml-1 shadow-[0_0_6px_#ffe600] animate-[blink_0.9s_infinite]" />}
         </div>
 
         {/* Keypad */}
         <div className="grid grid-cols-3 gap-[5px] flex-1 content-start">
           {keys.map((key, i) => (
-            <button
-              key={i}
-              onClick={() => {
-                if (key === "ENTER") checkAnswer();
-                else appendInput(key);
-              }}
+            <button key={i}
+              onClick={() => { if (key === "ENTER") checkAnswer(); else appendInput(key); }}
               disabled={gameState !== "playing"}
               className="bg-[#0c0e1a] border-2 border-[#39ff14] text-[#39ff14] text-[1.1rem] py-3 rounded-sm shadow-[0_0_0_2px_#000,0_5px_0_rgba(57,255,20,0.3)] active:translate-y-[5px] active:shadow-none transition-transform disabled:opacity-50 cursor-pointer flex items-center justify-center num-btn"
-              style={{
-                gridColumn: key === "ENTER" ? "span 2" : "span 1",
-                fontSize: key === "ENTER" ? "0.6rem" : key === "DEL" ? "1.2rem" : "1.1rem"
-              }}
+              style={{ gridColumn: key === "ENTER" ? "span 2" : "span 1", fontSize: key === "ENTER" ? "0.6rem" : key === "DEL" ? "1.2rem" : "1.1rem" }}
             >
-              {key === "DEL" ? "⌫" : key === "ENTER" ? t('game_enter') : key}
+              {key === "DEL" ? "⌫" : key === "ENTER" ? t("game_enter") : key}
             </button>
           ))}
         </div>
 
-        {/* Audio Controls */}
+        {/* Audio */}
         <div className="border-t-2 border-[#14161e] pt-3 flex flex-col gap-[5px] shrink-0 mt-auto">
-          <button 
-            onClick={() => setIsMuted(!isMuted)}
-            className={`w-full text-[0.44rem] py-[7px] rounded-sm cursor-pointer transition-colors ${
-              isMuted 
-                ? 'bg-[#0d0d0d] border-2 border-[#242424] text-[#3a3a3a] shadow-none' 
-                : 'bg-[#0c0e1a] border-2 border-[#00eeff] text-[#00eeff] shadow-[0_0_7px_rgba(0,238,255,0.15)]'
-            }`}
-          >
-            {isMuted ? t('sound_off') : t('sound_on')}
+          <button onClick={() => setIsMuted(!isMuted)}
+            className={`w-full text-[0.44rem] py-[7px] rounded-sm cursor-pointer transition-colors ${isMuted ? "bg-[#0d0d0d] border-2 border-[#242424] text-[#3a3a3a] shadow-none" : "bg-[#0c0e1a] border-2 border-[#00eeff] text-[#00eeff] shadow-[0_0_7px_rgba(0,238,255,0.15)]"}`}>
+            {isMuted ? t("sound_off") : t("sound_on")}
           </button>
-          
           <div className="flex items-center gap-[6px]">
             <span className="text-[0.75rem]">🔉</span>
-            <input 
-              type="range" 
-              min="0" max="100" 
-              value={volume}
-              onChange={(e) => setVolume(e.target.value)}
-              className="flex-1 accent-[#00eeff]"
-            />
+            <input type="range" min="0" max="100" value={volume} onChange={(e) => setVolume(e.target.value)} className="flex-1 accent-[#00eeff]" />
             <span className="text-[0.75rem]">🔊</span>
           </div>
         </div>
-
       </div>
     </div>
   );

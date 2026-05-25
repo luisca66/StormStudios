@@ -3,11 +3,19 @@
 import { useMemo, useState } from "react";
 import { GameProvider, useGame } from "./GameContext";
 import { LanguageProvider, useLanguage } from "./LanguageContext";
-import GameLevel1 from "./GameLevel1";
-import GameLevel2 from "./GameLevel2";
+import GameLevel from "./GameLevel";
 import Scanlines from "./Scanlines";
 import TutorLevel1 from "./TutorLevel1";
 import TutorLevel2 from "./TutorLevel2";
+import TutorLevel3 from "./TutorLevel3";
+
+const LEVEL_CONFIG = {
+  1: { problemTypes: [0, 2, 4] },
+  2: { problemTypes: [1, 3, 5] },
+  3: { problemTypes: [6] },
+};
+
+const TUTOR_MAP = { 1: TutorLevel1, 2: TutorLevel2, 3: TutorLevel3 };
 
 function HomeScreen({ onLevel }) {
   const { unlockedLevels, resetProgress } = useGame();
@@ -113,8 +121,8 @@ function LevelScreen({ level, onMap, onLevel }) {
   const { t, toggleLanguage } = useLanguage();
   const hasCompletedLesson = completedLessons.includes(level);
   const [activeTab, setActiveTab] = useState(hasCompletedLesson ? "game" : "tutor");
-  const Tutor = level === 2 ? TutorLevel2 : TutorLevel1;
-  const Game = level === 2 ? GameLevel2 : GameLevel1;
+  const Tutor  = TUTOR_MAP[level]  ?? TutorLevel1;
+  const config = LEVEL_CONFIG[level] ?? LEVEL_CONFIG[1];
 
   return (
     <div className="h-full flex flex-col bg-[#08090f] overflow-hidden relative">
@@ -171,7 +179,9 @@ function LevelScreen({ level, onMap, onLevel }) {
           {activeTab === "tutor" ? (
             <Tutor onComplete={() => setActiveTab("game")} />
           ) : (
-            <Game
+            <GameLevel
+              level={level}
+              problemTypes={config.problemTypes}
               onComplete={() => {
                 unlockLevel(level + 1);
                 if (level === 1) onLevel(2);
