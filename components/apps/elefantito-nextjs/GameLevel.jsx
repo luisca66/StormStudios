@@ -177,6 +177,15 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
           while (Math.floor((num2 % 100) / 10) === 0 || num2 % 10 === 0);
           answer = num1 + num2;
           break;
+        case 8: {
+          // Round-and-compensate: num2 ends in 91–99 (1–9 away from next hundred)
+          operator = "+";
+          const hMult = Math.floor(Math.random() * 8) + 1; // 1–8
+          num2 = hMult * 100 + Math.floor(Math.random() * 9) + 91; // 191–899
+          num1 = Math.floor(Math.random() * 800) + 100; // 100–899
+          answer = num1 + num2;
+          break;
+        }
         default:
           operator = "+"; num1 = 1; num2 = 1; answer = 2;
       }

@@ -9,15 +9,17 @@ import TutorLevel1 from "./TutorLevel1";
 import TutorLevel2 from "./TutorLevel2";
 import TutorLevel3 from "./TutorLevel3";
 import TutorLevel4 from "./TutorLevel4";
+import TutorLevel5 from "./TutorLevel5";
 
 const LEVEL_CONFIG = {
   1: { problemTypes: [0, 2, 4] },
   2: { problemTypes: [1, 3, 5] },
   3: { problemTypes: [6] },
   4: { problemTypes: [7] },
+  5: { problemTypes: [8] },
 };
 
-const TUTOR_MAP = { 1: TutorLevel1, 2: TutorLevel2, 3: TutorLevel3, 4: TutorLevel4 };
+const TUTOR_MAP = { 1: TutorLevel1, 2: TutorLevel2, 3: TutorLevel3, 4: TutorLevel4, 5: TutorLevel5 };
 
 function HomeScreen({ onLevel }) {
   const { unlockedLevels, resetProgress } = useGame();
