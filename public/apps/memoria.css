@@ -1,0 +1,130 @@
+    /* ── Base ───────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f0eeff; min-height: 100vh; }
+
+    /* ── Tab Bar ────────────────────────────────────────────── */
+    #tab-bar { display: flex; justify-content: center; gap: 0.5rem; padding: 1rem 1rem 0; }
+    .tab-btn { font-family: 'Inter', monospace, sans-serif; font-size: 0.8rem; font-weight: 600; padding: 0.55rem 1.4rem; border-radius: 999px; border: 1px solid rgba(139,92,246,0.3); background: transparent; color: rgba(240,238,255,0.5); cursor: pointer; letter-spacing: 0.04em; transition: all 0.2s; }
+    .tab-btn:hover { color: rgba(240,238,255,0.85); border-color: rgba(139,92,246,0.6); }
+    .tab-btn.active { background: rgba(139,92,246,0.2); border-color: rgba(139,92,246,0.7); color: #c4b5fd; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .is-hidden { display: none; }
+    .settings-divider { border: none; border-top: 1px solid #d1d5db; margin: 1.5rem 0; }
+    .button-warning { background-color: #f97316; color: white; }
+    .button-success { background-color: #16a34a; color: white; }
+    .button-secondary { background-color: #6b7280; color: white; }
+    .button-teal { background-color: #0d9488; color: white; }
+    .button-rose { background-color: #9f1239; color: white; }
+    .button-amber { background-color: #ca8a04; color: white; }
+    .button-compact { font-size: 0.9rem; padding: 0.6rem 1rem; }
+
+    /* ═══════════════════════════════════════════════════════════
+       JUEGO DE MEMORIA — estilos encapsulados
+    ═══════════════════════════════════════════════════════════ */
+    #nemotecnia-memory-game-app { font-family: 'Inter', sans-serif; box-sizing: border-box; width: 100%; max-width: 900px; margin: 1.5rem auto; padding: 1.5rem; color: #333; background-image: url('https://www.stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Fondo%20app%20memoria.png'); background-size: cover; background-position: center; background-repeat: no-repeat; background-color: #f0f4f8; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    #nemotecnia-memory-game-app *, #nemotecnia-memory-game-app *::before, #nemotecnia-memory-game-app *::after { box-sizing: inherit; }
+    #nemotecnia-memory-game-app #selection-screen { background-color: rgba(255,255,255,0.95); padding: 2rem; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); text-align: center; width: 100%; max-width: 750px; margin: 0 auto; }
+    #nemotecnia-memory-game-app #selection-screen h2 { margin-bottom: 1.5rem; color: #1f2937; font-size: 1.6rem; font-weight: 600; }
+    #nemotecnia-memory-game-app .selection-button { padding: 0.8rem 1.6rem; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; transition: background-color 0.3s, transform 0.1s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background-color: #4f46e5; margin: 0.5rem; display: inline-block; border: none; min-width: 150px; }
+    #nemotecnia-memory-game-app .selection-button:hover { background-color: #4338ca; transform: translateY(-1px); }
+    #nemotecnia-memory-game-app #game-container { display: none; width: 100%; flex-direction: column; align-items: center; background-color: rgba(255,255,255,0.7); padding: 1rem; border-radius: 10px; margin-top: 1rem; }
+    #nemotecnia-memory-game-app #game-container.visible { display: flex; }
+    #nemotecnia-memory-game-app #game-container h1 { margin-bottom: 1.5rem; text-align: center; color: #111827; font-size: 2rem; font-weight: 700; }
+    #nemotecnia-memory-game-app .card { width: 100px; height: 140px; position: relative; transform-style: preserve-3d; transition: transform 0.6s; cursor: pointer; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); background-color: transparent; }
+    #nemotecnia-memory-game-app .card.is-flipped { transform: rotateY(180deg); }
+    #nemotecnia-memory-game-app .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; justify-content: center; align-items: center; border-radius: 8px; font-family: inherit; padding: 0.5rem; text-align: center; }
+    #nemotecnia-memory-game-app .card-front { background-color: #4a90e2; color: white; font-size: 2.5rem; }
+    #nemotecnia-memory-game-app .card-back { background-color: #f8fafc; color: #1f2937; transform: rotateY(180deg); font-size: 1.2rem; font-weight: 600; line-height: 1.3; overflow-wrap: break-word; }
+    #nemotecnia-memory-game-app #game-board { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1rem; width: 100%; max-width: 800px; margin: 1.5rem auto; padding: 1.5rem; background-color: rgba(255,255,255,0.85); border-radius: 12px; box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+    #nemotecnia-memory-game-app #message-box { min-height: 3.5rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); margin-bottom: 1rem; padding: 0.8rem 1rem; width: 100%; max-width: 550px; text-align: center; font-weight: 600; transition: background-color 0.3s, color 0.3s; background-color: #e0f2fe; color: #0c4a6e; }
+    #nemotecnia-memory-game-app #message-box.success { background-color: #dcfce7; color: #166534; }
+    #nemotecnia-memory-game-app #message-box.error { background-color: #fee2e2; color: #991b1b; }
+    #nemotecnia-memory-game-app #message-box.final { background-color: #fef9c3; color: #854d0e; }
+    #nemotecnia-memory-game-app #message-box.loading { background-color: #e5e7eb; color: #4b5563; }
+    #nemotecnia-memory-game-app .game-button-container { margin-top: 1.5rem; display: flex; justify-content: center; flex-wrap: wrap; gap: 0.75rem; }
+    #nemotecnia-memory-game-app .game-button { padding: 0.75rem 1.5rem; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; transition: background-color 0.3s, transform 0.1s, filter 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: none; min-width: 120px; }
+    #nemotecnia-memory-game-app .game-button:hover { filter: brightness(110%); transform: translateY(-1px); }
+    #nemotecnia-memory-game-app #reset-button { background-color: #10b981; }
+    #nemotecnia-memory-game-app #show-code-button { background-color: #3b82f6; }
+    #nemotecnia-memory-game-app #back-button { background-color: #6b7280; }
+    #nemotecnia-memory-game-app #mute-button { background-color: #f97316; }
+    #nemotecnia-memory-game-app #mute-button.muted { background-color: #ef4444; }
+    #nemotecnia-memory-game-app .game-info { display: flex; justify-content: space-around; align-items: center; width: 100%; max-width: 320px; margin: 1rem auto 0; padding: 0.6rem 1rem; background-color: rgba(255,255,255,0.9); border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); font-size: 1.1rem; color: #374151; }
+    #nemotecnia-memory-game-app .game-info > div { flex-basis: 50%; text-align: center; }
+    #nemotecnia-memory-game-app .game-info span { font-weight: bold; color: #1f2937; margin-left: 0.3rem; }
+    /* Modal */
+    #nemotecnia-memory-game-app .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s 0.3s linear; }
+    #nemotecnia-memory-game-app .modal-overlay.is-visible { opacity: 1; visibility: visible; transition: opacity 0.3s ease; }
+    #nemotecnia-memory-game-app .modal-content { background-color: white; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 90%; width: 500px; position: relative; transform: translateY(-20px); transition: transform 0.3s ease; color: #1f2937; }
+    #nemotecnia-memory-game-app .modal-overlay.is-visible .modal-content { transform: translateY(0); }
+    #nemotecnia-memory-game-app .modal-close-button { position: absolute; top: 0.8rem; right: 0.8rem; background: #e5e7eb; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: #4b5563; line-height: 32px; text-align: center; transition: background-color 0.2s, color 0.2s; }
+    #nemotecnia-memory-game-app .modal-close-button:hover { background-color: #d1d5db; color: #1f2937; }
+    #nemotecnia-memory-game-app .modal-content h2 { margin-top: 0; margin-bottom: 1rem; color: #111827; font-size: 1.4rem; font-weight: 600; }
+    #nemotecnia-memory-game-app .mnemonic-list { list-style: none; padding: 0.5rem; margin: 0; max-height: 300px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; }
+    #nemotecnia-memory-game-app .mnemonic-list li { padding: 0.6rem 0.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 1rem; color: #1f2937; }
+    #nemotecnia-memory-game-app .mnemonic-list li:last-child { border-bottom: none; }
+    #nemotecnia-memory-game-app .mnemonic-list li span:first-child { font-weight: bold; margin-right: 1rem; flex-shrink: 0; }
+    #nemotecnia-memory-game-app .word-value { text-align: right; padding: 4px 6px; border-radius: 4px; transition: background-color 0.2s; min-width: 80px; }
+    #nemotecnia-memory-game-app .modal-content.is-editing .word-value { background-color: #eef2ff; outline: 2px solid #4f46e5; cursor: text; }
+    #nemotecnia-memory-game-app .modal-button-container { margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; }
+    #nemotecnia-memory-game-app .mnemonic-list::-webkit-scrollbar { width: 6px; }
+    #nemotecnia-memory-game-app .mnemonic-list::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
+    #nemotecnia-memory-game-app .mnemonic-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       MODO DE PRÁCTICA — estilos encapsulados
+    ═══════════════════════════════════════════════════════════ */
+    #nemotecnia-practice-app { font-family: 'Inter', sans-serif; box-sizing: border-box; width: 100%; max-width: 700px; margin: 1.5rem auto; padding: 2rem; background-image: url('https://www.stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Fondo%20app%20memoria.png'); background-size: cover; background-position: center; background-repeat: no-repeat; background-color: #121212; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    #nemotecnia-practice-app *, #nemotecnia-practice-app *::before, #nemotecnia-practice-app *::after { box-sizing: inherit; }
+    #nemotecnia-practice-app h2 { text-align: center; color: #1f2937; font-size: 1.8rem; font-weight: 700; margin-top: 0; margin-bottom: 1.5rem; background-color: rgba(255,255,255,0.92); padding: 1rem; border-radius: 12px; }
+    #score-container, #settings-container, #practice-container { background-color: rgba(255,255,255,0.92); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; }
+    #nemotecnia-practice-app #score-container { display: flex; justify-content: space-around; text-align: center; }
+    #nemotecnia-practice-app .score-item { color: #4b5563; font-size: 0.9rem; font-weight: 600; }
+    #nemotecnia-practice-app .score-value { display: block; color: #1f2937; font-size: 1.5rem; font-weight: 700; }
+    #nemotecnia-practice-app .setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    #nemotecnia-practice-app .setting-row:last-child { margin-bottom: 0; }
+    #nemotecnia-practice-app #settings-container p { font-weight: 600; color: #1f2937; }
+    #nemotecnia-practice-app .setting-row p { margin: 0; }
+    #nemotecnia-practice-app #range-checkboxes { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.8rem; margin-top: 1rem; }
+    #nemotecnia-practice-app .checkbox-label { display: flex; align-items: center; padding: 0.5rem 0.75rem; background-color: #f3f4f6; color: #1f2937; border-radius: 8px; cursor: pointer; transition: background-color 0.2s; }
+    #nemotecnia-practice-app .checkbox-label:hover { background-color: #e5e7eb; }
+    #nemotecnia-practice-app .checkbox-label input { margin-right: 0.75rem; width: 18px; height: 18px; }
+    #nemotecnia-practice-app #time-select { padding: 0.5rem; border-radius: 8px; background-color: #f3f4f6; color: #1f2937; border: 1px solid #d1d5db; font-family: inherit; font-weight: 600; }
+    #nemotecnia-practice-app #practice-container { text-align: center; }
+    #nemotecnia-practice-app #question-card { background-color: #4f46e5; color: white; padding: 2.5rem 1.5rem; border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 8px 20px rgba(79,70,229,0.3); position: relative; overflow: hidden; }
+    #nemotecnia-practice-app #question-type { font-size: 1rem; font-weight: 600; opacity: 0.8; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+    #nemotecnia-practice-app #question-text { font-size: 3rem; font-weight: 700; }
+    #nemotecnia-practice-app #timer-bar-container { width: 100%; background-color: rgba(255,255,255,0.2); border-radius: 4px; margin-top: 1.5rem; height: 8px; }
+    #nemotecnia-practice-app #timer-bar { height: 100%; width: 100%; background-color: #34d399; border-radius: 4px; transition: width 0.1s linear; }
+    #nemotecnia-practice-app #answer-input { width: 100%; padding: 1rem; font-size: 1.2rem; text-align: center; background-color: #ffffff; color: #1f2937; border: 2px solid #d1d5db; border-radius: 8px; margin-top: 1rem; margin-bottom: 1rem; transition: border-color 0.2s, box-shadow 0.2s; }
+    #nemotecnia-practice-app #answer-input:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.3); }
+    #nemotecnia-practice-app .practice-buttons-wrapper { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.75rem; }
+    #nemotecnia-practice-app .practice-actions-start { justify-content: flex-start; margin-bottom: 1rem; }
+    #nemotecnia-practice-app .practice-edit-actions { margin-top: 1.5rem; }
+    #nemotecnia-practice-app .practice-button { padding: 0.8rem 1.5rem; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s, transform 0.1s, filter 0.2s; }
+    #nemotecnia-practice-app .practice-button:disabled { cursor: not-allowed; filter: brightness(60%); background-color: #9ca3af !important; }
+    #nemotecnia-practice-app #check-answer-btn { background-color: #10b981; color: white; }
+    #nemotecnia-practice-app #start-practice-btn { background-color: #6366f1; color: white; }
+    #nemotecnia-practice-app #mute-practice-btn { background-color: #f97316; color: white; }
+    #nemotecnia-practice-app #reset-practice-btn { background-color: #6b7280; color: white; }
+    #nemotecnia-practice-app #mute-practice-btn.muted { background-color: #ef4444; }
+    #nemotecnia-practice-app .practice-button:hover:not(:disabled) { filter: brightness(110%); transform: translateY(-1px); }
+    #nemotecnia-practice-app #feedback-container { margin-top: 1.5rem; padding: 1rem; border-radius: 8px; font-weight: 600; min-height: 50px; display: flex; align-items: center; justify-content: center; transition: background-color 0.3s, color 0.3s; }
+    #nemotecnia-practice-app #feedback-container.correct { background-color: #dcfce7; color: #166534; }
+    #nemotecnia-practice-app #feedback-container.incorrect { background-color: #fee2e2; color: #991b1b; }
+    #nemotecnia-practice-app #feedback-container.info { background-color: #e0f2fe; color: #0c4a6e; }
+    #nemotecnia-practice-app .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.75); display: flex; justify-content: center; align-items: center; z-index: 10000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
+    #nemotecnia-practice-app .modal-overlay.is-visible { opacity: 1; visibility: visible; }
+    #nemotecnia-practice-app .modal-content { background-color: white; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 90%; width: 500px; position: relative; transform: translateY(-20px); transition: transform 0.3s ease; }
+    #nemotecnia-practice-app .modal-overlay.is-visible .modal-content { transform: translateY(0); }
+    #nemotecnia-practice-app .modal-close-button { position: absolute; top: 0.8rem; right: 0.8rem; background: #e5e7eb; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1.2rem; font-weight: bold; cursor: pointer; color: #4b5563; line-height: 32px; text-align: center; }
+    #nemotecnia-practice-app .modal-close-button:hover { background-color: #d1d5db; color: #1f2937; }
+    #nemotecnia-practice-app .modal-content h3 { margin-top: 0; margin-bottom: 1rem; color: #111827; }
+    #nemotecnia-practice-app .mnemonic-list { list-style: none; padding: 0.5rem; margin: 0; max-height: 300px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; color: #1f2937; }
+    #nemotecnia-practice-app .mnemonic-list li { padding: 0.6rem 0.5rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+    #nemotecnia-practice-app .mnemonic-list li:last-child { border-bottom: none; }
+    #nemotecnia-practice-app .mnemonic-list span:first-child { font-weight: bold; margin-right: 1rem; }
+    #nemotecnia-practice-app .word-value { text-align: right; padding: 4px 6px; border-radius: 4px; transition: background-color 0.2s; min-width: 80px; }
+    #nemotecnia-practice-app .modal-content.is-editing .word-value { background-color: #eef2ff; outline: 2px solid #4f46e5; cursor: text; }
+    #nemotecnia-practice-app .modal-button-container { margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; }
