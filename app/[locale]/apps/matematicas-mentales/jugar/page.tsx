@@ -33,7 +33,7 @@ export default async function JugarPage({ params }: Props) {
   const { locale } = await params;
 
   return (
-    <div className={`fixed inset-0 z-[9999] overflow-hidden bg-[#08090f] text-zinc-100 ${pressStart2P.variable}`}>
+    <div className={`min-h-screen bg-[#08090f] text-zinc-100 ${pressStart2P.variable}`}>
       <ElefantitoApp initialLocale={locale} />
     </div>
   );

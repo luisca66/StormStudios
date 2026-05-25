@@ -25,7 +25,7 @@ export function GameProvider({ children }) {
   };
 
   const unlockLevel = (level) => {
-    if (!unlockedLevels.includes(level)) {
+if (!unlockedLevels.includes(level)) {
       const newLevels = [...unlockedLevels, level];
       setUnlockedLevels(newLevels);
       localStorage.setItem("unlockedLevels", JSON.stringify(newLevels));

@@ -170,6 +170,13 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
           while (num2 % 10 === 0) num2 = Math.floor(Math.random() * 79) + 11;
           answer = num1 + num2;
           break;
+        case 7:
+          operator = "+";
+          num1 = Math.floor(Math.random() * 900) + 100; // 100–999
+          do { num2 = Math.floor(Math.random() * 900) + 100; }
+          while (Math.floor((num2 % 100) / 10) === 0 || num2 % 10 === 0);
+          answer = num1 + num2;
+          break;
         default:
           operator = "+"; num1 = 1; num2 = 1; answer = 2;
       }
@@ -277,7 +284,7 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
 
   const appendInput = (val) => {
     if (val === "DEL") setInput((prev) => prev.slice(0, -1));
-    else if (input.length < 3) setInput((prev) => prev + val);
+    else if (input.length < 4) setInput((prev) => prev + val);
   };
 
   const keys = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "DEL", "0", "ENTER"];

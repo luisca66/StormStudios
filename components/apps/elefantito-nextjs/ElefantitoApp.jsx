@@ -8,14 +8,16 @@ import Scanlines from "./Scanlines";
 import TutorLevel1 from "./TutorLevel1";
 import TutorLevel2 from "./TutorLevel2";
 import TutorLevel3 from "./TutorLevel3";
+import TutorLevel4 from "./TutorLevel4";
 
 const LEVEL_CONFIG = {
   1: { problemTypes: [0, 2, 4] },
   2: { problemTypes: [1, 3, 5] },
   3: { problemTypes: [6] },
+  4: { problemTypes: [7] },
 };
 
-const TUTOR_MAP = { 1: TutorLevel1, 2: TutorLevel2, 3: TutorLevel3 };
+const TUTOR_MAP = { 1: TutorLevel1, 2: TutorLevel2, 3: TutorLevel3, 4: TutorLevel4 };
 
 function HomeScreen({ onLevel }) {
   const { unlockedLevels, resetProgress } = useGame();
@@ -184,8 +186,7 @@ function LevelScreen({ level, onMap, onLevel }) {
               problemTypes={config.problemTypes}
               onComplete={() => {
                 unlockLevel(level + 1);
-                if (level === 1) onLevel(2);
-                else onMap();
+                onMap();
               }}
             />
           )}
