@@ -26,3 +26,27 @@ body {
   transition-duration: 150ms;
   transition-timing-function: ease-in-out;
 }
+
+@keyframes blink    { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+@keyframes floatY   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+@keyframes twinkle  { 0%,100%{opacity:0.1} 50%{opacity:0.7} }
+@keyframes slideDown{ from{opacity:0;transform:translateX(-50%) translateY(-14px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+@keyframes pulseR   { 0%,100%{opacity:1;text-shadow:0 0 12px #ff2244,0 0 24px rgba(255,34,68,0.4)} 50%{opacity:0.8;text-shadow:0 0 24px #ff2244,0 0 48px rgba(255,34,68,0.7)} }
+@keyframes winGlow  { 0%,100%{box-shadow:0 0 0 4px #000,0 0 30px rgba(57,255,20,0.3)} 50%{box-shadow:0 0 0 4px #000,0 0 60px rgba(57,255,20,0.7)} }
+@keyframes correctF { 0%{opacity:1} 50%{opacity:0.5} 100%{opacity:1} }
+
+.bg-jungle {
+  background-image: url("/selva.png");
+  background-size: cover;
+  background-position: center;
+}
+
+input[type=range] {
+  accent-color: #39ff14;
+  cursor: pointer;
+}
+
+.num-btn:active {
+  transform: translateY(5px) !important;
+  box-shadow: none !important;
+}
