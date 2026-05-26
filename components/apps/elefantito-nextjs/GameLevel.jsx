@@ -186,6 +186,25 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
           answer = num1 + num2;
           break;
         }
+        case 9: {
+          // 4-digit + 3-digit, no zeros in any non-leading digit
+          operator = "+";
+          do {
+            num1 = Math.floor(Math.random() * 9000) + 1000; // 1000–9999
+          } while (
+            Math.floor((num1 % 1000) / 100) === 0 ||
+            Math.floor((num1 % 100)  / 10)  === 0 ||
+            num1 % 10 === 0
+          );
+          do {
+            num2 = Math.floor(Math.random() * 900) + 100; // 100–999
+          } while (
+            Math.floor((num2 % 100) / 10) === 0 ||
+            num2 % 10 === 0
+          );
+          answer = num1 + num2;
+          break;
+        }
         default:
           operator = "+"; num1 = 1; num2 = 1; answer = 2;
       }
@@ -293,7 +312,7 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
 
   const appendInput = (val) => {
     if (val === "DEL") setInput((prev) => prev.slice(0, -1));
-    else if (input.length < 4) setInput((prev) => prev + val);
+    else if (input.length < 5) setInput((prev) => prev + val);
   };
 
   const keys = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "DEL", "0", "ENTER"];

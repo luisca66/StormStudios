@@ -10,6 +10,7 @@ import TutorLevel2 from "./TutorLevel2";
 import TutorLevel3 from "./TutorLevel3";
 import TutorLevel4 from "./TutorLevel4";
 import TutorLevel5 from "./TutorLevel5";
+import TutorLevel6 from "./TutorLevel6";
 
 const LEVEL_CONFIG = {
   1: { problemTypes: [0, 2, 4] },
@@ -17,9 +18,10 @@ const LEVEL_CONFIG = {
   3: { problemTypes: [6] },
   4: { problemTypes: [7] },
   5: { problemTypes: [8] },
+  6: { problemTypes: [9] },
 };
 
-const TUTOR_MAP = { 1: TutorLevel1, 2: TutorLevel2, 3: TutorLevel3, 4: TutorLevel4, 5: TutorLevel5 };
+const TUTOR_MAP = { 1: TutorLevel1, 2: TutorLevel2, 3: TutorLevel3, 4: TutorLevel4, 5: TutorLevel5, 6: TutorLevel6 };
 
 function HomeScreen({ onLevel }) {
   const { unlockedLevels, resetProgress } = useGame();
@@ -86,7 +88,7 @@ function HomeScreen({ onLevel }) {
       </div>
 
       <div className="flex gap-4 flex-wrap justify-center mb-12 z-10">
-        {[1, 2, 3, 4, 5].map((level) => {
+        {[1, 2, 3, 4, 5, 6].map((level) => {
           const isUnlocked = unlockedLevels.includes(level);
 
           return isUnlocked ? (
