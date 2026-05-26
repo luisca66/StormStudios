@@ -240,6 +240,16 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
           num1 = a; num2 = b; answer = num1 - num2;
           break;
         }
+        case 12: {
+          // Complement to 100: num2 is 10–98, not a multiple of 10
+          operator = "comp";
+          do {
+            num2 = Math.floor(Math.random() * 89) + 10; // 10–98
+          } while (num2 % 10 === 0);
+          num1 = 100;
+          answer = 100 - num2;
+          break;
+        }
         default:
           operator = "+"; num1 = 1; num2 = 1; answer = 2;
       }
@@ -472,11 +482,22 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
         <div className="bg-[#060810] border-[4px] border-[#00eeff] shadow-[0_0_0_4px_#000,0_0_12px_rgba(0,238,255,0.14)] rounded-sm p-2 min-h-[54px] flex items-center justify-center shrink-0">
           <div className="text-[1rem] text-[#00eeff] text-center drop-shadow-[0_0_10px_rgba(0,238,255,0.45)] tracking-[0.1em] flex items-center gap-2">
             {gameState === "playing" ? (
-              <>
-                <span>{problem?.num1}</span>
-                <span className={`${getOperatorColor(problem?.operator)} text-[1.3rem] mx-1`}>{problem?.operator}</span>
-                <span>{problem?.num2}</span>
-              </>
+              problem?.operator === "comp" ? (
+                <div className="flex flex-col items-center gap-0.5">
+                  <span className="text-[#b026ff] text-[0.45rem] tracking-widest drop-shadow-[0_0_6px_rgba(176,38,255,0.7)]">
+                    {lang === "en" ? "COMPL. OF" : "COMPL. DE"}
+                  </span>
+                  <span className="text-[#b026ff] text-[1.6rem] drop-shadow-[0_0_10px_rgba(176,38,255,0.8)]">
+                    {problem?.num2}
+                  </span>
+                </div>
+              ) : (
+                <>
+                  <span>{problem?.num1}</span>
+                  <span className={`${getOperatorColor(problem?.operator)} text-[1.3rem] mx-1`}>{problem?.operator}</span>
+                  <span>{problem?.num2}</span>
+                </>
+              )
             ) : "..."}
           </div>
         </div>
