@@ -69,7 +69,7 @@ export default function TutorLevel2({ onComplete }) {
       <div className="bg-[#0a0b14] border-2 border-[#14161e] p-3 mb-4 flex items-center gap-3 shrink-0">
         <button 
           onClick={toggleAudio}
-          className={`font-[family-name:var(--font-press-start-2p)] text-[0.44rem] px-3 py-2 shrink-0 transition-all cursor-pointer ${
+          className={`font-[family-name:var(--font-press-start-2p)] text-[0.6rem] px-3 py-2 shrink-0 transition-all cursor-pointer ${
             isPlaying 
               ? "bg-[#39ff14] text-black border-2 border-[#39ff14] shadow-[0_0_0_2px_#000,0_0_10px_rgba(57,255,20,0.35)]" 
               : "bg-transparent text-[#39ff14] border-2 border-[#39ff14]"
