@@ -205,6 +205,22 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
           answer = num1 + num2;
           break;
         }
+        case 10: {
+          // 2-digit minus 2-digit, no borrowing: each digit of num2 ≤ corresponding digit of num1
+          operator = "-";
+          let n1, n2, ok = false;
+          for (let i = 0; i < 200 && !ok; i++) {
+            n1 = Math.floor(Math.random() * 70) + 30;        // 30–99
+            const t1 = Math.floor(n1 / 10), o1 = n1 % 10;
+            if (o1 === 0) continue;
+            const t2 = Math.floor(Math.random() * t1) + 1;   // 1…t1
+            const o2 = Math.floor(Math.random() * o1) + 1;   // 1…o1
+            n2 = t2 * 10 + o2;
+            if (n2 < n1) ok = true;
+          }
+          num1 = n1; num2 = n2; answer = num1 - num2;
+          break;
+        }
         default:
           operator = "+"; num1 = 1; num2 = 1; answer = 2;
       }
