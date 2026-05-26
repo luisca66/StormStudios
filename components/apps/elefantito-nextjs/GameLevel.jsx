@@ -250,6 +250,16 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
           answer = 100 - num2;
           break;
         }
+        case 13: {
+          // Complement to 1000: num2 is 100–998, not a multiple of 10
+          operator = "comp";
+          do {
+            num2 = Math.floor(Math.random() * 899) + 100; // 100–998
+          } while (num2 % 10 === 0);
+          num1 = 1000;
+          answer = 1000 - num2;
+          break;
+        }
         default:
           operator = "+"; num1 = 1; num2 = 1; answer = 2;
       }
