@@ -16,14 +16,21 @@ export function LanguageProvider({ children, initialLanguage = "es" }) {
     // never force /en pages back into Spanish or /es pages back into English.
     const routeLanguage = translations[initialLanguage] ? initialLanguage : "es";
     setLang(routeLanguage);
-    localStorage.setItem("app_language", routeLanguage);
     setMounted(true);
   }, [initialLanguage]);
 
   const toggleLanguage = () => {
     const newLang = lang === "es" ? "en" : "es";
     setLang(newLang);
-    localStorage.setItem("app_language", newLang);
+
+    const { pathname, search, hash } = window.location;
+    const parts = pathname.split("/");
+    if (parts[1] === "es" || parts[1] === "en") {
+      parts[1] = newLang;
+    } else {
+      parts.splice(1, 0, newLang);
+    }
+    window.location.assign(`${parts.join("/")}${search}${hash}`);
   };
 
   const t = (key) => {

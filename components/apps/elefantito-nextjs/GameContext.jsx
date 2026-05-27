@@ -3,20 +3,41 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
 const GameContext = createContext();
+const PROGRESS_VERSION = "locked-v1";
+const INITIAL_UNLOCKED_LEVELS = [1];
+const INITIAL_COMPLETED_LESSONS = [];
+
+function readStoredLevels(key, fallback) {
+  try {
+    const saved = localStorage.getItem(key);
+    if (!saved) return fallback;
+    const parsed = JSON.parse(saved);
+    return Array.isArray(parsed) ? parsed : fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 export function GameProvider({ children }) {
   const ALL_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-  const [unlockedLevels, setUnlockedLevels] = useState(ALL_LEVELS);
-  const [completedLessons, setCompletedLessons] = useState(ALL_LEVELS);
+  const [unlockedLevels, setUnlockedLevels] = useState(INITIAL_UNLOCKED_LEVELS);
+  const [completedLessons, setCompletedLessons] = useState(INITIAL_COMPLETED_LESSONS);
 
-  // DEV MODE: all levels unlocked — skip localStorage
-  // To restore normal mode, uncomment the block below and remove this comment
-  // useEffect(() => {
-  //   const savedLevels = localStorage.getItem("unlockedLevels");
-  //   const savedLessons = localStorage.getItem("completedLessons");
-  //   if (savedLevels) setUnlockedLevels(JSON.parse(savedLevels));
-  //   if (savedLessons) setCompletedLessons(JSON.parse(savedLessons));
-  // }, []);
+  useEffect(() => {
+    const savedVersion = localStorage.getItem("elefantitoProgressVersion");
+
+    if (savedVersion !== PROGRESS_VERSION) {
+      setUnlockedLevels(INITIAL_UNLOCKED_LEVELS);
+      setCompletedLessons(INITIAL_COMPLETED_LESSONS);
+      localStorage.setItem("elefantitoProgressVersion", PROGRESS_VERSION);
+      localStorage.setItem("unlockedLevels", JSON.stringify(INITIAL_UNLOCKED_LEVELS));
+      localStorage.setItem("completedLessons", JSON.stringify(INITIAL_COMPLETED_LESSONS));
+      return;
+    }
+
+    setUnlockedLevels(readStoredLevels("unlockedLevels", INITIAL_UNLOCKED_LEVELS));
+    setCompletedLessons(readStoredLevels("completedLessons", INITIAL_COMPLETED_LESSONS));
+  }, []);
 
   const completeLesson = (level) => {
     if (!completedLessons.includes(level)) {
@@ -27,7 +48,7 @@ export function GameProvider({ children }) {
   };
 
   const unlockLevel = (level) => {
-if (!unlockedLevels.includes(level)) {
+    if (!unlockedLevels.includes(level) && ALL_LEVELS.includes(level)) {
       const newLevels = [...unlockedLevels, level];
       setUnlockedLevels(newLevels);
       localStorage.setItem("unlockedLevels", JSON.stringify(newLevels));
@@ -35,10 +56,11 @@ if (!unlockedLevels.includes(level)) {
   };
 
   const resetProgress = () => {
-    setUnlockedLevels(ALL_LEVELS);
-    setCompletedLessons(ALL_LEVELS);
-    localStorage.removeItem("unlockedLevels");
-    localStorage.removeItem("completedLessons");
+    setUnlockedLevels(INITIAL_UNLOCKED_LEVELS);
+    setCompletedLessons(INITIAL_COMPLETED_LESSONS);
+    localStorage.setItem("elefantitoProgressVersion", PROGRESS_VERSION);
+    localStorage.setItem("unlockedLevels", JSON.stringify(INITIAL_UNLOCKED_LEVELS));
+    localStorage.setItem("completedLessons", JSON.stringify(INITIAL_COMPLETED_LESSONS));
   };
 
   return (
