@@ -26,6 +26,7 @@ export default function AppDetail({ app, locale }: Props) {
     ? app.longDescription[locale as "es" | "en"] || app.longDescription.es
     : null;
   const categoryLabel = CATEGORY_LABELS[app.category]?.[locale] || app.category;
+  const apkUrl = app.apkUrls?.[locale as "es" | "en"] || app.apkUrl;
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -77,6 +78,16 @@ export default function AppDetail({ app, locale }: Props) {
       <div className="flex flex-wrap gap-3 mb-10">
         {app.playStoreUrl && (
           <DownloadBadge url={app.playStoreUrl} locale={locale} />
+        )}
+        {apkUrl && (
+          <a
+            href={apkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-5 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl transition-colors shadow-md font-medium"
+          >
+            ⬇ {es ? "Descargar Android" : "Download Android"}
+          </a>
         )}
         {app.kindleManualUrl && (
           <KindleLink url={app.kindleManualUrl} locale={locale} />

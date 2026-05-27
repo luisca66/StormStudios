@@ -8,6 +8,7 @@ export type AppEntry = {
   longDescription?: BilingualText;
   playStoreUrl?: string;
   apkUrl?: string;
+  apkUrls?: BilingualText;
   kindleManualUrl?: string;
   webUrl?: string;
   icon?: string;
@@ -66,21 +67,24 @@ export const APPS: AppEntry[] = [
     name: { es: "Elefantito Matemático", en: "Little Elephant Math" },
     category: "cognitive",
     description: {
-      es: "Entrena tu mente con aritmética cronometrada. Llena la repisa del elefantito resolviendo problemas antes de que se acabe el tiempo.",
-      en: "Train your mind with timed arithmetic. Fill the elephant's shelf by solving problems before time runs out.",
+      es: "Entrenamiento de cálculo mental para músicos: 20 niveles progresivos con tutor, juego cronometrado y técnicas reales de aritmética mental.",
+      en: "Mental math training for musicians: 20 progressive levels with tutoring, timed play, and real mental arithmetic techniques.",
     },
     longDescription: {
-      es: "Inspirada en la investigación del Dr. Kawashima sobre activación del córtex prefrontal, esta app te desafía a resolver operaciones aritméticas contra el reloj. Con 8 niveles de dificultad —incluyendo el modo 💀 Imposible— y tiempo ajustable por pregunta, el Elefantito Matemático se adapta tanto a niños que aprenden las sumas básicas como a adultos que quieren llevar su mente al límite.",
-      en: "Inspired by Dr. Kawashima's research on prefrontal cortex activation, this app challenges you to solve arithmetic operations against the clock. With 8 difficulty levels — including the 💀 Impossible mode — and adjustable time per question, Little Elephant Math adapts to children learning basic addition as well as adults looking to push their minds to the limit.",
+      es: "Elefantito Matemático es una app de entrenamiento cognitivo diseñada para acompañar el estudio musical. Combina la idea de activación mental rápida del Dr. Kawashima con técnicas de cálculo mental de Arthur Benjamin: resolver de izquierda a derecha, descomponer números, usar complementos, factorizar y reconocer patrones. Cada nivel tiene un tutor breve que explica la técnica y un juego cronometrado donde el elefantito llena la repisa lanzando barriles por cada respuesta correcta. La meta no es convertirte en matemático, sino fortalecer memoria de trabajo, atención, velocidad de procesamiento y flexibilidad mental: habilidades que también usas al leer, tocar, improvisar y pensar música.",
+      en: "Little Elephant Math is a cognitive training app designed to support musical study. It combines Dr. Kawashima's idea of quick mental activation with Arthur Benjamin's mental math techniques: solving left to right, decomposing numbers, using complements, factoring, and recognizing patterns. Each level includes a short tutor that explains the technique and a timed game where the elephant fills the shelf by launching barrels for each correct answer. The goal is not to turn you into a mathematician, but to strengthen working memory, attention, processing speed, and mental flexibility: the same abilities you use when reading, playing, improvising, and thinking in music.",
     },
-    apkUrl: "https://stormstudios.com.mx/wp-content/APKs_Apps/elefantitomatematico.apk",
+    apkUrls: {
+      es: "https://pub-2de970e8bf224791a9ab6d06fa62ce19.r2.dev/APKs/elefantito-matematico.apk",
+      en: "https://pub-2de970e8bf224791a9ab6d06fa62ce19.r2.dev/APKs/little-elephant-math.apk",
+    },
     webUrl: "/apps/matematicas-mentales/jugar",
     features: [
-      { es: "8 niveles de dificultad, hasta el modo 💀 Imposible", en: "8 difficulty levels, up to 💀 Impossible mode" },
-      { es: "Tiempo por pregunta ajustable (3–30 s)", en: "Adjustable time per question (3–30 s)" },
-      { es: "Las cuatro operaciones: +, −, ×, ÷", en: "All four operations: +, −, ×, ÷" },
-      { es: "Récord diario guardado localmente", en: "Daily record saved locally" },
-      { es: "Juega en el navegador o descarga la app Android", en: "Play in browser or download the Android app" },
+      { es: "20 niveles progresivos, desde operaciones básicas hasta fracciones decimales cíclicas", en: "20 progressive levels, from basic operations to repeating decimal fractions" },
+      { es: "Tutor bilingüe por nivel con explicación, ejemplos y práctica guiada", en: "Bilingual tutor for each level with explanation, examples, and guided practice" },
+      { es: "Técnicas basadas en cálculo mental real: complementos, distributiva, factorización y división izquierda a derecha", en: "Techniques based on real mental math: complements, distributive thinking, factoring, and left-to-right division" },
+      { es: "Juego cronometrado con progreso bloqueado: supera un nivel para abrir el siguiente", en: "Timed game with locked progression: clear a level to unlock the next one" },
+      { es: "Disponible en navegador y como APK para Android", en: "Available in the browser and as an Android APK" },
     ],
     icon: "/images/app-matematicas-mentales.png",
   },

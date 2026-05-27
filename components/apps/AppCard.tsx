@@ -19,6 +19,7 @@ export default function AppCard({ app, locale }: Props) {
   const name = app.name[locale as "es" | "en"] || app.name.es;
   const description = app.description[locale as "es" | "en"] || app.description.es;
   const categoryLabel = CATEGORY_LABELS[app.category]?.[locale] || app.category;
+  const hasAndroidDownload = Boolean(app.apkUrl || app.apkUrls?.[locale as "es" | "en"]);
 
   return (
     <Link
@@ -74,6 +75,12 @@ export default function AppCard({ app, locale }: Props) {
                 <path d="M3 20.5v-17c0-.83 1-.98 1.4-.38l14.6 8.5c.4.23.4.87 0 1.1L4.4 20.88C4 21.48 3 21.33 3 20.5z" />
               </svg>
               Play
+            </span>
+          )}
+          {hasAndroidDownload && (
+            <span className="ss-mono text-xs px-2 py-1 rounded-md"
+              style={{ border: "1px solid rgba(255,255,255,0.08)", color: "rgba(240,238,255,0.35)" }}>
+              Android
             </span>
           )}
           {app.kindleManualUrl && (

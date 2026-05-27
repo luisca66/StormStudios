@@ -23,8 +23,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: locale === "es" ? "Elefantito Matemático – Jugar" : "Little Elephant Math – Play",
     description:
       locale === "es"
-        ? "Versión jugable de Elefantito Matemático dentro del navegador."
-        : "Browser play version of Little Elephant Math.",
+        ? "Juego de cálculo mental con 20 niveles progresivos, tutores guiados y técnicas reales para entrenar memoria, atención y velocidad mental."
+        : "Mental math game with 20 progressive levels, guided tutors, and real techniques for training memory, attention, and processing speed.",
     noIndex: true,
   });
 }

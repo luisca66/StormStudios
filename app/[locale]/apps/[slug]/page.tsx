@@ -45,6 +45,7 @@ export default async function AppDetailPage({ params }: Props) {
   const name = app.name[locale as "es" | "en"] || app.name.es;
   const description = app.description[locale as "es" | "en"] || app.description.es;
   const longDescription = app.longDescription?.[locale as "es" | "en"];
+  const apkUrl = app.apkUrls?.[locale as "es" | "en"] || app.apkUrl;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -89,9 +90,11 @@ export default async function AppDetailPage({ params }: Props) {
                 🎮 {locale === "es" ? "Jugar en el navegador" : "Play in browser"}
               </Link>
             )}
-            {app.apkUrl && (
+            {apkUrl && (
               <a
-                href={app.apkUrl}
+                href={apkUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition font-medium shadow-md"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
