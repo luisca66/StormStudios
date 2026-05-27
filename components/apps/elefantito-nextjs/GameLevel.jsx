@@ -296,6 +296,42 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
           num1 = a15; num2 = b15; answer = num1 - num2;
           break;
         }
+        case 16: {
+          // Multiplication tables up to 12 x 12.
+          operator = "×";
+          num1 = Math.floor(Math.random() * 11) + 2; // 2-12
+          num2 = Math.floor(Math.random() * 11) + 2; // 2-12
+          answer = num1 * num2;
+          break;
+        }
+        case 17: {
+          // Tables of 11 and 12.
+          operator = "×";
+          num1 = Math.random() > 0.5 ? 11 : 12;
+          num2 = Math.floor(Math.random() * 11) + 2; // 2-12
+          if (Math.random() > 0.5) [num1, num2] = [num2, num1];
+          answer = num1 * num2;
+          break;
+        }
+        case 18: {
+          // Two-digit multiplication that can be factored through 11 or 12.
+          operator = "×";
+          const factorable = [22, 24, 33, 36, 44, 48, 55, 60, 66, 72, 77, 84, 88, 96, 99];
+          num1 = Math.floor(Math.random() * 80) + 20; // 20-99
+          num2 = factorable[Math.floor(Math.random() * factorable.length)];
+          answer = num1 * num2;
+          break;
+        }
+        case 19: {
+          // 2-by-1 multiplication using distributive decomposition.
+          operator = "×";
+          do {
+            num1 = Math.floor(Math.random() * 88) + 12; // 12-99
+          } while (num1 % 10 === 0);
+          num2 = Math.floor(Math.random() * 8) + 2; // 2-9
+          answer = num1 * num2;
+          break;
+        }
         default:
           operator = "+"; num1 = 1; num2 = 1; answer = 2;
       }

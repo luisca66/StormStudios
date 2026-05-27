@@ -17,6 +17,11 @@ import TutorLevel9 from "./TutorLevel9";
 import TutorLevel10 from "./TutorLevel10";
 import TutorLevel11 from "./TutorLevel11";
 import TutorLevel12 from "./TutorLevel12";
+import TutorLevel13 from "./TutorLevel13";
+import TutorLevel14 from "./TutorLevel14";
+import TutorLevel15 from "./TutorLevel15";
+
+const MAX_LEVEL = 15;
 
 const LEVEL_CONFIG = {
   1:  { problemTypes: [0, 2, 4] },
@@ -31,9 +36,14 @@ const LEVEL_CONFIG = {
   10: { problemTypes: [12] },
   11: { problemTypes: [15] },
   12: { problemTypes: [13] },
+  13: { problemTypes: [17] },
+  14: { problemTypes: [18] },
+  15: { problemTypes: [19] },
 };
 
-const TUTOR_MAP = { 1: TutorLevel1, 2: TutorLevel2, 3: TutorLevel3, 4: TutorLevel4, 5: TutorLevel5, 6: TutorLevel6, 7: TutorLevel7, 8: TutorLevel8, 9: TutorLevel9, 10: TutorLevel10, 11: TutorLevel11, 12: TutorLevel12 };
+const LEVELS = Array.from({ length: MAX_LEVEL }, (_, i) => i + 1);
+
+const TUTOR_MAP = { 1: TutorLevel1, 2: TutorLevel2, 3: TutorLevel3, 4: TutorLevel4, 5: TutorLevel5, 6: TutorLevel6, 7: TutorLevel7, 8: TutorLevel8, 9: TutorLevel9, 10: TutorLevel10, 11: TutorLevel11, 12: TutorLevel12, 13: TutorLevel13, 14: TutorLevel14, 15: TutorLevel15 };
 
 function HomeScreen({ onLevel }) {
   const { unlockedLevels, resetProgress } = useGame();
@@ -99,15 +109,15 @@ function HomeScreen({ onLevel }) {
         — SELECCIONA NIVEL —
       </div>
 
-      <div className="flex gap-4 flex-wrap justify-center mb-12 z-10">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((level) => {
+      <div className="grid grid-cols-4 sm:grid-cols-5 gap-3 sm:gap-4 place-items-center mb-10 z-10 w-full max-w-[520px]">
+        {LEVELS.map((level) => {
           const isUnlocked = unlockedLevels.includes(level);
 
           return isUnlocked ? (
             <button
               key={level}
               onClick={() => onLevel(level)}
-              className="w-[86px] h-[86px] font-[family-name:var(--font-press-start-2p)] text-2xl bg-[#071207] text-[#39ff14] border-4 border-[#39ff14] rounded flex flex-col items-center justify-center gap-1 drop-shadow-[0_0_12px_#39ff14] shadow-[0_0_0_4px_#000,0_0_24px_rgba(57,255,20,0.3),inset_0_0_16px_rgba(57,255,20,0.06)] hover:scale-105 transition-transform"
+              className="w-[72px] h-[72px] sm:w-[86px] sm:h-[86px] font-[family-name:var(--font-press-start-2p)] text-xl sm:text-2xl bg-[#071207] text-[#39ff14] border-4 border-[#39ff14] rounded flex flex-col items-center justify-center gap-1 drop-shadow-[0_0_12px_#39ff14] shadow-[0_0_0_4px_#000,0_0_24px_rgba(57,255,20,0.3),inset_0_0_16px_rgba(57,255,20,0.06)] hover:scale-105 transition-transform"
             >
               {level}
             </button>
@@ -115,7 +125,7 @@ function HomeScreen({ onLevel }) {
             <button
               key={level}
               disabled
-              className="w-[86px] h-[86px] font-[family-name:var(--font-press-start-2p)] text-2xl bg-[#090909] text-[#222] border-4 border-[#191919] rounded flex flex-col items-center justify-center gap-1 shadow-[0_0_0_4px_#000] cursor-not-allowed"
+              className="w-[72px] h-[72px] sm:w-[86px] sm:h-[86px] font-[family-name:var(--font-press-start-2p)] text-xl sm:text-2xl bg-[#090909] text-[#222] border-4 border-[#191919] rounded flex flex-col items-center justify-center gap-1 shadow-[0_0_0_4px_#000] cursor-not-allowed"
             >
               {level}
               <span className="text-[0.5rem] text-[#282828]">🔒</span>

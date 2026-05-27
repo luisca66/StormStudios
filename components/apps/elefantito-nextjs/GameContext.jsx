@@ -5,7 +5,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 const GameContext = createContext();
 
 export function GameProvider({ children }) {
-  const ALL_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const ALL_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
   const [unlockedLevels, setUnlockedLevels] = useState(ALL_LEVELS);
   const [completedLessons, setCompletedLessons] = useState(ALL_LEVELS);
 
@@ -35,8 +35,8 @@ if (!unlockedLevels.includes(level)) {
   };
 
   const resetProgress = () => {
-    setUnlockedLevels([1]);
-    setCompletedLessons([]);
+    setUnlockedLevels(ALL_LEVELS);
+    setCompletedLessons(ALL_LEVELS);
     localStorage.removeItem("unlockedLevels");
     localStorage.removeItem("completedLessons");
   };
