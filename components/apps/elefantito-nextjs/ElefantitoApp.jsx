@@ -29,6 +29,8 @@ const LEVEL_CONFIG = {
   10: { problemTypes: [13] },
 };
 
+const MAX_LEVEL = 10;
+
 const TUTOR_MAP = { 1: TutorLevel1, 2: TutorLevel2, 3: TutorLevel3, 4: TutorLevel4, 5: TutorLevel5, 6: TutorLevel6, 7: TutorLevel7, 8: TutorLevel8, 9: TutorLevel9, 10: TutorLevel10 };
 
 function HomeScreen({ onLevel }) {
@@ -197,7 +199,7 @@ function LevelScreen({ level, onMap, onLevel }) {
               level={level}
               problemTypes={config.problemTypes}
               onComplete={() => {
-                unlockLevel(level + 1);
+                if (level < MAX_LEVEL) unlockLevel(level + 1);
                 onMap();
               }}
             />

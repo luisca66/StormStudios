@@ -19,11 +19,12 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
   const [isThrowing, setIsThrowing] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(60);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(null); // { text, type: "success"|"error" }
   const [gameTime, setGameTime] = useState(0);
 
-  const isProcessingRef = useRef(false);
-  const timerRef = useRef(null);
+  const isProcessingRef  = useRef(false);
+  const timerRef         = useRef(null);
+  const pendingTimeouts  = useRef([]);
   const startTimeRef = useRef(0);
   const usedProblemsRef = useRef(new Set());
   const gameAreaRef = useRef(null);
@@ -35,8 +36,16 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
   const errorSoundRef = useRef(null);
   const musicPlayerRef = useRef(null);
 
+  const scheduleTimeout = (fn, ms) => {
+    const id = setTimeout(fn, ms);
+    pendingTimeouts.current.push(id);
+    return id;
+  };
+
   useEffect(() => {
     return () => {
+      pendingTimeouts.current.forEach(clearTimeout);
+      pendingTimeouts.current = [];
       if (musicPlayerRef.current) {
         musicPlayerRef.current.pause();
         musicPlayerRef.current.src = "";
@@ -99,9 +108,9 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
     }
   };
 
-  const showMessage = (msg) => {
-    setMessage(msg);
-    setTimeout(() => setMessage(""), 2500);
+  const showMessage = (msg, type = "success") => {
+    setMessage({ text: msg, type });
+    scheduleTimeout(() => setMessage(null), 2500);
   };
 
   const getOperatorColor = (op) => {
@@ -322,7 +331,7 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
       );
     });
 
-    setTimeout(() => {
+    scheduleTimeout(() => {
       setBarrels((prev) => [...prev, { id: Date.now() + Math.random().toString() }]);
       setIsThrowing(false);
       setFlyingBarrel(null);
@@ -333,7 +342,7 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
         setGameState("won");
         showMessage(t("msg_win"));
       } else {
-        setTimeout(generateProblem, 800);
+        scheduleTimeout(generateProblem, 800);
       }
     }, 1450);
   };
@@ -344,7 +353,7 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
 
   const handleTimeout = () => {
     playSound("error");
-    showMessage(t("msg_timeout"));
+    showMessage(t("msg_timeout"), "error");
     removeBarrel();
     generateProblem();
   };
@@ -359,7 +368,7 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
       throwBarrel();
     } else {
       playSound("error");
-      showMessage(t("msg_wrong"));
+      showMessage(t("msg_wrong"), "error");
       removeBarrel();
       generateProblem();
     }
@@ -429,11 +438,11 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
         {message && (
           <div className="absolute top-[35%] left-1/2 -translate-x-1/2 bg-[#0a0b14]/90 px-5 py-3 rounded-sm border-2 font-[family-name:var(--font-press-start-2p)] text-[0.55rem] text-center z-50 animate-[slideDown_0.3s_ease-out] shadow-2xl backdrop-blur-sm"
             style={{
-              borderColor: message.includes("−1") ? "#ff2244" : "#39ff14",
-              color:       message.includes("−1") ? "#ff2244" : "#39ff14",
-              textShadow:  message.includes("−1") ? "0 0 10px rgba(255,34,68,0.4)" : "0 0 10px rgba(57,255,20,0.4)",
+              borderColor: message.type === "error" ? "#ff2244" : "#39ff14",
+              color:       message.type === "error" ? "#ff2244" : "#39ff14",
+              textShadow:  message.type === "error" ? "0 0 10px rgba(255,34,68,0.4)" : "0 0 10px rgba(57,255,20,0.4)",
             }}>
-            {message}
+            {message.text}
           </div>
         )}
 
@@ -542,7 +551,7 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
           </button>
           <div className="flex items-center gap-[6px]">
             <span className="text-[0.75rem]">🔉</span>
-            <input type="range" min="0" max="100" value={volume} onChange={(e) => setVolume(e.target.value)} className="flex-1 accent-[#00eeff]" />
+            <input type="range" min="0" max="100" value={volume} onChange={(e) => setVolume(Number(e.target.value))} className="flex-1 accent-[#00eeff]" />
             <span className="text-[0.75rem]">🔊</span>
           </div>
         </div>
