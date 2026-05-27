@@ -6,6 +6,31 @@ const MAX_BARRELS = 20;
 const MUSIC_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/music/elefantito/";
 const MUSIC_TRACKS = Array.from({ length: 24 }, (_, i) => `${MUSIC_BASE}mate-${String(i + 1).padStart(2, "0")}.mp3`);
 
+const DECIMAL_FRACTIONS = [
+  [1, 2], [1, 3], [2, 3], [1, 4], [3, 4],
+  [1, 5], [2, 5], [3, 5], [4, 5],
+  [1, 6], [5, 6],
+  [1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7],
+  [1, 8], [3, 8], [5, 8], [7, 8],
+  [1, 9], [2, 9], [4, 9], [5, 9], [7, 9], [8, 9],
+  [1, 11], [2, 11], [3, 11], [4, 11], [5, 11], [6, 11], [7, 11], [8, 11], [9, 11], [10, 11],
+  [1, 12], [5, 12], [7, 12], [11, 12],
+];
+
+const decimalAnswer = (numerator, denominator) => {
+  const scaled = Math.floor((numerator * 1000) / denominator);
+  return `0.${String(scaled).padStart(3, "0")}`;
+};
+
+const normalizeDecimalAnswer = (value) => {
+  const trimmed = value.trim();
+  if (/^\d{3}$/.test(trimmed)) return `0.${trimmed}`;
+  const decimal = trimmed.startsWith(".") ? `0${trimmed}` : trimmed;
+  const match = decimal.match(/^0\.(\d{1,3})$/);
+  if (match) return `0.${match[1].padEnd(3, "0")}`;
+  return trimmed;
+};
+
 export default function GameLevel({ level, problemTypes, onComplete }) {
   const { t, lang } = useLanguage();
 
@@ -59,6 +84,7 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
       if (gameState !== "playing") return;
       if (e.key >= "0" && e.key <= "9") appendInput(e.key);
       else if (e.key === "Backspace") appendInput("DEL");
+      else if (e.key === "." && problem?.operator === "fracDec") appendInput(".");
       else if (e.key === "Enter") checkAnswer();
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -332,6 +358,51 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
           answer = num1 * num2;
           break;
         }
+        case 20: {
+          // 3-by-1 multiplication using extended distributive decomposition.
+          operator = "×";
+          do {
+            num1 = Math.floor(Math.random() * 900) + 100; // 100-999
+          } while (num1 % 10 === 0 || Math.floor((num1 % 100) / 10) === 0);
+          num2 = Math.floor(Math.random() * 8) + 2; // 2-9
+          answer = num1 * num2;
+          break;
+        }
+        case 21: {
+          // 2-by-2 multiplication for the addition method.
+          operator = "×";
+          do {
+            num1 = Math.floor(Math.random() * 89) + 11; // 11-99
+            num2 = Math.floor(Math.random() * 89) + 11; // 11-99
+          } while (num1 % 10 === 0 || num2 % 10 === 0);
+          answer = num1 * num2;
+          break;
+        }
+        case 22: {
+          // One-digit division with exact two-digit quotient.
+          operator = "÷";
+          num2 = Math.floor(Math.random() * 8) + 2; // divisor 2-9
+          answer = Math.floor(Math.random() * 88) + 12; // quotient 12-99
+          num1 = answer * num2;
+          break;
+        }
+        case 23: {
+          // One-digit division with exact three-digit quotient.
+          operator = "÷";
+          num2 = Math.floor(Math.random() * 8) + 2; // divisor 2-9
+          answer = Math.floor(Math.random() * 900) + 100; // quotient 100-999
+          num1 = answer * num2;
+          break;
+        }
+        case 24: {
+          // Common fractions as decimals, truncated to three decimal places.
+          operator = "fracDec";
+          const [numerator, denominator] = DECIMAL_FRACTIONS[Math.floor(Math.random() * DECIMAL_FRACTIONS.length)];
+          num1 = numerator;
+          num2 = denominator;
+          answer = decimalAnswer(numerator, denominator);
+          break;
+        }
         default:
           operator = "+"; num1 = 1; num2 = 1; answer = 2;
       }
@@ -424,7 +495,11 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
   const checkAnswer = () => {
     if (input === "" || isProcessingRef.current) return;
     isProcessingRef.current = true;
-    if (parseInt(input) === problem.answer) {
+    const isCorrect = problem.operator === "fracDec"
+      ? normalizeDecimalAnswer(input) === problem.answer
+      : parseInt(input) === problem.answer;
+
+    if (isCorrect) {
       playSound("correct");
       showMessage(barrels.length === MAX_BARRELS - 1 ? t("msg_correct_last") : t("msg_correct"));
       clearInterval(timerRef.current);
@@ -438,11 +513,27 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
   };
 
   const appendInput = (val) => {
-    if (val === "DEL") setInput((prev) => prev.slice(0, -1));
-    else if (input.length < 5) setInput((prev) => prev + val);
+    if (val === "DEL") {
+      setInput((prev) => prev.slice(0, -1));
+      return;
+    }
+
+    if (problem.operator === "fracDec") {
+      if (val === "." && input.includes(".")) return;
+      if (val === "." && input.length === 0) {
+        setInput("0.");
+        return;
+      }
+      if ((val === "." || /^\d$/.test(val)) && input.length < 5) setInput((prev) => prev + val);
+      return;
+    }
+
+    if (input.length < 5) setInput((prev) => prev + val);
   };
 
-  const keys = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "DEL", "0", "ENTER"];
+  const keys = problem.operator === "fracDec"
+    ? ["7", "8", "9", "4", "5", "6", "1", "2", "3", ".", "0", "DEL", "ENTER"]
+    : ["7", "8", "9", "4", "5", "6", "1", "2", "3", "DEL", "0", "ENTER"];
   const hudLabel   = lang === "en" ? `LEVEL ${level}`         : `NIVEL ${level}`;
   const winTitle   = lang === "en" ? `LEVEL ${level}\nCOMPLETED!` : `¡NIVEL ${level}\nCOMPLETADO!`;
   const nextLabel  = lang === "en" ? "NEXT LEVEL →"           : "SIGUIENTE NIVEL →";
@@ -573,6 +664,15 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
                     {problem?.num2}
                   </span>
                 </div>
+              ) : problem?.operator === "fracDec" ? (
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-[#ffe600] text-[0.42rem] tracking-widest drop-shadow-[0_0_6px_rgba(255,230,0,0.45)]">
+                    3 DEC.
+                  </span>
+                  <span className="text-[#00eeff] text-[1.35rem] drop-shadow-[0_0_10px_rgba(0,238,255,0.75)]">
+                    {problem?.num1}/{problem?.num2}
+                  </span>
+                </div>
               ) : (
                 <>
                   <span>{problem?.num1}</span>
@@ -599,7 +699,7 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
               onClick={() => { if (key === "ENTER") checkAnswer(); else appendInput(key); }}
               disabled={gameState !== "playing"}
               className="bg-[#0c0e1a] border-2 border-[#39ff14] text-[#39ff14] text-[1.1rem] py-3 rounded-sm shadow-[0_0_0_2px_#000,0_5px_0_rgba(57,255,20,0.3)] active:translate-y-[5px] active:shadow-none transition-transform disabled:opacity-50 cursor-pointer flex items-center justify-center num-btn"
-              style={{ gridColumn: key === "ENTER" ? "span 2" : "span 1", fontSize: key === "ENTER" ? "0.6rem" : key === "DEL" ? "1.2rem" : "1.1rem" }}
+              style={{ gridColumn: key === "ENTER" ? (problem.operator === "fracDec" ? "span 3" : "span 2") : "span 1", fontSize: key === "ENTER" ? "0.6rem" : key === "DEL" ? "1.2rem" : "1.1rem" }}
             >
               {key === "DEL" ? "⌫" : key === "ENTER" ? t("game_enter") : key}
             </button>

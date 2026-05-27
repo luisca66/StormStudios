@@ -20,8 +20,13 @@ import TutorLevel12 from "./TutorLevel12";
 import TutorLevel13 from "./TutorLevel13";
 import TutorLevel14 from "./TutorLevel14";
 import TutorLevel15 from "./TutorLevel15";
+import TutorLevel16 from "./TutorLevel16";
+import TutorLevel17 from "./TutorLevel17";
+import TutorLevel18 from "./TutorLevel18";
+import TutorLevel19 from "./TutorLevel19";
+import TutorLevel20 from "./TutorLevel20";
 
-const MAX_LEVEL = 15;
+const MAX_LEVEL = 20;
 
 const LEVEL_CONFIG = {
   1:  { problemTypes: [0, 2, 4] },
@@ -39,11 +44,16 @@ const LEVEL_CONFIG = {
   13: { problemTypes: [17] },
   14: { problemTypes: [18] },
   15: { problemTypes: [19] },
+  16: { problemTypes: [20] },
+  17: { problemTypes: [21] },
+  18: { problemTypes: [22] },
+  19: { problemTypes: [23] },
+  20: { problemTypes: [24] },
 };
 
 const LEVELS = Array.from({ length: MAX_LEVEL }, (_, i) => i + 1);
 
-const TUTOR_MAP = { 1: TutorLevel1, 2: TutorLevel2, 3: TutorLevel3, 4: TutorLevel4, 5: TutorLevel5, 6: TutorLevel6, 7: TutorLevel7, 8: TutorLevel8, 9: TutorLevel9, 10: TutorLevel10, 11: TutorLevel11, 12: TutorLevel12, 13: TutorLevel13, 14: TutorLevel14, 15: TutorLevel15 };
+const TUTOR_MAP = { 1: TutorLevel1, 2: TutorLevel2, 3: TutorLevel3, 4: TutorLevel4, 5: TutorLevel5, 6: TutorLevel6, 7: TutorLevel7, 8: TutorLevel8, 9: TutorLevel9, 10: TutorLevel10, 11: TutorLevel11, 12: TutorLevel12, 13: TutorLevel13, 14: TutorLevel14, 15: TutorLevel15, 16: TutorLevel16, 17: TutorLevel17, 18: TutorLevel18, 19: TutorLevel19, 20: TutorLevel20 };
 
 function HomeScreen({ onLevel }) {
   const { unlockedLevels, resetProgress } = useGame();
