@@ -20,11 +20,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return createPageMetadata({
     locale: locale as Locale,
     urls: getLocalizedRouteUrls("/apps/matematicas-mentales/jugar"),
-    title: locale === "es" ? "Elefantito Matemático – Jugar" : "Math Elephant – Play",
+    title: locale === "es" ? "Elefantito Matemático – Jugar" : "Little Elephant Math – Play",
     description:
       locale === "es"
         ? "Versión jugable de Elefantito Matemático dentro del navegador."
-        : "Browser play version of Math Elephant.",
+        : "Browser play version of Little Elephant Math.",
     noIndex: true,
   });
 }

@@ -41,6 +41,7 @@ const TX = {
     btn_start: "PRACTICAR ->",
     solved: (n) => `Resueltos: ${n}`,
     prompt: (n, d) => `¿Cuánto es ${n}/${d} en decimal?`,
+    decimal_label: "3 DECIMALES",
     hint_label: "PISTA:",
     hint: (cycle) => `Busca el ciclo: ${cycle}. Escribe 0.xxx con los primeros 3 decimales.`,
     btn_check: "VERIFICAR",
@@ -61,6 +62,7 @@ const TX = {
     btn_start: "PRACTICE ->",
     solved: (n) => `Solved: ${n}`,
     prompt: (n, d) => `What is ${n}/${d} as a decimal?`,
+    decimal_label: "3 DECIMALS",
     hint_label: "HINT:",
     hint: (cycle) => `Find the cycle: ${cycle}. Type 0.xxx with the first 3 decimals.`,
     btn_check: "CHECK",
@@ -239,7 +241,7 @@ export default function TutorLevel20({ onComplete }) {
       </div>
 
       <div className="bg-[#060810] border-[3px] border-[#00eeff] shadow-[0_0_0_3px_#000,0_0_12px_rgba(0,238,255,0.12)] rounded-sm p-5 mb-4 text-center shrink-0">
-        <div className="text-[#55555a] text-[0.54rem] tracking-[0.2em] mb-2">3 DECIMALES</div>
+        <div className="text-[#55555a] text-[0.54rem] tracking-[0.2em] mb-2">{tx.decimal_label}</div>
         <div className="text-[#00eeff] text-[clamp(1.6rem,5vw,2.6rem)] drop-shadow-[0_0_12px_rgba(0,238,255,0.65)]">
           {problem.n}/{problem.d}
         </div>

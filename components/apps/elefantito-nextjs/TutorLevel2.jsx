@@ -36,7 +36,7 @@ export default function TutorLevel2({ onComplete }) {
     } else {
       audioRef.current.play().catch(e => {
         console.error("Error al reproducir audio:", e);
-        alert("No se pudo cargar el audio. Verifica que el archivo en Cloudflare sea un MP3 válido.");
+        alert(t("audio_error"));
         setIsPlaying(false);
       });
       setIsPlaying(true);

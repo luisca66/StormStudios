@@ -108,7 +108,7 @@ function HomeScreen({ onLevel }) {
       </div>
 
       <div className="font-[family-name:var(--font-press-start-2p)] text-[clamp(1.3rem,3.8vw,2.8rem)] leading-[1.8] text-[#39ff14] whitespace-pre-line text-center drop-shadow-[0_0_20px_#39ff14] mb-2 z-10 text-shadow-[0_0_40px_rgba(57,255,20,0.35)]">
-        ELEFANTITO{"\n"}MATEMÁTICO
+        {t("game_title_line_1")}{"\n"}{t("game_title_line_2")}
       </div>
 
       <div className="font-[family-name:var(--font-press-start-2p)] text-[clamp(0.38rem,1vw,0.58rem)] text-[#ffe600] tracking-[0.18em] mb-10 z-10 drop-shadow-[0_0_8px_rgba(255,230,0,0.35)]">
@@ -116,7 +116,7 @@ function HomeScreen({ onLevel }) {
       </div>
 
       <div className="font-[family-name:var(--font-press-start-2p)] text-[0.52rem] text-[#3a3a3a] tracking-[0.1em] mb-5 z-10">
-        — SELECCIONA NIVEL —
+        {t("select_level")}
       </div>
 
       <div className="grid grid-cols-4 sm:grid-cols-5 gap-3 sm:gap-4 place-items-center mb-10 z-10 w-full max-w-[520px]">
@@ -201,7 +201,7 @@ function LevelScreen({ level, onMap, onLevel }) {
         </div>
 
         <span className="font-[family-name:var(--font-press-start-2p)] text-[0.5rem] text-[#ffe600] shrink-0 drop-shadow-[0_0_8px_rgba(255,230,0,0.35)]">
-          NIVEL {level}
+          {t("level_label")} {level}
         </span>
 
         <button

@@ -63,7 +63,7 @@ export const APPS: AppEntry[] = [
   },
   {
     slug: "matematicas-mentales",
-    name: { es: "Elefantito Matemático", en: "Mental Math Elephant" },
+    name: { es: "Elefantito Matemático", en: "Little Elephant Math" },
     category: "cognitive",
     description: {
       es: "Entrena tu mente con aritmética cronometrada. Llena la repisa del elefantito resolviendo problemas antes de que se acabe el tiempo.",
@@ -71,7 +71,7 @@ export const APPS: AppEntry[] = [
     },
     longDescription: {
       es: "Inspirada en la investigación del Dr. Kawashima sobre activación del córtex prefrontal, esta app te desafía a resolver operaciones aritméticas contra el reloj. Con 8 niveles de dificultad —incluyendo el modo 💀 Imposible— y tiempo ajustable por pregunta, el Elefantito Matemático se adapta tanto a niños que aprenden las sumas básicas como a adultos que quieren llevar su mente al límite.",
-      en: "Inspired by Dr. Kawashima's research on prefrontal cortex activation, this app challenges you to solve arithmetic operations against the clock. With 8 difficulty levels — including the 💀 Impossible mode — and adjustable time per question, the Math Elephant adapts to children learning basic addition as well as adults looking to push their minds to the limit.",
+      en: "Inspired by Dr. Kawashima's research on prefrontal cortex activation, this app challenges you to solve arithmetic operations against the clock. With 8 difficulty levels — including the 💀 Impossible mode — and adjustable time per question, Little Elephant Math adapts to children learning basic addition as well as adults looking to push their minds to the limit.",
     },
     apkUrl: "https://stormstudios.com.mx/wp-content/APKs_Apps/elefantitomatematico.apk",
     webUrl: "/apps/matematicas-mentales/jugar",

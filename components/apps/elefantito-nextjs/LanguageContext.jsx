@@ -12,13 +12,13 @@ export function LanguageProvider({ children, initialLanguage = "es" }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Load preference from local storage if available
-    const savedLang = localStorage.getItem("app_language");
-    if (savedLang && translations[savedLang]) {
-      setLang(savedLang);
-    }
+    // The route locale is the source of truth. A saved in-app preference should
+    // never force /en pages back into Spanish or /es pages back into English.
+    const routeLanguage = translations[initialLanguage] ? initialLanguage : "es";
+    setLang(routeLanguage);
+    localStorage.setItem("app_language", routeLanguage);
     setMounted(true);
-  }, []);
+  }, [initialLanguage]);
 
   const toggleLanguage = () => {
     const newLang = lang === "es" ? "en" : "es";
