@@ -8,76 +8,81 @@ const MUSIC_TRACKS = Array.from({ length: 24 }, (_, i) => `${MUSIC_BASE}mate-${S
 
 const TX = {
   es: {
-    intro_title:  "RESTA",
-    intro_sub:    "3 CIFRAS · SIN PRÉSTAMO",
-    intro_body:   "Resta de izquierda a derecha: primero las centenas, luego las decenas y por último las unidades. Solo funciona cuando cada dígito del número de abajo es menor o igual al de arriba.",
+    intro_title:  "COMPLEMENTOS",
+    intro_sub:    "A 1000 · TRES CIFRAS",
+    intro_body:   "Extiende la regla: los dos primeros dígitos van de 9 en 9, y solo el último llega a 10. Todo de 9, el último de 10.",
     ex_label:     "— EJEMPLO —",
-    ex_step1:     "958 − 400  =  558",
-    ex_step2:     "558 −  10  =  548",
-    ex_step3:     "548 −   7  =  541",
-    ex_result:    "958 − 417  =  541",
+    ex_step1:     "9 − 6  =  3",
+    ex_step2:     "9 − 3  =  6",
+    ex_step3:     "10 − 7  =  3",
+    ex_step4:     "Une:  3, 6 y 3  →  363",
+    ex_result:    "Compl. de 637  =  363",
     btn_start:    "PRACTICAR →",
     solved:       (n) => `Resueltos: ${n}`,
     step:         (i) => `PASO ${i}`,
     hint_label:   "PISTA:",
-    hint_0:       (a, bH)  => `Ignora decenas y unidades. Solo resta las centenas: ${a} − ${bH}.`,
-    hint_1:       (s1, bT) => `El paso anterior dio ${s1}. Resta solo las decenas: ${s1} − ${bT}.`,
-    hint_2:       (s2, bO) => `El paso anterior dio ${s2}. Ahora réstale las unidades: ${s2} − ${bO}.`,
+    hint_0:       (d1)         => `¿Cuánto falta para llegar a 9? ${d1} + ? = 9.`,
+    hint_1:       (d2)         => `¿Cuánto falta para llegar a 9? ${d2} + ? = 9.`,
+    hint_2:       (d3)         => `¿Cuánto falta para llegar a 10? ${d3} + ? = 10.`,
+    hint_3:       (s1, s2, s3) => `Pon los tres resultados seguidos: ${s1}${s2}${s3}.`,
     btn_check:    "VERIFICAR",
     btn_done:     "¡Entendido, estoy listo!",
-    step1_ins:    (a, bH)  => `Resta las centenas (${a} − ${bH})`,
-    step2_ins:    (s1, bT) => `Resta las decenas (${s1} − ${bT})`,
-    step3_ins:    (s2, bO) => `Resta las unidades (${s2} − ${bO})`,
+    step1_ins:    (d1)         => `¿Cuánto le falta al primer dígito (${d1}) para llegar a 9?`,
+    step2_ins:    (d2)         => `¿Cuánto le falta al segundo dígito (${d2}) para llegar a 9?`,
+    step3_ins:    (d3)         => `¿Cuánto le falta al último dígito (${d3}) para llegar a 10?`,
+    step4_ins:    (s1, s2, s3) => `Une los tres resultados (${s1}, ${s2} y ${s3})`,
     sound_on:     "🔊 Sonido ON",
     sound_off:    "🔇 Sonido OFF",
+    label:        "COMPL. DE",
   },
   en: {
-    intro_title:  "SUBTRACTION",
-    intro_sub:    "3 DIGITS · NO BORROWING",
-    intro_body:   "Subtract left to right: first the hundreds, then the tens, then the ones. This only works when each digit of the bottom number is less than or equal to the one above it.",
+    intro_title:  "COMPLEMENTS",
+    intro_sub:    "TO 1000 · THREE DIGITS",
+    intro_body:   "Extend the rule: the first two digits reach 9, only the last reaches 10. Everything to 9, the last to 10.",
     ex_label:     "— EXAMPLE —",
-    ex_step1:     "958 − 400  =  558",
-    ex_step2:     "558 −  10  =  548",
-    ex_step3:     "548 −   7  =  541",
-    ex_result:    "958 − 417  =  541",
+    ex_step1:     "9 − 6  =  3",
+    ex_step2:     "9 − 3  =  6",
+    ex_step3:     "10 − 7  =  3",
+    ex_step4:     "Join:  3, 6 and 3  →  363",
+    ex_result:    "Compl. of 637  =  363",
     btn_start:    "PRACTICE →",
     solved:       (n) => `Solved: ${n}`,
     step:         (i) => `STEP ${i}`,
     hint_label:   "HINT:",
-    hint_0:       (a, bH)  => `Ignore tens and ones. Just subtract the hundreds: ${a} − ${bH}.`,
-    hint_1:       (s1, bT) => `The previous step gave ${s1}. Now subtract the tens: ${s1} − ${bT}.`,
-    hint_2:       (s2, bO) => `The previous step gave ${s2}. Now subtract the ones: ${s2} − ${bO}.`,
+    hint_0:       (d1)         => `How much to reach 9? ${d1} + ? = 9.`,
+    hint_1:       (d2)         => `How much to reach 9? ${d2} + ? = 9.`,
+    hint_2:       (d3)         => `How much to reach 10? ${d3} + ? = 10.`,
+    hint_3:       (s1, s2, s3) => `Place the three results in order: ${s1}${s2}${s3}.`,
     btn_check:    "CHECK",
     btn_done:     "Got it, I'm ready!",
-    step1_ins:    (a, bH)  => `Subtract the hundreds (${a} − ${bH})`,
-    step2_ins:    (s1, bT) => `Subtract the tens (${s1} − ${bT})`,
-    step3_ins:    (s2, bO) => `Subtract the ones (${s2} − ${bO})`,
+    step1_ins:    (d1)         => `How much does the first digit (${d1}) need to reach 9?`,
+    step2_ins:    (d2)         => `How much does the second digit (${d2}) need to reach 9?`,
+    step3_ins:    (d3)         => `How much does the last digit (${d3}) need to reach 10?`,
+    step4_ins:    (s1, s2, s3) => `Join the three results (${s1}, ${s2} and ${s3})`,
     sound_on:     "🔊 Sound ON",
     sound_off:    "🔇 Sound OFF",
+    label:        "COMPL. OF",
   },
 };
 
 function genProblem() {
-  let a, b, bH, bT, bO, step1, step2, answer;
+  let n;
   do {
-    a = Math.floor(Math.random() * 900) + 100; // 100–999
-    const aH = Math.floor(a / 100);
-    const aT = Math.floor((a % 100) / 10);
-    const aO = a % 10;
-    if (aT === 0 || aO === 0) continue;         // need non-zero tens and ones
-    bH = Math.floor(Math.random() * aH) + 1;   // 1…aH  → no borrowing in hundreds
-    bT = Math.floor(Math.random() * aT) + 1;   // 1…aT  → no borrowing in tens
-    bO = Math.floor(Math.random() * aO) + 1;   // 1…aO  → no borrowing in ones
-    b      = bH * 100 + bT * 10 + bO;
-    step1  = a - bH * 100;
-    step2  = step1 - bT * 10;
-    answer = step2 - bO;
-  } while (b >= a || answer <= 0);
+    n = Math.floor(Math.random() * 899) + 100; // 100–998
+  } while (n % 10 === 0);                       // exclude multiples of 10
 
-  return { a, b, bHundreds: bH * 100, bTens: bT * 10, bOnes: bO, step1, step2, answer };
+  const d1    = Math.floor(n / 100);            // hundreds digit
+  const d2    = Math.floor((n % 100) / 10);     // tens digit
+  const d3    = n % 10;                          // ones digit
+  const step1 = 9  - d1;
+  const step2 = 9  - d2;
+  const step3 = 10 - d3;
+  const answer = step1 * 100 + step2 * 10 + step3;
+
+  return { n, d1, d2, d3, step1, step2, step3, answer };
 }
 
-export default function TutorLevel9({ onComplete }) {
+export default function TutorLevel12({ onComplete }) {
   const { completeLesson } = useGame();
   const { lang }           = useLanguage();
   const tx = TX[lang];
@@ -134,19 +139,24 @@ export default function TutorLevel9({ onComplete }) {
 
   const steps = [
     {
-      instruction: tx.step1_ins(problem.a, problem.bHundreds),
+      instruction: tx.step1_ins(problem.d1),
       answer:      problem.step1,
-      hint:        tx.hint_0(problem.a, problem.bHundreds),
+      hint:        tx.hint_0(problem.d1),
     },
     {
-      instruction: tx.step2_ins(problem.step1, problem.bTens),
+      instruction: tx.step2_ins(problem.d2),
       answer:      problem.step2,
-      hint:        tx.hint_1(problem.step1, problem.bTens),
+      hint:        tx.hint_1(problem.d2),
     },
     {
-      instruction: tx.step3_ins(problem.step2, problem.bOnes),
+      instruction: tx.step3_ins(problem.d3),
+      answer:      problem.step3,
+      hint:        tx.hint_2(problem.d3),
+    },
+    {
+      instruction: tx.step4_ins(problem.step1, problem.step2, problem.step3),
       answer:      problem.answer,
-      hint:        tx.hint_2(problem.step2, problem.bOnes),
+      hint:        tx.hint_3(problem.step1, problem.step2, problem.step3),
     },
   ];
 
@@ -188,7 +198,7 @@ export default function TutorLevel9({ onComplete }) {
   };
 
   const handleFinish = () => {
-    completeLesson(9);
+    completeLesson(12);
     onComplete();
   };
 
@@ -199,10 +209,10 @@ export default function TutorLevel9({ onComplete }) {
         <div className="flex-1 flex flex-col items-center justify-center gap-5 max-w-md mx-auto w-full py-4">
 
           <div className="text-center">
-            <div className="text-[#ff2244] text-[clamp(0.92rem,2.6vw,1.3rem)] leading-[2] drop-shadow-[0_0_14px_#ff2244]">
+            <div className="text-[#b026ff] text-[clamp(0.92rem,2.6vw,1.3rem)] leading-[2] drop-shadow-[0_0_14px_#b026ff]">
               {tx.intro_title}
             </div>
-            <div className="text-[#ff224499] text-[clamp(0.65rem,1.6vw,0.88rem)] leading-[2] tracking-[0.1em]">
+            <div className="text-[#b026ff99] text-[clamp(0.65rem,1.6vw,0.88rem)] leading-[2] tracking-[0.1em]">
               {tx.intro_sub}
             </div>
           </div>
@@ -211,21 +221,21 @@ export default function TutorLevel9({ onComplete }) {
             {tx.intro_body}
           </p>
 
-          <div className="bg-[#060810] border-2 border-[#ff224440] rounded-sm w-full shadow-[0_0_16px_rgba(255,34,68,0.06)]">
-            <div className="border-b border-[#ff224420] px-4 py-2 flex items-center justify-between">
-              <span className="text-[#ff224460] text-[0.54rem] tracking-[0.25em]">{tx.ex_label}</span>
-              <span className="text-[#ffe600] text-[0.65rem] drop-shadow-[0_0_6px_rgba(255,230,0,0.4)]">958 − 417</span>
+          <div className="bg-[#060810] border-2 border-[#b026ff40] rounded-sm w-full shadow-[0_0_16px_rgba(176,38,255,0.06)]">
+            <div className="border-b border-[#b026ff20] px-4 py-2 flex items-center justify-between">
+              <span className="text-[#b026ff60] text-[0.54rem] tracking-[0.25em]">{tx.ex_label}</span>
+              <span className="text-[#ffe600] text-[0.65rem] drop-shadow-[0_0_6px_rgba(255,230,0,0.4)]">637</span>
             </div>
             <div className="p-4 flex flex-col gap-1.5">
-              {[tx.ex_step1, tx.ex_step2, tx.ex_step3].map((s, i) => (
+              {[tx.ex_step1, tx.ex_step2, tx.ex_step3, tx.ex_step4].map((s, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <span className="text-[#ff224460] text-[0.54rem] w-4">{i + 1}</span>
-                  <div className="bg-[#0f0a0a] border border-[#ff224430] px-3 py-2 text-[#ff2244] text-[0.5rem] tracking-widest flex-1">
+                  <span className="text-[#b026ff60] text-[0.5rem] w-4">{i + 1}</span>
+                  <div className="bg-[#0e0a14] border border-[#b026ff30] px-3 py-2 text-[#b026ff] text-[0.6rem] tracking-widest flex-1">
                     {s}
                   </div>
                 </div>
               ))}
-              <div className="mt-2 text-right text-[#ffe600] text-[0.5rem] tracking-widest drop-shadow-[0_0_6px_rgba(255,230,0,0.3)]">
+              <div className="mt-2 text-right text-[#ffe600] text-[0.6rem] tracking-widest drop-shadow-[0_0_6px_rgba(255,230,0,0.3)]">
                 {tx.ex_result}
               </div>
             </div>
@@ -233,7 +243,7 @@ export default function TutorLevel9({ onComplete }) {
 
           <button
             onClick={startPractice}
-            className="bg-[#0c0e1a] hover:bg-[#1a0c0e] text-[#ff2244] border-2 border-[#ff2244] text-[0.5rem] py-4 px-8 cursor-pointer shadow-[0_0_0_2px_#000,0_0_14px_rgba(255,34,68,0.2)] active:scale-95 transition-all w-full"
+            className="bg-[#0c0e1a] hover:bg-[#160c1a] text-[#b026ff] border-2 border-[#b026ff] text-[0.6rem] py-4 px-8 cursor-pointer shadow-[0_0_0_2px_#000,0_0_14px_rgba(176,38,255,0.2)] active:scale-95 transition-all w-full"
           >
             {tx.btn_start}
           </button>
@@ -273,10 +283,10 @@ export default function TutorLevel9({ onComplete }) {
       </div>
 
       {/* Problem */}
-      <div className="bg-[#060810] border-[3px] border-[#ff2244] shadow-[0_0_0_3px_#000,0_0_12px_rgba(255,34,68,0.08)] rounded-sm p-3 mb-3 text-center shrink-0">
-        <div className="text-[#55555a] text-[0.54rem] tracking-[0.2em] mb-1">RESTA</div>
-        <div className="text-[#ff2244] text-[clamp(1.2rem,3vw,1.8rem)] drop-shadow-[0_0_10px_rgba(255,34,68,0.5)]">
-          {problem.a} − {problem.b}
+      <div className="bg-[#060810] border-[3px] border-[#b026ff] shadow-[0_0_0_3px_#000,0_0_12px_rgba(176,38,255,0.12)] rounded-sm p-3 mb-3 text-center shrink-0">
+        <div className="text-[#55555a] text-[0.54rem] tracking-[0.2em] mb-1">{tx.label}</div>
+        <div className="text-[#b026ff] text-[clamp(1.5rem,4vw,2.2rem)] drop-shadow-[0_0_12px_rgba(176,38,255,0.6)]">
+          {problem.n}
         </div>
       </div>
 
@@ -290,20 +300,20 @@ export default function TutorLevel9({ onComplete }) {
               key={idx}
               className={`flex items-center justify-between px-3 py-2 rounded-sm border-2 transition-all ${
                 isAnswered
-                  ? "bg-[#120707] border-[#ff224450] text-[#ff2244]"
+                  ? "bg-[#0e0714] border-[#b026ff50] text-[#b026ff]"
                   : isCurrent
                     ? "bg-[#060c1a] border-[#00eeff] text-[#00eeff] shadow-[0_0_8px_rgba(0,238,255,0.08)]"
                     : "bg-[#0a0a0a] border-[#1a1a1a] text-[#282828]"
               }`}
             >
               <div className="flex items-center gap-2 min-w-0">
-                <span className={`text-[0.5rem] shrink-0 ${isAnswered ? "text-[#ff224470]" : isCurrent ? "text-[#00eeff70]" : "text-[#202020]"}`}>
+                <span className={`text-[0.5rem] shrink-0 ${isAnswered ? "text-[#b026ff70]" : isCurrent ? "text-[#00eeff70]" : "text-[#202020]"}`}>
                   {tx.step(idx + 1)}
                 </span>
                 <span className="text-[0.58rem] leading-[1.8]">{s.instruction}</span>
               </div>
               {isAnswered && (
-                <span className="text-[#ff2244] text-[0.85rem] shrink-0 ml-3 drop-shadow-[0_0_8px_#ff2244]">
+                <span className="text-[#b026ff] text-[0.85rem] shrink-0 ml-3 drop-shadow-[0_0_8px_#b026ff]">
                   {revealed[idx]}
                 </span>
               )}
@@ -326,7 +336,7 @@ export default function TutorLevel9({ onComplete }) {
             placeholder="?"
             className={`flex-1 bg-[#060810] border-[3px] text-[1.3rem] text-center py-3 px-4 outline-none transition-all ${
               hasError
-                ? "border-[#ff2244] text-[#ff2244] shadow-[0_0_0_3px_#000,0_0_10px_rgba(255,34,68,0.3)]"
+                ? "border-[#ff2244] text-[#ff2244] shadow-[0_0_0_3px_#000,0_0_10px_rgba(255,34,68,0.2)]"
                 : "border-[#ffe600] text-[#ffe600] shadow-[0_0_0_3px_#000,0_0_8px_rgba(255,230,0,0.06)]"
             }`}
           />
@@ -352,7 +362,7 @@ export default function TutorLevel9({ onComplete }) {
       <div className="mt-auto pt-3 border-t-2 border-[#14161e] shrink-0">
         <button
           onClick={handleFinish}
-          className="font-[family-name:var(--font-press-start-2p)] text-[0.5rem] bg-[#39ff14] text-black border-2 border-[#39ff14] px-5 py-3 cursor-pointer shadow-[0_0_0_2px_#000,0_0_12px_rgba(57,255,20,0.35)] transition-transform active:scale-95 w-full"
+          className="font-[family-name:var(--font-press-start-2p)] text-[0.6rem] bg-[#39ff14] text-black border-2 border-[#39ff14] px-5 py-3 cursor-pointer shadow-[0_0_0_2px_#000,0_0_12px_rgba(57,255,20,0.35)] transition-transform active:scale-95 w-full"
         >
           {tx.btn_done}
         </button>

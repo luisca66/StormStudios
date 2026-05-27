@@ -9,75 +9,76 @@ const MUSIC_TRACKS = Array.from({ length: 24 }, (_, i) => `${MUSIC_BASE}mate-${S
 const TX = {
   es: {
     intro_title:  "RESTA",
-    intro_sub:    "3 CIFRAS · SIN PRÉSTAMO",
-    intro_body:   "Resta de izquierda a derecha: primero las centenas, luego las decenas y por último las unidades. Solo funciona cuando cada dígito del número de abajo es menor o igual al de arriba.",
+    intro_sub:    "3 CIFRAS · CON COMPLEMENTOS",
+    intro_body:   "Cuando hay que 'pedir prestado', redondea el sustraendo al centenar superior, resta ese número fácil, y usa el complemento para recuperar lo que te pasaste.",
     ex_label:     "— EJEMPLO —",
-    ex_step1:     "958 − 400  =  558",
-    ex_step2:     "558 −  10  =  548",
-    ex_step3:     "548 −   7  =  541",
-    ex_result:    "958 − 417  =  541",
+    ex_step1:     "468 → 500.  725 − 500  =  225",
+    ex_step2:     "Compl. de 68: (9−6=3, 10−8=2)  →  32",
+    ex_step3:     "225 + 32  =  257",
+    ex_result:    "725 − 468  =  257",
     btn_start:    "PRACTICAR →",
     solved:       (n) => `Resueltos: ${n}`,
     step:         (i) => `PASO ${i}`,
     hint_label:   "PISTA:",
-    hint_0:       (a, bH)  => `Ignora decenas y unidades. Solo resta las centenas: ${a} − ${bH}.`,
-    hint_1:       (s1, bT) => `El paso anterior dio ${s1}. Resta solo las decenas: ${s1} − ${bT}.`,
-    hint_2:       (s2, bO) => `El paso anterior dio ${s2}. Ahora réstale las unidades: ${s2} − ${bO}.`,
+    hint_0:       (b, rounded) => `Redondea ${b} al siguiente centenar: ${rounded}. ¿Cuánto queda de ${b < 200 ? '...' : '...'} al restar ${rounded}?`,
+    hint_1:       (lastTwo) => `Complemento de ${lastTwo} = 100 − ${lastTwo}. Usa (9−decena, 10−unidad).`,
+    hint_2:       (s1, c)   => `El paso 1 dio ${s1} y el complemento fue ${c}. Súmalos.`,
     btn_check:    "VERIFICAR",
     btn_done:     "¡Entendido, estoy listo!",
-    step1_ins:    (a, bH)  => `Resta las centenas (${a} − ${bH})`,
-    step2_ins:    (s1, bT) => `Resta las decenas (${s1} − ${bT})`,
-    step3_ins:    (s2, bO) => `Resta las unidades (${s2} − ${bO})`,
+    step1_ins:    (b, rounded, a)        => `${b} → ${rounded}. Resta (${a} − ${rounded})`,
+    step2_ins:    (lastTwo, d1, d2)      => `Compl. de ${lastTwo} (9−${d1}, 10−${d2})`,
+    step3_ins:    (s1, c)                => `Suma el complemento (${s1} + ${c})`,
     sound_on:     "🔊 Sonido ON",
     sound_off:    "🔇 Sonido OFF",
   },
   en: {
     intro_title:  "SUBTRACTION",
-    intro_sub:    "3 DIGITS · NO BORROWING",
-    intro_body:   "Subtract left to right: first the hundreds, then the tens, then the ones. This only works when each digit of the bottom number is less than or equal to the one above it.",
+    intro_sub:    "3 DIGITS · WITH COMPLEMENTS",
+    intro_body:   "When borrowing is needed, round the subtrahend up to the next hundred, subtract that easy number, and use the complement to recover what you over-subtracted.",
     ex_label:     "— EXAMPLE —",
-    ex_step1:     "958 − 400  =  558",
-    ex_step2:     "558 −  10  =  548",
-    ex_step3:     "548 −   7  =  541",
-    ex_result:    "958 − 417  =  541",
+    ex_step1:     "468 → 500.  725 − 500  =  225",
+    ex_step2:     "Compl. of 68: (9−6=3, 10−8=2)  →  32",
+    ex_step3:     "225 + 32  =  257",
+    ex_result:    "725 − 468  =  257",
     btn_start:    "PRACTICE →",
     solved:       (n) => `Solved: ${n}`,
     step:         (i) => `STEP ${i}`,
     hint_label:   "HINT:",
-    hint_0:       (a, bH)  => `Ignore tens and ones. Just subtract the hundreds: ${a} − ${bH}.`,
-    hint_1:       (s1, bT) => `The previous step gave ${s1}. Now subtract the tens: ${s1} − ${bT}.`,
-    hint_2:       (s2, bO) => `The previous step gave ${s2}. Now subtract the ones: ${s2} − ${bO}.`,
+    hint_0:       (b, rounded) => `Round ${b} to the next hundred: ${rounded}. How much is left after subtracting ${rounded}?`,
+    hint_1:       (lastTwo) => `Complement of ${lastTwo} = 100 − ${lastTwo}. Use (9−tens, 10−ones).`,
+    hint_2:       (s1, c)   => `Step 1 gave ${s1} and the complement was ${c}. Add them.`,
     btn_check:    "CHECK",
     btn_done:     "Got it, I'm ready!",
-    step1_ins:    (a, bH)  => `Subtract the hundreds (${a} − ${bH})`,
-    step2_ins:    (s1, bT) => `Subtract the tens (${s1} − ${bT})`,
-    step3_ins:    (s2, bO) => `Subtract the ones (${s2} − ${bO})`,
+    step1_ins:    (b, rounded, a)        => `${b} → ${rounded}. Subtract (${a} − ${rounded})`,
+    step2_ins:    (lastTwo, d1, d2)      => `Compl. of ${lastTwo} (9−${d1}, 10−${d2})`,
+    step3_ins:    (s1, c)                => `Add the complement (${s1} + ${c})`,
     sound_on:     "🔊 Sound ON",
     sound_off:    "🔇 Sound OFF",
   },
 };
 
 function genProblem() {
-  let a, b, bH, bT, bO, step1, step2, answer;
-  do {
-    a = Math.floor(Math.random() * 900) + 100; // 100–999
-    const aH = Math.floor(a / 100);
-    const aT = Math.floor((a % 100) / 10);
-    const aO = a % 10;
-    if (aT === 0 || aO === 0) continue;         // need non-zero tens and ones
-    bH = Math.floor(Math.random() * aH) + 1;   // 1…aH  → no borrowing in hundreds
-    bT = Math.floor(Math.random() * aT) + 1;   // 1…aT  → no borrowing in tens
-    bO = Math.floor(Math.random() * aO) + 1;   // 1…aO  → no borrowing in ones
-    b      = bH * 100 + bT * 10 + bO;
-    step1  = a - bH * 100;
-    step2  = step1 - bT * 10;
-    answer = step2 - bO;
-  } while (b >= a || answer <= 0);
-
-  return { a, b, bHundreds: bH * 100, bTens: bT * 10, bOnes: bO, step1, step2, answer };
+  let num1, num2, roundedNum2, lastTwo, d1, d2, compl, step1, answer;
+  let valid = false;
+  while (!valid) {
+    num1 = 200 + Math.floor(Math.random() * 800);               // 200–999
+    num2 = 100 + Math.floor(Math.random() * (num1 - 100));      // 100–(num1-1)
+    if (num2 % 10 === 0) continue;                               // ones digit ≠ 0
+    if (num2 % 100 < 10) continue;                               // last two digits must be ≥ 10
+    roundedNum2 = Math.ceil(num2 / 100) * 100;                  // next hundred above num2
+    if (roundedNum2 >= num1) continue;                           // step1 must be positive
+    lastTwo = num2 % 100;
+    d1      = Math.floor(lastTwo / 10);
+    d2      = lastTwo % 10;
+    compl   = 100 - lastTwo;                                     // = (9−d1)*10 + (10−d2)
+    step1   = num1 - roundedNum2;
+    answer  = step1 + compl;                                     // = num1 − num2
+    valid   = true;
+  }
+  return { num1, num2, roundedNum2, lastTwo, d1, d2, compl, step1, answer };
 }
 
-export default function TutorLevel9({ onComplete }) {
+export default function TutorLevel11({ onComplete }) {
   const { completeLesson } = useGame();
   const { lang }           = useLanguage();
   const tx = TX[lang];
@@ -134,19 +135,19 @@ export default function TutorLevel9({ onComplete }) {
 
   const steps = [
     {
-      instruction: tx.step1_ins(problem.a, problem.bHundreds),
+      instruction: tx.step1_ins(problem.num2, problem.roundedNum2, problem.num1),
       answer:      problem.step1,
-      hint:        tx.hint_0(problem.a, problem.bHundreds),
+      hint:        tx.hint_0(problem.num2, problem.roundedNum2),
     },
     {
-      instruction: tx.step2_ins(problem.step1, problem.bTens),
-      answer:      problem.step2,
-      hint:        tx.hint_1(problem.step1, problem.bTens),
+      instruction: tx.step2_ins(problem.lastTwo, problem.d1, problem.d2),
+      answer:      problem.compl,
+      hint:        tx.hint_1(problem.lastTwo),
     },
     {
-      instruction: tx.step3_ins(problem.step2, problem.bOnes),
+      instruction: tx.step3_ins(problem.step1, problem.compl),
       answer:      problem.answer,
-      hint:        tx.hint_2(problem.step2, problem.bOnes),
+      hint:        tx.hint_2(problem.step1, problem.compl),
     },
   ];
 
@@ -188,7 +189,7 @@ export default function TutorLevel9({ onComplete }) {
   };
 
   const handleFinish = () => {
-    completeLesson(9);
+    completeLesson(11);
     onComplete();
   };
 
@@ -214,13 +215,17 @@ export default function TutorLevel9({ onComplete }) {
           <div className="bg-[#060810] border-2 border-[#ff224440] rounded-sm w-full shadow-[0_0_16px_rgba(255,34,68,0.06)]">
             <div className="border-b border-[#ff224420] px-4 py-2 flex items-center justify-between">
               <span className="text-[#ff224460] text-[0.54rem] tracking-[0.25em]">{tx.ex_label}</span>
-              <span className="text-[#ffe600] text-[0.65rem] drop-shadow-[0_0_6px_rgba(255,230,0,0.4)]">958 − 417</span>
+              <span className="text-[#ffe600] text-[0.65rem] drop-shadow-[0_0_6px_rgba(255,230,0,0.4)]">725 − 468</span>
             </div>
             <div className="p-4 flex flex-col gap-1.5">
               {[tx.ex_step1, tx.ex_step2, tx.ex_step3].map((s, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <span className="text-[#ff224460] text-[0.54rem] w-4">{i + 1}</span>
-                  <div className="bg-[#0f0a0a] border border-[#ff224430] px-3 py-2 text-[#ff2244] text-[0.5rem] tracking-widest flex-1">
+                  <div className={`border px-3 py-2 text-[0.5rem] tracking-widest flex-1 ${
+                    i === 1
+                      ? "bg-[#0e0a14] border-[#b026ff30] text-[#b026ff]"
+                      : "bg-[#0f0a0a] border-[#ff224430] text-[#ff2244]"
+                  }`}>
                     {s}
                   </div>
                 </div>
@@ -276,7 +281,7 @@ export default function TutorLevel9({ onComplete }) {
       <div className="bg-[#060810] border-[3px] border-[#ff2244] shadow-[0_0_0_3px_#000,0_0_12px_rgba(255,34,68,0.08)] rounded-sm p-3 mb-3 text-center shrink-0">
         <div className="text-[#55555a] text-[0.54rem] tracking-[0.2em] mb-1">RESTA</div>
         <div className="text-[#ff2244] text-[clamp(1.2rem,3vw,1.8rem)] drop-shadow-[0_0_10px_rgba(255,34,68,0.5)]">
-          {problem.a} − {problem.b}
+          {problem.num1} − {problem.num2}
         </div>
       </div>
 
@@ -285,25 +290,36 @@ export default function TutorLevel9({ onComplete }) {
         {steps.map((s, idx) => {
           const isAnswered = idx < revealed.length;
           const isCurrent  = !allStepsDone && idx === step;
+          const isCompStep = idx === 1;
           return (
             <div
               key={idx}
               className={`flex items-center justify-between px-3 py-2 rounded-sm border-2 transition-all ${
                 isAnswered
-                  ? "bg-[#120707] border-[#ff224450] text-[#ff2244]"
+                  ? isCompStep
+                    ? "bg-[#0e0714] border-[#b026ff50] text-[#b026ff]"
+                    : "bg-[#120707] border-[#ff224450] text-[#ff2244]"
                   : isCurrent
                     ? "bg-[#060c1a] border-[#00eeff] text-[#00eeff] shadow-[0_0_8px_rgba(0,238,255,0.08)]"
                     : "bg-[#0a0a0a] border-[#1a1a1a] text-[#282828]"
               }`}
             >
               <div className="flex items-center gap-2 min-w-0">
-                <span className={`text-[0.5rem] shrink-0 ${isAnswered ? "text-[#ff224470]" : isCurrent ? "text-[#00eeff70]" : "text-[#202020]"}`}>
+                <span className={`text-[0.5rem] shrink-0 ${
+                  isAnswered
+                    ? isCompStep ? "text-[#b026ff70]" : "text-[#ff224470]"
+                    : isCurrent ? "text-[#00eeff70]" : "text-[#202020]"
+                }`}>
                   {tx.step(idx + 1)}
                 </span>
                 <span className="text-[0.58rem] leading-[1.8]">{s.instruction}</span>
               </div>
               {isAnswered && (
-                <span className="text-[#ff2244] text-[0.85rem] shrink-0 ml-3 drop-shadow-[0_0_8px_#ff2244]">
+                <span className={`text-[0.85rem] shrink-0 ml-3 ${
+                  isCompStep
+                    ? "text-[#b026ff] drop-shadow-[0_0_8px_#b026ff]"
+                    : "text-[#ff2244] drop-shadow-[0_0_8px_#ff2244]"
+                }`}>
                   {revealed[idx]}
                 </span>
               )}

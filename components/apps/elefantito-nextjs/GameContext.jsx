@@ -5,16 +5,18 @@ import { createContext, useContext, useState, useEffect } from "react";
 const GameContext = createContext();
 
 export function GameProvider({ children }) {
-  const [unlockedLevels, setUnlockedLevels] = useState([1]);
-  const [completedLessons, setCompletedLessons] = useState([]);
+  const ALL_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const [unlockedLevels, setUnlockedLevels] = useState(ALL_LEVELS);
+  const [completedLessons, setCompletedLessons] = useState(ALL_LEVELS);
 
-  // Load from localStorage on mount
-  useEffect(() => {
-    const savedLevels = localStorage.getItem("unlockedLevels");
-    const savedLessons = localStorage.getItem("completedLessons");
-    if (savedLevels) setUnlockedLevels(JSON.parse(savedLevels));
-    if (savedLessons) setCompletedLessons(JSON.parse(savedLessons));
-  }, []);
+  // DEV MODE: all levels unlocked — skip localStorage
+  // To restore normal mode, uncomment the block below and remove this comment
+  // useEffect(() => {
+  //   const savedLevels = localStorage.getItem("unlockedLevels");
+  //   const savedLessons = localStorage.getItem("completedLessons");
+  //   if (savedLevels) setUnlockedLevels(JSON.parse(savedLevels));
+  //   if (savedLessons) setCompletedLessons(JSON.parse(savedLessons));
+  // }, []);
 
   const completeLesson = (level) => {
     if (!completedLessons.includes(level)) {

@@ -269,6 +269,33 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
           answer = 1000 - num2;
           break;
         }
+        case 14: {
+          // 2-digit - 2-digit, num2 ends in 7/8/9, round-and-compensate
+          operator = "-";
+          let a14, b14;
+          do {
+            const lastDigit = 7 + Math.floor(Math.random() * 3);          // 7, 8, or 9
+            b14 = (1 + Math.floor(Math.random() * 6)) * 10 + lastDigit;  // 17–69
+            a14 = b14 + 5 + Math.floor(Math.random() * 20);              // a > b
+          } while (a14 > 99);
+          num1 = a14; num2 = b14; answer = num1 - num2;
+          break;
+        }
+        case 15: {
+          // 3-digit - 3-digit, round-and-compensate with complement
+          operator = "-";
+          let a15, b15, ok15 = false;
+          for (let i = 0; i < 200 && !ok15; i++) {
+            a15 = 200 + Math.floor(Math.random() * 800);              // 200–999
+            b15 = 100 + Math.floor(Math.random() * (a15 - 100));     // 100–(a15-1)
+            if (b15 % 10 === 0 || b15 % 100 < 10) continue;         // clean digits
+            const rb = Math.ceil(b15 / 100) * 100;
+            if (rb >= a15) continue;                                  // step1 must be > 0
+            ok15 = true;
+          }
+          num1 = a15; num2 = b15; answer = num1 - num2;
+          break;
+        }
         default:
           operator = "+"; num1 = 1; num2 = 1; answer = 2;
       }

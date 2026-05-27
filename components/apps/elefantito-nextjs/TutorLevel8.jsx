@@ -9,72 +9,61 @@ const MUSIC_TRACKS = Array.from({ length: 24 }, (_, i) => `${MUSIC_BASE}mate-${S
 const TX = {
   es: {
     intro_title:  "RESTA",
-    intro_sub:    "3 CIFRAS · SIN PRÉSTAMO",
-    intro_body:   "Resta de izquierda a derecha: primero las centenas, luego las decenas y por último las unidades. Solo funciona cuando cada dígito del número de abajo es menor o igual al de arriba.",
+    intro_sub:    "2 CIFRAS · REDONDEO Y COMPENSACIÓN",
+    intro_body:   "Cuando el sustraendo termina en 7, 8 o 9, redondea a la siguiente decena, resta ese número fácil, y suma de vuelta lo que te pasaste.",
     ex_label:     "— EJEMPLO —",
-    ex_step1:     "958 − 400  =  558",
-    ex_step2:     "558 −  10  =  548",
-    ex_step3:     "548 −   7  =  541",
-    ex_result:    "958 − 417  =  541",
+    ex_step1:     "84 − 60  =  24  (59 → 60)",
+    ex_step2:     "24 +  1  =  25  (devolver 1)",
+    ex_result:    "84 − 59  =  25",
     btn_start:    "PRACTICAR →",
     solved:       (n) => `Resueltos: ${n}`,
     step:         (i) => `PASO ${i}`,
     hint_label:   "PISTA:",
-    hint_0:       (a, bH)  => `Ignora decenas y unidades. Solo resta las centenas: ${a} − ${bH}.`,
-    hint_1:       (s1, bT) => `El paso anterior dio ${s1}. Resta solo las decenas: ${s1} − ${bT}.`,
-    hint_2:       (s2, bO) => `El paso anterior dio ${s2}. Ahora réstale las unidades: ${s2} − ${bO}.`,
+    hint_0:       (b, rounded) => `${b} se redondea a ${rounded}. ¿Cuánto queda al restar ${rounded}?`,
+    hint_1:       (inter, diff) => `El paso anterior dio ${inter}. Restaste ${diff} de más — suma ${diff}.`,
     btn_check:    "VERIFICAR",
     btn_done:     "¡Entendido, estoy listo!",
-    step1_ins:    (a, bH)  => `Resta las centenas (${a} − ${bH})`,
-    step2_ins:    (s1, bT) => `Resta las decenas (${s1} − ${bT})`,
-    step3_ins:    (s2, bO) => `Resta las unidades (${s2} − ${bO})`,
+    step1_ins:    (a, rounded, b) => `${b} → ${rounded}. Resta (${a} − ${rounded})`,
+    step2_ins:    (inter, diff)   => `Restaste ${diff} de más. Compensa (${inter} + ${diff})`,
     sound_on:     "🔊 Sonido ON",
     sound_off:    "🔇 Sonido OFF",
   },
   en: {
     intro_title:  "SUBTRACTION",
-    intro_sub:    "3 DIGITS · NO BORROWING",
-    intro_body:   "Subtract left to right: first the hundreds, then the tens, then the ones. This only works when each digit of the bottom number is less than or equal to the one above it.",
+    intro_sub:    "2 DIGITS · ROUND & COMPENSATE",
+    intro_body:   "When the subtrahend ends in 7, 8 or 9, round it up to the next ten, subtract that easy number, then add back what you over-subtracted.",
     ex_label:     "— EXAMPLE —",
-    ex_step1:     "958 − 400  =  558",
-    ex_step2:     "558 −  10  =  548",
-    ex_step3:     "548 −   7  =  541",
-    ex_result:    "958 − 417  =  541",
+    ex_step1:     "84 − 60  =  24  (59 → 60)",
+    ex_step2:     "24 +  1  =  25  (add back 1)",
+    ex_result:    "84 − 59  =  25",
     btn_start:    "PRACTICE →",
     solved:       (n) => `Solved: ${n}`,
     step:         (i) => `STEP ${i}`,
     hint_label:   "HINT:",
-    hint_0:       (a, bH)  => `Ignore tens and ones. Just subtract the hundreds: ${a} − ${bH}.`,
-    hint_1:       (s1, bT) => `The previous step gave ${s1}. Now subtract the tens: ${s1} − ${bT}.`,
-    hint_2:       (s2, bO) => `The previous step gave ${s2}. Now subtract the ones: ${s2} − ${bO}.`,
+    hint_0:       (b, rounded) => `${b} rounds to ${rounded}. How much is left after subtracting ${rounded}?`,
+    hint_1:       (inter, diff) => `The previous step gave ${inter}. You over-subtracted ${diff} — add ${diff} back.`,
     btn_check:    "CHECK",
     btn_done:     "Got it, I'm ready!",
-    step1_ins:    (a, bH)  => `Subtract the hundreds (${a} − ${bH})`,
-    step2_ins:    (s1, bT) => `Subtract the tens (${s1} − ${bT})`,
-    step3_ins:    (s2, bO) => `Subtract the ones (${s2} − ${bO})`,
+    step1_ins:    (a, rounded, b) => `${b} → ${rounded}. Subtract (${a} − ${rounded})`,
+    step2_ins:    (inter, diff)   => `Over-subtracted ${diff}. Compensate (${inter} + ${diff})`,
     sound_on:     "🔊 Sound ON",
     sound_off:    "🔇 Sound OFF",
   },
 };
 
 function genProblem() {
-  let a, b, bH, bT, bO, step1, step2, answer;
+  let a, b, rounded, diff, intermediate, answer;
   do {
-    a = Math.floor(Math.random() * 900) + 100; // 100–999
-    const aH = Math.floor(a / 100);
-    const aT = Math.floor((a % 100) / 10);
-    const aO = a % 10;
-    if (aT === 0 || aO === 0) continue;         // need non-zero tens and ones
-    bH = Math.floor(Math.random() * aH) + 1;   // 1…aH  → no borrowing in hundreds
-    bT = Math.floor(Math.random() * aT) + 1;   // 1…aT  → no borrowing in tens
-    bO = Math.floor(Math.random() * aO) + 1;   // 1…aO  → no borrowing in ones
-    b      = bH * 100 + bT * 10 + bO;
-    step1  = a - bH * 100;
-    step2  = step1 - bT * 10;
-    answer = step2 - bO;
-  } while (b >= a || answer <= 0);
+    const lastDigit = 7 + Math.floor(Math.random() * 3);          // 7, 8, or 9
+    b = (1 + Math.floor(Math.random() * 6)) * 10 + lastDigit;     // 17–69
+    a = b + 5 + Math.floor(Math.random() * 20);                   // a > b
+    rounded      = (Math.floor(b / 10) + 1) * 10;                 // next ten
+    diff         = rounded - b;                                    // 1, 2, or 3
+    intermediate = a - rounded;
+    answer       = intermediate + diff;                            // = a − b
+  } while (a > 99 || intermediate < 0);
 
-  return { a, b, bHundreds: bH * 100, bTens: bT * 10, bOnes: bO, step1, step2, answer };
+  return { a, b, rounded, diff, intermediate, answer };
 }
 
 export default function TutorLevel8({ onComplete }) {
@@ -134,19 +123,14 @@ export default function TutorLevel8({ onComplete }) {
 
   const steps = [
     {
-      instruction: tx.step1_ins(problem.a, problem.bHundreds),
-      answer:      problem.step1,
-      hint:        tx.hint_0(problem.a, problem.bHundreds),
+      instruction: tx.step1_ins(problem.a, problem.rounded, problem.b),
+      answer:      problem.intermediate,
+      hint:        tx.hint_0(problem.b, problem.rounded),
     },
     {
-      instruction: tx.step2_ins(problem.step1, problem.bTens),
-      answer:      problem.step2,
-      hint:        tx.hint_1(problem.step1, problem.bTens),
-    },
-    {
-      instruction: tx.step3_ins(problem.step2, problem.bOnes),
+      instruction: tx.step2_ins(problem.intermediate, problem.diff),
       answer:      problem.answer,
-      hint:        tx.hint_2(problem.step2, problem.bOnes),
+      hint:        tx.hint_1(problem.intermediate, problem.diff),
     },
   ];
 
@@ -214,10 +198,10 @@ export default function TutorLevel8({ onComplete }) {
           <div className="bg-[#060810] border-2 border-[#ff224440] rounded-sm w-full shadow-[0_0_16px_rgba(255,34,68,0.06)]">
             <div className="border-b border-[#ff224420] px-4 py-2 flex items-center justify-between">
               <span className="text-[#ff224460] text-[0.54rem] tracking-[0.25em]">{tx.ex_label}</span>
-              <span className="text-[#ffe600] text-[0.65rem] drop-shadow-[0_0_6px_rgba(255,230,0,0.4)]">958 − 417</span>
+              <span className="text-[#ffe600] text-[0.65rem] drop-shadow-[0_0_6px_rgba(255,230,0,0.4)]">84 − 59</span>
             </div>
             <div className="p-4 flex flex-col gap-1.5">
-              {[tx.ex_step1, tx.ex_step2, tx.ex_step3].map((s, i) => (
+              {[tx.ex_step1, tx.ex_step2].map((s, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <span className="text-[#ff224460] text-[0.54rem] w-4">{i + 1}</span>
                   <div className="bg-[#0f0a0a] border border-[#ff224430] px-3 py-2 text-[#ff2244] text-[0.5rem] tracking-widest flex-1">
