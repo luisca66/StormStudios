@@ -13,6 +13,13 @@ export const BLOG_POST_TRANSLATIONS: BlogPostTranslation[] = [
       es: "2026-05-21-bienvenida",
     },
   },
+  {
+    key: "preparatory-module-apps-ready",
+    slugs: {
+      en: "2026-05-27-preparatory-module-ready-mental-math-memory-apps",
+      es: "2026-05-27-propedeutico-listo-apps-matematicas-memoria",
+    },
+  },
 ];
 
 export function findBlogTranslationBySlug(locale: Locale, slug: string) {
