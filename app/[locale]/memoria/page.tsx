@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { Locale } from "@/i18n/routing";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
+import MemoriaApp from "@/components/apps/memoria/MemoriaApp";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -68,13 +69,10 @@ export default async function MemoriaPage({ params }: Props) {
         </span>
       </div>
 
-      {/* Iframe */}
-      <iframe
-        src={`/apps/memoria.html?lang=${locale}`}
-        title={es ? "App Memoria – Nemotecnia" : "Memory App – Mnemonics"}
-        allow="autoplay; microphone"
-        style={{ flex: 1, width: "100%", border: "none", display: "block" }}
-      />
+      {/* App Nativa React */}
+      <div style={{ flex: 1, width: "100%", overflowY: "auto" }}>
+        <MemoriaApp locale={locale} />
+      </div>
     </div>
   );
 }
