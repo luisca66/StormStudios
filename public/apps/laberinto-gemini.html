@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Maze: Neon Edition - Arcade Premium</title>
+  
+  <!-- Tailwind CSS para diseño y estructura moderna -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Iconos Phosphor para controles visuales -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Fuentes Retro/Futuristas de Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(circle at center, #0a051b 0%, #020108 100%);
+      overflow-x: hidden;
+    }
+    .font-arcade {
+      font-family: 'Press Start 2P', monospace;
+    }
+    /* Filtro de pantalla CRT retro para la cabina de juego */
+    .crt-screen {
+      position: relative;
+    }
+    .crt-screen::after {
+      content: " ";
+      display: block;
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+      background-size: 100% 3px, 3px 100%;
+      pointer-events: none;
+      z-index: 10;
+      border-radius: 12px;
+    }
+    /* Resplandor neón animado */
+    @keyframes cyanPulse {
+      0%, 100% { box-shadow: 0 0 15px rgba(6, 182, 212, 0.2), inset 0 0 15px rgba(6, 182, 212, 0.1); }
+      50% { box-shadow: 0 0 30px rgba(6, 182, 212, 0.4), inset 0 0 25px rgba(6, 182, 212, 0.2); }
+    }
+    .neon-border-cyan {
+      border: 3px solid #06b6d4;
+      animation: cyanPulse 4s infinite alternate;
+    }
+    @keyframes magentaGlow {
+      0%, 100% { filter: drop-shadow(0 0 3px #d946ef) drop-shadow(0 0 8px #d946ef); }
+      50% { filter: drop-shadow(0 0 6px #f472b6) drop-shadow(0 0 16px #d946ef); }
+    }
+    .neon-pulse-magenta {
+      animation: magentaGlow 2.5s infinite alternate;
+    }
+    /* Estilo de botones retro arcade */
+    .btn-arcade {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-arcade:active {
+      transform: scale(0.92);
+      box-shadow: 0 0 20px rgba(217, 70, 239, 0.6);
+    }
+    /* Eliminar selección de texto molesta en móviles */
+    .no-select {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col items-center justify-between p-3 relative no-select">
+
+  <!-- Cabecera Premium HUD -->
+  <header class="w-full max-w-lg flex items-center justify-between py-1.5 z-10 border-b border-cyan-950/40 mb-3">
+    <div class="flex items-center gap-2.5">
+      <div class="bg-cyan-950/30 p-2 rounded-xl border border-cyan-500/25 shadow-[0_0_12px_rgba(6,182,212,0.1)]">
+        <i class="ph-fill ph-cpu text-xl text-cyan-400 animate-pulse"></i>
+      </div>
+      <div>
+        <h1 class="text-sm sm:text-base font-bold tracking-widest text-cyan-400 font-arcade neon-pulse-magenta">CYBER MAZE</h1>
+        <p class="text-[8px] text-fuchsia-400 font-bold uppercase tracking-widest hidden sm:block">Protocolo Neon-Grid v2.6</p>
+      </div>
+    </div>
+    
+    <!-- AUDIO INTERFACES -->
+    <div class="flex items-center gap-1.5 bg-cyan-950/20 border border-cyan-900/40 p-1 rounded-xl backdrop-blur-md">
+      <button id="toggle-bgm" class="px-2 py-1.5 rounded-lg bg-cyan-950/50 border border-cyan-500/20 text-[9px] font-semibold flex items-center gap-1 text-cyan-400 hover:bg-cyan-900/40 transition-all">
+        <i id="bgm-icon" class="ph-bold ph-music-note"></i> MUS: <span id="bgm-status">OFF</span>
+      </button>
+      <button id="toggle-sfx" class="px-2 py-1.5 rounded-lg bg-cyan-950/50 border border-cyan-500/20 text-[9px] font-semibold flex items-center gap-1 text-cyan-400 hover:bg-cyan-900/40 transition-all">
+        <i id="sfx-icon" class="ph-bold ph-speaker-high"></i> SFX: <span id="sfx-status">ON</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal del Juego -->
+  <main class="w-full max-w-lg flex flex-col items-center justify-center gap-3 my-auto z-10">
+    
+    <!-- Tablero de Estado y Puntuaciones -->
+    <div class="w-full flex items-center justify-between bg-slate-950/80 border border-cyan-950/50 p-2.5 rounded-2xl shadow-xl backdrop-blur-sm">
+      <div class="flex flex-col">
+        <span class="text-[8px] text-cyan-500/80 font-bold tracking-widest">SCORE</span>
+        <span id="score" class="font-arcade text-sm text-cyan-400">00000</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <span class="text-[8px] text-fuchsia-500/80 font-bold tracking-widest">HIGH SCORE</span>
+        <span id="high-score" class="font-arcade text-sm text-fuchsia-400">00000</span>
+      </div>
+      <div class="flex flex-col items-end">
+        <span class="text-[8px] text-yellow-500/80 font-bold tracking-widest">ENERGY UNITS</span>
+        <div class="flex items-center gap-1 mt-0.5" id="lives-container">
+          <!-- Pequeñas ranitas de neón representadas como vidas -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Gabinete de la pantalla de juego -->
+    <div class="relative bg-black rounded-2xl overflow-hidden w-full h-auto aspect-square max-w-[45vh] lg:max-w-[480px] mx-auto neon-border-cyan crt-screen">
+      <!-- Brillo de vidrio de pantalla curvada -->
+      <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none z-10"></div>
+      
+      <!-- Canvas Principal -->
+      <canvas id="board" width="570" height="570" class="w-full h-full block bg-[#03010c]"></canvas>
+
+      <!-- Pantalla de Bienvenida / GameOver Overlay -->
+      <div id="game-overlay" class="absolute inset-0 bg-slate-950/90 backdrop-blur-md flex flex-col justify-center items-center p-6 z-20 text-center">
+        <div class="mb-3 text-cyan-400 text-5xl filter drop-shadow-[0_0_12px_rgba(6,182,212,0.6)]">
+          <i id="overlay-icon" class="ph-bold ph-game-controller animate-bounce"></i>
+        </div>
+        
+        <h2 id="overlay-title" class="font-arcade text-sm sm:text-base text-cyan-400 mb-2 tracking-widest leading-relaxed">NEON GRID MAZE</h2>
+        <p id="overlay-subtitle" class="text-slate-400 max-w-xs text-[10px] mb-5 font-medium tracking-wide">Limpia los nodos energéticos y devora el código de seguridad. ¡Evita los centinelas cibernéticos!</p>
+        
+        <!-- Estadísticas de fin de juego -->
+        <div id="overlay-stats" class="hidden flex flex-col items-center bg-cyan-950/20 border border-cyan-900/40 p-3 rounded-xl mb-5 font-arcade text-[9px] w-64">
+          <span class="text-slate-500 mb-1">SCORE OBTENIDO</span>
+          <span id="overlay-stat-score" class="text-sm text-fuchsia-400">00000</span>
+        </div>
+
+        <button onclick="startGame()" class="btn-arcade px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-fuchsia-500 text-slate-950 font-arcade font-bold text-[10px] tracking-wider rounded-xl hover:from-cyan-400 hover:to-fuchsia-400 shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all">
+          INICIAR SISTEMA
+        </button>
+      </div>
+    </div>
+
+    <!-- Controles Táctiles (Optimizado para móviles y tablets) -->
+    <div class="w-full grid grid-cols-3 gap-1.5 max-w-[280px] mx-auto py-1">
+      <div></div>
+      <button id="btn-up" class="btn-arcade h-11 bg-cyan-950/30 border border-cyan-500/30 rounded-xl flex items-center justify-center text-cyan-400 hover:bg-cyan-900/30">
+        <i class="ph-bold ph-arrow-fat-up text-xl"></i>
+      </button>
+      <div></div>
+      
+      <button id="btn-left" class="btn-arcade h-11 bg-cyan-950/30 border border-cyan-500/30 rounded-xl flex items-center justify-center text-cyan-400 hover:bg-cyan-900/30">
+        <i class="ph-bold ph-arrow-fat-left text-xl"></i>
+      </button>
+      <div class="flex items-center justify-center">
+        <div class="w-4 h-4 rounded-full border border-fuchsia-500/30 bg-fuchsia-950/10 animate-ping"></div>
+      </div>
+      <button id="btn-right" class="btn-arcade h-11 bg-cyan-950/30 border border-cyan-500/30 rounded-xl flex items-center justify-center text-cyan-400 hover:bg-cyan-900/30">
+        <i class="ph-bold ph-arrow-fat-right text-xl"></i>
+      </button>
+      
+      <div></div>
+      <button id="btn-down" class="btn-arcade h-11 bg-cyan-950/30 border border-cyan-500/30 rounded-xl flex items-center justify-center text-cyan-400 hover:bg-cyan-900/30">
+        <i class="ph-bold ph-arrow-fat-down text-xl"></i>
+      </button>
+      <div></div>
+    </div>
+  </main>
+
+  <footer class="w-full max-w-lg flex flex-col items-center gap-1 py-1 border-t border-cyan-950/20">
+    <div class="text-[8px] text-cyan-600/50 font-semibold uppercase tracking-wider text-center px-4">
+      Cyber Maze © 2026 • Audio Sintetizado y Redes Neuronales<br>
+      <span class="opacity-75">Juego independiente inspirado en mecánicas clásicas de arcade. Desarrollado con tecnología web moderna sin afiliación con las marcas originales.</span>
+    </div>
+  </footer>
+
+  <script>
+    const canvas = document.getElementById('board');
+    const ctx = canvas.getContext('2d');
+    const TILE = 38; // 15x15 tiles = 570
+    const ROWS = 15;
+    const COLS = 15;
+
+    // Mapa interactivo con soporte de Super-Píldoras ('P') en las esquinas de seguridad
+    const mapData = [
+      "WWWWWWWWWWWWWWW",
+      "WP.....W.....PW",
+      "W.WW.W.W.W.WW.W",
+      "W.............W",
+      "W.WW.W.WWW.WW.W",
+      "W....W..W..W..W",
+      "WWWW.WW.W.WW.WW",
+      "W.......W.....W",
+      "WWWW.W.WWW.W.WW",
+      "W......W......W",
+      "W.WW.W.W.W.WW.W",
+      "W..W.......W..W",
+      "WW.W.W.WWW.W.WW",
+      "WP...........PW",
+      "WWWWWWWWWWWWWWW"
+    ];
+
+    let map = [];
+    let pellets = 0;
+    let score = 0;
+    let highScore = parseInt(localStorage.getItem('cyber_maze_highscore')) || 0;
+    let lives = 3;
+    let level = 1;
+    let isGameOver = true;
+    let ghostFrightenedTime = 0; // Temporizador global para el pánico de fantasmas
+    let ghostEatenCombo = 0; // Combo multiplicador al devorar varios fantasmas
+
+    // Coleccionable especial (Energy Core) que aparece en el centro
+    let energyCoreActive = false;
+    let energyCoreX = 7;
+    let energyCoreY = 9;
+    let energyCoreTimer = 0;
+
+    // Arrays para efectos especiales
+    let particles = [];
+    let floatingTexts = [];
+
+    // Inicializar visual de la puntuación récord
+    document.getElementById('high-score').innerText = String(highScore).padStart(5, '0');
+
+    // ==========================================
+    // AUDIO PROCEDURAL CON WEB AUDIO API
+    // ==========================================
+    let audioCtx = null;
+    let sfxEnabled = true;
+    let bgmEnabled = false;
+    let bgmIntervalId = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playTone(freq, type, duration, vol = 0.05, rampType = 'exponential') {
+      if (!sfxEnabled) return;
+      initAudio();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+        if (rampType === 'exponential') {
+          gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        } else {
+          gainNode.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        }
+        
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn("Audio bloqueado.");
+      }
+    }
+
+    // Efectos de sonido integrales
+    const sounds = {
+      waka: () => {
+        // Sonido de masticado alternado clásico
+        const t = Date.now() / 150;
+        const f = Math.floor(t) % 2 === 0 ? 380 : 260;
+        playTone(f, 'triangle', 0.08, 0.02);
+      },
+      powerPellet: () => {
+        playTone(180, 'sine', 0.15, 0.06);
+        setTimeout(() => playTone(350, 'sine', 0.15, 0.06), 80);
+        setTimeout(() => playTone(720, 'sine', 0.3, 0.08), 160);
+      },
+      eatGhost: () => {
+        playTone(300, 'sawtooth', 0.1, 0.08);
+        setTimeout(() => playTone(600, 'sawtooth', 0.1, 0.08), 80);
+        setTimeout(() => playTone(1200, 'sine', 0.4, 0.12), 160);
+      },
+      eatCore: () => {
+        playTone(880, 'sine', 0.1, 0.05);
+        setTimeout(() => playTone(1320, 'sine', 0.1, 0.05), 100);
+        setTimeout(() => playTone(1760, 'sine', 0.2, 0.08), 200);
+      },
+      die: () => {
+        // Barrido de frecuencia descendente trágico
+        if (!sfxEnabled) return;
+        initAudio();
+        try {
+          const osc = audioCtx.createOscillator();
+          const gainNode = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.65);
+          gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+          gainNode.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.65);
+          osc.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.65);
+        } catch(e){}
+      },
+      win: () => {
+        playTone(523.25, 'triangle', 0.1, 0.06); // C5
+        setTimeout(() => playTone(659.25, 'triangle', 0.1, 0.06), 100); // E5
+        setTimeout(() => playTone(783.99, 'triangle', 0.1, 0.06), 200); // G5
+        setTimeout(() => playTone(1046.50, 'triangle', 0.3, 0.08), 300); // C6
+      }
+    };
+
+    // Secuenciador de música de 8 bits Cyberpunk
+    const bgmSequence = [
+      110.00, 110.00, 130.81, 110.00, 146.83, 110.00, 130.81, 146.83, // Melodía Cyber A (La Menor)
+      110.00, 110.00, 164.81, 110.00, 196.00, 164.81, 130.81, 98.00
+    ];
+    let bgmStep = 0;
+
+    function playBgmBeat() {
+      if (!bgmEnabled) return;
+      initAudio();
+      try {
+        const note = bgmSequence[bgmStep];
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        // Modificar timbre/pitch si los fantasmas están asustados (crear urgencia)
+        if (ghostFrightenedTime > 0) {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(note * 1.5, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.012, audioCtx.currentTime);
+        } else {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(note, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+        }
+
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.22);
+
+        // Sub-bajo rítmico complementario
+        const subOsc = audioCtx.createOscillator();
+        const subGain = audioCtx.createGain();
+        subOsc.type = 'sine';
+        subOsc.frequency.setValueAtTime(note / 2, audioCtx.currentTime);
+        subGain.gain.setValueAtTime(0.025, audioCtx.currentTime);
+        subGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+        subOsc.connect(subGain);
+        subGain.connect(audioCtx.destination);
+        subOsc.start();
+        subOsc.stop(audioCtx.currentTime + 0.22);
+
+        bgmStep = (bgmStep + 1) % bgmSequence.length;
+      } catch (e) {}
+    }
+
+    function startBgm() {
+      stopBgm();
+      bgmIntervalId = setInterval(playBgmBeat, 220); // Tempo rápido de 220 ms
+    }
+
+    function stopBgm() {
+      if (bgmIntervalId) {
+        clearInterval(bgmIntervalId);
+        bgmIntervalId = null;
+      }
+    }
+
+    // Vinculación de Controles de Audio en el HUD
+    const toggleBgmBtn = document.getElementById('toggle-bgm');
+    const toggleSfxBtn = document.getElementById('toggle-sfx');
+    const bgmStatus = document.getElementById('bgm-status');
+    const sfxStatus = document.getElementById('sfx-status');
+    const bgmIcon = document.getElementById('bgm-icon');
+    const sfxIcon = document.getElementById('sfx-icon');
+
+    toggleBgmBtn.addEventListener('click', () => {
+      bgmEnabled = !bgmEnabled;
+      bgmStatus.innerText = bgmEnabled ? 'ON' : 'OFF';
+      if (bgmEnabled) {
+        bgmIcon.className = 'ph-bold ph-music-notes text-fuchsia-400';
+        toggleBgmBtn.classList.remove('bg-cyan-950/50');
+        toggleBgmBtn.classList.add('bg-fuchsia-500/20', 'border-fuchsia-500/40');
+        initAudio();
+        startBgm();
+      } else {
+        bgmIcon.className = 'ph-bold ph-music-note';
+        toggleBgmBtn.classList.add('bg-cyan-950/50');
+        toggleBgmBtn.classList.remove('bg-fuchsia-500/20', 'border-fuchsia-500/40');
+        stopBgm();
+      }
+    });
+
+    toggleSfxBtn.addEventListener('click', () => {
+      sfxEnabled = !sfxEnabled;
+      sfxStatus.innerText = sfxEnabled ? 'ON' : 'OFF';
+      if (sfxEnabled) {
+        sfxIcon.className = 'ph-bold ph-speaker-high text-cyan-400';
+        toggleSfxBtn.classList.remove('bg-cyan-950/50');
+        toggleSfxBtn.classList.add('bg-cyan-500/20');
+      } else {
+        sfxIcon.className = 'ph-bold ph-speaker-x text-slate-500';
+        toggleSfxBtn.classList.add('bg-cyan-950/50');
+        toggleSfxBtn.classList.remove('bg-cyan-500/20');
+      }
+    });
+
+    // ==========================================
+    // SISTEMA DE PARTÍCULAS Y TEXTOS DIGITALES
+    // ==========================================
+    function spawnParticles(x, y, color, count = 10, isBurst = false) {
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = isBurst ? (Math.random() * 5 + 3) : (Math.random() * 2 + 0.5);
+        particles.push({
+          x: x,
+          y: y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          size: Math.random() * 3 + 1.5,
+          color: color,
+          alpha: 1,
+          decay: Math.random() * 0.03 + 0.015
+        });
+      }
+    }
+
+    function spawnFloatingText(x, y, text, color = '#f472b6') {
+      floatingTexts.push({
+        x: x,
+        y: y,
+        text: text,
+        color: color,
+        alpha: 1,
+        vy: -0.8,
+        life: 45
+      });
+    }
+
+    function updateParticlesAndTexts() {
+      // Actualizar chispas de neón
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= p.decay;
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+
+      // Actualizar mensajes flotantes flotantes
+      for (let i = floatingTexts.length - 1; i >= 0; i--) {
+        const t = floatingTexts[i];
+        t.y += t.vy;
+        t.alpha -= 1 / t.life;
+        if (t.alpha <= 0) {
+          floatingTexts.splice(i, 1);
+        }
+      }
+    }
+
+    // ==========================================
+    // CLASES DE ENTIDADES DE JUEGO (PACMAN Y FANTASMAS)
+    // ==========================================
+    class Entity {
+      constructor(x, y, color, isGhost = false, ghostType = '') {
+        this.x = x * TILE;
+        this.y = y * TILE;
+        this.gridX = x;
+        this.gridY = y;
+        this.vx = 0;
+        this.vy = 0;
+        this.speed = 2; // El tamaño TILE (38) es perfectamente divisible por 2 (Garantiza alineación física)
+        this.color = color;
+        this.isGhost = isGhost;
+        this.ghostType = ghostType; // 'chaser', 'ambusher', 'patroller', 'wanderer'
+        this.queuedVx = 0;
+        this.queuedVy = 0;
+        this.mouthOpenAngle = 0;
+        this.mouthClosing = false;
+        this.respawning = false; // Estado de retorno al nacer para fantasmas devorados
+        this.baseX = x * TILE;
+        this.baseY = y * TILE;
+        this.homeTimer = 0; // Tiempo de espera en jaula
+      }
+      
+      update() {
+        // Si está regresando a base (ojos volando)
+        if (this.respawning) {
+          const targetX = 7 * TILE;
+          const targetY = 7 * TILE;
+          const dx = targetX - this.x;
+          const dy = targetY - this.y;
+          const dist = Math.hypot(dx, dy);
+          
+          if (dist < 4) {
+            this.x = targetX;
+            this.y = targetY;
+            this.gridX = 7;
+            this.gridY = 7;
+            this.respawning = false;
+            this.homeTimer = 120; // Se queda penalizado 2 segundos
+          } else {
+            this.x += Math.sign(dx) * 4;
+            this.y += Math.sign(dy) * 4;
+          }
+          return;
+        }
+
+        // Cuenta regresiva de retención en casa
+        if (this.homeTimer > 0) {
+          this.homeTimer--;
+          this.x = 7 * TILE;
+          this.y = 7 * TILE;
+          return;
+        }
+
+        // Comprobación de alineación milimétrica con la rejilla lógica de tiles
+        if (this.x % TILE === 0 && this.y % TILE === 0) {
+          this.gridX = Math.round(this.x / TILE);
+          this.gridY = Math.round(this.y / TILE);
+
+          // Entrada en zona de túnel de teletransporte lateral
+          if (this.gridX < 0) {
+            this.x = (COLS - 1) * TILE;
+            this.gridX = COLS - 1;
+          } else if (this.gridX >= COLS) {
+            this.x = 0;
+            this.gridX = 0;
+          }
+
+          // LÓGICA DE MOVIMIENTO DE PAC-MAN (JUGADOR)
+          if (!this.isGhost) {
+            if (this.canMove(this.queuedVx, this.queuedVy)) {
+              this.vx = this.queuedVx;
+              this.vy = this.queuedVy;
+            } else if (!this.canMove(this.vx, this.vy)) {
+              this.vx = 0;
+              this.vy = 0;
+            }
+          } 
+          
+          // LÓGICA DE FANTASMAS (SISTEMA DE PERSONALIDAD DE IA)
+          else {
+            let possibleDirs = [
+              {vx: 1, vy: 0}, {vx: -1, vy: 0},
+              {vx: 0, vy: 1}, {vx: 0, vy: -1}
+            ];
+
+            // Evitar dar marcha atrás inmediata de golpe en intersecciones ordinarias
+            possibleDirs = possibleDirs.filter(d => !(d.vx === -this.vx && d.vy === -this.vy) || (this.vx === 0 && this.vy === 0));
+            let validDirs = possibleDirs.filter(d => this.canMove(d.vx, d.vy));
+
+            if (validDirs.length > 0) {
+              if (ghostFrightenedTime > 0) {
+                // Modo asustado: Elección de rutas 100% aleatoria errática
+                const choice = validDirs[Math.floor(Math.random() * validDirs.length)];
+                this.vx = choice.vx;
+                this.vy = choice.vy;
+              } else {
+                // Modo Persecución: IA de Rastreo de Destino según personalidad
+                let tx = player.gridX;
+                let ty = player.gridY;
+
+                if (this.ghostType === 'ambusher') {
+                  // Emboscada (Intenta pararse 3 casillas por delante del jugador)
+                  tx += player.vx * 3;
+                  ty += player.vy * 3;
+                } else if (this.ghostType === 'patroller') {
+                  // Errático (Divide su patrulla entre la esquina inferior izquierda y el jugador)
+                  if (Math.random() < 0.4) {
+                    tx = 1;
+                    ty = 13;
+                  }
+                } else if (this.ghostType === 'wanderer') {
+                  // Cobarde (Si está muy cerca huye a la esquina, si está lejos va tras jugador)
+                  let distToPlayer = Math.hypot(this.gridX - player.gridX, this.gridY - player.gridY);
+                  if (distToPlayer < 4) {
+                    tx = 13;
+                    ty = 13;
+                  }
+                }
+
+                // Evaluar la opción de dirección que acorte la distancia Manhattan al objetivo
+                let bestDir = validDirs[0];
+                let minDistance = Infinity;
+
+                validDirs.forEach(d => {
+                  let nextGridX = this.gridX + d.vx;
+                  let nextGridY = this.gridY + d.vy;
+                  let distance = Math.hypot(nextGridX - tx, nextGridY - ty);
+                  if (distance < minDistance) {
+                    minDistance = distance;
+                    bestDir = d;
+                  }
+                });
+
+                this.vx = bestDir.vx;
+                this.vy = bestDir.vy;
+              }
+            } else {
+              // Retroceder obligatoriamente en callejones sin salida
+              this.vx *= -1;
+              this.vy *= -1;
+            }
+          }
+        }
+        
+        // Cambio de dirección instantáneo para Pacman al retroceder
+        if (!this.isGhost) {
+          if (this.queuedVx === -this.vx && this.queuedVx !== 0) { this.vx = this.queuedVx; this.vy = 0; }
+          if (this.queuedVy === -this.vy && this.queuedVy !== 0) { this.vx = 0; this.vy = this.queuedVy; }
+        }
+        
+        // Desplazamiento de coordenadas continuas
+        const currentSpeed = ghostFrightenedTime > 0 && this.isGhost ? this.speed / 2 : this.speed;
+        this.x += this.vx * currentSpeed;
+        this.y += this.vy * currentSpeed;
+      }
+      
+      canMove(vx, vy) {
+        if (vx === 0 && vy === 0) return false;
+        let nx = this.gridX + vx;
+        let ny = this.gridY + vy;
+        
+        // Permitir el cruce seguro por los túneles laterales
+        if (nx < 0 || nx >= COLS) return true;
+        
+        // Bloqueo físico de muros
+        if (map[ny] && map[ny][nx] !== 'W') return true;
+        return false;
+      }
+
+      draw() {
+        ctx.save();
+        
+        // CASO 1: Renderizado de Fantasmas
+        if (this.isGhost) {
+          if (this.respawning) {
+            // Dibujar solo ojos virtuales flotando volviendo a base
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.beginPath(); ctx.arc(this.x + TILE/2 - 5, this.y + TILE/2 - 2, 4, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(this.x + TILE/2 + 5, this.y + TILE/2 - 2, 4, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#06b6d4';
+            ctx.beginPath(); ctx.arc(this.x + TILE/2 - 5, this.y + TILE/2 - 2, 2, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(this.x + TILE/2 + 5, this.y + TILE/2 - 2, 2, 0, Math.PI*2); ctx.fill();
+            ctx.restore();
+            return;
+          }
+
+          let drawColor = this.color;
+          let isFrightened = ghostFrightenedTime > 0;
+          
+          if (isFrightened) {
+            // Intermitencia de peligro blanco/azul cuando el poder esté por expirar
+            if (ghostFrightenedTime < 120 && Math.floor(ghostFrightenedTime / 15) % 2 === 0) {
+              drawColor = '#ffffff';
+            } else {
+              drawColor = '#1d4ed8'; // Azul asustado de neón oscuro
+            }
+          }
+
+          // Resplandor fantasma neón
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = drawColor;
+          ctx.fillStyle = drawColor;
+          
+          // Cuerpo superior de cúpula
+          ctx.beginPath();
+          ctx.arc(this.x + TILE/2, this.y + TILE/2, TILE/2 - 4, Math.PI, 0, false);
+          
+          // Costados rectos del vestido
+          ctx.lineTo(this.x + TILE - 4, this.y + TILE - 4);
+          
+          // Falda ondulada en movimiento orgánico de flotación
+          const wavePhase = Math.sin(Date.now() / 80 + this.gridX) * 3;
+          ctx.lineTo(this.x + TILE - 6, this.y + TILE - 6 + wavePhase);
+          ctx.lineTo(this.x + TILE/2 + 4, this.y + TILE - 4 - wavePhase);
+          ctx.lineTo(this.x + TILE/2 - 4, this.y + TILE - 6 + wavePhase);
+          ctx.lineTo(this.x + 6, this.y + TILE - 4 - wavePhase);
+          ctx.lineTo(this.x + 4, this.y + TILE/2);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.shadowBlur = 0; // Apagar sombras para dibujar los ojos limpios
+
+          // Ojos direccionados
+          if (!isFrightened) {
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath(); 
+            ctx.arc(this.x + TILE/2 - 5, this.y + TILE/2 - 2, 4, 0, Math.PI * 2); 
+            ctx.arc(this.x + TILE/2 + 5, this.y + TILE/2 - 2, 4, 0, Math.PI * 2); 
+            ctx.fill();
+
+            // Pupilas móviles según la dirección de movimiento
+            ctx.fillStyle = '#0a051b';
+            let px = this.vx * 2;
+            let py = this.vy * 2;
+            ctx.beginPath(); 
+            ctx.arc(this.x + TILE/2 - 5 + px, this.y + TILE/2 - 2 + py, 2, 0, Math.PI * 2); 
+            ctx.arc(this.x + TILE/2 + 5 + px, this.y + TILE/2 - 2 + py, 2, 0, Math.PI * 2); 
+            ctx.fill();
+          } else {
+            // Expresión asustada clásica (ojitos blancos y boquita de pánico)
+            ctx.fillStyle = '#f472b6';
+            ctx.beginPath();
+            ctx.rect(this.x + TILE/2 - 6, this.y + TILE/2 - 3, 2, 2);
+            ctx.rect(this.x + TILE/2 + 4, this.y + TILE/2 - 3, 2, 2);
+            ctx.fill();
+
+            // Boquita ondulada
+            ctx.strokeStyle = '#f472b6';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(this.x + TILE/2 - 6, this.y + TILE/2 + 4);
+            ctx.lineTo(this.x + TILE/2 - 3, this.y + TILE/2 + 2);
+            ctx.lineTo(this.x + TILE/2, this.y + TILE/2 + 4);
+            ctx.lineTo(this.x + TILE/2 + 3, this.y + TILE/2 + 2);
+            ctx.lineTo(this.x + TILE/2 + 6, this.y + TILE/2 + 4);
+            ctx.stroke();
+          }
+        } 
+        
+        // CASO 2: Renderizado del Héroe Pac-Man con masticado de bocas
+        else {
+          ctx.shadowBlur = 12;
+          ctx.shadowColor = '#facc15';
+          ctx.fillStyle = this.color;
+          
+          // Determinar ángulo de oscilación de la boca (Masticado rítmico continuo)
+          let speedFactor = (this.vx === 0 && this.vy === 0) ? 0 : 0.22;
+          this.mouthOpenAngle += speedFactor;
+          if (this.mouthOpenAngle > 0.6) this.mouthOpenAngle = 0.05;
+
+          ctx.beginPath();
+          ctx.moveTo(this.x + TILE/2, this.y + TILE/2);
+
+          // Rotación del dibujo de la boca según dirección
+          let startAngle = 0;
+          let endAngle = Math.PI * 2;
+
+          if (this.vx > 0) { // Derecha
+            startAngle = this.mouthOpenAngle;
+            endAngle = Math.PI * 2 - this.mouthOpenAngle;
+          } else if (this.vx < 0) { // Izquierda
+            startAngle = Math.PI + this.mouthOpenAngle;
+            endAngle = Math.PI - this.mouthOpenAngle;
+          } else if (this.vy < 0) { // Arriba
+            startAngle = Math.PI * 1.5 + this.mouthOpenAngle;
+            endAngle = Math.PI * 1.5 - this.mouthOpenAngle;
+          } else if (this.vy > 0) { // Abajo
+            startAngle = Math.PI * 0.5 + this.mouthOpenAngle;
+            endAngle = Math.PI * 0.5 - this.mouthOpenAngle;
+          } else {
+            // En reposo boca sutilmente entornada
+            startAngle = 0.1;
+            endAngle = Math.PI * 2 - 0.1;
+          }
+
+          ctx.arc(this.x + TILE/2, this.y + TILE/2, TILE/2 - 3, startAngle, endAngle);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        ctx.restore();
+      }
+    }
+
+    let player;
+    let ghosts = [];
+
+    // Cargar y procesar matriz de datos lógica
+    function parseMap() {
+      map = [];
+      pellets = 0;
+      for (let y = 0; y < ROWS; y++) {
+        let row = [];
+        for (let x = 0; x < COLS; x++) {
+          let char = mapData[y][x];
+          row.push(char);
+          if (char === '.' || char === 'P') pellets++;
+        }
+        map.push(row);
+      }
+    }
+
+    // Inicializar posiciones de spawn
+    function initEntities() {
+      // Spawn del jugador en el corredor inferior central
+      player = new Entity(7, 11, '#facc15');
+      
+      // Spawn coordinado de los 4 fantasmas con sus roles/IAs
+      ghosts = [
+        new Entity(7, 7, '#ef4444', true, 'chaser'), // Chaser (Rojo)
+        new Entity(6, 7, '#ec4899', true, 'ambusher'),  // Ambusher (Rosado)
+        new Entity(8, 7, '#06b6d4', true, 'patroller'),   // Patroller (Cian)
+        new Entity(7, 6, '#f97316', true, 'wanderer')   // Wanderer (Naranja)
+      ];
+    }
+
+    // ==========================================
+    // CONTROL DEL JUEGO Y BUCLE PRINCIPAL
+    // ==========================================
+    function startGame() {
+      initAudio();
+      score = 0;
+      level = 1;
+      lives = 3;
+      isGameOver = false;
+      ghostFrightenedTime = 0;
+      energyCoreActive = false;
+      energyCoreTimer = 0;
+
+      particles = [];
+      floatingTexts = [];
+
+      document.getElementById('game-overlay').classList.add('hidden');
+      document.getElementById('overlay-stats').classList.add('hidden');
+      
+      parseMap();
+      initEntities();
+      updateUI();
+
+      if (bgmEnabled) {
+        startBgm();
+      }
+
+      requestAnimationFrame(loop);
+    }
+
+    function updateUI() {
+      document.getElementById('score').innerText = String(score).padStart(5, '0');
+      
+      // Actualizar contenedor de vidas visuales con pequeños corazones/esferas de neón
+      const livesContainer = document.getElementById('lives-container');
+      livesContainer.innerHTML = '';
+      for (let i = 0; i < lives; i++) {
+        livesContainer.innerHTML += `<div class="w-3 h-3 rounded-full bg-yellow-400 border border-yellow-300 shadow-[0_0_8px_#facc15] animate-pulse"></div>`;
+      }
+    }
+
+    function die() {
+      sounds.die();
+      
+      // Burst explosivo masivo digital de partículas
+      spawnParticles(player.x + TILE/2, player.y + TILE/2, '#facc15', 30, true);
+      
+      lives--;
+      updateUI();
+      
+      if (lives <= 0) {
+        isGameOver = true;
+        stopBgm();
+        
+        // Guardar record local
+        if (score > highScore) {
+          highScore = score;
+          localStorage.setItem('cyber_maze_highscore', highScore);
+          document.getElementById('high-score').innerText = String(highScore).padStart(5, '0');
+        }
+
+        // Pantalla de Game Over
+        document.getElementById('overlay-icon').className = 'ph-bold ph-skull text-red-500 animate-pulse';
+        document.getElementById('overlay-title').innerText = "CONEXIÓN PERDIDA";
+        document.getElementById('overlay-stat-score').innerText = String(score).padStart(5, '0');
+        document.getElementById('overlay-stats').classList.remove('hidden');
+        document.getElementById('game-overlay').classList.remove('hidden');
+      } else {
+        // Pausar brevemente para asimilar muerte y reubicar
+        setTimeout(initEntities, 800);
+      }
+    }
+
+    function advanceLevel() {
+      sounds.win();
+      level++;
+      
+      // Efectos de confeti digital flotante
+      spawnFloatingText(canvas.width / 2, canvas.height / 2, `SISTEMA DEPURADO v.${level}`, '#10b981');
+      spawnParticles(canvas.width/2, canvas.height/2, '#06b6d4', 25, true);
+      spawnParticles(canvas.width/2, canvas.height/2, '#ec4899', 25, true);
+
+      // Re-establecer tablero limpio aumentando dificultad
+      parseMap();
+      initEntities();
+      
+      // Aumentar la velocidad general un 10% gradualmente
+      ghosts.forEach(g => {
+        g.speed = Math.min(3, g.speed + 0.2);
+      });
+      player.speed = Math.min(4, player.speed + 0.1);
+    }
+
+    function loop() {
+      if (isGameOver) return;
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Contador de invulnerabilidad/pánico
+      if (ghostFrightenedTime > 0) {
+        ghostFrightenedTime--;
+        if (ghostFrightenedTime === 0) {
+          ghostEatenCombo = 0; // Resetear combo de fantasmas devorados
+        }
+      }
+
+      // --- DIBUJAR MAPA / LABERINTO CIRCUITOS NEÓN ---
+      for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+          const tileX = x * TILE;
+          const tileY = y * TILE;
+
+          if (map[y][x] === 'W') {
+            // Circuito integrado tecnológico (Pared brillante)
+            ctx.save();
+            ctx.fillStyle = '#050212';
+            ctx.strokeStyle = '#0891b2';
+            ctx.lineWidth = 1.5;
+            ctx.shadowBlur = 6;
+            ctx.shadowColor = '#06b6d4';
+            
+            // Bordes suaves circulares en las esquinas de los muros
+            ctx.beginPath();
+            ctx.roundRect(tileX + 2, tileY + 2, TILE - 4, TILE - 4, 6);
+            ctx.fill();
+            ctx.stroke();
+
+            // Detalles metálicos decorativos retro interiores
+            ctx.strokeStyle = '#0e7490';
+            ctx.beginPath();
+            ctx.arc(tileX + TILE/2, tileY + TILE/2, 4, 0, Math.PI*2);
+            ctx.stroke();
+            ctx.restore();
+          } 
+          
+          else if (map[y][x] === '.') {
+            // Nodos normales (Píldoras de datos amarillos brillantes)
+            ctx.save();
+            ctx.fillStyle = '#eab308';
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = '#facc15';
+            ctx.beginPath();
+            ctx.arc(tileX + TILE/2, tileY + TILE/2, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          } 
+          
+          else if (map[y][x] === 'P') {
+            // Super-Nodos de Energía (Power Pellets fucsia pulsantes)
+            ctx.save();
+            ctx.fillStyle = '#d946ef';
+            const pulseRadius = 6 + Math.sin(Date.now() / 120) * 2;
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = '#d946ef';
+            ctx.beginPath();
+            ctx.arc(tileX + TILE/2, tileY + TILE/2, pulseRadius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+        }
+      }
+
+      // --- RENDERIZAR COLECCIONABLE ENERGY CORE ---
+      if (energyCoreActive) {
+        ctx.save();
+        ctx.fillStyle = '#10b981';
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#10b981';
+        const coreSize = 10 + Math.sin(Date.now() / 100) * 2;
+        ctx.beginPath();
+        // Estructura romboidal cibernética
+        ctx.moveTo(energyCoreX * TILE + TILE/2, energyCoreY * TILE + TILE/2 - coreSize);
+        ctx.lineTo(energyCoreX * TILE + TILE/2 + coreSize, energyCoreY * TILE + TILE/2);
+        ctx.lineTo(energyCoreX * TILE + TILE/2, energyCoreY * TILE + TILE/2 + coreSize);
+        ctx.lineTo(energyCoreX * TILE + TILE/2 - coreSize, energyCoreY * TILE + TILE/2);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        // Control de tiempo en pantalla del Core
+        energyCoreTimer--;
+        if (energyCoreTimer <= 0) {
+          energyCoreActive = false;
+        }
+
+        // Colisión con el Energy Core
+        if (player.gridX === energyCoreX && player.gridY === energyCoreY) {
+          energyCoreActive = false;
+          score += 100;
+          sounds.eatCore();
+          spawnFloatingText(energyCoreX * TILE + TILE/2, energyCoreY * TILE + TILE/2, "+100 CORES", '#10b981');
+          spawnParticles(energyCoreX * TILE + TILE/2, energyCoreY * TILE + TILE/2, '#10b981', 12, true);
+          updateUI();
+        }
+      }
+
+      // --- LOGICA DEL JUGADOR PAC-MAN ---
+      player.update();
+
+      // Consumo de píldoras ordinarias y súper-píldoras
+      const currentCell = map[player.gridY] ? map[player.gridY][player.gridX] : ' ';
+      
+      if (currentCell === '.') {
+        map[player.gridY][player.gridX] = ' ';
+        score += 10;
+        pellets--;
+        sounds.waka();
+        spawnParticles(player.x + TILE/2, player.y + TILE/2, '#facc15', 3);
+        updateUI();
+
+        // Spawn aleatorio del núcleo en el centro al consumir el 50% de píldoras
+        if (pellets === 60) {
+          energyCoreActive = true;
+          energyCoreTimer = 400; // Disponible por ~7 segundos
+        }
+
+        if (pellets <= 0) {
+          advanceLevel();
+        }
+      } 
+      
+      else if (currentCell === 'P') {
+        map[player.gridY][player.gridX] = ' ';
+        score += 50;
+        pellets--;
+        sounds.powerPellet();
+        
+        // Habilitar pánico de los fantasmas (6 segundos de inmunidad)
+        ghostFrightenedTime = 360; 
+        ghostEatenCombo = 0; // Inicializar multiplicador combo
+        
+        spawnFloatingText(player.x + TILE/2, player.y + TILE/2, "SUPER-CHARGE!", '#d946ef');
+        spawnParticles(player.x + TILE/2, player.y + TILE/2, '#d946ef', 12, true);
+        
+        updateUI();
+
+        if (pellets <= 0) {
+          advanceLevel();
+        }
+      }
+
+      player.draw();
+
+      // --- CONTROL Y SEGUIMIENTO DE ENERGÍAS ENEMIGAS (FANTASMAS) ---
+      ghosts.forEach(g => {
+        g.update();
+        g.draw();
+
+        // Colisión milimétrica del área de influencia contra el jugador
+        const distToPlayer = Math.hypot(player.x - g.x, player.y - g.y);
+        
+        if (distToPlayer < TILE - 12) {
+          if (ghostFrightenedTime > 0 && g.isGhost && !g.respawning && g.homeTimer === 0) {
+            // El héroe devora al fantasma en pánico
+            g.respawning = true;
+            ghostEatenCombo++;
+            
+            // Fórmula de combo acumulativo
+            const bonus = ghostEatenCombo * 200;
+            score += bonus;
+            sounds.eatGhost();
+            
+            spawnFloatingText(g.x + TILE/2, g.y + TILE/2, `+${bonus} DATA`, '#06b6d4');
+            spawnParticles(g.x + TILE/2, g.y + TILE/2, g.color, 15, true);
+            
+            updateUI();
+          } else if (!g.respawning && g.homeTimer === 0) {
+            // Muerte trágica del héroe
+            die();
+          }
+        }
+      });
+
+      // --- ACTUALIZAR PARTÍCULAS Y TEXTOS FLOTANTES ---
+      updateParticlesAndTexts();
+
+      particles.forEach(p => {
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.shadowBlur = 4;
+        ctx.shadowColor = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      floatingTexts.forEach(t => {
+        ctx.save();
+        ctx.globalAlpha = t.alpha;
+        ctx.fillStyle = t.color;
+        ctx.font = 'bold 10px "Press Start 2P"';
+        ctx.shadowBlur = 6;
+        ctx.shadowColor = t.color;
+        ctx.textAlign = 'center';
+        ctx.fillText(t.text, t.x, t.y);
+        ctx.restore();
+      });
+
+      requestAnimationFrame(loop);
+    }
+
+    // --- MANEJO DE CONTROLES ---
+    function sendDirection(vx, vy) {
+      if (isGameOver) return;
+      initAudio();
+      player.queuedVx = vx;
+      player.queuedVy = vy;
+    }
+
+    // Eventos Teclado Fieles
+    document.addEventListener('keydown', e => {
+      if (isGameOver) return;
+      initAudio();
+      
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { player.queuedVx = 0; player.queuedVy = -1; e.preventDefault(); }
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') { player.queuedVx = 0; player.queuedVy = 1; e.preventDefault(); }
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { player.queuedVx = -1; player.queuedVy = 0; e.preventDefault(); }
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { player.queuedVx = 1; player.queuedVy = 0; e.preventDefault(); }
+    });
+
+    // Asignación de Controladores a Botones Táctiles D-PAD
+    document.getElementById('btn-up').addEventListener('touchstart', (e) => { sendDirection(0, -1); e.preventDefault(); }, { passive: false });
+    document.getElementById('btn-down').addEventListener('touchstart', (e) => { sendDirection(0, 1); e.preventDefault(); }, { passive: false });
+    document.getElementById('btn-left').addEventListener('touchstart', (e) => { sendDirection(-1, 0); e.preventDefault(); }, { passive: false });
+    document.getElementById('btn-right').addEventListener('touchstart', (e) => { sendDirection(1, 0); e.preventDefault(); }, { passive: false });
+
+    document.getElementById('btn-up').addEventListener('mousedown', () => sendDirection(0, -1));
+    document.getElementById('btn-down').addEventListener('mousedown', () => sendDirection(0, 1));
+    document.getElementById('btn-left').addEventListener('mousedown', () => sendDirection(-1, 0));
+    document.getElementById('btn-right').addEventListener('mousedown', () => sendDirection(1, 0));
+
+    // Soporte Adicional de Gestos de Deslizamiento (Swipe) Directo en el Canvas
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    canvas.addEventListener('touchstart', e => {
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+    }, { passive: true });
+
+    canvas.addEventListener('touchend', e => {
+      if (isGameOver) return;
+      const touch = e.changedTouches[0];
+      const diffX = touch.clientX - touchStartX;
+      const diffY = touch.clientY - touchStartY;
+
+      // Evaluar la dominancia del eje del deslizamiento
+      if (Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX > 30) sendDirection(1, 0); // Deslizó a Derecha
+        else if (diffX < -30) sendDirection(-1, 0); // Deslizó a Izquierda
+      } else {
+        if (diffY > 30) sendDirection(0, 1); // Deslizó Abajo
+        else if (diffY < -30) sendDirection(0, -1); // Deslizó Arriba
+      }
+    }, { passive: true });
+
+    // Carga de Renderizado de Vista Previa Pasiva Inicial de la Cabina
+    window.onload = function() {
+      parseMap();
+      initEntities();
+      
+      // Dibujar presentación
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+          if (map[y][x] === 'W') {
+            ctx.fillStyle = '#050212';
+            ctx.strokeStyle = '#0891b2';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(x * TILE + 2, y * TILE + 2, TILE - 4, TILE - 4, 6);
+            ctx.fill();
+            ctx.stroke();
+          } else if (map[y][x] === '.') {
+            ctx.fillStyle = '#eab308';
+            ctx.beginPath();
+            ctx.arc(x * TILE + TILE/2, y * TILE + TILE/2, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+      player.draw();
+      ghosts.forEach(g => g.draw());
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Neon Blocks - Retro Premium Arcade</title>
+  
+  <!-- Tailwind CSS para la interfaz principal -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Iconos Phosphor para la barra de control e interfaz -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Fuentes Retro y Modernas de Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: radial-gradient(circle at center, #1e1b4b 0%, #0f0728 50%, #03000a 100%);
+      overflow-x: hidden;
+    }
+    .font-arcade {
+      font-family: 'Press Start 2P', monospace;
+    }
+    /* Efecto holograma de pantalla CRT antigua */
+    .crt-effect {
+      position: relative;
+    }
+    .crt-effect::after {
+      content: " ";
+      display: block;
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
+      background-size: 100% 3px, 3px 100%;
+      pointer-events: none;
+      z-index: 10;
+      border-radius: 12px;
+    }
+    /* Animación de pulso neon */
+    @keyframes neonPulse {
+      0%, 100% { filter: drop-shadow(0 0 4px #c084fc) drop-shadow(0 0 10px #a855f7); }
+      50% { filter: drop-shadow(0 0 8px #d8b4fe) drop-shadow(0 0 20px #c084fc); }
+    }
+    .neon-glow {
+      animation: neonPulse 2.5s infinite alternate;
+    }
+    /* Efectos táctiles responsivos */
+    .arcade-btn {
+      transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .arcade-btn:active {
+      transform: scale(0.9);
+      background-color: #3b0764 !important;
+      box-shadow: 0 0 15px #c084fc;
+    }
+    /* Estilización del scroll */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #020005;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #a855f7;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col items-center justify-between p-3 relative crt-effect">
+
+  <header class="w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-4 py-2 z-10 border-b border-purple-950/40">
+    <div class="flex items-center gap-3">
+      <div class="bg-purple-950/40 p-2.5 rounded-2xl border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+        <i class="ph-bold ph-game-controller text-2xl text-purple-400"></i>
+      </div>
+      <div>
+        <h1 class="text-lg sm:text-2xl font-arcade text-purple-400 tracking-wider neon-glow">NEON BLOCKS</h1>
+        <p class="text-[10px] text-purple-500/80 font-semibold uppercase tracking-widest mt-0.5 hidden sm:block">Cyber Retro Arcade Cabinet</p>
+      </div>
+    </div>
+    
+    <!-- Ajustes de Sonido procedurales -->
+    <div class="flex items-center gap-2 bg-purple-950/20 border border-purple-900/40 p-1.5 rounded-xl backdrop-blur-md">
+      <button id="toggle-bgm" class="px-3 py-1.5 rounded-lg bg-purple-950/50 border border-purple-500/20 text-xs font-semibold flex items-center gap-1.5 text-purple-400 hover:bg-purple-900/40 transition-all">
+        <i id="bgm-icon" class="ph-bold ph-music-note"></i> BGM: <span id="bgm-status">OFF</span>
+      </button>
+      <button id="toggle-sfx" class="px-3 py-1.5 rounded-lg bg-purple-950/50 border border-purple-500/20 text-xs font-semibold flex items-center gap-1.5 text-purple-400 hover:bg-purple-900/40 transition-all">
+        <i id="sfx-icon" class="ph-bold ph-speaker-high"></i> SFX: <span id="sfx-status">ON</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="w-full max-w-4xl flex flex-col md:flex-row items-center justify-center gap-4 my-auto z-10">
+    
+    <!-- PANEL IZQUIERDO: Reserva (Hold), Récord y Estadísticas -->
+    <div class="w-full md:w-44 flex flex-row md:flex-col gap-3 self-stretch justify-between md:justify-start">
+      
+      <!-- Contenedor HOLD (Guardar Pieza) -->
+      <div class="flex-1 md:flex-initial bg-slate-950/85 border-2 border-purple-900/50 rounded-2xl p-3 flex flex-col items-center justify-center shadow-xl backdrop-blur-sm">
+        <h3 class="font-arcade text-[9px] text-purple-400 tracking-wider mb-2">RESERVA</h3>
+        <div class="relative w-20 h-20 bg-slate-900/60 border border-purple-950/80 rounded-xl flex items-center justify-center overflow-hidden">
+          <canvas id="hold-canvas" width="80" height="80" class="block"></canvas>
+          <div id="hold-hint" class="absolute inset-0 flex items-center justify-center bg-slate-950/80 text-[9px] text-slate-500 font-bold uppercase tracking-wider text-center pointer-events-none">[C]</div>
+        </div>
+      </div>
+
+      <!-- Estadísticas rápidas -->
+      <div class="flex-1 md:flex-initial bg-slate-950/85 border-2 border-purple-900/50 rounded-2xl p-3 flex flex-col justify-between shadow-xl backdrop-blur-sm gap-2">
+        <div class="space-y-2 text-xs">
+          <div class="flex items-center justify-between border-b border-purple-950/40 pb-1.5">
+            <span class="text-slate-400 font-bold text-[10px]">RÉCORD</span>
+            <span id="highscore-val" class="font-arcade text-yellow-400">0</span>
+          </div>
+          <div class="flex items-center justify-between border-b border-purple-950/40 pb-1.5">
+            <span class="text-slate-400 font-bold text-[10px]">LÍNEAS</span>
+            <span id="lines-val" class="font-arcade text-cyan-400">0</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400 font-bold text-[10px]">NIVEL</span>
+            <span id="level-val" class="font-arcade text-purple-400">1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL CENTRAL: El Tablero de Juego (Canvas) -->
+    <div class="relative bg-slate-950 border-4 border-slate-800 rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(168,85,247,0.3)] max-w-full">
+      <!-- Brillo simulador de cristal del gabinete -->
+      <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none z-10"></div>
+      
+      <!-- Canvas Principal del Juego -->
+      <canvas id="board" width="300" height="600" class="w-auto h-full max-h-[50vh] md:max-h-[600px] aspect-[1/2] block bg-[#0c061a] mx-auto object-contain"></canvas>
+
+      <!-- Pantallas de Estado Overlay: Inicio / Game Over -->
+      <div id="game-overlay" class="absolute inset-0 bg-slate-950/90 backdrop-blur-md flex flex-col justify-center items-center p-6 z-20 text-center">
+        <!-- Icono holográfico arcade -->
+        <div class="mb-4 text-purple-400 text-5xl filter drop-shadow-[0_0_10px_#a855f7]">
+          <i id="overlay-icon" class="ph-bold ph-cpu"></i>
+        </div>
+        
+        <h2 id="overlay-title" class="font-arcade text-lg sm:text-xl text-purple-400 mb-2 neon-glow">CARGAR MATRIZ</h2>
+        <p id="overlay-subtitle" class="text-slate-400 max-w-xs text-xs mb-6">Alinea las figuras y destruye filas enteras en una simulación de neón cyberpunk de alta precisión.</p>
+        
+        <!-- Scoreboard del final -->
+        <div id="overlay-stats" class="hidden grid grid-cols-2 gap-4 w-full max-w-xs bg-purple-950/20 border border-purple-900/50 p-3 rounded-xl mb-6 font-arcade text-[10px]">
+          <div>
+            <div class="text-slate-500 mb-1">NIVEL</div>
+            <div id="overlay-stat-level" class="text-sm text-yellow-400">1</div>
+          </div>
+          <div>
+            <div class="text-slate-500 mb-1">PUNTUACIÓN</div>
+            <div id="overlay-stat-score" class="text-sm text-cyan-400">0</div>
+          </div>
+        </div>
+
+        <button onclick="startGame()" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-slate-950 font-arcade font-bold text-xs tracking-wider rounded-xl hover:from-purple-400 hover:to-pink-400 shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all active:scale-95">
+          INICIAR JUEGO
+        </button>
+      </div>
+    </div>
+
+    <!-- PANEL DERECHO: Siguiente Pieza & Controles -->
+    <div class="w-full md:w-44 flex flex-row md:flex-col gap-3 self-stretch justify-between md:justify-start">
+      
+      <!-- Contenedor SIGUIENTE (Next Piece) -->
+      <div class="flex-1 md:flex-initial bg-slate-950/85 border-2 border-purple-900/50 rounded-2xl p-3 flex flex-col items-center justify-center shadow-xl backdrop-blur-sm">
+        <h3 class="font-arcade text-[9px] text-purple-400 tracking-wider mb-2">SIGUIENTE</h3>
+        <div class="relative w-20 h-20 bg-slate-900/60 border border-purple-950/80 rounded-xl flex items-center justify-center overflow-hidden">
+          <canvas id="next" width="80" height="80" class="block"></canvas>
+        </div>
+      </div>
+
+      <!-- Cuadro de Puntuación Principal -->
+      <div class="flex-1 md:flex-initial bg-slate-950/85 border-2 border-purple-900/50 rounded-2xl p-3 flex flex-col items-center justify-center shadow-xl backdrop-blur-sm">
+        <h3 class="font-arcade text-[9px] text-purple-400 tracking-wider mb-1">PUNTOS</h3>
+        <p id="score-val" class="text-xl sm:text-2xl font-arcade text-emerald-400 tracking-widest">00000</p>
+      </div>
+
+      <!-- Leyenda de Teclado (Oculto en móviles pequeños) -->
+      <div class="hidden md:block bg-slate-950/85 border border-purple-950/50 rounded-2xl p-3 text-[10px] text-slate-400 space-y-1.5">
+        <div class="flex items-center justify-between"><kbd class="px-1 py-0.5 bg-slate-800 rounded border border-slate-700 font-mono text-[9px]">← →</kbd> Mover</div>
+        <div class="flex items-center justify-between"><kbd class="px-1 py-0.5 bg-slate-800 rounded border border-slate-700 font-mono text-[9px]">↑</kbd> Rotar</div>
+        <div class="flex items-center justify-between"><kbd class="px-1 py-0.5 bg-slate-800 rounded border border-slate-700 font-mono text-[9px]">↓</kbd> Caída Lenta</div>
+        <div class="flex items-center justify-between"><kbd class="px-1 py-0.5 bg-slate-800 rounded border border-slate-700 font-mono text-[9px]">Espacio</kbd> Hard Drop</div>
+        <div class="flex items-center justify-between"><kbd class="px-1 py-0.5 bg-slate-800 rounded border border-slate-700 font-mono text-[9px]">Shift / C</kbd> Guardar</div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="w-full max-w-4xl flex flex-col items-center gap-3 mt-4 mb-2 z-10">
+    <div class="w-full flex flex-wrap items-center justify-center gap-4 bg-slate-950/60 p-3 rounded-2xl border border-purple-950/50 backdrop-blur-md max-w-lg md:max-w-2xl">
+      <!-- Sección Dirección (Cruceta de Control) -->
+      <div class="flex items-center gap-2">
+        <button id="ctrl-left" class="arcade-btn w-12 h-12 bg-purple-950/30 border border-purple-500/30 rounded-xl text-purple-400 flex items-center justify-center text-lg shadow-lg">
+          <i class="ph-bold ph-arrow-left"></i>
+        </button>
+        <div class="flex flex-col gap-2">
+          <button id="ctrl-rotate" class="arcade-btn w-12 h-12 bg-purple-950/40 border border-purple-400/40 rounded-xl text-purple-300 flex items-center justify-center text-lg shadow-lg">
+            <i class="ph-bold ph-arrow-clockwise"></i>
+          </button>
+          <button id="ctrl-down" class="arcade-btn w-12 h-12 bg-purple-950/30 border border-purple-500/30 rounded-xl text-purple-400 flex items-center justify-center text-lg shadow-lg">
+            <i class="ph-bold ph-arrow-down"></i>
+          </button>
+        </div>
+        <button id="ctrl-right" class="arcade-btn w-12 h-12 bg-purple-950/30 border border-purple-500/30 rounded-xl text-purple-400 flex items-center justify-center text-lg shadow-lg">
+          <i class="ph-bold ph-arrow-right"></i>
+        </button>
+      </div>
+
+      <!-- Línea Divisoria -->
+      <div class="hidden sm:block h-12 w-px bg-purple-900/30"></div>
+
+      <!-- Botones de Acción Especial -->
+      <div class="flex items-center gap-2">
+        <!-- Guardar Pieza -->
+        <button id="ctrl-hold" class="arcade-btn px-4 h-12 bg-pink-950/30 border border-pink-500/30 rounded-xl text-pink-400 flex flex-col items-center justify-center shadow-lg">
+          <i class="ph-bold ph-swap text-md"></i>
+          <span class="text-[8px] font-arcade mt-0.5">HOLD</span>
+        </button>
+        <!-- Caída Directa (Hard Drop) -->
+        <button id="ctrl-drop" class="arcade-btn px-6 h-12 bg-emerald-950/30 border border-emerald-500/30 rounded-xl text-emerald-400 flex flex-col items-center justify-center shadow-lg">
+          <i class="ph-bold ph-lightning text-md"></i>
+          <span class="text-[8px] font-arcade mt-0.5">HARD DROP</span>
+        </button>
+      </div>
+    </div>
+    
+    <div class="text-[9px] text-purple-500/60 font-semibold uppercase tracking-wider text-center max-w-sm">
+      Cyber Neon Blocks Arcade © 2026 • Premium Audio-Sintetizado<br>
+      <span class="opacity-75">Juego independiente inspirado en mecánicas clásicas de arcade. Desarrollado con tecnología web moderna sin afiliación con las marcas originales.</span>
+    </div>
+  </footer>
+
+  <script>
+    // Configuración Base del Tablero
+    const COLS = 10;
+    const ROWS = 20;
+    const BLOCK_SIZE = 30;
+
+    const canvas = document.getElementById('board');
+    const ctx = canvas.getContext('2d');
+
+    // Canvas Auxiliares
+    const nextCanvas = document.getElementById('next');
+    const nextCtx = nextCanvas.getContext('2d');
+    nextCtx.scale(20, 20); // Escala para la caja siguiente
+
+    const holdCanvas = document.getElementById('hold-canvas');
+    const holdCtx = holdCanvas.getContext('2d');
+    holdCtx.scale(20, 20); // Escala para la reserva
+
+    // Elementos UI
+    const scoreVal = document.getElementById('score-val');
+    const linesVal = document.getElementById('lines-val');
+    const levelVal = document.getElementById('level-val');
+    const highscoreVal = document.getElementById('highscore-val');
+    const gameOverlay = document.getElementById('game-overlay');
+    const overlayTitle = document.getElementById('overlay-title');
+    const overlaySubtitle = document.getElementById('overlay-subtitle');
+    const overlayIcon = document.getElementById('overlay-icon');
+    const overlayStats = document.getElementById('overlay-stats');
+    const overlayStatLevel = document.getElementById('overlay-stat-level');
+    const overlayStatScore = document.getElementById('overlay-stat-score');
+
+    // --- SISTEMA DE AUDIO (Web Audio API Avanzada) ---
+    let audioCtx = null;
+    let sfxEnabled = true;
+    let bgmEnabled = false;
+    let bgmSequenceId = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    // Sintetizador procedural de efectos retro
+    function playTone(freq, type, duration, vol = 0.05) {
+      if (!sfxEnabled) return;
+      initAudio();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn("Audio Context bloqueado o no soportado");
+      }
+    }
+
+    // Colección de efectos de sonido sintetizados
+    const sounds = {
+      tick: () => playTone(140, 'triangle', 0.04, 0.02),
+      move: () => playTone(300, 'sine', 0.08, 0.05),
+      rotate: () => playTone(450, 'sine', 0.1, 0.05),
+      hold: () => {
+        playTone(350, 'sine', 0.05, 0.06);
+        setTimeout(() => playTone(550, 'sine', 0.08, 0.06), 50);
+      },
+      hardDrop: () => {
+        playTone(120, 'square', 0.12, 0.08);
+        setTimeout(() => playTone(80, 'square', 0.15, 0.08), 60);
+      },
+      clearLine: () => {
+        // Arpegio ascendente
+        playTone(523.25, 'triangle', 0.1, 0.08); // C5
+        setTimeout(() => playTone(659.25, 'triangle', 0.1, 0.08), 80); // E5
+        setTimeout(() => playTone(783.99, 'triangle', 0.15, 0.08), 160); // G5
+      },
+      tetris: () => {
+        // Efecto barrido de trueno cósmico para Tetris
+        initAudio();
+        if (!sfxEnabled) return;
+        try {
+          const osc = audioCtx.createOscillator();
+          const gainNode = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.6);
+          gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+          osc.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.6);
+        } catch (e) {}
+      },
+      levelUp: () => {
+        playTone(440, 'sine', 0.1, 0.1);
+        setTimeout(() => playTone(554.37, 'sine', 0.1, 0.1), 100);
+        setTimeout(() => playTone(659.25, 'sine', 0.1, 0.1), 200);
+        setTimeout(() => playTone(880, 'sine', 0.3, 0.15), 300);
+      },
+      gameOver: () => {
+        playTone(280, 'sawtooth', 0.3, 0.1);
+        setTimeout(() => playTone(220, 'sawtooth', 0.4, 0.1), 250);
+        setTimeout(() => playTone(150, 'sawtooth', 0.8, 0.1), 600);
+      }
+    };
+
+    // --- SECUENCIADOR RETRO (Música de Fondo Procedural) ---
+    // Melodía clásica "Korobeiniki" (Tema A de Tetris)
+    const melody = [
+      { f: 659.25, d: 2 }, // E5
+      { f: 493.88, d: 1 }, // B4
+      { f: 523.25, d: 1 }, // C5
+      { f: 587.33, d: 2 }, // D5
+      { f: 523.25, d: 1 }, // C5
+      { f: 493.88, d: 1 }, // B4
+      { f: 440.00, d: 2 }, // A4
+      { f: 440.00, d: 1 }, // A4
+      { f: 523.25, d: 1 }, // C5
+      { f: 659.25, d: 2 }, // E5
+      { f: 587.33, d: 1 }, // D5
+      { f: 523.25, d: 1 }, // C5
+      { f: 493.88, d: 3 }, // B4
+      { f: 523.25, d: 1 }, // C5
+      { f: 587.33, d: 2 }, // D5
+      { f: 659.25, d: 2 }, // E5
+      { f: 523.25, d: 2 }, // C5
+      { f: 440.00, d: 2 }, // A4
+      { f: 440.00, d: 2 }, // A4
+      { f: 0, d: 2 },      // Silencio
+      
+      { f: 587.33, d: 3 }, // D5
+      { f: 698.46, d: 1 }, // F5
+      { f: 880.00, d: 2 }, // A5
+      { f: 783.99, d: 1 }, // G5
+      { f: 698.46, d: 1 }, // F5
+      { f: 659.25, d: 3 }, // E5
+      { f: 523.25, d: 1 }, // C5
+      { f: 659.25, d: 2 }, // E5
+      { f: 587.33, d: 1 }, // D5
+      { f: 523.25, d: 1 }, // C5
+      { f: 493.88, d: 2 }, // B4
+      { f: 493.88, d: 1 }, // B4
+      { f: 523.25, d: 1 }, // C5
+      { f: 587.33, d: 2 }, // D5
+      { f: 659.25, d: 2 }, // E5
+      { f: 523.25, d: 2 }, // C5
+      { f: 440.00, d: 2 }, // A4
+      { f: 440.00, d: 2 }, // A4
+      { f: 0, d: 2 }       // Silencio
+    ];
+
+    let currentStep = 0;
+    const stepDuration = 180; // Milisegundos por corchea básica
+
+    function playBgmStep() {
+      if (!bgmEnabled) return;
+      initAudio();
+      try {
+        const note = melody[currentStep];
+        if (note.f > 0) {
+          const osc = audioCtx.createOscillator();
+          const gainNode = audioCtx.createGain();
+          
+          osc.type = 'triangle'; // Sonido suave característico del GameBoy
+          osc.frequency.setValueAtTime(note.f, audioCtx.currentTime);
+          
+          gainNode.gain.setValueAtTime(0.015, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (note.d * stepDuration / 1000) - 0.02);
+          
+          osc.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + (note.d * stepDuration / 1000));
+        }
+        
+        // Programar el siguiente paso basándonos en la duración del paso actual
+        bgmSequenceId = setTimeout(() => {
+          currentStep = (currentStep + 1) % melody.length;
+          playBgmStep();
+        }, note.d * stepDuration);
+      } catch (e) {}
+    }
+
+    function startBGMLoop() {
+      stopBGMLoop();
+      currentStep = 0;
+      playBgmStep();
+    }
+
+    function stopBGMLoop() {
+      if (bgmSequenceId) {
+        clearTimeout(bgmSequenceId);
+        bgmSequenceId = null;
+      }
+    }
+
+    // Controles de Música en Interfaz
+    const toggleBgmBtn = document.getElementById('toggle-bgm');
+    const toggleSfxBtn = document.getElementById('toggle-sfx');
+    const bgmStatus = document.getElementById('bgm-status');
+    const sfxStatus = document.getElementById('sfx-status');
+    const bgmIcon = document.getElementById('bgm-icon');
+    const sfxIcon = document.getElementById('sfx-icon');
+
+    toggleBgmBtn.addEventListener('click', () => {
+      bgmEnabled = !bgmEnabled;
+      bgmStatus.innerText = bgmEnabled ? 'ON' : 'OFF';
+      if (bgmEnabled) {
+        bgmIcon.className = 'ph-bold ph-music-notes text-purple-400';
+        toggleBgmBtn.classList.remove('bg-purple-950/50');
+        toggleBgmBtn.classList.add('bg-purple-500/20');
+        initAudio();
+        startBGMLoop();
+      } else {
+        bgmIcon.className = 'ph-bold ph-music-note';
+        toggleBgmBtn.classList.add('bg-purple-950/50');
+        toggleBgmBtn.classList.remove('bg-purple-500/20');
+        stopBGMLoop();
+      }
+    });
+
+    toggleSfxBtn.addEventListener('click', () => {
+      sfxEnabled = !sfxEnabled;
+      sfxStatus.innerText = sfxEnabled ? 'ON' : 'OFF';
+      if (sfxEnabled) {
+        sfxIcon.className = 'ph-bold ph-speaker-high text-purple-400';
+        toggleSfxBtn.classList.remove('bg-purple-950/50');
+        toggleSfxBtn.classList.add('bg-purple-500/20');
+      } else {
+        sfxIcon.className = 'ph-bold ph-speaker-x';
+        toggleSfxBtn.classList.add('bg-purple-950/50');
+        toggleSfxBtn.classList.remove('bg-purple-500/20');
+      }
+    });
+
+    // --- STREAMING_CHUNK: Estructura del Motor de Tetris y Definición de Piezas ---
+    
+    // Paleta de Colores de Neón de Gran Contraste (0 es vacío)
+    const COLORS = [
+      null,
+      '#ff007f', // I: Rosa Neón Profundo
+      '#3b82f6', // J: Azul Eléctrico
+      '#ffaa00', // L: Naranja Brillante
+      '#00ffff', // O: Cian Glaciar
+      '#10b981', // S: Verde Neón
+      '#a855f7', // T: Morado Cyber
+      '#ef4444'  // Z: Rojo Flama
+    ];
+
+    // Matrices de Diseño de Tetrominós
+    const SHAPES = [
+      [],
+      [[0,0,0,0], [1,1,1,1], [0,0,0,0], [0,0,0,0]], // I
+      [[2,0,0], [2,2,2], [0,0,0]], // J
+      [[0,0,3], [3,3,3], [0,0,0]], // L
+      [[4,4], [4,4]], // O
+      [[0,5,5], [5,5,0], [0,0,0]], // S
+      [[0,6,0], [6,6,6], [0,0,0]], // T
+      [[7,7,0], [0,7,7], [0,0,0]]  // Z
+    ];
+
+    // Variables lógicas de juego
+    let board = [];
+    let piece = null;
+    let nextPiece = null;
+    let holdPiece = null;
+    let canHold = true; // Solo se puede guardar una vez por turno
+    let score = 0;
+    let lines = 0;
+    let level = 1;
+    let dropCounter = 0;
+    let dropInterval = 1000;
+    let lastTime = 0;
+    let isGameOver = true;
+    let animationId = null;
+    let highscore = parseInt(localStorage.getItem('tetris_neon_highscore')) || 0;
+
+    // Partículas y Efectos
+    let particles = [];
+
+    // Inicializar visualización del Récord
+    highscoreVal.innerText = highscore;
+
+    function createMatrix(w, h) {
+      const matrix = [];
+      while (h--) {
+        matrix.push(new Array(w).fill(0));
+      }
+      return matrix;
+    }
+
+    // --- STREAMING_CHUNK: Sistema de Partículas Explosivas ---
+    function spawnParticles(gridY, color, count = 20) {
+      const yPos = gridY * BLOCK_SIZE + BLOCK_SIZE / 2;
+      for (let i = 0; i < count; i++) {
+        const xPos = Math.random() * canvas.width;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 4 + 2;
+        
+        particles.push({
+          x: xPos,
+          y: yPos,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 1, // Desplazamiento sutil hacia arriba
+          size: Math.random() * 4 + 2,
+          color: color,
+          alpha: 1,
+          decay: Math.random() * 0.03 + 0.015,
+          life: 40
+        });
+      }
+    }
+
+    function updateParticles() {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.08; // Fuerza de gravedad
+        p.alpha -= p.decay;
+        p.life--;
+        if (p.life <= 0 || p.alpha <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+    }
+
+    function drawParticles() {
+      particles.forEach(p => {
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        // Efecto brillo exterior
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+    }
+
+    // --- STREAMING_CHUNK: Funciones de Matrices y Mecánicas de Rotación ---
+    function collide(board, piece) {
+      const m = piece.matrix;
+      const o = piece.pos;
+      for (let y = 0; y < m.length; ++y) {
+        for (let x = 0; x < m[y].length; ++x) {
+          if (m[y][x] !== 0 &&
+             (board[y + o.y] && board[y + o.y][x + o.x]) !== 0) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    function merge(board, piece) {
+      piece.matrix.forEach((row, y) => {
+        row.forEach((value, x) => {
+          if (value !== 0) {
+            board[y + piece.pos.y][x + piece.pos.x] = value;
+          }
+        });
+      });
+    }
+
+    function rotate(matrix, dir) {
+      for (let y = 0; y < matrix.length; ++y) {
+        for (let x = 0; x < y; ++x) {
+          [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+        }
+      }
+      if (dir > 0) {
+        matrix.forEach(row => row.reverse());
+      } else {
+        matrix.reverse();
+      }
+    }
+
+    // --- STREAMING_CHUNK: Acciones del Jugador y Caídas ---
+    function playerDrop() {
+      if (isGameOver) return;
+      piece.pos.y++;
+      if (collide(board, piece)) {
+        piece.pos.y--;
+        merge(board, piece);
+        playerReset();
+        arenaSweep();
+        updateScoreUI();
+      } else {
+        sounds.tick();
+      }
+      dropCounter = 0;
+    }
+
+    function playerHardDrop() {
+      if (isGameOver) return;
+      let count = 0;
+      while (!collide(board, piece)) {
+        piece.pos.y++;
+        count++;
+      }
+      piece.pos.y--;
+      
+      // Añadir pequeños puntos por el Hard Drop acelerado
+      score += count * 2;
+      
+      sounds.hardDrop();
+      
+      // Destello blanco en la zona de caída
+      drawFlashEffect();
+      
+      merge(board, piece);
+      playerReset();
+      arenaSweep();
+      updateScoreUI();
+      dropCounter = 0;
+    }
+
+    function drawFlashEffect() {
+      ctx.save();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
+    }
+
+    function playerMove(dir) {
+      if (isGameOver) return;
+      piece.pos.x += dir;
+      if (collide(board, piece)) {
+        piece.pos.x -= dir;
+      } else {
+        sounds.move();
+      }
+    }
+
+    function playerRotate(dir) {
+      if (isGameOver) return;
+      const pos = piece.pos.x;
+      let offset = 1;
+      rotate(piece.matrix, dir);
+      
+      // Algoritmo de "Wall Kick" básico para evitar atorarse en paredes
+      while (collide(board, piece)) {
+        piece.pos.x += offset;
+        offset = -(offset + (offset > 0 ? 1 : -1));
+        if (offset > piece.matrix[0].length) {
+          rotate(piece.matrix, -dir);
+          piece.pos.x = pos;
+          return;
+        }
+      }
+      sounds.rotate();
+    }
+
+    // --- STREAMING_CHUNK: Manejo de Pieza Siguiente y Reserva (Hold) ---
+    function createPiece() {
+      const typeId = Math.floor(Math.random() * 7) + 1;
+      return {
+        matrix: JSON.parse(JSON.stringify(SHAPES[typeId])),
+        pos: {x: 0, y: 0},
+        type: typeId
+      };
+    }
+
+    function playerReset() {
+      if (!nextPiece) nextPiece = createPiece();
+      piece = nextPiece;
+      piece.pos.y = 0;
+      piece.pos.x = Math.floor(COLS / 2) - Math.floor(piece.matrix[0].length / 2);
+      
+      nextPiece = createPiece();
+      drawNext();
+      canHold = true; // Rehabilitar guardado para esta nueva pieza
+      
+      if (collide(board, piece)) {
+        gameOver();
+      }
+    }
+
+    function playerHold() {
+      if (isGameOver || !canHold) return;
+      
+      sounds.hold();
+      document.getElementById('hold-hint').classList.add('hidden');
+      
+      const temp = holdPiece;
+      holdPiece = {
+        matrix: JSON.parse(JSON.stringify(SHAPES[piece.type])),
+        type: piece.type
+      };
+
+      if (temp === null) {
+        // Primera reserva, obtener pieza nueva de la cola
+        piece = nextPiece;
+        piece.pos.y = 0;
+        piece.pos.x = Math.floor(COLS / 2) - Math.floor(piece.matrix[0].length / 2);
+        nextPiece = createPiece();
+        drawNext();
+      } else {
+        // Intercambiar piezas
+        piece = {
+          matrix: temp.matrix,
+          pos: {x: Math.floor(COLS / 2) - Math.floor(temp.matrix[0].length / 2), y: 0},
+          type: temp.type
+        };
+      }
+      
+      canHold = false; // Desactivar hasta el siguiente reinicio de pieza
+      drawHold();
+    }
+
+    // --- STREAMING_CHUNK: Limpieza de Líneas, Combos y Niveles ---
+    function arenaSweep() {
+      let rowCount = 0;
+      outer: for (let y = board.length - 1; y >= 0; --y) {
+        for (let x = 0; x < board[y].length; ++x) {
+          if (board[y][x] === 0) {
+            continue outer;
+          }
+        }
+        
+        // Efecto partículas al limpiar la fila
+        spawnParticles(y, COLORS[board[y][0] || 1], 25);
+        
+        // Eliminar fila y agregar una vacía al inicio
+        const row = board.splice(y, 1)[0].fill(0);
+        board.unshift(row);
+        ++y;
+        
+        rowCount++;
+      }
+
+      if (rowCount > 0) {
+        // Cálculo de Puntuación Arcade
+        if (rowCount === 4) {
+          sounds.tetris();
+          score += 800 * level; // Tetris otorga muchísimos puntos
+        } else {
+          sounds.clearLine();
+          const linePoints = [0, 100, 300, 500];
+          score += linePoints[rowCount] * level;
+        }
+        
+        lines += rowCount;
+        
+        // Ajustar nivel progresivamente cada 10 líneas
+        const oldLevel = level;
+        level = Math.floor(lines / 10) + 1;
+        if (level > oldLevel) {
+          sounds.levelUp();
+        }
+
+        // Aumentar velocidad exponencialmente
+        dropInterval = Math.max(80, 1000 - (level * 80));
+      }
+    }
+
+    // --- STREAMING_CHUNK: Renderizado del Tablero y Estética Retro ---
+    function drawBlock(ctxRef, x, y, colorId, size = BLOCK_SIZE) {
+      const color = COLORS[colorId];
+      ctxRef.save();
+      
+      // Dibujar bloque con bordes redondeados y efectos Neón Cyberpunk
+      ctxRef.fillStyle = color;
+      
+      // Sombra Neón de Resplandor
+      ctxRef.shadowBlur = 8;
+      ctxRef.shadowColor = color;
+      
+      ctxRef.beginPath();
+      // Estilo redondeado en esquinas para una apariencia arcade pulida
+      ctxRef.roundRect(x * size + 1.5, y * size + 1.5, size - 3, size - 3, 4);
+      ctxRef.fill();
+      ctxRef.shadowBlur = 0; // Desactivar sombra para detalles internos
+
+      // Brillo en esquina superior izquierda
+      ctxRef.fillStyle = 'rgba(255, 255, 255, 0.4)';
+      ctxRef.fillRect(x * size + 3, y * size + 3, size - 6, 2);
+      ctxRef.fillRect(x * size + 3, y * size + 3, 2, size - 6);
+
+      // Sombra oscura en esquina inferior derecha
+      ctxRef.fillStyle = 'rgba(0, 0, 0, 0.35)';
+      ctxRef.fillRect(x * size + 3, y * size + size - 5, size - 6, 2);
+      ctxRef.fillRect(x * size + size - 5, y * size + 3, 2, size - 6);
+
+      ctxRef.restore();
+    }
+
+    function drawMatrix(matrix, offset, ctxRef, size = BLOCK_SIZE) {
+      matrix.forEach((row, y) => {
+        row.forEach((value, x) => {
+          if (value !== 0) {
+            drawBlock(ctxRef, x + offset.x, y + offset.y, value, size);
+          }
+        });
+      });
+    }
+
+    function drawNext() {
+      nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+      if (nextPiece) {
+        const offset = {
+          x: 2 - nextPiece.matrix[0].length / 2,
+          y: 2 - nextPiece.matrix.length / 2
+        };
+        drawMatrix(nextPiece.matrix, offset, nextCtx, 20);
+      }
+    }
+
+    function drawHold() {
+      holdCtx.clearRect(0, 0, holdCanvas.width, holdCanvas.height);
+      if (holdPiece) {
+        const offset = {
+          x: 2 - holdPiece.matrix[0].length / 2,
+          y: 2 - holdPiece.matrix.length / 2
+        };
+        drawMatrix(holdPiece.matrix, offset, holdCtx, 20);
+      }
+    }
+
+    // --- STREAMING_CHUNK: Dibujado de Líneas de Cuadrícula Láser y Pieza Fantasma ---
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Dibujar cuadrícula láser en el fondo
+      ctx.strokeStyle = '#1e113a';
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i <= COLS; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * BLOCK_SIZE, 0);
+        ctx.lineTo(i * BLOCK_SIZE, canvas.height);
+        ctx.stroke();
+      }
+      for (let i = 0; i <= ROWS; i++) {
+        ctx.beginPath();
+        ctx.moveTo(0, i * BLOCK_SIZE);
+        ctx.lineTo(canvas.width, i * BLOCK_SIZE);
+        ctx.stroke();
+      }
+
+      // Dibujar bloques fijos en la arena
+      for (let y = 0; y < board.length; y++) {
+        for (let x = 0; x < board[y].length; x++) {
+          if (board[y][x] !== 0) {
+            drawBlock(ctx, x, y, board[y][x]);
+          }
+        }
+      }
+
+      // Dibujar pieza activa y fantasma láser
+      if (piece && !isGameOver) {
+        // --- CALCULAR PIEZA FANTASMA (GHOST PIECE) ---
+        let ghost = {
+          matrix: piece.matrix,
+          pos: {x: piece.pos.x, y: piece.pos.y}
+        };
+        while (!collide(board, ghost)) {
+          ghost.pos.y++;
+        }
+        ghost.pos.y--; // Retornar al último punto seguro
+
+        // Dibujar fantasma holográfico con bordes neón suaves
+        ctx.save();
+        ctx.globalAlpha = 0.25;
+        ghost.matrix.forEach((row, y) => {
+          row.forEach((value, x) => {
+            if (value !== 0) {
+              const gx = (x + ghost.pos.x) * BLOCK_SIZE;
+              const gy = (y + ghost.pos.y) * BLOCK_SIZE;
+              
+              // Trazar el borde neón de la silueta fantasma
+              ctx.strokeStyle = COLORS[value];
+              ctx.shadowBlur = 8;
+              ctx.shadowColor = COLORS[value];
+              ctx.lineWidth = 2;
+              ctx.strokeRect(gx + 2, gy + 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+            }
+          });
+        });
+        ctx.restore();
+        
+        // Dibujar pieza activa real
+        drawMatrix(piece.matrix, piece.pos, ctx);
+      }
+
+      // Renderizar partículas dinámicas
+      drawParticles();
+    }
+
+    function updateScoreUI() {
+      scoreVal.innerText = String(score).padStart(5, '0');
+      linesVal.innerText = lines;
+      levelVal.innerText = level;
+    }
+
+    // --- STREAMING_CHUNK: Bucle de Animación y Actualización de frames ---
+    function update(time = 0) {
+      if (isGameOver) return;
+      
+      const deltaTime = time - lastTime;
+      lastTime = time;
+      
+      dropCounter += deltaTime;
+      if (dropCounter > dropInterval) {
+        playerDrop();
+      }
+      
+      // Actualizar la física de las chispas de neón
+      updateParticles();
+
+      draw();
+      animationId = requestAnimationFrame(update);
+    }
+
+    // --- STREAMING_CHUNK: Gestión de Estado (Comienzo del Juego y Fin) ---
+    function startGame() {
+      initAudio();
+      board = createMatrix(COLS, ROWS);
+      score = 0;
+      lines = 0;
+      level = 1;
+      dropInterval = 1000;
+      isGameOver = false;
+      holdPiece = null;
+      canHold = true;
+      particles = [];
+
+      document.getElementById('hold-hint').classList.remove('hidden');
+      gameOverlay.classList.add('hidden');
+      
+      updateScoreUI();
+      playerReset();
+      drawHold();
+
+      if (bgmEnabled) {
+        startBGMLoop();
+      }
+
+      if (animationId) cancelAnimationFrame(animationId);
+      update();
+    }
+
+    function gameOver() {
+      isGameOver = true;
+      stopBGMLoop();
+      sounds.gameOver();
+
+      // Guardar puntaje récord
+      if (score > highscore) {
+        highscore = score;
+        localStorage.setItem('tetris_neon_highscore', highscore);
+        highscoreVal.innerText = highscore;
+      }
+
+      // Preparar el Overlay de estadísticas finales
+      overlayIcon.className = 'ph-bold ph-skull text-rose-500';
+      overlayTitle.innerText = "SISTEMA CAÍDO";
+      overlayTitle.classList.remove('text-purple-400');
+      overlayTitle.classList.add('text-rose-500');
+      overlaySubtitle.innerText = "La matriz colapsó por sobrecarga de bloques. Intenta limpiar mejor tu tablero cósmico.";
+      
+      overlayStatLevel.innerText = level;
+      overlayStatScore.innerText = score;
+      overlayStats.classList.remove('hidden');
+      
+      gameOverlay.classList.remove('hidden');
+    }
+
+    // --- STREAMING_CHUNK: Configuración de Eventos de Teclado y Touch ---
+    
+    // Controles físicos del teclado
+    document.addEventListener('keydown', event => {
+      if (isGameOver) return;
+      initAudio();
+      
+      // Detener scroll indeseado en la ventana web
+      if (["ArrowUp", "ArrowDown", "Space"].includes(event.key)) {
+        event.preventDefault();
+      }
+
+      switch (event.keyCode) {
+        case 37: // Flecha Izquierda
+          playerMove(-1);
+          break;
+        case 39: // Flecha Derecha
+          playerMove(1);
+          break;
+        case 40: // Flecha Abajo (Soft Drop)
+          playerDrop();
+          break;
+        case 38: // Flecha Arriba (Rotar a la derecha)
+          playerRotate(1);
+          break;
+        case 32: // Barra Espaciadora (Hard Drop)
+          playerHardDrop();
+          break;
+        case 16: // Shift izquierdo
+        case 67: // Tecla C
+          playerHold();
+          break;
+      }
+    });
+
+    // Controles táctiles mapeados a botones de interfaz virtual
+    document.getElementById('ctrl-left').addEventListener('click', () => playerMove(-1));
+    document.getElementById('ctrl-right').addEventListener('click', () => playerMove(1));
+    document.getElementById('ctrl-down').addEventListener('click', () => playerDrop());
+    document.getElementById('ctrl-rotate').addEventListener('click', () => playerRotate(1));
+    document.getElementById('ctrl-drop').addEventListener('click', () => playerHardDrop());
+    document.getElementById('ctrl-hold').addEventListener('click', () => playerHold());
+
+    // Soporte para gestos deslizantes táctiles rápidos sobre el Canvas (Swipes)
+    let touchStartX = 0;
+    let touchStartY = 0;
+    
+    canvas.addEventListener('touchstart', e => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      initAudio();
+    }, {passive: true});
+
+    canvas.addEventListener('touchend', e => {
+      if (isGameOver) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      
+      const threshold = 40; // Sensibilidad de deslizamiento
+      if (Math.abs(dx) > Math.abs(dy)) {
+        if (Math.abs(dx) > threshold) {
+          if (dx > 0) playerMove(1);
+          else playerMove(-1);
+        }
+      } else {
+        if (Math.abs(dy) > threshold) {
+          if (dy > 0) playerDrop(); // Deslizar abajo
+          else playerRotate(1);     // Deslizar arriba para rotar
+        }
+      }
+    }, {passive: true});
+
+    // Inicializar visualización del tablero al cargar la página por primera vez
+    window.onload = function() {
+      draw();
+    };
+  </script>
+</body>
+</html>

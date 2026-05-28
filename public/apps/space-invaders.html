@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Space Invaders</title>
+  <style>
+    /* ── Reset y base ───────────────────────────────────────── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #080810;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Marco estilo monitor CRT */
+    #wrapper {
+      position: relative;
+      padding: 24px 28px;
+      background: #0a0a0f;
+      border-radius: 16px;
+      border: 2px solid #1a2a1a;
+      box-shadow:
+        0 0 0 4px #111,
+        0 0 40px rgba(0,255,60,0.15),
+        0 0 100px rgba(0,255,60,0.05);
+    }
+
+    /* Scanlines sobre el canvas */
+    #wrapper::after {
+      content: '';
+      position: absolute;
+      inset: 24px 28px;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.12) 2px,
+        rgba(0,0,0,0.12) 4px
+      );
+      pointer-events: none;
+      border-radius: 4px;
+    }
+
+    canvas {
+      display: block;
+      image-rendering: pixelated;
+    }
+  </style>
+</head>
+<body>
+<div id="wrapper">
+  <canvas id="canvas"></canvas>
+</div>
+
+<script>
+// ================================================================
+//  SPACE INVADERS  –  HTML/CSS/JS puro, sin dependencias externas
+// ================================================================
+
+const canvas = document.getElementById('canvas');
+const ctx    = canvas.getContext('2d');
+
+const W = 800, H = 600;
+canvas.width  = W;
+canvas.height = H;
+
+// ── Paleta de colores ─────────────────────────────────────────
+const C = {
+  bg:       '#04040a',
+  green:    '#00ff46',
+  greenDim: '#00421a',
+  cyan:     '#00e5ff',
+  yellow:   '#ffe600',
+  red:      '#ff3b3b',
+  white:    '#dfffdf',
+  magenta:  '#ff00cc',
+  orange:   '#ff8800',
+};
+
+// ── Estados del juego ─────────────────────────────────────────
+const STATE = { MENU: 0, PLAYING: 1, WIN: 2, GAMEOVER: 3 };
+let state = STATE.MENU;
+
+// ── Puntuación ───────────────────────────────────────────────
+let score   = 0;
+let hiScore = parseInt(localStorage.getItem('si_hi') || '0');
+
+// ── Fondo: campo de estrellas ─────────────────────────────────
+const STARS = Array.from({ length: 130 }, () => ({
+  x:  Math.random() * W,
+  y:  Math.random() * H,
+  r:  Math.random() * 1.2 + 0.3,
+  a:  Math.random(),
+  da: (Math.random() - 0.5) * 0.018,
+}));
+
+// ── Jugador ───────────────────────────────────────────────────
+const P_W = 40, P_H = 24, P_SPEED = 5;
+let player;
+
+function resetPlayer() {
+  player = {
+    x:          W / 2 - P_W / 2,
+    y:          H - 58,
+    w:          P_W,
+    h:          P_H,
+    alive:      true,
+    deathTimer: 0,   // frames hasta mostrar game over
+  };
+}
+
+// ── Balas ─────────────────────────────────────────────────────
+let playerBullets = [];
+let enemyBullets  = [];
+let canShoot      = true;
+let shootCooldown = 0;
+const SHOOT_CD    = 18;   // frames entre disparos del jugador
+const P_BULLET_V  = 10;   // velocidad bala jugador (hacia arriba)
+const E_BULLET_V  = 3.5;  // velocidad bala enemigo (hacia abajo)
+
+// ── Búnkeres y Power-Ups ──────────────────────────────────────
+let bunkers  = [];
+let powerups = [];
+let prevPadAction = false;
+const BUNKER_MAP = [
+  "  XXXXXXXX  ",
+  " XXXXXXXXXX ",
+  "XXXXXXXXXXXX",
+  "XXXXXXXXXXXX",
+  "XXXX    XXXX",
+  "XXX      XXX",
+  "XXX      XXX"
+];
+
+function initBunkers() {
+  bunkers = [];
+  const bw = 12 * 4; // 12 columnas x 4px cada bloque
+  const spacing = (W - (4 * bw)) / 5;
+  for (let i = 0; i < 4; i++) {
+    let ox = spacing + i * (bw + spacing);
+    let oy = H - 150;
+    let blocks = [];
+    for (let r = 0; r < BUNKER_MAP.length; r++) {
+      for (let c = 0; c < BUNKER_MAP[r].length; c++) {
+        if (BUNKER_MAP[r][c] === 'X') {
+          blocks.push({ x: ox + c * 4, y: oy + r * 4, w: 4, h: 4, alive: true });
+        }
+      }
+    }
+    bunkers.push(blocks);
+  }
+}
+
+// ── Enemigos ──────────────────────────────────────────────────
+const ROWS      = 5;
+const COLS      = 11;
+const E_W       = 32, E_H  = 24;
+const E_PAD_X   = 14, E_PAD_Y = 10;
+const E_START_X = 55, E_START_Y = 68;
+
+let enemies         = [];
+let enemyDir        = 1;    // 1 = derecha, -1 = izquierda
+let enemyMoveTimer  = 0;
+let enemyBaseInterval = 50; // frames base entre pasos (se reduce con nivel)
+let enemyAnimFrame  = 0;    // 0 o 1, alterna con cada paso
+let enemyShootTimer = 0;
+let aliveCount      = 0;
+
+// Puntos según fila
+const ROW_POINTS = [30, 20, 20, 10, 10];
+
+function initEnemies() {
+  enemies    = [];
+  aliveCount = 0;
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      enemies.push({
+        x:      E_START_X + c * (E_W + E_PAD_X),
+        y:      E_START_Y + r * (E_H + E_PAD_Y),
+        w:      E_W,
+        h:      E_H,
+        row:    r,
+        col:    c,
+        alive:  true,
+        type:   r === 0 ? 0 : r <= 2 ? 1 : 2,  // 0=calamar,1=cangrejo,2=pulpo
+        points: ROW_POINTS[r],
+      });
+      aliveCount++;
+    }
+  }
+  enemyDir       = 1;
+  enemyMoveTimer = 0;
+  enemyBaseInterval = 50;
+  enemyShootTimer = 0;
+  enemyAnimFrame  = 0;
+}
+
+// ── Partículas de explosión ───────────────────────────────────
+let particles = [];
+
+function spawnParticles(x, y, color, n) {
+  for (let i = 0; i < n; i++) {
+    const ang   = Math.random() * Math.PI * 2;
+    const speed = Math.random() * 3 + 0.5;
+    particles.push({
+      x, y,
+      vx:    Math.cos(ang) * speed,
+      vy:    Math.sin(ang) * speed,
+      life:  1,
+      decay: Math.random() * 0.05 + 0.02,
+      size:  Math.random() * 3 + 1,
+      color,
+    });
+  }
+}
+
+// ── Input ─────────────────────────────────────────────────────
+const keys = {};
+
+document.addEventListener('keydown', e => {
+  keys[e.code] = true;
+  if (e.code === 'Space') e.preventDefault();
+
+  // Transiciones de estado con Enter o Space
+  if (e.code === 'Enter' || e.code === 'Space') {
+    if (state === STATE.MENU)     startGame();
+    if (state === STATE.GAMEOVER) startGame();
+    if (state === STATE.WIN)      startGame();
+  }
+
+  // Disparo del jugador
+  if (e.code === 'Space' && state === STATE.PLAYING && player.alive && canShoot) {
+    firePlayerBullet();
+  }
+});
+document.addEventListener('keyup', e => { keys[e.code] = false; });
+
+// ── Audio (Web Audio API, sin archivos externos) ───────────────
+let audioCtx = null;
+
+function getAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playTone(freqEnd, type, duration, vol = 0.28, freqStart = null) {
+  try {
+    const ac   = getAudio();
+    const osc  = ac.createOscillator();
+    const gain = ac.createGain();
+    osc.connect(gain);
+    gain.connect(ac.destination);
+    osc.type = type;
+    if (freqStart) {
+      osc.frequency.setValueAtTime(freqStart, ac.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(freqEnd, ac.currentTime + duration);
+    } else {
+      osc.frequency.value = freqEnd;
+    }
+    gain.gain.setValueAtTime(vol, ac.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + duration);
+    osc.start(ac.currentTime);
+    osc.stop(ac.currentTime + duration + 0.01);
+  } catch (_) {}
+}
+
+const SFX = {
+  shoot:     () => playTone(150, 'square',   0.08, 0.22, 900),
+  kill:      () => playTone(40,  'sawtooth', 0.24, 0.38, 120),
+  playerDie: () => playTone(50,  'sawtooth', 0.7,  0.48, 500),
+  win:       () => [262, 330, 392, 523].forEach((f, i) =>
+               setTimeout(() => playTone(f, 'square', 0.14, 0.2), i * 110)),
+  powerup:   () => playTone(800, 'sine',     0.2,  0.2, 400),
+  shieldHit: () => playTone(300, 'square',   0.1,  0.2, 600),
+  bunkerHit: () => playTone(100, 'sawtooth', 0.1,  0.1, 200),
+};
+
+// Sonido de marcha: 4 tonos que se alternan
+let marchStep = 0;
+const MARCH_FREQS = [160, 130, 110, 90];
+function playMarch() {
+  playTone(MARCH_FREQS[marchStep++ % 4], 'square', 0.07, 0.11);
+}
+
+// ── Iniciar partida ───────────────────────────────────────────
+function startGame() {
+  score = 0;
+  resetPlayer();
+  player.doubleShot = 0;
+  player.shield     = 0;
+  initEnemies();
+  initBunkers();
+  playerBullets = [];
+  enemyBullets  = [];
+  particles     = [];
+  powerups      = [];
+  canShoot      = true;
+  shootCooldown = 0;
+  state         = STATE.PLAYING;
+}
+
+// ── Disparo del jugador ───────────────────────────────────────
+function firePlayerBullet() {
+  if (player.doubleShot > 0) {
+    playerBullets.push({ x: player.x + P_W / 2 - 8, y: player.y, w: 3, h: 10 });
+    playerBullets.push({ x: player.x + P_W / 2 + 5, y: player.y, w: 3, h: 10 });
+  } else {
+    playerBullets.push({
+      x: player.x + P_W / 2 - 1.5,
+      y: player.y,
+      w: 3, h: 10,
+    });
+  }
+  canShoot      = false;
+  shootCooldown = SHOOT_CD;
+  SFX.shoot();
+}
+
+// ── Disparo enemigo: el enemigo más bajo de una columna aleatoria
+function fireEnemyBullet() {
+  const bottom = {};
+  enemies.forEach(e => {
+    if (!e.alive) return;
+    if (!bottom[e.col] || e.row > bottom[e.col].row) bottom[e.col] = e;
+  });
+  const candidates = Object.values(bottom);
+  if (!candidates.length) return;
+  const e = candidates[Math.floor(Math.random() * candidates.length)];
+  enemyBullets.push({ x: e.x + E_W / 2 - 1.5, y: e.y + E_H, w: 3, h: 10 });
+}
+
+// ── Colisión AABB ─────────────────────────────────────────────
+function hits(a, b) {
+  return a.x < b.x + b.w && a.x + a.w > b.x &&
+         a.y < b.y + b.h && a.y + a.h > b.y;
+}
+
+// ── UPDATE ────────────────────────────────────────────────────
+let frame = 0;
+
+function update() {
+  if (state !== STATE.PLAYING) return;
+  frame++;
+
+  // Gamepad Input en juego
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  const pad = pads[0];
+  if (pad) {
+    keys['PadLeft']  = pad.axes[0] < -0.3 || pad.buttons[14]?.pressed;
+    keys['PadRight'] = pad.axes[0] >  0.3 || pad.buttons[15]?.pressed;
+    keys['PadAction'] = pad.buttons[0]?.pressed || pad.buttons[1]?.pressed || pad.buttons[2]?.pressed || pad.buttons[7]?.pressed;
+  }
+
+  // Reducir timers de power-ups
+  if (player.doubleShot > 0) player.doubleShot--;
+  if (player.shield > 0) player.shield--;
+
+  // Cooldown del disparo del jugador
+  if (!canShoot && --shootCooldown <= 0) canShoot = true;
+
+  // ── Movimiento del jugador ────────────────────────────────
+  if (player.alive) {
+    if (keys['ArrowLeft']  || keys['KeyA'] || keys['PadLeft'])  player.x -= P_SPEED;
+    if (keys['ArrowRight'] || keys['KeyD'] || keys['PadRight']) player.x += P_SPEED;
+    player.x = Math.max(0, Math.min(W - P_W, player.x));
+
+    // Disparo continuo
+    if ((keys['Space'] || keys['PadAction']) && canShoot) firePlayerBullet();
+  } else {
+    // Cuenta regresiva de muerte → game over
+    if (--player.deathTimer <= 0) {
+      if (score > hiScore) { hiScore = score; localStorage.setItem('si_hi', hiScore); }
+      state = STATE.GAMEOVER;
+    }
+  }
+
+  // ── Balas del jugador ─────────────────────────────────────
+  for (let i = playerBullets.length - 1; i >= 0; i--) {
+    const b = playerBullets[i];
+    b.y -= P_BULLET_V;
+    if (b.y + b.h < 0) { playerBullets.splice(i, 1); continue; }
+
+    // Colisión con enemigos
+    let hit = false;
+    for (let j = enemies.length - 1; j >= 0; j--) {
+      const e = enemies[j];
+      if (!e.alive || !hits(b, e)) continue;
+      e.alive = false;
+      aliveCount--;
+      score += e.points;
+      const col = [C.cyan, C.green, C.yellow][e.type];
+      spawnParticles(e.x + E_W / 2, e.y + E_H / 2, col, 14);
+
+      // Soltar Power-up (10%)
+      if (Math.random() < 0.1) {
+        powerups.push({
+          x: e.x + E_W / 2 - 8, y: e.y, w: 16, h: 16,
+          type: Math.random() < 0.5 ? 'DOUBLE' : 'SHIELD'
+        });
+      }
+
+      SFX.kill();
+      playerBullets.splice(i, 1);
+      hit = true;
+      break;
+    }
+    if (hit) continue;
+
+    // Colisión con búnkeres
+    for (let bk of bunkers) {
+      for (let block of bk) {
+        if (block.alive && hits(b, block)) {
+          block.alive = false;
+          playerBullets.splice(i, 1);
+          spawnParticles(block.x + 2, block.y + 2, C.green, 3);
+          hit = true;
+          break;
+        }
+      }
+      if (hit) break;
+    }
+  }
+
+  // ── Balas enemigas ────────────────────────────────────────
+  for (let i = enemyBullets.length - 1; i >= 0; i--) {
+    const b = enemyBullets[i];
+    b.y += E_BULLET_V;
+    if (b.y > H) { enemyBullets.splice(i, 1); continue; }
+
+    let hitBunker = false;
+    for (let bk of bunkers) {
+      for (let block of bk) {
+        if (block.alive && hits(b, block)) {
+          block.alive = false;
+          enemyBullets.splice(i, 1);
+          spawnParticles(block.x + 2, block.y + 2, C.green, 3);
+          SFX.bunkerHit();
+          hitBunker = true;
+          break;
+        }
+      }
+      if (hitBunker) break;
+    }
+    if (hitBunker) continue;
+
+    if (player.alive && hits(b, player)) {
+      if (player.shield > 0) {
+        enemyBullets.splice(i, 1);
+        SFX.shieldHit();
+        spawnParticles(player.x + P_W / 2, player.y + P_H / 2, C.cyan, 15);
+        player.shield = 0; // Se rompe tras un impacto
+      } else {
+        player.alive      = false;
+        player.deathTimer = 100;
+        spawnParticles(player.x + P_W / 2, player.y + P_H / 2, C.green, 30);
+        SFX.playerDie();
+        enemyBullets.splice(i, 1);
+      }
+    }
+  }
+
+  // ── Power-Ups ─────────────────────────────────────────────
+  for (let i = powerups.length - 1; i >= 0; i--) {
+    const p = powerups[i];
+    p.y += 2.5;
+    if (p.y > H) { powerups.splice(i, 1); continue; }
+
+    if (player.alive && hits(p, player)) {
+      if (p.type === 'DOUBLE') player.doubleShot = 600;
+      if (p.type === 'SHIELD') player.shield = 600;
+      SFX.powerup();
+      spawnParticles(p.x + 8, p.y + 8, p.type === 'DOUBLE' ? C.magenta : C.cyan, 10);
+      powerups.splice(i, 1);
+    }
+  }
+
+  // ── Movimiento de enemigos ────────────────────────────────
+  // El intervalo se reduce proporcionalmente a los enemigos vivos
+  const dynInterval = Math.max(5,
+    Math.floor(enemyBaseInterval * (aliveCount / (ROWS * COLS)))
+  );
+  if (++enemyMoveTimer >= dynInterval) {
+    enemyMoveTimer = 0;
+    enemyAnimFrame = 1 - enemyAnimFrame;
+    playMarch();
+
+    // Detectar si algún extremo toca el borde
+    let minX = W, maxX = 0;
+    enemies.forEach(e => {
+      if (!e.alive) return;
+      minX = Math.min(minX, e.x);
+      maxX = Math.max(maxX, e.x + E_W);
+    });
+
+    let drop = false;
+    if (enemyDir === 1  && maxX + 10 >= W - 10) { enemyDir = -1; drop = true; }
+    if (enemyDir === -1 && minX - 10 <= 10)      { enemyDir =  1; drop = true; }
+
+    enemies.forEach(e => {
+      if (!e.alive) return;
+      e.x += enemyDir * 10;
+      if (drop) e.y += 18;
+
+      // Búnkeres: Destruir al tocarlos
+      for (let bk of bunkers) {
+        for (let block of bk) {
+          if (block.alive && hits(e, block)) block.alive = false;
+        }
+      }
+
+      // Game over si alcanzan al jugador
+      if (e.y + E_H >= player.y || (player.alive && hits(e, player))) {
+        player.alive      = false;
+        player.deathTimer = 100;
+        spawnParticles(player.x + P_W / 2, player.y + P_H / 2, C.green, 30);
+        SFX.playerDie();
+      }
+    });
+  }
+
+  // ── Disparo enemigo periódico ──────────────────────────────
+  if (++enemyShootTimer >= 68) {
+    enemyShootTimer = 0;
+    if (aliveCount > 0) fireEnemyBullet();
+  }
+
+  // ── Partículas ────────────────────────────────────────────
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.08;
+    if ((p.life -= p.decay) <= 0) particles.splice(i, 1);
+  }
+
+  // ── Victoria ─────────────────────────────────────────────
+  if (aliveCount === 0) {
+    if (score > hiScore) { hiScore = score; localStorage.setItem('si_hi', hiScore); }
+    state = STATE.WIN;
+    SFX.win();
+  }
+}
+
+// ================================================================
+//  RENDER
+// ================================================================
+
+// Helpers de brillo (glow)
+function glow(color, blur = 12) { ctx.shadowColor = color; ctx.shadowBlur = blur; }
+function noGlow()                { ctx.shadowBlur = 0; }
+
+// Texto pixelado con efecto glow
+function pText(text, x, y, size, color, align = 'left') {
+  ctx.font      = `bold ${size}px "Courier New", monospace`;
+  ctx.textAlign = align;
+  ctx.fillStyle = color;
+  glow(color, size * 0.9);
+  ctx.fillText(text, x, y);
+  noGlow();
+}
+
+// ── Nave del jugador (dibujada con rectángulos) ───────────────
+function drawPlayer() {
+  if (!player.alive) {
+    // Parpadeo al morir
+    if (player.deathTimer % 8 < 4) {
+      ctx.fillStyle = C.red;
+      glow(C.red, 14);
+      ctx.fillRect(player.x + 8, player.y + 4, 24, 16);
+      noGlow();
+    }
+    return;
+  }
+
+  // Dibujar escudo si está activo
+  if (player.shield > 0) {
+    ctx.strokeStyle = `rgba(0, 229, 255, ${0.4 + Math.sin(frame * 0.1) * 0.4})`;
+    ctx.lineWidth = 3;
+    glow(C.cyan, 15);
+    ctx.beginPath();
+    ctx.arc(player.x + P_W / 2, player.y + P_H / 2 - 2, P_W / 1.3, 0, Math.PI * 2);
+    ctx.stroke();
+    noGlow();
+  }
+
+  ctx.fillStyle = C.green;
+  glow(C.green, 10);
+  // Cañón
+  ctx.fillRect(player.x + 18, player.y - 6,  4,  6);
+  // Cabina
+  ctx.fillRect(player.x + 12, player.y,      16,  6);
+  // Alas
+  ctx.fillRect(player.x + 4,  player.y + 6,  32,  6);
+  // Cuerpo principal
+  ctx.fillRect(player.x,      player.y + 12, 40,  8);
+  // Recortes laterales
+  ctx.clearRect(player.x + 2,       player.y + 16, 6, 4);
+  ctx.clearRect(player.x + P_W - 8, player.y + 16, 6, 4);
+  noGlow();
+}
+
+// ── Sprites pixel-art de enemigos (12×8 px, escala ×2) ────────
+//  Cada sprite: array de 96 bits (12 cols × 8 filas)
+const SPRITE_COLS = 12, SPRITE_ROWS = 8, PX = 2;
+
+const SPRITES = {
+  // Tipo 0 – Calamar (fila top, cyan)
+  0: [
+    [0,0,1,0,0,0,0,0,1,0,0,0,
+     0,0,0,1,0,0,0,1,0,0,0,0,
+     0,0,1,1,1,1,1,1,1,0,0,0,
+     0,1,1,0,1,1,1,0,1,1,0,0,
+     1,1,1,1,1,1,1,1,1,1,1,0,
+     1,0,1,1,1,1,1,1,1,0,1,0,
+     1,0,1,0,0,0,0,0,1,0,1,0,
+     0,0,0,1,1,0,1,1,0,0,0,0],
+    [0,0,1,0,0,0,0,0,1,0,0,0,
+     1,0,0,1,0,0,0,1,0,0,0,1,
+     1,0,1,1,1,1,1,1,1,0,0,1,
+     1,1,1,0,1,1,1,0,1,1,1,1,
+     0,1,1,1,1,1,1,1,1,1,1,0,
+     0,0,1,1,1,1,1,1,1,0,0,0,
+     0,0,1,0,0,0,0,0,1,0,0,0,
+     0,1,0,0,0,0,0,0,0,1,0,0],
+  ],
+  // Tipo 1 – Cangrejo (filas medias, verde)
+  1: [
+    [0,0,0,0,1,0,0,1,0,0,0,0,
+     0,0,0,1,0,0,0,0,1,0,0,0,
+     0,0,0,1,1,1,1,1,1,0,0,0,
+     0,0,1,1,0,1,1,0,1,1,0,0,
+     0,1,1,1,1,1,1,1,1,1,1,0,
+     0,1,0,1,1,1,1,1,1,0,1,0,
+     0,1,0,1,0,0,0,0,1,0,1,0,
+     0,0,0,0,1,0,0,1,0,0,0,0],
+    [0,0,0,0,1,0,0,1,0,0,0,0,
+     0,1,0,1,0,0,0,0,1,0,1,0,
+     0,1,0,1,1,1,1,1,1,0,1,0,
+     0,1,1,1,0,1,1,0,1,1,1,0,
+     0,0,1,1,1,1,1,1,1,1,0,0,
+     0,0,0,1,1,1,1,1,1,0,0,0,
+     0,0,0,1,0,0,0,0,1,0,0,0,
+     0,0,1,0,0,0,0,0,0,1,0,0],
+  ],
+  // Tipo 2 – Pulpo (filas bajas, amarillo)
+  2: [
+    [0,0,1,1,1,1,1,1,1,1,0,0,
+     0,1,1,1,1,1,1,1,1,1,1,0,
+     1,1,0,1,1,0,0,1,1,0,1,1,
+     1,1,1,1,1,1,1,1,1,1,1,1,
+     0,1,1,0,0,0,0,0,0,1,1,0,
+     0,0,1,1,0,0,0,0,1,1,0,0,
+     0,1,0,0,1,0,0,1,0,0,1,0,
+     1,0,0,0,0,0,0,0,0,0,0,1],
+    [0,0,1,1,1,1,1,1,1,1,0,0,
+     0,1,1,1,1,1,1,1,1,1,1,0,
+     1,1,0,1,1,0,0,1,1,0,1,1,
+     1,1,1,1,1,1,1,1,1,1,1,1,
+     0,1,1,0,0,0,0,0,0,1,1,0,
+     0,1,0,1,1,0,0,1,1,0,1,0,
+     1,0,0,0,0,1,1,0,0,0,0,1,
+     0,1,0,0,0,0,0,0,0,0,1,0],
+  ],
+};
+
+const E_COLORS = [C.cyan, C.green, C.yellow];
+
+function drawEnemy(e) {
+  const sprite = SPRITES[e.type][enemyAnimFrame];
+  const color  = E_COLORS[e.type];
+  ctx.fillStyle = color;
+  glow(color, 6);
+  // Offset para centrar el sprite (24×16) dentro del hitbox (32×24)
+  const ox = e.x + (E_W - SPRITE_COLS * PX) / 2;
+  const oy = e.y + (E_H - SPRITE_ROWS * PX) / 2;
+  for (let r = 0; r < SPRITE_ROWS; r++) {
+    for (let c = 0; c < SPRITE_COLS; c++) {
+      if (sprite[r * SPRITE_COLS + c]) {
+        ctx.fillRect(ox + c * PX, oy + r * PX, PX, PX);
+      }
+    }
+  }
+  noGlow();
+}
+
+// ── HUD (score, hi-score, enemigos) ──────────────────────────
+function drawHUD() {
+  // Separadores horizontales
+  ctx.strokeStyle = C.greenDim;
+  ctx.lineWidth   = 1;
+  ctx.beginPath(); ctx.moveTo(0, 36); ctx.lineTo(W, 36); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, H - 40); ctx.lineTo(W, H - 40); ctx.stroke();
+
+  pText(`SCORE: ${score}`,    20,     26, 13, C.green,  'left');
+  pText(`HI: ${hiScore}`,     W / 2,  26, 13, C.yellow, 'center');
+  pText(`ENEMIGOS: ${aliveCount}`, W - 20, 26, 13, C.cyan, 'right');
+
+  // Controles
+  ctx.fillStyle = C.greenDim;
+  ctx.font      = '11px "Courier New"';
+  ctx.textAlign = 'center';
+  ctx.fillText('← → MOVER   ESPACIO DISPARAR   ENTER REINICIAR', W / 2, H - 16);
+}
+
+// ── Pantalla de inicio ────────────────────────────────────────
+function drawMenu() {
+  ctx.textAlign = 'center';
+
+  // Título
+  glow(C.green, 35);
+  ctx.fillStyle = C.green;
+  ctx.font      = 'bold 58px "Courier New"';
+  ctx.fillText('SPACE', W / 2, 150);
+  ctx.fillText('INVADERS', W / 2, 220);
+  noGlow();
+
+  // Tabla de puntos
+  const table = [
+    { label: '■ ■  →  30 PTS', color: C.cyan },
+    { label: '▲ ▲  →  20 PTS', color: C.green },
+    { label: '● ●  →  10 PTS', color: C.yellow },
+  ];
+  table.forEach((row, i) => {
+    ctx.fillStyle = row.color;
+    ctx.font      = '15px "Courier New"';
+    glow(row.color, 8);
+    ctx.fillText(row.label, W / 2, 290 + i * 32);
+  });
+  noGlow();
+
+  // Botón parpadeante
+  if (frame % 72 < 46) {
+    glow(C.white, 12);
+    ctx.fillStyle = C.white;
+    ctx.font      = '17px "Courier New"';
+    ctx.fillText('PRESIONA  ENTER  O  ESPACIO  PARA  COMENZAR', W / 2, 420);
+    noGlow();
+  }
+
+  if (hiScore > 0) {
+    ctx.fillStyle = C.yellow;
+    ctx.font      = '13px "Courier New"';
+    ctx.fillText(`MEJOR PUNTAJE: ${hiScore}`, W / 2, 468);
+  }
+}
+
+// ── Pantalla de Game Over ─────────────────────────────────────
+function drawGameOver() {
+  ctx.textAlign = 'center';
+  glow(C.red, 40);
+  ctx.fillStyle = C.red;
+  ctx.font      = 'bold 58px "Courier New"';
+  ctx.fillText('GAME OVER', W / 2, H / 2 - 60);
+  noGlow();
+
+  ctx.fillStyle = C.white;
+  ctx.font      = '20px "Courier New"';
+  ctx.fillText(`PUNTAJE: ${score}`, W / 2, H / 2 + 4);
+
+  if (score > 0 && score >= hiScore) {
+    glow(C.yellow, 15);
+    ctx.fillStyle = C.yellow;
+    ctx.font      = '15px "Courier New"';
+    ctx.fillText('★  NUEVO RECORD  ★', W / 2, H / 2 + 44);
+    noGlow();
+  }
+
+  if (frame % 72 < 46) {
+    ctx.fillStyle = C.green;
+    ctx.font      = '15px "Courier New"';
+    ctx.fillText('PRESIONA ENTER PARA REINTENTAR', W / 2, H / 2 + 90);
+  }
+}
+
+// ── Pantalla de Victoria ─────────────────────────────────────
+function drawWin() {
+  ctx.textAlign = 'center';
+  glow(C.cyan, 40);
+  ctx.fillStyle = C.cyan;
+  ctx.font      = 'bold 52px "Courier New"';
+  ctx.fillText('¡GANASTE!', W / 2, H / 2 - 70);
+  noGlow();
+
+  ctx.fillStyle = C.green;
+  ctx.font      = '20px "Courier New"';
+  ctx.fillText(`PUNTAJE FINAL: ${score}`, W / 2, H / 2 - 10);
+
+  if (score > 0 && score >= hiScore) {
+    glow(C.yellow, 15);
+    ctx.fillStyle = C.yellow;
+    ctx.font      = '15px "Courier New"';
+    ctx.fillText('★  NUEVO RECORD  ★', W / 2, H / 2 + 36);
+    noGlow();
+  }
+
+  if (frame % 72 < 46) {
+    ctx.fillStyle = C.white;
+    ctx.font      = '15px "Courier New"';
+    ctx.fillText('PRESIONA ENTER PARA JUGAR DE NUEVO', W / 2, H / 2 + 90);
+  }
+}
+
+// ── Render principal ──────────────────────────────────────────
+function draw() {
+  // Fondo
+  ctx.fillStyle = C.bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Estrellas parpadeantes
+  STARS.forEach(s => {
+    s.a += s.da;
+    s.a  = Math.max(0.05, Math.min(0.75, s.a));
+    ctx.fillStyle = `rgba(57,255,70,${s.a * 0.35})`;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // Pantallas de estado (sin HUD de juego)
+  if (state === STATE.MENU)     { drawMenu();     return; }
+  if (state === STATE.GAMEOVER) { drawGameOver(); return; }
+  if (state === STATE.WIN)      { drawWin();      return; }
+
+  // ── Estado PLAYING ────────────────────────────────────────
+
+  // Búnkeres
+  ctx.fillStyle = C.green;
+  glow(C.greenDim, 5);
+  for (let bk of bunkers) {
+    for (let block of bk) {
+      if (block.alive) ctx.fillRect(block.x, block.y, block.w, block.h);
+    }
+  }
+  noGlow();
+
+  // Power-Ups
+  powerups.forEach(p => {
+    const color = p.type === 'DOUBLE' ? C.magenta : C.cyan;
+    ctx.fillStyle = color;
+    glow(color, 8);
+    ctx.fillRect(p.x, p.y, p.w, p.h);
+    ctx.fillStyle = C.bg;
+    ctx.font = 'bold 12px "Courier New"';
+    ctx.textAlign = 'center';
+    ctx.fillText(p.type === 'DOUBLE' ? 'D' : 'S', p.x + p.w / 2, p.y + 12);
+  });
+  noGlow();
+
+  // Enemigos
+  enemies.forEach(e => { if (e.alive) drawEnemy(e); });
+
+  // Nave del jugador
+  drawPlayer();
+
+  // Balas del jugador
+  glow(C.white, 10);
+  ctx.fillStyle = C.white;
+  playerBullets.forEach(b => ctx.fillRect(b.x, b.y, b.w, b.h));
+
+  // Balas enemigas (zigzag visual)
+  enemyBullets.forEach(b => {
+    ctx.fillStyle = C.red;
+    glow(C.red, 8);
+    const zz = Math.floor(b.y / 4) % 2 * 2;
+    ctx.fillRect(b.x + zz,     b.y,           b.w, b.h / 2);
+    ctx.fillRect(b.x - zz + 1, b.y + b.h / 2, b.w, b.h / 2);
+  });
+  noGlow();
+
+  // Partículas
+  particles.forEach(p => {
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle   = p.color;
+    ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+  });
+  ctx.globalAlpha = 1;
+
+  drawHUD();
+}
+
+// ── Loop principal ────────────────────────────────────────────
+function loop() {
+  // Gamepad polling para menús (inicio rápido)
+  const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  const pad = pads[0];
+  if (pad) {
+    const action = pad.buttons[0]?.pressed || pad.buttons[1]?.pressed || pad.buttons[2]?.pressed || pad.buttons[7]?.pressed || pad.buttons[9]?.pressed;
+    if (action && !prevPadAction) {
+      if (state === STATE.MENU || state === STATE.GAMEOVER || state === STATE.WIN) {
+        startGame();
+      }
+    }
+    prevPadAction = action;
+  }
+
+  update();
+  draw();
+  frame++;
+  requestAnimationFrame(loop);
+}
+
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

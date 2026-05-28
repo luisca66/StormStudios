@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cosmic Bubble Shooter - Premium Arcade</title>
+  
+  <!-- Tailwind CSS para la estructura e interfaz moderna -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Iconos Phosphor para botones de control -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Fuentes elegantes y retro de Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+      overflow-x: hidden;
+    }
+    .font-arcade {
+      font-family: 'Press Start 2P', monospace;
+    }
+    /* Filtro de pantalla CRT retro para el gabinete */
+    .crt-effect {
+      position: relative;
+    }
+    .crt-effect::after {
+      content: " ";
+      display: block;
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+      background-size: 100% 4px, 4px 100%;
+      pointer-events: none;
+      z-index: 10;
+      border-radius: 16px;
+    }
+    /* Resplandor neón pulsante */
+    @keyframes pulseGlow {
+      0%, 100% { filter: drop-shadow(0 0 5px #0ea5e9) drop-shadow(0 0 10px #0284c7); }
+      50% { filter: drop-shadow(0 0 10px #38bdf8) drop-shadow(0 0 20px #0ea5e9); }
+    }
+    .neon-pulse {
+      animation: pulseGlow 3s infinite alternate;
+    }
+    /* Animación de botones interactivos */
+    .btn-arcade {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-arcade:active {
+      transform: scale(0.95);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col items-center justify-between p-4 relative">
+
+  <header class="w-full max-w-lg flex items-center justify-between py-2 z-10 border-b border-sky-950/50 mb-4">
+    <div class="flex items-center gap-3">
+      <div class="bg-sky-950/40 p-2.5 rounded-2xl border border-sky-500/30 shadow-[0_0_15px_rgba(14,165,233,0.15)]">
+        <i class="ph-bold ph-aperture text-2xl text-sky-400 animate-spin" style="animation-duration: 8s;"></i>
+      </div>
+      <div>
+        <h1 class="text-base sm:text-xl font-arcade text-sky-400 tracking-wider neon-pulse">COSMIC BUBBLE</h1>
+        <p class="text-[9px] text-sky-500/80 font-bold uppercase tracking-widest mt-0.5 hidden sm:block">Sintetizador Físico Premium</p>
+      </div>
+    </div>
+    
+    <!-- Ajustes de Sonido -->
+    <div class="flex items-center gap-1.5 bg-sky-950/20 border border-sky-900/40 p-1 rounded-xl backdrop-blur-md">
+      <button id="toggle-bgm" class="px-2.5 py-1.5 rounded-lg bg-sky-950/50 border border-sky-500/20 text-[10px] font-semibold flex items-center gap-1 text-sky-400 hover:bg-sky-900/40 transition-all">
+        <i id="bgm-icon" class="ph-bold ph-music-note"></i> BGM: <span id="bgm-status">OFF</span>
+      </button>
+      <button id="toggle-sfx" class="px-2.5 py-1.5 rounded-lg bg-sky-950/50 border border-sky-500/20 text-[10px] font-semibold flex items-center gap-1 text-sky-400 hover:bg-sky-900/40 transition-all">
+        <i id="sfx-icon" class="ph-bold ph-speaker-high"></i> SFX: <span id="sfx-status">ON</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="w-full max-w-lg flex flex-col items-center justify-center gap-4 my-auto z-10">
+    
+    <!-- Cuadro de Información de Estado -->
+    <div class="w-full flex items-center justify-between bg-slate-950/80 border border-sky-950/60 p-3 rounded-2xl shadow-xl backdrop-blur-md">
+      <div class="flex flex-col">
+        <span class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">PUNTUACIÓN</span>
+        <span id="score" class="font-arcade text-lg text-emerald-400">00000</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <span class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">MÁXIMO</span>
+        <span id="high-score" class="font-arcade text-lg text-yellow-400">00000</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-[9px] text-slate-500 font-bold uppercase tracking-widest text-right leading-3">BOMBA<br>ACTIVA</span>
+        <div class="relative w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center overflow-hidden">
+          <div id="bomb-charge-ring" class="absolute inset-0 border-2 border-dashed border-red-500 rounded-full animate-spin hidden" style="animation-duration: 4s;"></div>
+          <i id="bomb-status-icon" class="ph-bold ph-fire text-slate-600 text-lg"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gabinete del Canvas -->
+    <div class="relative bg-slate-950 border-4 border-slate-800 rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(14,165,233,0.25)] w-full aspect-square max-w-[45vh] lg:max-w-[500px] mx-auto crt-effect">
+      <!-- Brillo del cristal del monitor CRT -->
+      <div class="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/[0.03] to-transparent pointer-events-none z-10"></div>
+      
+      <!-- Canvas de Juego -->
+      <canvas id="board" width="600" height="600" class="w-full h-full block bg-[#050914]"></canvas>
+
+      <!-- Pantalla de Inicio / Fin de Juego -->
+      <div id="game-overlay" class="absolute inset-0 bg-slate-950/90 backdrop-blur-md flex flex-col justify-center items-center p-6 z-20 text-center">
+        <div class="mb-4 text-sky-400 text-5xl filter drop-shadow-[0_0_10px_#0ea5e9]">
+          <i id="overlay-icon" class="ph-bold ph-game-controller"></i>
+        </div>
+        
+        <h2 id="overlay-title" class="font-arcade text-sm sm:text-base text-sky-400 mb-2 tracking-widest neon-pulse">COSMIC BUBBLES</h2>
+        <p id="overlay-subtitle" class="text-slate-400 max-w-xs text-xs mb-6">Dispara y alinea burbujas de energía cósmica. ¡Evita que la matriz toque la línea límite!</p>
+        
+        <!-- Estadísticas de Fin de Juego -->
+        <div id="overlay-stats" class="hidden flex flex-col items-center bg-sky-950/20 border border-sky-900/50 p-4 rounded-xl mb-6 font-arcade text-[10px] w-64">
+          <span class="text-slate-500 mb-1">PUNTUACIÓN LOGRADA</span>
+          <span id="overlay-stat-score" class="text-lg text-emerald-400">0</span>
+        </div>
+
+        <button onclick="startGame()" class="px-6 py-3 bg-gradient-to-r from-sky-500 to-indigo-500 text-slate-950 font-arcade font-bold text-xs tracking-wider rounded-xl hover:from-sky-400 hover:to-indigo-400 shadow-[0_0_20px_rgba(14,165,233,0.4)] transition-all active:scale-95">
+          INICIAR MATRIZ
+        </button>
+      </div>
+    </div>
+
+    <!-- Controles de Acción Rápidos de Burbuja -->
+    <div class="w-full grid grid-cols-3 gap-3">
+      <!-- Siguiente burbuja -->
+      <div class="bg-slate-950/60 border border-sky-950/50 rounded-2xl p-2.5 flex flex-col items-center justify-center">
+        <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider mb-1">SIGUIENTE</span>
+        <canvas id="next-preview" width="40" height="40" class="block bg-slate-900/40 rounded-full border border-sky-950/20"></canvas>
+      </div>
+
+      <!-- Botón SWAP (Intercambiar) -->
+      <button id="btn-swap" class="btn-arcade bg-gradient-to-b from-sky-950/50 to-indigo-950/50 border border-sky-500/30 rounded-2xl flex flex-col items-center justify-center text-sky-400 gap-1 hover:from-sky-900/40 hover:to-indigo-900/40">
+        <i class="ph-bold ph-arrows-left-right text-lg"></i>
+        <span class="text-[9px] font-arcade tracking-tighter">SWAP [C]</span>
+      </button>
+
+      <!-- Botón de Disparo Directo Automático (Para Móviles) -->
+      <button id="btn-shoot-aim" class="btn-arcade bg-gradient-to-b from-emerald-950/50 to-teal-950/50 border border-emerald-500/30 rounded-2xl flex flex-col items-center justify-center text-emerald-400 gap-1 hover:from-emerald-900/40 hover:to-teal-900/40">
+        <i class="ph-bold ph-crosshair text-lg"></i>
+        <span class="text-[9px] font-arcade tracking-tighter">APUNTAR</span>
+      </button>
+    </div>
+  </main>
+
+  <footer class="w-full max-w-lg flex flex-col items-center gap-2 mt-4 z-10 px-4">
+    <div class="text-[9px] text-sky-600/60 font-semibold uppercase tracking-wider text-center">
+      Cosmic Bubble Shooter © 2026 • Audio y Física Procedural<br>
+      <span class="opacity-75">Juego independiente inspirado en mecánicas clásicas de arcade. Desarrollado con tecnología web moderna sin afiliación con las marcas originales.</span>
+    </div>
+  </footer>
+
+  <script>
+    const canvas = document.getElementById('board');
+    const ctx = canvas.getContext('2d');
+    const TILE = 50;
+    const ROWS = 12;
+    const COLS = 12; // 600 / 50 = 12
+
+    // Canvas Auxiliar de Siguiente Burbuja
+    const nextCanvas = document.getElementById('next-preview');
+    const nextCtx = nextCanvas.getContext('2d');
+
+    // Paleta de Colores Neón Vivos (3D radiales)
+    const COLOR_PALETTE = {
+      '#ef4444': { main: '#ef4444', dark: '#991b1b', light: '#fca5a5', glow: 'rgba(239, 68, 68, 0.6)' },     // Rojo
+      '#3b82f6': { main: '#3b82f6', dark: '#1e40af', light: '#93c5fd', glow: 'rgba(59, 130, 246, 0.6)' },    // Azul
+      '#10b981': { main: '#10b981', dark: '#065f46', light: '#6ee7b7', glow: 'rgba(16, 185, 129, 0.6)' },    // Verde
+      '#f59e0b': { main: '#f59e0b', dark: '#92400e', light: '#fde047', glow: 'rgba(245, 158, 11, 0.6)' },    // Amarillo/Naranja
+      '#8b5cf6': { main: '#8b5cf6', dark: '#5b21b6', light: '#c084fc', glow: 'rgba(139, 92, 246, 0.6)' },    // Morado
+      '#ec4899': { main: '#ec4899', dark: '#9d174d', light: '#fbcfe8', glow: 'rgba(236, 72, 153, 0.6)' },    // Rosa (Nuevo)
+      '#00ffff': { main: '#00ffff', dark: '#008b8b', light: '#e0ffff', glow: 'rgba(0, 255, 255, 0.6)' }      // Turquesa / Bomba (Especial)
+    };
+
+    const COLORS = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
+
+    // Variables de Estado Lógico
+    let grid = [];
+    let bullet = null;
+    let currentBubbleColor = '';
+    let nextBubbleColor = '';
+    let score = 0;
+    let highScore = parseInt(localStorage.getItem('cosmic_bubble_highscore')) || 0;
+    let isGameOver = true;
+    let mouseAngle = -Math.PI / 2;
+    let bombCharges = 0; // Carga para burbuja explosiva
+    const bombRequirement = 800; // Puntos necesarios para obtener una bomba
+
+    // Arrays para efectos de partículas y textos flotantes
+    let particles = [];
+    let floatingTexts = [];
+    let fallingBubbles = []; // Burbujas que caen físicamente cuando se desconectan
+
+    // Actualizar interfaz inicial
+    document.getElementById('high-score').innerText = String(highScore).padStart(5, '0');
+
+    let audioCtx = null;
+    let sfxEnabled = true;
+    let bgmEnabled = false;
+    let bgmIntervalId = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playTone(freq, type, duration, vol = 0.05, rampType = 'exponential') {
+      if (!sfxEnabled) return;
+      initAudio();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+        if (rampType === 'exponential') {
+          gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        } else {
+          gainNode.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        }
+        
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn("Contexto de audio bloqueado.");
+      }
+    }
+
+    const sounds = {
+      shoot: () => {
+        // Barrido ascendente láser (Pew!)
+        if (!sfxEnabled) return;
+        initAudio();
+        try {
+          const osc = audioCtx.createOscillator();
+          const gainNode = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(950, audioCtx.currentTime + 0.15);
+          gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+          osc.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.15);
+        } catch(e){}
+      },
+      pop: (isHeavy = false) => {
+        if (isHeavy) {
+          // Explosión de bomba pesada
+          playTone(180, 'sawtooth', 0.4, 0.15, 'linear');
+          setTimeout(() => playTone(80, 'sine', 0.5, 0.2), 50);
+        } else {
+          // Sonido sutil acuático de burbuja rompiéndose
+          playTone(700, 'triangle', 0.08, 0.08);
+          setTimeout(() => playTone(1200, 'sine', 0.05, 0.05), 30);
+        }
+      },
+      snap: () => playTone(350, 'triangle', 0.04, 0.05),
+      swap: () => {
+        playTone(450, 'sine', 0.05, 0.04);
+        setTimeout(() => playTone(300, 'sine', 0.05, 0.04), 40);
+      },
+      bombCharged: () => {
+        playTone(300, 'sine', 0.1, 0.08);
+        setTimeout(() => playTone(600, 'sine', 0.1, 0.08), 80);
+        setTimeout(() => playTone(1200, 'sine', 0.3, 0.15), 160);
+      },
+      gameOver: () => {
+        playTone(250, 'sawtooth', 0.4, 0.1);
+        setTimeout(() => playTone(180, 'sawtooth', 0.5, 0.1), 350);
+        setTimeout(() => playTone(120, 'sawtooth', 0.9, 0.15), 700);
+      }
+    };
+
+    const bgmNotes = [
+      261.63, 293.66, 311.13, 349.23, 392.00, 349.23, 311.13, 293.66, // Melodía acuática en escala menor
+      311.13, 349.23, 392.00, 440.00, 466.16, 440.00, 392.00, 349.23
+    ];
+    let bgmStep = 0;
+
+    function playBgmBeat() {
+      if (!bgmEnabled) return;
+      initAudio();
+      try {
+        // Melodía principal burbujeante (Onda triangular)
+        const note = bgmNotes[bgmStep];
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(note, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.012, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.25);
+
+        // Sub-bajo rítmico complementario
+        const subOsc = audioCtx.createOscillator();
+        const subGain = audioCtx.createGain();
+        subOsc.type = 'sine';
+        subOsc.frequency.setValueAtTime(note / 2, audioCtx.currentTime);
+        subGain.gain.setValueAtTime(0.015, audioCtx.currentTime);
+        subGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
+        subOsc.connect(subGain);
+        subGain.connect(audioCtx.destination);
+        subOsc.start();
+        subOsc.stop(audioCtx.currentTime + 0.25);
+
+        bgmStep = (bgmStep + 1) % bgmNotes.length;
+      } catch (e) {}
+    }
+
+    function startBgm() {
+      stopBgm();
+      bgmIntervalId = setInterval(playBgmBeat, 240); // 240 ms por pulso
+    }
+
+    function stopBgm() {
+      if (bgmIntervalId) {
+        clearInterval(bgmIntervalId);
+        bgmIntervalId = null;
+      }
+    }
+
+    // Vinculación de Controles de Audio en UI
+    const toggleBgmBtn = document.getElementById('toggle-bgm');
+    const toggleSfxBtn = document.getElementById('toggle-sfx');
+    const bgmStatus = document.getElementById('bgm-status');
+    const sfxStatus = document.getElementById('sfx-status');
+    const bgmIcon = document.getElementById('bgm-icon');
+    const sfxIcon = document.getElementById('sfx-icon');
+
+    toggleBgmBtn.addEventListener('click', () => {
+      bgmEnabled = !bgmEnabled;
+      bgmStatus.innerText = bgmEnabled ? 'ON' : 'OFF';
+      if (bgmEnabled) {
+        bgmIcon.className = 'ph-bold ph-music-notes text-sky-400';
+        toggleBgmBtn.classList.remove('bg-sky-950/50');
+        toggleBgmBtn.classList.add('bg-sky-500/20');
+        initAudio();
+        startBgm();
+      } else {
+        bgmIcon.className = 'ph-bold ph-music-note';
+        toggleBgmBtn.classList.add('bg-sky-950/50');
+        toggleBgmBtn.classList.remove('bg-sky-500/20');
+        stopBgm();
+      }
+    });
+
+    toggleSfxBtn.addEventListener('click', () => {
+      sfxEnabled = !sfxEnabled;
+      sfxStatus.innerText = sfxEnabled ? 'ON' : 'OFF';
+      if (sfxEnabled) {
+        sfxIcon.className = 'ph-bold ph-speaker-high text-sky-400';
+        toggleSfxBtn.classList.remove('bg-sky-950/50');
+        toggleSfxBtn.classList.add('bg-sky-500/20');
+      } else {
+        sfxIcon.className = 'ph-bold ph-speaker-x';
+        toggleSfxBtn.classList.add('bg-sky-950/50');
+        toggleSfxBtn.classList.remove('bg-sky-500/20');
+      }
+    });
+
+    function spawnParticles(x, y, color, count = 12, isExplosion = false) {
+      const palette = COLOR_PALETTE[color] || { main: '#ffffff', glow: 'rgba(255,255,255,0.5)' };
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = isExplosion ? (Math.random() * 6 + 4) : (Math.random() * 3 + 1);
+        particles.push({
+          x: x,
+          y: y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - (isExplosion ? 1 : 0.5),
+          size: Math.random() * (isExplosion ? 5 : 3) + 2,
+          color: palette.main,
+          glow: palette.glow,
+          alpha: 1,
+          decay: Math.random() * 0.03 + 0.015,
+          gravity: isExplosion ? 0.12 : 0.05
+        });
+      }
+    }
+
+    function spawnFloatingText(x, y, text, color = '#38bdf8') {
+      floatingTexts.push({
+        x: x,
+        y: y,
+        text: text,
+        color: color,
+        alpha: 1,
+        vy: -0.8,
+        life: 45
+      });
+    }
+
+    function updateParticlesAndTexts() {
+      // Actualizar partículas
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.alpha -= p.decay;
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+
+      // Actualizar textos flotantes
+      for (let i = floatingTexts.length - 1; i >= 0; i--) {
+        const t = floatingTexts[i];
+        t.y += t.vy;
+        t.alpha -= 1 / t.life;
+        if (t.alpha <= 0) {
+          floatingTexts.splice(i, 1);
+        }
+      }
+
+      // Actualizar burbujas que caen libres
+      for (let i = fallingBubbles.length - 1; i >= 0; i--) {
+        const fb = fallingBubbles[i];
+        fb.x += fb.vx;
+        fb.y += fb.vy;
+        fb.vy += 0.35; // Gravedad real
+        fb.angle += fb.spinSpeed;
+        
+        // Desaparecen si salen de la pantalla
+        if (fb.y > canvas.height + TILE) {
+          fallingBubbles.splice(i, 1);
+        }
+      }
+    }
+
+    function initGrid() {
+      grid = [];
+      for (let r = 0; r < ROWS; r++) {
+        let row = [];
+        for (let c = 0; c < COLS; c++) {
+          // Llenar las primeras 4 filas con burbujas de colores aleatorios
+          if (r < 4) {
+            row.push(getRandomColor());
+          } else {
+            row.push(null);
+          }
+        }
+        grid.push(row);
+      }
+    }
+
+    function getRandomColor() {
+      return COLORS[Math.floor(Math.random() * COLORS.length)];
+    }
+
+    function startGame() {
+      initAudio();
+      score = 0;
+      bombCharges = 0;
+      isGameOver = false;
+      bullet = null;
+      particles = [];
+      floatingTexts = [];
+      fallingBubbles = [];
+
+      document.getElementById('game-over').classList.add('hidden');
+      document.getElementById('overlay-stats').classList.add('hidden');
+      document.getElementById('score').innerText = String(score).padStart(5, '0');
+      
+      initGrid();
+      currentBubbleColor = getRandomColor();
+      nextBubbleColor = getRandomColor();
+
+      // Desactivar UI de cargador de bomba
+      updateBombUI();
+      drawNextPreview();
+
+      if (bgmEnabled) {
+        startBgm();
+      }
+
+      requestAnimationFrame(loop);
+    }
+
+    function getNeighbors(r, c) {
+      const dirs = [
+        [-1, 0], [1, 0], [0, -1], [0, 1]
+      ];
+      let res = [];
+      dirs.forEach(d => {
+        let nr = r + d[0];
+        let nc = c + d[1];
+        if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
+          res.push({ r: nr, c: nc });
+        }
+      });
+      return res;
+    }
+
+    // Flood Fill para buscar burbujas adyacentes conectadas del mismo color
+    function floodFill(r, c, color, visited) {
+      let stack = [{ r, c }];
+      visited[r][c] = true;
+      let matching = [{ r, c }];
+      
+      while (stack.length > 0) {
+        let curr = stack.pop();
+        let nbs = getNeighbors(curr.r, curr.c);
+        nbs.forEach(nb => {
+          if (!visited[nb.r][nb.c] && grid[nb.r][nb.c] === color) {
+            visited[nb.r][nb.c] = true;
+            stack.push({ r: nb.r, c: nb.c });
+            matching.push({ r: nb.r, c: nb.c });
+          }
+        });
+      }
+      return matching;
+    }
+
+    // Quitar del tablero las burbujas que se queden flotando (sin conexión al techo)
+    function removeFloating() {
+      let visited = Array.from({ length: ROWS }, () => Array(COLS).fill(false));
+      let stack = [];
+      
+      // Empezar buscando desde el techo (fila 0)
+      for (let c = 0; c < COLS; c++) {
+        if (grid[0][c]) {
+          stack.push({ r: 0, c: c });
+          visited[0][c] = true;
+        }
+      }
+      
+      // BFS/DFS de todas las conectadas al techo
+      while (stack.length > 0) {
+        let curr = stack.pop();
+        getNeighbors(curr.r, curr.c).forEach(nb => {
+          if (!visited[nb.r][nb.c] && grid[nb.r][nb.c]) {
+            visited[nb.r][nb.c] = true;
+            stack.push(nb);
+          }
+        });
+      }
+      
+      // Aquellas que no tengan conexión pasarán al estado físico de "caída"
+      let removedCount = 0;
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          if (grid[r][c] && !visited[r][c]) {
+            const color = grid[r][c];
+            grid[r][c] = null;
+            removedCount++;
+
+            // Lanzar burbuja flotante al motor físico
+            fallingBubbles.push({
+              x: c * TILE + TILE/2,
+              y: r * TILE + TILE/2,
+              vx: (Math.random() - 0.5) * 3,
+              vy: -Math.random() * 2,
+              color: color,
+              angle: 0,
+              spinSpeed: (Math.random() - 0.5) * 0.1
+            });
+
+            // Generar chispas
+            spawnParticles(c * TILE + TILE/2, r * TILE + TILE/2, color, 4);
+          }
+        }
+      }
+
+      if (removedCount > 0) {
+        const addedPoints = removedCount * 20;
+        score += addedPoints;
+        sounds.pop();
+        
+        // Mostrar texto flotante del combo acumulado
+        const comboX = canvas.width / 2;
+        const comboY = 200;
+        spawnFloatingText(comboX, comboY, `¡FLOTANTE! +${addedPoints}`, '#a855f7');
+      }
+    }
+
+    function handleBombExplosion(targetR, targetC) {
+      sounds.pop(true);
+      
+      // Destruir todas las burbujas en un radio de 2 de distancia
+      let destroyedCount = 0;
+      const radius = 2;
+
+      for (let r = Math.max(0, targetR - radius); r <= Math.min(ROWS - 1, targetR + radius); r++) {
+        for (let c = Math.max(0, targetC - radius); c <= Math.min(COLS - 1, targetC + radius); c++) {
+          if (grid[r][c]) {
+            const col = grid[r][c];
+            grid[r][c] = null;
+            destroyedCount++;
+            
+            // Explosión masiva de partículas para cada burbuja eliminada
+            spawnParticles(c * TILE + TILE/2, r * TILE + TILE/2, col, 15, true);
+          }
+        }
+      }
+
+      // Añadir puntaje masivo de la bomba
+      const bombPoints = destroyedCount * 15;
+      score += bombPoints;
+      spawnFloatingText(targetC * TILE + TILE/2, targetR * TILE + TILE/2, `¡BUM! +${bombPoints}`, '#f59e0b');
+
+      removeFloating();
+      document.getElementById('score').innerText = String(score).padStart(5, '0');
+    }
+
+    function snapBullet() {
+      // Encontrar la celda de la rejilla más cercana
+      let br = Math.floor(bullet.y / TILE);
+      let bc = Math.floor(bullet.x / TILE);
+      
+      if (br < 0) br = 0;
+      if (br >= ROWS) br = ROWS - 1;
+      if (bc < 0) bc = 0;
+      if (bc >= COLS) bc = COLS - 1;
+
+      // Si la celda destino ya está ocupada, buscar espacio vacío alrededor
+      if (grid[br][bc] !== null) {
+        let found = false;
+        // Revisar fila de abajo e inmediatas
+        if (br + 1 < ROWS && grid[br + 1][bc] === null) {
+          br = br + 1;
+          found = true;
+        } else if (bc + 1 < COLS && grid[br][bc + 1] === null) {
+          bc = bc + 1;
+          found = true;
+        } else if (bc - 1 >= 0 && grid[br][bc - 1] === null) {
+          bc = bc - 1;
+          found = true;
+        }
+        
+        // Si no se pudo ubicar debido a que está totalmente lleno el tablero: Juego Terminado
+        if (!found) {
+          triggerGameOver();
+          bullet = null;
+          return;
+        }
+      }
+
+      // --- COMPORTAMIENTO SI EL TIRO FUE UNA BOMBA ---
+      if (bullet.isBomb) {
+        handleBombExplosion(br, bc);
+        bullet = null;
+        prepareNextTurn();
+        return;
+      }
+
+      // Ubicar burbuja normal en la matriz
+      grid[br][bc] = bullet.color;
+      bullet = null;
+      sounds.snap();
+
+      // Lanzar partículas del encastre
+      spawnParticles(bc * TILE + TILE/2, br * TILE + TILE/2, grid[br][bc], 8);
+      
+      // Comprobación de combinaciones de color
+      let visited = Array.from({ length: ROWS }, () => Array(COLS).fill(false));
+      let matches = floodFill(br, bc, grid[br][bc], visited);
+      
+      if (matches.length >= 3) {
+        sounds.pop();
+        matches.forEach(m => {
+          const col = grid[m.r][m.c];
+          grid[m.r][m.c] = null;
+          score += 10;
+          bombCharges += 10; // Cargar la habilidad explosiva
+
+          // Partículas de estallido
+          spawnParticles(m.c * TILE + TILE/2, m.r * TILE + TILE/2, col, 12);
+        });
+
+        // Crear texto flotante de los puntos ganados
+        spawnFloatingText(bc * TILE + TILE/2, br * TILE + TILE/2, `+${matches.length * 10}`, '#38bdf8');
+        
+        // Eliminar burbujas sueltas
+        removeFloating();
+      }
+
+      // Actualizar interfaz del puntaje
+      document.getElementById('score').innerText = String(score).padStart(5, '0');
+      updateBombUI();
+
+      // Comprobar si las burbujas llegaron al límite inferior (Fila ROWS-1)
+      for (let c = 0; c < COLS; c++) {
+        if (grid[ROWS - 1][c] !== null) {
+          triggerGameOver();
+          return;
+        }
+      }
+
+      prepareNextTurn();
+    }
+
+    function prepareNextTurn() {
+      // Rotar munición de burbujas
+      currentBubbleColor = nextBubbleColor;
+      nextBubbleColor = getRandomColor();
+      drawNextPreview();
+    }
+
+    function triggerGameOver() {
+      isGameOver = true;
+      stopBgm();
+      sounds.gameOver();
+
+      // Guardar puntaje récord
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('cosmic_bubble_highscore', highScore);
+        document.getElementById('high-score').innerText = String(highScore).padStart(5, '0');
+      }
+
+      // Configurar visual del Overlay
+      document.getElementById('overlay-icon').className = 'ph-bold ph-skull text-rose-500 animate-bounce';
+      document.getElementById('overlay-title').innerText = "MATRIZ COLAPSADA";
+      document.getElementById('overlay-title').classList.remove('text-sky-400');
+      document.getElementById('overlay-title').classList.add('text-rose-500');
+      document.getElementById('overlay-subtitle').innerText = "Las burbujas llegaron al núcleo. Limpia rápido tus filas para evitar la sobrecarga cósmica.";
+      
+      document.getElementById('overlay-stat-score').innerText = score;
+      document.getElementById('overlay-stats').classList.remove('hidden');
+      document.getElementById('game-over').classList.remove('hidden');
+    }
+
+    function updateBombUI() {
+      const chargePercent = Math.min(100, (bombCharges / bombRequirement) * 100);
+      const ring = document.getElementById('bomb-charge-ring');
+      const icon = document.getElementById('bomb-status-icon');
+
+      if (chargePercent >= 100) {
+        ring.classList.remove('hidden');
+        ring.classList.add('border-red-500');
+        icon.className = 'ph-bold ph-fire text-red-500 animate-pulse';
+        
+        // Sonar alerta de habilidad cargada
+        if (bombCharges === bombRequirement) {
+          sounds.bombCharged();
+        }
+      } else {
+        ring.classList.add('hidden');
+        icon.className = 'ph-bold ph-fire text-slate-700';
+      }
+    }
+
+    function drawBubble(ctxRef, x, y, color, scale = 1, isPowerUp = false) {
+      const size = TILE;
+      const radius = (size / 2 - 2) * scale;
+      const palette = COLOR_PALETTE[color] || { main: color, dark: '#000', light: '#fff', glow: 'rgba(255,255,255,0.2)' };
+
+      ctxRef.save();
+
+      // Efecto de resplandor neón exterior de la burbuja
+      ctxRef.shadowBlur = isPowerUp ? 15 : 6;
+      ctxRef.shadowColor = palette.main;
+
+      // Crear gradiente radial simulando profundidad esférica 3D
+      const gradient = ctxRef.createRadialGradient(
+        x + size / 2 - radius / 3, // Luz que viene desde arriba a la izquierda
+        y + size / 2 - radius / 3,
+        radius * 0.1,
+        x + size / 2,
+        y + size / 2,
+        radius
+      );
+
+      gradient.addColorStop(0, palette.light);
+      gradient.addColorStop(0.3, palette.main);
+      gradient.addColorStop(1, palette.dark);
+
+      ctxRef.fillStyle = gradient;
+      ctxRef.beginPath();
+      ctxRef.arc(x + size / 2, y + size / 2, radius, 0, Math.PI * 2);
+      ctxRef.fill();
+      
+      // Quitar brillo externo para dibujar los destellos internos nítidos
+      ctxRef.shadowBlur = 0;
+
+      // Destello de especularidad (Reflejo blanco de cristal de la bombilla)
+      ctxRef.fillStyle = 'rgba(255, 255, 255, 0.4)';
+      ctxRef.beginPath();
+      ctxRef.ellipse(
+        x + size / 2 - radius / 3,
+        y + size / 2 - radius / 3,
+        radius * 0.35,
+        radius * 0.18,
+        -Math.PI / 4,
+        0,
+        Math.PI * 2
+      );
+      ctxRef.fill();
+
+      // Sutil aro de contorno exterior metálico retro
+      ctxRef.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctxRef.lineWidth = 1;
+      ctxRef.beginPath();
+      ctxRef.arc(x + size / 2, y + size / 2, radius, 0, Math.PI * 2);
+      ctxRef.stroke();
+
+      // Si es burbuja bomba de poder, dibujar icono interior
+      if (isPowerUp) {
+        ctxRef.fillStyle = '#ffffff';
+        ctxRef.font = 'bold 20px "Outfit"';
+        ctxRef.textAlign = 'center';
+        ctxRef.textBaseline = 'middle';
+        ctxRef.fillText('🔥', x + size / 2, y + size / 2);
+      }
+
+      ctxRef.restore();
+    }
+
+    function drawNextPreview() {
+      nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+      // Ajustar escala interna para que entre en la previsualización chica
+      nextCtx.save();
+      nextCtx.scale(40 / TILE, 40 / TILE);
+      drawBubble(nextCtx, 0, 0, nextBubbleColor);
+      nextCtx.restore();
+    }
+
+    function drawLaserGuide(startX, startY, angle) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([5, 8]); // Línea discontinua cibernética
+
+      let x = startX;
+      let y = startY;
+      let vx = Math.cos(angle);
+      let vy = Math.sin(angle);
+      
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+
+      // Trazar rebotes
+      for (let bounce = 0; bounce < 3; bounce++) {
+        // Encontrar intersección con las paredes laterales del gabinete (x=0 y x=canvas.width)
+        let tWall = Infinity;
+        if (vx > 0) {
+          tWall = (canvas.width - TILE/2 - x) / vx;
+        } else if (vx < 0) {
+          tWall = (TILE/2 - x) / vx;
+        }
+
+        // Intersección con el techo (y=0)
+        let tCeiling = -y / vy;
+
+        // Seleccionar la colisión más cercana en el tiempo
+        let t = Math.min(tWall, tCeiling);
+
+        // Si es mayor a la altura o inválido, limitar
+        if (t <= 0) break;
+
+        // Mover guía láser al punto de intersección
+        x += vx * t;
+        y += vy * t;
+        ctx.lineTo(x, y);
+
+        // Si golpeó el techo, terminar guía
+        if (t === tCeiling) {
+          break;
+        }
+
+        // Si golpeó una pared, rebotar el vector X
+        vx *= -1;
+      }
+      
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function triggerSwap() {
+      if (isGameOver) return;
+      sounds.swap();
+      
+      const temp = currentBubbleColor;
+      currentBubbleColor = nextBubbleColor;
+      nextBubbleColor = temp;
+
+      drawNextPreview();
+
+      // Efecto visual de intercambio en pantalla
+      spawnParticles(canvas.width / 2, canvas.height - 40, currentBubbleColor, 6);
+    }
+
+    // Vinculación del Botón Táctil de Intercambio
+    document.getElementById('btn-swap').addEventListener('click', triggerSwap);
+
+    function loop() {
+      if (isGameOver) return;
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // --- 1. DIBUJAR LÍNEA LÍMITE DE SEGURIDAD RETRO ---
+      ctx.save();
+      ctx.strokeStyle = 'rgba(239, 68, 68, 0.4)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([10, 5]);
+      ctx.beginPath();
+      ctx.moveTo(0, (ROWS - 1) * TILE);
+      ctx.lineTo(canvas.width, (ROWS - 1) * TILE);
+      ctx.stroke();
+      ctx.restore();
+
+      // --- 2. DIBUJAR CUADRÍCULA DE BURBUJAS FIJAS ---
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          if (grid[r][c]) {
+            // Animación sutil oscilatoria en las burbujas quietas
+            const wobbleY = Math.sin(Date.now() / 350 + (r * c)) * 1.5;
+            drawBubble(ctx, c * TILE, r * TILE + wobbleY, grid[r][c]);
+          }
+        }
+      }
+
+      // --- 3. DIBUJAR BURBUJAS FÍSICAS QUE CAEN AL VACÍO ---
+      fallingBubbles.forEach(fb => {
+        ctx.save();
+        drawBubble(ctx, fb.x - TILE/2, fb.y - TILE/2, fb.color, 0.9);
+        ctx.restore();
+      });
+
+      // --- 4. CONFIGURAR CAÑÓN, BASE Y GUÍA LÁSER ---
+      const cx = canvas.width / 2;
+      const cy = canvas.height - 35;
+      
+      // Mostrar guía láser de disparo
+      if (!bullet) {
+        drawLaserGuide(cx, cy, mouseAngle);
+      }
+
+      // Dibujar la base del cañón (Soporte holográfico)
+      ctx.save();
+      ctx.fillStyle = '#0f172a';
+      ctx.strokeStyle = '#0ea5e9';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 35, Math.PI, 0);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      // Burbuja lista para disparar (Arma cargada)
+      if (!bullet) {
+        const isCharged = (bombCharges >= bombRequirement);
+        drawBubble(ctx, cx - TILE/2, cy - TILE/2, isCharged ? '#00ffff' : currentBubbleColor, 1.1, isCharged);
+      }
+
+      // --- 5. LOGICA DE DESPLAZAMIENTO DEL DISPARO (BULLET) ---
+      if (bullet) {
+        bullet.x += bullet.vx;
+        bullet.y += bullet.vy;
+        
+        // Rebote elástico contra paredes laterales
+        if (bullet.x < 0) {
+          bullet.vx *= -1;
+          bullet.x = 0;
+          sounds.snap();
+        } else if (bullet.x > canvas.width - TILE) {
+          bullet.vx *= -1;
+          bullet.x = canvas.width - TILE;
+          sounds.snap();
+        }
+
+        // Colisión superior o contra techo directo
+        if (bullet.y <= 0) {
+          snapBullet();
+        } else {
+          // Comprobar colisiones circulares exactas con burbujas existentes
+          let hit = false;
+          const bulletCenterX = bullet.x + TILE/2;
+          const bulletCenterY = bullet.y + TILE/2;
+
+          for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+              if (grid[r][c]) {
+                const targetCenterX = c * TILE + TILE/2;
+                const targetCenterY = r * TILE + TILE/2;
+
+                // Distancia euclídea al centro
+                const distance = Math.hypot(bulletCenterX - targetCenterX, bulletCenterY - targetCenterY);
+                if (distance < TILE - 4) {
+                  hit = true;
+                  break;
+                }
+              }
+            }
+            if (hit) break;
+          }
+
+          if (hit) {
+            snapBullet();
+          }
+        }
+
+        // Renderizar proyectil en vuelo
+        if (bullet) {
+          drawBubble(ctx, bullet.x, bullet.y, bullet.isBomb ? '#00ffff' : bullet.color, 1, bullet.isBomb);
+          
+          // Dejar pequeña estela de partículas al volar
+          if (Math.random() < 0.4) {
+            spawnParticles(bullet.x + TILE/2, bullet.y + TILE/2, bullet.isBomb ? '#00ffff' : bullet.color, 1);
+          }
+        }
+      }
+
+      // --- 6. RENDERIZAR EFECTOS DE PARTÍCULAS Y TEXTOS ---
+      updateParticlesAndTexts();
+
+      // Dibujar partículas
+      particles.forEach(p => {
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = p.glow;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // Dibujar textos flotantes (Puntos y Combo)
+      floatingTexts.forEach(t => {
+        ctx.save();
+        ctx.globalAlpha = t.alpha;
+        ctx.fillStyle = t.color;
+        ctx.font = 'bold 11px "Press Start 2P"';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+        ctx.shadowBlur = 4;
+        ctx.textAlign = 'center';
+        ctx.fillText(t.text, t.x, t.y);
+        ctx.restore();
+      });
+
+      // Continuar con el siguiente frame
+      requestAnimationFrame(loop);
+    }
+
+    
+    // Convertir coordenadas del ratón/toque a ángulo de disparo
+    function updateAngleFromCoords(mx, my) {
+      const cx = canvas.width / 2;
+      const cy = canvas.height - 35;
+      mouseAngle = Math.atan2(my - cy, mx - cx);
+      
+      // Limitar el ángulo para que no dispare hacia abajo
+      if (mouseAngle > -0.15) mouseAngle = -0.15;
+      if (mouseAngle < -Math.PI + 0.15) mouseAngle = -Math.PI + 0.15;
+    }
+
+    canvas.addEventListener('mousemove', e => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const my = (e.clientY - rect.top) * (canvas.height / rect.height);
+      updateAngleFromCoords(mx, my);
+    });
+
+    // Disparar burbuja cargada
+    function executeShoot() {
+      if (isGameOver || bullet) return;
+      initAudio();
+
+      sounds.shoot();
+
+      const isCharged = (bombCharges >= bombRequirement);
+      bullet = {
+        x: canvas.width / 2 - TILE / 2,
+        y: canvas.height - 35 - TILE / 2,
+        vx: Math.cos(mouseAngle) * 13,
+        vy: Math.sin(mouseAngle) * 13,
+        color: currentBubbleColor,
+        isBomb: isCharged
+      };
+
+      // Si se disparó la bomba, reiniciar la carga
+      if (isCharged) {
+        bombCharges = 0;
+        updateBombUI();
+      }
+    }
+
+    canvas.addEventListener('click', executeShoot);
+
+    // Soporte para Teclado
+    document.addEventListener('keydown', e => {
+      if (isGameOver) return;
+      if (e.key === 'c' || e.key === 'C' || e.key === 'Shift') {
+        triggerSwap();
+      } else if (e.key === ' ' || e.key === 'Spacebar') {
+        triggerSwap();
+        e.preventDefault(); // Detener scroll en navegador
+      }
+    });
+
+    
+    // Soporte para toques en dispositivos móviles y tablets directos en el Canvas
+    canvas.addEventListener('touchstart', e => {
+      if (isGameOver) return;
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      const mx = (touch.clientX - rect.left) * (canvas.width / rect.width);
+      const my = (touch.clientY - rect.top) * (canvas.height / rect.height);
+      
+      updateAngleFromCoords(mx, my);
+      executeShoot();
+    }, { passive: true });
+
+    // Botón Táctil Auxiliar de Apuntado Virtual
+    const aimButton = document.getElementById('btn-shoot-aim');
+    aimButton.addEventListener('click', () => {
+      if (isGameOver) return;
+      // Rotar el ángulo hacia el centro del tablero de forma predefinida si no hay ratón
+      mouseAngle = -Math.PI / 2;
+      spawnFloatingText(canvas.width / 2, canvas.height - 120, "¡CAÑÓN CENTRADO!", '#10b981');
+    });
+
+    // Iniciar con el Canvas dibujado en el arranque de ventana
+    window.onload = function() {
+      // Dibujar la rejilla de presentación
+      initGrid();
+      currentBubbleColor = getRandomColor();
+      nextBubbleColor = getRandomColor();
+      
+      // Dibujo de fondo inicial en reposo
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < COLS; c++) {
+          drawBubble(ctx, c * TILE, r * TILE, grid[r][c]);
+        }
+      }
+      drawNextPreview();
+    };
+  </script>
+</body>
+</html>

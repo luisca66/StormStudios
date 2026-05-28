@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useFirebaseMnemonic } from "./useFirebaseMnemonic";
 import MemoriaGame from "./MemoriaGame";
 import MemoriaPractice from "./MemoriaPractice";
+import MemoriaChallenge from "./MemoriaChallenge";
 
 type MemoriaAppProps = {
   locale: string;
@@ -11,7 +12,7 @@ type MemoriaAppProps = {
 
 export default function MemoriaApp({ locale }: MemoriaAppProps) {
   const isEN = locale === "en";
-  const [activeTab, setActiveTab] = useState<"game" | "practice">("game");
+  const [activeTab, setActiveTab] = useState<"game" | "practice" | "challenge">("game");
 
   const { words, practiceWords, loading, saveRangeWords } = useFirebaseMnemonic(locale);
 
@@ -27,7 +28,7 @@ export default function MemoriaApp({ locale }: MemoriaAppProps) {
   return (
     <div className="min-h-[calc(100vh-64px)] bg-[#0f172a] text-white font-sans flex flex-col">
       {/* Tab Bar */}
-      <div className="flex justify-center gap-3 p-4 pt-6 shrink-0">
+      <div className="flex flex-wrap justify-center gap-3 p-4 pt-6 shrink-0">
         <button
           onClick={() => setActiveTab("game")}
           className={`px-6 py-2.5 rounded-full font-mono text-sm font-semibold tracking-wide transition-all duration-200 border
@@ -36,7 +37,7 @@ export default function MemoriaApp({ locale }: MemoriaAppProps) {
               : "bg-transparent border-violet-500/30 text-white/50 hover:text-white/85 hover:border-violet-500/60"
             }`}
         >
-          {isEN ? "🃏 Memory Game" : "🃏 Juego de Memoria"}
+          {isEN ? "🃏 Learn the Code" : "🃏 Aprende el código"}
         </button>
         <button
           onClick={() => setActiveTab("practice")}
@@ -46,7 +47,17 @@ export default function MemoriaApp({ locale }: MemoriaAppProps) {
               : "bg-transparent border-violet-500/30 text-white/50 hover:text-white/85 hover:border-violet-500/60"
             }`}
         >
-          {isEN ? "📝 Practice Mode" : "📝 Modo de Práctica"}
+          {isEN ? "📝 Practice the Code" : "📝 Practica el código"}
+        </button>
+        <button
+          onClick={() => setActiveTab("challenge")}
+          className={`px-6 py-2.5 rounded-full font-mono text-sm font-semibold tracking-wide transition-all duration-200 border
+            ${activeTab === "challenge" 
+              ? "bg-rose-500/20 border-rose-500/70 text-rose-300 shadow-[0_0_15px_rgba(244,63,94,0.2)]" 
+              : "bg-transparent border-rose-500/30 text-white/50 hover:text-white/85 hover:border-rose-500/60"
+            }`}
+        >
+          {isEN ? "🏆 Use the Code" : "🏆 Usa el código"}
         </button>
       </div>
 
@@ -57,6 +68,9 @@ export default function MemoriaApp({ locale }: MemoriaAppProps) {
         )}
         {activeTab === "practice" && practiceWords && (
           <MemoriaPractice locale={locale} practiceWords={practiceWords} onSaveWords={saveRangeWords} />
+        )}
+        {activeTab === "challenge" && (
+          <MemoriaChallenge locale={locale} />
         )}
       </div>
     </div>
