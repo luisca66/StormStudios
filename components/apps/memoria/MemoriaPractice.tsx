@@ -50,6 +50,7 @@ export default function MemoriaPractice({ locale, practiceWords, onSaveWords }: 
   const errorSoundRef = useRef<HTMLAudioElement | null>(null);
   const nextSoundRef = useRef<HTMLAudioElement | null>(null);
   const answerInputRef = useRef<HTMLInputElement | null>(null);
+  const handleTimeoutRef = useRef<(() => void) | null>(null);
 
   const T = {
     title: isEN ? "Practice Mode" : "Modo de Práctica",
@@ -113,6 +114,10 @@ export default function MemoriaPractice({ locale, practiceWords, onSaveWords }: 
     if (bgMusicRef.current) bgMusicRef.current.muted = isMuted;
   }, [isMuted]);
 
+  useEffect(() => {
+    handleTimeoutRef.current = handleTimeout;
+  });
+
   // Timer logic
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -120,7 +125,7 @@ export default function MemoriaPractice({ locale, practiceWords, onSaveWords }: 
       interval = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 0.1) {
-            handleTimeout();
+            handleTimeoutRef.current?.();
             return 0;
           }
           return prev - 0.1;

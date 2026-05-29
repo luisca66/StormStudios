@@ -26,6 +26,7 @@ export default function MemoriaChallenge({ locale }: MemoriaChallengeProps) {
   const timerSoundRef = useRef<HTMLAudioElement | null>(null);
   const correctSoundRef = useRef<HTMLAudioElement | null>(null);
   const errorSoundRef = useRef<HTMLAudioElement | null>(null);
+  const handleTimeoutRef = useRef<(() => void) | null>(null);
 
   const T = {
     title: isEN ? "Memory Challenge" : "El Reto de Memoria",
@@ -58,6 +59,10 @@ export default function MemoriaChallenge({ locale }: MemoriaChallengeProps) {
     errorSoundRef.current = new Audio(`${AUDIO_BASE_URL}/${AUDIO_ASSETS.effects.error}`);
   }, []);
 
+  useEffect(() => {
+    handleTimeoutRef.current = handleTimeout;
+  });
+
   // Timer Effect
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -65,7 +70,7 @@ export default function MemoriaChallenge({ locale }: MemoriaChallengeProps) {
       interval = setInterval(() => {
         setTimeLeft(t => {
           if (t <= 1) {
-            handleTimeout();
+            handleTimeoutRef.current?.();
             return 0;
           }
           return t - 1;
@@ -73,7 +78,7 @@ export default function MemoriaChallenge({ locale }: MemoriaChallengeProps) {
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [timerRunning, timeLeft, phase]);
+  }, [timerRunning, timeLeft]);
 
   const handleTimeout = () => {
     setTimerRunning(false);
