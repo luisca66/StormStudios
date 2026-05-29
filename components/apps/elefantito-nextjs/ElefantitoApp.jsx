@@ -154,7 +154,7 @@ function HomeScreen({ onLevel }) {
   );
 }
 
-function LevelScreen({ level, onMap, onLevel }) {
+function LevelScreen({ level, onMap }) {
   const { completedLessons, unlockLevel } = useGame();
   const { t, toggleLanguage } = useLanguage();
   const hasCompletedLesson = completedLessons.includes(level);

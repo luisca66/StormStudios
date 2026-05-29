@@ -3,6 +3,7 @@ import { getBlogPost, getBlogPosts } from "@/lib/mdx";
 import { BlogLayout } from "@/components/blog/BlogLayout";
 import { JsonLd } from "@/components/JsonLd";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata } from "@/lib/seo/page-alternates";
 import { getBlogPostUrls } from "@/data/seo/blog-post-translations";
 import type { Locale } from "@/i18n/routing";
@@ -13,6 +14,7 @@ interface BlogPostPageProps {
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { locale, slug } = await params;
+  setRequestLocale(locale);
   const post = await getBlogPost(locale, slug);
 
   if (!post) notFound();

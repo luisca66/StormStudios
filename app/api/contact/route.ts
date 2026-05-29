@@ -25,6 +25,16 @@ const ContactSchema = z.object({
   ),
 });
 
+// Escapa caracteres HTML para evitar inyección en el cuerpo del correo.
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function getClientIp(request: NextRequest): string {
   const forwardedFor = request.headers.get("x-forwarded-for");
   if (forwardedFor) {
@@ -75,6 +85,9 @@ export async function POST(request: NextRequest) {
     }
 
     const { name, email, message, website, startedAt } = parsed.data;
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safeMessage = escapeHtml(message);
 
     if (website.trim().length > 0) {
       return blockedResponse();
@@ -97,11 +110,11 @@ export async function POST(request: NextRequest) {
         text: `Nombre: ${name}\nEmail: ${email}\n\nMensaje:\n${message}`,
         html: `
           <h2>Nuevo mensaje de contacto</h2>
-          <p><strong>Nombre:</strong> ${name}</p>
-          <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+          <p><strong>Nombre:</strong> ${safeName}</p>
+          <p><strong>Email:</strong> <a href="mailto:${safeEmail}">${safeEmail}</a></p>
           <hr>
           <p><strong>Mensaje:</strong></p>
-          <p>${message.replace(/\n/g, "<br>")}</p>
+          <p>${safeMessage.replace(/\n/g, "<br>")}</p>
         `,
       });
     } else {

@@ -3,6 +3,7 @@ import {
   createPageMetadata,
   getLocalizedRouteUrls,
 } from "@/lib/seo/page-alternates";
+import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 import type { Metadata } from "next";
 
@@ -45,6 +46,7 @@ export async function generateMetadata({
 
 export default async function MusicReadingPage({ params }: Props) {
   const { locale } = await params;
+  setRequestLocale(locale);
 
   return <MusicReadingApp locale={locale === "en" ? "en" : "es"} />;
 }

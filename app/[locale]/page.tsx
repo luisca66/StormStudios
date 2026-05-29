@@ -6,6 +6,7 @@ import { HomeHero } from "@/components/home/HomeHero";
 import { HomeResourcesSection } from "@/components/home/HomeResourcesSection";
 import { HomeStructuredData } from "@/components/home/HomeStructuredData";
 import type { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 import type { Locale } from "@/i18n/routing";
 
@@ -48,7 +49,14 @@ export async function generateMetadata(
   });
 }
 
-export default function HomePage() {
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <div className="ss-root">
       <div className="ss-orb ss-orb-a" />

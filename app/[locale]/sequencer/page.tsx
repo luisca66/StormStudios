@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
@@ -20,6 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function SequencerPage({ params }: Props) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const es = locale === "es";
 
   return (

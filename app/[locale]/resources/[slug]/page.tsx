@@ -9,6 +9,7 @@ import {
   getResourceBySlug,
   getResourceUrls,
 } from "@/data/resources/resources-catalog";
+import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata } from "@/lib/seo/page-alternates";
 
 type Props = {
@@ -46,6 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ResourcePage({ params }: Props) {
   const { locale, slug } = await params;
+  setRequestLocale(locale);
   const es = locale === "es";
   const resource = getResourceBySlug(locale as Locale, slug);
 

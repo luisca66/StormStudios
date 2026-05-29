@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { BASE_URL, SITE_NAME, TWITTER_HANDLE } from "@/lib/seo/page-alternates";
+import "../globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 type Props = {
   children: React.ReactNode;
@@ -43,13 +51,21 @@ export default async function LocaleLayout({ children, params }: Props) {
     notFound();
   }
 
+  // Habilita el render estático (next-intl): debe llamarse antes de usar
+  // cualquier API de next-intl como getMessages().
+  setRequestLocale(locale);
+
   const messages = await getMessages();
 
   return (
-    <NextIntlClientProvider messages={messages}>
-      <Header />
-      <main className="flex-1">{children}</main>
-      <Footer />
-    </NextIntlClientProvider>
+    <html lang={locale} className={inter.variable}>
+      <body className="font-sans antialiased bg-white text-gray-900 flex flex-col min-h-screen">
+        <NextIntlClientProvider messages={messages}>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }

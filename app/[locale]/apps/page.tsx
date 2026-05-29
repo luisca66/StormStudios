@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { APPS } from "@/data/apps/apps-catalog";
 import AppCard from "@/components/apps/AppCard";
 import { type Locale } from "@/i18n/routing";
+import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 import { Link } from "@/i18n/navigation";
 
@@ -29,6 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function AppsPage({ params }: Props) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const es = locale === "es";
 
   const androidApps = APPS.filter((a) => !a.isWeb);

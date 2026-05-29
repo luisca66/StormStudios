@@ -5,6 +5,7 @@ import { getPageContent } from "@/lib/mdx";
 import DarkMDXRenderer from "@/components/DarkMDXRenderer";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
 import { type Locale } from "@/i18n/routing";
+import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -36,6 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ElLibroPage({ params }: Props) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const page = await getPageContent(locale, SLUG_MAP[locale] || SLUG_MAP["es"]);
   if (!page) notFound();
 

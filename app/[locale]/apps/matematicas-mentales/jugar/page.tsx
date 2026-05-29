@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Press_Start_2P } from "next/font/google";
+import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 import ElefantitoApp from "@/components/apps/elefantito-nextjs/ElefantitoApp";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
@@ -31,6 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function JugarPage({ params }: Props) {
   const { locale } = await params;
+  setRequestLocale(locale);
 
   return (
     <div className={`min-h-screen bg-[#08090f] text-zinc-100 ${pressStart2P.variable}`}>

@@ -4,10 +4,59 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
+// ─── Content Security Policy (compatibility-first) ───────────────────────────
+// El sitio combina la app Next.js con juegos HTML autónomos embebidos por iframe
+// (secuenciador, tetris, etc.) que cargan librerías desde CDNs (Tailwind Play,
+// jsDelivr, cdnjs, unpkg) y requieren 'unsafe-eval'. Como esos .html reciben el
+// mismo header, el CSP debe permitirlos. Sigue aportando defensa: bloquea
+// orígenes de script fuera de la allowlist, clickjacking (frame-ancestors),
+// object-src, base-uri y form-action.
+const SCRIPT_CDNS = [
+  "https://cdn.jsdelivr.net",
+  "https://cdn.tailwindcss.com",
+  "https://cdnjs.cloudflare.com",
+  "https://unpkg.com",
+].join(" ");
+
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${SCRIPT_CDNS}`,
+  `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com ${SCRIPT_CDNS}`,
+  "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net data:",
+  "img-src 'self' data: blob: https:",
+  "media-src 'self' data: blob: https:",
+  "connect-src 'self' https: wss:",
+  "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
+  "frame-ancestors 'self'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "object-src 'none'",
+  "upgrade-insecure-requests",
+].join("; ");
+
+const securityHeaders = [
+  { key: "Content-Security-Policy", value: contentSecurityPolicy },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  // No restringimos microphone ni autoplay: el secuenciador y los audios los usan.
+  { key: "Permissions-Policy", value: "camera=(), geolocation=(), browsing-topics=()" },
+];
+
 const nextConfig: NextConfig = {
   // Permite archivos .md y .mdx como páginas
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   trailingSlash: false,
+
+  // ─── Security headers (aplican a todas las rutas) ──────────────────────────
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: securityHeaders,
+      },
+    ];
+  },
 
   // ─── Redirects: legacy WordPress URLs y rutas obsoletas ────────────────────
   async redirects() {

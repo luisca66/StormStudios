@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { Locale } from "@/i18n/routing";
+import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 import MemoriaApp from "@/components/apps/memoria/MemoriaApp";
 
@@ -21,6 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function MemoriaPage({ params }: Props) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const es = locale === "es";
 
   return (

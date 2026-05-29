@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
 import { getAllResources } from "@/data/resources/resources-catalog";
+import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 type Props = {
@@ -32,6 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ResourcesIndexPage({ params }: Props) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const es = locale === "es";
   const resources = getAllResources();
 

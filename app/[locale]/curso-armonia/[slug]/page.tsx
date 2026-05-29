@@ -4,6 +4,7 @@ import { getAllLessonSlugs, getLessonBySlug, getLessonNav } from "@/lib/course";
 import { getLessonContent } from "@/lib/mdx";
 import LessonLayout from "@/components/course/LessonLayout";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 import type { Locale } from "@/i18n/routing";
 
@@ -32,6 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function LessonPage({ params }: Props) {
   const { locale, slug } = await params;
+  setRequestLocale(locale);
   const lesson = getLessonBySlug(slug);
   if (!lesson) notFound();
 

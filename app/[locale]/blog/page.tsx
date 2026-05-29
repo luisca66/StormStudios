@@ -1,6 +1,7 @@
 import { getBlogPosts } from "@/lib/mdx";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { type Locale } from "@/i18n/routing";
+import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 interface BlogPageProps {
@@ -9,6 +10,7 @@ interface BlogPageProps {
 
 export default async function BlogPage({ params }: BlogPageProps) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const es = locale === "es";
 
   const posts = await getBlogPosts(locale);

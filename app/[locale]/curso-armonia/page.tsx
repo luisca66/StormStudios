@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { type Locale } from "@/i18n/routing";
 import { JsonLd } from "@/components/JsonLd";
+import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -44,6 +45,7 @@ const MAIN_LESSONS = [
 
 export default async function CursoArmoniaPage({ params }: Props) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const es = locale === "es";
 
   return (

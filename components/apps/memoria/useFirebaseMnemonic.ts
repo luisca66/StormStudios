@@ -101,7 +101,7 @@ export function useFirebaseMnemonic(locale: string) {
   }, [locale, isEN]);
 
   const saveRangeWords = async (range: string, newSet: Record<string, string>) => {
-    const { db, userId, words, practiceWords } = state;
+    const { db, userId } = state;
     if (!db || !userId) return;
 
     try {

@@ -1,4 +1,5 @@
 import { RhythmReadingApp } from "@/components/rhythm-reading/RhythmReadingApp";
+import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 import {
   createPageMetadata,
@@ -45,6 +46,7 @@ export async function generateMetadata({
 
 export default async function RhythmReadingPage({ params }: Props) {
   const { locale } = await params;
+  setRequestLocale(locale);
 
   return <RhythmReadingApp locale={locale === "en" ? "en" : "es"} />;
 }

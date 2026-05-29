@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { APPS, getAppBySlug } from "@/data/apps/apps-catalog";
 import { Link } from "@/i18n/navigation";
+import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 import type { Locale } from "@/i18n/routing";
 
@@ -39,6 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function AppDetailPage({ params }: Props) {
   const { locale, slug } = await params;
+  setRequestLocale(locale);
   const app = getAppBySlug(slug);
   if (!app) notFound();
 

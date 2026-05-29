@@ -163,7 +163,7 @@ export default function MemoriaChallenge({ locale }: MemoriaChallengeProps) {
               <label className="text-slate-300 font-semibold mb-3">{T.distractorLabel}</label>
               <select 
                 value={distractorGame} 
-                onChange={e => setDistractorGame(e.target.value as any)}
+                onChange={e => setDistractorGame(e.target.value as typeof distractorGame)}
                 className="w-full max-w-[200px] p-3 rounded-lg bg-slate-700 border-2 border-slate-600 text-white font-bold text-lg focus:outline-none focus:border-indigo-500 transition-colors"
               >
                 <option value="tetris">{T.gameTetris}</option>

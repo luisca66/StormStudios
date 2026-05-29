@@ -117,7 +117,7 @@ export default function MemoriaGame({ locale, wordsData, onSaveWords }: MemoriaG
     return `${minutes}:${seconds}`;
   };
 
-  const shuffle = (items: any[]) => {
+  const shuffle = <T,>(items: T[]): T[] => {
     const arr = [...items];
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -142,7 +142,7 @@ export default function MemoriaGame({ locale, wordsData, onSaveWords }: MemoriaG
     setRandomMusic();
 
     const dataSet = wordsData[range] || {};
-    let newCards: CardData[] = [];
+    const newCards: CardData[] = [];
     Object.keys(dataSet).forEach((key) => {
       newCards.push({ id: key, text: key, uniqueId: `${key}-num` });
       newCards.push({ id: key, text: dataSet[key], uniqueId: `${key}-word` });
