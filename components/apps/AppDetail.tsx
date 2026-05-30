@@ -25,6 +25,9 @@ export default function AppDetail({ app, locale }: Props) {
   const longDescription = app.longDescription
     ? app.longDescription[locale as "es" | "en"] || app.longDescription.es
     : null;
+  const longDescriptionParagraphs = longDescription
+    ? longDescription.split(/\n\s*\n/).filter(Boolean)
+    : [];
   const categoryLabel = CATEGORY_LABELS[app.category]?.[locale] || app.category;
   const apkUrl = app.apkUrls?.[locale as "es" | "en"] || app.apkUrl;
 
@@ -103,9 +106,11 @@ export default function AppDetail({ app, locale }: Props) {
       </div>
 
       {/* Descripción larga */}
-      {longDescription && (
+      {longDescriptionParagraphs.length > 0 && (
         <div className="prose prose-lg max-w-none mb-8 text-gray-700">
-          <p>{longDescription}</p>
+          {longDescriptionParagraphs.map((paragraph, index) => (
+            <p key={index}>{paragraph}</p>
+          ))}
         </div>
       )}
 

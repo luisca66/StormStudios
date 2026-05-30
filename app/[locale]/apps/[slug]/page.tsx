@@ -47,6 +47,9 @@ export default async function AppDetailPage({ params }: Props) {
   const name = app.name[locale as "es" | "en"] || app.name.es;
   const description = app.description[locale as "es" | "en"] || app.description.es;
   const longDescription = app.longDescription?.[locale as "es" | "en"];
+  const longDescriptionParagraphs = longDescription
+    ? longDescription.split(/\n\s*\n/).filter(Boolean)
+    : [];
   const apkUrl = app.apkUrls?.[locale as "es" | "en"] || app.apkUrl;
 
   return (
@@ -133,9 +136,11 @@ export default async function AppDetailPage({ params }: Props) {
       </div>
 
       {/* Descripción larga */}
-      {longDescription && (
+      {longDescriptionParagraphs.length > 0 && (
         <div className="mt-12 prose prose-lg prose-gray max-w-none">
-          <p>{longDescription}</p>
+          {longDescriptionParagraphs.map((paragraph, index) => (
+            <p key={index}>{paragraph}</p>
+          ))}
         </div>
       )}
 
