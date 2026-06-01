@@ -1165,6 +1165,15 @@
             return (4 / den) * num * TICKS_PER_QUARTER;
         }
 
+        function addMeasureKeySignature(stave, key, previousKey = null) {
+            if (previousKey && previousKey !== key) {
+                stave.addKeySignature(key, previousKey);
+                stave.setBegBarType(Vex.Flow.Barline.type.DOUBLE);
+            } else {
+                stave.addKeySignature(key);
+            }
+        }
+
         function updateDraftSettings() {
             draftClef = document.getElementById('clef-select').value;
             draftTimeSig = document.getElementById('time-sig-select').value;
@@ -2173,11 +2182,11 @@
                 const padding = (m === 0) ? 120 : 30;
                 const staveWidth = Math.max(MIN_STAVE_WIDTH, minWidth + padding + 80);
                 const stave = new VF.Stave(currentX, STAVE_Y_START, staveWidth);
-                if (m === 0) stave.addClef(settings.clef).addTimeSignature(settings.time).addKeySignature(settings.key);
+                if (m === 0) addMeasureKeySignature(stave.addClef(settings.clef).addTimeSignature(settings.time), settings.key);
                 else {
                     const prev = getSettingsForMeasure(m - 1);
                     if (settings.clef !== prev.clef) stave.addClef(settings.clef);
-                    if (settings.key !== prev.key) { stave.addKeySignature(settings.key); stave.setBegBarType(VF.Barline.type.SINGLE); }
+                    if (settings.key !== prev.key) addMeasureKeySignature(stave, settings.key, prev.key);
                     if (settings.time !== prev.time) stave.addTimeSignature(settings.time);
                 }
                 stave.setContext(context).draw();
@@ -2270,13 +2279,13 @@
                 const st = new VF.Stave(currentX, yT, width);
                 const sb = new VF.Stave(currentX, yB, width);
                 if (m === 0) {
-                     [ss,sa].forEach(s=>s.addClef('treble').addTimeSignature(settings.time).addKeySignature(settings.key));
-                     [st,sb].forEach(s=>s.addClef('bass').addTimeSignature(settings.time).addKeySignature(settings.key));
+                     [ss,sa].forEach(s=>addMeasureKeySignature(s.addClef('treble').addTimeSignature(settings.time), settings.key));
+                     [st,sb].forEach(s=>addMeasureKeySignature(s.addClef('bass').addTimeSignature(settings.time), settings.key));
                      new VF.StaveConnector(ss, sb).setType(VF.StaveConnector.type.BRACKET).setContext(context).draw();
                      new VF.StaveConnector(ss, sb).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(context).draw();
                 } else {
                      const prev = getSettingsForMeasure(m-1);
-                     if (settings.key !== prev.key) { [ss,sa,st,sb].forEach(s=>{s.addKeySignature(settings.key); s.setBegBarType(VF.Barline.type.SINGLE);}); }
+                     if (settings.key !== prev.key) [ss,sa,st,sb].forEach(s=>addMeasureKeySignature(s, settings.key, prev.key));
                      if (settings.time !== prev.time) [ss,sa,st,sb].forEach(s=>s.addTimeSignature(settings.time));
                 }
                 new VF.StaveConnector(ss, sb).setType(VF.StaveConnector.type.SINGLE_RIGHT).setContext(context).draw();
