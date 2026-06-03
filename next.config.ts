@@ -4,24 +4,48 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
-// ─── Content Security Policy (compatibility-first) ───────────────────────────
-// El sitio combina la app Next.js con juegos HTML autónomos embebidos por iframe
-// (secuenciador, tetris, etc.) que cargan librerías desde CDNs (Tailwind Play,
-// jsDelivr, cdnjs, unpkg) y requieren 'unsafe-eval'. Como esos .html reciben el
-// mismo header, el CSP debe permitirlos. Sigue aportando defensa: bloquea
-// orígenes de script fuera de la allowlist, clickjacking (frame-ancestors),
-// object-src, base-uri y form-action.
-const SCRIPT_CDNS = [
+// ─── Content Security Policy ─────────────────────────────────────────────────
+// Dos políticas porque el sitio combina dos mundos:
+//   1. La app Next.js (estricta): sin 'unsafe-eval' ni CDNs externos de script;
+//      connect-src acotado a Firebase. Es lo que sirve todas las páginas.
+//   2. Los juegos HTML autónomos en /apps y /tools (permisiva): cargan librerías
+//      de CDNs (Tailwind Play, jsDelivr, cdnjs, unpkg) y necesitan 'unsafe-eval'.
+// El catch-all estricto excluye /apps y /tools con un negative-lookahead para que
+// cada ruta reciba UNA sola cabecera CSP (dos romperían los juegos por intersección).
+
+// Orígenes externos que SOLO necesitan los juegos legacy embebidos.
+const GAME_SCRIPT_CDNS = [
   "https://cdn.jsdelivr.net",
   "https://cdn.tailwindcss.com",
   "https://cdnjs.cloudflare.com",
   "https://unpkg.com",
 ].join(" ");
 
-const contentSecurityPolicy = [
+// CSP estricta para la app Next.js. 'unsafe-inline' en script es inevitable
+// porque Next inyecta scripts de hidratación inline sin nonce en render estático;
+// pero quitamos 'unsafe-eval' y los CDNs externos. media-src permite https para
+// el audio de R2 (apps de memoria/elefantito); connect-src se limita a Firebase.
+const appCsp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${SCRIPT_CDNS}`,
-  `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com ${SCRIPT_CDNS}`,
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com data:",
+  "img-src 'self' data: blob: https:",
+  "media-src 'self' data: blob: https:",
+  "connect-src 'self' https://*.googleapis.com https://*.gstatic.com https://*.firebaseio.com https://*.firebasestorage.app wss://*.firebaseio.com",
+  "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
+  "frame-ancestors 'self'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "object-src 'none'",
+  "upgrade-insecure-requests",
+].join("; ");
+
+// CSP permisiva SOLO para los juegos HTML autónomos (/apps/*, /tools/*).
+const gameCsp = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${GAME_SCRIPT_CDNS}`,
+  `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com ${GAME_SCRIPT_CDNS}`,
   "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net data:",
   "img-src 'self' data: blob: https:",
   "media-src 'self' data: blob: https:",
@@ -34,8 +58,8 @@ const contentSecurityPolicy = [
   "upgrade-insecure-requests",
 ].join("; ");
 
-const securityHeaders = [
-  { key: "Content-Security-Policy", value: contentSecurityPolicy },
+// Cabeceras comunes a ambos mundos (no entran en conflicto entre reglas).
+const baseSecurityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -48,12 +72,22 @@ const nextConfig: NextConfig = {
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   trailingSlash: false,
 
-  // ─── Security headers (aplican a todas las rutas) ──────────────────────────
+  // ─── Security headers ──────────────────────────────────────────────────────
+  // Cada ruta cae en EXACTAMENTE una regla (los juegos quedan fuera del catch-all
+  // estricto vía negative-lookahead), así que recibe una sola cabecera CSP.
   async headers() {
     return [
       {
-        source: "/:path*",
-        headers: securityHeaders,
+        source: "/apps/:path*",
+        headers: [...baseSecurityHeaders, { key: "Content-Security-Policy", value: gameCsp }],
+      },
+      {
+        source: "/tools/:path*",
+        headers: [...baseSecurityHeaders, { key: "Content-Security-Policy", value: gameCsp }],
+      },
+      {
+        source: "/((?!apps/|tools/).*)",
+        headers: [...baseSecurityHeaders, { key: "Content-Security-Policy", value: appCsp }],
       },
     ];
   },
