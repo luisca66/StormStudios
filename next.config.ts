@@ -6,8 +6,9 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 // ─── Content Security Policy ─────────────────────────────────────────────────
 // Dos políticas porque el sitio combina dos mundos:
-//   1. La app Next.js (estricta): sin 'unsafe-eval' ni CDNs externos de script;
-//      connect-src acotado a Firebase. Es lo que sirve todas las páginas.
+//   1. La app Next.js (estricta): sin CDNs externos de script; 'unsafe-eval' se
+//      habilita solo en desarrollo porque React lo usa para sus herramientas de
+//      depuración. connect-src queda acotado a Firebase.
 //   2. Los juegos HTML autónomos en /apps y /tools (permisiva): cargan librerías
 //      de CDNs (Tailwind Play, jsDelivr, cdnjs, unpkg) y necesitan 'unsafe-eval'.
 // El catch-all estricto excluye /apps y /tools con un negative-lookahead para que
@@ -23,11 +24,17 @@ const GAME_SCRIPT_CDNS = [
 
 // CSP estricta para la app Next.js. 'unsafe-inline' en script es inevitable
 // porque Next inyecta scripts de hidratación inline sin nonce en render estático;
-// pero quitamos 'unsafe-eval' y los CDNs externos. media-src permite https para
-// el audio de R2 (apps de memoria/elefantito); connect-src se limita a Firebase.
+// En producción quitamos 'unsafe-eval' y los CDNs externos. media-src permite
+// https para el audio de R2 (apps de memoria/elefantito); connect-src se limita
+// a Firebase.
+const appScriptSrc =
+  process.env.NODE_ENV === "development"
+    ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+    : "script-src 'self' 'unsafe-inline'";
+
 const appCsp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  appScriptSrc,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob: https:",
