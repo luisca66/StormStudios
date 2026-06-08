@@ -2819,10 +2819,19 @@ function renderPianoRollNotes(svg) {
                         const [key, oct] = note.keys[0].split('/');
                         const pitch = getMidiPitch(key, oct);
                         const ch = channelByTrack[trackName] ?? 0;
-                        trackEvents.push({ tickMidi: tick * TICKS_TO_MIDI, type: 'on', ch, pitch, vel: 100 });
+                        const onTickMidi = tick * TICKS_TO_MIDI;
+                        // Per-note enharmonic spelling (e.g. 'a##' vs 'b'): a standard MIDI file
+                        // only stores the note number, so we embed the spelling as a text meta
+                        // 'SP:<spelling>' right before the note-on so the Virtual Teacher can tell
+                        // enharmonics apart. Players ignore it.
+                        trackEvents.push({ tickMidi: onTickMidi, type: 'spell', spelling: key });
+                        trackEvents.push({ tickMidi: onTickMidi, type: 'on', ch, pitch, vel: 100 });
                         trackEvents.push({ tickMidi: (tick + totalDur) * TICKS_TO_MIDI, type: 'off', ch, pitch, vel: 0 });
                     });
-                    trackEvents.sort((a, b) => (a.tickMidi - b.tickMidi) || ((a.type === 'off') ? -1 : 1));
+                    // Sort by tick; at equal tick: meta < off < spell < on, so each
+                    // 'SP:' text meta sits right before its note-on.
+                    const evOrder = (t) => (t === 'meta' ? 0 : t === 'off' ? 1 : t === 'spell' ? 2 : 3);
+                    trackEvents.sort((a, b) => (a.tickMidi - b.tickMidi) || (evOrder(a.type) - evOrder(b.type)));
                     let trackBytes = [];
                     const addByte = (b) => trackBytes.push(b & 0xFF);
                     const addVLQ = (val) => {
@@ -2834,6 +2843,10 @@ function renderPianoRollNotes(svg) {
                     trackEvents.forEach(ev => {
                         addVLQ(ev.tickMidi - lastTick); lastTick = ev.tickMidi;
                         if (ev.type === 'meta') ev.data.forEach(addByte);
+                        else if (ev.type === 'spell') {
+                            const txt = strToBytes('SP:' + ev.spelling);
+                            addByte(0xFF); addByte(0x01); addVLQ(txt.length); txt.forEach(addByte);
+                        }
                         else { addByte((ev.type === 'on' ? 0x90 : 0x80) + (ev.ch & 0x0F)); addByte(ev.pitch & 0x7F); addByte(ev.vel & 0x7F); }
                     });
                     addVLQ(0); addByte(0xFF); addByte(0x2F); addByte(0x00);

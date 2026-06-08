@@ -5,6 +5,14 @@
  */
 
 import type { VoiceData } from './midi-parser';
+import {
+  parseSpelling,
+  spellWithLetter,
+  sameSpelling,
+  spellingName,
+  letterIndex,
+  type Letter,
+} from './spelling';
 
 // ── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -24,6 +32,7 @@ export type ScaleRuleId =
   | 'SCALE_ORDER'
   | 'SCALE_NOTE_COUNT'
   | 'SCALE_WRONG_NOTE'
+  | 'SCALE_ENHARMONIC'
   | 'SCALE_DIRECTION'
   | 'SCALE_TONIC_CLOSURE'
   | 'SCALE_MISSING_KEYSIG';
@@ -99,7 +108,8 @@ const DEGREES = ['I','II','III','IV','V','VI','VII',"I'"] as const;
 
 interface ScaleSegment {
   key: string;
-  notes: number[];   // MIDI numbers in order
+  notes: number[];                  // MIDI numbers in order
+  spellings: (string | undefined)[]; // grafía incrustada por nota (paralelo a notes)
 }
 
 /**
@@ -115,6 +125,7 @@ function extractSegments(voiceData: VoiceData): ScaleSegment[] {
   const segments: ScaleSegment[] = [];
   let currentKey = voiceData.keyChanges[0]?.key ?? 'C';
   let currentNotes: number[] = [];
+  let currentSpellings: (string | undefined)[] = [];
 
   // Group notes by their key change
   for (const note of sopranoNotes) {
@@ -122,16 +133,18 @@ function extractSegments(voiceData: VoiceData): ScaleSegment[] {
     const kc = voiceData.keyChanges.find(k => k.tick === note.tick);
     if (kc && kc.key !== currentKey) {
       if (currentNotes.length > 0) {
-        segments.push({ key: currentKey, notes: currentNotes });
+        segments.push({ key: currentKey, notes: currentNotes, spellings: currentSpellings });
       }
       currentKey = kc.key;
       currentNotes = [];
+      currentSpellings = [];
     }
     currentNotes.push(note.midi);
+    currentSpellings.push(note.spelling);
   }
 
   if (currentNotes.length > 0) {
-    segments.push({ key: currentKey, notes: currentNotes });
+    segments.push({ key: currentKey, notes: currentNotes, spellings: currentSpellings });
   }
 
   return segments;
@@ -223,8 +236,9 @@ export function validateLesson1Scales(voiceData: VoiceData): ScaleError[] {
     const keyRoot   = key as MajorKeyRoot;
     const expPc     = SCALE_PC[keyRoot];
     const spelling  = SPELLINGS[keyRoot];
+    const tonicLetterIdx = letterIndex(keyRoot[0].toLowerCase() as Letter);
 
-    // Rule 4: Correct notes (pitch class)
+    // Rule 4: Correct notes (pitch class) + Rule 4b: enharmonic spelling
     for (let deg = 0; deg < 8; deg++) {
       const gotPc = notes[deg] % 12;
       const expPc_ = expPc[deg];
@@ -244,6 +258,27 @@ export function validateLesson1Scales(voiceData: VoiceData): ScaleError[] {
                   + `got ${gotName}. `
                   + `Check the key signature of ${nameEn}.`,
         });
+        continue; // altura ya incorrecta: no dupliquemos con un error de grafía
+      }
+
+      // Rule 4b: misma altura pero ¿grafía enarmónica correcta? (ej. La## vs Si)
+      const got = parseSpelling(segments[pos].spellings[deg]);
+      if (got) {
+        const exp = spellWithLetter(tonicLetterIdx + deg, expPc_);
+        if (!sameSpelling(got, exp)) {
+          errors.push({
+            rule: 'SCALE_ENHARMONIC',
+            severity: 'error',
+            position: pos + 1,
+            degree: DEGREES[deg],
+            titleEs: `${nameEs}: grafía incorrecta en grado ${DEGREES[deg]}`,
+            titleEn: `${nameEn}: wrong spelling on degree ${DEGREES[deg]}`,
+            detailEs: `Grado ${DEGREES[deg]}: escribiste ${spellingName(got, 'es')} pero en ${nameEs} corresponde ${spellingName(exp, 'es')}. `
+                    + `Suenan igual (son enarmónicas) pero la grafía correcta de la escala es ${spellingName(exp, 'es')}.`,
+            detailEn: `Degree ${DEGREES[deg]}: you wrote ${spellingName(got, 'en')} but ${nameEn} requires ${spellingName(exp, 'en')}. `
+                    + `They sound the same (enharmonic) but the correct scale spelling is ${spellingName(exp, 'en')}.`,
+          });
+        }
       }
     }
 

@@ -6,6 +6,14 @@
  */
 
 import type { VoiceData } from './midi-parser';
+import {
+  parseSpelling,
+  spellWithLetter,
+  sameSpelling,
+  spellingName,
+  letterIndex,
+  type Letter,
+} from './spelling';
 
 // ── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -26,6 +34,7 @@ export type MinorScaleRuleId =
   | 'MINOR_ORDER'
   | 'MINOR_NOTE_COUNT'
   | 'MINOR_WRONG_NOTE'
+  | 'MINOR_ENHARMONIC'
   | 'MINOR_DIRECTION'
   | 'MINOR_MISSING_KEYSIG';
 
@@ -111,6 +120,7 @@ const SUB_SEGMENTS: SubSegment[] = [
 interface KeySegment {
   relKey: string;
   notes: number[];
+  spellings: (string | undefined)[]; // grafía incrustada por nota (paralelo a notes)
 }
 
 function extractSegments(voiceData: VoiceData): KeySegment[] {
@@ -122,21 +132,24 @@ function extractSegments(voiceData: VoiceData): KeySegment[] {
   const segments: KeySegment[] = [];
   let currentKey = voiceData.keyChanges[0]?.key ?? 'C';
   let currentNotes: number[] = [];
+  let currentSpellings: (string | undefined)[] = [];
 
   for (const note of sopranoNotes) {
     const kc = voiceData.keyChanges.find(k => k.tick === note.tick);
     if (kc && kc.key !== currentKey) {
       if (currentNotes.length > 0) {
-        segments.push({ relKey: currentKey, notes: currentNotes });
+        segments.push({ relKey: currentKey, notes: currentNotes, spellings: currentSpellings });
       }
       currentKey = kc.key;
       currentNotes = [];
+      currentSpellings = [];
     }
     currentNotes.push(note.midi);
+    currentSpellings.push(note.spelling);
   }
 
   if (currentNotes.length > 0) {
-    segments.push({ relKey: currentKey, notes: currentNotes });
+    segments.push({ relKey: currentKey, notes: currentNotes, spellings: currentSpellings });
   }
 
   return segments;
@@ -182,7 +195,7 @@ export function validateLesson2Scales(voiceData: VoiceData): MinorScaleError[] {
 
   // ── Rules 2–5: Per-key validation ────────────────────────────────────────
   for (let pos = 0; pos < segments.length; pos++) {
-    const { relKey, notes } = segments[pos];
+    const { relKey, notes, spellings } = segments[pos];
     const actualMinor   = REL_TO_MINOR[relKey];
     const expectedMinor = LESSON2_ORDER[pos] as MinorKeyRoot | undefined;
 
@@ -226,17 +239,25 @@ export function validateLesson2Scales(voiceData: VoiceData): MinorScaleError[] {
 
     if (!data) continue;
     const tonic = data.tonic;
+    const tonicLetterIdx = letterIndex(actualMinor![0].toLowerCase() as Letter);
 
     // Rules 4 & 5: Validate each sub-segment
     for (const sub of SUB_SEGMENTS) {
-      const subNotes = notes.slice(sub.offset, sub.offset + sub.noteCount);
-      const gotPCs   = subNotes.map(n => n % 12);
+      const subNotes     = notes.slice(sub.offset, sub.offset + sub.noteCount);
+      const subSpellings = spellings.slice(sub.offset, sub.offset + sub.noteCount);
+      const gotPCs       = subNotes.map(n => n % 12);
 
       // Expected PCs (for melodic_desc, skip the initial tonic)
       let expPCs = minorPCs(tonic, sub.type);
       if (sub.type === 'melodic_desc') expPCs = expPCs.slice(1);
 
-      // Rule 4: Correct notes
+      // Índice de letra esperado por posición: las escalas usan letras
+      // consecutivas. Ascendente: tónica + posición. Descendente (melódica↓):
+      // se baja desde la tónica de la octava, así que tónica + (n-1 - posición).
+      const letterIdxAt = (i: number) =>
+        sub.ascending ? tonicLetterIdx + i : tonicLetterIdx + (sub.noteCount - 1 - i);
+
+      // Rule 4: Correct notes (pitch class) + Rule 4b: enharmonic spelling
       for (let deg = 0; deg < sub.noteCount; deg++) {
         if (gotPCs[deg] !== expPCs[deg]) {
           errors.push({
@@ -252,6 +273,28 @@ export function validateLesson2Scales(voiceData: VoiceData): MinorScaleError[] {
             detailEn: `Degree ${sub.degrees[deg]}: expected pitch class ${expPCs[deg]}, got ${gotPCs[deg]}. `
                     + `Check the ${sub.labelEn} scale of ${nameEn}.`,
           });
+          continue; // altura ya incorrecta: no dupliquemos con un error de grafía
+        }
+
+        // Rule 4b: misma altura pero ¿grafía enarmónica correcta? (ej. Mi# vs Fa)
+        const got = parseSpelling(subSpellings[deg]);
+        if (got) {
+          const exp = spellWithLetter(letterIdxAt(deg), expPCs[deg]);
+          if (!sameSpelling(got, exp)) {
+            errors.push({
+              rule: 'MINOR_ENHARMONIC',
+              severity: 'error',
+              position: pos + 1,
+              scaleType: sub.labelEs,
+              degree: sub.degrees[deg],
+              titleEs: `${nameEs} ${sub.labelEs}: grafía incorrecta en grado ${sub.degrees[deg]}`,
+              titleEn: `${nameEn} ${sub.labelEn}: wrong spelling on degree ${sub.degrees[deg]}`,
+              detailEs: `Grado ${sub.degrees[deg]}: escribiste ${spellingName(got, 'es')} pero corresponde ${spellingName(exp, 'es')}. `
+                      + `Suenan igual (enarmónicas) pero la grafía correcta de la ${sub.labelEs} de ${nameEs} es ${spellingName(exp, 'es')}.`,
+              detailEn: `Degree ${sub.degrees[deg]}: you wrote ${spellingName(got, 'en')} but it should be ${spellingName(exp, 'en')}. `
+                      + `They sound the same (enharmonic) but the correct spelling of the ${sub.labelEn} scale of ${nameEn} is ${spellingName(exp, 'en')}.`,
+            });
+          }
         }
       }
 

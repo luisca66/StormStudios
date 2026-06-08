@@ -2776,10 +2776,19 @@ function renderPianoRollNotes(svg) {
                         const [key, oct] = note.keys[0].split('/');
                         const pitch = getMidiPitch(key, oct);
                         const ch = channelByTrack[trackName] ?? 0;
-                        trackEvents.push({ tickMidi: tick * TICKS_TO_MIDI, type: 'on', ch, pitch, vel: 100 });
+                        const onTickMidi = tick * TICKS_TO_MIDI;
+                        // Grafía enarmónica de la nota (ej. 'a##' vs 'b'): el MIDI estándar solo
+                        // guarda el número de nota, así que la incrustamos como meta-texto
+                        // 'SP:<grafía>' justo antes del note-on para que el Maestro Virtual pueda
+                        // distinguir enarmonías. Los reproductores la ignoran.
+                        trackEvents.push({ tickMidi: onTickMidi, type: 'spell', spelling: key });
+                        trackEvents.push({ tickMidi: onTickMidi, type: 'on', ch, pitch, vel: 100 });
                         trackEvents.push({ tickMidi: (tick + totalDur) * TICKS_TO_MIDI, type: 'off', ch, pitch, vel: 0 });
                     });
-                    trackEvents.sort((a, b) => (a.tickMidi - b.tickMidi) || ((a.type === 'off') ? -1 : 1));
+                    // Orden por tick; a igual tick: meta < off < spell < on, para que
+                    // cada meta-texto 'SP:' quede justo antes de su note-on.
+                    const evOrder = (t) => (t === 'meta' ? 0 : t === 'off' ? 1 : t === 'spell' ? 2 : 3);
+                    trackEvents.sort((a, b) => (a.tickMidi - b.tickMidi) || (evOrder(a.type) - evOrder(b.type)));
                     let trackBytes = [];
                     const addByte = (b) => trackBytes.push(b & 0xFF);
                     const addVLQ = (val) => {
@@ -2791,6 +2800,10 @@ function renderPianoRollNotes(svg) {
                     trackEvents.forEach(ev => {
                         addVLQ(ev.tickMidi - lastTick); lastTick = ev.tickMidi;
                         if (ev.type === 'meta') ev.data.forEach(addByte);
+                        else if (ev.type === 'spell') {
+                            const txt = strToBytes('SP:' + ev.spelling);
+                            addByte(0xFF); addByte(0x01); addVLQ(txt.length); txt.forEach(addByte);
+                        }
                         else { addByte((ev.type === 'on' ? 0x90 : 0x80) + (ev.ch & 0x0F)); addByte(ev.pitch & 0x7F); addByte(ev.vel & 0x7F); }
                     });
                     addVLQ(0); addByte(0xFF); addByte(0x2F); addByte(0x00);

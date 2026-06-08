@@ -10,6 +10,7 @@ export interface ParsedNote {
   pitch: number;      // clase de altura 0–11
   tick: number;       // tick absoluto de inicio
   key: string;        // tonalidad activa cuando sonó esta nota (ej: 'Gb', 'C#')
+  spelling?: string;  // grafía enarmónica incrustada por el secuenciador (ej: 'a##', 'b', 'gb')
 }
 
 export interface KeyChange {
@@ -73,6 +74,8 @@ export function parseMidiBuffer(buffer: ArrayBuffer): VoiceData {
     const trackEnd = pos + trackLen;
     let absoluteTick = 0;
     let runningStatus = 0;
+    // Grafía incrustada (meta-texto 'SP:…') que precede a cada note-on en esta pista.
+    let pendingSpelling: string | null = null;
 
     while (pos < trackEnd) {
       const delta = readVarLen();
@@ -93,6 +96,14 @@ export function parseMidiBuffer(buffer: ArrayBuffer): VoiceData {
           const key = sfToKey(sf);
           currentKey = key;
           keyChanges.push({ tick: absoluteTick, key });
+        } else if (metaType === 0x01) {
+          // Text meta: el secuenciador Storm Studios incrusta la grafía de cada
+          // nota como 'SP:<grafía>' (ej. 'SP:a##') justo antes de su note-on,
+          // porque el número MIDI no distingue enarmonías (La## y Si = 71).
+          let text = '';
+          for (let i = 0; i < metaLen; i++) text += String.fromCharCode(view.getUint8(pos + i));
+          pos += metaLen;
+          if (text.startsWith('SP:')) pendingSpelling = text.slice(3);
         } else {
           pos += metaLen;
         }
@@ -124,7 +135,9 @@ export function parseMidiBuffer(buffer: ArrayBuffer): VoiceData {
             pitch: note % 12,
             tick:  absoluteTick,
             key:   currentKey,
+            spelling: pendingSpelling ?? undefined,
           });
+          pendingSpelling = null;
         }
       } else if (msgType === 0xA || msgType === 0xB) { pos += 2; }
       else if (msgType === 0xC || msgType === 0xD)   { pos += 1; }
