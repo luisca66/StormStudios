@@ -36,7 +36,7 @@ body {
 @keyframes correctF { 0%{opacity:1} 50%{opacity:0.5} 100%{opacity:1} }
 
 .bg-jungle {
-  background-image: url("/selva.png");
+  background-image: url("/selva.jpg");
   background-size: cover;
   background-position: center;
 }
