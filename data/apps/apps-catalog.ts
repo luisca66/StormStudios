@@ -14,7 +14,8 @@ export type AppEntry = {
   icon?: string;
   screenshots?: string[];
   features?: BilingualText[];
-  isWeb?: boolean;
+  // Herramienta de apoyo (sección "Herramientas Web"); las demás van en "Web Apps".
+  isTool?: boolean;
 };
 
 export const APPS: AppEntry[] = [
@@ -31,7 +32,7 @@ export const APPS: AppEntry[] = [
       en: "This game supports lesson P02 of the preparatory module. It generates level-based rhythm patterns, plays a metronome, captures your taps, and evaluates whether you maintain the required accuracy across consecutive rounds.",
     },
     webUrl: "/herramientas/lectura-ritmica",
-    isWeb: true,
+    isTool: true,
     features: [
       { es: "5 niveles progresivos", en: "5 progressive levels" },
       { es: "Metrónomo y tempo ajustable", en: "Metronome with adjustable tempo" },
@@ -53,7 +54,7 @@ export const APPS: AppEntry[] = [
       en: "This game supports the preparatory harmony-course module. It shows notes on the staff, plays their sound, and saves local progress as you move through levels.",
     },
     webUrl: "/herramientas/lectura-musical",
-    isWeb: true,
+    isTool: true,
     features: [
       { es: "12 niveles progresivos", en: "12 progressive levels" },
       { es: "Clave de sol y clave de fa", en: "Treble clef and bass clef" },
@@ -172,9 +173,24 @@ export const APPS: AppEntry[] = [
       { es: "Rango seleccionable", en: "Selectable range" },
       { es: "Dificultad progresiva hasta acordes con 13ª", en: "Progressive difficulty up to 13th chords" },
     ],
-    webUrl: "/apps/acordes/jugar",
-    isWeb: true,
     icon: "/images/app-acordes.jpeg",
+  },
+  {
+    slug: "acordes-cantar",
+    name: { es: "Cantar Acordes", en: "Sing Chords" },
+    category: "ear-training",
+    description: {
+      es: "Entrena la afinación cantando las notas de acordes de dificultad progresiva. La app escucha tu voz con el micrófono y evalúa tu precisión en tiempo real.",
+      en: "Train your pitch by singing the notes of progressively challenging chords. The app listens to your voice through the microphone and evaluates your accuracy in real time.",
+    },
+    webUrl: "/apps/acordes-cantar/jugar",
+    features: [
+      { es: "Detección de afinación por micrófono", en: "Microphone pitch detection" },
+      { es: "Rangos vocales: varón F2–G4, dama G3–A5", en: "Vocal ranges: male F2–G4, female G3–A5" },
+      { es: "Multi-tímbrica (5 timbres)", en: "Multi-timbral (5 timbres)" },
+      { es: "Dificultad progresiva hasta acordes con 13ª", en: "Progressive difficulty up to 13th chords" },
+    ],
+    icon: "/images/app-acordes-cantar.jpeg",
   },
   {
     slug: "grados-mayores",
@@ -241,7 +257,7 @@ export const APPS: AppEntry[] = [
       en: "Online music sequencer to compose your exercises and export them as MIDI for the Virtual Teacher.",
     },
     webUrl: "/sequencer",
-    isWeb: true,
+    isTool: true,
     features: [
       { es: "Disponible en el navegador, sin descarga", en: "Available in browser, no download needed" },
       { es: "Exporta a MIDI para el Maestro Virtual", en: "Export to MIDI for the Virtual Teacher" },

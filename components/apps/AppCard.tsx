@@ -43,7 +43,7 @@ export default function AppCard({ app, locale }: Props) {
               style={{ background: "rgba(59,130,246,0.15)", color: "rgba(147,197,253,0.9)", border: "1px solid rgba(59,130,246,0.2)" }}>
               {categoryLabel}
             </span>
-            {app.isWeb && (
+            {app.webUrl && (
               <span className="ss-mono text-xs px-2 py-0.5 rounded-full"
                 style={{ background: "rgba(16,185,129,0.12)", color: "rgba(52,211,153,0.9)", border: "1px solid rgba(16,185,129,0.2)" }}>
                 Web

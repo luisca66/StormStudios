@@ -9,8 +9,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   return createPageMetadata({
     locale: locale as Locale,
-    urls: getLocalizedRouteUrls("/apps/acordes/jugar"),
-    title: locale === "es" ? "Acordes – Cantar" : "Chords – Sing",
+    urls: getLocalizedRouteUrls("/apps/acordes-cantar/jugar"),
+    title: locale === "es" ? "Cantar Acordes" : "Sing Chords",
     description:
       locale === "es"
         ? "Entrena la afinación cantando las notas de acordes de dificultad progresiva."
@@ -47,7 +47,7 @@ export default async function AcordesCantarPage({ params }: Props) {
       >
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <a
-            href={`/${locale}/apps/acordes`}
+            href={`/${locale}/apps/acordes-cantar`}
             style={{
               color: "rgba(255,255,255,0.6)",
               fontSize: "0.72rem",
@@ -55,7 +55,7 @@ export default async function AcordesCantarPage({ params }: Props) {
               textDecoration: "none",
             }}
           >
-            ← {es ? "Reconocimiento de Acordes" : "Chord Recognition"}
+            ← {es ? "Volver" : "Back"}
           </a>
           <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.75rem" }}>|</span>
           <span
@@ -66,7 +66,7 @@ export default async function AcordesCantarPage({ params }: Props) {
               fontWeight: 600,
             }}
           >
-            {es ? "Acordes – Cantar" : "Chords – Sing"}
+            {es ? "Cantar Acordes" : "Sing Chords"}
           </span>
           <span
             style={{
@@ -97,7 +97,7 @@ export default async function AcordesCantarPage({ params }: Props) {
 
       <iframe
         src={`/apps/acordes-cantar/index.html?lang=${locale}`}
-        title={es ? "Acordes – Cantar" : "Chords – Sing"}
+        title={es ? "Cantar Acordes" : "Sing Chords"}
         allow="autoplay; microphone"
         style={{ flex: 1, width: "100%", border: "none", display: "block" }}
       />

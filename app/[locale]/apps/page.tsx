@@ -33,8 +33,8 @@ export default async function AppsPage({ params }: Props) {
   setRequestLocale(locale);
   const es = locale === "es";
 
-  const androidApps = APPS.filter((a) => !a.isWeb);
-  const webApps = APPS.filter((a) => a.isWeb);
+  const webApps = APPS.filter((a) => !a.isTool);
+  const webTools = APPS.filter((a) => a.isTool);
 
   return (
     <div className="ss-root" style={{ minHeight: "100vh" }}>
@@ -63,26 +63,26 @@ export default async function AppsPage({ params }: Props) {
 
         <div className="ss-divider mb-14" />
 
-        {/* Apps Android */}
+        {/* Web Apps */}
         <section className="mb-14">
           <h2 className="ss-serif mb-8 flex items-center gap-3"
             style={{ fontSize: "1.4rem", color: "#f0eeff" }}>
-            <span>📱</span>
-            {es ? "Apps para Android" : "Android Apps"}
+            <span>🎧</span>
+            Web Apps
             <span className="ss-mono text-xs px-2 py-0.5 rounded-full ml-2"
               style={{ background: "rgba(139,92,246,0.12)", color: "rgba(196,181,253,0.8)", border: "1px solid rgba(139,92,246,0.2)", fontSize: "0.7rem" }}>
-              {androidApps.length}
+              {webApps.length}
             </span>
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {androidApps.map((app) => (
+            {webApps.map((app) => (
               <AppCard key={app.slug} app={app} locale={locale} />
             ))}
           </div>
         </section>
 
-        {/* Apps Web */}
-        {webApps.length > 0 && (
+        {/* Herramientas Web */}
+        {webTools.length > 0 && (
           <section className="mb-14">
             <h2 className="ss-serif mb-8 flex items-center gap-3"
               style={{ fontSize: "1.4rem", color: "#f0eeff" }}>
@@ -90,7 +90,7 @@ export default async function AppsPage({ params }: Props) {
               {es ? "Herramientas Web" : "Web Tools"}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {webApps.map((app) => (
+              {webTools.map((app) => (
                 <AppCard key={app.slug} app={app} locale={locale} />
               ))}
             </div>
