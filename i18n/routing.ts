@@ -31,6 +31,7 @@ export const routing = defineRouting({
     },
     "/apps": "/apps",
     "/apps/[slug]": "/apps/[slug]",
+    "/apps/acordes/jugar": "/apps/acordes/jugar",
     "/el-libro": {
       es: "/el-libro",
       en: "/the-book",

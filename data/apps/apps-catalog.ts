@@ -172,6 +172,8 @@ export const APPS: AppEntry[] = [
       { es: "Rango seleccionable", en: "Selectable range" },
       { es: "Dificultad progresiva hasta acordes con 13ª", en: "Progressive difficulty up to 13th chords" },
     ],
+    webUrl: "/apps/acordes/jugar",
+    isWeb: true,
     icon: "/images/app-acordes.jpeg",
   },
   {
