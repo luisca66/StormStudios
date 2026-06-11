@@ -6,6 +6,7 @@ export default defineConfig({
     environment: "node",
     include: [
       "components/rhythm-reading/_tests/**/*.test.ts",
+      "lib/acordes-cantar/**/*.test.ts",
       "lib/maestro-virtual/**/*.test.ts",
     ],
   },

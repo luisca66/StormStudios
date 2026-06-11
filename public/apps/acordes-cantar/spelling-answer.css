@@ -1,0 +1,60 @@
+.ac-feedback {
+  height: auto;
+  min-height: 88px;
+}
+
+.ac-spelling-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.ac-spelling-label {
+  color: var(--ink-dim);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ac-spelling-row,
+.ac-spelling-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ac-spelling-choice {
+  min-width: 58px;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 17px;
+  text-align: center;
+}
+
+.ac-spelling-confirm {
+  padding: 9px 22px;
+  font-size: 13px;
+}
+
+.ac-spelling-confirm:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+  transform: none;
+}
+
+.ac-note.naming {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 50%, transparent);
+}
+
+.ac-note.naming .ac-note-led {
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+.ac-note.naming .ac-note-state {
+  color: var(--accent);
+}
