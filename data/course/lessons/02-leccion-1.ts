@@ -23,7 +23,8 @@ export const lesson: LessonConfig = {
     {
       youtubeId: "1y7qsJWDfKE",
       embedUrl: "https://www.youtube.com/embed/1y7qsJWDfKE?si=WCUaiUgzF-9dNOeP",
-      youtubeIdEn: "qoufWT7UCiI",
+      youtubeIdEn: "b697hsxmgd0",
+      embedUrlEn: "https://www.youtube.com/embed/b697hsxmgd0?si=UT1ksiGvgY3HSjD7",
       title: { es: "Escala mayor y círculo de quintas", en: "Major scale and circle of fifths" },
     },
   ],
