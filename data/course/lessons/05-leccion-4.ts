@@ -4,15 +4,17 @@ export const lesson: LessonConfig = {
   id: "05-leccion-4",
   slug: "05-leccion-4",
   order: 5,
+  lessonNumber: 4,
   module: "triadas-satb",
+  status: "construction",
 
   title: {
-    es: "Lección 4 — Primera Inversión",
-    en: "Lesson 4 — First Inversion",
+    es: "Lección 4 — Acordes de 5a",
+    en: "Lesson 4 — Triads (Fifth Chords)",
   },
   description: {
-    es: "Acordes en primera inversión (acorde de sexta): duplicación, usos idiomáticos y cadencia ⁶₄ de dominante.",
-    en: "Chords in first inversion (sixth chord): doubling, idiomatic uses, and the dominant ⁶₄ cadence.",
+    es: "Las tríadas (acordes de 5a): mayor, menor, disminuida y aumentada, en estado fundamental e inversiones.",
+    en: "Triads (fifth chords): major, minor, diminished and augmented, in root position and inversions.",
   },
   estimatedMinutes: 75,
 

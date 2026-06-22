@@ -8,71 +8,72 @@ export const lesson: LessonConfig = {
   module: "triadas-satb",
 
   title: {
-    es: "Lección 2 — Escalas Menores",
-    en: "Lesson 2 — Minor Scales",
+    es: "Lección 2 — Modos",
+    en: "Lesson 2 — Modes",
   },
   description: {
-    es: "Las 15 tonalidades menores en el orden del círculo de quintas. Natural, armónica y melódica para cada tonalidad.",
-    en: "The 15 minor keys in circle-of-fifths order. Natural, harmonic and melodic for each key.",
+    es: "Los 7 modos de la escala mayor (jónico, dórico, frigio, lidio, mixolidio, eólico y locrio) presentados como modos paralelos desde una misma tónica.",
+    en: "The 7 modes of the major scale (Ionian, Dorian, Phrygian, Lydian, Mixolydian, Aeolian and Locrian) presented as parallel modes from a single tonic.",
   },
-  estimatedMinutes: 60,
+  estimatedMinutes: 50,
 
   prerequisites: ["02-leccion-1"],
 
   videos: [
     {
-      youtubeId: "Yq4CVkp_dzE",
-      youtubeIdEn: "UdQt0vl7ftA",
-      title: { es: "Escalas menores y círculo de quintas", en: "Minor scales and circle of fifths" },
+      youtubeId: "2tCzUjsRiJU",
+      embedUrl: "https://www.youtube.com/embed/2tCzUjsRiJU?si=Tl31ax2-4K8krcnu",
+      title: { es: "Modos — los 7 modos de la escala mayor", en: "Modes — the 7 modes of the major scale" },
     },
   ],
 
   activeRules: [],
 
   exercise: {
-    type: "major-scales", // reusing type slot — validated by minor-scale-validator
+    type: "modes",
     voiceCount: 1,
     voices: ["soprano"],
-    keySignatures: [
-      "Am","Em","Bm","F#m","C#m","G#m","D#m","A#m",
-      "Dm","Gm","Cm","Fm","Bbm","Ebm","Abm",
-    ],
+    keySignatures: [], // tónica libre: el alumno elige cualquier nota
     chordTypes: [],
     inversions: [],
-    minChords: 15,
-    maxChords: 15,
+    minChords: 7,
+    maxChords: 7,
     description: {
-      es: "Toca las 15 tonalidades menores en el secuenciador: quintas ascendentes (Am·Em·Bm·F#m·C#m·G#m·D#m·A#m) y quintas descendentes (Dm·Gm·Cm·Fm·Bbm·Ebm·Abm). Por cada tonalidad: natural (8 notas) + armónica (8) + melódica ascendente (8) + melódica descendente (7) = 31 notas. Exporta el MIDI y súbelo aquí.",
-      en: "Play all 15 minor keys in the sequencer: ascending fifths (Am·Em·Bm·F#m·C#m·G#m·D#m·A#m) then descending fifths (Dm·Gm·Cm·Fm·Bbm·Ebm·Abm). For each key: natural (8 notes) + harmonic (8) + melodic ascending (8) + melodic descending (7) = 31 notes. Export the MIDI and upload it here.",
+      es: "Elige una tónica (cualquier nota) y toca los 7 modos paralelos desde ella, en orden: jónico · dórico · frigio · lidio · mixolidio · eólico · locrio. Cada modo va de tónica a tónica, ascendente (8 notas). 56 notas en total, 1 canal (Soprano). Exporta el MIDI y súbelo aquí.",
+      en: "Pick a tonic (any note) and play the 7 parallel modes from it, in order: Ionian · Dorian · Phrygian · Lydian · Mixolydian · Aeolian · Locrian. Each mode goes tonic to tonic, ascending (8 notes). 56 notes total, 1 channel (Soprano). Export the MIDI and upload it here.",
     },
   },
 
   feedback: {
-    "MINOR_MISSING_KEYSIG": {
-      es: "El archivo MIDI no contiene información de tonalidad. Exporta desde el secuenciador Storm Studios.",
-      en: "The MIDI file contains no key signature info. Export from the Storm Studios sequencer.",
+    "MODE_COUNT": {
+      es: "Se esperan 56 notas: 7 modos de 8 notas cada uno.",
+      en: "Exactly 56 notes are expected: 7 modes of 8 notes each.",
     },
-    "MINOR_COUNT": {
-      es: "Se esperan exactamente 15 tonalidades menores.",
-      en: "Exactly 15 minor keys are expected.",
+    "MODE_WRONG_TONIC": {
+      es: "Todos los modos parten de la misma tónica. Modo {measure}.",
+      en: "All modes start from the same tonic. Mode {measure}.",
     },
-    "MINOR_ORDER": {
-      es: "Las tonalidades deben ir en el orden del círculo de quintas. Posición {measure}.",
-      en: "Keys must follow circle-of-fifths order. Position {measure}.",
+    "MODE_ORDER": {
+      es: "Los modos deben ir en orden: jónico · dórico · frigio · lidio · mixolidio · eólico · locrio. Posición {measure}.",
+      en: "Modes must follow the order: Ionian · Dorian · Phrygian · Lydian · Mixolydian · Aeolian · Locrian. Position {measure}.",
     },
-    "MINOR_NOTE_COUNT": {
-      es: "Cada tonalidad debe tener 31 notas: natural(8)+armónica(8)+melódica↑(8)+melódica↓(7). Tonalidad {measure}.",
-      en: "Each key must have 31 notes: natural(8)+harmonic(8)+melodic↑(8)+melodic↓(7). Key {measure}.",
+    "MODE_WRONG_NOTE": {
+      es: "Nota incorrecta en el modo {measure}. Revisa las alteraciones del modo.",
+      en: "Wrong note in mode {measure}. Check the mode's accidentals.",
     },
-    "MINOR_WRONG_NOTE": {
-      es: "Nota incorrecta en la tonalidad {measure}. Revisa la armadura y las alteraciones.",
-      en: "Wrong note in key {measure}. Check the key signature and accidentals.",
+    "MODE_ENHARMONIC": {
+      es: "Grafía enarmónica incorrecta en el modo {measure}. Cada grado usa su propia letra.",
+      en: "Wrong enharmonic spelling in mode {measure}. Each degree uses its own letter.",
     },
-    "MINOR_DIRECTION": {
-      es: "Dirección incorrecta en la tonalidad {measure}. Natural, armónica y melódica↑ ascienden; melódica↓ desciende.",
-      en: "Wrong direction in key {measure}. Natural, harmonic and melodic↑ ascend; melodic↓ descends.",
+    "MODE_DIRECTION": {
+      es: "Cada modo debe tocarse ascendente. Modo {measure}.",
+      en: "Each mode must be played ascending. Mode {measure}.",
+    },
+    "MODE_TONIC_CLOSURE": {
+      es: "Cada modo debe cerrar en la tónica una octava arriba. Modo {measure}.",
+      en: "Each mode must close on the tonic one octave higher. Mode {measure}.",
     },
   },
 
-  tags: ["escalas", "menores", "natural", "armónica", "melódica", "círculo de quintas"],
+  tags: ["modos", "jónico", "dórico", "frigio", "lidio", "mixolidio", "eólico", "locrio"],
 };

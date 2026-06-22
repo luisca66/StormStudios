@@ -32,7 +32,9 @@ import { lesson as l06 } from "@/data/course/lessons/06-leccion-5";
  */
 const ALL_LESSONS: LessonConfig[] = [
   l00, lP01, lP02, lP03, lP04, l02, l03, l04, l05, l06,
-].sort((a, b) => a.order - b.order);
+]
+  .filter((l) => l.status !== "hidden") // las ocultas no se publican ni se enlazan
+  .sort((a, b) => a.order - b.order);
 
 // ─── API pública ──────────────────────────────────────────────────────────────
 

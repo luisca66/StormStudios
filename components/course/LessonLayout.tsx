@@ -74,6 +74,10 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
 
           <div className="ss-divider mb-8" />
 
+          {lesson.status === "construction" ? (
+            <ConstructionBanner locale={locale} />
+          ) : (
+          <>
           {/* Videos de la lección */}
           {lessonVideos && lessonVideos.length > 0 && (
             <div className="mb-10">
@@ -208,11 +212,31 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
           <div className="mt-8 pt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
             <ProgressTracker lessonSlug={lesson.slug} locale={locale} />
           </div>
+          </>
+          )}
 
           {/* Navegación prev/next */}
           <LessonNav prev={prev} next={next} locale={locale} />
         </article>
       </div>
+    </div>
+  );
+}
+
+function ConstructionBanner({ locale }: { locale: string }) {
+  const es = locale === "es";
+  return (
+    <div className="ss-glass rounded-2xl p-8 text-center"
+      style={{ border: "1px solid rgba(245,158,11,0.25)", background: "rgba(245,158,11,0.05)" }}>
+      <div className="text-4xl mb-4">🚧</div>
+      <h2 className="ss-serif mb-3" style={{ fontSize: "1.3rem", color: "#f0eeff" }}>
+        {es ? "Lección en construcción" : "Lesson under construction"}
+      </h2>
+      <p className="ss-mono text-sm" style={{ color: "rgba(240,238,255,0.5)", lineHeight: 1.7, maxWidth: "440px", margin: "0 auto" }}>
+        {es
+          ? "Estamos preparando esta lección. Muy pronto estará disponible con su video, su teoría y el Maestro Virtual."
+          : "We're preparing this lesson. It will soon be available with its video, theory and the Virtual Teacher."}
+      </p>
     </div>
   );
 }

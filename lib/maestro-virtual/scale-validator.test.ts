@@ -102,3 +102,39 @@ describe('validateLesson1Scales — grafía enarmónica', () => {
     expect(errors).toEqual([]);
   });
 });
+
+describe('validateLesson1Scales — orden libre y completitud', () => {
+  function buildForKeys(keys: string[]): VoiceData {
+    const soprano: ParsedNote[] = [];
+    const keyChanges = keys.map((key, s) => ({ tick: s * SCALE_SPAN, key }));
+    keys.forEach((key, s) => {
+      buildMajorScale(key).forEach((n, i) => {
+        soprano.push({
+          midi: n.midi,
+          pitch: n.midi % 12,
+          tick: s * SCALE_SPAN + i * NOTE_GAP,
+          key,
+          spelling: n.sp,
+        });
+      });
+    });
+    return { ticksPerBeat: 128, keyChanges, voices: { SOPRANO: soprano }, beats: [] };
+  }
+
+  it('acepta las 15 escalas en orden inverso (el orden ya no importa)', () => {
+    const errors = validateLesson1Scales(buildForKeys([...LESSON1_ORDER].reverse()));
+    expect(errors).toEqual([]);
+  });
+
+  it('reporta la escala faltante (Mib) si solo hay 14', () => {
+    const errors = validateLesson1Scales(buildForKeys(LESSON1_ORDER.filter(k => k !== 'Eb')));
+    expect(errors.some(e => e.rule === 'SCALE_MISSING_KEY' && e.titleEs.includes('Mib'))).toBe(true);
+  });
+
+  it('reporta duplicado si una escala aparece dos veces', () => {
+    const keys = LESSON1_ORDER.filter(k => k !== 'Cb').concat('C'); // C duplicada, falta Dob
+    const errors = validateLesson1Scales(buildForKeys(keys));
+    expect(errors.some(e => e.rule === 'SCALE_DUPLICATE_KEY')).toBe(true);
+    expect(errors.some(e => e.rule === 'SCALE_COUNT')).toBe(false); // siguen siendo 15
+  });
+});

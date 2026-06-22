@@ -114,6 +114,7 @@ export type ValidationContext = {
 
 export type ExerciseType =
   | "major-scales"
+  | "modes"
   | "four-voice-chorale"
   | "two-voice"
   | "melody-harmonization"
@@ -178,6 +179,8 @@ export type LessonConfig = {
   order: number;         // sort order (includes intro/propedeutico)
   lessonNumber?: number; // display number shown to student (1, 2, 3…)
   module?: string;
+  /** Estado de publicación. Default: "published". */
+  status?: "published" | "construction" | "hidden";
 
   // Metadata
   title: BilingualText;

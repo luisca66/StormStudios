@@ -1,16 +1,23 @@
 /**
  * scale-validator.ts
  * Valida las 15 escalas mayores de la Lección 1.
- * Requiere key_signature meta-messages en el MIDI (exportados por el secuenciador Storm Studios).
+ *
+ * La TEORÍA (alturas y grafía correcta de cada escala) la provee el motor
+ * `music-theory-core.ts` vía `buildScale(key, 'MAJOR')`. Este validador solo
+ * define el EJERCICIO (qué 15 tonalidades) y compara contra lo que el core dice.
+ *
+ * Regla de orden: el alumno puede tocar las 15 escalas en CUALQUIER orden; solo
+ * se exige que estén las 15 (sin faltantes ni duplicadas). La grafía enarmónica
+ * de cada nota se valida con la grafía incrustada por el secuenciador (SP:…).
  */
 
 import type { VoiceData } from './midi-parser';
+import { buildScale, type ScaleNote } from './music-theory-core';
 import {
   parseSpelling,
-  spellWithLetter,
   sameSpelling,
   spellingName,
-  letterIndex,
+  type Spelling,
   type Letter,
 } from './spelling';
 
@@ -19,7 +26,7 @@ import {
 export interface ScaleError {
   rule: ScaleRuleId;
   severity: 'error' | 'warning';
-  position: number;       // 1-15, posición de la escala
+  position: number;       // 1-15, posición de la escala (0 = error global)
   degree?: string;        // 'I' 'II' ... "I'"
   titleEs: string;
   titleEn: string;
@@ -29,7 +36,9 @@ export interface ScaleError {
 
 export type ScaleRuleId =
   | 'SCALE_COUNT'
-  | 'SCALE_ORDER'
+  | 'SCALE_MISSING_KEY'
+  | 'SCALE_DUPLICATE_KEY'
+  | 'SCALE_UNKNOWN_KEY'
   | 'SCALE_NOTE_COUNT'
   | 'SCALE_WRONG_NOTE'
   | 'SCALE_ENHARMONIC'
@@ -37,78 +46,41 @@ export type ScaleRuleId =
   | 'SCALE_TONIC_CLOSURE'
   | 'SCALE_MISSING_KEYSIG';
 
-// ── Datos de las 15 escalas ───────────────────────────────────────────────────
+// ── Datos del ejercicio: las 15 tonalidades mayores ───────────────────────────
+// El orden de esta lista ya NO se exige al alumno; solo enumera las 15 escalas
+// esperadas (la elección de enarmonías —F# y Gb, C# y Db, B y Cb— es curricular).
 
-const LESSON1_ORDER = [
-  'C','G','D','A','E','B','F#','C#',
-  'F','Bb','Eb','Ab','Db','Gb','Cb',
+const EXPECTED_KEYS = [
+  'C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#',
+  'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb',
 ] as const;
 
-export type MajorKeyRoot = typeof LESSON1_ORDER[number];
+const DEGREES = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', "I'"] as const;
 
-const SCALE_NAMES: Record<MajorKeyRoot, { es: string; en: string }> = {
-  'C':  { es: 'Do Mayor',   en: 'C Major'  },
-  'G':  { es: 'Sol Mayor',  en: 'G Major'  },
-  'D':  { es: 'Re Mayor',   en: 'D Major'  },
-  'A':  { es: 'La Mayor',   en: 'A Major'  },
-  'E':  { es: 'Mi Mayor',   en: 'E Major'  },
-  'B':  { es: 'Si Mayor',   en: 'B Major'  },
-  'F#': { es: 'Fa# Mayor',  en: 'F# Major' },
-  'C#': { es: 'Do# Mayor',  en: 'C# Major' },
-  'F':  { es: 'Fa Mayor',   en: 'F Major'  },
-  'Bb': { es: 'Sib Mayor',  en: 'Bb Major' },
-  'Eb': { es: 'Mib Mayor',  en: 'Eb Major' },
-  'Ab': { es: 'Lab Mayor',  en: 'Ab Major' },
-  'Db': { es: 'Reb Mayor',  en: 'Db Major' },
-  'Gb': { es: 'Solb Mayor', en: 'Gb Major' },
-  'Cb': { es: 'Dob Mayor',  en: 'Cb Major' },
-};
+// ── Helpers que consultan el core ─────────────────────────────────────────────
 
-// Pitch class sequence for each key (I II III IV V VI VII I')
-const SCALE_PC: Record<MajorKeyRoot, number[]> = {
-  'C':  [0,2,4,5,7,9,11,0],
-  'G':  [7,9,11,0,2,4,6,7],
-  'D':  [2,4,6,7,9,11,1,2],
-  'A':  [9,11,1,2,4,6,8,9],
-  'E':  [4,6,8,9,11,1,3,4],
-  'B':  [11,1,3,4,6,8,10,11],
-  'F#': [6,8,10,11,1,3,5,6],
-  'C#': [1,3,5,6,8,10,0,1],
-  'F':  [5,7,9,10,0,2,4,5],
-  'Bb': [10,0,2,3,5,7,9,10],
-  'Eb': [3,5,7,8,10,0,2,3],
-  'Ab': [8,10,0,1,3,5,7,8],
-  'Db': [1,3,5,6,8,10,0,1],
-  'Gb': [6,8,10,11,1,3,5,6],
-  'Cb': [11,1,3,4,6,8,10,11],
-};
+/** Convierte un ScaleNote del core a la grafía {letter, alter} del comparador. */
+function coreNoteToSpelling(n: ScaleNote): Spelling {
+  const letter = n.letter.toLowerCase() as Letter;
+  const alter =
+    n.alteration === '##' ? 2 :
+    n.alteration === '#'  ? 1 :
+    n.alteration === 'b'  ? -1 :
+    n.alteration === 'bb' ? -2 : 0;
+  return { letter, alter };
+}
 
-// Note names per key (pitch class → name in that key)
-const SPELLINGS: Record<MajorKeyRoot, Record<number, string>> = {
-  'C':  {0:'Do',  2:'Re',  4:'Mi',  5:'Fa',   7:'Sol', 9:'La',  11:'Si'},
-  'G':  {7:'Sol', 9:'La',  11:'Si', 0:'Do',   2:'Re',  4:'Mi',  6:'Fa#'},
-  'D':  {2:'Re',  4:'Mi',  6:'Fa#', 7:'Sol',  9:'La',  11:'Si', 1:'Do#'},
-  'A':  {9:'La',  11:'Si', 1:'Do#', 2:'Re',   4:'Mi',  6:'Fa#', 8:'Sol#'},
-  'E':  {4:'Mi',  6:'Fa#', 8:'Sol#',9:'La',   11:'Si', 1:'Do#', 3:'Re#'},
-  'B':  {11:'Si', 1:'Do#', 3:'Re#', 4:'Mi',   6:'Fa#', 8:'Sol#',10:'La#'},
-  'F#': {6:'Fa#', 8:'Sol#',10:'La#',11:'Si',  1:'Do#', 3:'Re#', 5:'Mi#'},
-  'C#': {1:'Do#', 3:'Re#', 5:'Mi#', 6:'Fa#',  8:'Sol#',10:'La#',0:'Si#'},
-  'F':  {5:'Fa',  7:'Sol', 9:'La',  10:'Sib', 0:'Do',  2:'Re',  4:'Mi'},
-  'Bb': {10:'Sib',0:'Do',  2:'Re',  3:'Mib',  5:'Fa',  7:'Sol', 9:'La'},
-  'Eb': {3:'Mib', 5:'Fa',  7:'Sol', 8:'Lab',  10:'Sib',0:'Do',  2:'Re'},
-  'Ab': {8:'Lab', 10:'Sib',0:'Do',  1:'Reb',  3:'Mib', 5:'Fa',  7:'Sol'},
-  'Db': {1:'Reb', 3:'Mib', 5:'Fa',  6:'Solb', 8:'Lab', 10:'Sib',0:'Do'},
-  'Gb': {6:'Solb',8:'Lab', 10:'Sib',11:'Dob', 1:'Reb', 3:'Mib', 5:'Fa'},
-  'Cb': {11:'Dob',1:'Reb', 3:'Mib', 4:'Fab',  6:'Solb',8:'Lab', 10:'Sib'},
-};
-
-const DEGREES = ['I','II','III','IV','V','VI','VII',"I'"] as const;
+/** Nombre legible de la escala mayor (ej. 'Sib Mayor' / 'Bb Major'). */
+function scaleNames(key: string): { es: string; en: string } {
+  const tonic = buildScale(key, 'MAJOR').notes[0];
+  return { es: `${tonic.nameEs} Mayor`, en: `${tonic.nameEn} Major` };
+}
 
 // ── Parser de segmentos ───────────────────────────────────────────────────────
 
 interface ScaleSegment {
   key: string;
-  notes: number[];                  // MIDI numbers in order
+  notes: number[];                   // MIDI numbers in order
   spellings: (string | undefined)[]; // grafía incrustada por nota (paralelo a notes)
 }
 
@@ -127,9 +99,7 @@ function extractSegments(voiceData: VoiceData): ScaleSegment[] {
   let currentNotes: number[] = [];
   let currentSpellings: (string | undefined)[] = [];
 
-  // Group notes by their key change
   for (const note of sopranoNotes) {
-    // Check if key changed at this tick
     const kc = voiceData.keyChanges.find(k => k.tick === note.tick);
     if (kc && kc.key !== currentKey) {
       if (currentNotes.length > 0) {
@@ -173,7 +143,7 @@ export function validateLesson1Scales(voiceData: VoiceData): ScaleError[] {
 
   const segments = extractSegments(voiceData);
 
-  // ── Rule 1: Total count ───────────────────────────────────────────────────
+  // ── Rule 1: Total count (titular) ─────────────────────────────────────────
   if (segments.length !== 15) {
     const diff = 15 - segments.length;
     errors.push({
@@ -183,39 +153,68 @@ export function validateLesson1Scales(voiceData: VoiceData): ScaleError[] {
       titleEs: `Se encontraron ${segments.length} escalas, se esperan 15`,
       titleEn: `Found ${segments.length} scales, expected 15`,
       detailEs: diff > 0
-        ? `Faltan ${diff} escala${diff > 1 ? 's' : ''}. El ejercicio completo requiere las 15 escalas mayores.`
+        ? `Faltan ${diff} escala${diff > 1 ? 's' : ''}. El ejercicio completo requiere las 15 escalas mayores (en cualquier orden).`
         : `Hay ${Math.abs(diff)} escala${Math.abs(diff) > 1 ? 's' : ''} de más.`,
       detailEn: diff > 0
-        ? `Missing ${diff} scale${diff > 1 ? 's' : ''}. The complete exercise requires all 15 major scales.`
+        ? `Missing ${diff} scale${diff > 1 ? 's' : ''}. The complete exercise requires all 15 major scales (in any order).`
         : `${Math.abs(diff)} extra scale${Math.abs(diff) > 1 ? 's' : ''}.`,
     });
   }
 
-  // ── Rules 2–5: Per-scale validation ──────────────────────────────────────
-  for (let pos = 0; pos < segments.length; pos++) {
-    const { key, notes } = segments[pos];
-    const expectedKey    = LESSON1_ORDER[pos] as MajorKeyRoot | undefined;
-    const nameEs         = SCALE_NAMES[key as MajorKeyRoot]?.es ?? key;
-    const nameEn         = SCALE_NAMES[key as MajorKeyRoot]?.en ?? key;
+  // ── Rule 2: Completitud del conjunto (sustituye a la antigua regla de orden) ──
+  // El orden no importa; solo que estén las 15, una sola vez cada una.
+  const counts = new Map<string, number>();
+  for (const seg of segments) counts.set(seg.key, (counts.get(seg.key) ?? 0) + 1);
 
-    // Rule 2: Order
-    if (expectedKey && key !== expectedKey) {
-      const expNameEs = SCALE_NAMES[expectedKey].es;
-      const expNameEn = SCALE_NAMES[expectedKey].en;
+  for (const [key, count] of counts) {
+    if (!(EXPECTED_KEYS as readonly string[]).includes(key)) {
       errors.push({
-        rule: 'SCALE_ORDER',
+        rule: 'SCALE_UNKNOWN_KEY',
         severity: 'error',
-        position: pos + 1,
-        titleEs: `Posición ${pos + 1}: se esperaba ${expNameEs}`,
-        titleEn: `Position ${pos + 1}: expected ${expNameEn}`,
-        detailEs: `En la posición ${pos + 1} está ${nameEs} pero debería ser ${expNameEs}. `
-                + `Orden correcto: Do·Sol·Re·La·Mi·Si·Fa#·Do# (quintas ascendentes), `
-                + `luego Fa·Sib·Mib·Lab·Reb·Solb·Dob (quintas descendentes).`,
-        detailEn: `Position ${pos + 1} has ${nameEn} but should be ${expNameEn}. `
-                + `Correct order: C·G·D·A·E·B·F#·C# (ascending fifths), `
-                + `then F·Bb·Eb·Ab·Db·Gb·Cb (descending fifths).`,
+        position: 0,
+        titleEs: `Tonalidad inesperada: ${key}`,
+        titleEn: `Unexpected key: ${key}`,
+        detailEs: `${key} no es una de las 15 escalas mayores del ejercicio. Revisa la armadura.`,
+        detailEn: `${key} is not one of the 15 major scales of this exercise. Check the key signature.`,
+      });
+    } else if (count > 1) {
+      const { es, en } = scaleNames(key);
+      errors.push({
+        rule: 'SCALE_DUPLICATE_KEY',
+        severity: 'error',
+        position: 0,
+        titleEs: `${es} aparece ${count} veces`,
+        titleEn: `${en} appears ${count} times`,
+        detailEs: `Cada escala debe aparecer una sola vez. ${es} está duplicada.`,
+        detailEn: `Each scale must appear exactly once. ${en} is duplicated.`,
       });
     }
+  }
+
+  for (const key of EXPECTED_KEYS) {
+    if (!counts.has(key)) {
+      const { es, en } = scaleNames(key);
+      errors.push({
+        rule: 'SCALE_MISSING_KEY',
+        severity: 'error',
+        position: 0,
+        titleEs: `Falta la escala de ${es}`,
+        titleEn: `Missing the ${en} scale`,
+        detailEs: `El ejercicio requiere las 15 escalas mayores; falta ${es}.`,
+        detailEn: `The exercise requires all 15 major scales; ${en} is missing.`,
+      });
+    }
+  }
+
+  // ── Rules 3–6: Validación por escala (contra su PROPIA tonalidad declarada) ──
+  for (let pos = 0; pos < segments.length; pos++) {
+    const { key, notes, spellings } = segments[pos];
+
+    // Si la tonalidad no es válida, ya se reportó arriba; no intentamos validar notas.
+    if (!(EXPECTED_KEYS as readonly string[]).includes(key)) continue;
+
+    const expScale = buildScale(key, 'MAJOR');   // teoría desde el core
+    const { es: nameEs, en: nameEn } = scaleNames(key);
 
     // Rule 3: Note count
     if (notes.length !== 8) {
@@ -230,21 +229,17 @@ export function validateLesson1Scales(voiceData: VoiceData): ScaleError[] {
         detailEn: `Each scale must go from tonic to tonic: I II III IV V VI VII I'. `
                 + `The ${nameEn} scale has ${notes.length} note${notes.length !== 1 ? 's' : ''}.`,
       });
-      continue; // can't validate individual notes without 8
+      continue; // no se pueden validar grados sin 8 notas
     }
-
-    const keyRoot   = key as MajorKeyRoot;
-    const expPc     = SCALE_PC[keyRoot];
-    const spelling  = SPELLINGS[keyRoot];
-    const tonicLetterIdx = letterIndex(keyRoot[0].toLowerCase() as Letter);
 
     // Rule 4: Correct notes (pitch class) + Rule 4b: enharmonic spelling
     for (let deg = 0; deg < 8; deg++) {
-      const gotPc = notes[deg] % 12;
-      const expPc_ = expPc[deg];
-      if (gotPc !== expPc_) {
-        const gotName = spelling[gotPc]  ?? `(pc ${gotPc})`;
-        const expName = spelling[expPc_] ?? `(pc ${expPc_})`;
+      const gotPc = ((notes[deg] % 12) + 12) % 12;
+      const expNote = expScale.notes[deg];
+      const expPc = expNote.pitch;
+
+      if (gotPc !== expPc) {
+        const gotName = gotNoteName(spellings[deg], gotPc);
         errors.push({
           rule: 'SCALE_WRONG_NOTE',
           severity: 'error',
@@ -252,19 +247,18 @@ export function validateLesson1Scales(voiceData: VoiceData): ScaleError[] {
           degree: DEGREES[deg],
           titleEs: `${nameEs}: nota incorrecta en grado ${DEGREES[deg]}`,
           titleEn: `${nameEn}: wrong note on degree ${DEGREES[deg]}`,
-          detailEs: `Grado ${DEGREES[deg]}: se esperaba ${expName} y se tocó ${gotName}. `
+          detailEs: `Grado ${DEGREES[deg]}: se esperaba ${expNote.nameEs} y se tocó ${gotName}. `
                   + `Revisa la armadura de ${nameEs}.`,
-          detailEn: `Degree ${DEGREES[deg]}: expected ${expName}, `
-                  + `got ${gotName}. `
+          detailEn: `Degree ${DEGREES[deg]}: expected ${expNote.nameEn}, got ${gotName}. `
                   + `Check the key signature of ${nameEn}.`,
         });
-        continue; // altura ya incorrecta: no dupliquemos con un error de grafía
+        continue; // altura ya incorrecta: no dupliquemos con error de grafía
       }
 
       // Rule 4b: misma altura pero ¿grafía enarmónica correcta? (ej. La## vs Si)
-      const got = parseSpelling(segments[pos].spellings[deg]);
+      const got = parseSpelling(spellings[deg]);
       if (got) {
-        const exp = spellWithLetter(tonicLetterIdx + deg, expPc_);
+        const exp = coreNoteToSpelling(expNote);
         if (!sameSpelling(got, exp)) {
           errors.push({
             rule: 'SCALE_ENHARMONIC',
@@ -293,30 +287,35 @@ export function validateLesson1Scales(voiceData: VoiceData): ScaleError[] {
           titleEs: `${nameEs}: dirección incorrecta en grado ${DEGREES[i]}`,
           titleEn: `${nameEn}: wrong direction on degree ${DEGREES[i]}`,
           detailEs: `La escala debe tocarse ascendente. La nota ${DEGREES[i]} `
-                  + `(MIDI ${notes[i]}) no es mayor que la anterior (MIDI ${notes[i-1]}).`,
+                  + `(MIDI ${notes[i]}) no es mayor que la anterior (MIDI ${notes[i - 1]}).`,
           detailEn: `The scale must be played ascending. Note ${DEGREES[i]} `
-                  + `(MIDI ${notes[i]}) is not higher than the previous (MIDI ${notes[i-1]}).`,
+                  + `(MIDI ${notes[i]}) is not higher than the previous (MIDI ${notes[i - 1]}).`,
         });
       }
     }
 
     // Rule 6: Tonic closure
-    if (notes[0] % 12 !== notes[7] % 12) {
-      const startName = spelling[notes[0] % 12] ?? `pc ${notes[0] % 12}`;
-      const endName   = spelling[notes[7] % 12] ?? `pc ${notes[7] % 12}`;
+    if (((notes[0] % 12) + 12) % 12 !== ((notes[7] % 12) + 12) % 12) {
       errors.push({
         rule: 'SCALE_TONIC_CLOSURE',
         severity: 'error',
         position: pos + 1,
         titleEs: `${nameEs}: no cierra en tónica`,
         titleEn: `${nameEn}: doesn't close on tonic`,
-        detailEs: `La escala empieza en ${startName} y termina en ${endName}. `
-                + `La última nota debe ser la tónica (${startName}) en la octava superior.`,
-        detailEn: `Scale starts on ${startName} and ends on ${endName}. `
-                + `The last note must be the tonic (${startName}) one octave higher.`,
+        detailEs: `La última nota debe ser la tónica (${expScale.notes[0].nameEs}) en la octava superior.`,
+        detailEn: `The last note must be the tonic (${expScale.notes[0].nameEn}) one octave higher.`,
       });
     }
   }
 
   return errors;
+}
+
+/** Nombre de la nota tocada para los mensajes de error (usa la grafía del alumno). */
+function gotNoteName(spelling: string | undefined, pc: number): string {
+  const got = parseSpelling(spelling);
+  if (got) return spellingName(got, 'es');
+  // Sin grafía incrustada: nombre cromático aproximado en español.
+  const CHROMATIC_ES = ['Do', 'Do#', 'Re', 'Re#', 'Mi', 'Fa', 'Fa#', 'Sol', 'Sol#', 'La', 'La#', 'Si'];
+  return CHROMATIC_ES[pc] ?? `(pc ${pc})`;
 }

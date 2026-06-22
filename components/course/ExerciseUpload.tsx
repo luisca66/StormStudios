@@ -118,7 +118,7 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
           </div>
         )}
 
-        {/* Referencia visual para lección 2 */}
+        {/* Referencia visual para lección 2 — Modos */}
         {lessonId === "03-leccion-2" && (
           <div className="mb-4 p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs font-mono space-y-1">
             <p className="text-gray-600 font-semibold mb-1">
@@ -127,25 +127,15 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
             <p className="text-gray-500">
               ↑{" "}
               <span className="text-purple-700">
-                Am · Em · Bm · F#m · C#m · G#m · D#m · A#m
-              </span>
-              <span className="text-gray-400 ml-2">
-                {es ? "(quintas ascendentes)" : "(ascending fifths)"}
-              </span>
-            </p>
-            <p className="text-gray-500">
-              ↓{" "}
-              <span className="text-blue-700">
-                Dm · Gm · Cm · Fm · Bbm · Ebm · Abm
-              </span>
-              <span className="text-gray-400 ml-2">
-                {es ? "(quintas descendentes)" : "(descending fifths)"}
+                {es
+                  ? "jónico · dórico · frigio · lidio · mixolidio · eólico · locrio"
+                  : "Ionian · Dorian · Phrygian · Lydian · Mixolydian · Aeolian · Locrian"}
               </span>
             </p>
             <p className="text-gray-400 mt-1">
               {es
-                ? "Por tonalidad: natural (8) + armónica (8) + melódica↑ (8) + melódica↓ (7) = 31 notas · 465 total · 1 canal (Soprano)"
-                : "Per key: natural (8) + harmonic (8) + melodic↑ (8) + melodic↓ (7) = 31 notes · 465 total · 1 channel (Soprano)"}
+                ? "Modos paralelos desde una tónica libre (cualquier nota) · 8 notas ascendentes por modo · 7 modos · 56 notas total · 1 canal (Soprano)"
+                : "Parallel modes from a free tonic (any note) · 8 ascending notes per mode · 7 modes · 56 notes total · 1 channel (Soprano)"}
             </p>
           </div>
         )}
@@ -244,6 +234,12 @@ function FeedbackDisplay({
   const es = locale === "es";
   const passed = feedback.passed;
 
+  // Término de la posición según el tipo de ejercicio de la lección.
+  const unitWord =
+    feedback.lessonId === "03-leccion-2" ? (es ? "modo" : "mode")
+    : feedback.lessonId === "02-leccion-1" ? (es ? "escala" : "scale")
+    : (es ? "compás" : "measure");
+
   return (
     <div className="space-y-4">
       {/* Resultado general */}
@@ -285,7 +281,7 @@ function FeedbackDisplay({
               </span>
               {v.measure > 0 && (
                 <span className="text-red-500 ml-2 text-xs">
-                  ({es ? "escala" : "scale"} {v.measure})
+                  ({unitWord} {v.measure})
                 </span>
               )}
               <p className="text-red-600 mt-1">

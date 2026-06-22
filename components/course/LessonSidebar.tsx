@@ -138,6 +138,9 @@ function LessonLink({
       <span className="line-clamp-2">
         {lesson.title[locale as "es" | "en"]}
       </span>
+      {lesson.status === "construction" && (
+        <span className="ml-auto flex-shrink-0 text-xs" title="En construcción">🚧</span>
+      )}
     </Link>
   );
 }

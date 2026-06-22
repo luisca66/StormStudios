@@ -5,6 +5,7 @@ import { type Locale } from "@/i18n/routing";
 import { JsonLd } from "@/components/JsonLd";
 import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
+import { getLessonsByModule } from "@/lib/course";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -35,18 +36,13 @@ const PROPEDEUTICO_LESSONS = [
   { slug: "p04-secuenciador", title: { es: "P04 – Uso del Secuenciador",              en: "P04 – Using the Sequencer" } },
 ];
 
-const MAIN_LESSONS = [
-  { slug: "02-leccion-1", lessonNumber: 1, title: { es: "Lección 1", en: "Lesson 1" } },
-  { slug: "03-leccion-2", lessonNumber: 2, title: { es: "Lección 2", en: "Lesson 2" } },
-  { slug: "04-leccion-3", lessonNumber: 3, title: { es: "Lección 3", en: "Lesson 3" } },
-  { slug: "05-leccion-4", lessonNumber: 4, title: { es: "Lección 4", en: "Lesson 4" } },
-  { slug: "06-leccion-5", lessonNumber: 5, title: { es: "Lección 5", en: "Lesson 5" } },
-];
+// Las lecciones principales se leen del curso (excluye ocultas automáticamente).
 
 export default async function CursoArmoniaPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const es = locale === "es";
+  const mainLessons = getLessonsByModule("triadas-satb");
 
   return (
     <div className="ss-root" style={{ minHeight: "100vh" }}>
@@ -151,7 +147,7 @@ export default async function CursoArmoniaPage({ params }: Props) {
           </details>
 
           {/* Lecciones principales */}
-          {MAIN_LESSONS.map((lesson) => (
+          {mainLessons.map((lesson) => (
             <Link
               key={lesson.slug}
               href={{ pathname: "/curso-armonia/[slug]", params: { slug: lesson.slug } }}
@@ -160,12 +156,18 @@ export default async function CursoArmoniaPage({ params }: Props) {
             >
               <div className="w-10 h-10 rounded-full flex items-center justify-center ss-mono text-sm font-bold flex-shrink-0"
                 style={{ background: "rgba(139,92,246,0.15)", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.25)" }}>
-                {lesson.lessonNumber}
+                {lesson.lessonNumber ?? lesson.order}
               </div>
               <span className="ss-mono text-sm" style={{ color: "rgba(240,238,255,0.8)" }}>
                 {lesson.title[locale as "es" | "en"]}
               </span>
-              <span className="ml-auto ss-mono text-sm" style={{ color: "rgba(139,92,246,0.7)" }}>→</span>
+              {lesson.status === "construction" ? (
+                <span className="ml-auto ss-mono text-xs" style={{ color: "rgba(245,158,11,0.85)" }}>
+                  🚧 {es ? "En construcción" : "Under construction"}
+                </span>
+              ) : (
+                <span className="ml-auto ss-mono text-sm" style={{ color: "rgba(139,92,246,0.7)" }}>→</span>
+              )}
             </Link>
           ))}
 
