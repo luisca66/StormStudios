@@ -5,7 +5,7 @@ import { type Locale } from "@/i18n/routing";
 import { JsonLd } from "@/components/JsonLd";
 import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
-import { getLessonsByModule } from "@/lib/course";
+import { getLessonUrlSlug, getLessonsByModule } from "@/lib/course";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -42,6 +42,7 @@ export default async function CursoArmoniaPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const es = locale === "es";
+  const currentLocale = locale as Locale;
   const mainLessons = getLessonsByModule("triadas-satb");
 
   return (
@@ -102,7 +103,7 @@ export default async function CursoArmoniaPage({ params }: Props) {
 
           {/* Introducción */}
           <Link
-            href={{ pathname: "/curso-armonia/[slug]", params: { slug: INTRO_LESSON.slug } }}
+            href={{ pathname: "/curso-armonia/[slug]", params: { slug: getLessonUrlSlug(INTRO_LESSON.slug, currentLocale) } }}
             className="ss-glass ss-card flex items-center gap-4 p-4 rounded-xl group"
             style={{ border: "1px solid rgba(255,255,255,0.07)" }}
           >
@@ -134,7 +135,7 @@ export default async function CursoArmoniaPage({ params }: Props) {
               {PROPEDEUTICO_LESSONS.map((lesson) => (
                 <Link
                   key={lesson.slug}
-                  href={{ pathname: "/curso-armonia/[slug]", params: { slug: lesson.slug } }}
+                  href={{ pathname: "/curso-armonia/[slug]", params: { slug: getLessonUrlSlug(lesson.slug, currentLocale) } }}
                   className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors"
                   style={{ color: "rgba(240,238,255,0.65)" }}
                 >
@@ -150,7 +151,7 @@ export default async function CursoArmoniaPage({ params }: Props) {
           {mainLessons.map((lesson) => (
             <Link
               key={lesson.slug}
-              href={{ pathname: "/curso-armonia/[slug]", params: { slug: lesson.slug } }}
+              href={{ pathname: "/curso-armonia/[slug]", params: { slug: getLessonUrlSlug(lesson, currentLocale) } }}
               className="ss-glass ss-card flex items-center gap-4 p-4 rounded-xl group"
               style={{ border: "1px solid rgba(255,255,255,0.07)" }}
             >

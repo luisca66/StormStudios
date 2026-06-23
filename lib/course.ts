@@ -6,6 +6,7 @@
  * (Next.js Server Components / generateStaticParams).
  */
 
+import type { Locale } from "@/i18n/routing";
 import type { LessonConfig } from "@/types/course";
 import { COURSE_CONFIG } from "@/data/course/course-config";
 
@@ -36,6 +37,49 @@ const ALL_LESSONS: LessonConfig[] = [
   .filter((l) => l.status !== "hidden") // las ocultas no se publican ni se enlazan
   .sort((a, b) => a.order - b.order);
 
+const LESSON_URL_SLUGS: Record<string, Record<Locale, string>> = {
+  "00-introduccion": {
+    es: "00-introduccion",
+    en: "00-course-introduction",
+  },
+  "p01-notas": {
+    es: "p01-notas",
+    en: "p01-writing-musical-notes",
+  },
+  "p02-ritmica": {
+    es: "p02-ritmica",
+    en: "p02-writing-musical-rhythm",
+  },
+  "p03-intervalos": {
+    es: "p03-intervalos",
+    en: "p03-intervals",
+  },
+  "p04-secuenciador": {
+    es: "p04-secuenciador",
+    en: "p04-using-the-sequencer",
+  },
+  "02-leccion-1": {
+    es: "02-leccion-1",
+    en: "02-lesson-1-major-scales",
+  },
+  "03-leccion-2": {
+    es: "03-leccion-2",
+    en: "03-lesson-2-modes",
+  },
+  "04-leccion-3": {
+    es: "04-leccion-3",
+    en: "04-lesson-3-minor-scales",
+  },
+  "05-leccion-4": {
+    es: "05-leccion-4",
+    en: "05-lesson-4-triads-fifth-chords",
+  },
+  "06-leccion-5": {
+    es: "06-leccion-5",
+    en: "06-lesson-5-second-inversion-64-cadence",
+  },
+};
+
 // ─── API pública ──────────────────────────────────────────────────────────────
 
 /**
@@ -57,6 +101,39 @@ export function getAllLessonSlugs(): string[] {
  */
 export function getLessonBySlug(slug: string): LessonConfig | undefined {
   return ALL_LESSONS.find((l) => l.slug === slug);
+}
+
+/**
+ * Retorna el slug público para un idioma, conservando `lesson.slug` como ID interno.
+ */
+export function getLessonUrlSlug(lessonOrSlug: LessonConfig | string, locale: Locale): string {
+  const slug = typeof lessonOrSlug === "string" ? lessonOrSlug : lessonOrSlug.slug;
+  return LESSON_URL_SLUGS[slug]?.[locale] ?? slug;
+}
+
+/**
+ * Busca una lección por su slug público localizado.
+ * También acepta el slug interno legacy para mantener compatibilidad con links viejos.
+ */
+export function getLessonByLocalizedSlug(
+  locale: Locale,
+  localizedSlug: string
+): LessonConfig | undefined {
+  return ALL_LESSONS.find(
+    (lesson) =>
+      lesson.slug === localizedSlug ||
+      getLessonUrlSlug(lesson, locale) === localizedSlug
+  );
+}
+
+/**
+ * Params localizados para rutas de lección.
+ */
+export function getLessonRouteParams(lessonOrSlug: LessonConfig | string): Record<Locale, { slug: string }> {
+  return {
+    es: { slug: getLessonUrlSlug(lessonOrSlug, "es") },
+    en: { slug: getLessonUrlSlug(lessonOrSlug, "en") },
+  };
 }
 
 /**

@@ -26,6 +26,7 @@ type MetadataConfig = {
 };
 
 type RouteParams = Record<string, string>;
+type LocalizedRouteParams = Record<Locale, RouteParams | undefined>;
 
 export type MainRoute =
   | "/"
@@ -73,6 +74,16 @@ export function getLocalizedRouteUrls(route: Pathnames, params?: RouteParams): L
   return {
     es: getLocalizedPathname(route, "es", params),
     en: getLocalizedPathname(route, "en", params),
+  };
+}
+
+export function getLocalizedRouteUrlsByLocaleParams(
+  route: Pathnames,
+  params: LocalizedRouteParams
+): LocalizedUrlMap {
+  return {
+    es: getLocalizedPathname(route, "es", params.es),
+    en: getLocalizedPathname(route, "en", params.en),
   };
 }
 

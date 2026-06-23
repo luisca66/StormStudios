@@ -3,8 +3,12 @@ import { APPS } from "@/data/apps/apps-catalog";
 import { BLOG_POST_TRANSLATIONS } from "@/data/seo/blog-post-translations";
 import { getAllResources, getResourceUrls } from "@/data/resources/resources-catalog";
 import { getBlogPosts, getLessonContent, getPageContent, getBlogPost } from "@/lib/mdx";
-import { getAllLessonSlugs } from "@/lib/course";
-import { getLocalizedRouteUrls, BASE_URL } from "@/lib/seo/page-alternates";
+import { getAllLessons, getLessonRouteParams } from "@/lib/course";
+import {
+  getLocalizedRouteUrls,
+  getLocalizedRouteUrlsByLocaleParams,
+  BASE_URL,
+} from "@/lib/seo/page-alternates";
 import { routing, type Locale } from "@/i18n/routing";
 
 const LOCALES = routing.locales;
@@ -59,7 +63,7 @@ async function getStaticRouteLastModified(route: KnownStaticRoute) {
 
   if (route === "/curso-armonia") {
     const lessons = await Promise.all(
-      getAllLessonSlugs().flatMap((slug) => LOCALES.map((locale) => getLessonContent(locale, slug)))
+      getAllLessons().flatMap((lesson) => LOCALES.map((locale) => getLessonContent(locale, lesson.slug)))
     );
     return getMostRecentDate(lessons.map((lesson) => lesson?.lastModified));
   }
@@ -97,11 +101,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // 2. Lecciones del curso con ruta localizada
-  const lessonSlugs = getAllLessonSlugs();
-
-  for (const slug of lessonSlugs) {
-    const urls = getLocalizedRouteUrls("/curso-armonia/[slug]", { slug });
-    const lessonVariants = await Promise.all(LOCALES.map((locale) => getLessonContent(locale, slug)));
+  for (const lesson of getAllLessons()) {
+    const urls = getLocalizedRouteUrlsByLocaleParams(
+      "/curso-armonia/[slug]",
+      getLessonRouteParams(lesson)
+    );
+    const lessonVariants = await Promise.all(LOCALES.map((locale) => getLessonContent(locale, lesson.slug)));
     const lastModified = getMostRecentDate(lessonVariants.map((lesson) => lesson?.lastModified));
 
     for (const locale of LOCALES) {

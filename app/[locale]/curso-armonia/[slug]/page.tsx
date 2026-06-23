@@ -1,31 +1,49 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { getAllLessonSlugs, getLessonBySlug, getLessonNav } from "@/lib/course";
+import { notFound, permanentRedirect } from "next/navigation";
+import {
+  getAllLessons,
+  getLessonByLocalizedSlug,
+  getLessonNav,
+  getLessonRouteParams,
+  getLessonUrlSlug,
+} from "@/lib/course";
 import { getLessonContent } from "@/lib/mdx";
 import LessonLayout from "@/components/course/LessonLayout";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { setRequestLocale } from "next-intl/server";
-import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
+import {
+  createPageMetadata,
+  getLocalizedPathname,
+  getLocalizedRouteUrlsByLocaleParams,
+} from "@/lib/seo/page-alternates";
 import type { Locale } from "@/i18n/routing";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
 export async function generateStaticParams() {
-  const slugs = getAllLessonSlugs();
   const locales = ["es", "en"];
-  return locales.flatMap((locale) => slugs.map((slug) => ({ locale, slug })));
+  return locales.flatMap((locale) =>
+    getAllLessons().map((lesson) => ({
+      locale,
+      slug: getLessonUrlSlug(lesson, locale as Locale),
+    }))
+  );
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
-  const lesson = getLessonBySlug(slug);
+  const currentLocale = locale as Locale;
+  const lesson = getLessonByLocalizedSlug(currentLocale, slug);
   if (!lesson) return {};
 
   return createPageMetadata({
-    locale: locale as Locale,
-    urls: getLocalizedRouteUrls("/curso-armonia/[slug]", { slug }),
-    title: lesson.title[locale as "es" | "en"],
-    description: lesson.description[locale as "es" | "en"],
+    locale: currentLocale,
+    urls: getLocalizedRouteUrlsByLocaleParams(
+      "/curso-armonia/[slug]",
+      getLessonRouteParams(lesson)
+    ),
+    title: lesson.title[currentLocale],
+    description: lesson.description[currentLocale],
     keywords: lesson.tags,
     image: locale === "es" ? "/og/course-es.jpg" : "/og/course-en.jpg",
   });
@@ -33,12 +51,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function LessonPage({ params }: Props) {
   const { locale, slug } = await params;
+  const currentLocale = locale as Locale;
   setRequestLocale(locale);
-  const lesson = getLessonBySlug(slug);
+  const lesson = getLessonByLocalizedSlug(currentLocale, slug);
   if (!lesson) notFound();
 
-  const { prev, next } = getLessonNav(slug);
-  const mdxContent = await getLessonContent(locale, slug);
+  const canonicalSlug = getLessonUrlSlug(lesson, currentLocale);
+  if (slug !== canonicalSlug) {
+    permanentRedirect(
+      getLocalizedPathname("/curso-armonia/[slug]", currentLocale, { slug: canonicalSlug })
+    );
+  }
+
+  const { prev, next } = getLessonNav(lesson.slug);
+  const mdxContent = await getLessonContent(locale, lesson.slug);
 
   return (
     <LessonLayout lesson={lesson} prev={prev} next={next} locale={locale}>

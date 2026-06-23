@@ -1,4 +1,6 @@
 import { Link } from "@/i18n/navigation";
+import { getLessonUrlSlug } from "@/lib/course";
+import type { Locale } from "@/i18n/routing";
 import type { LessonConfig } from "@/types/course";
 
 type Props = {
@@ -9,6 +11,7 @@ type Props = {
 
 export default function LessonNav({ prev, next, locale }: Props) {
   const es = locale === "es";
+  const currentLocale = locale as Locale;
 
   return (
     <nav className="flex items-center justify-between gap-4 pt-8 mt-8 border-t border-gray-200">
@@ -18,7 +21,7 @@ export default function LessonNav({ prev, next, locale }: Props) {
           <Link
             href={{
               pathname: "/curso-armonia/[slug]",
-              params: { slug: prev.slug },
+              params: { slug: getLessonUrlSlug(prev, currentLocale) },
             }}
             className="group flex items-center gap-3 p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all"
           >
@@ -43,7 +46,7 @@ export default function LessonNav({ prev, next, locale }: Props) {
           <Link
             href={{
               pathname: "/curso-armonia/[slug]",
-              params: { slug: next.slug },
+              params: { slug: getLessonUrlSlug(next, currentLocale) },
             }}
             className="group flex items-center gap-3 p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all text-right"
           >

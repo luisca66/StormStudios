@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Link } from "@/i18n/navigation";
-import { getAllLessons, getCourseConfig } from "@/lib/course";
+import { getAllLessons, getCourseConfig, getLessonUrlSlug } from "@/lib/course";
+import type { Locale } from "@/i18n/routing";
 import type { LessonConfig } from "@/types/course";
 
 type Props = {
@@ -111,11 +112,13 @@ function LessonLink({
   isActive: boolean;
   onNavigate: () => void;
 }) {
+  const localizedSlug = getLessonUrlSlug(lesson, locale as Locale);
+
   return (
     <Link
       href={{
         pathname: "/curso-armonia/[slug]",
-        params: { slug: lesson.slug },
+        params: { slug: localizedSlug },
       }}
       onClick={onNavigate}
       className={`
