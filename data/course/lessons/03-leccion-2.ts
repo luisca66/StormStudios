@@ -23,6 +23,8 @@ export const lesson: LessonConfig = {
     {
       youtubeId: "2tCzUjsRiJU",
       embedUrl: "https://www.youtube.com/embed/2tCzUjsRiJU?si=Tl31ax2-4K8krcnu",
+      youtubeIdEn: "aiNZlkNWL1w",
+      embedUrlEn: "https://www.youtube.com/embed/aiNZlkNWL1w?si=4JV5r626Bi_XLWKN",
       title: { es: "Modos — los 7 modos de la escala mayor", en: "Modes — the 7 modes of the major scale" },
     },
   ],
