@@ -90,13 +90,6 @@ export function getAllLessons(): LessonConfig[] {
 }
 
 /**
- * Retorna todos los slugs (usado en generateStaticParams).
- */
-export function getAllLessonSlugs(): string[] {
-  return ALL_LESSONS.map((l) => l.slug);
-}
-
-/**
  * Busca una lección por slug. Retorna `undefined` si no existe.
  */
 export function getLessonBySlug(slug: string): LessonConfig | undefined {
