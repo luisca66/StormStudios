@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { parseMidiBuffer } from '@/lib/maestro-virtual/midi-parser';
 import { validateLesson1Scales } from '@/lib/maestro-virtual/scale-validator';
-import { validateLesson2Scales } from '@/lib/maestro-virtual/minor-scale-validator';
+import { validateMinorScales } from '@/lib/maestro-virtual/minor-scale-validator';
 import { validateLesson2Modes } from '@/lib/maestro-virtual/modes-validator';
 import { runRuleEngine } from '@/lib/maestro-virtual/rule-engine';
 import { getLessonConfig } from '@/data/course/lessons/lesson-configs';
@@ -13,7 +13,7 @@ import { getLessonConfig } from '@/data/course/lessons/lesson-configs';
  * indicado por `lessonConfig.validator`:
  *   - 'major-scales' → validateLesson1Scales  (escalas mayores)
  *   - 'modes'        → validateLesson2Modes    (modos paralelos)
- *   - 'minor-scales' → validateLesson2Scales   (escalas menores — futura)
+ *   - 'minor-scales' → validateMinorScales     (escalas menores)
  *   - 'satb'         → runRuleEngine           (cuarteto vocal)
  *
  * Devuelve MaestroFeedback compatible con ExerciseUpload.tsx.
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     switch (lessonConfig.validator) {
       case 'major-scales': rawErrors = validateLesson1Scales(voiceData); break;
       case 'modes':        rawErrors = validateLesson2Modes(voiceData);  break;
-      case 'minor-scales': rawErrors = validateLesson2Scales(voiceData); break;
+      case 'minor-scales': rawErrors = validateMinorScales(voiceData); break;
       case 'satb':         rawErrors = runRuleEngine(voiceData, lessonConfig.activeRules); break;
       default:             rawErrors = runRuleEngine(voiceData, lessonConfig.activeRules);
     }

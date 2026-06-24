@@ -44,7 +44,7 @@ const VALIDATOR_CONFIGS: Record<string, ValidatorConfig> = {
     voiceCount: 1,
     activeRules: [
       'MINOR_COUNT', 'MINOR_ORDER', 'MINOR_NOTE_COUNT',
-      'MINOR_WRONG_NOTE', 'MINOR_DIRECTION',
+      'MINOR_WRONG_NOTE', 'MINOR_ENHARMONIC', 'MINOR_DIRECTION',
     ],
   },
 

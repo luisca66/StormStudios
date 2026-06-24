@@ -1,6 +1,6 @@
 /**
  * minor-scale-validator.ts
- * Valida las 15 tonalidades menores de la Lección 2.
+ * Valida las 15 tonalidades menores de la Lección 3.
  * Cada tonalidad: natural (8) + armónica (8) + melódica↑ (8) + melódica↓ (7) = 31 notas.
  * Usa key_signature de la relativa mayor para identificar la tonalidad.
  */
@@ -40,12 +40,12 @@ export type MinorScaleRuleId =
 
 // ── Datos de las 15 tonalidades menores ──────────────────────────────────────
 
-const LESSON2_ORDER = [
+const MINOR_KEY_ORDER = [
   'Am','Em','Bm','F#m','C#m','G#m','D#m','A#m',
   'Dm','Gm','Cm','Fm','Bbm','Ebm','Abm',
 ] as const;
 
-export type MinorKeyRoot = typeof LESSON2_ORDER[number];
+export type MinorKeyRoot = typeof MINOR_KEY_ORDER[number];
 
 interface MinorKeyData {
   tonic: number;    // pitch class 0–11
@@ -74,7 +74,7 @@ const MINOR_DATA: Record<MinorKeyRoot, MinorKeyData> = {
 
 // Relative major → minor key (used to identify segments from key_signature)
 const REL_TO_MINOR: Record<string, MinorKeyRoot> = Object.fromEntries(
-  LESSON2_ORDER.map(k => [MINOR_DATA[k].rel, k])
+  MINOR_KEY_ORDER.map(k => [MINOR_DATA[k].rel, k])
 ) as Record<string, MinorKeyRoot>;
 
 // ── Scale pitch-class sequences ───────────────────────────────────────────────
@@ -157,7 +157,7 @@ function extractSegments(voiceData: VoiceData): KeySegment[] {
 
 // ── Main validator ────────────────────────────────────────────────────────────
 
-export function validateLesson2Scales(voiceData: VoiceData): MinorScaleError[] {
+export function validateMinorScales(voiceData: VoiceData): MinorScaleError[] {
   const errors: MinorScaleError[] = [];
 
   if (voiceData.keyChanges.length === 0) {
@@ -197,7 +197,7 @@ export function validateLesson2Scales(voiceData: VoiceData): MinorScaleError[] {
   for (let pos = 0; pos < segments.length; pos++) {
     const { relKey, notes, spellings } = segments[pos];
     const actualMinor   = REL_TO_MINOR[relKey];
-    const expectedMinor = LESSON2_ORDER[pos] as MinorKeyRoot | undefined;
+    const expectedMinor = MINOR_KEY_ORDER[pos] as MinorKeyRoot | undefined;
 
     const data    = actualMinor ? MINOR_DATA[actualMinor] : null;
     const nameEs  = data?.es ?? relKey;

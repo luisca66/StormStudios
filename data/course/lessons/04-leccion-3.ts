@@ -6,7 +6,6 @@ export const lesson: LessonConfig = {
   order: 4,
   lessonNumber: 3,
   module: "triadas-satb",
-  status: "construction",
 
   title: {
     es: "Lección 3 — Escalas Menores",
@@ -20,12 +19,20 @@ export const lesson: LessonConfig = {
 
   prerequisites: ["03-leccion-2"],
 
-  videos: [],
+  videos: [
+    {
+      youtubeId: "FLfiLZGu7iY",
+      embedUrl: "https://www.youtube.com/embed/FLfiLZGu7iY?si=IT5yCUbE93W5J13x",
+      title: {
+        es: "Escalas Menores — natural, armónica y melódica",
+        en: "Minor Scales — natural, harmonic and melodic",
+      },
+    },
+  ],
 
   activeRules: [],
 
-  // El validador (minor-scale-validator) está listo y enrutado en lesson-configs;
-  // se activará automáticamente al quitar `status: "construction"`.
+  // Validado por minor-scale-validator (enrutado en lesson-configs como 'minor-scales').
   exercise: {
     type: "major-scales", // reusing type slot — validado por minor-scale-validator
     voiceCount: 1,
@@ -49,6 +56,7 @@ export const lesson: LessonConfig = {
     "MINOR_ORDER": { es: "Las tonalidades deben ir en el orden del círculo de quintas. Posición {measure}.", en: "Keys must follow circle-of-fifths order. Position {measure}." },
     "MINOR_NOTE_COUNT": { es: "Cada tonalidad debe tener 31 notas. Tonalidad {measure}.", en: "Each key must have 31 notes. Key {measure}." },
     "MINOR_WRONG_NOTE": { es: "Nota incorrecta en la tonalidad {measure}.", en: "Wrong note in key {measure}." },
+    "MINOR_ENHARMONIC": { es: "Grafía enarmónica incorrecta en la tonalidad {measure}. Cada grado usa su propia letra.", en: "Wrong enharmonic spelling in key {measure}. Each degree uses its own letter." },
     "MINOR_DIRECTION": { es: "Dirección incorrecta en la tonalidad {measure}.", en: "Wrong direction in key {measure}." },
   },
 
