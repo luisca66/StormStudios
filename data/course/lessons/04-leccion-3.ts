@@ -23,6 +23,8 @@ export const lesson: LessonConfig = {
     {
       youtubeId: "FLfiLZGu7iY",
       embedUrl: "https://www.youtube.com/embed/FLfiLZGu7iY?si=IT5yCUbE93W5J13x",
+      youtubeIdEn: "pibtQZk1rvM",
+      embedUrlEn: "https://www.youtube.com/embed/pibtQZk1rvM?si=V1hnYkbf8_5YNEbZ",
       title: {
         es: "Escalas Menores — natural, armónica y melódica",
         en: "Minor Scales — natural, harmonic and melodic",
