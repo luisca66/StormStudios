@@ -112,6 +112,8 @@
             { id: 'orbital-drift.mp3', name: 'Orbital Drift', icon: '🛸' },
             { id: 'silent-orbits.mp3', name: 'Silent Orbits', icon: '🌠' }
         ];
+        const THRUST_ACCELERATION = 0.002;
+        const MAX_SHIP_SPEED = 1;
 
         const getSampleUrl = (inst, ni, oo) => `${BASE_URL}/${inst}/${encodeURIComponent(NOTES[ni])}${4 + oo}.mp3`;
 
@@ -1160,13 +1162,13 @@
                         const thrust = keys['Space'] || keys['ShiftLeft'];
                         if (thrust) {
                             const dir = new THREE.Vector3(0, 0, -1).applyQuaternion(ship.quaternion);
-                            velocityRef.current.add(dir.multiplyScalar((keys['ShiftLeft'] ? 0.7 : 0.5) * 0.004));
+                            velocityRef.current.add(dir.multiplyScalar((keys['ShiftLeft'] ? 0.7 : 0.5) * THRUST_ACCELERATION));
                             ship.userData.engine.material.opacity = 0.8 + Math.sin(time * 20) * 0.2;
                             ship.userData.engineLight.intensity = 3 + Math.sin(time * 20);
                         } else { ship.userData.engine.material.opacity = 0.4; ship.userData.engineLight.intensity = 1; }
 
                         let spd = velocityRef.current.length();
-                        if (spd > 2) { velocityRef.current.multiplyScalar(2 / spd); spd = 2; }
+                        if (spd > MAX_SHIP_SPEED) { velocityRef.current.multiplyScalar(MAX_SHIP_SPEED / spd); spd = MAX_SHIP_SPEED; }
 
                         const newPos = ship.position.clone().add(velocityRef.current);
                         let collision = false;
