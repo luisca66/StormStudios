@@ -3,6 +3,97 @@
         const { useState, useEffect, useRef } = React;
         const { createRoot } = ReactDOM;
 
+        const LANG = new URLSearchParams(window.location.search).get('lang') === 'en' ? 'en' : 'es';
+        const TXT = {
+            es: {
+                subtitle: 'ENTRENAMIENTO AUDITIVO ESPACIAL',
+                loadingSounds: 'CARGANDO SONIDOS...',
+                audioReady: 'Audio listo ✓',
+                enableMicrophone: 'ACTIVAR MICRÓFONO',
+                micActive: 'Micrófono activo ✓',
+                micPermissionDenied: 'Permiso denegado',
+                micError: 'Error de micrófono',
+                moonCount: 'Número de Lunas',
+                missionDuration: 'Duración de la Misión',
+                minutes: 'minutos',
+                backgroundMusic: 'Música de Fondo',
+                startMission: 'INICIAR MISIÓN',
+                enableMicShort: 'ACTIVA EL MICRÓFONO',
+                developedBy: 'Desarrollado por',
+                forLabel: 'para',
+                exit: 'SALIR',
+                time: 'Tiempo',
+                planet: 'Planeta',
+                note: 'Nota',
+                noteNumber: (n) => `Nota ${n}`,
+                speed: 'Velocidad',
+                direction: 'Dirección',
+                spaceKey: 'ESPACIO',
+                accelerate: 'Acelerar',
+                sing: 'Cantar',
+                clickPlanet: '🎯 Haz click en el planeta',
+                listenPrompt: '🎵 Escucha...',
+                completedPrompt: '🎉 ¡Completado!',
+                singPrompt: '🎤 ¡Canta!',
+                playingStatus: '🎵 Reproduciendo...',
+                holdStatus: '✨ ¡Mantén!',
+                listeningStatus: '🎤 Escuchando...',
+                timeUp: '¡TIEMPO AGOTADO!',
+                missionCompleted: 'MISIÓN COMPLETADA',
+                finalScore: 'Puntuación Final',
+                points: 'puntos',
+                newMission: '🔄 NUEVA MISIÓN',
+                excellentEar: '🏆 ¡Excelente oído musical!',
+                veryGood: '⭐ ¡Muy bien!',
+                goodWork: '👍 ¡Buen trabajo!',
+                keepPracticing: '💪 ¡Sigue practicando!'
+            },
+            en: {
+                subtitle: 'SPACE EAR TRAINING',
+                loadingSounds: 'LOADING SOUNDS...',
+                audioReady: 'Audio ready ✓',
+                enableMicrophone: 'ENABLE MICROPHONE',
+                micActive: 'Microphone active ✓',
+                micPermissionDenied: 'Permission denied',
+                micError: 'Microphone error',
+                moonCount: 'Number of Moons',
+                missionDuration: 'Mission Duration',
+                minutes: 'minutes',
+                backgroundMusic: 'Background Music',
+                startMission: 'START MISSION',
+                enableMicShort: 'ENABLE THE MICROPHONE',
+                developedBy: 'Developed by',
+                forLabel: 'for',
+                exit: 'EXIT',
+                time: 'Time',
+                planet: 'Planet',
+                note: 'Note',
+                noteNumber: (n) => `Note ${n}`,
+                speed: 'Speed',
+                direction: 'Direction',
+                spaceKey: 'SPACE',
+                accelerate: 'Accelerate',
+                sing: 'Sing',
+                clickPlanet: '🎯 Click on the planet',
+                listenPrompt: '🎵 Listen...',
+                completedPrompt: '🎉 Completed!',
+                singPrompt: '🎤 Sing!',
+                playingStatus: '🎵 Playing...',
+                holdStatus: '✨ Hold!',
+                listeningStatus: '🎤 Listening...',
+                timeUp: 'TIME UP!',
+                missionCompleted: 'MISSION COMPLETE',
+                finalScore: 'Final Score',
+                points: 'points',
+                newMission: '🔄 NEW MISSION',
+                excellentEar: '🏆 Excellent musical ear!',
+                veryGood: '⭐ Great job!',
+                goodWork: '👍 Nice work!',
+                keepPracticing: '💪 Keep practicing!'
+            }
+        };
+        const t = TXT[LANG];
+
         const IconMusic = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>;
         const IconPlay = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>;
         const IconLogOut = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>;
@@ -711,7 +802,7 @@
                     setMicReady(true);
                     startPitchDetection();
                 } catch (err) {
-                    setMicError(err.name === 'NotAllowedError' ? 'Permiso denegado' : 'Error de micrófono');
+                    setMicError(err.name === 'NotAllowedError' ? t.micPermissionDenied : t.micError);
                 }
             };
 
@@ -1180,12 +1271,12 @@
                         <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-purple-950 to-black flex items-center justify-center">
                             <div className="bg-slate-900/90 p-8 rounded-2xl border border-cyan-500/50 text-center max-w-md w-full mx-4 shadow-2xl">
                                 <h1 className="font-orbitron text-4xl font-bold mb-2 bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-transparent">COSMIC EAR</h1>
-                                <p className="text-gray-400 mb-6 text-sm tracking-widest">ENTRENAMIENTO AUDITIVO ESPACIAL</p>
+                                <p className="text-gray-400 mb-6 text-sm tracking-widest">{t.subtitle}</p>
                                 
                                 {!isLoaded ? (
                                     <div className="mb-4">
                                         <div className="text-cyan-400 text-sm font-bold mb-2 flex items-center justify-center gap-2 animate-pulse">
-                                            <IconMusic /> CARGANDO SONIDOS...
+                                            <IconMusic /> {t.loadingSounds}
                                         </div>
                                         <div className="w-full bg-slate-800 h-3 rounded-full overflow-hidden border border-white/10">
                                             <div className="bg-gradient-to-r from-cyan-500 to-purple-500 h-full transition-all duration-200" style={{ width: `${loadingProgress}%` }}></div>
@@ -1194,7 +1285,7 @@
                                     </div>
                                 ) : (
                                     <div className="mb-4 bg-green-900/30 border border-green-500/30 p-2 rounded-lg text-green-300 text-xs flex items-center justify-center gap-2">
-                                        <IconMusic /> Audio listo ✓
+                                        <IconMusic /> {t.audioReady}
                                     </div>
                                 )}
 
@@ -1204,15 +1295,15 @@
                                     </div>
                                 ) : !micReady ? (
                                     <button onClick={requestMicPermission} className="mb-4 w-full bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all">
-                                        <IconMic /> ACTIVAR MICRÓFONO
+                                        <IconMic /> {t.enableMicrophone}
                                     </button>
                                 ) : (
                                     <div className="mb-4 bg-green-900/30 border border-green-500/30 p-2 rounded-lg text-green-300 text-xs flex items-center justify-center gap-2">
-                                        <IconMic /> Micrófono activo ✓
+                                        <IconMic /> {t.micActive}
                                     </div>
                                 )}
 
-                                <p className="text-gray-300 mb-3 text-xs uppercase tracking-widest">Número de Lunas</p>
+                                <p className="text-gray-300 mb-3 text-xs uppercase tracking-widest">{t.moonCount}</p>
                                 <div className="flex gap-3 justify-center mb-6">
                                     {[1, 2, 3, 4, 5].map(n => (
                                         <button key={n} onClick={() => setNumMoons(n)}
@@ -1222,7 +1313,7 @@
                                     ))}
                                 </div>
 
-                                <p className="text-gray-300 mb-3 text-xs uppercase tracking-widest">Duración de la Misión</p>
+                                <p className="text-gray-300 mb-3 text-xs uppercase tracking-widest">{t.missionDuration}</p>
                                 <div className="flex items-center justify-center gap-4 mb-6">
                                     <button onClick={() => setGameDuration(Math.max(3, gameDuration - 1))}
                                         className="w-12 h-12 rounded-xl bg-slate-800 border-2 border-slate-600 hover:bg-slate-700 text-white font-bold text-2xl transition-all">
@@ -1232,7 +1323,7 @@
                                         <div className="font-orbitron text-3xl font-bold text-yellow-400">
                                             {gameDuration}:00
                                         </div>
-                                        <div className="text-xs text-gray-400 mt-1">minutos</div>
+                                        <div className="text-xs text-gray-400 mt-1">{t.minutes}</div>
                                     </div>
                                     <button onClick={() => setGameDuration(gameDuration + 1)}
                                         className="w-12 h-12 rounded-xl bg-slate-800 border-2 border-slate-600 hover:bg-slate-700 text-white font-bold text-2xl transition-all">
@@ -1240,7 +1331,7 @@
                                     </button>
                                 </div>
 
-                                <p className="text-gray-300 mb-3 text-xs uppercase tracking-widest">Música de Fondo</p>
+                                <p className="text-gray-300 mb-3 text-xs uppercase tracking-widest">{t.backgroundMusic}</p>
                                 <div className="mb-6">
                                     <select value={selectedMusic} onChange={(e) => setSelectedMusic(e.target.value)}
                                         className="w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-400 text-white font-bold py-3 px-4 rounded-xl transition-all cursor-pointer focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-500/50">
@@ -1252,10 +1343,10 @@
 
                                 <button onClick={startGame} disabled={!canStart}
                                     className={`w-full py-4 rounded-xl font-bold font-orbitron flex items-center justify-center gap-3 text-lg transition-all ${canStart ? 'bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white shadow-lg cursor-pointer' : 'bg-slate-700 text-gray-500 cursor-not-allowed'}`}>
-                                    <IconPlay /> {canStart ? "INICIAR MISIÓN" : "ACTIVA EL MICRÓFONO"}
+                                    <IconPlay /> {canStart ? t.startMission : t.enableMicShort}
                                 </button>
                                 
-                                <p className="text-gray-500 text-xs mt-6">Desarrollado por Luis Cárdenas para <a href="https://stormstudios.com.mx" target="_blank" className="text-cyan-400 hover:underline">Storm Studios Learning</a></p>
+                                <p className="text-gray-500 text-xs mt-6">{t.developedBy} Luis Cárdenas {t.forLabel} <a href="https://stormstudios.com.mx" target="_blank" className="text-cyan-400 hover:underline">Storm Studios Learning</a></p>
                             </div>
                         </div>
                     )}
@@ -1269,11 +1360,11 @@
                                     <h1 className="font-orbitron text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">COSMIC EAR</h1>
                                     <div className="text-cyan-400 font-orbitron text-2xl font-bold mt-1">{score} pts</div>
                                     <button onClick={exitGame} className="mt-2 bg-red-600/80 hover:bg-red-500 px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold transition-all shadow-lg">
-                                        <IconLogOut /> SALIR
+                                        <IconLogOut /> {t.exit}
                                     </button>
                                 </div>
                                 <div className="bg-black/70 border border-yellow-500/50 rounded-lg px-4 py-2 backdrop-blur-sm">
-                                    <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">Tiempo</div>
+                                    <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">{t.time}</div>
                                     <div className="font-orbitron text-yellow-400 font-bold text-lg">
                                         {Math.floor(gameTimeLeft / 60)}:{(gameTimeLeft % 60).toString().padStart(2, '0')}
                                     </div>
@@ -1292,12 +1383,12 @@
                             {/* Planet info - top right */}
                             {nearestPlanet && !tunerActive && (
                                 <div className={`absolute top-20 right-4 bg-black/70 border rounded-lg p-4 min-w-[180px] backdrop-blur-sm transition-all ${canInteract ? 'border-green-500 shadow-lg shadow-green-500/30' : 'border-purple-500/50'}`}>
-                                    <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">Planeta</div>
+                                    <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">{t.planet}</div>
                                     <div className="font-orbitron text-purple-400 font-bold">{nearestPlanet.name}</div>
                                     <div className="text-sm text-gray-300">{nearestPlanet.distance}u</div>
                                     <div className="flex gap-1 mt-2 flex-wrap">
                                         {nearestPlanet.notes.map((n, i) => (
-                                            <span key={i} className={`px-2 py-1 rounded text-xs font-bold font-orbitron ${n.solved ? 'bg-gray-600 line-through opacity-50' : 'bg-gradient-to-r from-cyan-500 to-purple-500'}`}>Nota {i + 1}</span>
+                                            <span key={i} className={`px-2 py-1 rounded text-xs font-bold font-orbitron ${n.solved ? 'bg-gray-600 line-through opacity-50' : 'bg-gradient-to-r from-cyan-500 to-purple-500'}`}>{t.noteNumber(i + 1)}</span>
                                         ))}
                                     </div>
                                 </div>
@@ -1305,7 +1396,7 @@
 
                             {/* Speed - bottom left */}
                             <div className="absolute bottom-20 left-4">
-                                <div className="text-xs text-gray-400 uppercase tracking-wider mb-1 font-orbitron">Velocidad</div>
+                                <div className="text-xs text-gray-400 uppercase tracking-wider mb-1 font-orbitron">{t.speed}</div>
                                 <div className="w-32 h-2 bg-slate-800 rounded-full overflow-hidden">
                                     <div className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 transition-all" style={{ width: `${Math.min(speed, 100)}%` }} />
                                 </div>
@@ -1314,17 +1405,17 @@
                             {/* Controls - bottom center */}
                             {!tunerActive && (
                                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 px-6 py-3 rounded-xl border border-white/10 flex gap-6 text-sm backdrop-blur-sm">
-                                    <div className="flex items-center gap-2"><span className="bg-slate-700 px-2 py-1 rounded font-mono text-xs">WASD</span><span className="text-gray-400">Dirección</span></div>
+                                    <div className="flex items-center gap-2"><span className="bg-slate-700 px-2 py-1 rounded font-mono text-xs">WASD</span><span className="text-gray-400">{t.direction}</span></div>
                                     <div className="flex items-center gap-2"><span className="bg-slate-700 px-2 py-1 rounded font-mono text-xs">QE</span><span className="text-gray-400">Roll</span></div>
-                                    <div className="flex items-center gap-2"><span className="bg-slate-700 px-2 py-1 rounded font-mono text-xs">ESPACIO</span><span className="text-gray-400">Acelerar</span></div>
-                                    <div className="flex items-center gap-2"><span className="bg-slate-700 px-2 py-1 rounded font-mono text-xs">CLICK</span><span className="text-gray-400">Cantar</span></div>
+                                    <div className="flex items-center gap-2"><span className="bg-slate-700 px-2 py-1 rounded font-mono text-xs">{t.spaceKey}</span><span className="text-gray-400">{t.accelerate}</span></div>
+                                    <div className="flex items-center gap-2"><span className="bg-slate-700 px-2 py-1 rounded font-mono text-xs">CLICK</span><span className="text-gray-400">{t.sing}</span></div>
                                 </div>
                             )}
 
                             {/* Click prompt */}
                             {canInteract && !tunerActive && (
                                 <div className="absolute top-[15%] left-1/2 -translate-x-1/2 font-orbitron text-green-400 text-xl animate-pulse text-center bg-black/60 px-5 py-2 rounded-xl border border-green-500/40 backdrop-blur-sm">
-                                    🎯 Haz click en el planeta
+                                    {t.clickPlanet}
                                 </div>
                             )}
 
@@ -1338,10 +1429,10 @@
 
                                         <div className="flex justify-between items-center mb-3">
                                             <div className="text-gray-400 text-sm text-center flex-1">
-                                                {tunerPhase === 'playing' ? '🎵 Escucha...' : tunerPhase === 'success' ? '🎉 ¡Completado!' : '🎤 ¡Canta!'}
+                                                {tunerPhase === 'playing' ? t.listenPrompt : tunerPhase === 'success' ? t.completedPrompt : t.singPrompt}
                                             </div>
                                             <div className="bg-slate-800/80 border-2 border-cyan-400/50 rounded-lg px-4 py-2">
-                                                <div className="text-xs text-gray-400 uppercase tracking-wider text-center mb-1">⏱️ Tiempo</div>
+                                                <div className="text-xs text-gray-400 uppercase tracking-wider text-center mb-1">⏱️ {t.time}</div>
                                                 <div className="font-orbitron text-cyan-300 font-bold text-xl text-center">
                                                     {Math.floor(planetTimeElapsed / 60)}:{(planetTimeElapsed % 60).toString().padStart(2, '0')}
                                                 </div>
@@ -1356,7 +1447,7 @@
                                                     i === currentNoteIndex && tunerPhase === 'listening' ? (isMatching ? 'bg-green-500/40 border-green-400 scale-105 shadow-lg shadow-green-500/50' : 'bg-cyan-600/40 border-cyan-400 animate-pulse') :
                                                     'bg-slate-800/50 border-slate-600'
                                                 }`}>
-                                                    <div className="text-xs font-bold opacity-70">Nota</div>
+                                                    <div className="text-xs font-bold opacity-70">{t.note}</div>
                                                     <div className="text-lg font-bold">{i + 1}</div>
                                                 </div>
                                             ))}
@@ -1371,8 +1462,8 @@
                                             isMatching ? 'bg-green-600/30 border border-green-400 text-green-300' :
                                             'bg-cyan-600/30 border border-cyan-400 text-cyan-300'
                                         }`}>
-                                            {tunerPhase === 'playing' && '🎵 Reproduciendo...'}
-                                            {tunerPhase === 'listening' && (isMatching ? '✨ ¡Mantén!' : '🎤 Escuchando...')}
+                                            {tunerPhase === 'playing' && t.playingStatus}
+                                            {tunerPhase === 'listening' && (isMatching ? t.holdStatus : t.listeningStatus)}
                                             {tunerPhase === 'success' && '🎉 +' + (activePlanet.notes.length * 100) + ' pts'}
                                         </div>
                                     </div>
@@ -1386,31 +1477,31 @@
                         <div className="absolute inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-50">
                             <div className="bg-gradient-to-b from-slate-900 to-purple-950 p-10 rounded-3xl border-2 border-cyan-500 text-center max-w-lg w-full mx-4 shadow-2xl shadow-cyan-500/30">
                                 <h1 className="font-orbitron text-5xl font-bold mb-4 bg-gradient-to-r from-red-500 via-yellow-500 to-purple-500 bg-clip-text text-transparent animate-pulse">
-                                    ¡TIEMPO AGOTADO!
+                                    {t.timeUp}
                                 </h1>
-                                <p className="text-gray-400 mb-6 text-lg">MISIÓN COMPLETADA</p>
+                                <p className="text-gray-400 mb-6 text-lg">{t.missionCompleted}</p>
 
                                 <div className="bg-black/50 border-2 border-cyan-400 rounded-2xl p-6 mb-6">
-                                    <div className="text-xs text-gray-400 uppercase tracking-widest mb-2">Puntuación Final</div>
+                                    <div className="text-xs text-gray-400 uppercase tracking-widest mb-2">{t.finalScore}</div>
                                     <div className="font-orbitron text-6xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
                                         {score}
                                     </div>
-                                    <div className="text-gray-400 text-sm mt-2">puntos</div>
+                                    <div className="text-gray-400 text-sm mt-2">{t.points}</div>
                                 </div>
 
                                 <div className="flex gap-3 justify-center">
                                     <button onClick={() => { setGameOver(false); setGameState('intro'); setScore(0); }}
                                         className="bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-bold font-orbitron py-3 px-6 rounded-xl transition-all shadow-lg">
-                                        🔄 NUEVA MISIÓN
+                                        {t.newMission}
                                     </button>
                                     <button onClick={exitGame}
                                         className="bg-red-600/80 hover:bg-red-500 text-white font-bold font-orbitron py-3 px-6 rounded-xl transition-all">
-                                        🚪 SALIR
+                                        🚪 {t.exit}
                                     </button>
                                 </div>
 
                                 <p className="text-gray-500 text-xs mt-6">
-                                    {score >= 5000 ? '🏆 ¡Excelente oído musical!' : score >= 3000 ? '⭐ ¡Muy bien!' : score >= 1500 ? '👍 ¡Buen trabajo!' : '💪 ¡Sigue practicando!'}
+                                    {score >= 5000 ? t.excellentEar : score >= 3000 ? t.veryGood : score >= 1500 ? t.goodWork : t.keepPracticing}
                                 </p>
                             </div>
                         </div>

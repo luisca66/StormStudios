@@ -96,7 +96,7 @@ export default async function CosmicEarPage({ params }: Props) {
       </div>
 
       <iframe
-        src="/apps/cosmic-ear/index.html"
+        src={`/apps/cosmic-ear/index.html?lang=${locale}`}
         title="Cosmic Ear"
         allow="autoplay; microphone"
         style={{ flex: 1, width: "100%", border: "none", display: "block" }}
