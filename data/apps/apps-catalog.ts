@@ -147,9 +147,12 @@ export const APPS: AppEntry[] = [
       es: "Entrena el reconocimiento de distancias relativas entre notas. Identifica los intervalos que reproduce la app.",
       en: "Train the recognition of relative distances between notes. Identify the intervals the app plays.",
     },
+    webUrl: "/apps/intervalos-reconocimiento/jugar",
     features: [
       { es: "Multi-tímbrica (5 timbres)", en: "Multi-timbral (5 timbres)" },
-      { es: "Niveles progresivos (quintas a séptimas mayores)", en: "Progressive levels (fifths to major sevenths)" },
+      { es: "Modos clásico, contrarreloj y supervivencia", en: "Classic, time attack, and survival modes" },
+      { es: "Intervalos armónicos, melódicos y mixtos", en: "Harmonic, melodic, and mixed intervals" },
+      { es: "Estadísticas locales por intervalo", en: "Local statistics by interval" },
     ],
     icon: "/images/app-intervals-listening.jpeg",
   },

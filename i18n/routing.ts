@@ -33,6 +33,10 @@ export const routing = defineRouting({
     "/apps/[slug]": "/apps/[slug]",
     "/apps/acordes-cantar/jugar": "/apps/acordes-cantar/jugar",
     "/apps/desglose/jugar": "/apps/desglose/jugar",
+    "/apps/intervalos-reconocimiento/jugar": {
+      es: "/apps/intervalos-reconocimiento/jugar",
+      en: "/apps/intervalos-reconocimiento/play",
+    },
     "/apps/cosmic-ear/jugar": {
       es: "/apps/cosmic-ear/jugar",
       en: "/apps/cosmic-ear/play",
