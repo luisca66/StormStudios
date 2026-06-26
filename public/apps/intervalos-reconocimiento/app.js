@@ -2,6 +2,7 @@
   const AUDIO_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
   const STATS_KEY = "storm.intervalos.reconocimiento.stats.v1";
   const RECORD_KEY = "storm.intervalos.reconocimiento.record.v1";
+  const VOLUME_KEY = "storm.intervalos.reconocimiento.volume.v1";
 
   const params = new URLSearchParams(window.location.search);
   const lang = params.get("lang") === "en" ? "en" : "es";
@@ -23,6 +24,7 @@
       timbre: "Timbre",
       intervals: "Intervalos a practicar",
       playback: "Modo de reproducción",
+      volume: "Volumen",
       startDisabled: "Selecciona al menos un grupo",
       startTraining: "Comenzar entrenamiento",
       back: "Volver",
@@ -82,6 +84,7 @@
       timbre: "Timbre",
       intervals: "Intervals to practice",
       playback: "Playback mode",
+      volume: "Volume",
       startDisabled: "Select at least one group",
       startTraining: "Start training",
       back: "Back",
@@ -192,6 +195,7 @@
     selectedGroups: new Set(),
     selectedTimbre: "all",
     selectedPlayback: "mixed",
+    volume: loadVolume(),
     confirmClear: false,
     loadToken: 0,
     game: null,
@@ -227,6 +231,17 @@
   function loadRecord() {
     const raw = Number(localStorage.getItem(RECORD_KEY) || "0");
     return Number.isFinite(raw) ? raw : 0;
+  }
+
+  function loadVolume() {
+    const raw = Number(localStorage.getItem(VOLUME_KEY) || "0.8");
+    return Number.isFinite(raw) ? Math.min(1, Math.max(0, raw)) : 0.8;
+  }
+
+  function saveVolume(volume) {
+    try {
+      localStorage.setItem(VOLUME_KEY, String(volume));
+    } catch {}
   }
 
   function saveRecord(record) {
@@ -361,16 +376,16 @@
 
   function playInterval(interval) {
     const folder = getTimbreFolder();
-    playUrl(sampleUrl(folder, interval.note1));
+    playUrl(sampleUrl(folder, interval.note1), state.volume);
     if (interval.mode === "harmonic") {
-      playUrl(sampleUrl(folder, interval.note2));
+      playUrl(sampleUrl(folder, interval.note2), state.volume);
       return;
     }
-    setTimeout(() => playUrl(sampleUrl(folder, interval.note2)), 400);
+    setTimeout(() => playUrl(sampleUrl(folder, interval.note2), state.volume), 400);
   }
 
   function playFeedback(wasCorrect) {
-    playUrl(`${AUDIO_BASE}/${wasCorrect ? "acierto" : "error"}.mp3`, 0.8);
+    playUrl(`${AUDIO_BASE}/${wasCorrect ? "acierto" : "error"}.mp3`, state.volume * 0.8);
   }
 
   function clearGameTimers() {
@@ -642,6 +657,14 @@
               `).join("")}
             </div>
           </div>
+
+          <div class="setup-section">
+            <div class="volume-head">
+              <div class="section-label">${text.volume}</div>
+              <div class="volume-value">${Math.round(state.volume * 100)}%</div>
+            </div>
+            <input class="volume-slider" type="range" min="0" max="100" step="1" value="${Math.round(state.volume * 100)}" data-action="volume" aria-label="${text.volume}" />
+          </div>
         </section>
 
         <div class="sticky-action">
@@ -901,6 +924,16 @@
       state.confirmClear = false;
       render();
     }
+  });
+
+  app.addEventListener("input", (event) => {
+    const target = event.target.closest('[data-action="volume"]');
+    if (!target) return;
+    state.volume = Number(target.value) / 100;
+    saveVolume(state.volume);
+    const section = target.closest(".setup-section");
+    const value = section && section.querySelector(".volume-value");
+    if (value) value.textContent = `${Math.round(state.volume * 100)}%`;
   });
 
   app.addEventListener("keydown", (event) => {
