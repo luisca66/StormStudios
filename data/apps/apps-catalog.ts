@@ -11,6 +11,8 @@ export type AppEntry = {
   apkUrls?: BilingualText;
   kindleManualUrl?: string;
   webUrl?: string;
+  // Modo juego (variante gamificada de la misma app); abre una segunda experiencia.
+  gameUrl?: string;
   icon?: string;
   screenshots?: string[];
   features?: BilingualText[];
@@ -127,7 +129,9 @@ export const APPS: AppEntry[] = [
       en: "Train your ear to isolate and identify individual notes within chords or dense textures. The app plays 2 to 6 simultaneous notes — your goal is to sing each one.",
     },
     webUrl: "/apps/desglose/jugar",
+    gameUrl: "/apps/cosmic-ear/jugar",
     features: [
+      { es: "Modo juego: Cosmic Ear, pilotea una nave 3D y resuelve planetas cantando", en: "Game mode: Cosmic Ear, pilot a 3D ship and clear planets by singing" },
       { es: "Dificultad ajustable (2 a 6 notas)", en: "Adjustable difficulty (2 to 6 notes)" },
       { es: "Rango seleccionable C2–C7", en: "Selectable range C2–C7" },
       { es: "Detección de afinación por micrófono (algoritmo YIN)", en: "Microphone pitch detection (YIN algorithm)" },
