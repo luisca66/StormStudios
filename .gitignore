@@ -2,6 +2,9 @@
 
 # dependencies
 /node_modules
+# Sub-proyectos Vite (apps-src): deps y dist locales; el build publicado vive en public/apps/
+apps-src/*/node_modules
+apps-src/*/dist
 /.pnp
 .pnp.*
 .yarn/*

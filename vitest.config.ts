@@ -7,6 +7,7 @@ export default defineConfig({
     include: [
       "components/rhythm-reading/_tests/**/*.test.ts",
       "lib/acordes-cantar/**/*.test.ts",
+      "lib/desglose/**/*.test.ts",
       "lib/maestro-virtual/**/*.test.ts",
     ],
   },

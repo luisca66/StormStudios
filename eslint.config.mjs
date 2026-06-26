@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "public/apps/**/assets/**",
+    // Sub-proyecto Vite de Desglose: tiene su propio toolchain/tsconfig.
+    "apps-src/**",
     "next-env.d.ts",
   ]),
   {
