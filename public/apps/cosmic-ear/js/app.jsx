@@ -16,7 +16,6 @@
                 moonCount: 'Número de Lunas',
                 missionDuration: 'Duración de la Misión',
                 minutes: 'minutos',
-                backgroundMusic: 'Música de Fondo',
                 startMission: 'INICIAR MISIÓN',
                 enableMicShort: 'ACTIVA EL MICRÓFONO',
                 developedBy: 'Desarrollado por',
@@ -59,7 +58,6 @@
                 moonCount: 'Number of Moons',
                 missionDuration: 'Mission Duration',
                 minutes: 'minutes',
-                backgroundMusic: 'Background Music',
                 startMission: 'START MISSION',
                 enableMicShort: 'ENABLE THE MICROPHONE',
                 developedBy: 'Developed by',
@@ -106,16 +104,21 @@
         // Música ambiente: subcarpeta del mismo bucket.
         const MUSIC_BASE = `${BASE_URL}/music/desglose`;
         const NOTE_COLORS = { "C": 0xff0000, "C#": 0xff4400, "D": 0xff8800, "D#": 0xffcc00, "E": 0xffff00, "F": 0x88ff00, "F#": 0x00ff00, "G": 0x00ff88, "G#": 0x00ffff, "A": 0x0088ff, "A#": 0x0000ff, "B": 0x8800ff };
-        const MUSIC_TRACKS = [
-            { id: 'space-ambient.mp3', name: 'Space Ambient', icon: '🌌' },
-            { id: 'cosmic-song.mp3', name: 'Cosmic Song', icon: '🎵' },
-            { id: 'orbital-drift.mp3', name: 'Orbital Drift', icon: '🛸' },
-            { id: 'silent-orbits.mp3', name: 'Silent Orbits', icon: '🌠' }
-        ];
+        const MUSIC_TRACKS = Array.from({ length: 30 }, (_, i) => `cosmic-unlocking ${String(i + 1).padStart(2, '0')}.mp3`);
         const THRUST_ACCELERATION = 0.002;
         const MAX_SHIP_SPEED = 1;
+        const TUNER_LISTENING_DELAY_MS = 3000;
 
         const getSampleUrl = (inst, ni, oo) => `${BASE_URL}/${inst}/${encodeURIComponent(NOTES[ni])}${4 + oo}.mp3`;
+        const getMusicTrackUrl = (trackId) => `${MUSIC_BASE}/${encodeURIComponent(trackId)}`;
+        const shuffleArray = (items) => {
+            const shuffled = [...items];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        };
 
         const getNoteFromPitch = (freq) => {
             const noteNum = 12 * (Math.log(freq / 440) / Math.log(2));
@@ -702,7 +705,6 @@
         function App() {
             const [gameState, setGameState] = useState('intro');
             const [numMoons, setNumMoons] = useState(2);
-            const [selectedMusic, setSelectedMusic] = useState('space-ambient.mp3');
             const [gameDuration, setGameDuration] = useState(5); // Duración en minutos (3+)
             const [loadingProgress, setLoadingProgress] = useState(0);
             const [isLoaded, setIsLoaded] = useState(false);
@@ -754,6 +756,9 @@
             const pitchDetectionActiveRef = useRef(false);
             const particleSystemRef = useRef(null);
             const ambientMusicRef = useRef(null);
+            const musicQueueRef = useRef([]);
+            const currentMusicTrackRef = useRef(null);
+            const tunerListeningTimeoutRef = useRef(null);
             const thrusterNoiseRef = useRef(null);
             const thrusterGainRef = useRef(null);
 
@@ -767,14 +772,21 @@
                     });
                     urls.push(`${BASE_URL}/acierto.mp3`);
                     urls.push(`${BASE_URL}/error.mp3`);
-                    MUSIC_TRACKS.forEach(track => urls.push(`${MUSIC_BASE}/${track.id}`));
 
                     let loaded = 0;
                     const loadAudio = (url) => new Promise(resolve => {
                         const audio = new Audio();
                         audio.src = url;
                         audio.preload = 'auto';
-                        const done = () => { audioCacheRef.current[url] = audio; loaded++; setLoadingProgress(Math.floor((loaded / urls.length) * 100)); resolve(); };
+                        let settled = false;
+                        const done = () => {
+                            if (settled) return;
+                            settled = true;
+                            audioCacheRef.current[url] = audio;
+                            loaded++;
+                            setLoadingProgress(Math.floor((loaded / urls.length) * 100));
+                            resolve();
+                        };
                         audio.addEventListener('canplaythrough', done, { once: true });
                         audio.addEventListener('error', done, { once: true });
                         setTimeout(done, 3000);
@@ -916,9 +928,91 @@
                 });
             };
 
-            const playSuccessSound = () => {
+            const playSuccessSound = () => new Promise(resolve => {
                 const url = `${BASE_URL}/acierto.mp3`;
-                if (audioCacheRef.current[url]) { const a = audioCacheRef.current[url]; a.currentTime = 0; a.volume = 0.6; a.play().catch(() => {}); }
+                const a = audioCacheRef.current[url];
+                if (!a) {
+                    resolve();
+                    return;
+                }
+
+                let fallbackId = null;
+                let settled = false;
+                const finish = () => {
+                    if (settled) return;
+                    settled = true;
+                    if (fallbackId !== null) clearTimeout(fallbackId);
+                    a.removeEventListener('ended', finish);
+                    a.removeEventListener('error', finish);
+                    resolve();
+                };
+                try {
+                    a.currentTime = 0;
+                    a.volume = 0.6;
+                    a.addEventListener('ended', finish, { once: true });
+                    a.addEventListener('error', finish, { once: true });
+                    const durationMs = Number.isFinite(a.duration) && a.duration > 0 ? Math.ceil(a.duration * 1000) + 250 : 15000;
+                    fallbackId = setTimeout(finish, durationMs);
+                    a.play().catch(finish);
+                } catch(e) {
+                    finish();
+                }
+            });
+
+            const getNextMusicTrackId = () => {
+                if (musicQueueRef.current.length === 0) {
+                    const shuffled = shuffleArray(MUSIC_TRACKS);
+                    if (shuffled.length > 1 && shuffled[0] === currentMusicTrackRef.current) {
+                        [shuffled[0], shuffled[1]] = [shuffled[1], shuffled[0]];
+                    }
+                    musicQueueRef.current = shuffled;
+                }
+
+                const nextTrack = musicQueueRef.current.shift();
+                currentMusicTrackRef.current = nextTrack;
+                return nextTrack;
+            };
+
+            const stopAmbientMusic = () => {
+                if (!ambientMusicRef.current) return;
+                try {
+                    ambientMusicRef.current.pause();
+                    ambientMusicRef.current.currentTime = 0;
+                    ambientMusicRef.current.onended = null;
+                    ambientMusicRef.current.onerror = null;
+                } catch(e) {}
+                ambientMusicRef.current = null;
+            };
+
+            const playRandomAmbientMusic = () => {
+                stopAmbientMusic();
+                const trackId = getNextMusicTrackId();
+                if (!trackId) return;
+
+                const url = getMusicTrackUrl(trackId);
+                const music = audioCacheRef.current[url] || new Audio(url);
+                audioCacheRef.current[url] = music;
+                music.preload = 'auto';
+                music.loop = false;
+                music.volume = 0.4;
+                music.currentTime = 0;
+                music.onended = () => {
+                    if (ambientMusicRef.current === music) playRandomAmbientMusic();
+                };
+                music.onerror = () => {
+                    if (ambientMusicRef.current === music) playRandomAmbientMusic();
+                };
+                ambientMusicRef.current = music;
+                music.play().catch(() => {});
+            };
+
+            const resumeAmbientMusic = () => {
+                if (ambientMusicRef.current) {
+                    try { ambientMusicRef.current.play().catch(() => {}); } catch(e) {}
+                    return;
+                }
+
+                playRandomAmbientMusic();
             };
 
             const dissolveMoonWithParticles = (moonIndex, color) => {
@@ -955,6 +1049,7 @@
                 if (pl.completed) return;
                 const firstUnsolved = pl.notes.findIndex(n => !n.solved);
                 if (firstUnsolved === -1) return;
+                if (tunerListeningTimeoutRef.current) clearTimeout(tunerListeningTimeoutRef.current);
 
                 setActivePlanet({...pl});
                 setCurrentNoteIndex(firstUnsolved);
@@ -974,15 +1069,23 @@
                 }
 
                 playSampleChord(pl.notes, pl.instrument);
-                setTimeout(() => setTunerPhase('listening'), 1500);
+                tunerListeningTimeoutRef.current = setTimeout(() => {
+                    tunerListeningTimeoutRef.current = null;
+                    if (activePlanetMeshRef.current === planetMesh) setTunerPhase('listening');
+                }, TUNER_LISTENING_DELAY_MS);
             };
 
-            const closeTuner = () => {
+            const closeTuner = ({ restartMusic = false } = {}) => {
+                if (tunerListeningTimeoutRef.current) {
+                    clearTimeout(tunerListeningTimeoutRef.current);
+                    tunerListeningTimeoutRef.current = null;
+                }
                 if (activePlanetMeshRef.current) activePlanetMeshRef.current.userData.moonsOrbitPaused = false;
                 setTunerActive(false);
                 setActivePlanet(null);
                 activePlanetMeshRef.current = null;
-                if (ambientMusicRef.current) { try { ambientMusicRef.current.play(); } catch(e) {} }
+                if (restartMusic) playRandomAmbientMusic();
+                else resumeAmbientMusic();
             };
 
             // Note matching effect
@@ -1002,7 +1105,7 @@
                     if (!matchStartRef.current) matchStartRef.current = Date.now();
                     setIsMatching(true);
                     if (Date.now() - matchStartRef.current >= 700) {
-                        playSuccessSound();
+                        const successSoundDone = playSuccessSound();
                         dissolveMoonWithParticles(currentUnsolved, NOTE_COLORS[target.note]);
                         
                         realPlanetData.notes[currentUnsolved].solved = true;
@@ -1020,7 +1123,9 @@
 
                             realPlanetData.completed = true;
                             setTunerPhase('success');
-                            setTimeout(closeTuner, 1200);
+                            successSoundDone.then(() => {
+                                if (activePlanetMeshRef.current === planetMesh) closeTuner({ restartMusic: true });
+                            });
                         } else {
                             const next = realPlanetData.notes.findIndex((n, i) => !n.solved && i > currentUnsolved);
                             setCurrentNoteIndex(next !== -1 ? next : realPlanetData.notes.findIndex(n => !n.solved));
@@ -1034,13 +1139,18 @@
             useEffect(() => { hoveredPlanetRef.current = hoveredPlanet; }, [hoveredPlanet]);
 
             const exitGame = () => {
+                if (tunerListeningTimeoutRef.current) {
+                    clearTimeout(tunerListeningTimeoutRef.current);
+                    tunerListeningTimeoutRef.current = null;
+                }
                 if (engineOscRef.current) { try { engineOscRef.current.stop(); } catch(e) {} engineOscRef.current = null; }
                 if (thrusterNoiseRef.current) { try { thrusterNoiseRef.current.stop(); } catch(e) {} thrusterNoiseRef.current = null; }
-                if (ambientMusicRef.current) { try { ambientMusicRef.current.pause(); ambientMusicRef.current.currentTime = 0; } catch(e) {} ambientMusicRef.current = null; }
+                stopAmbientMusic();
                 setGameState('intro');
                 setScore(0);
                 setTunerActive(false);
                 setActivePlanet(null);
+                activePlanetMeshRef.current = null;
                 setGameOver(false);
                 setGameTimeLeft(gameDuration * 60);
                 setScorePopup(null);
@@ -1082,13 +1192,7 @@
 
                 startEngineSound();
                 startThrusterSound();
-                const ambientUrl = `${MUSIC_BASE}/${selectedMusic}`;
-                if (audioCacheRef.current[ambientUrl]) {
-                    const music = audioCacheRef.current[ambientUrl];
-                    music.loop = true; music.volume = 0.4;
-                    music.play().catch(() => {});
-                    ambientMusicRef.current = music;
-                }
+                playRandomAmbientMusic();
 
                 const onKeyDown = e => { keysPressed.current[e.code] = true; if (e.code === 'Escape' && tunerActive) closeTuner(); };
                 const onKeyUp = e => { keysPressed.current[e.code] = false; };
@@ -1257,6 +1361,8 @@
 
             const startGame = async () => {
                 if (audioCtxRef.current?.state === 'suspended') await audioCtxRef.current.resume();
+                musicQueueRef.current = [];
+                currentMusicTrackRef.current = null;
                 setGameTimeLeft(gameDuration * 60); // Use selected duration
                 setGameOver(false);
                 setScore(0);
@@ -1332,16 +1438,6 @@
                                         className="w-12 h-12 rounded-xl bg-slate-800 border-2 border-slate-600 hover:bg-slate-700 text-white font-bold text-2xl transition-all">
                                         +
                                     </button>
-                                </div>
-
-                                <p className="text-gray-300 mb-3 text-xs uppercase tracking-widest">{t.backgroundMusic}</p>
-                                <div className="mb-6">
-                                    <select value={selectedMusic} onChange={(e) => setSelectedMusic(e.target.value)}
-                                        className="w-full bg-slate-800 border-2 border-slate-600 hover:border-purple-400 text-white font-bold py-3 px-4 rounded-xl transition-all cursor-pointer focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-500/50">
-                                        {MUSIC_TRACKS.map(track => (
-                                            <option key={track.id} value={track.id}>{track.icon} {track.name}</option>
-                                        ))}
-                                    </select>
                                 </div>
 
                                 <button onClick={startGame} disabled={!canStart}
