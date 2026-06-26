@@ -1255,7 +1255,7 @@
                                     <IconPlay /> {canStart ? "INICIAR MISIÓN" : "ACTIVA EL MICRÓFONO"}
                                 </button>
                                 
-                                <p className="text-gray-500 text-xs mt-6">Desarrollado por <a href="https://stormstudios.com.mx" target="_blank" className="text-cyan-400 hover:underline">Storm Studios</a></p>
+                                <p className="text-gray-500 text-xs mt-6">Desarrollado por Luis Cárdenas para <a href="https://stormstudios.com.mx" target="_blank" className="text-cyan-400 hover:underline">Storm Studios Learning</a></p>
                             </div>
                         </div>
                     )}
@@ -1323,7 +1323,7 @@
 
                             {/* Click prompt */}
                             {canInteract && !tunerActive && (
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-orbitron text-green-400 text-xl animate-pulse text-center">
+                                <div className="absolute top-[15%] left-1/2 -translate-x-1/2 font-orbitron text-green-400 text-xl animate-pulse text-center bg-black/60 px-5 py-2 rounded-xl border border-green-500/40 backdrop-blur-sm">
                                     🎯 Haz click en el planeta
                                 </div>
                             )}
