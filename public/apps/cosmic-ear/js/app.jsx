@@ -1187,6 +1187,7 @@
 
                         const camOff = new THREE.Vector3(0, 2, 8).applyQuaternion(ship.quaternion);
                         cameraRef.current.position.lerp(ship.position.clone().add(camOff), 0.1);
+                        cameraRef.current.up.copy(new THREE.Vector3(0, 1, 0).applyQuaternion(ship.quaternion));
                         cameraRef.current.lookAt(ship.position);
                     }
 

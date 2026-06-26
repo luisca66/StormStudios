@@ -14,6 +14,7 @@ const PERMANENT_REDIRECTS: Record<string, string> = {
   "/en/apps-2": "/en/apps",
   "/lessons-workshop": "/es/clases-taller",
   "/en/lessons-workshop": "/en/classes-workshop",
+  "/en/apps/cosmic-ear/jugar": "/en/apps/cosmic-ear/play",
 };
 
 const GONE_PATTERNS = [
