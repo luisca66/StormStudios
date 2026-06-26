@@ -30,17 +30,22 @@ export const routing = defineRouting({
       en: "/harmony-course/[slug]",
     },
     "/apps": "/apps",
-    "/apps/[slug]": "/apps/[slug]",
     "/apps/acordes-cantar/jugar": "/apps/acordes-cantar/jugar",
     "/apps/desglose/jugar": "/apps/desglose/jugar",
     "/apps/intervalos-reconocimiento/jugar": {
       es: "/apps/intervalos-reconocimiento/jugar",
       en: "/apps/intervalos-reconocimiento/play",
     },
+    "/apps/intervalos-reconocimiento/juego": {
+      es: "/apps/intervalos-reconocimiento/juego",
+      en: "/apps/intervalos-reconocimiento/game",
+    },
     "/apps/cosmic-ear/jugar": {
       es: "/apps/cosmic-ear/jugar",
       en: "/apps/cosmic-ear/play",
     },
+    "/apps/matematicas-mentales/jugar": "/apps/matematicas-mentales/jugar",
+    "/apps/[slug]": "/apps/[slug]",
     "/el-libro": {
       es: "/el-libro",
       en: "/the-book",
@@ -74,7 +79,6 @@ export const routing = defineRouting({
     "/intervalos": "/intervalos",
     "/memoria": "/memoria",
     "/sequencer": "/sequencer",
-    "/apps/matematicas-mentales/jugar": "/apps/matematicas-mentales/jugar",
   },
 });
 

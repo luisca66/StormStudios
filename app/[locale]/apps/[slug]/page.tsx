@@ -51,6 +51,7 @@ export default async function AppDetailPage({ params }: Props) {
     ? longDescription.split(/\n\s*\n/).filter(Boolean)
     : [];
   const apkUrl = app.apkUrls?.[locale as "es" | "en"] || app.apkUrl;
+  const gameLabel = app.gameLabel?.[locale as "es" | "en"] || (locale === "es" ? "Modo juego" : "Game mode");
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -100,7 +101,7 @@ export default async function AppDetailPage({ params }: Props) {
                 href={app.gameUrl as Parameters<typeof Link>[0]["href"]}
                 className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-purple-600 to-cyan-600 text-white rounded-xl hover:from-purple-700 hover:to-cyan-700 transition font-medium shadow-md"
               >
-                🚀 {locale === "es" ? "Modo juego" : "Game mode"}
+                🚀 {gameLabel}
               </Link>
             )}
             {apkUrl && (

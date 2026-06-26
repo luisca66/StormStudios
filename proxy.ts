@@ -14,8 +14,18 @@ const PERMANENT_REDIRECTS: Record<string, string> = {
   "/en/apps-2": "/en/apps",
   "/lessons-workshop": "/es/clases-taller",
   "/en/lessons-workshop": "/en/classes-workshop",
-  "/en/apps/cosmic-ear/jugar": "/en/apps/cosmic-ear/play",
 };
+
+const APP_ROUTE_REWRITES: Record<string, string> = {
+  "/en/apps/cosmic-ear/play": "/en/apps/cosmic-ear/jugar",
+  "/en/apps/intervalos-reconocimiento/play": "/en/apps/intervalos-reconocimiento/jugar",
+  "/en/apps/intervalos-reconocimiento/game": "/en/apps/intervalos-reconocimiento/juego",
+};
+
+const APP_ROUTE_PATTERNS = [
+  /^\/(?:es|en)\/apps\/(?:acordes-cantar|cosmic-ear|desglose|matematicas-mentales)\/jugar$/i,
+  /^\/(?:es|en)\/apps\/intervalos-reconocimiento\/(?:jugar|juego)$/i,
+];
 
 const GONE_PATTERNS = [
   /^\/(?:(?:es|en)\/)?(?:category|tag|author)(?:\/.*)?$/i,
@@ -38,6 +48,12 @@ function buildRedirectResponse(request: NextRequest, pathname: string) {
   return NextResponse.redirect(url, 308);
 }
 
+function buildRewriteResponse(request: NextRequest, pathname: string) {
+  const url = request.nextUrl.clone();
+  url.pathname = pathname;
+  return NextResponse.rewrite(url);
+}
+
 function buildGoneResponse() {
   return new NextResponse("Gone", {
     status: 410,
@@ -54,6 +70,16 @@ export default function proxy(request: NextRequest) {
 
   if (redirectTarget) {
     return buildRedirectResponse(request, redirectTarget);
+  }
+
+  const rewriteTarget = APP_ROUTE_REWRITES[pathname];
+
+  if (rewriteTarget) {
+    return buildRewriteResponse(request, rewriteTarget);
+  }
+
+  if (APP_ROUTE_PATTERNS.some((pattern) => pattern.test(pathname))) {
+    return NextResponse.next();
   }
 
   if (GONE_PATTERNS.some((pattern) => pattern.test(pathname))) {

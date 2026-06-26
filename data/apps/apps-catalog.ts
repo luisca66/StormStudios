@@ -13,6 +13,7 @@ export type AppEntry = {
   webUrl?: string;
   // Modo juego (variante gamificada de la misma app); abre una segunda experiencia.
   gameUrl?: string;
+  gameLabel?: BilingualText;
   icon?: string;
   screenshots?: string[];
   features?: BilingualText[];
@@ -148,7 +149,10 @@ export const APPS: AppEntry[] = [
       en: "Train the recognition of relative distances between notes. Identify the intervals the app plays.",
     },
     webUrl: "/apps/intervalos-reconocimiento/jugar",
+    gameUrl: "/apps/intervalos-reconocimiento/juego",
+    gameLabel: { es: "Videojuego", en: "Video game" },
     features: [
+      { es: "Videojuego retro: Synth-Kong, cruza sectores rumbo al planeta respondiendo intervalos", en: "Retro video game: Synth-Kong, cross sectors toward the planet by answering intervals" },
       { es: "Multi-tímbrica (5 timbres)", en: "Multi-timbral (5 timbres)" },
       { es: "Modos clásico, contrarreloj y supervivencia", en: "Classic, time attack, and survival modes" },
       { es: "Intervalos armónicos, melódicos y mixtos", en: "Harmonic, melodic, and mixed intervals" },
