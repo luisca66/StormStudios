@@ -1,0 +1,16 @@
+{
+  "name": "reconocimiento-acordes-webapp",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5176",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 5176",
+    "check": "npm run build",
+    "deploy": "npm run build && node scripts/copy-dist.mjs"
+  },
+  "devDependencies": {
+    "vite": "^8.1.0"
+  }
+}

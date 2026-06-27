@@ -30,6 +30,10 @@ export const routing = defineRouting({
       en: "/harmony-course/[slug]",
     },
     "/apps": "/apps",
+    "/apps/acordes/jugar": {
+      es: "/apps/acordes/jugar",
+      en: "/apps/acordes/play",
+    },
     "/apps/acordes-cantar/jugar": "/apps/acordes-cantar/jugar",
     "/apps/desglose/jugar": "/apps/desglose/jugar",
     "/apps/intervalos-cantados/jugar": {

@@ -191,9 +191,16 @@ export const APPS: AppEntry[] = [
       es: "Entrena la habilidad de identificar acordes y sus cualidades armónicas, desde tríadas hasta acordes complejos con 13ª.",
       en: "Train your ability to identify chords and their harmonic qualities, from triads to complex 13th chords.",
     },
+    longDescription: {
+      es: "Reconocimiento de Acordes reproduce acordes con distintos timbres para entrenar la identificación auditiva de sus cualidades. Puedes elegir el rango, seleccionar familias de acordes, practicar en modo clásico, contrarreloj o supervivencia, y revisar estadísticas locales por tipo de acorde.",
+      en: "Chord Recognition plays chords with different timbres so you can train the ear to identify harmonic qualities. You can choose the range, select chord families, practice in classic, time attack, or survival mode, and review local statistics by chord type.",
+    },
+    webUrl: "/apps/acordes/jugar",
     features: [
       { es: "Multi-tímbrica (5 timbres)", en: "Multi-timbral (5 timbres)" },
       { es: "Rango seleccionable", en: "Selectable range" },
+      { es: "Modos clásico, contrarreloj y supervivencia", en: "Classic, time attack, and survival modes" },
+      { es: "Estadísticas locales por tipo de acorde", en: "Local statistics by chord type" },
       { es: "Dificultad progresiva hasta acordes con 13ª", en: "Progressive difficulty up to 13th chords" },
     ],
     icon: "/images/app-acordes.jpeg",
