@@ -19,13 +19,14 @@ const PERMANENT_REDIRECTS: Record<string, string> = {
 const APP_ROUTE_REWRITES: Record<string, string> = {
   "/en/apps/acordes/play": "/en/apps/acordes/jugar",
   "/en/apps/cosmic-ear/play": "/en/apps/cosmic-ear/jugar",
+  "/en/apps/grados-menores/play": "/en/apps/grados-menores/jugar",
   "/en/apps/intervalos-cantados/play": "/en/apps/intervalos-cantados/jugar",
   "/en/apps/intervalos-reconocimiento/play": "/en/apps/intervalos-reconocimiento/jugar",
   "/en/apps/intervalos-reconocimiento/game": "/en/apps/intervalos-reconocimiento/juego",
 };
 
 const APP_ROUTE_PATTERNS = [
-  /^\/(?:es|en)\/apps\/(?:acordes|acordes-cantar|cosmic-ear|desglose|intervalos-cantados|matematicas-mentales)\/jugar$/i,
+  /^\/(?:es|en)\/apps\/(?:acordes|acordes-cantar|cosmic-ear|desglose|grados-menores|intervalos-cantados|matematicas-mentales)\/jugar$/i,
   /^\/(?:es|en)\/apps\/intervalos-reconocimiento\/(?:jugar|juego)$/i,
 ];
 

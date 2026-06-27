@@ -247,9 +247,16 @@ export const APPS: AppEntry[] = [
       es: "Desarrolla la percepción de la función tonal de cada nota en tonalidades menores. Reconoce grados diatónicos y cromáticos en contexto.",
       en: "Develop perception of the tonal function of each note in minor keys. Recognize diatonic and chromatic degrees in context.",
     },
+    longDescription: {
+      es: "Practica el reconocimiento de grados en escalas menores con centro tonal, timbres múltiples, modos clásico, contrarreloj y supervivencia, además de estadísticas locales por grado.",
+      en: "Practice recognizing minor-scale degrees with a tonal center, multiple timbres, classic, time attack, and survival modes, plus local per-degree statistics.",
+    },
+    webUrl: "/apps/grados-menores/jugar",
     features: [
-      { es: "Grados diatónicos y cromáticos", en: "Diatonic and chromatic degrees" },
-      { es: "Contexto tonal menor", en: "Minor tonal context" },
+      { es: "15 tonalidades menores y 5 timbres", en: "15 minor keys and 5 timbres" },
+      { es: "Modos clásico, contrarreloj y supervivencia", en: "Classic, time attack, and survival modes" },
+      { es: "Grados diatónicos y cromáticos del modo menor", en: "Minor-mode diatonic and chromatic degrees" },
+      { es: "Centro tonal menor y estadísticas por grado", en: "Minor tonal center and per-degree statistics" },
     ],
     icon: "/images/app-grados-menores.jpeg",
   },

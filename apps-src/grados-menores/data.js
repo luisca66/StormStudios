@@ -1,20 +1,22 @@
-// data.js — Teoría musical y textos para "Grados Escala Mayor"
-// Portado fielmente de la app Android (MusicTheory.kt) de Storm Studios.
+// data.js - Teoria musical y textos para "Grados Escala Menor".
+// Portado desde la app Android appgradosmenoresmulti de Storm Studios.
 
 // Audio servido desde Cloudflare R2 (mismo bucket que las demás ear-training apps).
-// Para desarrollo offline puedes cambiarlo a "audio" (folder local incluido en el repo).
 export const AUDIO_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
 
-// Tonalidades mayores disponibles (mismo orden que la app).
-export const SCALES = ["C♭", "C", "C#", "D♭", "D", "E♭", "E", "F", "F#", "G♭", "G", "A♭", "A", "B♭", "B"];
+// Tonalidades menores disponibles (mismo orden que la app Android).
+export const SCALES = [
+  "Am", "Em", "Bm", "F#m", "C#m", "G#m", "D#m", "A#m",
+  "Dm", "Gm", "Cm", "Fm", "B♭m", "E♭m", "A♭m",
+];
 
-// Grados diatónicos y cromáticos (los "colores" cromáticos del sistema Storm Studios).
-export const DIATONIC_DEGREES = ["I", "II", "III", "IV", "V", "VI", "VII"];
-export const CHROMATIC_DEGREES = ["IVly", "VImen", "IIfr", "VIIST", "IIImen"];
-export const ALL_DEGREES_OPTIONS = [...DIATONIC_DEGREES, ...CHROMATIC_DEGREES];
+// Grados diatónicos y cromáticos del sistema Storm Studios para modo menor.
+export const DIATONIC_DEGREES = ["I", "II", "III", "IV", "V", "VI", "VIIST"];
+export const CHROMATIC_DEGREES = ["IIfr", "IVly", "VImel", "VIIsen"];
+export const ALL_DEGREES_OPTIONS = ["I", "II", "IIfr", "III", "IV", "IVly", "V", "VI", "VImel", "VIIST", "VIIsen"];
 
-// Timbres: nombre lógico -> carpeta en el bucket R2 (nombres capitalizados, compartidos
-// con las otras apps). El folder local `audio/` usa estos mismos nombres tras renombrar.
+// Timbres: nombre lógico -> carpeta en el bucket R2.
+// La Android usa "cello/corno" localmente; en R2 esas carpetas viven capitalizadas.
 export const BASE_TIMBRES = ["Piano", "Cello", "Corno", "Coro", "Fagot"];
 export const RANDOM_TIMBRE = "Aleatorio";
 export const TIMBRES = [...BASE_TIMBRES, RANDOM_TIMBRE];
@@ -27,52 +29,56 @@ export const TIMBRE_DIRS = {
   Fagot: "Fagot",
 };
 
-// Inventario real de muestras (idéntico en los 5 timbres). 136 notas por timbre.
-export const NOTE_FILES = ["A#2", "A#3", "A#4", "A#5", "A#6", "A♭♭2", "A♭♭3", "A♭♭4", "A♭♭5", "A♭♭6", "A♭2", "A♭3", "A♭4", "A♭5", "A♭6", "A2", "A3", "A4", "A5", "A6", "B#2", "B#3", "B#4", "B#5", "B#6", "B♭♭2", "B♭♭3", "B♭♭4", "B♭♭5", "B♭♭6", "B♭2", "B♭3", "B♭4", "B♭5", "B♭6", "B2", "B3", "B4", "B5", "B6", "C#2", "C#3", "C#4", "C#5", "C#6", "C♭3", "C♭4", "C♭5", "C♭6", "C♭7", "C2", "C3", "C4", "C5", "C6", "C7", "D#2", "D#3", "D#4", "D#5", "D#6", "D♭♭2", "D♭♭3", "D♭♭4", "D♭♭5", "D♭♭6", "D♭2", "D♭3", "D♭4", "D♭5", "D♭6", "D2", "D3", "D4", "D5", "D6", "E#2", "E#3", "E#4", "E#5", "E#6", "E♭♭2", "E♭♭3", "E♭♭4", "E♭♭5", "E♭♭6", "E♭2", "E♭3", "E♭4", "E♭5", "E♭6", "E2", "E3", "E4", "E5", "E6", "F##2", "F##3", "F##4", "F##5", "F##6", "F#2", "F#3", "F#4", "F#5", "F#6", "F♭2", "F♭3", "F♭4", "F♭5", "F♭6", "F2", "F3", "F4", "F5", "F6", "G#2", "G#3", "G#4", "G#5", "G#6", "G♭♭2", "G♭♭3", "G♭♭4", "G♭♭5", "G♭♭6", "G♭2", "G♭3", "G♭4", "G♭5", "G♭6", "G2", "G3", "G4", "G5", "G6"];
+// Inventario real de muestras útiles. R2 no tiene C♭2, así que se omite esa
+// octava; C## y G## se conservan y se resuelven por fallback enharmónico.
+export const NOTE_FILES = ["A#2","A#3","A#4","A#5","A#6","A♭2","A♭3","A♭4","A♭5","A♭6","A2","A3","A4","A5","A6","B#2","B#3","B#4","B#5","B#6","B♭♭2","B♭♭3","B♭♭4","B♭♭5","B♭♭6","B♭2","B♭3","B♭4","B♭5","B♭6","B2","B3","B4","B5","B6","C##2","C##3","C##4","C##5","C##6","C#2","C#3","C#4","C#5","C#6","C♭3","C♭4","C♭5","C♭6","C♭7","C2","C3","C4","C5","C6","C7","D##2","D##3","D##4","D##5","D##6","D#2","D#3","D#4","D#5","D#6","D♭2","D♭3","D♭4","D♭5","D♭6","D2","D3","D4","D5","D6","E#2","E#3","E#4","E#5","E#6","E♭2","E♭3","E♭4","E♭5","E♭6","E2","E3","E4","E5","E6","F##2","F##3","F##4","F##5","F##6","F#2","F#3","F#4","F#5","F#6","F♭2","F♭3","F♭4","F♭5","F♭6","F2","F3","F4","F5","F6","G##2","G##3","G##4","G##5","G##6","G#2","G#3","G#4","G#5","G#6","G♭2","G♭3","G♭4","G♭5","G♭6","G2","G3","G4","G5","G6"];
 
-// Mapa grado tonal por tonalidad: tonalidad -> { pitchClass -> grado } (port literal de scaleDegrees).
+// Mapa grado tonal por tonalidad menor: tonalidad -> { pitchClass -> grado }.
 export const scaleDegrees = {
-  "C♭": { "C♭": "I", "D♭": "II", "D♭♭": "IIfr", "E♭": "III", "E♭♭": "IIImen", "F♭": "IV", "F": "IVly", "G♭": "V", "A♭": "VI", "A♭♭": "VImen", "B♭": "VII", "B♭♭": "VIIST" },
-  "C": { "C": "I", "D": "II", "D♭": "IIfr", "E": "III", "E♭": "IIImen", "F": "IV", "F#": "IVly", "G": "V", "A": "VI", "A♭": "VImen", "B": "VII", "B♭": "VIIST" },
-  "C#": { "C#": "I", "D#": "II", "D": "IIfr", "E#": "III", "E": "IIImen", "F#": "IV", "F##": "IVly", "G#": "V", "A#": "VI", "A": "VImen", "B#": "VII", "B": "VIIST" },
-  "D♭": { "D♭": "I", "E♭": "II", "E♭♭": "IIfr", "F": "III", "F♭": "IIImen", "G♭": "IV", "G": "IVly", "A♭": "V", "B♭": "VI", "B♭♭": "VImen", "C": "VII", "C♭": "VIIST" },
-  "D": { "D": "I", "E": "II", "E♭": "IIfr", "F#": "III", "F": "IIImen", "G": "IV", "G#": "IVly", "A": "V", "B": "VI", "B♭": "VImen", "C#": "VII", "C": "VIIST" },
-  "E♭": { "E♭": "I", "F": "II", "F♭": "IIfr", "G": "III", "G♭": "IIImen", "A♭": "IV", "A": "IVly", "B♭": "V", "C": "VI", "C♭": "VImen", "D": "VII", "D♭": "VIIST" },
-  "E": { "E": "I", "F#": "II", "F": "IIfr", "G#": "III", "G": "IIImen", "A": "IV", "A#": "IVly", "B": "V", "C#": "VI", "C": "VImen", "D#": "VII", "D": "VIIST" },
-  "F": { "F": "I", "G": "II", "G♭": "IIfr", "A": "III", "A♭": "IIImen", "B♭": "IV", "B": "IVly", "C": "V", "D": "VI", "D♭": "VImen", "E": "VII", "E♭": "VIIST" },
-  "F#": { "F#": "I", "G#": "II", "G": "IIfr", "A#": "III", "A": "IIImen", "B": "IV", "B#": "IVly", "C#": "V", "D#": "VI", "D": "VImen", "E#": "VII", "E": "VIIST" },
-  "G♭": { "G♭": "I", "A♭": "II", "A♭♭": "IIfr", "B♭": "III", "B♭♭": "IIImen", "C♭": "IV", "C": "IVly", "D♭": "V", "E♭": "VI", "E♭♭": "VImen", "F": "VII", "F♭": "VIIST" },
-  "G": { "G": "I", "A": "II", "A♭": "IIfr", "B": "III", "B♭": "IIImen", "C": "IV", "C#": "IVly", "D": "V", "E": "VI", "E♭": "VImen", "F#": "VII", "F": "VIIST" },
-  "A♭": { "A♭": "I", "B♭": "II", "B♭♭": "IIfr", "C": "III", "C♭": "IIImen", "D♭": "IV", "D": "IVly", "E♭": "V", "F": "VI", "F♭": "VImen", "G": "VII", "G♭": "VIIST" },
-  "A": { "A": "I", "B": "II", "B♭": "IIfr", "C#": "III", "C": "IIImen", "D": "IV", "D#": "IVly", "E": "V", "F#": "VI", "F": "VImen", "G#": "VII", "G": "VIIST" },
-  "B♭": { "B♭": "I", "C": "II", "C♭": "IIfr", "D": "III", "D♭": "IIImen", "E♭": "IV", "E": "IVly", "F": "V", "G": "VI", "G♭": "VImen", "A": "VII", "A♭": "VIIST" },
-  "B": { "B": "I", "C#": "II", "C": "IIfr", "D#": "III", "D": "IIImen", "E": "IV", "E#": "IVly", "F#": "V", "G#": "VI", "G": "VImen", "A#": "VII", "A": "VIIST" },
+  "Am": { "A": "I", "B": "II", "B♭": "IIfr", "C": "III", "D": "IV", "D#": "IVly", "E": "V", "F": "VI", "F#": "VImel", "G": "VIIST", "G#": "VIIsen" },
+  "Em": { "E": "I", "F#": "II", "F": "IIfr", "G": "III", "A": "IV", "A#": "IVly", "B": "V", "C": "VI", "C#": "VImel", "D": "VIIST", "D#": "VIIsen" },
+  "Bm": { "B": "I", "C#": "II", "C": "IIfr", "D": "III", "E": "IV", "E#": "IVly", "F#": "V", "G": "VI", "G#": "VImel", "A": "VIIST", "A#": "VIIsen" },
+  "F#m": { "F#": "I", "G#": "II", "G": "IIfr", "A": "III", "B": "IV", "B#": "IVly", "C#": "V", "D": "VI", "D#": "VImel", "E": "VIIST", "E#": "VIIsen" },
+  "C#m": { "C#": "I", "D#": "II", "D": "IIfr", "E": "III", "F#": "IV", "F##": "IVly", "G#": "V", "A": "VI", "A#": "VImel", "B": "VIIST", "B#": "VIIsen" },
+  "G#m": { "G#": "I", "A#": "II", "A": "IIfr", "B": "III", "C#": "IV", "C##": "IVly", "D#": "V", "E": "VI", "E#": "VImel", "F#": "VIIST", "F##": "VIIsen" },
+  "D#m": { "D#": "I", "E#": "II", "E": "IIfr", "F#": "III", "G#": "IV", "G##": "IVly", "A#": "V", "B": "VI", "B#": "VImel", "C#": "VIIST", "C##": "VIIsen" },
+  "A#m": { "A#": "I", "B#": "II", "B": "IIfr", "C#": "III", "D#": "IV", "E##": "IVly", "E#": "V", "F#": "VI", "F##": "VImel", "G#": "VIIST", "G##": "VIIsen" },
+  "Dm": { "D": "I", "E": "II", "E♭": "IIfr", "F": "III", "G": "IV", "G#": "IVly", "A": "V", "B♭": "VI", "B": "VImel", "C": "VIIST", "C#": "VIIsen" },
+  "Gm": { "G": "I", "A": "II", "A♭": "IIfr", "B♭": "III", "C": "IV", "C#": "IVly", "D": "V", "E♭": "VI", "E": "VImel", "F": "VIIST", "F#": "VIIsen" },
+  "Cm": { "C": "I", "D": "II", "D♭": "IIfr", "E♭": "III", "F": "IV", "F#": "IVly", "G": "V", "A♭": "VI", "A": "VImel", "B♭": "VIIST", "B": "VIIsen" },
+  "Fm": { "F": "I", "G": "II", "G♭": "IIfr", "A♭": "III", "B♭": "IV", "B": "IVly", "C": "V", "D♭": "VI", "D": "VImel", "E♭": "VIIST", "E": "VIIsen" },
+  "B♭m": { "B♭": "I", "C": "II", "C♭": "IIfr", "D♭": "III", "E♭": "IV", "E": "IVly", "F": "V", "G♭": "VI", "G": "VImel", "A♭": "VIIST", "A": "VIIsen" },
+  "E♭m": { "E♭": "I", "F": "II", "F♭": "IIfr", "G♭": "III", "A♭": "IV", "A": "IVly", "B♭": "V", "C♭": "VI", "C": "VImel", "D♭": "VIIST", "D": "VIIsen" },
+  "A♭m": { "A♭": "I", "B♭": "II", "B♭♭": "IIfr", "C♭": "III", "D♭": "IV", "D": "IVly", "E♭": "V", "F♭": "VI", "F": "VImel", "G♭": "VIIST", "G": "VIIsen" },
 };
 
-// Las 15 tonalidades tienen acorde mayor de referencia (carpeta "Major Chords").
+// Las 15 tonalidades tienen acorde menor de referencia (carpeta "Minor Chords").
 export const CHORD_TONICS = SCALES;
 
-// Glosario de los grados cromáticos (se muestra como leyenda y tooltips).
+export function minorChordFileName(scale) {
+  return `${scale.endsWith("m") ? scale.slice(0, -1) : scale}minor.mp3`;
+}
+
+// Glosario de grados.
 export const DEGREE_GLOSSARY = {
   I:      { es: "Tónica", en: "Tonic" },
   II:     { es: "Supertónica", en: "Supertonic" },
+  IIfr:   { es: "II frigio (♭2)", en: "Phrygian II (♭2)" },
   III:    { es: "Mediante", en: "Mediant" },
   IV:     { es: "Subdominante", en: "Subdominant" },
+  IVly:   { es: "IV lidio (#4)", en: "Lydian IV (#4)" },
   V:      { es: "Dominante", en: "Dominant" },
   VI:     { es: "Superdominante", en: "Submediant" },
-  VII:    { es: "Sensible", en: "Leading tone" },
-  IVly:   { es: "IV lidio (#4)", en: "Lydian IV (#4)" },
-  VImen:  { es: "VI menor (♭6)", en: "Minor VI (♭6)" },
-  IIfr:   { es: "II frigio (♭2)", en: "Phrygian II (♭2)" },
+  VImel:  { es: "VI melódico (#6)", en: "Melodic VI (#6)" },
   VIIST:  { es: "VII subtónica (♭7)", en: "Subtonic VII (♭7)" },
-  IIImen: { es: "III menor (♭3)", en: "Minor III (♭3)" },
+  VIIsen: { es: "VII sensible (#7)", en: "Leading-tone VII (#7)" },
 };
 
 // Textos de interfaz bilingües.
 export const I18N = {
   es: {
-    appTitle: "Grados Escala Mayor",
-    appTagline: "Entrenamiento auditivo profesional para reconocer grados de las escalas mayores.",
+    appTitle: "Grados Escala Menor",
+    appTagline: "Entrenamiento auditivo profesional para reconocer grados de las escalas menores.",
     creditsTitle: "Créditos",
     creditsBody: "Desarrollada por Luis Cárdenas para Storm Studios Learning",
     start: "Comenzar",
@@ -92,7 +98,7 @@ export const I18N = {
     selectedMode: "Modo seleccionado",
     duration: "Duración",
     keyAndTimbre: "Tonalidad y timbre",
-    majorScale: "Escala mayor",
+    minorScale: "Escala menor",
     timbre: "Timbre",
     diatonicDegrees: "Grados diatónicos",
     chromaticColor: "Color cromático",
@@ -108,6 +114,11 @@ export const I18N = {
     back: "Volver",
 
     sessionPrefix: "Sesión",
+    sessionTitles: {
+      CLASSIC: "Sesión clásica",
+      TIME_ATTACK: "Sesión contrarreloj",
+      SURVIVAL: "Sesión de supervivencia",
+    },
     context: "Contexto",
     markers: "Marcadores",
     hits: "Aciertos",
@@ -122,7 +133,7 @@ export const I18N = {
     pickAnswer: "Selección de respuesta",
     sessionAccuracy: "Precisión de sesión",
     tonalCenter: "Centro tonal",
-    tonalCenterHelp: "Usa los acordes mayores para reubicar el oído cuando lo necesites.",
+    tonalCenterHelp: "Usa los acordes menores para reubicar el oído cuando lo necesites.",
     sessionFinished: "Sesión finalizada",
     restart: "Reiniciar",
     exitSession: "Salir de la sesión",
@@ -155,8 +166,8 @@ export const I18N = {
     randomTimbre: "Aleatorio",
   },
   en: {
-    appTitle: "Major Scale Degrees",
-    appTagline: "Professional ear training to recognize the degrees of major scales.",
+    appTitle: "Minor Scale Degrees",
+    appTagline: "Professional ear training to recognize the degrees of minor scales.",
     creditsTitle: "Credits",
     creditsBody: "Developed by Luis Cárdenas for Storm Studios Learning",
     start: "Start",
@@ -176,7 +187,7 @@ export const I18N = {
     selectedMode: "Selected mode",
     duration: "Duration",
     keyAndTimbre: "Key and timbre",
-    majorScale: "Major scale",
+    minorScale: "Minor scale",
     timbre: "Timbre",
     diatonicDegrees: "Diatonic degrees",
     chromaticColor: "Chromatic color",
@@ -192,6 +203,11 @@ export const I18N = {
     back: "Back",
 
     sessionPrefix: "Session",
+    sessionTitles: {
+      CLASSIC: "Classic session",
+      TIME_ATTACK: "Time attack session",
+      SURVIVAL: "Survival session",
+    },
     context: "Context",
     markers: "Scoreboard",
     hits: "Correct",
@@ -206,7 +222,7 @@ export const I18N = {
     pickAnswer: "Pick your answer",
     sessionAccuracy: "Session accuracy",
     tonalCenter: "Tonal center",
-    tonalCenterHelp: "Use the major chords to re-center your ear whenever you need it.",
+    tonalCenterHelp: "Use the minor chords to re-center your ear whenever you need it.",
     sessionFinished: "Session finished",
     restart: "Restart",
     exitSession: "Exit session",

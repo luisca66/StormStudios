@@ -1,8 +1,8 @@
-// app.js — UI y orquestación de "Grados Escala Mayor" (web).
+// app.js - UI y orquestacion de "Grados Escala Menor" (web).
 import {
   SCALES, DIATONIC_DEGREES, CHROMATIC_DEGREES, ALL_DEGREES_OPTIONS,
   TIMBRES, RANDOM_TIMBRE, CHORD_TONICS, DEGREE_GLOSSARY, I18N,
-  MODE_KEYS, TIME_ATTACK_OPTIONS, SURVIVAL_LIVES, scaleDegrees,
+  TIME_ATTACK_OPTIONS, SURVIVAL_LIVES, scaleDegrees, minorChordFileName,
 } from "./data.js";
 import {
   audioUrl, buildQuestionSet, makeDegreeNoteSelector, getSupportAssetBaseDir,
@@ -29,7 +29,6 @@ function h(tag, attrs = {}, ...children) {
   }
   return node;
 }
-const $ = (sel, root = document) => root.querySelector(sel);
 
 /* ---------- audio ---------- */
 class AudioPlayer {
@@ -50,7 +49,7 @@ class AudioPlayer {
   setLooping(on) { if (this.el) this.el.loop = on; }
   stop() {
     if (this.el) {
-      try { this.el.pause(); this.el.currentTime = 0; } catch (e) {}
+      try { this.el.pause(); this.el.currentTime = 0; } catch {}
       this.el = null;
     }
   }
@@ -67,12 +66,14 @@ const state = {
   t: I18N[lang],
   screen: "intro",
   mode: "CLASSIC",
-  scale: "C",
+  scale: "Am",
   timbre: "Piano",
   timeAttackDuration: 90,
   selectedDegrees: new Set(DIATONIC_DEGREES),
   stats: loadStats(),
 };
+
+document.title = `${state.t.appTitle} · Storm Studios`;
 
 const root = () => document.getElementById("app");
 let activeTraining = null;
@@ -110,7 +111,7 @@ function outlineButton(label, onClick, opts = {}) {
 }
 function degreeLabel(degree) {
   const g = DEGREE_GLOSSARY[degree];
-  return g ? `${degree} — ${g[state.lang]}` : degree;
+  return g ? `${degree} · ${g[state.lang]}` : degree;
 }
 
 /* ---------- pantalla: INTRO ---------- */
@@ -189,7 +190,7 @@ function SetupScreen() {
   const timbreOptions = TIMBRES.map((x) => x === RANDOM_TIMBRE ? t.randomTimbre : x);
   const currentTimbreLabel = state.timbre === RANDOM_TIMBRE ? t.randomTimbre : state.timbre;
   const keySection = sectionCard(t.keyAndTimbre,
-    selectField(t.majorScale, state.scale, SCALES, (v) => { state.scale = v; rerender(); }),
+    selectField(t.minorScale, state.scale, SCALES, (v) => { state.scale = v; rerender(); }),
     selectField(t.timbre, currentTimbreLabel, timbreOptions, (v) => {
       state.timbre = v === t.randomTimbre ? RANDOM_TIMBRE : v; rerender();
     }));
@@ -289,7 +290,7 @@ function TrainingScreen() {
   const screen = h("div", { class: "screen training" });
   const topbar = h("div", { class: "topbar" },
     h("button", { class: "icon-btn", onclick: () => go("setup"), "aria-label": t.back }, "←"),
-    h("span", { class: "topbar-title" }, `${t.sessionPrefix} ${t.modes[mode].title.toLowerCase()}`));
+    h("span", { class: "topbar-title" }, t.sessionTitles[mode]));
 
   // contexto
   const contextSection = sectionCard(t.context,
@@ -382,7 +383,7 @@ function TrainingScreen() {
 
   function playChord(tonic) {
     const base = getSupportAssetBaseDir(timbre, ts.currentQuestion);
-    player.play(`${base}/Major Chords/${tonic}major.mp3`, false);
+    player.play(`${base}/Minor Chords/${minorChordFileName(tonic)}`, false);
   }
 
   function registerAnswer(selected) {
