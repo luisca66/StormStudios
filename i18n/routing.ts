@@ -32,6 +32,10 @@ export const routing = defineRouting({
     "/apps": "/apps",
     "/apps/acordes-cantar/jugar": "/apps/acordes-cantar/jugar",
     "/apps/desglose/jugar": "/apps/desglose/jugar",
+    "/apps/intervalos-cantados/jugar": {
+      es: "/apps/intervalos-cantados/jugar",
+      en: "/apps/intervalos-cantados/play",
+    },
     "/apps/intervalos-reconocimiento/jugar": {
       es: "/apps/intervalos-reconocimiento/jugar",
       en: "/apps/intervalos-reconocimiento/play",
@@ -45,6 +49,7 @@ export const routing = defineRouting({
       en: "/apps/cosmic-ear/play",
     },
     "/apps/matematicas-mentales/jugar": "/apps/matematicas-mentales/jugar",
+    "/apps/grados-mayores/jugar": "/apps/grados-mayores/jugar",
     "/apps/[slug]": "/apps/[slug]",
     "/el-libro": {
       es: "/el-libro",
