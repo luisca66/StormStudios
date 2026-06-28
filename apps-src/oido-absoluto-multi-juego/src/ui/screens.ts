@@ -1,4 +1,5 @@
 import { GameStateManager, Note } from "@/game/state";
+import { COPY, GameCopy, getLocale, INSTRUMENTS } from "@/i18n";
 
 export function mountUI(
   root: HTMLElement, 
@@ -7,10 +8,11 @@ export function mountUI(
   onResetChallenge: () => void,
   triggerSpawn: () => void
 ): void {
+  const copy = COPY[getLocale()];
   
   // Re-render UI on state updates
   stateManager.subscribe((state) => {
-    root.innerHTML = render(state, stateManager);
+    root.innerHTML = render(state, stateManager, copy);
     
     // Bind Volume Slider dynamically
     const volSlider = root.querySelector(".volume-slider") as HTMLInputElement;
@@ -68,15 +70,15 @@ export function mountUI(
         if (isCorrect) {
           toast.style.setProperty("--border-color", "var(--mint)");
           icon.textContent = "✅";
-          text.textContent = "¡CORRECTO!";
+          text.textContent = copy.correct;
           text.style.color = "var(--mint)";
-          sub.textContent = "+1 Acierto. Siguiente nota cargada.";
+          sub.textContent = copy.correctSub;
         } else {
           toast.style.setProperty("--border-color", "var(--rose)");
           icon.textContent = "❌";
-          text.textContent = "¡INCORRECTO!";
+          text.textContent = copy.wrong;
           text.style.color = "var(--rose)";
-          sub.textContent = "Racha reiniciada. Nota reubicada.";
+          sub.textContent = copy.wrongSub;
         }
         
         // Auto-fadeout toast after 1.8s
@@ -99,36 +101,28 @@ export function mountUI(
   });
 }
 
-function render(state: any, stateManager: GameStateManager): string {
+function render(state: any, stateManager: GameStateManager, copy: GameCopy): string {
   if (state.activeScreen === "menu") {
-    return renderMenu(state);
+    return renderMenu(state, copy);
   }
   if (state.activeScreen === "note-selection") {
-    return renderNoteSelection(state, stateManager);
+    return renderNoteSelection(state, stateManager, copy);
   }
   if (state.activeScreen === "warmup") {
-    return renderWarmup(state, stateManager);
+    return renderWarmup(state, stateManager, copy);
   }
   if (state.activeScreen === "gameplay") {
-    return renderGameplayHUD(state, stateManager);
+    return renderGameplayHUD(state, stateManager, copy);
   }
   if (state.activeScreen === "victory") {
-    return renderVictory(state);
+    return renderVictory(state, copy);
   }
   return "";
 }
 
-function renderMenu(state: any): string {
-  const instruments = ["Piano", "Cello", "Corno", "Coro", "Fagot", "Aleatorio"];
+function renderMenu(state: any, copy: GameCopy): string {
   const colors = ["var(--mint)", "var(--aqua)", "var(--indigo)", "var(--gold)", "var(--purple)"];
   const icons = ["🌾", "🌊", "🌌", "🐊", "🦄"];
-  const subtitles = [
-    "Cuarta aumentada.",
-    "Tercera mayor.",
-    "Tercera menor.",
-    "Segunda mayor.",
-    "Escala cromática."
-  ];
 
   return `
     <main class="screen">
@@ -136,24 +130,24 @@ function renderMenu(state: any): string {
         <div class="brand">
           <span class="mark">🎵</span>
           <div>
-            <div class="eyebrow">Entrenamiento Oído Absoluto</div>
-            <h1 class="title">WALKING AP</h1>
-            <p class="subtitle">Storm Studios Coclear Method</p>
+            <div class="eyebrow">${copy.eyebrow}</div>
+            <h1 class="title">${copy.appTitle}</h1>
+            <p class="subtitle">${copy.appSubtitle}</p>
           </div>
         </div>
       </header>
 
       <section class="mode-list">
-        <h2 class="section-label" style="margin-bottom: 4px;">Seleccionar Nivel</h2>
+        <h2 class="section-label" style="margin-bottom: 4px;">${copy.selectLevel}</h2>
         ${[1, 2, 3, 4, 5].map((lvl) => {
-          const name = ["La Pradera", "El Océano", "El Cosmos", "El Pantano", "Las Nubes"][lvl - 1];
+          const levelCopy = copy.levels[lvl - 1];
           return `
             <div class="mode-card" data-action="select-level" data-id="${lvl}" style="--card-color: ${colors[lvl - 1]}">
               <span class="accent-bar"></span>
               <span class="mode-icon">${icons[lvl - 1]}</span>
               <span class="mode-body">
-                <span class="mode-title">${name}</span>
-                <span class="mode-subtitle">${subtitles[lvl - 1]}</span>
+                <span class="mode-title">${levelCopy.name}</span>
+                <span class="mode-subtitle">${levelCopy.menuSubtitle}</span>
               </span>
               <span class="mode-arrow">›</span>
             </div>
@@ -162,11 +156,11 @@ function renderMenu(state: any): string {
       </section>
 
       <section class="setup-section" style="margin-top: 10px;">
-        <span class="section-label">Timbre del Instrumento</span>
+        <span class="section-label">${copy.instrumentTone}</span>
         <div class="chip-row">
-          ${instruments.map((inst) => `
+          ${INSTRUMENTS.map((inst) => `
             <button class="chip ${state.selectedInstrument === inst ? "on" : ""}" data-action="select-instrument" data-id="${inst}">
-              ${inst}
+              ${copy.instruments[inst]}
             </button>
           `).join("")}
         </div>
@@ -175,21 +169,22 @@ function renderMenu(state: any): string {
   `;
 }
 
-function renderNoteSelection(state: any, stateManager: GameStateManager): string {
+function renderNoteSelection(state: any, stateManager: GameStateManager, copy: GameCopy): string {
   const levelConfig = stateManager.levels[state.currentLevel];
+  const levelCopy = copy.levels[state.currentLevel - 1];
 
   return `
     <main class="screen">
       <header class="header-row">
-        <button class="secondary-button" style="padding: 6px 12px; font-size: 0.88rem;" data-action="menu">‹ Volver</button>
+        <button class="secondary-button" style="padding: 6px 12px; font-size: 0.88rem;" data-action="menu">‹ ${copy.back}</button>
         <div style="text-align: right;">
-          <div class="eyebrow">Paso 1 de 2</div>
-          <h2 style="font-size: 1.4rem; font-weight: 800; margin: 0; color: var(--aqua);">${levelConfig.name}</h2>
+          <div class="eyebrow">${copy.step1}</div>
+          <h2 style="font-size: 1.4rem; font-weight: 800; margin: 0; color: var(--aqua);">${levelCopy.name}</h2>
         </div>
       </header>
 
-      <h1 class="title" style="font-size: 1.8rem; margin: 10px 0;">Grupo de Notas</h1>
-      <p class="subtitle" style="margin-bottom: 12px;">Elige el grupo de notas para entrenar el oído:</p>
+      <h1 class="title" style="font-size: 1.8rem; margin: 10px 0;">${copy.noteGroup}</h1>
+      <p class="subtitle" style="margin-bottom: 12px;">${copy.chooseGroup}</p>
 
       <section class="mode-list">
         ${levelConfig.groups.map((group, idx) => `
@@ -209,21 +204,22 @@ function renderNoteSelection(state: any, stateManager: GameStateManager): string
   `;
 }
 
-function renderWarmup(state: any, stateManager: GameStateManager): string {
+function renderWarmup(state: any, stateManager: GameStateManager, copy: GameCopy): string {
   const levelConfig = stateManager.levels[state.currentLevel];
+  const levelCopy = copy.levels[state.currentLevel - 1];
 
   return `
     <main class="screen">
       <header class="header-row">
-        <button class="secondary-button" style="padding: 6px 12px; font-size: 0.88rem;" data-action="select-level" data-id="${state.currentLevel}">‹ Volver</button>
+        <button class="secondary-button" style="padding: 6px 12px; font-size: 0.88rem;" data-action="select-level" data-id="${state.currentLevel}">‹ ${copy.back}</button>
         <div style="text-align: right;">
-          <div class="eyebrow">Paso 2 de 2</div>
-          <h2 style="font-size: 1.4rem; font-weight: 800; margin: 0; color: var(--gold);">${levelConfig.name}</h2>
+          <div class="eyebrow">${copy.step2}</div>
+          <h2 style="font-size: 1.4rem; font-weight: 800; margin: 0; color: var(--gold);">${levelCopy.name}</h2>
         </div>
       </header>
 
-      <h1 class="title" style="font-size: 1.8rem; margin: 10px 0;">Calentamiento Auditivo</h1>
-      <p class="subtitle" style="margin-bottom: 10px;">Presiona las teclas para memorizar la sensación coclear antes de jugar:</p>
+      <h1 class="title" style="font-size: 1.8rem; margin: 10px 0;">${copy.warmupTitle}</h1>
+      <p class="subtitle" style="margin-bottom: 10px;">${copy.warmupCopy}</p>
 
       <div class="keyboard-row">
         ${state.selectedNotes.map((note: Note) => {
@@ -231,35 +227,29 @@ function renderWarmup(state: any, stateManager: GameStateManager): string {
           return `
             <button class="key-btn" data-action="warmup-note" data-index="${note.note_index}" data-octave="${note.octave}">
               <span>${noteName}</span>
-              <span style="font-size: 0.65rem; opacity: 0.5; margin-top: 4px;">Octava ${note.octave}</span>
+              <span style="font-size: 0.65rem; opacity: 0.5; margin-top: 4px;">${copy.octave} ${note.octave}</span>
             </button>
           `;
         }).join("")}
       </div>
 
       <button class="primary-button" style="margin-top: 15px;" data-action="confirm-warmup">
-        ¡COMENZAR JUEGO!
+        ${copy.startGame}
       </button>
     </main>
   `;
 }
 
-function renderGameplayHUD(state: any, stateManager: GameStateManager): string {
-  const levelName = ["La Pradera", "El Océano", "El Cosmos", "El Pantano", "Las Nubes"][state.currentLevel - 1];
-  const instructions = [
-    "WASD / Flechas para girar. SPACE para caminar.<br>Camina hacia los cubos de colores.",
-    "WASD para cabeceo/guiñada. QE para alabeo. SPACE para propulsión.<br>Nada hacia las burbujas.",
-    "WASD para pitch/yaw. QE para roll. SPACE para empuje.<br>Vuela hacia los cristales espaciales.",
-    "WASD para girar. SPACE para avanzar.<br>Waddles en el fango hacia las luces fatuas.",
-    "WASD para pitch/yaw. QE para roll. SPACE para volar.<br>Vuela hacia los globos aerostáticos."
-  ][state.currentLevel - 1];
+function renderGameplayHUD(state: any, stateManager: GameStateManager, copy: GameCopy): string {
+  const levelName = copy.levels[state.currentLevel - 1].name;
+  const instructions = copy.instructions[state.currentLevel - 1];
 
   // Draw notes selector keyboard inside the bottom answer panel
   let answerMarkup = "";
   if (state.currentChallenge) {
     answerMarkup = `
       <div class="answer-panel">
-        <div class="eyebrow" style="text-align: center; color: var(--gold);">¿Qué nota escuchaste?</div>
+        <div class="eyebrow" style="text-align: center; color: var(--gold);">${copy.heardQuestion}</div>
         <div class="answer-grid">
           ${state.selectedNotes.map((note: Note) => {
             const noteName = stateManager.noteNames[note.note_index];
@@ -279,16 +269,16 @@ function renderGameplayHUD(state: any, stateManager: GameStateManager): string {
       <div class="hud-top">
         <div style="display: flex; gap: 12px;">
           <div class="hud-card">
-            <span class="hud-label">Racha</span>
+            <span class="hud-label">${copy.streak}</span>
             <span class="hud-value"><span class="accent">${state.streak}</span> / ${state.maxStreakToUnlock}</span>
           </div>
           <div class="hud-card">
-            <span class="hud-label">Aciertos</span>
+            <span class="hud-label">${copy.hits}</span>
             <span class="hud-value">${state.score}</span>
           </div>
           <div class="hud-card" style="align-items: center; justify-content: center; opacity: 0.85;">
             <span class="hud-label">${levelName}</span>
-            <span style="font-size: 0.88rem; font-weight: bold; margin-top: 2px;">Lvl ${state.currentLevel}</span>
+            <span style="font-size: 0.88rem; font-weight: bold; margin-top: 2px;">${copy.levelShort} ${state.currentLevel}</span>
           </div>
         </div>
         
@@ -306,7 +296,7 @@ function renderGameplayHUD(state: any, stateManager: GameStateManager): string {
 
           <div style="display: flex; gap: 8px;">
             <button class="secondary-button" style="padding: 8px 14px; font-size: 0.85rem;" data-action="menu">
-              Salir al Menú
+              ${copy.exitToMenu}
             </button>
           </div>
         </div>
@@ -315,8 +305,8 @@ function renderGameplayHUD(state: any, stateManager: GameStateManager): string {
       <!-- Toast feedback notifier -->
       <div id="feedback-toast" class="feedback-toast">
         <div id="feedback-icon" class="feedback-icon">✅</div>
-        <div id="feedback-text" class="feedback-text">¡CORRECTO!</div>
-        <div id="feedback-sub" style="font-size: 0.9rem; color: var(--muted);">+1 Acierto</div>
+        <div id="feedback-text" class="feedback-text">${copy.correct}</div>
+        <div id="feedback-sub" style="font-size: 0.9rem; color: var(--muted);">${copy.initialToastSub}</div>
       </div>
 
       <!-- 2D Canvas for Search Radar -->
@@ -325,28 +315,28 @@ function renderGameplayHUD(state: any, stateManager: GameStateManager): string {
   `;
 }
 
-function renderVictory(state: any): string {
+function renderVictory(state: any, copy: GameCopy): string {
   return `
     <main class="screen" style="text-align: center; gap: 24px; max-width: 500px;">
       <div>
         <span style="font-size: 4.5rem;">🏆</span>
-        <h1 class="title" style="color: var(--gold); margin-top: 10px;">¡NIVEL COMPLETADO!</h1>
-        <p class="subtitle" style="font-size: 1.1rem; margin-top: 6px;">Has logrado 20 aciertos consecutivos.</p>
+        <h1 class="title" style="color: var(--gold); margin-top: 10px;">${copy.victoryTitle}</h1>
+        <p class="subtitle" style="font-size: 1.1rem; margin-top: 6px;">${copy.victoryBody}</p>
       </div>
 
       <div style="padding: 16px; background: rgba(255,255,255,0.02); border-radius: var(--radius); border: 1px solid var(--border);">
-        <div class="eyebrow">Puntaje Total</div>
+        <div class="eyebrow">${copy.totalScore}</div>
         <div style="font-size: 3rem; font-weight: 800; color: var(--ink); margin-top: 4px;">
-          ${state.score} aciertos
+          ${state.score} ${copy.hitsLower}
         </div>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
         <button class="primary-button" data-action="advance">
-          Siguiente Nivel
+          ${copy.nextLevel}
         </button>
         <button class="secondary-button" data-action="menu">
-          Volver al Menú Principal
+          ${copy.mainMenu}
         </button>
       </div>
     </main>

@@ -3,6 +3,9 @@ import { AudioEngine } from "./audio/engine";
 import { GameStateManager } from "./game/state";
 import { Game3DRenderer } from "./3d/renderer";
 import { mountUI } from "./ui/screens";
+import { applyDocumentLocale } from "./i18n";
+
+applyDocumentLocale();
 
 // 1. Initialize Audio Engine
 const audio = new AudioEngine();
