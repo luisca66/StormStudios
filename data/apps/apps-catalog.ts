@@ -274,7 +274,10 @@ export const APPS: AppEntry[] = [
       en: "Perfect Pitch Multi-timbral trains absolute-note recognition with piano, cello, horn, choir, and bassoon. You can choose exactly which notes to study from C2 to C7, enable looping for focused listening, adjust volume, and practice in classic, time attack, or survival mode. The app saves local per-note statistics so you can see which pitches need more work.",
     },
     webUrl: "/apps/oido-absoluto-multi/jugar",
+    gameUrl: "/apps/oido-absoluto-multi/juego",
+    gameLabel: { es: "Modo juego 3D", en: "3D game mode" },
     features: [
+      { es: "Modo juego 3D: Walking AP Multi, explora cinco mundos y abre compuertas reconociendo notas", en: "3D game mode: Walking AP Multi, explore five worlds and unlock gates by recognizing notes" },
       { es: "5 timbres: piano, cello, corno, fagot y coro", en: "5 timbres: piano, cello, horn, bassoon, and choir" },
       { es: "Selección precisa de notas entre C2 y C7", en: "Precise note selection from C2 to C7" },
       { es: "Modos clásico, contrarreloj y supervivencia", en: "Classic, time attack, and survival modes" },

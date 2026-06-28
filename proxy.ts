@@ -25,11 +25,13 @@ const APP_ROUTE_REWRITES: Record<string, string> = {
   "/en/apps/intervalos-reconocimiento/game": "/en/apps/intervalos-reconocimiento/juego",
   "/en/apps/oido-absoluto-guitarra/play": "/en/apps/oido-absoluto-guitarra/jugar",
   "/en/apps/oido-absoluto-multi/play": "/en/apps/oido-absoluto-multi/jugar",
+  "/en/apps/oido-absoluto-multi/game": "/en/apps/oido-absoluto-multi/juego",
 };
 
 const APP_ROUTE_PATTERNS = [
   /^\/(?:es|en)\/apps\/(?:acordes|acordes-cantar|cosmic-ear|desglose|grados-menores|intervalos-cantados|matematicas-mentales|oido-absoluto-guitarra|oido-absoluto-multi)\/jugar$/i,
   /^\/(?:es|en)\/apps\/intervalos-reconocimiento\/(?:jugar|juego)$/i,
+  /^\/(?:es|en)\/apps\/oido-absoluto-multi\/(?:jugar|juego)$/i,
 ];
 
 const GONE_PATTERNS = [

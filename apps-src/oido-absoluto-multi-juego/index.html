@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#07101a" />
+    <title>Walking AP Multi — Oído Absoluto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fragment+Mono&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- The 3D canvas stays in the background behind the DOM UI -->
+    <canvas id="game-canvas" style="position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; outline: none;"></canvas>
+    
+    <!-- UI Root handles the HTML screens overlay -->
+    <div id="app" class="app-shell" aria-live="polite"></div>
+    
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

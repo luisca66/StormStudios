@@ -70,6 +70,10 @@ export const routing = defineRouting({
       es: "/apps/oido-absoluto-multi/jugar",
       en: "/apps/oido-absoluto-multi/play",
     },
+    "/apps/oido-absoluto-multi/juego": {
+      es: "/apps/oido-absoluto-multi/juego",
+      en: "/apps/oido-absoluto-multi/game",
+    },
     "/apps/[slug]": "/apps/[slug]",
     "/el-libro": {
       es: "/el-libro",
