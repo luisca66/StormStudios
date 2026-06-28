@@ -40,6 +40,10 @@ export const routing = defineRouting({
       es: "/apps/intervalos-cantados/jugar",
       en: "/apps/intervalos-cantados/play",
     },
+    "/apps/intervalos-cantados/juego": {
+      es: "/apps/intervalos-cantados/juego",
+      en: "/apps/intervalos-cantados/game",
+    },
     "/apps/intervalos-reconocimiento/jugar": {
       es: "/apps/intervalos-reconocimiento/jugar",
       en: "/apps/intervalos-reconocimiento/play",

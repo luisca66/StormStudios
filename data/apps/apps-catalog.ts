@@ -173,6 +173,7 @@ export const APPS: AppEntry[] = [
       en: "Sung Intervals trains the connection between theory, inner hearing, and voice. The app plays a starting note with different timbres, asks you to complete an ascending or descending interval, and evaluates both the note name and the sung pitch in hybrid mode. It includes free practice, time attack, survival, and local statistics by interval.",
     },
     webUrl: "/apps/intervalos-cantados/jugar",
+    gameUrl: "/apps/intervalos-cantados/juego",
     features: [
       { es: "Modo híbrido: nomenclatura y afinación con micrófono", en: "Hybrid mode: note naming and microphone pitch checking" },
       { es: "Modo solo nomenclatura para practicar sin micrófono", en: "Nomenclature-only mode for practice without the microphone" },
