@@ -149,6 +149,7 @@ export function EjercicioPlayer({
   // Seed estable en SSR (1); se reemplaza por un valor aleatorio real
   // después del montaje en el cliente para evitar mismatch de hidratación.
   const [seed, setSeed] = useState(1);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- swap único post-montaje; el re-render extra es intencional
   useEffect(() => { setSeed(nuevaSemilla()); }, []);
   const [bpm, setBpm] = useState(REGLAS_V1[0].bpmDefault);
   const [fase, setFaseLocal] = useState<Fase>('idle');

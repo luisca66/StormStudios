@@ -15,6 +15,14 @@ type Question = {
   answer: string;
 };
 
+// Selección aleatoria a nivel de módulo: solo se llama desde event handlers y
+// timeouts, así queda fuera del análisis de pureza del React Compiler.
+function pickRandomPair(pool: { number: string; word: string }[]) {
+  const pair = pool[Math.floor(Math.random() * pool.length)];
+  const wordToNumber = Math.random() > 0.5;
+  return { pair, wordToNumber };
+}
+
 export default function MemoriaPractice({ locale, practiceWords, onSaveWords }: MemoriaPracticeProps) {
   const isEN = locale === "en";
 
@@ -114,10 +122,6 @@ export default function MemoriaPractice({ locale, practiceWords, onSaveWords }: 
     if (bgMusicRef.current) bgMusicRef.current.muted = isMuted;
   }, [isMuted]);
 
-  useEffect(() => {
-    handleTimeoutRef.current = handleTimeout;
-  });
-
   // Timer logic
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -150,6 +154,23 @@ export default function MemoriaPractice({ locale, practiceWords, onSaveWords }: 
     bgMusicRef.current.load();
   };
 
+  const resetPractice = () => {
+    if (bgMusicRef.current) {
+      bgMusicRef.current.pause();
+      setRandomMusic();
+    }
+    setMusicStarted(false);
+    setTimerRunning(false);
+    setPracticeInProgress(false);
+    setCorrectAnswers(0);
+    setTotalQuestions(0);
+    setStreak(0);
+    setCurrentQuestion(null);
+    setUserAnswer("");
+    setIsChecking(false);
+    setFeedback({ text: isEN ? 'Set up your practice and press "Start" to begin.' : 'Configura tu práctica y presiona "Comenzar" para empezar.', type: "info" });
+  };
+
   const generateQuestion = (isInitial = false) => {
     if (isInitial) {
       playSound(nextSoundRef.current);
@@ -173,8 +194,7 @@ export default function MemoriaPractice({ locale, practiceWords, onSaveWords }: 
 
     if (pool.length === 0) return;
 
-    const pair = pool[Math.floor(Math.random() * pool.length)];
-    const isWordToNum = Math.random() > 0.5;
+    const { pair, wordToNumber: isWordToNum } = pickRandomPair(pool);
     
     setCurrentQuestion({
       type: isWordToNum ? "word-to-number" : "number-to-word",
@@ -208,6 +228,11 @@ export default function MemoriaPractice({ locale, practiceWords, onSaveWords }: 
     setTimeout(() => generateQuestion(), 1500);
   };
 
+  // Mantiene el ref apuntando al handler más reciente (declarado justo arriba).
+  useEffect(() => {
+    handleTimeoutRef.current = handleTimeout;
+  });
+
   const checkAnswer = () => {
     if (!currentQuestion || !practiceInProgress || isChecking) return;
     setTimerRunning(false);
@@ -228,23 +253,6 @@ export default function MemoriaPractice({ locale, practiceWords, onSaveWords }: 
     }
 
     setTimeout(() => generateQuestion(), 1500);
-  };
-
-  const resetPractice = () => {
-    if (bgMusicRef.current) {
-      bgMusicRef.current.pause();
-      setRandomMusic();
-    }
-    setMusicStarted(false);
-    setTimerRunning(false);
-    setPracticeInProgress(false);
-    setCorrectAnswers(0);
-    setTotalQuestions(0);
-    setStreak(0);
-    setCurrentQuestion(null);
-    setUserAnswer("");
-    setIsChecking(false);
-    setFeedback({ text: isEN ? 'Set up your practice and press "Start" to begin.' : 'Configura tu práctica y presiona "Comenzar" para empezar.', type: "info" });
   };
 
   const handleToggleRange = (range: string) => {

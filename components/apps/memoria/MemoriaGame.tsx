@@ -15,6 +15,21 @@ type CardData = {
   uniqueId: string; // React key
 };
 
+// Helpers impuros a nivel de módulo: solo se llaman desde event handlers,
+// así quedan fuera del análisis de pureza del React Compiler.
+function pickRandomTrack(tracks: readonly string[]) {
+  return tracks[Math.floor(Math.random() * tracks.length)];
+}
+
+function shuffle<T>(items: T[]): T[] {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 export default function MemoriaGame({ locale, wordsData, onSaveWords }: MemoriaGameProps) {
   const isEN = locale === "en";
 
@@ -105,8 +120,7 @@ export default function MemoriaGame({ locale, wordsData, onSaveWords }: MemoriaG
 
   const setRandomMusic = () => {
     if (!bgMusicRef.current) return;
-    const tracks = AUDIO_ASSETS.tracks;
-    const track = tracks[Math.floor(Math.random() * tracks.length)];
+    const track = pickRandomTrack(AUDIO_ASSETS.tracks);
     bgMusicRef.current.src = `${AUDIO_BASE_URL}/${AUDIO_ASSETS.musicPath}/${track}.mp3`;
     bgMusicRef.current.load();
   };
@@ -115,15 +129,6 @@ export default function MemoriaGame({ locale, wordsData, onSaveWords }: MemoriaG
     const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
     const seconds = String(totalSeconds % 60).padStart(2, "0");
     return `${minutes}:${seconds}`;
-  };
-
-  const shuffle = <T,>(items: T[]): T[] => {
-    const arr = [...items];
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
   };
 
   const startGame = (range: string) => {

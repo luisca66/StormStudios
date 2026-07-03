@@ -59,10 +59,6 @@ export default function MemoriaChallenge({ locale }: MemoriaChallengeProps) {
     errorSoundRef.current = new Audio(`${AUDIO_BASE_URL}/${AUDIO_ASSETS.effects.error}`);
   }, []);
 
-  useEffect(() => {
-    handleTimeoutRef.current = handleTimeout;
-  });
-
   // Timer Effect
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -94,6 +90,11 @@ export default function MemoriaChallenge({ locale }: MemoriaChallengeProps) {
       }
     }
   };
+
+  // Mantiene el ref apuntando al handler más reciente (declarado justo arriba).
+  useEffect(() => {
+    handleTimeoutRef.current = handleTimeout;
+  });
 
   const generateSequence = () => {
     const newSeq: string[] = [];
