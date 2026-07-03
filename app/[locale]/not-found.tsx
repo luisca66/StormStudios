@@ -1,10 +1,10 @@
-"use client";
-
-import { useLocale } from "next-intl";
+import { getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 
-export default function NotFound() {
-  const locale = useLocale();
+// Server component: en el build de producción, un not-found.tsx cliente no se
+// registra para el segmento [locale] y Next cae al 404 por defecto.
+export default async function NotFound() {
+  const locale = await getLocale();
   const es = locale === "es";
 
   return (
