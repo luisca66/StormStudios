@@ -13,7 +13,7 @@ Auditoría anterior: 2026-05-29 (Opus 4.8) — resolvió render estático, 62 li
 
 Todos los hallazgos accionables desde el repo fueron **resueltos y verificados** (lint 0, tests 155 ✅, build ✅, 404 verificada en navegador):
 
-- §1 404/error → `app/[locale]/not-found.tsx` + `[...rest]` catch-all + `error.tsx` + `global-error.tsx`
+- §1 404/error → `app/not-found.tsx` raíz bilingüe (prerenderizado como `/_not-found`) + `app/layout.tsx` passthrough + `error.tsx` + `global-error.tsx`. **Nota importante:** el patrón documentado de next-intl (`[locale]/not-found.tsx` + catch-all `[...rest]`) funciona en dev pero NO en producción — regresión de Turbopack en Next 16 (el boundary por segmento se ignora en rutas dinámicas). Por eso el 404 real es el raíz; `[locale]/not-found.tsx` se conserva para cuando Next lo corrija. Verificado en vivo: status 404 + página propia.
 - §2 Logo ap-multi → 1.8 MB → 53 KB (ambas copias; misma imagen que ap-guitar)
 - §3 Cache-Control immutable para `/apps/:app/assets/*` en next.config.ts
 - §4 `npm audit fix` + `npm update` → **0 vulnerabilidades**; el update de eslint-config-next destapó 8 errores nuevos del React Compiler en componentes de memoria/lectura-rítmica — corregidos de raíz (helpers impuros a scope de módulo, refs sincronizados tras la declaración, 1 supresión documentada del seed anti-hidratación)
