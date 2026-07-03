@@ -85,6 +85,12 @@ const nextConfig: NextConfig = {
   // estricto vía negative-lookahead), así que recibe una sola cabecera CSP.
   async headers() {
     return [
+      // Assets de Vite con hash de contenido en el nombre: cachear un año.
+      // (La regla CSP de /apps/:path* también matchea; las cabeceras se combinan.)
+      {
+        source: "/apps/:app/assets/:asset*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
       {
         source: "/apps/:path*",
         headers: [...baseSecurityHeaders, { key: "Content-Security-Policy", value: gameCsp }],
