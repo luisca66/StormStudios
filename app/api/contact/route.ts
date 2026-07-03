@@ -11,7 +11,7 @@ const ipRequestLog = new Map<string, number[]>();
 
 const ContactSchema = z.object({
   name: z.string().min(1).max(100),
-  email: z.string().email(),
+  email: z.email(),
   message: z.string().min(10).max(2000),
   website: z.string().max(0).optional().default(""),
   startedAt: z.preprocess(
@@ -78,10 +78,7 @@ export async function POST(request: NextRequest) {
     const parsed = ContactSchema.safeParse(body);
 
     if (!parsed.success) {
-      return NextResponse.json(
-        { error: "Datos inválidos", details: parsed.error.issues },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });
     }
 
     const { name, email, message, website, startedAt } = parsed.data;

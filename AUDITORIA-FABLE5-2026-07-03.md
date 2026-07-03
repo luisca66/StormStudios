@@ -9,6 +9,25 @@ Auditoría anterior: 2026-05-29 (Opus 4.8) — resolvió render estático, 62 li
 
 ---
 
+## ✅ Estado de ejecución (2026-07-03, mismo día — Fable 5)
+
+Todos los hallazgos accionables desde el repo fueron **resueltos y verificados** (lint 0, tests 155 ✅, build ✅, 404 verificada en navegador):
+
+- §1 404/error → `app/[locale]/not-found.tsx` + `[...rest]` catch-all + `error.tsx` + `global-error.tsx`
+- §2 Logo ap-multi → 1.8 MB → 53 KB (ambas copias; misma imagen que ap-guitar)
+- §3 Cache-Control immutable para `/apps/:app/assets/*` en next.config.ts
+- §4 `npm audit fix` + `npm update` → **0 vulnerabilidades**; el update de eslint-config-next destapó 8 errores nuevos del React Compiler en componentes de memoria/lectura-rítmica — corregidos de raíz (helpers impuros a scope de módulo, refs sincronizados tras la declaración, 1 supresión documentada del seed anti-hidratación)
+- §5 Archivos basura eliminados (~9 MB)
+- §6 Vercel Analytics integrado (`<Analytics />` en layout) — **PENDIENTE (Luis): habilitar Analytics en el dashboard de Vercel** (Proyecto → Analytics → Enable)
+- §7 MusicPlayer bilingüe + mp3 7.3 MB → 1.5 MB (tenía una carátula incrustada; re-encodeado a 128 kbps)
+- §8 Skip-link añadido
+- §9 OG recomprimidas: 3.5 MB → 0.5 MB total (las 8)
+- §10 proxy.ts alineado con i18n/routing.ts
+- §11 APIs endurecidas (sin detalles de validación ni err.message al cliente; z.email(); MIDI corrupto responde 400 con mensaje claro)
+- §12 **PENDIENTE (Luis): verificar reglas de Firestore en la consola de Firebase** (solo lectura/escritura del propio uid)
+
+---
+
 ## Resumen ejecutivo
 
 **Estado general: muy bueno.** El sitio está sano en lo fundamental:

@@ -52,8 +52,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const buffer    = await file.arrayBuffer();
-    const voiceData = parseMidiBuffer(buffer);
+    const buffer = await file.arrayBuffer();
+    let voiceData;
+    try {
+      voiceData = parseMidiBuffer(buffer);
+    } catch (parseErr) {
+      console.warn('[Maestro Virtual] MIDI inválido:', parseErr);
+      return NextResponse.json(
+        { error: 'Archivo MIDI inválido o corrupto' },
+        { status: 400 }
+      );
+    }
 
     // ── Enrutar al validador correcto (explícito, según lesson-configs) ─────
     let rawErrors;
@@ -103,7 +112,7 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error('[Maestro Virtual]', err);
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : 'Error interno del servidor' },
+      { error: 'Error interno del servidor' },
       { status: 500 }
     );
   }

@@ -21,6 +21,7 @@ const APP_ROUTE_REWRITES: Record<string, string> = {
   "/en/apps/cosmic-ear/play": "/en/apps/cosmic-ear/jugar",
   "/en/apps/grados-menores/play": "/en/apps/grados-menores/jugar",
   "/en/apps/intervalos-cantados/play": "/en/apps/intervalos-cantados/jugar",
+  "/en/apps/intervalos-cantados/game": "/en/apps/intervalos-cantados/juego",
   "/en/apps/intervalos-reconocimiento/play": "/en/apps/intervalos-reconocimiento/jugar",
   "/en/apps/intervalos-reconocimiento/game": "/en/apps/intervalos-reconocimiento/juego",
   "/en/apps/oido-absoluto-guitarra/play": "/en/apps/oido-absoluto-guitarra/jugar",
@@ -29,9 +30,10 @@ const APP_ROUTE_REWRITES: Record<string, string> = {
 };
 
 const APP_ROUTE_PATTERNS = [
-  /^\/(?:es|en)\/apps\/(?:acordes|acordes-cantar|cosmic-ear|desglose|grados-menores|intervalos-cantados|matematicas-mentales|oido-absoluto-guitarra|oido-absoluto-multi)\/jugar$/i,
-  /^\/(?:es|en)\/apps\/intervalos-reconocimiento\/(?:jugar|juego)$/i,
-  /^\/(?:es|en)\/apps\/oido-absoluto-multi\/(?:jugar|juego)$/i,
+  // Apps con solo ruta /jugar
+  /^\/(?:es|en)\/apps\/(?:acordes|acordes-cantar|cosmic-ear|desglose|grados-mayores|grados-menores|matematicas-mentales|oido-absoluto-guitarra)\/jugar$/i,
+  // Apps con ruta /jugar y modo juego /juego
+  /^\/(?:es|en)\/apps\/(?:intervalos-reconocimiento|intervalos-cantados|oido-absoluto-multi)\/(?:jugar|juego)$/i,
 ];
 
 const GONE_PATTERNS = [
