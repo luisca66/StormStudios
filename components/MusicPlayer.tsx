@@ -84,14 +84,14 @@ export function MusicPlayer() {
             <rect x="2" y="1" width="4" height="12" rx="1"/>
             <rect x="8" y="1" width="4" height="12" rx="1"/>
           </svg>
-          <span>Pausar demo</span>
+          <span>{es ? "Pausar demo" : "Pause demo"}</span>
         </>
       ) : (
         <>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
             <polygon points="5,3 19,12 5,21"/>
           </svg>
-          <span>▸ Play demo</span>
+          <span>{es ? "▸ Reproducir demo" : "▸ Play demo"}</span>
         </>
       )}
 
