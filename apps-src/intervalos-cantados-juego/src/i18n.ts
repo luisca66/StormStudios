@@ -38,6 +38,7 @@ export const t = {
     victory: "¡Victoria!",
     victoryBody: (interval: string) =>
       `Has completado todos los desafíos del ${interval}. ¡Felicidades!`,
+    replayNote: "Repetir la nota (también puedes tocar al enemigo)",
     intervals: {
       "5J": "5ª Justa",
       "4J": "4ª Justa",
@@ -104,6 +105,7 @@ export const t = {
     victory: "Victory!",
     victoryBody: (interval: string) =>
       `You have completed every ${interval} challenge. Congratulations!`,
+    replayNote: "Replay the note (you can also tap the enemy)",
     intervals: {
       "5J": "Perfect 5th",
       "4J": "Perfect 4th",

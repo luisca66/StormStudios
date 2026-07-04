@@ -78,6 +78,47 @@ export class GameEngine {
     window.addEventListener("keyup", (e) => {
       this.keysPressed[e.key.toLowerCase()] = false;
     });
+
+    // Click/tap on the enemy replays the challenge's root note
+    this.canvas.addEventListener("pointerdown", (e) => {
+      if (this.isPointerOnEnemy(e)) {
+        this.controller.replayNote();
+      }
+    });
+
+    this.canvas.addEventListener("pointermove", (e) => {
+      this.canvas.style.cursor = this.isPointerOnEnemy(e) ? "pointer" : "default";
+    });
+  }
+
+  private isPointerOnEnemy(e: PointerEvent): boolean {
+    const state = this.controller.getState();
+    if (state.screen !== "game" || !state.currentChallenge || state.isGameOver || state.isLevelComplete) {
+      return false;
+    }
+
+    // Map pointer coords to canvas internal coords
+    const rect = this.canvas.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return false;
+    const x = (e.clientX - rect.left) * (this.canvas.width / rect.width);
+    const y = (e.clientY - rect.top) * (this.canvas.height / rect.height);
+
+    let enemyX = this.enemyX;
+    let enemyY = this.enemyY;
+    let radius = this.enemySize + 26;
+
+    if (isFirstPersonLevel(state.selectedLevel)) {
+      if (this.enemy3D.z <= 0) return false;
+      const proj = this.project3D(this.enemy3D.x, this.enemy3D.y, this.enemy3D.z);
+      enemyX = proj.x;
+      enemyY = proj.y;
+      // Same size formula the draw pass uses, plus a forgiving margin
+      const scale = 360 / Math.max(1.0, this.enemy3D.z);
+      radius = Math.max(8, Math.min(220, 1.25 * scale)) + 26;
+    }
+
+    // Keep a generous minimum so distant/small enemies are still tappable
+    return Math.hypot(x - enemyX, y - enemyY) <= Math.max(radius, 44);
   }
 
   start() {

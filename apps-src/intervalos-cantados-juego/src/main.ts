@@ -25,6 +25,9 @@ const DIFFICULTIES = ["Lento", "Normal", "Rapido", "Maestro"];
 
 // Current spelled answer state
 let currentAnswer = "";
+// Tracks challenge changes so the typed answer survives a missed shot
+// (it stays validated for re-firing) but clears for each new challenge.
+let lastAnswerChallenge: unknown = null;
 
 function init() {
   appDiv = document.getElementById("app") as HTMLDivElement;
@@ -108,6 +111,7 @@ function init() {
           <span class="challenge-note" id="challenge-note">C3</span>
           <span class="challenge-arrow" id="challenge-arrow">↑</span>
           <span class="challenge-interval" id="challenge-interval">5ª Justa</span>
+          <button class="btn-replay-note" id="btn-replay-note" title="${t.replayNote}" aria-label="${t.replayNote}">🔊</button>
         </div>
       </div>
 
@@ -268,6 +272,11 @@ function setupUIHandlers() {
     submitAnswer();
   });
 
+  // Replay the current root note (same sample the challenge played)
+  document.getElementById("btn-replay-note")!.addEventListener("click", () => {
+    controller.replayNote();
+  });
+
   // Also support physical keyboard inputs (only Backspace/Delete and Enter)
   window.addEventListener("keydown", (e) => {
     const state = controller.getState();
@@ -324,18 +333,21 @@ function updateAnswerDisplay() {
     display.classList.add("empty");
     display.innerText = "—";
   }
+  updateFireButton();
+}
+
+function updateFireButton() {
+  const state = controller.getState();
+  const confirmBtn = document.getElementById("btn-confirm-answer") as HTMLButtonElement;
+  confirmBtn.disabled = !state.missileCharged || state.missileInFlight || currentAnswer.length === 0;
 }
 
 function submitAnswer() {
   if (currentAnswer.length === 0) return;
   controller.submitAnswer(currentAnswer);
-  
-  // Clear answer box on correct submission, keep it on wrong so they can edit
-  const state = controller.getState();
-  if (state.missileInFlight) {
-    currentAnswer = "";
-    updateAnswerDisplay();
-  }
+  // The answer is NOT cleared here: if the missile misses, the weapon stays
+  // charged and the validated note must remain so "Disparar" can re-fire.
+  // It clears when the challenge changes (see renderUI).
 }
 
 function renderUI(state: GameState) {
@@ -416,6 +428,15 @@ function renderUI(state: GameState) {
       updateAnswerDisplay();
     }
 
+    // New challenge: reset the typed answer
+    if (state.currentChallenge !== lastAnswerChallenge) {
+      lastAnswerChallenge = state.currentChallenge;
+      if (currentAnswer.length > 0) {
+        currentAnswer = "";
+        updateAnswerDisplay();
+      }
+    }
+
     // Render Hud header info
     const levelIntervalKey = LEVEL_INTERVALS[state.selectedLevel] ?? "5J";
     document.getElementById("hud-level-name")!.innerText =
@@ -455,8 +476,11 @@ function renderUI(state: GameState) {
     }
 
     // Confirm button enabling
-    const confirmBtn = document.getElementById("btn-confirm-answer") as HTMLButtonElement;
-    confirmBtn.disabled = !state.missileCharged || state.missileInFlight;
+    updateFireButton();
+
+    // Replay button only makes sense while a challenge is live
+    const replayBtn = document.getElementById("btn-replay-note") as HTMLButtonElement;
+    replayBtn.disabled = !state.currentChallenge || state.isGameOver || state.isLevelComplete;
 
     // Feedback message ticker
     const ticker = document.getElementById("feedback-ticker")!;

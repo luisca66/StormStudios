@@ -33,6 +33,12 @@ export class GameController {
   private state: GameState;
   private listeners: Set<Listener> = new Set();
   private pitchIntervalId: any = null;
+  // Concrete timbre per challenge (resolved once so "Aleatorio" replays the same sample)
+  private challengeInstruments: string[] = [];
+  private currentNoteUrl: string | null = null;
+  // Invalidates async work (sample loads, timers) from previous games/challenges
+  private gameEpoch = 0;
+  private lastReplayAt = 0;
 
   constructor(
     readonly audio: AudioEngine,
@@ -85,9 +91,11 @@ export class GameController {
 
   setScreen(screen: ScreenType): void {
     if (screen === "menu") {
+      this.gameEpoch++;
       this.stopPitchMonitoring();
       this.mic.stopListening();
       this.audio.stopAllSFX();
+      this.audio.stopNote();
     }
     this.patch({ screen });
   }
@@ -131,6 +139,11 @@ export class GameController {
     }
     list = shuffle(list);
 
+    this.gameEpoch++;
+    this.challengeInstruments = list.map(() =>
+      this.audio.resolveInstrument(this.state.selectedInstrument)
+    );
+
     this.patch({
       screen: "game",
       score: 0,
@@ -152,8 +165,10 @@ export class GameController {
     this.startChallenge();
   }
 
-  private startChallenge(): void {
+  private async startChallenge(): Promise<void> {
     const { challenges, currentIdx } = this.state;
+    const epoch = this.gameEpoch;
+
     if (currentIdx >= challenges.length) {
       this.patch({
         isLevelComplete: true,
@@ -167,7 +182,7 @@ export class GameController {
 
     const ch = challenges[currentIdx];
     this.patch({
-      currentChallenge: ch,
+      currentChallenge: null,
       pitchHoldTime: 0.0,
       missileCharged: false,
       missileInFlight: false,
@@ -175,15 +190,37 @@ export class GameController {
       feedbackKind: "info"
     });
 
-    // 1. Play the starting root note sample
-    this.audio.playNote(this.state.selectedInstrument, ch.rootDisplay, ch.rootMidi);
-
     this.stopPitchMonitoring();
     this.mic.stopListening();
 
-    // 2. Wait 3 seconds (GameManager.ROOT_SAMPLE_SECONDS) before starting movement and mic listening
+    // 1. Make sure the root note sample is in memory BEFORE the challenge goes
+    // live: both the enemy movement (engine) and the 3s mic timer key off the
+    // moment currentChallenge is published, so the note is always heard first.
+    // If the network stalls (>6s) we proceed anyway rather than hang the game.
+    const instrument = this.challengeInstruments[currentIdx]
+      ?? this.audio.resolveInstrument(this.state.selectedInstrument);
+    const noteUrl = this.audio.noteUrl(instrument, ch.rootMidi);
+    await Promise.race([
+      this.audio.loadNote(noteUrl).catch(() => {}),
+      new Promise(resolve => setTimeout(resolve, 6000))
+    ]);
+    if (this.gameEpoch !== epoch || this.state.screen !== "game" || this.state.currentIdx !== currentIdx || this.state.isGameOver) return;
+
+    // 2. Publish the challenge and play the root note
+    this.currentNoteUrl = noteUrl;
+    this.patch({ currentChallenge: ch });
+    this.audio.playNoteUrl(noteUrl);
+
+    // Prefetch the next challenge's sample in the background
+    const next = challenges[currentIdx + 1];
+    if (next) {
+      const nextInstrument = this.challengeInstruments[currentIdx + 1] ?? instrument;
+      this.audio.loadNote(this.audio.noteUrl(nextInstrument, next.rootMidi)).catch(() => {});
+    }
+
+    // 3. Wait 3 seconds (GameManager.ROOT_SAMPLE_SECONDS) before starting movement and mic listening
     setTimeout(() => {
-      if (this.state.screen !== "game" || this.state.currentIdx !== currentIdx || this.state.isGameOver) return;
+      if (this.gameEpoch !== epoch || this.state.screen !== "game" || this.state.currentIdx !== currentIdx || this.state.isGameOver) return;
 
       this.patch({
         feedbackMessage: "¡Canta el intervalo!",
@@ -198,6 +235,20 @@ export class GameController {
       this.mic.startListening(targetFreq);
       this.startPitchMonitoring();
     }, 3000);
+  }
+
+  // Replays the current challenge's root note (same sample/timbre). Wired to
+  // the 🔊 button and to clicking/tapping the enemy on the canvas.
+  replayNote(): void {
+    const s = this.state;
+    if (s.screen !== "game" || !s.currentChallenge || s.isGameOver || s.isLevelComplete) return;
+    if (!this.currentNoteUrl) return;
+
+    const now = performance.now();
+    if (now - this.lastReplayAt < 350) return; // throttle spam clicks
+    this.lastReplayAt = now;
+
+    this.audio.playNoteUrl(this.currentNoteUrl);
   }
 
   private getTargetFrequency(): number {

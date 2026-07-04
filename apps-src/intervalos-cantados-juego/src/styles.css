@@ -753,3 +753,30 @@ header.topline {
   color: var(--gold);
   text-shadow: 0 0 12px rgba(242, 182, 97, 0.4);
 }
+
+.btn-replay-note {
+  background: rgba(103, 214, 255, 0.12);
+  border: 1px solid var(--border-strong);
+  color: var(--aqua);
+  font-size: 1.1rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-replay-note:hover:not(:disabled) {
+  background: rgba(103, 214, 255, 0.25);
+  box-shadow: 0 0 12px rgba(103, 214, 255, 0.3);
+  transform: scale(1.08);
+}
+
+.btn-replay-note:disabled {
+  opacity: 0.35;
+  cursor: default;
+}

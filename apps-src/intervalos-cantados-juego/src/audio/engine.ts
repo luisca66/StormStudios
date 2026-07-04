@@ -9,6 +9,11 @@ export class AudioEngine {
   private loopSounds: Map<string, HTMLAudioElement> = new Map();
   private isMuted = false;
 
+  // Decoded note samples kept in memory so playback (and replay) is instant.
+  private noteBuffers: Map<string, AudioBuffer> = new Map();
+  private noteLoads: Map<string, Promise<AudioBuffer>> = new Map();
+  private currentNoteSource: AudioBufferSourceNode | null = null;
+
   context(): AudioContext {
     if (!this.ctx) {
       this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -79,24 +84,93 @@ export class AudioEngine {
     this.loopSounds.clear();
   }
 
-  playNote(instrument: string, _noteName: string, midiNumber: number): Promise<void> {
+  // "Aleatorio" picks a concrete timbre; callers that need to replay the same
+  // note (or prefetch its URL) must resolve once and reuse the result.
+  resolveInstrument(instrument: string): string {
+    if (instrument === "Aleatorio" || instrument === "random") {
+      const list = ["Piano", "Cello", "Corno", "Coro", "Fagot"];
+      return list[Math.floor(Math.random() * list.length)];
+    }
+    return instrument;
+  }
+
+  noteUrl(instrument: string, midiNumber: number): string {
     // Standardize note mapping: GameManager.get_sample_midi(midi_number) -> offset is -12
     const sampleMidi = midiNumber - 12;
     const sampleNote = ALL_NOTES[((sampleMidi % 12) + 12) % 12];
     const sampleOctave = Math.floor(sampleMidi / 12) - 1;
-    
+
     const formattedNote = `${sampleNote}${sampleOctave}`;
     const escapedNote = encodeURIComponent(formattedNote.replace(/b/g, "♭"));
-    
-    // Instrument naming maps: "Piano" | "Cello" | "Corno" | "Coro" | "Fagot"
-    let instFolder = instrument;
-    if (instFolder === "Aleatorio" || instFolder === "random") {
-      const list = ["Piano", "Cello", "Corno", "Coro", "Fagot"];
-      instFolder = list[Math.floor(Math.random() * list.length)];
-    }
 
-    const url = `${AUDIO_BASE}/${instFolder}/${escapedNote}.mp3`;
-    return this.playUrl(url, 0.75);
+    return `${AUDIO_BASE}/${instrument}/${escapedNote}.mp3`;
+  }
+
+  loadNote(url: string): Promise<AudioBuffer> {
+    const cached = this.noteBuffers.get(url);
+    if (cached) return Promise.resolve(cached);
+
+    let pending = this.noteLoads.get(url);
+    if (!pending) {
+      pending = fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.arrayBuffer();
+        })
+        .then(data => this.context().decodeAudioData(data))
+        .then(buffer => {
+          this.noteBuffers.set(url, buffer);
+          this.noteLoads.delete(url);
+          return buffer;
+        })
+        .catch(err => {
+          this.noteLoads.delete(url);
+          throw err;
+        });
+      this.noteLoads.set(url, pending);
+    }
+    return pending;
+  }
+
+  async playNoteUrl(url: string, volume = 0.75): Promise<void> {
+    try {
+      const buffer = await this.loadNote(url);
+      if (this.isMuted) return;
+
+      const ctx = this.context();
+      if (ctx.state === "suspended") {
+        await ctx.resume().catch(() => {});
+      }
+
+      this.stopNote();
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      const gain = ctx.createGain();
+      gain.gain.value = volume;
+      source.connect(gain);
+      gain.connect(ctx.destination);
+      source.onended = () => {
+        if (this.currentNoteSource === source) this.currentNoteSource = null;
+      };
+      source.start();
+      this.currentNoteSource = source;
+    } catch (err) {
+      // Decode/fetch failed: fall back to plain <audio> streaming
+      console.warn("[Audio] Buffered note failed, falling back to <audio>", url, err);
+      await this.playUrl(url, volume);
+    }
+  }
+
+  stopNote(): void {
+    if (this.currentNoteSource) {
+      try { this.currentNoteSource.stop(); } catch { /* already stopped */ }
+      this.currentNoteSource = null;
+    }
+  }
+
+  playNote(instrument: string, _noteName: string, midiNumber: number): Promise<void> {
+    const url = this.noteUrl(this.resolveInstrument(instrument), midiNumber);
+    return this.playNoteUrl(url);
   }
 
   private playUrl(url: string, volume: number): Promise<void> {
