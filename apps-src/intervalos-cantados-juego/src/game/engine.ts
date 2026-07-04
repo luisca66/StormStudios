@@ -137,10 +137,13 @@ export class GameEngine {
     else if (state.difficulty === "Maestro") { minTime = 5.0; maxTime = 10.0; }
     this.currentApproachTime = minTime + Math.random() * (maxTime - minTime);
 
-    if (state.selectedLevel === 4) {
-      // FPS Spawn: random X (-22 to +22), fixed Y (1.5), Z far away (32 to 42)
+    if (isFirstPersonLevel(state.selectedLevel)) {
+      // FPS Spawn: random X, fixed Y (1.5), Z far away (32 to 42).
+      // Narrower corridors: level 7 river, level 13 vortex tunnel; others use the full arena.
       const zVal = 32.0 + Math.random() * 10.0;
-      const xVal = (Math.random() - 0.5) * 44.0;
+      const spreadMap: Record<number, number> = { 7: 26.0, 13: 36.0 };
+      const spread = spreadMap[state.selectedLevel] ?? 44.0;
+      const xVal = (Math.random() - 0.5) * spread;
       this.enemy3D = {
         x: xVal,
         y: 1.5,
@@ -191,7 +194,7 @@ export class GameEngine {
 
     // 1. Smooth turret rotation & manual rotation for all levels
     let rotating = false;
-    if (state.selectedLevel === 4) {
+    if (isFirstPersonLevel(state.selectedLevel)) {
       const rotateSpeed = 0.8; // rads per second (Godot speed)
       const maxRotation = 0.87; // 50 degrees (Godot limit)
 
@@ -241,7 +244,7 @@ export class GameEngine {
       const movingTime = this.elapsedTime - 3.0;
       const progress = Math.min(1.0, movingTime / approachTime);
 
-      if (state.selectedLevel === 4) {
+      if (isFirstPersonLevel(state.selectedLevel)) {
         // FPS 3D movement: approaches player at (0, 1.5, 0)
         this.enemy3D.x = this.enemyInitialX * (1 - progress);
         this.enemy3D.z = this.enemyInitialZ - progress * this.enemyInitialZ;
@@ -269,7 +272,7 @@ export class GameEngine {
 
     // 3. Update missile flight physics
     if (state.missileInFlight) {
-      if (state.selectedLevel === 4) {
+      if (isFirstPersonLevel(state.selectedLevel)) {
         // FPS Laser flight: flies fast into Z depth
         if (this.missile3D.z === 0.0) {
           this.controller.triggerMissileFire();
@@ -358,7 +361,7 @@ export class GameEngine {
     let hitX = this.enemyX;
     let hitY = this.enemyY;
 
-    if (state.selectedLevel === 4) {
+    if (isFirstPersonLevel(state.selectedLevel)) {
       // FPS Projections hit
       const proj = this.project3D(this.enemy3D.x, this.enemy3D.y, this.enemy3D.z);
       hitX = proj.x;
@@ -380,7 +383,7 @@ export class GameEngine {
     let hitX = width / 2;
     let hitY = height - 80;
     
-    if (state.selectedLevel === 4) {
+    if (isFirstPersonLevel(state.selectedLevel)) {
       // In FPS mode, cockpit explodes in the center and spreads out
       hitX = width / 2;
       hitY = height / 2;
@@ -420,7 +423,7 @@ export class GameEngine {
 
     // 2. Draw enemy if active
     if (hasActiveEnemy) {
-      if (state.selectedLevel === 4) {
+      if (isFirstPersonLevel(state.selectedLevel)) {
         // Draw Level 4 pseudo-3D Enemy
         const proj = this.project3D(this.enemy3D.x, this.enemy3D.y, this.enemy3D.z);
         
@@ -435,9 +438,9 @@ export class GameEngine {
             proj.x,
             proj.y,
             drawnSize,
-            4,
+            state.selectedLevel,
             state.currentChallenge!.rootDisplay,
-            getLevelIntervalLabel(state.selectedLevel),
+            state.currentChallenge!.intervalKey ?? getLevelIntervalLabel(state.selectedLevel),
             state.currentChallenge!.direction === 1,
             time
           );
@@ -451,7 +454,7 @@ export class GameEngine {
           this.enemySize,
           state.selectedLevel,
           state.currentChallenge!.rootDisplay,
-          getLevelIntervalLabel(state.selectedLevel),
+          state.currentChallenge!.intervalKey ?? getLevelIntervalLabel(state.selectedLevel),
           state.currentChallenge!.direction === 1,
           time
         );
@@ -462,7 +465,7 @@ export class GameEngine {
     const playerX = width / 2;
     const playerY = height - 80;
     
-    if (state.selectedLevel !== 4) {
+    if (!isFirstPersonLevel(state.selectedLevel)) {
       drawLevelPlayer(
         this.ctx,
         playerX,
@@ -473,12 +476,12 @@ export class GameEngine {
         this.playerAngle
       );
     } else {
-      // Level 4 Cockpit console HUD
+      // First-person cockpit / boat overlay
       drawLevelPlayer(
         this.ctx,
         playerX,
         playerY,
-        4,
+        state.selectedLevel,
         state.pitchHoldTime,
         time
       );
@@ -486,7 +489,7 @@ export class GameEngine {
 
     // 4. Draw active missile in flight
     if (state.missileInFlight) {
-      if (state.selectedLevel === 4) {
+      if (isFirstPersonLevel(state.selectedLevel)) {
         // Draw Level 4 Laser beam projectile flying forward from bottom center
         const projLaser = this.projectCameraSpace(0, -0.6, this.missile3D.z);
 
@@ -494,7 +497,7 @@ export class GameEngine {
           this.ctx,
           projLaser.x,
           projLaser.y,
-          4,
+          state.selectedLevel,
           0,
           time
         );
@@ -515,7 +518,7 @@ export class GameEngine {
     this.drawParticles();
 
     // 6. Draw FPS hud layout if Level 4 (crosshair stays in center)
-    if (state.selectedLevel === 4) {
+    if (isFirstPersonLevel(state.selectedLevel)) {
       drawFPSOverlayHUD(
         this.ctx,
         width,
@@ -524,7 +527,8 @@ export class GameEngine {
         state.pitchHoldTime,
         state.strikes,
         state.feedbackKind === "wrong" ? "wrong" : (this.shakeAmount > 16 ? "damage" : null),
-        time
+        time,
+        state.selectedLevel
       );
     }
 
@@ -575,6 +579,11 @@ export class GameEngine {
     
     return { x: px, y: py };
   }
+}
+
+// Levels that use the pseudo-3D first-person camera (turret cockpit, river boat, bathyscaphe, vortex)
+function isFirstPersonLevel(level: number): boolean {
+  return level === 4 || level === 7 || level === 9 || level === 13;
 }
 
 function getLevelIntervalLabel(level: number): string {

@@ -209,8 +209,10 @@ export class GameController {
     // sample_midi = root_midi + (-12)
     // target_midi = sample_midi + semitones * direction
     const levelKey = LEVEL_INTERVALS[this.state.selectedLevel] || "5J";
-    const semitones = levelKey === "ALL" ? 7 : (LEVEL_INTERVALS[this.state.selectedLevel] ? getIntervalSemitones(levelKey) : 7);
-    
+    // Prefer the challenge's own interval tag (essential for "ALL" mixed mode)
+    const key = currentChallenge.intervalKey ?? (levelKey === "ALL" ? "5J" : levelKey);
+    const semitones = getIntervalSemitones(key);
+
     const sampleMidi = currentChallenge.rootMidi - 12;
     const targetMidi = sampleMidi + semitones * currentChallenge.direction;
     

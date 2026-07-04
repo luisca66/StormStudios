@@ -4,7 +4,7 @@ import { MicPitchDetector } from "@/audio/pitch";
 import { GameController, GameState } from "@/game/controller";
 import { GameEngine } from "@/game/engine";
 import { LEVEL_INTERVALS } from "@/music/core";
-import { t } from "@/i18n";
+import { t, translateFeedback } from "@/i18n";
 
 // DOM references
 let appDiv: HTMLDivElement;
@@ -195,17 +195,14 @@ function init() {
 function setupUIHandlers() {
   // Level selector grid generator
   const grid = document.getElementById("level-selection-grid")!;
-  for (let i = 1; i <= 4; i++) { // Render Levels 1 to 4 as fully active
+  for (let i = 1; i <= 13; i++) { // All 13 levels are fully active
     const btn = document.createElement("button");
     btn.className = "level-btn";
     btn.style.setProperty("--accent-color", LEVEL_COLORS[i]);
     btn.dataset.level = i.toString();
-    const levelIntervalKey = LEVEL_INTERVALS[i] || "5J";
-    const translatedLevelInterval = t.intervals[levelIntervalKey as keyof typeof t.intervals] || levelIntervalKey;
-
     btn.innerHTML = `
-      <span class="num">${t.level} 0${i}</span>
-      <span class="name">${translatedLevelInterval}</span>
+      <span class="num">${t.level} ${i.toString().padStart(2, "0")}</span>
+      <span class="name">${getIntervalDisplay(LEVEL_INTERVALS[i] ?? "5J")}</span>
       <span class="status">${t.ready}</span>
     `;
     btn.addEventListener("click", () => {
@@ -219,7 +216,7 @@ function setupUIHandlers() {
   INSTRUMENTS.forEach(inst => {
     const btn = document.createElement("button");
     btn.className = "selector-btn";
-    btn.innerText = t.instruments[inst as keyof typeof t.instruments] || inst;
+    btn.innerText = t.instruments[inst as keyof typeof t.instruments] ?? inst;
     btn.dataset.inst = inst;
     btn.addEventListener("click", () => {
       controller.selectInstrument(inst);
@@ -232,7 +229,7 @@ function setupUIHandlers() {
   DIFFICULTIES.forEach(diff => {
     const btn = document.createElement("button");
     btn.className = "selector-btn";
-    btn.innerText = t.difficulties[diff as keyof typeof t.difficulties] || diff;
+    btn.innerText = t.difficulties[diff as keyof typeof t.difficulties] ?? diff;
     btn.dataset.diff = diff;
     btn.addEventListener("click", () => {
       controller.selectDifficulty(diff);
@@ -388,7 +385,7 @@ function renderUI(state: GameState) {
 
     if (state.micError) {
       statusDot.className = "status-dot";
-      statusText.innerText = state.micError;
+      statusText.innerText = translateFeedback(state.micError);
       startBtn.disabled = true;
     } else if (state.isLoadingMic) {
       statusDot.className = "status-dot";
@@ -419,9 +416,10 @@ function renderUI(state: GameState) {
       updateAnswerDisplay();
     }
 
-    const intervalKey = LEVEL_INTERVALS[state.selectedLevel] || "5J";
-    const translatedInterval = t.intervals[intervalKey as keyof typeof t.intervals] || intervalKey;
-    document.getElementById("hud-level-name")!.innerText = `${t.level} ${state.selectedLevel} — ${translatedInterval}`;
+    // Render Hud header info
+    const levelIntervalKey = LEVEL_INTERVALS[state.selectedLevel] ?? "5J";
+    document.getElementById("hud-level-name")!.innerText =
+      `${t.level} ${state.selectedLevel} — ${getIntervalDisplay(levelIntervalKey)}`;
     
     const noteEl = document.getElementById("challenge-note")!;
     const arrowEl = document.getElementById("challenge-arrow")!;
@@ -435,8 +433,8 @@ function renderUI(state: GameState) {
       arrowEl.innerText = isUp ? "↑" : "↓";
       arrowEl.className = `challenge-arrow ${isUp ? "up" : "down"}`;
       
-      const intervalKey = LEVEL_INTERVALS[state.selectedLevel] || "5J";
-      intervalEl.innerText = getIntervalDisplaySpanish(intervalKey);
+      const intervalKey = ch.intervalKey ?? LEVEL_INTERVALS[state.selectedLevel] ?? "5J";
+      intervalEl.innerText = getIntervalDisplay(intervalKey);
     } else {
       noteEl.innerText = "—";
       arrowEl.innerText = "•";
@@ -462,7 +460,7 @@ function renderUI(state: GameState) {
 
     // Feedback message ticker
     const ticker = document.getElementById("feedback-ticker")!;
-    ticker.innerText = state.feedbackMessage || "";
+    ticker.innerText = translateFeedback(state.feedbackMessage || "");
     ticker.className = `feedback-ticker ${state.feedbackKind || ""}`;
 
     // Game Over / Victory Modal popup overlays
@@ -481,7 +479,7 @@ function renderUI(state: GameState) {
       popup.style.display = "flex";
       popupTitle.className = "modal-title victory";
       popupTitle.innerText = t.victory;
-      popupBody.innerText = t.victoryBody;
+      popupBody.innerText = t.victoryBody(getIntervalDisplay(LEVEL_INTERVALS[state.selectedLevel] ?? "5J"));
       popupScore.innerText = state.score.toString();
     } else {
       popup.style.display = "none";
@@ -533,8 +531,8 @@ function updateTunerHUD() {
 
 
 
-function getIntervalDisplaySpanish(key: string): string {
-  return t.intervals[key as keyof typeof t.intervals] || key;
+function getIntervalDisplay(key: string): string {
+  return t.intervals[key as keyof typeof t.intervals] ?? key;
 }
 
 // Start app

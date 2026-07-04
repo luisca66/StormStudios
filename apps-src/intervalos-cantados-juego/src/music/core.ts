@@ -3,6 +3,7 @@ export interface Challenge {
   rootMidi: number;
   answer: string;
   direction: number; // 1 = asc, -1 = desc
+  intervalKey?: string; // e.g. "5J" — set per-challenge so mixed ("ALL") mode knows each target
 }
 
 export const ALL_NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
@@ -223,14 +224,16 @@ export function spellIntervalNote(
 
 export function normalizeNoteSpelling(note: string): string {
   let normalized = note.trim();
-  normalized = normalized.replace("♭", "b");
-  normalized = normalized.replace("🝆", "bb"); // double flat variant
-  normalized = normalized.replace("🝇", "bb");
-  normalized = normalized.replace("𝄫", "bb");
-  normalized = normalized.replace("♯", "#");
-  normalized = normalized.replace("🝄", "##"); // double sharp variant
-  normalized = normalized.replace("𝄪", "##");
-  normalized = normalized.replace("x", "##");
+  // Use global regex: a note can carry two identical accidental glyphs (e.g. "E♭♭"),
+  // and String.replace with a plain string only swaps the first occurrence.
+  normalized = normalized.replace(/𝄫/g, "bb"); // double flat glyph (before single ♭)
+  normalized = normalized.replace(/🝆/g, "bb"); // double flat variants
+  normalized = normalized.replace(/🝇/g, "bb");
+  normalized = normalized.replace(/♭/g, "b");
+  normalized = normalized.replace(/𝄪/g, "##"); // double sharp glyph (before single ♯)
+  normalized = normalized.replace(/🝄/g, "##"); // double sharp variant
+  normalized = normalized.replace(/♯/g, "#");
+  normalized = normalized.replace(/x/g, "##");
   if (normalized.length === 0) return "";
 
   const base = normalized.charAt(0).toUpperCase();
@@ -249,12 +252,21 @@ export function noteSpellingMatches(submittedNote: string, correctNote: string):
 }
 
 export function getChallengesForInterval(intervalKey: string): Challenge[] {
+  if (intervalKey === "ALL") {
+    // Random mode: sample a few challenges from every interval, tagged individually
+    const mixed: Challenge[] = [];
+    for (const key of Object.keys(INTERVALS)) {
+      mixed.push(...shuffle(getChallengesForInterval(key)).slice(0, 3));
+    }
+    return shuffle(mixed);
+  }
   if (intervalKey === "5J") {
     return CHALLENGES_5J.map(([root, midi, ans, dir]) => ({
       rootDisplay: root,
       rootMidi: midi,
       answer: ans,
-      direction: dir
+      direction: dir,
+      intervalKey: "5J"
     }));
   }
   if (intervalKey === "4J") {
@@ -262,7 +274,8 @@ export function getChallengesForInterval(intervalKey: string): Challenge[] {
       rootDisplay: root,
       rootMidi: midi,
       answer: ans,
-      direction: dir
+      direction: dir,
+      intervalKey: "4J"
     }));
   }
 
@@ -274,7 +287,8 @@ export function getChallengesForInterval(intervalKey: string): Challenge[] {
     rootDisplay: root,
     rootMidi: midi,
     answer: spellIntervalNote(root, midi, semitones, dir, letterSteps),
-    direction: dir
+    direction: dir,
+    intervalKey
   }));
 }
 

@@ -16,7 +16,7 @@ export const t = {
     shields: "Escudos",
     activeChallenge: "DESAFÍO ACTIVO",
     gameOver: "Fin del Juego",
-    defeatText: "No pudiste defender la torreta.",
+    defeatText: "Los enemigos han sobrepasado tus escudos. Entrena un poco más y vuelve a intentarlo.",
     finalScore: "Puntaje Final",
     playAgain: "Jugar de Nuevo",
     mainMenu: "Menú Principal",
@@ -36,7 +36,8 @@ export const t = {
     charging: "CARGANDO:",
     chargeEmpty: "CARGA VACÍA",
     victory: "¡Victoria!",
-    victoryBody: "Has completado todos los desafíos. ¡Felicidades!",
+    victoryBody: (interval: string) =>
+      `Has completado todos los desafíos del ${interval}. ¡Felicidades!`,
     intervals: {
       "5J": "5ª Justa",
       "4J": "4ª Justa",
@@ -81,7 +82,7 @@ export const t = {
     shields: "Shields",
     activeChallenge: "ACTIVE CHALLENGE",
     gameOver: "Game Over",
-    defeatText: "You couldn't defend the turret.",
+    defeatText: "The enemies have overwhelmed your shields. Train a bit more and try again.",
     finalScore: "Final Score",
     playAgain: "Play Again",
     mainMenu: "Main Menu",
@@ -101,7 +102,8 @@ export const t = {
     charging: "CHARGING:",
     chargeEmpty: "CHARGE EMPTY",
     victory: "Victory!",
-    victoryBody: "You have completed all challenges. Congratulations!",
+    victoryBody: (interval: string) =>
+      `You have completed every ${interval} challenge. Congratulations!`,
     intervals: {
       "5J": "Perfect 5th",
       "4J": "Perfect 4th",
@@ -133,3 +135,30 @@ export const t = {
     }
   }
 }[lang];
+
+// The game logic files (controller.ts, engine.ts, core.ts, levels.ts) stay
+// byte-identical to the upstream project in D:\claude_code, so the Spanish
+// status messages they emit are translated here at render time instead.
+// Unknown messages fall back to the original Spanish text.
+const FEEDBACK_EN: Record<string, string> = {
+  "Prepárate...": "Get ready...",
+  "Escucha la nota...": "Listen to the note...",
+  "¡NIVEL COMPLETADO!": "LEVEL COMPLETE!",
+  "¡Canta el intervalo!": "Sing the interval!",
+  "¡Misil cargado! Escribe la nota": "Missile charged! Spell the note",
+  "¡Objetivo fijado! Fuego": "Target locked! Fire",
+  "Respuesta incorrecta. ¡Intenta de nuevo!": "Wrong answer. Try again!",
+  "¡Excelente!": "Excellent!",
+  "¡Apuntado fallido! Intenta de nuevo": "Missed aim! Try again",
+  "¡FIN DEL JUEGO!": "GAME OVER!",
+  "¡Impacto recibido!": "Hit taken!",
+  "No se pudo acceder al micrófono. Revisa los permisos.":
+    "Could not access the microphone. Check permissions.",
+  "El micrófono requiere conexión segura HTTPS o localhost.":
+    "The microphone requires a secure HTTPS connection or localhost.",
+};
+
+export function translateFeedback(message: string): string {
+  if (lang === "es") return message;
+  return FEEDBACK_EN[message] ?? message;
+}
