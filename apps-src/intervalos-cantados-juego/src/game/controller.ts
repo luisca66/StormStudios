@@ -273,25 +273,25 @@ export class GameController {
 
   private startPitchMonitoring(): void {
     this.stopPitchMonitoring();
-    
+
+    // The hold logic lives in MicPitchDetector (sustained-singing state machine
+    // timed by the audio clock); this interval only mirrors its progress into
+    // the game state and fires the charge event.
     this.pitchIntervalId = setInterval(() => {
       if (this.state.missileCharged || this.state.missileInFlight || this.state.isGameOver) return;
 
       const micState = this.mic.getCurrentState();
-      let pitchHoldTime = this.state.pitchHoldTime;
+      const pitchHoldTime = micState.holdProgress;
 
-      if (micState.isOnPitch) {
-        pitchHoldTime = Math.min(1.0, pitchHoldTime + 0.05);
-        if (pitchHoldTime >= 1.0) {
-          this.patch({ pitchHoldTime, missileCharged: true, feedbackMessage: "¡Misil cargado! Escribe la nota" });
-          this.audio.playSFX("clank", false, 0.9);
-          return;
-        }
-      } else {
-        pitchHoldTime = Math.max(0.0, pitchHoldTime - 0.05);
+      if (pitchHoldTime >= 1.0) {
+        this.patch({ pitchHoldTime: 1.0, missileCharged: true, feedbackMessage: "¡Misil cargado! Escribe la nota" });
+        this.audio.playSFX("clank", false, 0.9);
+        return;
       }
 
-      this.patch({ pitchHoldTime });
+      if (pitchHoldTime !== this.state.pitchHoldTime) {
+        this.patch({ pitchHoldTime });
+      }
     }, 50);
   }
 

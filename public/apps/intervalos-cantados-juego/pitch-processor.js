@@ -1,11 +1,16 @@
+// Standard vocal pitch worklet (YIN/CMNDF).
+// Contract with the main thread: post ONE frame per hop, ALWAYS —
+// voiced frames carry the frequency, unvoiced/silent frames carry -1.
+// The main-thread tracker uses this steady stream as its clock, so the
+// worklet must never go quiet while the context is running.
 class PitchProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
     this.bufferSize = 2048;
-    this.hop = 1024;
+    this.hop = 1024; // ~21.3 ms per frame @ 48 kHz
     this.buffer = new Float32Array(this.bufferSize);
     this.filled = 0;
-    this.threshold = 0.12;
+    this.threshold = 0.15; // CMNDF acceptance (Godot reference uses 0.16)
     this.minRms = 0.01;
   }
 
@@ -17,8 +22,9 @@ class PitchProcessor extends AudioWorkletProcessor {
       this.buffer[this.filled] = channel[i];
       this.filled += 1;
       if (this.filled === this.bufferSize) {
-        const frequency = this.detect(this.buffer, sampleRate);
-        if (frequency > 0) this.port.postMessage(frequency);
+        const frame = this.detect(this.buffer, sampleRate);
+        frame.t = currentTime; // audio-clock timestamp (seconds)
+        this.port.postMessage(frame);
         this.buffer.copyWithin(0, this.hop);
         this.filled = this.bufferSize - this.hop;
       }
@@ -29,13 +35,13 @@ class PitchProcessor extends AudioWorkletProcessor {
   detect(buffer, sampleRateValue) {
     const size = buffer.length;
     const half = size >> 1;
-    let sumSquares = 0;
 
+    let sumSquares = 0;
     for (let i = 0; i < size; i += 1) sumSquares += buffer[i] * buffer[i];
-    if (Math.sqrt(sumSquares / size) < this.minRms) return -1;
+    const rms = Math.sqrt(sumSquares / size);
+    if (rms < this.minRms) return { frequency: -1, clarity: 0, rms };
 
     const yin = new Float32Array(half);
-
     for (let tau = 1; tau < half; tau += 1) {
       let sum = 0;
       for (let i = 0; i < half; i += 1) {
@@ -60,7 +66,9 @@ class PitchProcessor extends AudioWorkletProcessor {
         break;
       }
     }
-    if (tauEstimate === -1) return -1;
+    if (tauEstimate === -1) return { frequency: -1, clarity: 0, rms };
+
+    const clarity = 1 - yin[tauEstimate];
 
     let betterTau = tauEstimate;
     const x0 = tauEstimate > 0 ? tauEstimate - 1 : tauEstimate;
@@ -74,8 +82,8 @@ class PitchProcessor extends AudioWorkletProcessor {
     }
 
     const frequency = sampleRateValue / betterTau;
-    if (frequency < 30 || frequency > 2100) return -1;
-    return frequency;
+    if (frequency < 30 || frequency > 2100) return { frequency: -1, clarity: 0, rms };
+    return { frequency, clarity, rms };
   }
 }
 
