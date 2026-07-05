@@ -5,7 +5,23 @@ Verificadas contra el código actual; rutas y funciones son reales.
 
 ---
 
-## 1. Rango vocal (transposición de octava) — LISTA PARA IMPLEMENTAR
+## 1. Rango vocal / tesitura por nivel — ⚠️ EN ESPERA DE DATOS DE LUIS (NO implementar aún)
+
+> **CORRECCIÓN de Luis (2026-07-05, sesión posterior a Fable):** este punto es más
+> complejo que un toggle de octava. **Descartado** el enfoque de abajo (transposición
+> global +12 por tipo de voz). Luis va a definir a fondo, **nivel por nivel**, la
+> **tesitura exacta** que corresponde a cada uno y entregará una tabla completa.
+> El afinador debe exigir la **nota exacta de esa tesitura** — NO reconocer octavas ni
+> aceptar equivalentes por pitch class. NO implementar nada hasta tener la lista de Luis;
+> cuando llegue, el trabajo será cargar esos targets exactos por nivel, no calcular un shift.
+>
+> Confirmado: Luis coincide en NO usar matching por octava (ver nota ⚠️ abajo, que sigue
+> vigente). Lo que cambia es el ORIGEN de los targets: los define Luis por nivel, no una
+> fórmula global.
+
+---
+
+### (Enfoque original de Fable — SUPERSEDIDO, se conserva solo como referencia)
 
 **Problema:** el target que el alumno debe cantar es `rootMidi - 12 + semitonos*dirección`
 (`GameController.getTargetFrequency`, src/game/controller.ts). Ese `-12` fija el ejercicio
