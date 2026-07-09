@@ -1,4 +1,5 @@
 import { RhythmReadingApp } from "@/components/rhythm-reading/RhythmReadingApp";
+import FullscreenShell from "@/components/apps/FullscreenShell";
 import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 import {
@@ -48,5 +49,9 @@ export default async function RhythmReadingPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <RhythmReadingApp locale={locale === "en" ? "en" : "es"} />;
+  return (
+    <FullscreenShell locale={locale}>
+      <RhythmReadingApp locale={locale === "en" ? "en" : "es"} />
+    </FullscreenShell>
+  );
 }

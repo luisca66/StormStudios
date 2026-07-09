@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
+import GameShell from "@/components/apps/GameShell";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -25,88 +26,31 @@ export default async function OidoAbsolutoGuitarraPage({ params }: Props) {
   const es = locale === "es";
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "calc(100vh - 64px)",
-        overflow: "hidden",
-        background: "#14110f",
+    <GameShell
+      locale={locale}
+      background="#14110f"
+      borderColor="rgba(242,232,221,0.14)"
+      dividerColor="rgba(242,232,221,0.22)"
+      backColor="rgba(242,232,221,0.65)"
+      taglineColor="rgba(242,232,221,0.4)"
+      backHref={`/${locale}/apps/oido-absoluto-guitarra`}
+      backLabel={es ? "Volver" : "Back"}
+      title={es ? "Oido Absoluto Guitarra Clasica" : "Perfect Pitch Classical Guitar"}
+      titleColor="#f2e8dd"
+      badge={{
+        label: "Web App",
+        bg: "rgba(198,124,78,0.14)",
+        border: "rgba(198,124,78,0.32)",
+        color: "#dfa16e",
       }}
+      tagline={es ? "Escucha · Reconoce · Responde" : "Listen · Recognize · Answer"}
     >
-      <div
-        style={{
-          background: "#14110f",
-          borderBottom: "1px solid rgba(242,232,221,0.14)",
-          padding: "6px 16px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexShrink: 0,
-          gap: "16px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
-          <a
-            href={`/${locale}/apps/oido-absoluto-guitarra`}
-            style={{
-              color: "rgba(242,232,221,0.65)",
-              fontSize: "0.72rem",
-              fontFamily: "monospace",
-              textDecoration: "none",
-              whiteSpace: "nowrap",
-            }}
-          >
-            ← {es ? "Volver" : "Back"}
-          </a>
-          <span style={{ color: "rgba(242,232,221,0.22)", fontSize: "0.75rem" }}>|</span>
-          <span
-            style={{
-              color: "#f2e8dd",
-              fontFamily: "monospace",
-              fontSize: "0.78rem",
-              fontWeight: 600,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {es ? "Oido Absoluto Guitarra Clasica" : "Perfect Pitch Classical Guitar"}
-          </span>
-          <span
-            style={{
-              background: "rgba(198,124,78,0.14)",
-              border: "1px solid rgba(198,124,78,0.32)",
-              color: "#dfa16e",
-              fontSize: "0.6rem",
-              fontFamily: "monospace",
-              padding: "2px 7px",
-              borderRadius: "999px",
-              textTransform: "uppercase",
-              whiteSpace: "nowrap",
-            }}
-          >
-            Web App
-          </span>
-        </div>
-        <span
-          style={{
-            color: "rgba(242,232,221,0.4)",
-            fontSize: "0.68rem",
-            fontFamily: "monospace",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {es ? "Escucha · Reconoce · Responde" : "Listen · Recognize · Answer"}
-        </span>
-      </div>
-
       <iframe
         src={`/apps/ap-guitar/index.html?lang=${locale}`}
         title={es ? "Oido Absoluto Guitarra Clasica" : "Perfect Pitch Classical Guitar"}
         allow="autoplay"
         style={{ flex: 1, width: "100%", border: "none", display: "block" }}
       />
-    </div>
+    </GameShell>
   );
 }

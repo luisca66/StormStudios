@@ -3,6 +3,7 @@ import { Press_Start_2P } from "next/font/google";
 import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 import ElefantitoApp from "@/components/apps/elefantito-nextjs/ElefantitoApp";
+import FullscreenShell from "@/components/apps/FullscreenShell";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 
 const pressStart2P = Press_Start_2P({
@@ -35,8 +36,12 @@ export default async function JugarPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <div className={`min-h-screen bg-[#08090f] text-zinc-100 ${pressStart2P.variable}`}>
+    <FullscreenShell
+      locale={locale}
+      align="left"
+      className={`min-h-screen bg-[#08090f] text-zinc-100 ${pressStart2P.variable}`}
+    >
       <ElefantitoApp initialLocale={locale} />
-    </div>
+    </FullscreenShell>
   );
 }

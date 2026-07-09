@@ -1,4 +1,5 @@
 import { MusicReadingApp } from "@/components/music-reading/MusicReadingApp";
+import FullscreenShell from "@/components/apps/FullscreenShell";
 import {
   createPageMetadata,
   getLocalizedRouteUrls,
@@ -48,5 +49,9 @@ export default async function MusicReadingPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <MusicReadingApp locale={locale === "en" ? "en" : "es"} />;
+  return (
+    <FullscreenShell locale={locale}>
+      <MusicReadingApp locale={locale === "en" ? "en" : "es"} />
+    </FullscreenShell>
+  );
 }

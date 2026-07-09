@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
+import GameShell from "@/components/apps/GameShell";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -25,90 +26,27 @@ export default async function WalkingApMultiPage({ params }: Props) {
   const es = locale === "es";
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "calc(100vh - 64px)",
-        overflow: "hidden",
-        background: "#07101a",
+    <GameShell
+      locale={locale}
+      background="#07101a"
+      backHref={`/${locale}/apps/oido-absoluto-multi`}
+      backLabel={es ? "Volver" : "Back"}
+      title="Walking AP Multi"
+      badge={{
+        label: es ? "Modo juego 3D" : "3D game mode",
+        bg: "rgba(139,92,246,0.14)",
+        border: "rgba(139,92,246,0.35)",
+        color: "#c4b5fd",
       }}
+      tagline={es ? "Explora · Escucha · Reconoce" : "Explore · Listen · Recognize"}
+      taglineHiddenOnMobile
     >
-      <div
-        style={{
-          background: "#07101a",
-          borderBottom: "1px solid rgba(255,255,255,0.12)",
-          padding: "6px 16px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexShrink: 0,
-          gap: "16px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
-          <a
-            href={`/${locale}/apps/oido-absoluto-multi`}
-            style={{
-              color: "rgba(255,255,255,0.6)",
-              fontSize: "0.72rem",
-              fontFamily: "monospace",
-              textDecoration: "none",
-              whiteSpace: "nowrap",
-            }}
-          >
-            ← {es ? "Volver" : "Back"}
-          </a>
-          <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.75rem" }}>|</span>
-          <span
-            style={{
-              color: "#f5f2e9",
-              fontFamily: "monospace",
-              fontSize: "0.78rem",
-              fontWeight: 600,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            Walking AP Multi
-          </span>
-          <span
-            style={{
-              background: "rgba(139,92,246,0.14)",
-              border: "1px solid rgba(139,92,246,0.35)",
-              color: "#c4b5fd",
-              fontSize: "0.6rem",
-              fontFamily: "monospace",
-              padding: "2px 7px",
-              borderRadius: "999px",
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {es ? "Modo juego 3D" : "3D game mode"}
-          </span>
-        </div>
-        <span
-          className="hidden sm:inline"
-          style={{
-            color: "rgba(255,255,255,0.35)",
-            fontSize: "0.68rem",
-            fontFamily: "monospace",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {es ? "Explora · Escucha · Reconoce" : "Explore · Listen · Recognize"}
-        </span>
-      </div>
-
       <iframe
         src={`/apps/oido-absoluto-multi/index.html?lang=${locale}`}
         title="Walking AP Multi"
         allow="autoplay"
         style={{ flex: 1, width: "100%", border: "none", display: "block" }}
       />
-    </div>
+    </GameShell>
   );
 }

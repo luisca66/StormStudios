@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
+import GameShell from "@/components/apps/GameShell";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -25,88 +26,27 @@ export default async function AcordesPage({ params }: Props) {
   const es = locale === "es";
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "calc(100vh - 64px)",
-        overflow: "hidden",
-        background: "#0c0c14",
+    <GameShell
+      locale={locale}
+      background="#0c0c14"
+      backHref={`/${locale}/apps/acordes`}
+      backLabel={es ? "Volver" : "Back"}
+      title={es ? "Reconocimiento de Acordes" : "Chord Recognition"}
+      titleColor="#ede8df"
+      badge={{
+        label: "Web App",
+        bg: "rgba(201,168,108,0.12)",
+        border: "rgba(201,168,108,0.3)",
+        color: "#d8b766",
       }}
+      tagline={es ? "Escucha · Reconoce · Responde" : "Listen · Recognize · Answer"}
     >
-      <div
-        style={{
-          background: "#0c0c14",
-          borderBottom: "1px solid rgba(255,255,255,0.12)",
-          padding: "6px 16px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexShrink: 0,
-          gap: "16px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
-          <a
-            href={`/${locale}/apps/acordes`}
-            style={{
-              color: "rgba(255,255,255,0.6)",
-              fontSize: "0.72rem",
-              fontFamily: "monospace",
-              textDecoration: "none",
-              whiteSpace: "nowrap",
-            }}
-          >
-            ← {es ? "Volver" : "Back"}
-          </a>
-          <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.75rem" }}>|</span>
-          <span
-            style={{
-              color: "#ede8df",
-              fontFamily: "monospace",
-              fontSize: "0.78rem",
-              fontWeight: 600,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {es ? "Reconocimiento de Acordes" : "Chord Recognition"}
-          </span>
-          <span
-            style={{
-              background: "rgba(201,168,108,0.12)",
-              border: "1px solid rgba(201,168,108,0.3)",
-              color: "#d8b766",
-              fontSize: "0.6rem",
-              fontFamily: "monospace",
-              padding: "2px 7px",
-              borderRadius: "999px",
-              textTransform: "uppercase",
-              whiteSpace: "nowrap",
-            }}
-          >
-            Web App
-          </span>
-        </div>
-        <span
-          style={{
-            color: "rgba(255,255,255,0.35)",
-            fontSize: "0.68rem",
-            fontFamily: "monospace",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {es ? "Escucha · Reconoce · Responde" : "Listen · Recognize · Answer"}
-        </span>
-      </div>
-
       <iframe
         src={`/apps/acordes/index.html?lang=${locale}`}
         title={es ? "Reconocimiento de Acordes" : "Chord Recognition"}
         allow="autoplay"
         style={{ flex: 1, width: "100%", border: "none", display: "block" }}
       />
-    </div>
+    </GameShell>
   );
 }
