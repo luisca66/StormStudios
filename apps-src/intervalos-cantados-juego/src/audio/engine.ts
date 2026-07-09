@@ -1,6 +1,14 @@
 import { ALL_NOTES } from "@/music/core";
 
 export const AUDIO_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+const VOCAL_ARCADE_SFX_BASE = `${AUDIO_BASE}/vocal-arcade`;
+const REMOTE_SFX_LEVELS = new Set([1, 2, 3, 4]);
+
+const LEVEL_SFX_NAMES: Record<string, string[]> = {
+  clank: ["clank"],
+  "muere-enemigo": ["muere-enemigo"],
+  "gira-torreta": ["gira-torreta"]
+};
 
 export class AudioEngine {
   private ctx: AudioContext | null = null;
@@ -8,6 +16,8 @@ export class AudioEngine {
   private audioCache: Map<string, HTMLAudioElement> = new Map();
   private loopSounds: Map<string, HTMLAudioElement> = new Map();
   private isMuted = false;
+  private sfxUrlCache: Map<string, string> = new Map();
+  private failedSfxUrls: Set<string> = new Set();
 
   // Decoded note samples kept in memory so playback (and replay) is instant.
   private noteBuffers: Map<string, AudioBuffer> = new Map();
@@ -28,12 +38,12 @@ export class AudioEngine {
     }
   }
 
-  playSFX(name: string, loop = false, volume = 0.8): HTMLAudioElement | null {
+  playSFX(name: string, loop = false, volume = 0.8, level?: number): HTMLAudioElement | null {
     if (this.isMuted) return null;
-    const url = `./sfx/${name}.mp3`;
+    const key = this.sfxKey(name, level);
     
-    if (loop && this.loopSounds.has(name)) {
-      const existing = this.loopSounds.get(name)!;
+    if (loop && this.loopSounds.has(key)) {
+      const existing = this.loopSounds.get(key)!;
       existing.volume = volume;
       if (existing.paused) {
         existing.play().catch(() => {});
@@ -41,16 +51,12 @@ export class AudioEngine {
       return existing;
     }
 
-    const audio = new Audio(url);
+    const audio = new Audio();
     audio.loop = loop;
     audio.volume = volume;
-    
-    audio.play().catch(err => {
-      console.warn(`[Audio] Failed to play SFX: ${name}`, err);
-    });
 
     if (loop) {
-      this.loopSounds.set(name, audio);
+      this.loopSounds.set(key, audio);
     } else {
       this.activeSounds.add(audio);
       audio.addEventListener("ended", () => {
@@ -58,15 +64,17 @@ export class AudioEngine {
       });
     }
 
+    this.playSFXFromCandidates(audio, name, key, this.sfxCandidates(name, level), loop);
     return audio;
   }
 
-  stopSFX(name: string): void {
-    if (this.loopSounds.has(name)) {
-      const audio = this.loopSounds.get(name)!;
+  stopSFX(name: string, level?: number): void {
+    const key = this.sfxKey(name, level);
+    if (this.loopSounds.has(key)) {
+      const audio = this.loopSounds.get(key)!;
       audio.pause();
       audio.currentTime = 0;
-      this.loopSounds.delete(name);
+      this.loopSounds.delete(key);
     }
   }
 
@@ -82,6 +90,95 @@ export class AudioEngine {
       audio.currentTime = 0;
     }
     this.loopSounds.clear();
+  }
+
+  private sfxKey(name: string, level?: number): string {
+    return level ? `${level}:${name}` : name;
+  }
+
+  private sfxCandidates(name: string, level?: number): string[] {
+    const localFallback = `./sfx/${name}.mp3`;
+    if (!level || !REMOTE_SFX_LEVELS.has(level)) return [localFallback];
+
+    const remoteNames = this.remoteSfxNames(name, level);
+    const remoteUrls = this.remoteSfxFolders(level).flatMap(folder =>
+      remoteNames.map(remoteName => `${VOCAL_ARCADE_SFX_BASE}/${folder}/${remoteName}.mp3`)
+    );
+    if (this.remoteOnlySfx(name, level)) return remoteUrls;
+    return [...remoteUrls, localFallback];
+  }
+
+  private remoteSfxFolders(level: number): string[] {
+    const padded = String(level).padStart(2, "0");
+    if (level === 1) return [`level%20${padded}`];
+    return [`level%20${padded}`, `nivel%20${padded}`];
+  }
+
+  private remoteSfxNames(name: string, level: number): string[] {
+    if (name === "shot") return level === 1 ? ["shot", "disparo"] : ["disparo", "shot"];
+    if (name === "enemy") return level === 1 ? ["enemy", "enemigo"] : ["enemigo", "enemy"];
+    if (name === "gira-torreta" && level === 2) return ["torreta", "gira-torreta"];
+    if (name === "gira-torreta" && level === 3) return ["giro-catapulta", "gira-torreta"];
+    if (name === "gira-torreta" && level === 4) return ["giro-torreta", "gira-torreta"];
+    return LEVEL_SFX_NAMES[name] ?? [name];
+  }
+
+  private remoteOnlySfx(_name: string, level: number): boolean {
+    return REMOTE_SFX_LEVELS.has(level);
+  }
+
+  private playSFXFromCandidates(
+    audio: HTMLAudioElement,
+    name: string,
+    key: string,
+    candidates: string[],
+    loop: boolean
+  ): void {
+    const cached = this.sfxUrlCache.get(key);
+    const availableCandidates = candidates.filter(url => !this.failedSfxUrls.has(url));
+    const urls = cached && availableCandidates.includes(cached)
+      ? [cached, ...availableCandidates.filter(url => url !== cached)]
+      : availableCandidates;
+
+    const tryUrl = (index: number) => {
+      if (loop && this.loopSounds.get(key) !== audio) return;
+
+      const url = urls[index];
+      if (!url) {
+        console.warn(`[Audio] Failed to play SFX: ${name}; no source loaded`);
+        this.activeSounds.delete(audio);
+        if (loop) this.loopSounds.delete(key);
+        return;
+      }
+
+      let finished = false;
+      const fail = (err?: unknown) => {
+        if (finished) return;
+        finished = true;
+        audio.removeEventListener("error", fail);
+        this.failedSfxUrls.add(url);
+        if (this.sfxUrlCache.get(key) === url) {
+          this.sfxUrlCache.delete(key);
+        }
+        if (index === urls.length - 1) {
+          console.warn(`[Audio] Failed to play SFX: ${name}`, err);
+        }
+        tryUrl(index + 1);
+      };
+
+      audio.addEventListener("error", fail, { once: true });
+      audio.src = url;
+      audio.load();
+      audio.play()
+        .then(() => {
+          finished = true;
+          audio.removeEventListener("error", fail);
+          this.sfxUrlCache.set(key, url);
+        })
+        .catch(fail);
+    };
+
+    tryUrl(0);
   }
 
   // "Aleatorio" picks a concrete timbre; callers that need to replay the same

@@ -36,7 +36,7 @@ export class GameEngine {
   // Missile state
   private missileX = 0;
   private missileY = 0;
-  private missileSpeed = 12;
+  private missileSpeed = 6;
   private missileAngle = 0;
   // Level 4 pseudo-3D missile
   private missile3D = { x: 0, y: 0, z: 0.0 };
@@ -132,8 +132,9 @@ export class GameEngine {
     this.keysPressed = {};
     this.lastChallenge = null; // Reset last challenge tracking
     if (this.turretSoundPlaying) {
+      const state = this.controller.getState();
       this.turretSoundPlaying = false;
-      this.controller.audio.stopSFX("gira-torreta");
+      this.controller.audio.stopSFX("gira-torreta", state.selectedLevel);
     }
 
     this.spawnEnemyData();
@@ -156,8 +157,9 @@ export class GameEngine {
       this.animationId = null;
     }
     if (this.turretSoundPlaying) {
+      const state = this.controller.getState();
       this.turretSoundPlaying = false;
-      this.controller.audio.stopSFX("gira-torreta");
+      this.controller.audio.stopSFX("gira-torreta", state.selectedLevel);
     }
   }
 
@@ -265,12 +267,12 @@ export class GameEngine {
     if (rotating) {
       if (!this.turretSoundPlaying) {
         this.turretSoundPlaying = true;
-        this.controller.audio.playSFX("gira-torreta", true, 0.35);
+        this.controller.audio.playSFX("gira-torreta", true, 0.35, state.selectedLevel);
       }
     } else {
       if (this.turretSoundPlaying) {
         this.turretSoundPlaying = false;
-        this.controller.audio.stopSFX("gira-torreta");
+        this.controller.audio.stopSFX("gira-torreta", state.selectedLevel);
       }
     }
 
@@ -320,7 +322,7 @@ export class GameEngine {
           this.missile3D = { x: 0, y: 0, z: 2.0 };
         }
         
-        this.missile3D.z += dt * 90.0; // Fly very fast in Z
+        this.missile3D.z += dt * 45.0; // Fly fast in Z, with enough time to hear the shot
         
         // Check impact with enemy at its depth
         if (this.missile3D.z >= this.enemy3D.z) {
