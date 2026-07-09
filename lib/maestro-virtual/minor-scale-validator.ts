@@ -124,7 +124,7 @@ interface KeySegment {
 }
 
 function extractSegments(voiceData: VoiceData): KeySegment[] {
-  const sopranoNotes = (voiceData.voices['SOPRANO'] ?? [])
+  const sopranoNotes = [...(voiceData.voices['SOPRANO'] ?? [])]
     .sort((a, b) => a.tick - b.tick);
 
   if (sopranoNotes.length === 0) return [];
@@ -133,14 +133,22 @@ function extractSegments(voiceData: VoiceData): KeySegment[] {
   let currentKey = voiceData.keyChanges[0]?.key ?? 'C';
   let currentNotes: number[] = [];
   let currentSpellings: (string | undefined)[] = [];
+  const keyChangeAtTick = new Map<number, string>();
+
+  for (const keyChange of voiceData.keyChanges) {
+    // Conserva la semántica de Array#find: el primer cambio en el tick gana.
+    if (!keyChangeAtTick.has(keyChange.tick)) {
+      keyChangeAtTick.set(keyChange.tick, keyChange.key);
+    }
+  }
 
   for (const note of sopranoNotes) {
-    const kc = voiceData.keyChanges.find(k => k.tick === note.tick);
-    if (kc && kc.key !== currentKey) {
+    const keyAtNote = keyChangeAtTick.get(note.tick);
+    if (keyAtNote && keyAtNote !== currentKey) {
       if (currentNotes.length > 0) {
         segments.push({ relKey: currentKey, notes: currentNotes, spellings: currentSpellings });
       }
-      currentKey = kc.key;
+      currentKey = keyAtNote;
       currentNotes = [];
       currentSpellings = [];
     }

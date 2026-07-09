@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { MaestroFeedback } from "@/types/course";
 
 type Props = {
@@ -14,14 +14,32 @@ type UploadState =
   | { status: "success"; feedback: MaestroFeedback }
   | { status: "error"; message: string };
 
+const MAX_MIDI_FILE_BYTES = 2 * 1024 * 1024;
+const UPLOAD_TIMEOUT_MS = 20_000;
+
 export default function ExerciseUpload({ lessonId, locale }: Props) {
   const [state, setState] = useState<UploadState>({ status: "idle" });
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const uploadControllerRef = useRef<AbortController | null>(null);
+  const uploadTimeoutRef = useRef<number | null>(null);
+  const isMountedRef = useRef(true);
   const es = locale === "es";
 
+  useEffect(() => {
+    isMountedRef.current = true;
+
+    return () => {
+      isMountedRef.current = false;
+      uploadControllerRef.current?.abort();
+      if (uploadTimeoutRef.current !== null) {
+        window.clearTimeout(uploadTimeoutRef.current);
+      }
+    };
+  }, []);
+
   async function handleFile(file: File) {
-    if (!file.name.endsWith(".mid") && !file.name.endsWith(".midi")) {
+    if (!/\.(mid|midi)$/i.test(file.name)) {
       setState({
         status: "error",
         message: es
@@ -30,8 +48,22 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
       });
       return;
     }
+    if (file.size > MAX_MIDI_FILE_BYTES) {
+      setState({
+        status: "error",
+        message: es
+          ? "El archivo supera el límite de 2 MB"
+          : "The file exceeds the 2 MB limit",
+      });
+      return;
+    }
 
     setState({ status: "uploading" });
+    uploadControllerRef.current?.abort();
+    const controller = new AbortController();
+    uploadControllerRef.current = controller;
+    const timeoutId = window.setTimeout(() => controller.abort(), UPLOAD_TIMEOUT_MS);
+    uploadTimeoutRef.current = timeoutId;
 
     try {
       const formData = new FormData();
@@ -42,19 +74,41 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
       const response = await fetch("/api/maestro-virtual/check", {
         method: "POST",
         body: formData,
+        signal: controller.signal,
       });
 
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const feedback: MaestroFeedback = await response.json();
+      const payload = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(
+          payload?.error
+          || (es ? "No se pudo analizar el archivo" : "The file could not be analyzed")
+        );
+      }
+      const feedback: MaestroFeedback = payload;
+      if (!isMountedRef.current || uploadControllerRef.current !== controller) return;
       setState({ status: "success", feedback });
     } catch (err) {
-      console.error(err);
+      if (!isMountedRef.current || uploadControllerRef.current !== controller) return;
+      if (!controller.signal.aborted) {
+        console.error(err);
+      }
       setState({
         status: "error",
-        message: es
-          ? "Error al analizar el archivo. Intenta de nuevo."
-          : "Error analyzing the file. Please try again.",
+        message:
+          err instanceof DOMException && err.name === "AbortError"
+            ? (es ? "La revisión tardó demasiado. Intenta de nuevo." : "The review took too long. Please try again.")
+            : err instanceof Error
+              ? err.message
+              : (es ? "Error al analizar el archivo. Intenta de nuevo." : "Error analyzing the file. Please try again."),
       });
+    } finally {
+      window.clearTimeout(timeoutId);
+      if (uploadControllerRef.current === controller) {
+        uploadControllerRef.current = null;
+      }
+      if (uploadTimeoutRef.current === timeoutId) {
+        uploadTimeoutRef.current = null;
+      }
     }
   }
 
@@ -143,7 +197,8 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
         {/* Estado: idle / uploading */}
         {(state.status === "idle" || state.status === "uploading") && (
           <>
-            <div
+            <button
+              type="button"
               onClick={() => state.status === "idle" && fileInputRef.current?.click()}
               onDrop={handleDrop}
               onDragOver={(e) => {
@@ -151,8 +206,9 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
                 setIsDragging(true);
               }}
               onDragLeave={() => setIsDragging(false)}
+              disabled={state.status === "uploading"}
               className={`
-                border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer
+                w-full border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer bg-white
                 ${state.status === "uploading" ? "opacity-50 cursor-not-allowed" : ""}
                 ${
                   isDragging
@@ -163,26 +219,26 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
             >
               {state.status === "uploading" ? (
                 <>
-                  <div className="animate-spin text-4xl mb-3">⚙️</div>
-                  <p className="text-gray-600 font-medium">
+                  <span aria-hidden="true" className="block animate-spin text-4xl mb-3">⚙️</span>
+                  <span className="block text-gray-600 font-medium">
                     {es ? "Analizando tu ejercicio..." : "Analyzing your exercise..."}
-                  </p>
+                  </span>
                 </>
               ) : (
                 <>
-                  <div className="text-4xl mb-3">🎵</div>
-                  <p className="text-gray-700 font-medium mb-1">
+                  <span aria-hidden="true" className="block text-4xl mb-3">🎵</span>
+                  <span className="block text-gray-700 font-medium mb-1">
                     {es
                       ? "Arrastra tu archivo MIDI aquí"
                       : "Drag your MIDI file here"}
-                  </p>
-                  <p className="text-sm text-gray-400">
+                  </span>
+                  <span className="block text-sm text-gray-400">
                     {es ? "o haz clic para seleccionar" : "or click to select"}
-                  </p>
-                  <p className="text-xs text-gray-300 mt-2">.mid / .midi</p>
+                  </span>
+                  <span className="block text-xs text-gray-300 mt-2">.mid / .midi</span>
                 </>
               )}
-            </div>
+            </button>
             <input
               ref={fileInputRef}
               type="file"

@@ -79,6 +79,22 @@
   to { opacity: 1; transform: none; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .ss-root *,
+  .ss-root *::before,
+  .ss-root *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .ss-root .ss-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ── Wave bars ── */
 .ss-bar {
   width: 6px;
@@ -136,12 +152,76 @@ body:has(.ss-root) {
   background: var(--ss-bg) !important;
 }
 
-/* ── Dark homepage: make site header transparent/glass ── */
-body:has(.ss-root) header {
+/* ── Dark pages: make the global site header transparent/glass ── */
+body:has(.ss-root) .ss-site-header {
   background: rgba(5, 5, 8, 0.6) !important;
   border-bottom-color: rgba(255, 255, 255, 0.06) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
+}
+
+/* Keep the global navigation legible when it sits above a dark page. */
+body:has(.ss-root) .ss-site-header .ss-brand {
+  color: #f0eeff !important;
+}
+body:has(.ss-root) .ss-site-header .ss-brand-accent {
+  color: #93c5fd !important;
+}
+body:has(.ss-root) .ss-site-header .ss-nav-link,
+body:has(.ss-root) .ss-site-header .ss-menu-trigger {
+  color: rgba(240, 238, 255, 0.86) !important;
+}
+body:has(.ss-root) .ss-site-header .ss-nav-link:hover,
+body:has(.ss-root) .ss-site-header .ss-menu-trigger:hover {
+  background: rgba(139, 92, 246, 0.22) !important;
+  color: #ffffff !important;
+}
+body:has(.ss-root) .ss-site-header .ss-nav-link-active {
+  background: rgba(139, 92, 246, 0.24) !important;
+  color: #ddd6fe !important;
+}
+body:has(.ss-root) .ss-site-header .ss-header-language button {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  color: #f0eeff !important;
+}
+body:has(.ss-root) .ss-site-header .ss-header-language button:hover {
+  background: rgba(139, 92, 246, 0.22) !important;
+}
+body:has(.ss-root) .ss-site-header .ss-header-language .text-gray-500 {
+  color: #ddd6fe !important;
+}
+body:has(.ss-root) .ss-site-header .ss-header-language .text-gray-400 {
+  color: #c4b5fd !important;
+}
+body:has(.ss-root) .ss-site-header .ss-header-language .text-gray-700 {
+  color: #f0eeff !important;
+}
+body:has(.ss-root) .ss-mobile-menu {
+  background: rgba(12, 12, 20, 0.98) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.12) !important;
+}
+body:has(.ss-root) .ss-site-header :focus-visible {
+  outline: 2px solid #c4b5fd !important;
+  outline-offset: 3px;
+}
+
+/* Contact form fields are rendered inside the dark page layout. */
+.ss-root form.space-y-5 label.text-gray-700 {
+  color: #e5e7eb !important;
+}
+.ss-root form.space-y-5 input.w-full,
+.ss-root form.space-y-5 textarea.w-full {
+  background: #ffffff;
+  color: #111827;
+}
+.ss-root form.space-y-5 input.w-full::placeholder,
+.ss-root form.space-y-5 textarea.w-full::placeholder {
+  color: #6b7280;
+  opacity: 1;
+}
+.ss-root form.space-y-5 .text-red-600 {
+  color: #fca5a5 !important;
 }
 
 /* ── Blog prose styles ── */

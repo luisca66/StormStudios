@@ -9,18 +9,18 @@
 
 ## FASE 1 — Subir el código a GitHub
 
-El proyecto está en la carpeta local del usuario. Abrir una terminal DENTRO de esa carpeta y ejecutar estos comandos en orden:
+El proyecto está en la carpeta local del usuario. Abrir una terminal DENTRO de esa carpeta y ejecutar estos comandos en orden (omitir `git init` si la carpeta ya tiene un repositorio):
 
 ```bash
 git init
-git remote add origin https://github.com/luisca66/StormStudios.git
+git remote -v
 git branch -M main
 git add .
 git commit -m "Storm Studios Learning — nuevo sitio Next.js"
-git push -f origin main
+git push -u origin main
 ```
 
-> ⚠️ El `-f` en el último comando es intencional — sobreescribe el repo viejo que solo tenía un index.html.
+Si `origin` no aparece en `git remote -v`, agregarlo una sola vez con `git remote add origin https://github.com/luisca66/StormStudios.git`. Si el remoto tiene un historial incompatible, detenerse y revisar antes de sobrescribirlo; usar `git push --force-with-lease origin main` solo después de confirmar explícitamente que no se perderá trabajo ajeno.
 
 **Verificar:** Ir a https://github.com/luisca66/StormStudios y confirmar que ya aparecen carpetas como `app/`, `components/`, `content/`, etc.
 
@@ -38,10 +38,35 @@ git push -f origin main
    - **Root Directory:** dejar en blanco (el proyecto está en la raíz)
    - **Build Command:** `npm run build` (ya está configurado)
    - **Output Directory:** `.next` (automático)
-   - **Environment Variables:** NO hay ninguna que agregar
+   - **Environment Variables:** agregar `RESEND_API_KEY` para que el formulario de contacto pueda entregar los mensajes (ver Fase 2.1 antes de desplegar)
 7. Hacer clic en **"Deploy"**
 8. Esperar 2-3 minutos mientras construye el sitio
 9. **Verificar:** Vercel dará una URL temporal tipo `stormstudios-xyz.vercel.app` — abrir esa URL y confirmar que el sitio se ve bien
+
+---
+
+### FASE 2.1 — Configurar el formulario de contacto (Resend)
+
+El formulario de `/es/contacto` solo confirma el envío después de que Resend acepta el correo. Si falta la clave o Resend rechaza el envío, muestra un mensaje temporal y reintentable; no guarda ni registra el contenido del formulario en los logs.
+
+1. Crear una cuenta en [Resend](https://resend.com) y verificar el dominio `stormstudios.com.mx`.
+2. En Resend, crear una API key con permiso de envío y copiarla una sola vez.
+3. En Vercel: **Project → Settings → Environment Variables**. Agregar:
+
+   | Nombre | Valor | Entornos |
+   |--------|-------|----------|
+   | `RESEND_API_KEY` | La API key creada en Resend | Production (y Preview si quieres probar el formulario allí) |
+
+4. Confirmar en Resend que `noreply@stormstudios.com.mx` es un remitente permitido. La ruta actual recibe los mensajes en `info@stormstudios.com.mx` y usa el correo de quien escribe como `Reply-To`.
+5. Hacer un redeploy después de guardar la variable y enviar una prueba desde el sitio publicado. Confirmar tanto la respuesta de éxito en pantalla como la llegada a `info@stormstudios.com.mx`.
+
+Para desarrollo local se puede crear un archivo `.env.local` con `RESEND_API_KEY=...`. No subirlo al repositorio ni exponer la clave con un prefijo `NEXT_PUBLIC_`.
+
+> El límite actual del endpoint es deliberadamente local a cada instancia: ayuda ante ráfagas pequeñas, pero no sustituye una protección distribuida. Si hay spam o tráfico sostenido, activar las protecciones de Vercel y/o usar un rate limit compartido antes de confiar en él como control principal.
+
+### FASE 2.2 — Proteger las rutas públicas contra abuso
+
+Antes de depender del formulario o de Maestro Virtual en producción, configurar en Vercel una regla WAF/rate-limit distribuida para `/api/contact` y `/api/maestro-virtual/check`. El código limita solicitudes por instancia y acota los cuerpos, pero las instancias serverless no comparten ese contador. Empezar con límites conservadores y ajustarlos según el tráfico legítimo; confirmar después con una prueba publicada que una ráfaga recibe `429` sin afectar a usuarios normales.
 
 ---
 
@@ -161,7 +186,7 @@ Vercel detecta el push automáticamente y publica el sitio actualizado en ~2 min
 - **Contenido:** MDX en `content/` (blog y lecciones del curso)
 - **Herramientas web:** Secuenciador en `public/tools/` (archivos HTML estáticos)
 - **Apps web:** Juegos y apps en `public/apps/` (archivos HTML estáticos)
-- **Sin variables de entorno:** El proyecto no requiere ningún `.env`
+- **Variables de entorno:** `RESEND_API_KEY` es obligatoria para entregar los mensajes del formulario de contacto. Puede faltar solo si el formulario se mantiene temporalmente fuera de servicio (mostrará un error reintentable, nunca un éxito falso).
 - **Sin base de datos:** Todo el contenido está en archivos MDX
 
 ---

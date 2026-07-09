@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseMidiBuffer } from './midi-parser';
+import { MAX_MIDI_EVENTS, MAX_MIDI_TRACKS, parseMidiBuffer } from './midi-parser';
 
 /** Construye un buffer MIDI tipo 1 de una pista a partir de bytes de eventos. */
 function midiBuffer(trackEvents: number[]): ArrayBuffer {
@@ -45,5 +45,36 @@ describe('parseMidiBuffer — meta-texto de grafía (SP:)', () => {
 
     expect(sop[2].midi).toBe(69);
     expect(sop[2].spelling).toBeUndefined(); // sin meta-texto
+  });
+
+  it('rechaza archivos que exceden los límites de pistas o eventos', () => {
+    const tooManyTracks = new Uint8Array([
+      0x4d, 0x54, 0x68, 0x64, 0, 0, 0, 6, 0, 1,
+      (MAX_MIDI_TRACKS + 1) >> 8, (MAX_MIDI_TRACKS + 1) & 0xff,
+      0, 0x80,
+    ]).buffer;
+    expect(() => parseMidiBuffer(tooManyTracks)).toThrow(/máximo.*pistas/i);
+
+    const repeatedNoteOn = Array.from(
+      { length: MAX_MIDI_EVENTS + 1 },
+      () => [0x00, 0x90, 0x3c, 0x40]
+    ).flat();
+    expect(() => parseMidiBuffer(midiBuffer(repeatedNoteOn))).toThrow(/máximo.*eventos/i);
+  });
+
+  it('rechaza eventos que se salen del límite de una pista', () => {
+    expect(() => parseMidiBuffer(midiBuffer([0x00, 0x90]))).toThrow(/truncado|corrupto/i);
+  });
+
+  it('ignora grafías SP demasiado largas sin construir texto arbitrario', () => {
+    const oversizedSpelling = `SP:${'x'.repeat(33)}`;
+    const track = [
+      0x00, 0xff, 0x01, oversizedSpelling.length, ...s(oversizedSpelling),
+      0x00, 0x90, 0x3c, 0x40,
+      0x00, 0xff, 0x2f, 0x00,
+    ];
+
+    const voiceData = parseMidiBuffer(midiBuffer(track));
+    expect(voiceData.voices.SOPRANO?.[0].spelling).toBeUndefined();
   });
 });

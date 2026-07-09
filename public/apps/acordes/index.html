@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acordes - Entrenamiento Auditivo</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -21,6 +21,11 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
         padding-bottom: 80px;
+      }
+
+      .mode-card:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 3px;
       }
     </style>
   <script type="module" crossorigin src="/apps/acordes/assets/index-BbNg9fCN.js"></script>
@@ -51,29 +56,29 @@
             <section class="mode-list">
                 <h2 class="screen-title">Modos de Juego</h2>
 
-                <div class="mode-card" data-action="mode-classic" data-accent="blue">
-                    <span class="mode-icon">📚</span>
+                <button type="button" class="mode-card" data-action="mode-classic" data-accent="blue">
+                    <span class="mode-icon" aria-hidden="true">📚</span>
                     <span class="mode-body">
                         <span class="mode-title" style="display:block;">Modo Clásico</span>
                         <span class="mode-subtitle subtitle">10 rondas para practicar a tu ritmo</span>
                     </span>
-                </div>
+                </button>
 
-                <div class="mode-card" data-action="mode-time" data-accent="amber">
-                    <span class="mode-icon">⏱️</span>
+                <button type="button" class="mode-card" data-action="mode-time" data-accent="amber">
+                    <span class="mode-icon" aria-hidden="true">⏱️</span>
                     <span class="mode-body">
                         <span class="mode-title" style="display:block;">Contrarreloj</span>
                         <span class="mode-subtitle subtitle">Máximo puntaje antes del límite</span>
                     </span>
-                </div>
+                </button>
 
-                <div class="mode-card" data-action="mode-survival" data-accent="rose">
-                    <span class="mode-icon">❤️</span>
+                <button type="button" class="mode-card" data-action="mode-survival" data-accent="rose">
+                    <span class="mode-icon" aria-hidden="true">❤️</span>
                     <span class="mode-body">
                         <span class="mode-title" style="display:block;">Supervivencia</span>
                         <span class="mode-subtitle subtitle">3 errores y estás fuera</span>
                     </span>
-                </div>
+                </button>
 
                 <button class="secondary-button" data-action="open-stats" style="margin-top:20px;">
                     📊 Ver Estadísticas

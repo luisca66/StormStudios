@@ -5,7 +5,9 @@ export default defineConfig({
   test: {
     environment: "node",
     include: [
+      "app/api/**/*.test.ts",
       "components/rhythm-reading/_tests/**/*.test.ts",
+      "data/**/*.test.ts",
       "lib/acordes-cantar/**/*.test.ts",
       "lib/desglose/**/*.test.ts",
       "lib/maestro-virtual/**/*.test.ts",

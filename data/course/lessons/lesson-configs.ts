@@ -68,5 +68,7 @@ const VALIDATOR_CONFIGS: Record<string, ValidatorConfig> = {
  * Retorna null si el lessonId no está registrado.
  */
 export function getLessonConfig(lessonId: string): ValidatorConfig | null {
-  return VALIDATOR_CONFIGS[lessonId] ?? null;
+  return Object.prototype.hasOwnProperty.call(VALIDATOR_CONFIGS, lessonId)
+    ? VALIDATOR_CONFIGS[lessonId]
+    : null;
 }

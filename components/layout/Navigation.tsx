@@ -15,7 +15,12 @@ const navLinks = [
   { key: "contact", href: "/contacto" as const },
 ] as const;
 
-export default function Navigation({ mobile = false }: { mobile?: boolean }) {
+type NavigationProps = {
+  mobile?: boolean;
+  onNavigate?: () => void;
+};
+
+export default function Navigation({ mobile = false, onNavigate }: NavigationProps) {
   const t = useTranslations("nav");
   const pathname = usePathname();
 
@@ -30,10 +35,12 @@ export default function Navigation({ mobile = false }: { mobile?: boolean }) {
           <Link
             key={key}
             href={href}
+            aria-current={isActive ? "page" : undefined}
+            onClick={onNavigate}
             className={cn(
-              "px-3 py-2 text-sm font-medium rounded-md transition-colors",
+              "ss-nav-link px-3 py-2 text-sm font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2",
               isActive
-                ? "text-blue-600 bg-blue-50"
+                ? "ss-nav-link-active text-blue-600 bg-blue-50"
                 : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
             )}
           >
