@@ -228,7 +228,7 @@ export class GameController {
       });
 
       // Start looping enemy sound
-      this.audio.playSFX("enemy", true, 0.45, this.state.selectedLevel);
+      this.audio.playSFX("enemigo", true, 0.45, this.state.selectedLevel);
 
       // Start listening
       const targetFreq = this.getTargetFrequency();
@@ -285,7 +285,7 @@ export class GameController {
 
       if (pitchHoldTime >= 1.0) {
         this.patch({ pitchHoldTime: 1.0, missileCharged: true, feedbackMessage: "¡Misil cargado! Escribe la nota" });
-        this.audio.playSFX("clank", false, 0.9, this.state.selectedLevel);
+        this.audio.playSFX("carga", false, 0.9, this.state.selectedLevel);
         return;
       }
 
@@ -324,12 +324,12 @@ export class GameController {
   }
 
   triggerMissileFire(): void {
-    this.audio.playSFX("shot", false, 0.8, this.state.selectedLevel);
+    this.audio.playSFX("disparo", false, 0.8, this.state.selectedLevel);
   }
 
   onEnemyDestroyed(): void {
     // Enemy was shot and destroyed
-    this.audio.stopSFX("enemy", this.state.selectedLevel);
+    this.audio.stopSFX("enemigo", this.state.selectedLevel);
     this.audio.playSFX("muere-enemigo", false, 0.85, this.state.selectedLevel);
 
     const nextIdx = this.state.currentIdx + 1;
@@ -366,7 +366,7 @@ export class GameController {
 
   onEnemyReached(): void {
     // Enemy reached the player (strike!)
-    this.audio.stopSFX("enemy", this.state.selectedLevel);
+    this.audio.stopSFX("enemigo", this.state.selectedLevel);
     this.audio.playSFX("muere-enemigo", false, 0.7, this.state.selectedLevel); // Crash sound
 
     const strikes = this.state.strikes + 1;

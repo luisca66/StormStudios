@@ -2,12 +2,14 @@ import { ALL_NOTES } from "@/music/core";
 
 export const AUDIO_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
 const VOCAL_ARCADE_SFX_BASE = `${AUDIO_BASE}/vocal-arcade`;
-const REMOTE_SFX_LEVELS = new Set([1, 2, 3, 4]);
+const REMOTE_SFX_LEVELS = new Set([1, 2, 3, 4, 5]);
 
-const LEVEL_SFX_NAMES: Record<string, string[]> = {
-  clank: ["clank"],
-  "muere-enemigo": ["muere-enemigo"],
-  "gira-torreta": ["gira-torreta"]
+const LOCAL_SFX_NAMES: Record<string, string> = {
+  carga: "clank",
+  disparo: "shot",
+  enemigo: "enemy",
+  "gira-torreta": "gira-torreta",
+  "muere-enemigo": "muere-enemigo"
 };
 
 export class AudioEngine {
@@ -97,30 +99,21 @@ export class AudioEngine {
   }
 
   private sfxCandidates(name: string, level?: number): string[] {
-    const localFallback = `./sfx/${name}.mp3`;
+    const localFallback = `./sfx/${this.localSfxName(name)}.mp3`;
     if (!level || !REMOTE_SFX_LEVELS.has(level)) return [localFallback];
 
-    const remoteNames = this.remoteSfxNames(name, level);
-    const remoteUrls = this.remoteSfxFolders(level).flatMap(folder =>
-      remoteNames.map(remoteName => `${VOCAL_ARCADE_SFX_BASE}/${folder}/${remoteName}.mp3`)
-    );
+    const remoteUrls = [`${VOCAL_ARCADE_SFX_BASE}/${this.remoteSfxFolder(level)}/${name}.mp3`];
     if (this.remoteOnlySfx(name, level)) return remoteUrls;
     return [...remoteUrls, localFallback];
   }
 
-  private remoteSfxFolders(level: number): string[] {
+  private remoteSfxFolder(level: number): string {
     const padded = String(level).padStart(2, "0");
-    if (level === 1) return [`level%20${padded}`];
-    return [`level%20${padded}`, `nivel%20${padded}`];
+    return `level-${padded}`;
   }
 
-  private remoteSfxNames(name: string, level: number): string[] {
-    if (name === "shot") return level === 1 ? ["shot", "disparo"] : ["disparo", "shot"];
-    if (name === "enemy") return level === 1 ? ["enemy", "enemigo"] : ["enemigo", "enemy"];
-    if (name === "gira-torreta" && level === 2) return ["torreta", "gira-torreta"];
-    if (name === "gira-torreta" && level === 3) return ["giro-catapulta", "gira-torreta"];
-    if (name === "gira-torreta" && level === 4) return ["giro-torreta", "gira-torreta"];
-    return LEVEL_SFX_NAMES[name] ?? [name];
+  private localSfxName(name: string): string {
+    return LOCAL_SFX_NAMES[name] ?? name;
   }
 
   private remoteOnlySfx(_name: string, level: number): boolean {

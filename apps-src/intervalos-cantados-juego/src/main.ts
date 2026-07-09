@@ -253,9 +253,7 @@ function setupUIHandlers() {
 
   // Back to menu from gameplay
   document.getElementById("btn-game-back")!.addEventListener("click", () => {
-    if (confirm(t.confirmExit)) {
-      controller.setScreen("menu");
-    }
+    controller.setScreen("menu");
   });
 
   // Virtual keyboard buttons
