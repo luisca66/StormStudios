@@ -197,7 +197,10 @@ export const APPS: AppEntry[] = [
       en: "Chord Recognition plays chords with different timbres so you can train the ear to identify harmonic qualities. You can choose the range, select chord families, practice in classic, time attack, or survival mode, and review local statistics by chord type.",
     },
     webUrl: "/apps/acordes/jugar",
+    gameUrl: "/apps/acordes/juego",
+    gameLabel: { es: "Modo juego 3D", en: "3D game mode" },
     features: [
+      { es: "Modo juego 3D: Batisfera, desciende a la fosa y captura criaturas reconociendo acordes", en: "3D game mode: Bathysphere, descend into the trench and capture creatures by recognizing chords" },
       { es: "Multi-tímbrica (5 timbres)", en: "Multi-timbral (5 timbres)" },
       { es: "Rango seleccionable", en: "Selectable range" },
       { es: "Modos clásico, contrarreloj y supervivencia", en: "Classic, time attack, and survival modes" },

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Batisfera — Storm Studios</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <canvas id="game-canvas"></canvas>
+
+    <div id="ui-root">
+      <!-- MENÚ PRINCIPAL -->
+      <section id="menu-screen" class="screen active">
+        <div class="card menu-card">
+          <h1 class="title" data-i18n="app.title">BATISFERA</h1>
+          <p class="subtitle" data-i18n="app.subtitle">Desciende. Escucha. Cataloga.</p>
+
+          <div class="config-group">
+            <h3 data-i18n="menu.mode">Modo de inmersión</h3>
+            <div id="mode-options" class="chip-row"></div>
+            <p id="mode-desc" class="mode-desc"></p>
+          </div>
+
+          <div class="config-group">
+            <h3 data-i18n="menu.instrument">Timbre</h3>
+            <div id="timbre-options" class="chip-row"></div>
+          </div>
+
+          <div class="config-group">
+            <h3 data-i18n="menu.startZone">Zona inicial</h3>
+            <div id="zone-options" class="chip-row"></div>
+          </div>
+
+          <div class="config-group volume-group">
+            <h3 data-i18n="menu.volume">Volumen</h3>
+            <input id="volume-slider" type="range" min="0" max="100" value="80" />
+          </div>
+
+          <div class="menu-actions">
+            <button id="bitacora-btn" class="btn secondary" data-i18n="menu.bitacora">Bitácora</button>
+            <button id="start-btn" class="btn primary" data-i18n="menu.start">INICIAR INMERSIÓN</button>
+          </div>
+
+          <p class="credit" data-i18n="credit"></p>
+        </div>
+      </section>
+
+      <!-- HUD / CONSOLA (F3) -->
+      <section id="hud" class="screen hidden"></section>
+
+      <!-- TRANSICIÓN DE ZONA -->
+      <section id="zone-transition" class="screen hidden">
+        <div class="zone-card">
+          <div id="zt-name" class="zt-name"></div>
+          <div id="zt-meters" class="zt-meters"></div>
+          <div id="zt-family" class="zt-family"></div>
+        </div>
+      </section>
+
+      <!-- RESUMEN -->
+      <section id="summary-screen" class="screen hidden">
+        <div class="card menu-card">
+          <h2 class="title" style="font-size:1.5rem" data-i18n="summary.title">Informe de inmersión</h2>
+          <p id="summary-reason" class="subtitle"></p>
+          <div id="summary-stats" class="summary-stats"></div>
+          <div class="menu-actions">
+            <button id="summary-retry" class="btn primary" data-i18n="summary.retry">Reintentar</button>
+            <button id="summary-menu" class="btn secondary" data-i18n="summary.menu">Menú</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- BITÁCORA -->
+      <section id="bitacora-screen" class="screen hidden">
+        <div class="card menu-card">
+          <h2 class="title" style="font-size:1.25rem" data-i18n="bitacora.title">Bitácora del biólogo</h2>
+          <p class="subtitle"><span id="bitacora-count">0/33</span> <span data-i18n="bitacora.progress">catalogados</span></p>
+          <div id="bitacora-grid" class="bitacora-grid"></div>
+          <div class="menu-actions">
+            <button id="bitacora-back" class="btn secondary" data-i18n="bitacora.back">Volver</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAUSA -->
+      <section id="pause-screen" class="screen hidden">
+        <div class="card" style="text-align:center">
+          <h2 class="title" style="font-size:1.4rem" data-i18n="pause.title">Pausa</h2>
+          <div class="menu-actions">
+            <button id="pause-resume" class="btn primary" data-i18n="pause.resume">Reanudar</button>
+            <button id="pause-quit" class="btn secondary" data-i18n="pause.quit">Abandonar inmersión</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Utilidades -->
+      <div id="toast" class="toast"></div>
+      <div id="debug-panel" class="debug-panel hidden"></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
