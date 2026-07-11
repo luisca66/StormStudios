@@ -225,6 +225,10 @@ export class PlayerController {
     return this.yawObject.position;
   }
 
+  get isMoving(): boolean {
+    return this.velocity.lengthSq() > 0.05;
+  }
+
   /** Rumbo (rotación Y) — el sonar orienta sus blips con esto. */
   get yaw(): number {
     return this.yawObject.rotation.y;
@@ -283,9 +287,13 @@ export class PlayerController {
     if (target.lengthSq() > 1) target.normalize();
     target.multiplyScalar(PHYSICS.maxSpeed);
 
-    // Inercia exponencial (aceleración y freno suaves).
-    const lerp = Math.min(1, PHYSICS.accelLerp * dt);
-    this.velocity.lerp(target, lerp);
+    // Inercia exponencial para acelerar, pero freno instantáneo sin inercia.
+    if (target.lengthSq() === 0) {
+      this.velocity.set(0, 0, 0);
+    } else {
+      const lerp = Math.min(1, PHYSICS.accelLerp * dt);
+      this.velocity.lerp(target, lerp);
+    }
 
     const pos = this.yawObject.position;
     pos.addScaledVector(this.velocity, dt);

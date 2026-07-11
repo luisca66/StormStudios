@@ -6,6 +6,7 @@ import type { FamilyId } from "@/music/chords";
 export const AUDIO_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
 // Assets propios del juego (no compartidos con las demás apps) viven bajo /batisfera/.
 export const AMBIENT_BUBBLES_URL = `${AUDIO_BASE}/batisfera/water-bubbles.mp3`;
+export const AMBIENT_THRUSTERS_URL = `${AUDIO_BASE}/batisfera/thrusters.mp3`;
 
 export const INSTRUMENTS = ["Piano", "Coro", "Corno", "Cello", "Fagot"] as const;
 export type Instrument = (typeof INSTRUMENTS)[number];

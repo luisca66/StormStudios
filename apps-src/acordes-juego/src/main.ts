@@ -20,7 +20,7 @@ import { DiveState, type DiveEndReason } from "@/game/state";
 import { shouldCancelListening } from "@/game/listening";
 import { loadBitacora, recordAttempt, saveUnlockedZone } from "@/game/persistence";
 import { SPECIES } from "@/3d/creatures/species";
-import { AMBIENT_BUBBLES_URL, FAMILY_GLOW } from "@/config";
+import { AMBIENT_BUBBLES_URL, AMBIENT_THRUSTERS_URL, FAMILY_GLOW } from "@/config";
 import { SamplePlayer, resolveInstrument } from "@/audio/samples";
 import type { Creature } from "@/3d/creatures/base";
 import type { Instrument } from "@/config";
@@ -179,6 +179,8 @@ function returnToMenu(): void {
   game.stopDive();
   game.creatures.clear();
   player.stopLoop("bubbles");
+  player.stopLoop("thrusters");
+  thrustersActive = false;
   dive = null;
   paused = false;
   cancelListening();
@@ -216,12 +218,27 @@ game.onFrame = (dt) => {
     hud.setO2(dive.o2 / 90);
     if (out) endDive("O2_OUT");
   }
+
+  if (dive && !paused && !dive.ended) {
+    const moving = game.player.isMoving;
+    if (moving && !thrustersActive) {
+      thrustersActive = true;
+      player.startLoop("thrusters", AMBIENT_THRUSTERS_URL, 1.0);
+    } else if (!moving && thrustersActive) {
+      thrustersActive = false;
+      player.stopLoop("thrusters");
+    }
+  } else if (thrustersActive) {
+    thrustersActive = false;
+    player.stopLoop("thrusters");
+  }
 };
 
 // ---------- Sesión de inmersión (F5) ----------
 const questions = new QuestionMachine();
 let dive: DiveState | null = null;
 let paused = false;
+let thrustersActive = false;
 
 // El generador alimenta al spawner con el avance de la zona actual.
 game.creatures.setAssigner((zoneIndex) => {
@@ -375,6 +392,8 @@ function endDive(reason: DiveEndReason): void {
   dive.ended = reason;
   game.stopDive();
   player.stopLoop("bubbles");
+  player.stopLoop("thrusters");
+  thrustersActive = false;
   cancelListening();
 
   const reasonKey =
@@ -404,6 +423,8 @@ game.player.onEscape = () => {
 function pauseDive(): void {
   paused = true;
   game.stopDive();
+  player.stopLoop("thrusters");
+  thrustersActive = false;
   showScreen("pause-screen");
 }
 

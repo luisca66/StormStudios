@@ -40,9 +40,7 @@ export class SamplePlayer {
 
   setVolume(v: number): void {
     this.volume = Math.max(0, Math.min(1, v));
-    for (const { audio, volumeScale } of this.loops.values()) {
-      audio.volume = this.volume * volumeScale;
-    }
+    // No actualizamos this.loops aquí para que los ambientes sean independientes del slider
   }
 
   getVolume(): number {
@@ -150,7 +148,7 @@ export class SamplePlayer {
       entry = { audio, volumeScale };
       this.loops.set(name, entry);
     }
-    entry.audio.volume = this.volume * volumeScale;
+    entry.audio.volume = Math.max(0, Math.min(1, volumeScale));
     if (entry.audio.paused) {
       entry.audio.play().catch((err: unknown) => {
         if (this.isAutoplayBlock(err)) this.armLoopRetry();
