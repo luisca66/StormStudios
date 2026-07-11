@@ -122,7 +122,7 @@ export const FAMILY_GLOW: Record<FamilyId, number> = {
 export type GameMode = "EXPEDITION" | "TIME_ATTACK" | "SURVIVAL";
 
 export const MODES: Record<GameMode, { quota: number }> = {
-  EXPEDITION: { quota: 8 },
+  EXPEDITION: { quota: 20 },
   TIME_ATTACK: { quota: 4 },
   SURVIVAL: { quota: 6 },
 };
