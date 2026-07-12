@@ -268,8 +268,9 @@ function playCreatureChord(creature: Creature): void {
     instrument = resolveInstrument(settings.instrument);
     creatureInstrument.set(creature, instrument);
   }
-  void player.playChord(chordNotes(creature.rootNote, creature.chord), instrument);
-  creature.pulse();
+  const notes = chordNotes(creature.rootNote, creature.chord);
+  void player.playChord(notes, instrument);
+  creature.pulse(notes.length); // H4a: un destello por nota, escalonados
 }
 
 game.onCreatureTapped = (creature) => {

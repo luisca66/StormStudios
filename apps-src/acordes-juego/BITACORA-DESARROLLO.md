@@ -279,3 +279,43 @@ Regla: al terminar (o interrumpir) trabajo, anota fecha, fase, qué quedó y pen
   ⚠️ El rAF del preview pane se throttlea en segundo plano: medir FPS con render
   síncrono por consola, no con contadores de rAF.
 - Sin commit/push/deploy (pendiente de OK de Luis). Siguiente: **H4** (criaturas).
+
+### ✅ Deploy H2+H3 a producción (2026-07-12, Claude Sonnet 5)
+- Descubierto: el commit de H1+H2 (c333cfb) fue solo de FUENTE — el bundle de
+  `public/apps/acordes-juego` nunca se reconstruyó, así que producción seguía
+  sirviendo los controles pre-H2. `npm run deploy` + commit 5b38de7 + push lo
+  publicó todo (H1+H2+H3) vía Vercel.
+- `scripts/qa.mjs` estaba desactualizado (cuota 8 pre-H1, distancia 45 pre-Sol):
+  ahora lee MODES/INTERACTION de config.ts — no volverá a desfasarse solo.
+
+### ✅ H4 — Criaturas a calidad final (2026-07-12, Claude Fable 5)
+- **4a destello por-nota**: `Creature.pulse(noteCount)` — nota i arranca en
+  i×0.09 s, mini-envolvente ataque 0.02/caída 0.35, SUMADA a la envolvente global.
+  Hook opcional `CreatureVisual.flashSegment(i, intensidad, nNotas)` llamado tras
+  el barrido global (sumar con +=, no asignar; se llama con 0 para apagar).
+  Implementado en las 7: medusa→tentáculo i, cardumen→sub-racimo (escala de
+  instancia, array `flashes`), calamar→par de tentáculos, rape→señuelo parpadea
+  n veces, sifonóforo→grupo de faroles (16/n), dumbo→par de brazos, leviatán→placa
+  i. Materiales clonados por segmento donde hizo falta (dispose() ya los cubre).
+- **4b tamaño por registro**: `baseScale = clamp(1.35−(midi−48)×0.0125, 0.85,
+  1.35)` en el constructor; capture() multiplica por baseScale al encoger.
+- **4c**: cooldown de spawn a la mitad en z4 · leviatán al aparecer hace
+  `pulse(9)` (ola de destellos por las placas) + blip grande ámbar 3 s en el
+  sonar (`SonarBlip.strong`, anillo de eco) · cardumen en huida se COMPACTA
+  (hook `fleeAnimate`, órbitas ×0.25) en vez del aleteo ×2.5.
+- `main.ts`: `creature.pulse(notes.length)` con las notas ya calculadas.
+- **Verificado por consola**: pulse(4) en medusa → exactamente 4 picos en la suma
+  de emisivos (update manual ×70 pasos) · escalas de 5 criaturas vivas == fórmula
+  (G3:1.263, A4:1.088…), C3=1.35 > C5=1.05 · z4 con 30 s simulados → 6 activas
+  (mínimo 4) · build limpio 552 KB · QA OK · screenshot rape en escucha.
+- Sin commit/push/deploy (pendiente de OK de Luis). Siguiente: **H5** (QA+deploy).
+
+### ⏸ Sesión cortada por presupuesto de tokens (2026-07-12, Claude Sonnet 5)
+- Luis pidió parar aquí. Se hace commit+push de SOLO el código fuente de H4
+  (arriba); NO se corrió `npm run deploy`, así que producción todavía sirve el
+  bundle de H2+H3 (commit 5b38de7) — el destello por-nota y tamaño por registro
+  de H4 están en el repo pero no en vivo.
+- Siguiente agente: si Luis pide "seguir" o "publicar H4", correr
+  `npm run deploy` en `apps-src/acordes-juego`, verificar en navegador y
+  commitear `public/apps/acordes-juego` (mismo patrón que el deploy de H2+H3).
+  Si pide seguir con el plan, el siguiente hito sigue siendo **H5**.

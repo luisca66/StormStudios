@@ -23,6 +23,8 @@ export class CreatureManager {
   private spawnCooldown = 0;
   private leviathanSpawnedThisVisit = false;
   private lastZoneIndex = 0;
+  /** H4c: mientras corre, el blip del Leviatán se dibuja grande en el sonar. */
+  private leviathanBlipTimer = 0;
   /** F5 lo apaga durante transiciones/resumen. */
   spawningEnabled = true;
 
@@ -65,6 +67,8 @@ export class CreatureManager {
       this.leviathanSpawnedThisVisit = false;
     }
 
+    this.leviathanBlipTimer = Math.max(0, this.leviathanBlipTimer - dt);
+
     if (!this.spawningEnabled) return;
 
     this.spawnCooldown -= dt;
@@ -74,7 +78,9 @@ export class CreatureManager {
     if (active < INTERACTION.maxCreatures && this.spawnCooldown <= 0) {
       this.trySpawn(playerPos, zone.index);
       // Repoblación rápida si quedamos bajo el mínimo; pausada si no.
-      this.spawnCooldown = active < INTERACTION.minCreatures ? 0.25 : 1.4;
+      // H4c: la zona 4 se sentía escasa → cooldown a la mitad.
+      const cooldown = active < INTERACTION.minCreatures ? 0.25 : 1.4;
+      this.spawnCooldown = zone.index === 4 ? cooldown / 2 : cooldown;
     }
   }
 
@@ -110,7 +116,13 @@ export class CreatureManager {
     creature.group.rotation.y = Math.random() * Math.PI * 2;
     this.creatures.push(creature);
     this.scene.add(creature.group);
-    if (creature.isLeviathan) this.leviathanSpawnedThisVisit = true;
+    if (creature.isLeviathan) {
+      this.leviathanSpawnedThisVisit = true;
+      // H4c: "bramido" de aparición — ola de destellos recorriendo las 9 placas
+      // (reusa el destello por-nota escalonado) + blip grande en el sonar 3 s.
+      creature.pulse(9);
+      this.leviathanBlipTimer = 3;
+    }
   }
 
   private findSpawnPosition(
@@ -164,6 +176,7 @@ export class CreatureManager {
           bearing: Math.atan2(crossY, dot),
           distance: Math.hypot(vx, vz),
           active: c.state === "LISTENING",
+          strong: c.isLeviathan && this.leviathanBlipTimer > 0,
         };
       });
   }

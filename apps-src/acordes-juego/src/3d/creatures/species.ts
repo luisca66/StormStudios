@@ -62,12 +62,15 @@ function buildJellyfish(color: number): CreatureVisual {
   );
   group.add(bell);
 
-  const tentacleMat = glowMat(color, 0x0a1016, 0.7);
+  // H4a: material propio por tentáculo para destellar nota a nota.
+  const tentacleMats: THREE.MeshStandardMaterial[] = [];
   const tentacles: THREE.Mesh[] = [];
   for (let i = 0; i < 9; i++) {
     const a = (i / 9) * Math.PI * 2;
-    const tentacle = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.008, 1.7, 4), tentacleMat);
+    const mat = glowMat(color, 0x0a1016, 0.7);
+    const tentacle = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.008, 1.7, 4), mat);
     tentacle.position.set(Math.cos(a) * 0.55, -0.9, Math.sin(a) * 0.55);
+    tentacleMats.push(mat);
     tentacles.push(tentacle);
     group.add(tentacle);
   }
@@ -75,7 +78,7 @@ function buildJellyfish(color: number): CreatureVisual {
 
   return {
     group,
-    glowMaterials: [bellMat, tentacleMat],
+    glowMaterials: [bellMat, ...tentacleMats],
     glowSprites: group.children.filter((c): c is THREE.Sprite => c instanceof THREE.Sprite),
     bodyRadius: 1.6,
     animate(_dt, elapsed) {
@@ -85,6 +88,9 @@ function buildJellyfish(color: number): CreatureVisual {
         tentacles[i].rotation.x = Math.sin(elapsed * 1.8 + i) * 0.14;
         tentacles[i].rotation.z = Math.cos(elapsed * 1.5 + i) * 0.14;
       }
+    },
+    flashSegment(index, intensity) {
+      tentacleMats[index % tentacleMats.length].emissiveIntensity += intensity * 3;
     },
   };
 }
@@ -107,32 +113,49 @@ function buildSchool(color: number): CreatureVisual {
     yOff: (Math.random() - 0.5) * 2.2,
   }));
   const dummy = new THREE.Object3D();
+  // H4a: destello por sub-racimo (escala de instancia); H4c: huida compactando órbitas.
+  const flashes = new Float32Array(COUNT);
+  let fleeK = 0;
+
+  const animate = (_dt: number, elapsed: number): void => {
+    const orbitShrink = 1 - fleeK * 0.75; // H4c: los peces se compactan al huir
+    for (let i = 0; i < COUNT; i++) {
+      const p = params[i];
+      const a = elapsed * p.speed + p.phase;
+      const r = p.r * orbitShrink;
+      dummy.position.set(
+        Math.cos(a) * r,
+        (p.yOff + Math.sin(a * 1.3) * 0.4 + Math.sin(a) * r * p.tilt * 0.3) * orbitShrink,
+        Math.sin(a) * r,
+      );
+      // El cono apunta hacia donde nada (tangente de la órbita).
+      dummy.lookAt(
+        dummy.position.x - Math.sin(a) * r,
+        dummy.position.y,
+        dummy.position.z + Math.cos(a) * r,
+      );
+      dummy.rotateX(Math.PI / 2);
+      dummy.scale.setScalar(1 + flashes[i] * 1.2);
+      dummy.updateMatrix();
+      school.setMatrixAt(i, dummy.matrix);
+    }
+    school.instanceMatrix.needsUpdate = true;
+  };
 
   return {
     group,
     glowMaterials: [mat],
     glowSprites: group.children.filter((c): c is THREE.Sprite => c instanceof THREE.Sprite),
     bodyRadius: 3.2,
-    animate(_dt, elapsed) {
-      for (let i = 0; i < COUNT; i++) {
-        const p = params[i];
-        const a = elapsed * p.speed + p.phase;
-        dummy.position.set(
-          Math.cos(a) * p.r,
-          p.yOff + Math.sin(a * 1.3) * 0.4 + Math.sin(a) * p.r * p.tilt * 0.3,
-          Math.sin(a) * p.r,
-        );
-        // El cono apunta hacia donde nada (tangente de la órbita).
-        dummy.lookAt(
-          dummy.position.x - Math.sin(a) * p.r,
-          dummy.position.y,
-          dummy.position.z + Math.cos(a) * p.r,
-        );
-        dummy.rotateX(Math.PI / 2);
-        dummy.updateMatrix();
-        school.setMatrixAt(i, dummy.matrix);
-      }
-      school.instanceMatrix.needsUpdate = true;
+    animate,
+    flashSegment(index, intensity, noteCount) {
+      const j0 = Math.floor((index * COUNT) / noteCount);
+      const j1 = Math.floor(((index + 1) * COUNT) / noteCount);
+      for (let j = j0; j < j1; j++) flashes[j] = intensity;
+    },
+    fleeAnimate(dt, elapsed, progress) {
+      fleeK = Math.min(1, progress);
+      animate(dt, elapsed);
     },
   };
 }
@@ -156,13 +179,16 @@ function buildSquid(color: number): CreatureVisual {
     group.add(fin);
   }
 
-  const tentacleMat = glowMat(color, 0x0a1016, 0.7);
+  // H4a: material propio por tentáculo — la nota i destella el par i.
+  const tentacleMats: THREE.MeshStandardMaterial[] = [];
   const tentacles: THREE.Mesh[] = [];
   for (let i = 0; i < 8; i++) {
     const a = (i / 8) * Math.PI * 2;
-    const tentacle = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.01, 1.3, 4), tentacleMat);
+    const mat = glowMat(color, 0x0a1016, 0.7);
+    const tentacle = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.01, 1.3, 4), mat);
     tentacle.rotation.x = Math.PI / 2;
     tentacle.position.set(Math.cos(a) * 0.22, Math.sin(a) * 0.22, 1.7);
+    tentacleMats.push(mat);
     tentacles.push(tentacle);
     group.add(tentacle);
   }
@@ -170,7 +196,7 @@ function buildSquid(color: number): CreatureVisual {
 
   return {
     group,
-    glowMaterials: [bodyMat, finMat, tentacleMat],
+    glowMaterials: [bodyMat, finMat, ...tentacleMats],
     glowSprites: group.children.filter((c): c is THREE.Sprite => c instanceof THREE.Sprite),
     bodyRadius: 2.0,
     animate(_dt, elapsed) {
@@ -182,6 +208,11 @@ function buildSquid(color: number): CreatureVisual {
       fins[0].rotation.y = Math.sin(elapsed * 2.0) * 0.35;
       fins[1].rotation.y = -Math.sin(elapsed * 2.0) * 0.35;
       group.rotation.y = Math.sin(elapsed * 0.4) * 0.5;
+    },
+    flashSegment(index, intensity) {
+      const pair = (index * 2) % tentacleMats.length;
+      tentacleMats[pair].emissiveIntensity += intensity * 3;
+      tentacleMats[pair + 1].emissiveIntensity += intensity * 3;
     },
   };
 }
@@ -231,6 +262,11 @@ function buildAnglerfish(color: number): CreatureVisual {
       group.rotation.z = Math.sin(elapsed * 0.9) * 0.06;
       jaw.rotation.x = Math.max(0, Math.sin(elapsed * 0.7)) * 0.25;
     },
+    // Las notas llegan escalonadas → el señuelo parpadea n veces, una por nota.
+    flashSegment(_index, intensity) {
+      lureMat.emissiveIntensity += intensity * 4;
+      lureHalo.material.opacity = Math.min(1, lureHalo.material.opacity + intensity * 0.4);
+    },
   };
 }
 
@@ -238,10 +274,13 @@ function buildAnglerfish(color: number): CreatureVisual {
 function buildSiphonophore(color: number): CreatureVisual {
   const group = new THREE.Group();
   const BEADS = 16;
-  const beadMat = glowMat(color, 0x121821, 1.3);
+  // H4a: material propio por farol — la nota i enciende su grupo (16/nNotas).
+  const beadMats: THREE.MeshStandardMaterial[] = [];
   const beads: THREE.Mesh[] = [];
   for (let i = 0; i < BEADS; i++) {
-    const bead = new THREE.Mesh(new THREE.SphereGeometry(i % 3 === 0 ? 0.3 : 0.2, 8, 6), beadMat);
+    const mat = glowMat(color, 0x121821, 1.3);
+    const bead = new THREE.Mesh(new THREE.SphereGeometry(i % 3 === 0 ? 0.3 : 0.2, 8, 6), mat);
+    beadMats.push(mat);
     beads.push(bead);
     group.add(bead);
   }
@@ -250,7 +289,7 @@ function buildSiphonophore(color: number): CreatureVisual {
 
   return {
     group,
-    glowMaterials: [beadMat],
+    glowMaterials: beadMats,
     glowSprites: [halo],
     bodyRadius: 3.4,
     animate(_dt, elapsed) {
@@ -263,6 +302,13 @@ function buildSiphonophore(color: number): CreatureVisual {
           3.2 - t * 6.4,
           Math.cos(wave * 0.8) * 0.9 * t,
         );
+      }
+    },
+    flashSegment(index, intensity, noteCount) {
+      const size = Math.ceil(BEADS / noteCount);
+      const j0 = index * size;
+      for (let j = j0; j < Math.min(BEADS, j0 + size); j++) {
+        beadMats[j].emissiveIntensity += intensity * 2.5;
       }
     },
   };
@@ -287,14 +333,17 @@ function buildDumbo(color: number): CreatureVisual {
     group.add(ear);
   }
 
-  const armMat = glowMat(color, 0x0d1016, 0.6);
+  // H4a: material propio por brazo — la nota i destella el par i.
+  const armMats: THREE.MeshStandardMaterial[] = [];
   const arms: THREE.Mesh[] = [];
   for (let i = 0; i < 8; i++) {
     const a = (i / 8) * Math.PI * 2;
-    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.02, 0.7, 4), armMat);
+    const mat = glowMat(color, 0x0d1016, 0.6);
+    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.02, 0.7, 4), mat);
     arm.position.set(Math.cos(a) * 0.4, -0.75, Math.sin(a) * 0.4);
     arm.rotation.z = Math.cos(a) * 0.5;
     arm.rotation.x = -Math.sin(a) * 0.5;
+    armMats.push(mat);
     arms.push(arm);
     group.add(arm);
   }
@@ -302,7 +351,7 @@ function buildDumbo(color: number): CreatureVisual {
 
   return {
     group,
-    glowMaterials: [bodyMat, earMat, armMat],
+    glowMaterials: [bodyMat, earMat, ...armMats],
     glowSprites: group.children.filter((c): c is THREE.Sprite => c instanceof THREE.Sprite),
     bodyRadius: 1.5,
     animate(_dt, elapsed) {
@@ -312,6 +361,11 @@ function buildDumbo(color: number): CreatureVisual {
       for (let i = 0; i < arms.length; i++) {
         arms[i].rotation.y = Math.sin(elapsed * 1.6 + i) * 0.12;
       }
+    },
+    flashSegment(index, intensity) {
+      const pair = (index * 2) % armMats.length;
+      armMats[pair].emissiveIntensity += intensity * 3;
+      armMats[pair + 1].emissiveIntensity += intensity * 3;
     },
   };
 }
@@ -325,7 +379,9 @@ function buildLeviathan(color: number): CreatureVisual {
     emissive: 0x000000,
     roughness: 1,
   });
-  const plateMat = glowMat(color, 0x0a0f16, 1.8);
+  // H4a: material propio por placa dorsal — la nota i destella la placa i
+  // (y el "bramido" de aparición recorre las placas en ola, ver manager).
+  const plateMats: THREE.MeshStandardMaterial[] = [];
   const segments: THREE.Mesh[] = [];
   for (let i = 0; i < SEGMENTS; i++) {
     const radius = 3.2 * (1 - (i / SEGMENTS) * 0.75);
@@ -334,8 +390,10 @@ function buildLeviathan(color: number): CreatureVisual {
     segments.push(seg);
     group.add(seg);
 
+    const plateMat = glowMat(color, 0x0a0f16, 1.8);
     const plate = new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.6, 4), plateMat);
     plate.position.set(0, radius * 0.95, i * 4.6);
+    plateMats.push(plateMat);
     group.add(plate);
   }
   const halo = makeHalo(color, 14, 0.22);
@@ -344,7 +402,7 @@ function buildLeviathan(color: number): CreatureVisual {
 
   return {
     group,
-    glowMaterials: [plateMat],
+    glowMaterials: plateMats,
     glowSprites: [halo],
     bodyRadius: 11,
     animate(_dt, elapsed) {
@@ -354,6 +412,9 @@ function buildLeviathan(color: number): CreatureVisual {
         plate.position.x = segments[i].position.x;
       }
       group.rotation.y += _dt * 0.06; // cruza lentamente el campo visual
+    },
+    flashSegment(index, intensity) {
+      plateMats[index % plateMats.length].emissiveIntensity += intensity * 3;
     },
   };
 }

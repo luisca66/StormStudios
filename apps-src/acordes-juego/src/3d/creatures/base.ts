@@ -5,6 +5,7 @@
 import * as THREE from "three";
 import type { ChordType } from "@/music/chords";
 import { INTERACTION } from "@/config";
+import { noteToMidi } from "@/music/theory";
 
 export type CreatureState = "IDLE" | "LISTENING" | "FLEEING" | "CAPTURED" | "GONE";
 
@@ -18,11 +19,24 @@ export interface CreatureVisual {
   bodyRadius: number;
   /** Animación idle propia de la especie. */
   animate(dt: number, elapsed: number): void;
+  /**
+   * H4a: destello por-nota. Si la especie lo implementa, cada nota i del acorde
+   * ilumina SU segmento (tentáculo/farol/placa…) con la intensidad dada; se llama
+   * cada frame (también con 0 para apagar). Sin implementar → cuerpo completo.
+   * Se invoca DESPUÉS del barrido global de brillo: sumar (+=), no asignar.
+   */
+  flashSegment?(index: number, intensity: number, noteCount: number): void;
+  /** H4c: huida propia de la especie (p.ej. el cardumen se compacta). progress 0→1. */
+  fleeAnimate?(dt: number, elapsed: number, progress: number): void;
 }
 
 const FLEE_DURATION = 1.6;
 const CAPTURE_DURATION = 1.25;
 const GLOW_DECAY_SECONDS = 1.6;
+// H4a: escalonado y mini-envolvente de cada nota del acorde.
+const NOTE_STAGGER = 0.09;
+const NOTE_ATTACK = 0.02;
+const NOTE_DECAY = 0.35;
 const WHITE = new THREE.Color(0xffffff);
 
 export class Creature {
@@ -40,6 +54,11 @@ export class Creature {
   private stateTime = 0;
   private baseEmissive: number[];
   private baseSpriteOpacity: number[];
+  // H4a: cuántas notas destellan y el reloj desde el pulse().
+  private pulseNotes = 0;
+  private pulseTime = 0;
+  /** H4b: escala por registro (fundamental grave = criatura grande). */
+  readonly baseScale: number;
 
   constructor(
     readonly visual: CreatureVisual,
@@ -50,6 +69,14 @@ export class Creature {
     this.group = visual.group;
     this.baseEmissive = visual.glowMaterials.map((m) => m.emissiveIntensity);
     this.baseSpriteOpacity = visual.glowSprites.map((s) => s.material.opacity);
+
+    // H4b: scale = 1.35 − (rootMidi − 48) × 0.0125, clamp [0.85, 1.35] (§4b).
+    this.baseScale = THREE.MathUtils.clamp(
+      1.35 - (noteToMidi(rootNote) - 48) * 0.0125,
+      0.85,
+      1.35,
+    );
+    this.group.scale.setScalar(this.baseScale);
 
     const clickRadius = visual.bodyRadius * INTERACTION.clickRadiusFactor;
     this.clickSphere = new THREE.Mesh(
@@ -69,9 +96,11 @@ export class Creature {
     return this.group.position;
   }
 
-  /** El acorde suena: destello bioluminiscente (PLAN §7). */
-  pulse(): void {
+  /** El acorde suena: destello bioluminiscente (PLAN §7). H4a: nota a nota. */
+  pulse(noteCount = 1): void {
     this.glowEnvelope = 1;
+    this.pulseNotes = noteCount;
+    this.pulseTime = 0;
   }
 
   /** Fallo: huye a la oscuridad (PLAN §6.1 — un solo intento). */
@@ -115,6 +144,28 @@ export class Creature {
       );
     }
 
+    // H4a: mini-envolventes por nota (nota i arranca en i×0.09 s; ataque 0.02,
+    // caída 0.35). Con hook de especie → destella el segmento i; sin hook → suma
+    // al cuerpo completo. Corre DESPUÉS del barrido global (que asigna, no suma).
+    if (this.pulseNotes > 0) {
+      this.pulseTime += dt;
+      let noteBoost = 0;
+      let anyAlive = false;
+      for (let i = 0; i < this.pulseNotes; i++) {
+        const t = this.pulseTime - i * NOTE_STAGGER;
+        if (t < NOTE_ATTACK + NOTE_DECAY) anyAlive = true;
+        if (t < 0) continue;
+        const env =
+          t < NOTE_ATTACK ? t / NOTE_ATTACK : Math.max(0, 1 - (t - NOTE_ATTACK) / NOTE_DECAY);
+        if (this.visual.flashSegment) this.visual.flashSegment(i, env, this.pulseNotes);
+        else noteBoost += env;
+      }
+      if (noteBoost > 0) {
+        for (const m of this.visual.glowMaterials) m.emissiveIntensity += noteBoost * 1.8;
+      }
+      if (!anyAlive) this.pulseNotes = 0;
+    }
+
     switch (this.state) {
       case "IDLE":
       case "LISTENING": {
@@ -131,14 +182,20 @@ export class Creature {
       case "FLEEING": {
         const speed = 6 + this.stateTime * 16; // acelera hacia la oscuridad
         this.group.position.addScaledVector(this.fleeDir, speed * dt);
-        this.visual.animate(dt * 2.5, elapsed * 2.5); // aleteo frenético
+        // H4c: la especie puede tener huida propia (cardumen compacto);
+        // por defecto, aleteo frenético.
+        if (this.visual.fleeAnimate) {
+          this.visual.fleeAnimate(dt, elapsed, this.stateTime / FLEE_DURATION);
+        } else {
+          this.visual.animate(dt * 2.5, elapsed * 2.5);
+        }
         return this.stateTime < FLEE_DURATION;
       }
       case "CAPTURED": {
         // Nada hacia la cámara mientras se encoge y brilla blanco.
         this.group.position.lerp(playerPos, Math.min(1, 2.2 * dt));
         const k = Math.max(0.06, 1 - this.stateTime / CAPTURE_DURATION);
-        this.group.scale.setScalar(k);
+        this.group.scale.setScalar(k * this.baseScale); // H4b: respeta el tamaño base
         this.visual.animate(dt * 1.5, elapsed);
         return this.stateTime < CAPTURE_DURATION;
       }

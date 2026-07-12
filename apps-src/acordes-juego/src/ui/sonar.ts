@@ -8,6 +8,8 @@ export interface SonarBlip {
   distance: number;
   /** Resalta el blip (criatura en escucha). */
   active?: boolean;
+  /** H4c: blip grande (bramido del Leviatán al aparecer). */
+  strong?: boolean;
 }
 
 const RANGE = 70; // distancia máx representada (== spawnRadiusMax)
@@ -67,10 +69,21 @@ export class Sonar {
       const d = Math.min(1, blip.distance / RANGE) * radius * 0.92;
       const x = cx + Math.sin(blip.bearing) * d;
       const y = cy - Math.cos(blip.bearing) * d;
-      ctx.fillStyle = blip.active ? "rgba(255, 210, 127, 0.95)" : "rgba(125, 211, 252, 0.9)";
+      ctx.fillStyle = blip.strong
+        ? "rgba(255, 160, 90, 0.95)"
+        : blip.active
+          ? "rgba(255, 210, 127, 0.95)"
+          : "rgba(125, 211, 252, 0.9)";
       ctx.beginPath();
-      ctx.arc(x, y, blip.active ? 3.4 : 2.4, 0, Math.PI * 2);
+      ctx.arc(x, y, blip.strong ? 6 : blip.active ? 3.4 : 2.4, 0, Math.PI * 2);
       ctx.fill();
+      if (blip.strong) {
+        // Anillo de eco alrededor del bramido.
+        ctx.strokeStyle = "rgba(255, 160, 90, 0.5)";
+        ctx.beginPath();
+        ctx.arc(x, y, 9, 0, Math.PI * 2);
+        ctx.stroke();
+      }
     }
   }
 }
