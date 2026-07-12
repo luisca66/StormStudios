@@ -314,13 +314,14 @@ function answerCurrent(chordId: string): void {
   if (result.correct) {
     player.playCorrect();
     creature.capture();
-    hud.showFeedback(true, `${t("feedback.correct")} +${result.points}`);
     if (result.thermoclineOpened) {
       game.player.depthLimit = dive.allowedBottomY();
       game.environment.setThermoclineOpen(dive.zoneIndex, true);
-      window.setTimeout(() => hud.showFeedback(true, t("feedback.zoneOpen")), 1900);
+      hud.showFeedback(true, `${t("feedback.correct")} +${result.points} — ${t("feedback.zoneOpen")}`);
       // Solo Expedición desbloquea zonas de forma persistente (PLAN §6.4).
       if (dive.mode === "EXPEDITION") saveUnlockedZone(dive.zoneIndex + 1);
+    } else {
+      hud.showFeedback(true, `${t("feedback.correct")} +${result.points}`);
     }
   } else {
     player.playIncorrect();
