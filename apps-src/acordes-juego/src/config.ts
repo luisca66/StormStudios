@@ -149,7 +149,7 @@ export const INTERACTION = {
   spawnRadiusMin: 25,
   spawnRadiusMax: 70,
   minSeparation: 15,
-  interactMaxDistance: 45, // si la criatura queda más lejos, vuelve a EXPLORANDO
+  interactMaxDistance: 80, // si la criatura queda más lejos, vuelve a EXPLORANDO
   listenTimeoutSec: 30,
   recycleDistance: 90,
   clickRadiusFactor: 1.5,
