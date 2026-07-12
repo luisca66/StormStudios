@@ -84,15 +84,16 @@ body {
   width: min(560px, 94vw);
   max-height: 92vh;
   overflow-y: auto;
+  overflow-x: hidden;
   text-align: center;
 }
 
 .title {
   font-family: var(--font-title);
   font-weight: 900;
-  font-size: clamp(1.9rem, 6vw, 2.8rem);
-  letter-spacing: 0.35em;
-  padding-left: 0.35em;
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
   color: var(--neon-soft);
   text-shadow: 0 0 18px rgba(56, 189, 248, 0.55), 0 0 60px rgba(56, 189, 248, 0.25);
 }
