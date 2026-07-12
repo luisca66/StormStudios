@@ -26,8 +26,12 @@ export interface AnswerResult {
 
 export class DiveState {
   readonly quota: number;
-  /** Capturas por zona (persisten al re-visitar dentro de la sesión). */
+  /** Racha de capturas por zona — H1: un error la reinicia a 0 (PLAN-HITOS-2). */
   private zoneCaptures: Partial<Record<number, number>> = {};
+  /** Zonas cuya termoclina ya abrió en esta sesión: abrir es IRREVERSIBLE. */
+  private openedZones = new Set<number>();
+  /** Máximo histórico de racha por zona: los grupos introducidos NO regresan. */
+  private introHighWater: Partial<Record<number, number>> = {};
   zoneIndex: number;
   score = 0;
   streak = 0;
@@ -45,15 +49,23 @@ export class DiveState {
     this.quota = MODES[mode].quota;
     this.zoneIndex = startZone;
     // Zonas por encima de la inicial cuentan como completadas (ya desbloqueadas).
-    for (let i = 1; i < startZone; i++) this.zoneCaptures[i] = this.quota;
+    for (let i = 1; i < startZone; i++) {
+      this.openedZones.add(i);
+      this.introHighWater[i] = this.quota;
+    }
   }
 
   get capturesInZone(): number {
     return this.zoneCaptures[this.zoneIndex] ?? 0;
   }
 
+  /** Avance para los grupos de introducción de acordes: no regresa con errores. */
+  get zoneIntroProgress(): number {
+    return this.introHighWater[this.zoneIndex] ?? 0;
+  }
+
   isZoneOpen(zoneIndex: number): boolean {
-    return (this.zoneCaptures[zoneIndex] ?? 0) >= this.quota;
+    return this.openedZones.has(zoneIndex);
   }
 
   /** Y mínima permitida: el fondo de la zona más profunda alcanzable. */
@@ -76,6 +88,11 @@ export class DiveState {
     const correct = correctChordId === answeredChordId;
     if (!correct) {
       this.streak = 0;
+      // H1: el desbloqueo exige aciertos CONSECUTIVOS — el error reinicia la
+      // racha de la zona actual (las zonas ya abiertas no se cierran).
+      if (!this.openedZones.has(this.zoneIndex)) {
+        this.zoneCaptures[this.zoneIndex] = 0;
+      }
       if (this.mode === "SURVIVAL") this.hull = Math.max(0, this.hull - 1);
       return { correct, points: 0, thermoclineOpened: false, hullRemaining: this.hull };
     }
@@ -89,8 +106,16 @@ export class DiveState {
     this.captures++;
     const before = this.capturesInZone;
     this.zoneCaptures[this.zoneIndex] = before + 1;
-    const thermoclineOpened = before + 1 === this.quota;
-    if (thermoclineOpened) points += SCORING.zoneBonus;
+    this.introHighWater[this.zoneIndex] = Math.max(
+      this.introHighWater[this.zoneIndex] ?? 0,
+      before + 1,
+    );
+    const thermoclineOpened =
+      before + 1 >= this.quota && !this.openedZones.has(this.zoneIndex);
+    if (thermoclineOpened) {
+      this.openedZones.add(this.zoneIndex);
+      points += SCORING.zoneBonus;
+    }
 
     this.score += points;
     return { correct, points, thermoclineOpened, hullRemaining: this.hull };

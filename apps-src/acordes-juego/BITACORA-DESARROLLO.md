@@ -205,3 +205,57 @@ Regla: al terminar (o interrumpir) trabajo, anota fecha, fase, qué quedó y pen
 - Website verificado: 166 tests pasan, ESLint limpio, `next build` limpio (129 páginas),
   rutas ES/EN e iframe revisados en navegador sin errores de consola.
 - No se hizo commit, push ni despliegue a producción.
+
+---
+
+## Sesión 2026-07-12 (Claude Fable 5) — Plan de hitos v2
+
+- Juego YA EN PRODUCCIÓN (migración y ajustes finales por Sol/GPT: cuota 20,
+  interactMaxDistance 80, thrusters, fullscreen). Esta carpeta es la fuente de
+  verdad; el standalone de D:\ quedó desactualizado.
+- Nuevo plan por hitos con decisiones nuevas de Luis:
+  **`PLAN-HITOS-BATISFERA-2.md`** — H1 desbloqueo por racha de 20, H2 movimiento
+  tipo nave (siempre horizontal, peek limitado), H3 referencias/adornos en la
+  oscuridad, H4 criaturas a calidad final (destello por-nota), H5 QA+deploy.
+- Regla operativa: un hito por sesión, economía de tokens estricta (sección 0 del
+  plan). Próximo agente: empezar por H1.
+
+### ✅ H1 — Desbloqueo por racha de 20 (2026-07-12, Claude Fable 5)
+- `state.ts`: `openedZones` (Set, abrir es irreversible) + `introHighWater` por zona
+  + getter `zoneIntroProgress`; error → `zoneCaptures[zona] = 0` solo si la zona no
+  está abierta; `isZoneOpen` usa el Set; `thermoclineOpened` con `>=` y guard.
+- `main.ts`: assigner y `optionsFor` usan `zoneIntroProgress` (el pool no regresa);
+  aviso `feedback.quotaReset` (i18n es/en nuevo) 1.9 s tras el error si había racha.
+- Verificado en consola: 3 ok→racha 3/intro 3 · error→racha 0/intro 3 · 20 seguidas→
+  abierta+límite −298 · error post-apertura NO cierra. Build limpio.
+- Tooling dev: junction `C:\Users\Luis\dev-acordes-juego` → esta carpeta (el runner
+  de preview no tolera espacios en la ruta; Vite rechaza rutas 8.3). Launch config
+  "batisfera-repo" en el proyecto D:\ la usa.
+- Siguiente: **H2** (movimiento tipo nave, PLAN-HITOS-BATISFERA-2.md).
+
+### ✅ H2 — Movimiento tipo nave (2026-07-12, Claude Fable 5)
+- `config.ts` PHYSICS: accelLerp 1.8, turnSpeed 1.6, peekPitchMax 20°, peekSensitivity,
+  peekRecenterLerp 4, bankMaxRoll 5°, bankFactor, accelDipMax 2°. `pitchClamp` eliminado.
+- `player.ts` reescrito: la nave tiene RUMBO y queda SIEMPRE horizontal. W/S = thrust
+  horizontal por el rumbo (ya no sigue la mirada); A/D y ←/→ = timón (adiós strafe);
+  drag horizontal = timón; drag vertical = peek ±20° auto-recentrado (~0.25 s a mitad);
+  Q/E-Space/Shift vertical puro; banqueo cosmético al girar + cabeceo al acelerar
+  (solo cámara, decaen a 0); `externalMove.strafe` → `.turn` (joystick X = timón);
+  `isMoving` incluye giro (para el loop de thrusters de Sol); freno instantáneo de Sol
+  conservado. Click/tap/hover SIN cambios.
+- Verificado: W 1 s → dy 0.000/dxz 4.48 · Q solo Y (drift=inercia previa, esperado) ·
+  A → 1.6 rad/s exacto con roll −5° · peek clamp −0.349 rad exacto y recentrado a ~0.
+- ⚠️ Tooling: `npm run build` debe correrse desde la RUTA REAL (con espacios), no desde
+  el junction `C:\Users\Luis\dev-acordes-juego` (rolldown se confunde con rutas
+  emitidas). El junction es SOLO para el dev server del preview.
+- Siguiente: **H3** (referencias/adornos en la oscuridad).
+
+### ✅ Ajuste puntual (2026-07-12, Claude Sonnet 5): velocidad de giro a la mitad
+- Pedido directo de Luis tras probar H2: el timón se sentía muy rápido.
+- `config.ts` PHYSICS.turnSpeed: **1.6 → 0.8 rad/s** (nota: el resumen de H2 arriba
+  todavía dice 1.6 — ese valor quedó OBSOLETO, el vigente es 0.8).
+  Afecta solo A/D y ←/→ con teclado/joystick; el drag del mouse (timón por arrastre)
+  usa `lookSensitivity` y no cambió.
+- Verificado en consola: A sostenida 0.5 s → 0.40 rad de giro (exactamente la mitad
+  del 0.80 rad que daba antes). Sin build de producción (cambio de constante, HMR).
+- Siguiente: **H3** (referencias/adornos en la oscuridad, PLAN-HITOS-BATISFERA-2.md).

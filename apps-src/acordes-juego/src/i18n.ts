@@ -53,6 +53,7 @@ const dict: Record<Lang, Record<string, string>> = {
     "feedback.wrong": "Huyó…",
     "feedback.was": "Era:",
     "feedback.zoneOpen": "Termoclina abierta: puedes descender",
+    "feedback.quotaReset": "Racha de zona perdida: el desbloqueo exige aciertos seguidos",
 
     "pause.title": "Pausa",
     "pause.resume": "Reanudar",
@@ -131,6 +132,7 @@ const dict: Record<Lang, Record<string, string>> = {
     "feedback.wrong": "It fled…",
     "feedback.was": "It was:",
     "feedback.zoneOpen": "Thermocline open: you may descend",
+    "feedback.quotaReset": "Zone streak lost: unlocking requires consecutive hits",
 
     "pause.title": "Paused",
     "pause.resume": "Resume",

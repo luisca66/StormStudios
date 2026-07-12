@@ -243,7 +243,8 @@ let thrustersActive = false;
 // El generador alimenta al spawner con el avance de la zona actual.
 game.creatures.setAssigner((zoneIndex) => {
   if (!dive || dive.ended || paused) return null;
-  const q = questions.next(zoneIndex, dive.capturesInZone, dive.quota);
+  // H1: el pool introducido usa el máximo histórico (no regresa al fallar).
+  const q = questions.next(zoneIndex, dive.zoneIntroProgress, dive.quota);
   return q ? { chord: q.chord, rootNote: q.rootNote, isReview: q.isReview } : null;
 });
 
@@ -285,7 +286,7 @@ game.onCreatureTapped = (creature) => {
   const options = questions.optionsFor(
     { chord: creature.chord, rootNote: creature.rootNote, isReview: creature.isReview },
     dive.zoneIndex,
-    dive.capturesInZone,
+    dive.zoneIntroProgress, // H1: los botones tampoco regresan al fallar
     dive.quota,
   );
   const familyLabel = creature.isReview
@@ -305,6 +306,7 @@ function answerCurrent(chordId: string): void {
   listeningElapsedSec = 0;
   hud.clearQuestion();
 
+  const zoneProgressBefore = dive.capturesInZone; // H1: para avisar racha perdida
   const result = dive.answer(creature.chord.id, chordId, creature.isLeviathan);
   recordAttempt(creature.chord.id, result.correct, creature.speciesId); // F7: guarda YA
   hud.setScore(dive.score);
@@ -334,6 +336,14 @@ function answerCurrent(chordId: string): void {
       hud.addCrack();
       hud.setHull(result.hullRemaining, 3);
       if (result.hullRemaining === 0) endDive("HULL_OUT");
+    }
+    // H1: si había progreso de zona y esta aún no estaba abierta, avisar el reinicio.
+    if (zoneProgressBefore > 0 && !dive.isZoneOpen(dive.zoneIndex)) {
+      window.setTimeout(() => {
+        if (dive && !dive.ended && !paused) {
+          hud.showFeedback(false, t("feedback.quotaReset"));
+        }
+      }, 1900);
     }
   }
 }

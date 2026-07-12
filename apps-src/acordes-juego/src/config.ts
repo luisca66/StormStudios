@@ -155,12 +155,19 @@ export const INTERACTION = {
   clickRadiusFactor: 1.5,
 } as const;
 
-// Física de nado (PLAN §9)
+// Física de nave (H2, PLAN-HITOS-2): la nave gira su RUMBO y permanece SIEMPRE
+// horizontal — nunca de cabeza. La vista solo hace un "peek" limitado que se recentra.
 export const PHYSICS = {
   maxSpeed: 8, // u/s
-  accelLerp: 2.5, // factor exponencial de aceleración/freno
-  lookSensitivity: 0.0035, // rad por pixel de drag
-  pitchClamp: (85 * Math.PI) / 180,
+  accelLerp: 1.8, // inercia con masa (H2: antes 2.5)
+  lookSensitivity: 0.0035, // rad por pixel de drag horizontal (timón)
+  turnSpeed: 0.8, // rad/s de giro con A/D o ←/→ (Luis: la mitad, 2026-07-12)
+  peekPitchMax: (20 * Math.PI) / 180, // peek vertical máximo de la cámara
+  peekSensitivity: 0.0028, // rad por pixel de drag vertical
+  peekRecenterLerp: 4, // velocidad de recentrado del peek al soltar
+  bankMaxRoll: (5 * Math.PI) / 180, // banqueo cosmético máximo al girar
+  bankFactor: 0.22, // roll = -velocidadDeGiro × factor
+  accelDipMax: (2 * Math.PI) / 180, // cabeceo visual al acelerar/frenar
   camRollAmplitude: (0.5 * Math.PI) / 180, // balanceo submarino
   camRollSpeed: 0.4,
 } as const;

@@ -1,6 +1,8 @@
-// Controlador del sumergible (PLAN §9): nado libre 3D con inercia,
-// mirar arrastrando (cursor SIEMPRE visible, SIN pointer lock — decisión de Luis),
-// y detección de tap/click corto para tocar criaturas (raycast lo hace el renderer).
+// Controlador de la nave (H2, PLAN-HITOS-2): la nave tiene RUMBO y permanece
+// SIEMPRE horizontal — nunca de cabeza. W/S = thrust horizontal según el rumbo,
+// A/D o drag horizontal = timón (girar), Q/E = vertical puro. El drag vertical
+// solo hace un "peek" de cámara limitado que se auto-recentra al soltar.
+// Cursor SIEMPRE visible, SIN pointer lock; click corto = tocar criatura.
 
 import * as THREE from "three";
 import { PHYSICS, WORLD } from "@/config";
@@ -9,7 +11,7 @@ const CLICK_MAX_PX = 5;
 const CLICK_MAX_MS = 250;
 
 export class PlayerController {
-  // Rig: yaw (Y) → pitch (X) → cámara (roll se aplica a la cámara).
+  // Rig: yaw (rumbo de la nave) → pitch (solo peek) → cámara (roll+dip cosméticos).
   readonly yawObject = new THREE.Object3D();
   private pitchObject = new THREE.Object3D();
 
@@ -17,7 +19,12 @@ export class PlayerController {
   private velocity = new THREE.Vector3();
   private enabled = false;
 
-  // Estado de drag para mirar / detectar click corto.
+  // Banqueo: velocidad de giro suavizada (rad/s) para roll cosmético.
+  private turnVelSmoothed = 0;
+  private prevYaw = 0;
+  private accelDip = 0;
+
+  // Estado de drag para timón/peek / detectar click corto.
   private dragging = false;
   private dragMoved = false;
   private dragStart = { x: 0, y: 0, t: 0 };
@@ -31,8 +38,8 @@ export class PlayerController {
   onEscape: (() => void) | null = null;
   /** Y mínima permitida (termoclina cerrada). null = sin límite. */
   depthLimit: number | null = null;
-  /** Entrada táctil (joystick + botones ▲▼), sumada a la de teclado. */
-  readonly externalMove = { forward: 0, strafe: 0, vertical: 0 };
+  /** Entrada táctil: joystick Y = thrust, X = timón; botones = vertical. */
+  readonly externalMove = { forward: 0, turn: 0, vertical: 0 };
 
   private elapsed = 0;
 
@@ -54,7 +61,7 @@ export class PlayerController {
     window.addEventListener("keyup", (e) => this.keys.delete(e.key.toLowerCase()));
     window.addEventListener("blur", () => this.keys.clear());
 
-    // Mouse: arrastrar para mirar; click corto = tap.
+    // Mouse: arrastrar = timón (horizontal) + peek (vertical); click corto = tap.
     canvas.addEventListener("mousedown", (e) => {
       if (e.button !== 0) return;
       this.beginDrag(e.clientX, e.clientY);
@@ -69,7 +76,7 @@ export class PlayerController {
       this.endDrag(e.clientX, e.clientY);
     });
 
-    // Touch: un dedo = mirar / tap. (Joystick de movimiento llega en F8.)
+    // Touch: un dedo sobre el canvas = timón + peek / tap.
     canvas.addEventListener(
       "touchstart",
       (e) => {
@@ -118,11 +125,12 @@ export class PlayerController {
     }
     if (!this.enabled || !this.dragMoved) return;
 
+    // Horizontal = timón (gira la NAVE); vertical = peek limitado de cámara.
     this.yawObject.rotation.y -= dx * PHYSICS.lookSensitivity;
     this.pitchObject.rotation.x = THREE.MathUtils.clamp(
-      this.pitchObject.rotation.x - dy * PHYSICS.lookSensitivity,
-      -PHYSICS.pitchClamp,
-      PHYSICS.pitchClamp,
+      this.pitchObject.rotation.x - dy * PHYSICS.peekSensitivity,
+      -PHYSICS.peekPitchMax,
+      PHYSICS.peekPitchMax,
     );
   }
 
@@ -140,12 +148,12 @@ export class PlayerController {
     if (!on) {
       this.keys.clear();
       this.externalMove.forward = 0;
-      this.externalMove.strafe = 0;
+      this.externalMove.turn = 0;
       this.externalMove.vertical = 0;
     }
   }
 
-  /** Conecta el joystick virtual y los botones ▲▼ (móvil, PLAN §9). */
+  /** Joystick virtual y botones ▲▼ (móvil): Y = thrust, X = timón. */
   attachTouchControls(
     zone: HTMLElement,
     knob: HTMLElement,
@@ -181,7 +189,8 @@ export class PlayerController {
             dx /= mag;
             dy /= mag;
           }
-          this.externalMove.strafe = dx;
+          // X del joystick = timón (derecha = girar a la derecha = yaw negativo).
+          this.externalMove.turn = -dx;
           this.externalMove.forward = -dy;
           knob.style.transform = `translate(${dx * RADIUS * 0.6}px, ${dy * RADIUS * 0.6}px)`;
           e.preventDefault();
@@ -194,7 +203,7 @@ export class PlayerController {
       for (const touch of Array.from(e.changedTouches)) {
         if (touch.identifier !== activeTouch) continue;
         activeTouch = -1;
-        this.externalMove.strafe = 0;
+        this.externalMove.turn = 0;
         this.externalMove.forward = 0;
         knob.style.transform = "";
       }
@@ -226,7 +235,7 @@ export class PlayerController {
   }
 
   get isMoving(): boolean {
-    return this.velocity.lengthSq() > 0.05;
+    return this.velocity.lengthSq() > 0.05 || Math.abs(this.turnVelSmoothed) > 0.15;
   }
 
   /** Rumbo (rotación Y) — el sonar orienta sus blips con esto. */
@@ -237,7 +246,14 @@ export class PlayerController {
   setPose(x: number, y: number, z: number, yaw = 0, pitch = 0): void {
     this.yawObject.position.set(x, y, z);
     this.yawObject.rotation.y = yaw;
-    this.pitchObject.rotation.x = pitch;
+    this.prevYaw = yaw;
+    this.turnVelSmoothed = 0;
+    this.accelDip = 0;
+    this.pitchObject.rotation.x = THREE.MathUtils.clamp(
+      pitch,
+      -PHYSICS.peekPitchMax,
+      PHYSICS.peekPitchMax,
+    );
     this.velocity.set(0, 0, 0);
   }
 
@@ -253,37 +269,50 @@ export class PlayerController {
   update(dt: number): void {
     this.elapsed += dt;
 
-    // Balanceo submarino sutil (roll de cámara).
-    this.camera.rotation.z =
-      Math.sin(this.elapsed * PHYSICS.camRollSpeed * Math.PI * 2) * PHYSICS.camRollAmplitude;
+    if (!this.enabled) {
+      // Solo balanceo submarino en reposo/menú.
+      this.camera.rotation.z =
+        Math.sin(this.elapsed * PHYSICS.camRollSpeed * Math.PI * 2) * PHYSICS.camRollAmplitude;
+      return;
+    }
 
-    if (!this.enabled) return;
-
-    // Ejes de entrada (teclado + táctil).
+    // ---------- Ejes de entrada (teclado + táctil) ----------
     const forwardInput =
       (this.key("w", "arrowup") ? 1 : 0) -
       (this.key("s", "arrowdown") ? 1 : 0) +
       this.externalMove.forward;
-    const strafeInput =
-      (this.key("d", "arrowright") ? 1 : 0) -
-      (this.key("a", "arrowleft") ? 1 : 0) +
-      this.externalMove.strafe;
+    // A/← = girar a la izquierda (+yaw); D/→ = derecha (−yaw).
+    const turnInput =
+      (this.key("a", "arrowleft") ? 1 : 0) -
+      (this.key("d", "arrowright") ? 1 : 0) +
+      this.externalMove.turn;
     const verticalInput =
       (this.key("q", " ") ? 1 : 0) -
       (this.key("e", "shift") ? 1 : 0) +
       this.externalMove.vertical;
 
-    // Avanzar sigue la mirada COMPLETA (incluye componente vertical) — PLAN §9.
-    const forward = new THREE.Vector3();
-    this.camera.getWorldDirection(forward);
-    const right = new THREE.Vector3().crossVectors(forward, new THREE.Vector3(0, 1, 0));
-    if (right.lengthSq() < 1e-6) right.set(1, 0, 0); // mirando exactamente vertical
-    right.normalize();
+    // ---------- Timón ----------
+    this.yawObject.rotation.y += turnInput * PHYSICS.turnSpeed * dt;
 
-    const target = new THREE.Vector3()
-      .addScaledVector(forward, forwardInput)
-      .addScaledVector(right, strafeInput)
-      .add(new THREE.Vector3(0, verticalInput, 0));
+    // Velocidad de giro real (incluye drag), suavizada para el banqueo.
+    const yaw = this.yawObject.rotation.y;
+    const rawTurnVel = dt > 0 ? (yaw - this.prevYaw) / dt : 0;
+    this.prevYaw = yaw;
+    this.turnVelSmoothed +=
+      (rawTurnVel - this.turnVelSmoothed) * Math.min(1, 8 * dt);
+
+    // ---------- Peek: se recentra solo al no arrastrar ----------
+    if (!this.dragging) {
+      this.pitchObject.rotation.x +=
+        (0 - this.pitchObject.rotation.x) * Math.min(1, PHYSICS.peekRecenterLerp * dt);
+    }
+
+    // ---------- Thrust: SIEMPRE en el plano horizontal del rumbo ----------
+    const target = new THREE.Vector3(
+      -Math.sin(yaw) * forwardInput,
+      verticalInput,
+      -Math.cos(yaw) * forwardInput,
+    );
     if (target.lengthSq() > 1) target.normalize();
     target.multiplyScalar(PHYSICS.maxSpeed);
 
@@ -298,7 +327,21 @@ export class PlayerController {
     const pos = this.yawObject.position;
     pos.addScaledVector(this.velocity, dt);
 
-    // Límites verticales: bajo la superficie y sobre el fondo.
+    // ---------- Cosmética: banqueo al girar + cabeceo al acelerar ----------
+    const bank = THREE.MathUtils.clamp(
+      -this.turnVelSmoothed * PHYSICS.bankFactor,
+      -PHYSICS.bankMaxRoll,
+      PHYSICS.bankMaxRoll,
+    );
+    this.camera.rotation.z =
+      Math.sin(this.elapsed * PHYSICS.camRollSpeed * Math.PI * 2) * PHYSICS.camRollAmplitude +
+      bank;
+
+    const dipTarget = -forwardInput * PHYSICS.accelDipMax;
+    this.accelDip += (dipTarget - this.accelDip) * Math.min(1, 3 * dt);
+    this.camera.rotation.x = this.accelDip;
+
+    // ---------- Límites del mundo ----------
     const floor = this.depthLimit ?? WORLD.bottomY + 3;
     pos.y = THREE.MathUtils.clamp(pos.y, Math.max(floor, WORLD.bottomY + 3), -1.5);
     if (pos.y <= floor + 0.5 && this.velocity.y < 0) this.velocity.y *= 0.2;
