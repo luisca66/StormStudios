@@ -102,9 +102,31 @@ check(!listening.shouldCancelListening(29.99, maxDist), "La escucha se canceló 
 check(listening.shouldCancelListening(30, maxDist), "La escucha no se canceló a los 30 s");
 check(listening.shouldCancelListening(0, maxDist + 0.01), "La escucha no se canceló fuera de rango");
 
+// H5: las 20 apariciones de Expedición deben recorrer verticalmente cada zona;
+// no pueden repoblarse todas alrededor de la profundidad inicial.
+for (let zone = 1; zone <= 5; zone++) {
+  const ys = Array.from(
+    { length: config.INTERACTION.spawnDepthSteps },
+    (_, i) => config.creatureSpawnY(zone, i),
+  );
+  check(ys.every((y, i) => i === 0 || y < ys[i - 1]), `Apariciones sin descenso en zona ${zone}`);
+  check(
+    ys[0] - ys.at(-1) > config.WORLD.zoneHeight * 0.8,
+    `Apariciones no cubren la zona ${zone}`,
+  );
+  check(
+    Math.abs(ys[5] - ys[0]) > config.INTERACTION.spawnVerticalLead,
+    `Se pueden generar seis criaturas sin mover la nave en zona ${zone}`,
+  );
+  check(
+    config.creatureSpawnY(zone, config.INTERACTION.spawnDepthSteps) > ys.at(-1),
+    `Los intentos extra no regresan hacia arriba en zona ${zone}`,
+  );
+}
+
 if (failures.length) {
   console.error(`QA falló (${failures.length}):\n- ${failures.join("\n- ")}`);
   process.exitCode = 1;
 } else {
-  console.log("QA lógica OK: 33 acordes, 5 zonas, 150 preguntas, modos, repaso, Leviatán y escucha.");
+  console.log("QA lógica OK: acordes, zonas, 150 preguntas, modos, repaso, Leviatán, escucha y progresión vertical.");
 }

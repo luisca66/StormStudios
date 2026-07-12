@@ -148,12 +148,33 @@ export const INTERACTION = {
   minCreatures: 4,
   spawnRadiusMin: 25,
   spawnRadiusMax: 70,
+  // La cuota de Expedición se reparte verticalmente por toda la zona. El spawner
+  // solo adelanta unos metros respecto de la nave para obligar a explorar/descender.
+  spawnDepthSteps: 20,
+  spawnTopInset: 4,
+  spawnBottomInset: 10,
+  spawnVerticalLead: 28,
   minSeparation: 15,
   interactMaxDistance: 80, // si la criatura queda más lejos, vuelve a EXPLORANDO
   listenTimeoutSec: 30,
   recycleDistance: 90,
   clickRadiusFactor: 1.5,
 } as const;
+
+/** Profundidad planificada del objetivo n dentro de una zona (0 = primero). */
+export function creatureSpawnY(zoneIndex: number, ordinal: number): number {
+  const zone = ZONES[Math.max(0, Math.min(ZONES.length - 1, zoneIndex - 1))];
+  const lastStep = INTERACTION.spawnDepthSteps - 1;
+  // Tras recorrer los 20 peldaños, los intentos extra vuelven hacia arriba. Esto
+  // evita que una racha reiniciada pueda completarse girando junto a la termoclina.
+  const cycleLength = lastStep * 2;
+  const phase = cycleLength > 0 ? Math.max(0, ordinal) % cycleLength : 0;
+  const step = phase <= lastStep ? phase : cycleLength - phase;
+  const t = lastStep > 0 ? step / lastStep : 0;
+  const firstY = zone.yTop - INTERACTION.spawnTopInset;
+  const lastY = zone.yBottom + INTERACTION.spawnBottomInset;
+  return firstY + (lastY - firstY) * t;
+}
 
 // Física de nave (H2, PLAN-HITOS-2): la nave gira su RUMBO y permanece SIEMPRE
 // horizontal — nunca de cabeza. La vista solo hace un "peek" limitado que se recentra.

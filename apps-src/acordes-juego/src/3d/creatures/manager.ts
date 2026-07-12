@@ -3,7 +3,14 @@
 // acordes viene de fuera (F4: aleatoria de zona; F5: questions.ts con pesos).
 
 import * as THREE from "three";
-import { FAMILY_GLOW, INTERACTION, WORLD, ZONES, zoneAtY } from "@/config";
+import {
+  creatureSpawnY,
+  FAMILY_GLOW,
+  INTERACTION,
+  WORLD,
+  ZONES,
+  zoneAtY,
+} from "@/config";
 import type { ChordType } from "@/music/chords";
 import { Creature } from "./base";
 import { LEVIATHAN, speciesForZone, type SpeciesDef } from "./species";
@@ -23,6 +30,8 @@ export class CreatureManager {
   private spawnCooldown = 0;
   private leviathanSpawnedThisVisit = false;
   private lastZoneIndex = 0;
+  /** Siguiente peldaño vertical de aparición, independiente para cada zona. */
+  private spawnOrdinalByZone = new Map<number, number>();
   /** H4c: mientras corre, el blip del Leviatán se dibuja grande en el sonar. */
   private leviathanBlipTimer = 0;
   /** F5 lo apaga durante transiciones/resumen. */
@@ -85,8 +94,12 @@ export class CreatureManager {
   }
 
   private trySpawn(playerPos: THREE.Vector3, zoneIndex: number): void {
-    const assignment = this.assignChord(zoneIndex);
-    if (!assignment) return;
+    const ordinal = this.spawnOrdinalByZone.get(zoneIndex) ?? 0;
+    const targetY = creatureSpawnY(zoneIndex, ordinal);
+
+    // No llenar toda la zona mientras la nave sigue arriba: el próximo objetivo
+    // aparece al aproximarse verticalmente y obliga a continuar la inmersión.
+    if (Math.abs(targetY - playerPos.y) > INTERACTION.spawnVerticalLead) return;
 
     // Leviatán: una vez por visita a la Fosa (PLAN §7), 12% de probabilidad por spawn.
     let species: SpeciesDef;
@@ -99,8 +112,16 @@ export class CreatureManager {
       species = pool[Math.floor(Math.random() * pool.length)];
     }
 
-    const position = this.findSpawnPosition(playerPos, zoneIndex, species.id === "leviathan");
+    const position = this.findSpawnPosition(
+      playerPos,
+      zoneIndex,
+      species.id === "leviathan",
+      targetY,
+    );
     if (!position) return;
+
+    const assignment = this.assignChord(zoneIndex);
+    if (!assignment) return;
 
     const color = FAMILY_GLOW[assignment.chord.family];
     const creature = new Creature(
@@ -115,6 +136,7 @@ export class CreatureManager {
     // Mirando en una dirección aleatoria (los visuales son mayormente simétricos).
     creature.group.rotation.y = Math.random() * Math.PI * 2;
     this.creatures.push(creature);
+    this.spawnOrdinalByZone.set(zoneIndex, ordinal + 1);
     this.scene.add(creature.group);
     if (creature.isLeviathan) {
       this.leviathanSpawnedThisVisit = true;
@@ -129,6 +151,7 @@ export class CreatureManager {
     playerPos: THREE.Vector3,
     zoneIndex: number,
     isLeviathan: boolean,
+    targetY: number,
   ): THREE.Vector3 | null {
     const zone = ZONES[zoneIndex - 1];
     const yMin = zone.yBottom + 10;
@@ -143,7 +166,7 @@ export class CreatureManager {
       const candidate = new THREE.Vector3(
         playerPos.x + Math.cos(angle) * radius,
         THREE.MathUtils.clamp(
-          playerPos.y + (Math.random() - 0.5) * 40,
+          targetY + (Math.random() - 0.5) * 3,
           Math.min(yMin, yMax),
           Math.max(yMin, yMax),
         ),
@@ -189,5 +212,6 @@ export class CreatureManager {
     }
     this.creatures = [];
     this.leviathanSpawnedThisVisit = false;
+    this.spawnOrdinalByZone.clear();
   }
 }

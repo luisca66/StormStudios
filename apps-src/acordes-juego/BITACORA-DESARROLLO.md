@@ -319,3 +319,38 @@ Regla: al terminar (o interrumpir) trabajo, anota fecha, fase, qué quedó y pen
   `npm run deploy` en `apps-src/acordes-juego`, verificar en navegador y
   commitear `public/apps/acordes-juego` (mismo patrón que el deploy de H2+H3).
   Si pide seguir con el plan, el siguiente hito sigue siendo **H5**.
+
+### ✅ H5 — QA final + bundle de producción (2026-07-12, Codex GPT-5)
+- Corregida una regresión de exploración detectada por Luis: el spawner usaba
+  `player.y ±20`, por lo que las 20 preguntas podían resolverse girando a una sola
+  profundidad. Ahora las 20 apariciones recorren >80% de la altura de cada zona,
+  con un máximo de 28 u verticales por delante de la nave. Al iniciar hay 5 objetivos;
+  los siguientes no se generan hasta descender. Tras 20 intentos la ruta rebota hacia
+  arriba para que una racha reiniciada tampoco se resuelva quieto. `clear()` reinicia.
+- Prueba integrada en navegador: inicio en y≈−6 → 5 criaturas en y≈−10…−33;
+  retirarlas sin mover → 0 reemplazos; descender a y=−28 → 3 nuevas en y≈−38…−54.
+- `scripts/qa.mjs` incluye una regresión para las cinco zonas: 20 profundidades
+  estrictamente descendentes, cobertura >80%, bloqueo estático y retorno ascendente.
+
+Checklist §13 (resultado final):
+- ✅ 33 acordes y cobertura de samples: `npm run qa` (33 IDs únicos, 150 preguntas).
+- ✅ Fundamental sostenida/F# y escape `%23`: verificación de audio conservada de F1/F9.
+- ✅ Timbre Aleatorio se resuelve una vez por criatura y varía entre preguntas.
+- ✅ Re-escuchar no llama `answer()`; no puntúa ni penaliza.
+- ✅ Acierto/fallo persiste inmediatamente mediante `recordAttempt()`.
+- ✅ Termoclina bloquea antes de 20 y abre con racha completa; regresión automática.
+- ✅ Repaso hadal: tercera pregunta tras media cuota y opciones de una familia; QA OK.
+- ✅ O₂: agotamiento y bonificación exacta de +8 s; QA OK.
+- ✅ Supervivencia: tres fallos agotan casco y las grietas se acumulan; QA OK.
+- ✅ Leviatán: aparición hadal, puntuación doble, bitácora y pulso de placas conservados.
+- ✅ ES/EN: rutas integradas verificadas; `/en/apps/acordes/game` carga `?lang=en` completo.
+- ✅ Audio permanece bloqueado hasta gesto y se desbloquea al iniciar.
+- ✅ Móvil fuera del alcance actual por decisión de producto.
+- ✅ Navegador: rutas ES/EN, menú y HUD cargan sin overlay ni errores observados.
+- ✅ `Esc` pausa; el drenaje de O₂ está condicionado a `!paused`.
+- ✅ Extras H5: racha-reset, nave horizontal, referencias H3 y destello H4 presentes;
+  progresión vertical nueva comprobada desde el bundle público.
+
+- `npm run qa` y `npm run build` limpios; bundle JS 552.43 kB (<600 kB desktop).
+- `npm run deploy` ejecutado: H4 + progresión vertical copiados a
+  `public/apps/acordes-juego`. Rutas integradas ES/EN verificadas en el dev server.
