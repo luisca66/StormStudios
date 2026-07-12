@@ -259,3 +259,23 @@ Regla: al terminar (o interrumpir) trabajo, anota fecha, fase, qué quedó y pen
 - Verificado en consola: A sostenida 0.5 s → 0.40 rad de giro (exactamente la mitad
   del 0.80 rad que daba antes). Sin build de producción (cambio de constante, HMR).
 - Siguiente: **H3** (referencias/adornos en la oscuridad, PLAN-HITOS-BATISFERA-2.md).
+
+### ✅ H3 — Referencias en la oscuridad (2026-07-12, Claude Fable 5)
+- `environment.ts` (único archivo tocado): pared de la fosa (cilindro rocoso BackSide
+  con ruido; nunca invade el clamp de radio 90) + vetas emisivas (CanvasTexture
+  procedural, color FAMILY_GLOW por zona, alpha 0 → plena bajo −300, aditiva 0.25) +
+  12 pináculos instanciados (z5). Decorado por zona con RNG sembrado (20260712, mundo
+  idéntico entre sesiones): z1 burbujas×3 + barco hundido; z2 arcos×4 + 5 medusas
+  decorativas (`SPECIES[0].build` sin Creature → sin click/sonar, tinte pálido);
+  z3 45 corales instanciados en 6 parches de pared, puntas ámbar; z4 osamenta de
+  ballena (costillas instanciadas, hueso emisivo tenue) + 15 anémonas-farol
+  (parpadeo compartido de UNA malla); z5 2 columnas de venteo sobre chimeneas.
+  14 balizas (poste+lámpara+halo sin(t·3+fase)+letrero de profundidad CanvasTexture).
+- Verificado: teleport −380/−520/−700 → 11/18/12 objetos autoluminosos H3 a <80 u SIN
+  foco · 0.31 ms/frame a −520 (22 draw calls, 5 254 tris) → ≥50 fps sobrado · build
+  limpio 550 KB (<600) · screenshot z4 con anémona y vetas.
+- Tooling: config "batisfera" añadida al `.claude/launch.json` del REPO
+  (`npm run dev --prefix C:/Users/Luis/dev-acordes-juego`, puerto 5173).
+  ⚠️ El rAF del preview pane se throttlea en segundo plano: medir FPS con render
+  síncrono por consola, no con contadores de rAF.
+- Sin commit/push/deploy (pendiente de OK de Luis). Siguiente: **H4** (criaturas).

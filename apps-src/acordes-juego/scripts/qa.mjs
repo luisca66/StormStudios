@@ -54,25 +54,37 @@ for (let zone = 1; zone <= 5; zone++) {
   }
 }
 
+const quota1 = config.MODES.EXPEDITION.quota; // 20 desde H1 (racha, PLAN-HITOS-2)
 const expedition = new state.DiveState("EXPEDITION", 1);
 for (let i = 0; i < 8; i++) expedition.answer("MAJOR", "MAJOR", false);
-check(expedition.score === 202, `Ocho capturas deben sumar 202, sumaron ${expedition.score}`);
-check(expedition.isZoneOpen(1), "Ocho capturas deben abrir la zona 1");
-check(expedition.allowedBottomY() === config.ZONES[1].yBottom + 2, "La termoclina no abrió el paso a zona 2");
+check(expedition.score === 152, `Ocho capturas (racha, sin abrir) deben sumar 152, sumaron ${expedition.score}`);
+check(!expedition.isZoneOpen(1), "Ocho capturas NO deben abrir la zona (cuota es 20 desde H1)");
+
+const fullStreak = new state.DiveState("EXPEDITION", 1);
+for (let i = 0; i < quota1; i++) fullStreak.answer("MAJOR", "MAJOR", false);
+check(fullStreak.score === 670, `${quota1} capturas seguidas deben sumar 670, sumaron ${fullStreak.score}`);
+check(fullStreak.isZoneOpen(1), `${quota1} capturas seguidas deben abrir la zona 1`);
+check(fullStreak.allowedBottomY() === config.ZONES[1].yBottom + 2, "La termoclina no abrió el paso a zona 2");
+
+const brokenStreak = new state.DiveState("EXPEDITION", 1);
+for (let i = 0; i < quota1; i++) brokenStreak.answer("MAJOR", "MAJOR", false);
+brokenStreak.answer("MAJOR", "MINOR", false); // error DESPUÉS de abierta
+check(brokenStreak.isZoneOpen(1), "Un error tras abrir la zona no debe volver a cerrarla (H1)");
 
 const normalCapture = new state.DiveState("EXPEDITION", 5).answer("MAJOR_13", "MAJOR_13", false);
 const leviathanCapture = new state.DiveState("EXPEDITION", 5).answer("MAJOR_13", "MAJOR_13", true);
 check(leviathanCapture.points === normalCapture.points * 2, "El Leviatán debe valer el doble");
 
+const halfQuota = config.MODES.EXPEDITION.quota / 2; // repaso arranca pasada la mitad
 const reviewMachine = new questions.QuestionMachine();
 const hadalQuestions = [
-  reviewMachine.next(5, 4, config.MODES.EXPEDITION.quota),
-  reviewMachine.next(5, 4, config.MODES.EXPEDITION.quota),
-  reviewMachine.next(5, 4, config.MODES.EXPEDITION.quota),
+  reviewMachine.next(5, halfQuota, config.MODES.EXPEDITION.quota),
+  reviewMachine.next(5, halfQuota, config.MODES.EXPEDITION.quota),
+  reviewMachine.next(5, halfQuota, config.MODES.EXPEDITION.quota),
 ];
 check(hadalQuestions[2]?.isReview === true, "La tercera pregunta hadal debe ser repaso");
 if (hadalQuestions[2]) {
-  const reviewOptions = reviewMachine.optionsFor(hadalQuestions[2], 5, 4, config.MODES.EXPEDITION.quota);
+  const reviewOptions = reviewMachine.optionsFor(hadalQuestions[2], 5, halfQuota, config.MODES.EXPEDITION.quota);
   check(reviewOptions.every((option) => option.family === hadalQuestions[2].chord.family), "El repaso debe mostrar una sola familia");
 }
 
@@ -85,9 +97,10 @@ const survival = new state.DiveState("SURVIVAL", 1);
 for (let i = 0; i < 3; i++) survival.answer("MAJOR", "MINOR", false);
 check(survival.hull === 0, "Tres fallos deben agotar el casco");
 
-check(!listening.shouldCancelListening(29.99, 45), "La escucha se canceló antes del límite");
-check(listening.shouldCancelListening(30, 45), "La escucha no se canceló a los 30 s");
-check(listening.shouldCancelListening(0, 45.01), "La escucha no se canceló fuera de rango");
+const maxDist = config.INTERACTION.interactMaxDistance; // 80 desde el ajuste de Sol
+check(!listening.shouldCancelListening(29.99, maxDist), "La escucha se canceló antes del límite");
+check(listening.shouldCancelListening(30, maxDist), "La escucha no se canceló a los 30 s");
+check(listening.shouldCancelListening(0, maxDist + 0.01), "La escucha no se canceló fuera de rango");
 
 if (failures.length) {
   console.error(`QA falló (${failures.length}):\n- ${failures.join("\n- ")}`);
