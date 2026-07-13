@@ -354,3 +354,11 @@ Checklist §13 (resultado final):
 - `npm run qa` y `npm run build` limpios; bundle JS 552.43 kB (<600 kB desktop).
 - `npm run deploy` ejecutado: H4 + progresión vertical copiados a
   `public/apps/acordes-juego`. Rutas integradas ES/EN verificadas en el dev server.
+
+### ✅ Ajuste UX zona 2 — retirar falsas criaturas (2026-07-12, Codex GPT-5)
+- Luis detectó medusas visibles que no respondían al clic. Eran las 5 medusas
+  decorativas de H3, construidas con la misma fábrica visual que la especie activa
+  pero deliberadamente sin `Creature`, esfera de clic ni blip.
+- Se retiraron del entorno para que toda silueta de criatura visible represente un
+  objetivo interactivo. La zona 2 conserva sus arcos rocosos, balizas y pared/vetas
+  como referencias ambientales, sin señuelos que parezcan preguntas rotas.

@@ -4,8 +4,6 @@
 
 import * as THREE from "three";
 import { DEPTH_KEYFRAMES, WORLD, ZONES, FAMILY_GLOW, depthMeters } from "@/config";
-import { SPECIES } from "./creatures/species";
-import type { CreatureVisual } from "./creatures/base";
 
 const SNOW_COUNT = 1500;
 const SNOW_BOX = 120; // cubo centrado en el jugador
@@ -82,7 +80,6 @@ export class Environment {
   private columns: { attr: THREE.BufferAttribute; yTop: number; yBottom: number; speed: number }[] = [];
   private beacons: { lampMat: THREE.MeshBasicMaterial; haloMat: THREE.SpriteMaterial; phase: number }[] = [];
   private anemoneMat: THREE.MeshStandardMaterial | null = null;
-  private decoJellies: { visual: CreatureVisual; baseY: number; phase: number }[] = [];
   private beaconHaloTex: THREE.CanvasTexture | null = null;
 
   // Termoclinas: discos shimmer en cada frontera de zona (PLAN §5.1).
@@ -209,7 +206,6 @@ export class Environment {
     this.buildBubbleColumns(rng); // z1
     this.buildShipwreck(rng); // z1
     this.buildArches(rng); // z2
-    this.buildDecoJellies(rng); // z2
     this.buildCoralGarden(rng); // z3
     this.buildWhaleFall(rng); // z4
     this.buildAnemones(rng); // z4
@@ -298,22 +294,6 @@ export class Environment {
       archMesh.rotation.z = Math.PI / 2 - arc / 2; // arco centrado arriba, patas abajo
       archMesh.rotation.y = rng() * Math.PI * 2;
       this.scene.add(archMesh);
-    }
-  }
-
-  // Medusas decorativas (z2): reusa la fábrica visual SIN Creature → sin clickSphere
-  // ni blip de sonar. Tinte pálido para no confundirse con los colores de familia.
-  private buildDecoJellies(rng: () => number): void {
-    const build = SPECIES[0].build; // buildJellyfish
-    for (let i = 0; i < 5; i++) {
-      const visual = build(0x8ea6c8);
-      const a = rng() * Math.PI * 2;
-      const r = 55 + rng() * 28;
-      const baseY = -170 - rng() * 115;
-      visual.group.position.set(Math.cos(a) * r, baseY, Math.sin(a) * r);
-      visual.group.scale.setScalar(1.2 + rng() * 0.6);
-      this.scene.add(visual.group);
-      this.decoJellies.push({ visual, baseY, phase: rng() * Math.PI * 2 });
     }
   }
 
@@ -685,11 +665,5 @@ export class Environment {
       this.anemoneMat.emissiveIntensity = 0.55 + (Math.sin(elapsed * 0.8) + 1) * 0.35;
     }
 
-    // H3: medusas decorativas — deriva vertical lenta + su animación de campana.
-    for (const j of this.decoJellies) {
-      j.visual.group.position.y = j.baseY + Math.sin(elapsed * 0.25 + j.phase) * 2.5;
-      j.visual.group.rotation.y += dt * 0.05;
-      j.visual.animate?.(dt, elapsed + j.phase);
-    }
   }
 }
