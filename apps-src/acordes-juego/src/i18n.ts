@@ -48,12 +48,14 @@ const dict: Record<Lang, Record<string, string>> = {
     "hud.answer": "¿Qué acorde canta?",
     "hud.family": "Familia detectada",
     "hud.quota": "Capturas de zona",
+    "hud.nearest": "Objetivo",
 
     "feedback.correct": "¡Capturada!",
     "feedback.wrong": "Huyó…",
     "feedback.was": "Era:",
     "feedback.zoneOpen": "Termoclina abierta: puedes descender",
     "feedback.quotaReset": "Racha de zona perdida: el desbloqueo exige aciertos seguidos",
+    "feedback.approach": "Acércate {meters} m para escuchar",
 
     "pause.title": "Pausa",
     "pause.resume": "Reanudar",
@@ -127,12 +129,14 @@ const dict: Record<Lang, Record<string, string>> = {
     "hud.answer": "Which chord is it singing?",
     "hud.family": "Family detected",
     "hud.quota": "Zone captures",
+    "hud.nearest": "Target",
 
     "feedback.correct": "Captured!",
     "feedback.wrong": "It fled…",
     "feedback.was": "It was:",
     "feedback.zoneOpen": "Thermocline open: you may descend",
     "feedback.quotaReset": "Zone streak lost: unlocking requires consecutive hits",
+    "feedback.approach": "Move {meters} m closer to listen",
 
     "pause.title": "Paused",
     "pause.resume": "Resume",

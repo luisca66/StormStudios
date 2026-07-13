@@ -1,11 +1,17 @@
 // Sonar circular de la consola (PLAN §8): blips relativos al rumbo de la cámara.
 // Canvas 2D autónomo; recibe datos por frame desde hud.tick().
 
+import { INTERACTION } from "@/config";
+
 export interface SonarBlip {
   /** Rumbo relativo a la mirada: 0 = al frente, + = a la derecha (radianes). */
   bearing: number;
   /** Distancia en unidades de mundo. */
   distance: number;
+  /** Distancia tridimensional real usada para la interacción. */
+  range: number;
+  /** La criatura ya puede activarse. */
+  inRange: boolean;
   /** Resalta el blip (criatura en escucha). */
   active?: boolean;
   /** H4c: blip grande (bramido del Leviatán al aparecer). */
@@ -48,6 +54,13 @@ export class Sonar {
       ctx.arc(cx, cy, radius * f, 0, Math.PI * 2);
       ctx.stroke();
     }
+    // Anillo verde: alcance real para activar la criatura.
+    ctx.strokeStyle = "rgba(74, 222, 128, 0.62)";
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius * (INTERACTION.interactMaxDistance / RANGE), 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
     // Marca de rumbo (arriba = hacia donde miras).
     ctx.beginPath();
     ctx.moveTo(cx, cy - radius);
@@ -73,6 +86,8 @@ export class Sonar {
         ? "rgba(255, 160, 90, 0.95)"
         : blip.active
           ? "rgba(255, 210, 127, 0.95)"
+          : blip.inRange
+            ? "rgba(74, 222, 128, 0.95)"
           : "rgba(125, 211, 252, 0.9)";
       ctx.beginPath();
       ctx.arc(x, y, blip.strong ? 6 : blip.active ? 3.4 : 2.4, 0, Math.PI * 2);

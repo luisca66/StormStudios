@@ -458,6 +458,8 @@ body {
 
 .sonar-screen {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   padding: 8px;
 }
@@ -467,6 +469,31 @@ body {
   max-width: 128px;
   aspect-ratio: 1;
   border-radius: 50%;
+}
+
+.sonar-distance {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+  padding: 2px 3px 0;
+  font-family: var(--font-title);
+  font-size: 0.52rem;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.sonar-distance b {
+  color: var(--neon-soft);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.sonar-distance b.in-range {
+  color: var(--ok);
+  text-shadow: 0 0 9px rgba(74, 222, 128, 0.55);
 }
 
 .stat-screen label {

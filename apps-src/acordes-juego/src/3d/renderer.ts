@@ -2,7 +2,7 @@
 // y (desde F4) raycast de criaturas. El estado del juego vive en game/ — no aquí.
 
 import * as THREE from "three";
-import { ZONES, depthMeters } from "@/config";
+import { INTERACTION, ZONES, depthMeters } from "@/config";
 import { Environment } from "./environment";
 import { PlayerController } from "./player";
 import { Cockpit } from "./cockpit";
@@ -101,7 +101,10 @@ export class Game3D {
       -(clientY / window.innerHeight) * 2 + 1,
     );
     this.raycaster.setFromCamera(this.ndc, this.camera);
-    this.raycaster.far = 75;
+    this.raycaster.far = Math.hypot(
+      INTERACTION.spawnRadiusMax,
+      INTERACTION.spawnVerticalLead,
+    ) + 10;
     const hits = this.raycaster.intersectObjects(this.creatures.clickTargets(), false);
     return hits.length > 0 ? (hits[0].object.userData.creature as Creature) : null;
   }

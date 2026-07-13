@@ -6,11 +6,13 @@
 import { getLang, t } from "../i18n";
 import { chordName, type ChordType } from "@/music/chords";
 import { Sonar, type SonarBlip } from "./sonar";
+import { INTERACTION } from "@/config";
 
 export class HUD {
   private sonar: Sonar;
   private depthValue!: HTMLElement;
   private zoneName!: HTMLElement;
+  private targetDistance!: HTMLElement;
   private scoreValue!: HTMLElement;
   private streakValue!: HTMLElement;
   /** Contenedor de botones de respuesta (lo llena F5). */
@@ -43,6 +45,10 @@ export class HUD {
       <aside class="side-panel left">
         <div class="crt sonar-screen">
           <canvas id="sonar-canvas" width="120" height="120"></canvas>
+          <div class="sonar-distance">
+            <span data-i18n="hud.nearest">${t("hud.nearest")}</span>
+            <b id="target-distance">—</b>
+          </div>
         </div>
         <div class="dial"><i></i></div>
         <div class="light-strip">
@@ -100,6 +106,7 @@ export class HUD {
 
     this.depthValue = q("#depth-value");
     this.zoneName = q("#zone-name");
+    this.targetDistance = q("#target-distance");
     this.scoreValue = q("#hud-score");
     this.streakValue = q("#hud-streak");
     this.answerArea = q("#answer-area");
@@ -230,5 +237,14 @@ export class HUD {
   /** Llamar cada frame: anima el sonar. */
   tick(dt: number, blips: SonarBlip[]): void {
     this.sonar.update(dt, blips);
+    const nearest = blips.reduce<SonarBlip | null>(
+      (best, blip) => (!best || blip.range < best.range ? blip : best),
+      null,
+    );
+    this.targetDistance.textContent = nearest ? `${Math.round(nearest.range)} m` : "—";
+    this.targetDistance.classList.toggle(
+      "in-range",
+      Boolean(nearest && nearest.range <= INTERACTION.interactMaxDistance),
+    );
   }
 }

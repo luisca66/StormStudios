@@ -17,7 +17,7 @@ import { CHORD_TYPES, CHORD_BY_ID, FAMILY_NAMES, chordName } from "@/music/chord
 import { chordNotes, hasSamplesFor, noteToMidi, midiToNote } from "@/music/theory";
 import { QuestionMachine } from "@/game/questions";
 import { DiveState, type DiveEndReason } from "@/game/state";
-import { shouldCancelListening } from "@/game/listening";
+import { distanceToInteractionRange, shouldCancelListening } from "@/game/listening";
 import { loadBitacora, recordAttempt, saveUnlockedZone } from "@/game/persistence";
 import { SPECIES } from "@/3d/creatures/species";
 import { AMBIENT_BUBBLES_URL, AMBIENT_THRUSTERS_URL, FAMILY_GLOW } from "@/config";
@@ -276,6 +276,15 @@ function playCreatureChord(creature: Creature): void {
 game.onCreatureTapped = (creature) => {
   if (!dive || dive.ended || paused) return;
   if (creature.state !== "IDLE" && creature.state !== "LISTENING") return;
+  const distance = creature.position.distanceTo(game.player.position);
+  const metersAway = distanceToInteractionRange(distance);
+  if (metersAway > 0) {
+    hud.showFeedback(
+      false,
+      t("feedback.approach").replace("{meters}", String(metersAway)),
+    );
+    return;
+  }
   if (listening && listening !== creature && listening.state === "LISTENING") {
     cancelListening(); // tocar otra cancela la anterior sin penalización (§6.1)
   }

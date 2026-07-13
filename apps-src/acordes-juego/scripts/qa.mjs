@@ -97,10 +97,13 @@ const survival = new state.DiveState("SURVIVAL", 1);
 for (let i = 0; i < 3; i++) survival.answer("MAJOR", "MINOR", false);
 check(survival.hull === 0, "Tres fallos deben agotar el casco");
 
-const maxDist = config.INTERACTION.interactMaxDistance; // 80 desde el ajuste de Sol
-check(!listening.shouldCancelListening(29.99, maxDist), "La escucha se canceló antes del límite");
-check(listening.shouldCancelListening(30, maxDist), "La escucha no se canceló a los 30 s");
-check(listening.shouldCancelListening(0, maxDist + 0.01), "La escucha no se canceló fuera de rango");
+const leashDist = config.INTERACTION.listenLeashDistance;
+check(!listening.shouldCancelListening(29.99, leashDist), "La escucha se canceló antes del límite");
+check(listening.shouldCancelListening(30, leashDist), "La escucha no se canceló a los 30 s");
+check(listening.shouldCancelListening(0, leashDist + 0.01), "La escucha no se canceló fuera de rango");
+check(listening.distanceToInteractionRange(30) === 0, "Una criatura a 30 m debe estar en rango");
+check(listening.distanceToInteractionRange(30.1) === 1, "La aproximación debe redondear hacia arriba");
+check(listening.distanceToInteractionRange(47.2) === 18, "La distancia restante es incorrecta");
 
 // H5: las 20 apariciones de Expedición deben recorrer verticalmente cada zona;
 // no pueden repoblarse todas alrededor de la profundidad inicial.

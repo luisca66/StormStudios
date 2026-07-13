@@ -362,3 +362,13 @@ Checklist §13 (resultado final):
 - Se retiraron del entorno para que toda silueta de criatura visible represente un
   objetivo interactivo. La zona 2 conserva sus arcos rocosos, balizas y pared/vetas
   como referencias ambientales, sin señuelos que parezcan preguntas rotas.
+
+### ✅ Navegación obligatoria + telémetro (2026-07-12, Codex GPT-5)
+- Alcance de activación reducido de 80 a 30 m; tolerancia de escucha de 40 m para
+  que la deriva natural no cierre una pregunta ya iniciada.
+- Sonar con anillo verde de alcance, blips verdes cuando son interactuables y
+  telémetro 3D del objetivo más cercano (`OBJETIVO X m`).
+- Tocar una criatura fuera de rango ya no reproduce el acorde ni abre respuestas:
+  muestra `Acércate X m para escuchar` (y equivalente completo en inglés).
+- Raycast ampliado al radio máximo de spawn para que el aviso funcione incluso con
+  objetivos lejanos. QA cubre umbral, redondeo y tolerancia de escucha.

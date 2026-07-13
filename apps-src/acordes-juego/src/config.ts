@@ -155,7 +155,8 @@ export const INTERACTION = {
   spawnBottomInset: 10,
   spawnVerticalLead: 28,
   minSeparation: 15,
-  interactMaxDistance: 80, // si la criatura queda más lejos, vuelve a EXPLORANDO
+  interactMaxDistance: 30, // alcance para activar una criatura (obliga a navegar)
+  listenLeashDistance: 40, // histéresis: no cancelar por la deriva tras activarla
   listenTimeoutSec: 30,
   recycleDistance: 90,
   clickRadiusFactor: 1.5,

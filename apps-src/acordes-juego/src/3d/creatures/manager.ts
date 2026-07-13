@@ -192,12 +192,16 @@ export class CreatureManager {
       .filter((c) => c.state === "IDLE" || c.state === "LISTENING")
       .map((c) => {
         const vx = c.position.x - playerPos.x;
+        const vy = c.position.y - playerPos.y;
         const vz = c.position.z - playerPos.z;
+        const range = Math.hypot(vx, vy, vz);
         const dot = fx * vx + fz * vz;
         const crossY = fx * vz - fz * vx;
         return {
           bearing: Math.atan2(crossY, dot),
           distance: Math.hypot(vx, vz),
+          range,
+          inRange: range <= INTERACTION.interactMaxDistance,
           active: c.state === "LISTENING",
           strong: c.isLeviathan && this.leviathanBlipTimer > 0,
         };
