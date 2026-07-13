@@ -11,7 +11,7 @@ export const MUSIC_TRACK_URLS = Array.from(
   { length: 15 },
   (_, i) => `${AUDIO_BASE}/batisfera/batisfera-${String(i + 1).padStart(2, "0")}.mp3`,
 );
-export const MUSIC_VOLUME_SCALE = 0.14;
+export const MUSIC_VOLUME_SCALE = 0.35;
 export const MUSIC_FADE_OUT_MS = 320;
 export const MUSIC_FADE_IN_MS = 900;
 

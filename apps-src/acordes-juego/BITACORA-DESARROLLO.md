@@ -402,8 +402,8 @@ Checklist §13 (resultado final):
 
 ### ✅ Música dinámica sin mezcla con acordes (2026-07-12, Codex GPT-5)
 - Lista aleatoria de 15 pistas R2: `batisfera/batisfera-01.mp3` a `-15.mp3`;
-  las 15 URLs verificadas con HTTP 200. Música al 14% relativo (0.112 efectivo con
-  volumen global 0.8), burbujas intactas y thrusters sin cambios (archivo al 100%).
+  las 15 URLs verificadas con HTTP 200. Música al 35% relativo (0.28 efectivo con
+  volumen global 0.8), equilibrada con burbujas a 0.35; thrusters sin cambios.
 - Al activar criatura: fade-out suave de 320 ms hasta volumen 0, pausa conservando
   `currentTime` y solo entonces reproduce el acorde. Reescuchar mantiene la música
   pausada; no puede mezclarse con ninguna repetición.
@@ -413,7 +413,9 @@ Checklist §13 (resultado final):
 - `SamplePlayer`: pista inicial y cada sucesora elegidas al azar (sin repetición
   inmediata), fades cancelables,
   retry de autoplay, respeto al volumen global y `playlistState()` para diagnóstico.
-- Verificado con audio real: 0.112→0.095 a 120 ms→0/paused a 320 ms; reescucha quedó
+- Verificado con audio real: rampa progresiva→0/paused a 320 ms; reescucha quedó
   en el mismo segundo; respuesta reanudó la pista. QA valida los 15 nombres.
 - Ajuste posterior pedido por Luis: selección totalmente aleatoria tanto al iniciar
   inmersión como al terminar cada pista; QA cubre extremos y anti-repetición inmediata.
+- Balance final pedido por Luis: música 0.14→0.35 relativo; fades y silencio del
+  acorde sin cambios.
