@@ -182,7 +182,9 @@ export function creatureSpawnY(zoneIndex: number, ordinal: number): number {
 export const PHYSICS = {
   maxSpeed: 8, // u/s
   accelLerp: 1.8, // inercia con masa (H2: antes 2.5)
-  lookSensitivity: 0.0035, // rad por pixel de drag horizontal (vista/rumbo sin motor)
+  lookSensitivity: 0.0035, // rad por pixel de drag horizontal (solo vista)
+  lookYawMax: (40 * Math.PI) / 180, // mirada lateral máxima respecto al frente
+  lookRecenterLerp: 4, // recentrado horizontal al soltar (igual al peek vertical)
   turnSpeed: 0.8, // rad/s de giro con A/D o ←/→ (Luis: la mitad, 2026-07-12)
   peekPitchMax: (20 * Math.PI) / 180, // peek vertical máximo de la cámara
   peekSensitivity: 0.0028, // rad por pixel de drag vertical

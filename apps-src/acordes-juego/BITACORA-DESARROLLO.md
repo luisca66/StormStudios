@@ -390,3 +390,12 @@ Checklist §13 (resultado final):
   luces de estado y reflejos de cristal conservados.
 - Sonar/telemetría y estadísticas replegados al perímetro; consola de respuestas más
   baja y estrecha. Verificado con HUD vacío y pregunta activa (3 botones) sin recortes.
+
+### ✅ Vista lateral autocentrada + avisos grandes (2026-07-12, Codex GPT-5)
+- El mouse ya no modifica el `yawObject` persistente de la nave: nuevo nodo
+  `lookYawObject` entre rumbo y pitch, limitado a ±40°, vuelve al frente con lerp 4
+  al soltar. A/D/joystick conservan el giro real de la nave; avanzar sigue el rumbo,
+  no la mirada temporal.
+- Avisos centrales escalables para pantallas grandes: 1.45–2.75rem (2.2vw), peso 700,
+  fondo oscuro translúcido, borde por estado y sombra; duración 1.7→2.3 s.
+- Metros y familia de las transiciones de zona también usan tamaño responsivo mayor.

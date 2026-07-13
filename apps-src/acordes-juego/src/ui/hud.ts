@@ -238,7 +238,7 @@ export class HUD {
     window.clearTimeout(this.feedbackTimer);
     this.feedbackTimer = window.setTimeout(
       () => this.feedback.classList.remove("show"),
-      1700,
+      2300,
     );
   }
 

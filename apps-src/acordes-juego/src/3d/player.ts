@@ -1,7 +1,7 @@
 // Controlador de la nave (H2, PLAN-HITOS-2): la nave tiene RUMBO y permanece
 // SIEMPRE horizontal — nunca de cabeza. W/S = thrust horizontal según el rumbo,
-// A/D = timón propulsado; drag horizontal = orientar la vista/rumbo SIN motores
-// ni banqueo. Q/E = vertical puro. El drag vertical solo hace un "peek" limitado.
+// A/D = timón propulsado; drag = mirar temporalmente SIN alterar el rumbo de la
+// nave. La vista horizontal y vertical se recentra al soltar el mouse.
 // Cursor SIEMPRE visible, SIN pointer lock; click corto = tocar criatura.
 
 import * as THREE from "three";
@@ -11,8 +11,9 @@ const CLICK_MAX_PX = 5;
 const CLICK_MAX_MS = 250;
 
 export class PlayerController {
-  // Rig: yaw (rumbo de la nave) → pitch (solo peek) → cámara (roll+dip cosméticos).
+  // Rig: yaw (rumbo nave) → lookYaw (vista lateral) → pitch (vista vertical) → cámara.
   readonly yawObject = new THREE.Object3D();
+  private lookYawObject = new THREE.Object3D();
   private pitchObject = new THREE.Object3D();
 
   private keys = new Set<string>();
@@ -44,7 +45,8 @@ export class PlayerController {
 
   constructor(private camera: THREE.PerspectiveCamera, canvas: HTMLCanvasElement) {
     this.pitchObject.add(camera);
-    this.yawObject.add(this.pitchObject);
+    this.lookYawObject.add(this.pitchObject);
+    this.yawObject.add(this.lookYawObject);
 
     window.addEventListener("keydown", (e) => {
       if (e.target instanceof HTMLInputElement) return;
@@ -124,9 +126,12 @@ export class PlayerController {
     }
     if (!this.enabled || !this.dragMoved) return;
 
-    // Horizontal = orientar vista/rumbo sin propulsión; vertical = peek de cámara.
-    // El banqueo y los thrusters se calculan solo desde A/D o el joystick.
-    this.yawObject.rotation.y -= dx * PHYSICS.lookSensitivity;
+    // Horizontal y vertical son solo vista temporal; no cambian rumbo ni posición.
+    this.lookYawObject.rotation.y = THREE.MathUtils.clamp(
+      this.lookYawObject.rotation.y - dx * PHYSICS.lookSensitivity,
+      -PHYSICS.lookYawMax,
+      PHYSICS.lookYawMax,
+    );
     this.pitchObject.rotation.x = THREE.MathUtils.clamp(
       this.pitchObject.rotation.x - dy * PHYSICS.peekSensitivity,
       -PHYSICS.peekPitchMax,
@@ -243,9 +248,15 @@ export class PlayerController {
     return this.yawObject.rotation.y;
   }
 
+  /** Desvío lateral temporal de la vista respecto al frente de la nave. */
+  get lookYaw(): number {
+    return this.lookYawObject.rotation.y;
+  }
+
   setPose(x: number, y: number, z: number, yaw = 0, pitch = 0): void {
     this.yawObject.position.set(x, y, z);
     this.yawObject.rotation.y = yaw;
+    this.lookYawObject.rotation.y = 0;
     this.turnVelSmoothed = 0;
     this.accelDip = 0;
     this.pitchObject.rotation.x = THREE.MathUtils.clamp(
@@ -300,8 +311,10 @@ export class PlayerController {
     this.turnVelSmoothed +=
       (poweredTurnVel - this.turnVelSmoothed) * Math.min(1, 8 * dt);
 
-    // ---------- Peek: se recentra solo al no arrastrar ----------
+    // ---------- Vista temporal: ambos ejes se recentran al soltar ----------
     if (!this.dragging) {
+      this.lookYawObject.rotation.y +=
+        (0 - this.lookYawObject.rotation.y) * Math.min(1, PHYSICS.lookRecenterLerp * dt);
       this.pitchObject.rotation.x +=
         (0 - this.pitchObject.rotation.x) * Math.min(1, PHYSICS.peekRecenterLerp * dt);
     }
