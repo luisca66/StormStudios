@@ -401,7 +401,7 @@ Checklist §13 (resultado final):
 - Metros y familia de las transiciones de zona también usan tamaño responsivo mayor.
 
 ### ✅ Música dinámica sin mezcla con acordes (2026-07-12, Codex GPT-5)
-- Lista secuencial de 15 pistas R2: `batisfera/batisfera-01.mp3` a `-15.mp3`;
+- Lista aleatoria de 15 pistas R2: `batisfera/batisfera-01.mp3` a `-15.mp3`;
   las 15 URLs verificadas con HTTP 200. Música al 14% relativo (0.112 efectivo con
   volumen global 0.8), burbujas intactas y thrusters sin cambios (archivo al 100%).
 - Al activar criatura: fade-out suave de 320 ms hasta volumen 0, pausa conservando
@@ -410,7 +410,10 @@ Checklist §13 (resultado final):
 - Al responder: detiene la cola del acorde, reanuda la misma pista desde el mismo
   punto y hace fade-in de 900 ms. Cancelar pregunta también recupera la música;
   cambiar directamente de criatura la mantiene en silencio entre ambos acordes.
-- `SamplePlayer`: playlist secuencial, avance al terminar pista, fades cancelables,
+- `SamplePlayer`: pista inicial y cada sucesora elegidas al azar (sin repetición
+  inmediata), fades cancelables,
   retry de autoplay, respeto al volumen global y `playlistState()` para diagnóstico.
 - Verificado con audio real: 0.112→0.095 a 120 ms→0/paused a 320 ms; reescucha quedó
   en el mismo segundo; respuesta reanudó la pista. QA valida los 15 nombres.
+- Ajuste posterior pedido por Luis: selección totalmente aleatoria tanto al iniciar
+  inmersión como al terminar cada pista; QA cubre extremos y anti-repetición inmediata.

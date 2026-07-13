@@ -20,6 +20,19 @@ interface PlaylistEntry {
   volumeScale: number;
   currentScale: number;
   fadeToken: number;
+  stopped: boolean;
+}
+
+/** Índice aleatorio; si hay alternativas, nunca repite inmediatamente current. */
+export function pickRandomTrackIndex(
+  length: number,
+  current = -1,
+  random: () => number = Math.random,
+): number {
+  if (length <= 1) return 0;
+  if (current < 0 || current >= length) return Math.floor(random() * length);
+  const candidate = Math.floor(random() * (length - 1));
+  return candidate >= current ? candidate + 1 : candidate;
 }
 
 export class SamplePlayer {
@@ -209,21 +222,23 @@ export class SamplePlayer {
     }
   }
 
-  /** Lista musical secuencial; conserva el punto de reproducción al pausarse. */
+  /** Lista musical aleatoria; conserva el punto de reproducción al pausarse. */
   startPlaylist(name: string, urls: string[], volumeScale = 1): void {
     if (urls.length === 0) return;
     this.unlock();
     let entry = this.playlists.get(name);
     if (!entry) {
-      const audio = new Audio(urls[0]);
+      const index = pickRandomTrackIndex(urls.length);
+      const audio = new Audio(urls[index]);
       audio.preload = "auto";
       entry = {
         audio,
         urls: [...urls],
-        index: 0,
+        index,
         volumeScale,
         currentScale: volumeScale,
         fadeToken: 0,
+        stopped: false,
       };
       audio.addEventListener("ended", () => this.advancePlaylist(name));
       audio.addEventListener("error", () => {
@@ -231,6 +246,13 @@ export class SamplePlayer {
       });
       this.playlists.set(name, entry);
     } else {
+      if (entry.stopped) {
+        entry.index = pickRandomTrackIndex(entry.urls.length);
+        entry.audio.src = entry.urls[entry.index];
+        entry.audio.load();
+        entry.audio.currentTime = 0;
+        entry.stopped = false;
+      }
       entry.volumeScale = volumeScale;
       entry.currentScale = volumeScale;
       entry.fadeToken++;
@@ -247,7 +269,7 @@ export class SamplePlayer {
   private advancePlaylist(name: string): void {
     const entry = this.playlists.get(name);
     if (!entry || entry.urls.length === 0) return;
-    entry.index = (entry.index + 1) % entry.urls.length;
+    entry.index = pickRandomTrackIndex(entry.urls.length, entry.index);
     entry.audio.src = entry.urls[entry.index];
     entry.audio.load();
     entry.audio.play().catch((err: unknown) => {
@@ -323,9 +345,8 @@ export class SamplePlayer {
     if (!entry) return;
     entry.fadeToken++;
     entry.audio.pause();
-    entry.index = 0;
-    entry.audio.src = entry.urls[0];
     entry.audio.currentTime = 0;
+    entry.stopped = true;
     entry.currentScale = entry.volumeScale;
     entry.audio.volume = Math.max(0, Math.min(1, this.volume * entry.currentScale));
   }
