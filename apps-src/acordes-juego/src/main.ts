@@ -11,6 +11,10 @@ import {
   type GameMode,
   type InstrumentChoice,
   depthMeters,
+  MUSIC_FADE_IN_MS,
+  MUSIC_FADE_OUT_MS,
+  MUSIC_TRACK_URLS,
+  MUSIC_VOLUME_SCALE,
   zoneAtY,
 } from "@/config";
 import { CHORD_TYPES, CHORD_BY_ID, FAMILY_NAMES, chordName } from "@/music/chords";
@@ -178,12 +182,13 @@ function showScreen(id: string): void {
 function returnToMenu(): void {
   game.stopDive();
   game.creatures.clear();
+  cancelListening(false);
   player.stopLoop("bubbles");
   player.stopLoop("thrusters");
+  player.stopPlaylist("music");
   thrustersActive = false;
   dive = null;
   paused = false;
-  cancelListening();
   showScreen("menu-screen");
   renderMenu(); // refresca zonas desbloqueadas
 }
@@ -252,24 +257,38 @@ game.creatures.setAssigner((zoneIndex) => {
 const creatureInstrument = new WeakMap<Creature, Instrument>();
 let listening: Creature | null = null;
 let listeningElapsedSec = 0;
+let chordPlaybackToken = 0;
 
-function cancelListening(): void {
+function cancelListening(resumeMusic = true): void {
+  chordPlaybackToken++;
   if (listening?.state === "LISTENING") listening.state = "IDLE";
   listening = null;
   listeningElapsedSec = 0;
   player.stopChord();
   hud.clearQuestion();
+  if (resumeMusic) player.resumePlaylist("music", MUSIC_FADE_IN_MS);
 }
 
-function playCreatureChord(creature: Creature): void {
+async function playCreatureChord(creature: Creature): Promise<void> {
   player.unlock();
+  const token = ++chordPlaybackToken;
+  await player.pausePlaylist("music", MUSIC_FADE_OUT_MS);
+  if (
+    token !== chordPlaybackToken ||
+    listening !== creature ||
+    creature.state !== "LISTENING"
+  ) return;
   let instrument = creatureInstrument.get(creature);
   if (!instrument) {
     instrument = resolveInstrument(settings.instrument);
     creatureInstrument.set(creature, instrument);
   }
   const notes = chordNotes(creature.rootNote, creature.chord);
-  void player.playChord(notes, instrument);
+  await player.playChord(notes, instrument);
+  if (token !== chordPlaybackToken || listening !== creature) {
+    player.stopChord();
+    return;
+  }
   creature.pulse(notes.length); // H4a: un destello por nota, escalonados
 }
 
@@ -286,12 +305,12 @@ game.onCreatureTapped = (creature) => {
     return;
   }
   if (listening && listening !== creature && listening.state === "LISTENING") {
-    cancelListening(); // tocar otra cancela la anterior sin penalización (§6.1)
+    cancelListening(false); // la música sigue pausada mientras cambia de criatura
   }
   listening = creature;
   listeningElapsedSec = 0;
   creature.state = "LISTENING";
-  playCreatureChord(creature); // re-click = re-escuchar, ilimitado
+  void playCreatureChord(creature); // re-click = re-escuchar, ilimitado
 
   const options = questions.optionsFor(
     { chord: creature.chord, rootNote: creature.rootNote, isReview: creature.isReview },
@@ -305,16 +324,19 @@ game.onCreatureTapped = (creature) => {
   hud.showQuestion(options, answerCurrent, () => {
     if (listening !== creature || creature.state !== "LISTENING") return;
     listeningElapsedSec = 0;
-    playCreatureChord(creature);
+    void playCreatureChord(creature);
   }, familyLabel);
 };
 
 function answerCurrent(chordId: string): void {
   if (!dive || !listening || listening.state !== "LISTENING") return;
   const creature = listening;
+  chordPlaybackToken++;
   listening = null;
   listeningElapsedSec = 0;
   hud.clearQuestion();
+  player.stopChord();
+  player.resumePlaylist("music", MUSIC_FADE_IN_MS);
 
   const zoneProgressBefore = dive.capturesInZone; // H1: para avisar racha perdida
   const result = dive.answer(creature.chord.id, chordId, creature.isLeviathan);
@@ -365,7 +387,7 @@ window.addEventListener("keydown", (e) => {
   if (n >= 1 && n <= 9) hud.pickByIndex(n);
   if (e.key.toLowerCase() === "r" && listening) {
     listeningElapsedSec = 0;
-    playCreatureChord(listening);
+    void playCreatureChord(listening);
   }
 });
 
@@ -388,7 +410,7 @@ function startDive(): void {
   questions.reset();
   dive = new DiveState(selectedMode, selectedStartZone);
   paused = false;
-  cancelListening();
+  cancelListening(false);
   game.creatures.clear();
   game.creatures.spawningEnabled = true;
   hud.clearQuestion();
@@ -406,6 +428,7 @@ function startDive(): void {
   game.startDive(selectedStartZone);
   showZoneTransition(selectedStartZone);
   player.startLoop("bubbles", AMBIENT_BUBBLES_URL, 0.35);
+  player.startPlaylist("music", MUSIC_TRACK_URLS, MUSIC_VOLUME_SCALE);
 }
 
 function endDive(reason: DiveEndReason): void {
@@ -414,8 +437,9 @@ function endDive(reason: DiveEndReason): void {
   game.stopDive();
   player.stopLoop("bubbles");
   player.stopLoop("thrusters");
+  cancelListening(false);
+  player.stopPlaylist("music");
   thrustersActive = false;
-  cancelListening();
 
   const reasonKey =
     reason === "COMPLETE" ? "summary.complete" : reason === "O2_OUT" ? "summary.o2out" : reason === "HULL_OUT" ? "summary.hullout" : "";

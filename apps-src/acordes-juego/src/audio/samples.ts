@@ -13,10 +13,20 @@ export function resolveInstrument(choice: InstrumentChoice): Instrument {
   return INSTRUMENTS[Math.floor(Math.random() * INSTRUMENTS.length)];
 }
 
+interface PlaylistEntry {
+  audio: HTMLAudioElement;
+  urls: string[];
+  index: number;
+  volumeScale: number;
+  currentScale: number;
+  fadeToken: number;
+}
+
 export class SamplePlayer {
   private cache = new Map<string, HTMLAudioElement>();
   private activeAudios: HTMLAudioElement[] = [];
   private loops = new Map<string, { audio: HTMLAudioElement; volumeScale: number }>();
+  private playlists = new Map<string, PlaylistEntry>();
   private volume = 0.8;
   private unlocked = false;
   private unlockAudio: HTMLAudioElement | null = null;
@@ -40,7 +50,10 @@ export class SamplePlayer {
 
   setVolume(v: number): void {
     this.volume = Math.max(0, Math.min(1, v));
-    // No actualizamos this.loops aquí para que los ambientes sean independientes del slider
+    // Los ambientes conservan su mezcla propia; la música sí sigue el volumen global.
+    for (const entry of this.playlists.values()) {
+      entry.audio.volume = Math.max(0, Math.min(1, this.volume * entry.currentScale));
+    }
   }
 
   getVolume(): number {
@@ -176,6 +189,13 @@ export class SamplePlayer {
           else console.warn(`Loop "${name}" no disponible:`, err);
         });
       }
+      for (const [name, entry] of this.playlists) {
+        if (!entry.audio.paused || entry.currentScale === 0) continue;
+        entry.audio.play().catch((err: unknown) => {
+          if (this.isAutoplayBlock(err)) this.armLoopRetry();
+          else console.warn(`Música "${name}" no disponible:`, err);
+        });
+      }
     };
     window.addEventListener("pointerdown", retry, { capture: true, once: true });
     window.addEventListener("keydown", retry, { capture: true, once: true });
@@ -187,5 +207,146 @@ export class SamplePlayer {
       entry.audio.pause();
       entry.audio.currentTime = 0;
     }
+  }
+
+  /** Lista musical secuencial; conserva el punto de reproducción al pausarse. */
+  startPlaylist(name: string, urls: string[], volumeScale = 1): void {
+    if (urls.length === 0) return;
+    this.unlock();
+    let entry = this.playlists.get(name);
+    if (!entry) {
+      const audio = new Audio(urls[0]);
+      audio.preload = "auto";
+      entry = {
+        audio,
+        urls: [...urls],
+        index: 0,
+        volumeScale,
+        currentScale: volumeScale,
+        fadeToken: 0,
+      };
+      audio.addEventListener("ended", () => this.advancePlaylist(name));
+      audio.addEventListener("error", () => {
+        console.warn(`Pista musical no disponible: ${audio.src}`);
+      });
+      this.playlists.set(name, entry);
+    } else {
+      entry.volumeScale = volumeScale;
+      entry.currentScale = volumeScale;
+      entry.fadeToken++;
+    }
+    entry.audio.volume = Math.max(0, Math.min(1, this.volume * entry.currentScale));
+    if (entry.audio.paused) {
+      entry.audio.play().catch((err: unknown) => {
+        if (this.isAutoplayBlock(err)) this.armLoopRetry();
+        else console.warn(`Música "${name}" no disponible:`, err);
+      });
+    }
+  }
+
+  private advancePlaylist(name: string): void {
+    const entry = this.playlists.get(name);
+    if (!entry || entry.urls.length === 0) return;
+    entry.index = (entry.index + 1) % entry.urls.length;
+    entry.audio.src = entry.urls[entry.index];
+    entry.audio.load();
+    entry.audio.play().catch((err: unknown) => {
+      if (this.isAutoplayBlock(err)) this.armLoopRetry();
+      else console.warn(`Pista musical no disponible: ${entry.audio.src}`, err);
+    });
+  }
+
+  private fadePlaylistTo(
+    name: string,
+    targetScale: number,
+    durationMs: number,
+    pauseAfter: boolean,
+  ): Promise<void> {
+    const entry = this.playlists.get(name);
+    if (!entry) return Promise.resolve();
+    const target = Math.max(0, targetScale);
+    const from = entry.currentScale;
+    const token = ++entry.fadeToken;
+    if (durationMs <= 0 || Math.abs(from - target) < 0.0001) {
+      entry.currentScale = target;
+      entry.audio.volume = Math.max(0, Math.min(1, this.volume * target));
+      if (pauseAfter) entry.audio.pause();
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      const started = performance.now();
+      const step = (now: number) => {
+        if (entry.fadeToken !== token) {
+          resolve();
+          return;
+        }
+        const t = Math.min(1, (now - started) / durationMs);
+        // Curva suave sin escalón audible en los extremos.
+        const eased = t * t * (3 - 2 * t);
+        entry.currentScale = from + (target - from) * eased;
+        entry.audio.volume = Math.max(0, Math.min(1, this.volume * entry.currentScale));
+        if (t < 1) {
+          requestAnimationFrame(step);
+          return;
+        }
+        if (pauseAfter) entry.audio.pause();
+        resolve();
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
+  /** Silencia completamente y pausa sin perder currentTime. */
+  pausePlaylist(name: string, fadeMs = 0): Promise<void> {
+    return this.fadePlaylistTo(name, 0, fadeMs, true);
+  }
+
+  /** Continúa desde el mismo currentTime y recupera su volumen suavemente. */
+  resumePlaylist(name: string, fadeMs = 0): void {
+    const entry = this.playlists.get(name);
+    if (!entry) return;
+    entry.fadeToken++;
+    entry.currentScale = 0;
+    entry.audio.volume = 0;
+    entry.audio.play().then(() => {
+      void this.fadePlaylistTo(name, entry.volumeScale, fadeMs, false);
+    }).catch((err: unknown) => {
+      if (this.isAutoplayBlock(err)) this.armLoopRetry();
+      else console.warn(`Música "${name}" no disponible:`, err);
+    });
+  }
+
+  /** Detiene y reinicia la lista para la siguiente inmersión. */
+  stopPlaylist(name: string): void {
+    const entry = this.playlists.get(name);
+    if (!entry) return;
+    entry.fadeToken++;
+    entry.audio.pause();
+    entry.index = 0;
+    entry.audio.src = entry.urls[0];
+    entry.audio.currentTime = 0;
+    entry.currentScale = entry.volumeScale;
+    entry.audio.volume = Math.max(0, Math.min(1, this.volume * entry.currentScale));
+  }
+
+  /** Diagnóstico de QA local. */
+  playlistState(name: string): {
+    paused: boolean;
+    currentTime: number;
+    volume: number;
+    index: number;
+    src: string;
+  } | null {
+    const entry = this.playlists.get(name);
+    return entry
+      ? {
+          paused: entry.audio.paused,
+          currentTime: entry.audio.currentTime,
+          volume: entry.audio.volume,
+          index: entry.index,
+          src: entry.audio.src,
+        }
+      : null;
   }
 }

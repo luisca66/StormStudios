@@ -34,6 +34,9 @@ const failures = [];
 const check = (condition, message) => { if (!condition) failures.push(message); };
 
 const introducedIds = config.ZONES.flatMap((zone) => zone.introGroups.flat());
+check(config.MUSIC_TRACK_URLS.length === 15, "La lista musical debe contener 15 pistas");
+check(config.MUSIC_TRACK_URLS[0].endsWith("/batisfera/batisfera-01.mp3"), "Nombre inicial de música incorrecto");
+check(config.MUSIC_TRACK_URLS[14].endsWith("/batisfera/batisfera-15.mp3"), "Nombre final de música incorrecto");
 check(chords.CHORD_TYPES.length === 33, "Deben existir 33 acordes");
 check(new Set(introducedIds).size === 33, "Las zonas deben cubrir 33 acordes únicos");
 check(introducedIds.every((id) => chords.CHORD_BY_ID[id]), "Hay un acorde de zona desconocido");
