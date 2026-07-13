@@ -110,6 +110,11 @@ export function frequencyToPreciseMidi(frequency: number): number {
   return 69 + 12 * Math.log2(frequency / 440);
 }
 
+/** Convierte un nombre de nota a frecuencia en Hz. A4 = 440 Hz. */
+export function noteToFrequency(note: string): number {
+  return 440 * Math.pow(2, (noteToMidi(note) - 69) / 12);
+}
+
 export type GradeReason = "ok" | "wrong-pitch" | "no-clear" | "silence";
 
 export interface Grade {

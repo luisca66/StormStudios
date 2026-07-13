@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return createPageMetadata({
     locale: locale as Locale,
     urls: getLocalizedRouteUrls("/apps/cosmic-ear/jugar"),
-    title: locale === "es" ? "Cosmic Ear — Modo juego de Desglose" : "Cosmic Ear — Desglose game mode",
+    title: locale === "es" ? "Cosmic Ear — Modo juego de Desglose" : "Cosmic Ear — Unlocking game mode",
     description:
       locale === "es"
         ? "Pilotea una nave 3D por el cosmos y resuelve planetas cantando las notas de cada acorde."

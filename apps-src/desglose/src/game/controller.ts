@@ -9,10 +9,14 @@ import {
   filterChromaticRange,
   generateChromaticNotes,
   generateRandomChord,
-  gradeAttempt,
+  noteToFrequency,
 } from "@/lib/desglose/music";
 import { AudioEngine } from "../audio/engine";
-import { MicDeniedError, MicPitchDetector } from "../audio/pitch";
+import {
+  MicDeniedError,
+  MicPitchDetector,
+  MicUnsupportedError,
+} from "../audio/pitch";
 import {
   DEFAULT_CHORD_SIZE,
   DEFAULT_END,
@@ -22,7 +26,6 @@ import {
   LISTEN_WINDOW_MS,
   RANGE_HIGH,
   RANGE_LOW,
-  TUNING_TOLERANCE,
   type Instrument,
 } from "../config";
 import { strings, type Lang } from "../i18n";
@@ -39,6 +42,7 @@ export interface GameState {
   correctlyAnswered: Set<string>;
   mutedNotes: Set<number>;
   noteBeingRecorded: string | null;
+  pitchHoldProgress: number;
   questionText: string;
   resultMessage: string;
   resultKind: ResultKind;
@@ -69,6 +73,7 @@ export class GameController {
       correctlyAnswered: new Set(),
       mutedNotes: new Set(),
       noteBeingRecorded: null,
+      pitchHoldProgress: 0,
       questionText: this.t.promptStart,
       resultMessage: "",
       resultKind: "none",
@@ -97,9 +102,17 @@ export class GameController {
     try {
       await this.detector.ensureReady();
     } catch (err) {
-      if (err instanceof MicDeniedError) {
-        this.patch({ micDenied: true });
-      }
+      const denied = err instanceof MicDeniedError;
+      const unsupported = err instanceof MicUnsupportedError;
+      this.patch({
+        micDenied: denied || unsupported,
+        resultMessage: unsupported
+          ? this.t.micUnsupported
+          : denied
+            ? this.t.micDenied
+            : this.t.micError,
+        resultKind: "error",
+      });
     }
   }
 
@@ -150,6 +163,7 @@ export class GameController {
       correctlyAnswered: new Set(),
       mutedNotes: new Set(),
       noteBeingRecorded: null,
+      pitchHoldProgress: 0,
       questionText: this.t.promptActive,
       resultMessage: "",
       resultKind: "none",
@@ -171,16 +185,24 @@ export class GameController {
     if (this.state.noteBeingRecorded !== null) return;
     this.patch({
       noteBeingRecorded: expectedNote,
+      pitchHoldProgress: 0,
       resultMessage: this.t.listeningFor(label),
       resultKind: "info",
     });
 
     try {
-      const freqs = await this.detector.listen(LISTEN_WINDOW_MS);
-      const grade = gradeAttempt(freqs, expectedNote, TUNING_TOLERANCE);
+      const result = await this.detector.listenForTarget(
+        noteToFrequency(expectedNote),
+        LISTEN_WINDOW_MS,
+        (pitch) => {
+          if (this.state.noteBeingRecorded === expectedNote) {
+            this.patch({ pitchHoldProgress: pitch.holdProgress });
+          }
+        },
+      );
       const solved = new Set(this.state.correctlyAnswered);
 
-      if (grade.correct) {
+      if (result.matched) {
         solved.add(expectedNote);
         void this.engine.playFeedback(true, this.state.volume);
         this.patch({
@@ -191,12 +213,7 @@ export class GameController {
       } else {
         solved.delete(expectedNote);
         void this.engine.playFeedback(false, this.state.volume);
-        const message =
-          grade.reason === "silence"
-            ? this.t.silence
-            : grade.reason === "no-clear"
-              ? this.t.noClear
-              : this.t.incorrect;
+        const message = result.heardVoice ? this.t.incorrect : this.t.silence;
         this.patch({
           correctlyAnswered: solved,
           resultMessage: message,
@@ -204,13 +221,19 @@ export class GameController {
         });
       }
     } catch (err) {
+      const unsupported = err instanceof MicUnsupportedError;
       this.patch({
-        micDenied: err instanceof MicDeniedError,
-        resultMessage: err instanceof MicDeniedError ? this.t.micDenied : this.t.micError,
+        micDenied: err instanceof MicDeniedError || unsupported,
+        resultMessage:
+          err instanceof MicDeniedError
+            ? this.t.micDenied
+            : unsupported
+              ? this.t.micUnsupported
+              : this.t.micError,
         resultKind: "error",
       });
     } finally {
-      this.patch({ noteBeingRecorded: null });
+      this.patch({ noteBeingRecorded: null, pitchHoldProgress: 0 });
     }
   }
 }

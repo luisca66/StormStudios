@@ -50,9 +50,9 @@ export class AudioEngine {
     }
   }
 
-  /** Resuelve el timbre concreto de una nota ("Mixto" → aleatorio por nota). */
+  /** Resuelve el timbre concreto de una nota ("random" → aleatorio por nota). */
   private resolveTimbre(instrument: Instrument): Timbre {
-    if (instrument === "Mixto") {
+    if (instrument === "random") {
       return TIMBRES[Math.floor(Math.random() * TIMBRES.length)];
     }
     return instrument;
@@ -72,7 +72,7 @@ export class AudioEngine {
 
   /**
    * Reproduce las notas no silenciadas a la vez.
-   * @returns nombres de los timbres usados por índice (para "Mixto").
+   * En modo aleatorio resuelve un timbre independiente para cada nota.
    */
   async playChord(
     notes: string[],

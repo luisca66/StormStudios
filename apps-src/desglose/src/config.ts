@@ -10,8 +10,8 @@ export const FEEDBACK_ERROR_URL = `${R2_BASE}/error.mp3`;
 export const TIMBRES = ["Piano", "Cello", "Corno", "Fagot", "Coro"] as const;
 export type Timbre = (typeof TIMBRES)[number];
 
-/** "Mixto" reparte un timbre aleatorio por cada nota del acorde. */
-export const INSTRUMENT_OPTIONS = [...TIMBRES, "Mixto"] as const;
+/** Opción compartida con las demás apps: elige un timbre al azar por nota. */
+export const INSTRUMENT_OPTIONS = [...TIMBRES, "random"] as const;
 export type Instrument = (typeof INSTRUMENT_OPTIONS)[number];
 
 /** Rango de samples disponible: C2 (MIDI 36) a C7 (MIDI 96). */
@@ -28,11 +28,8 @@ export const DEFAULT_VOLUME = 0.72;
 /** Tamaños de acorde seleccionables. */
 export const CHORD_SIZES = [2, 3, 4, 5, 6] as const;
 
-/** Ventana de captura del micrófono por nota (ms). */
-export const LISTEN_WINDOW_MS = 2500;
-
-/** Tolerancia de afinación en semitonos (igual que la app Android). */
-export const TUNING_TOLERANCE = 0.25;
+/** Tiempo máximo para completar el sostén v2 de 1.5 segundos. */
+export const LISTEN_WINDOW_MS = 5000;
 
 /** Construye la URL del sample (codifica `#` → `%23`). */
 export function sampleUrl(timbre: Timbre, note: string): string {

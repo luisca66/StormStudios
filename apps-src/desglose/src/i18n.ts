@@ -1,5 +1,7 @@
 /** i18n.ts — Cadenas ES/EN. El idioma llega por `?lang=` desde el wrapper Next. */
 
+import type { Timbre } from "./config";
+
 export type Lang = "es" | "en";
 
 export function detectLang(): Lang {
@@ -15,6 +17,8 @@ interface Strings {
   sessionActive: string;
   sessionIdle: string;
   instrument: string;
+  randomInstrument: string;
+  instrumentName: (instrument: Timbre) => string;
   range: string;
   rangeStart: string;
   rangeEnd: string;
@@ -29,6 +33,7 @@ interface Strings {
   listenAndAnswer: string;
   note: (n: number) => string;
   listening: string;
+  holdProgress: (percent: number) => string;
   promptStart: string;
   promptActive: string;
   stageReady: string;
@@ -47,6 +52,7 @@ interface Strings {
   allMuted: string;
   listeningFor: (label: string) => string;
   micDenied: string;
+  micUnsupported: string;
   micError: string;
 }
 
@@ -58,6 +64,8 @@ const ES: Strings = {
   sessionActive: "Sesión activa",
   sessionIdle: "Sesión en espera",
   instrument: "Instrumento",
+  randomInstrument: "Aleatorio",
+  instrumentName: (instrument) => instrument,
   range: "Rango",
   rangeStart: "Inicio",
   rangeEnd: "Fin",
@@ -72,6 +80,7 @@ const ES: Strings = {
   listenAndAnswer: "Escucha y responde",
   note: (n) => `Nota ${n}`,
   listening: "Escuchando…",
+  holdProgress: (percent) => `Sostén ${percent}%`,
   promptStart: "Presiona Nueva pregunta para empezar",
   promptActive: "Escucha el acorde y canta las notas",
   stageReady: "Escenario listo",
@@ -88,6 +97,7 @@ const ES: Strings = {
   allMuted: "Todas las notas están silenciadas.",
   listeningFor: (label) => `Escuchando '${label}'…`,
   micDenied: "Permiso de micrófono denegado. Actívalo para responder.",
+  micUnsupported: "El micrófono requiere HTTPS y un navegador compatible.",
   micError: "No se pudo acceder al micrófono.",
 };
 
@@ -99,6 +109,14 @@ const EN: Strings = {
   sessionActive: "Active session",
   sessionIdle: "Session idle",
   instrument: "Instrument",
+  randomInstrument: "Random",
+  instrumentName: (instrument) => ({
+    Piano: "Piano",
+    Cello: "Cello",
+    Corno: "Horn",
+    Fagot: "Bassoon",
+    Coro: "Choir",
+  })[instrument],
   range: "Range",
   rangeStart: "Start",
   rangeEnd: "End",
@@ -113,6 +131,7 @@ const EN: Strings = {
   listenAndAnswer: "Listen & answer",
   note: (n) => `Note ${n}`,
   listening: "Listening…",
+  holdProgress: (percent) => `Hold ${percent}%`,
   promptStart: "Press New question to start",
   promptActive: "Listen to the chord and sing the notes",
   stageReady: "Stage ready",
@@ -129,6 +148,7 @@ const EN: Strings = {
   allMuted: "All notes are muted.",
   listeningFor: (label) => `Listening for '${label}'…`,
   micDenied: "Microphone permission denied. Enable it to answer.",
+  micUnsupported: "The microphone requires HTTPS and a compatible browser.",
   micError: "Could not access the microphone.",
 };
 

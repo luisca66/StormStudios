@@ -61,7 +61,7 @@ export function mountUI(root: HTMLElement, controller: GameController, lang: Lan
   const instrumentChips = el("div", "dg-chips");
   const instrumentButtons = new Map<Instrument, HTMLButtonElement>();
   for (const option of INSTRUMENT_OPTIONS) {
-    const chip = el("button", "dg-chip", option);
+    const chip = el("button", "dg-chip", instrumentLabel(option, t));
     chip.type = "button";
     chip.addEventListener("click", () => controller.setInstrument(option));
     instrumentButtons.set(option, chip);
@@ -156,10 +156,10 @@ export function mountUI(root: HTMLElement, controller: GameController, lang: Lan
     const active = state.currentChord.length > 0;
     kicker.textContent = active ? t.chordActive : t.stageReady;
     title.textContent = state.questionText;
-    sub.textContent = `${state.instrument} • ${state.numberOfNotes} ${t.notes}`;
+    sub.textContent = `${instrumentLabel(state.instrument, t)} • ${state.numberOfNotes} ${t.notes}`;
 
     // HUD
-    hudInstrument.value.textContent = state.instrument;
+    hudInstrument.value.textContent = instrumentLabel(state.instrument, t);
     hudRange.value.textContent = `${state.startNote} – ${state.endNote}`;
     hudChord.value.textContent = `${state.numberOfNotes} ${t.notes}`;
     hudVolume.value.textContent = `${Math.round(state.volume * 100)}%`;
@@ -275,7 +275,9 @@ function markerState(state: GameState, note: string, index: number): {
 }
 
 function markerStateText(state: GameState, note: string, index: number, t: ReturnType<typeof strings>): string {
-  if (state.noteBeingRecorded === note) return t.stateListening;
+  if (state.noteBeingRecorded === note) {
+    return t.holdProgress(Math.round(state.pitchHoldProgress * 100));
+  }
   if (state.correctlyAnswered.has(note)) return t.stateSolved;
   if (state.mutedNotes.has(index)) return t.stateMuted;
   return t.statePending;
@@ -346,6 +348,15 @@ function updateAnswers(container: HTMLElement, state: GameState, t: ReturnType<t
     btn.classList.toggle("recording", isRecording);
     btn.classList.toggle("solved", isSolved);
     btn.disabled = listening;
-    btn.textContent = isRecording ? t.listening : t.note(index + 1);
+    btn.textContent = isRecording
+      ? `${t.listening} ${Math.round(state.pitchHoldProgress * 100)}%`
+      : t.note(index + 1);
   });
+}
+
+function instrumentLabel(
+  instrument: Instrument,
+  t: ReturnType<typeof strings>,
+): string {
+  return instrument === "random" ? t.randomInstrument : t.instrumentName(instrument);
 }

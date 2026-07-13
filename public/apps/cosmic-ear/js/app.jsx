@@ -10,9 +10,12 @@
                 loadingSounds: 'CARGANDO SONIDOS...',
                 audioReady: 'Audio listo ✓',
                 enableMicrophone: 'ACTIVAR MICRÓFONO',
-                micActive: 'Micrófono activo ✓',
+                micActive: 'Micrófono activo · afinador v2 ✓',
                 micPermissionDenied: 'Permiso denegado',
                 micError: 'Error de micrófono',
+                instrument: 'Instrumento',
+                randomInstrument: 'Aleatorio',
+                instrumentNames: { Piano: 'Piano', Cello: 'Cello', Corno: 'Corno', Coro: 'Coro', Fagot: 'Fagot' },
                 moonCount: 'Número de Lunas',
                 missionDuration: 'Duración de la Misión',
                 minutes: 'minutos',
@@ -27,6 +30,7 @@
                 noteNumber: (n) => `Nota ${n}`,
                 speed: 'Velocidad',
                 direction: 'Dirección',
+                roll: 'Alabeo',
                 spaceKey: 'ESPACIO',
                 accelerate: 'Acelerar',
                 sing: 'Cantar',
@@ -52,9 +56,12 @@
                 loadingSounds: 'LOADING SOUNDS...',
                 audioReady: 'Audio ready ✓',
                 enableMicrophone: 'ENABLE MICROPHONE',
-                micActive: 'Microphone active ✓',
+                micActive: 'Microphone active · tuner v2 ✓',
                 micPermissionDenied: 'Permission denied',
                 micError: 'Microphone error',
+                instrument: 'Instrument',
+                randomInstrument: 'Random',
+                instrumentNames: { Piano: 'Piano', Cello: 'Cello', Corno: 'Horn', Coro: 'Choir', Fagot: 'Bassoon' },
                 moonCount: 'Number of Moons',
                 missionDuration: 'Mission Duration',
                 minutes: 'minutes',
@@ -69,6 +76,7 @@
                 noteNumber: (n) => `Note ${n}`,
                 speed: 'Speed',
                 direction: 'Direction',
+                roll: 'Roll',
                 spaceKey: 'SPACE',
                 accelerate: 'Accelerate',
                 sing: 'Sing',
@@ -99,6 +107,7 @@
 
         const NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
         const INSTRUMENTS = ["Piano", "Cello", "Corno", "Coro", "Fagot"];
+        const INSTRUMENT_OPTIONS = [...INSTRUMENTS, "random"];
         // Samples e instrumentos: bucket R2 (mismo que usa la webapp Desglose).
         const BASE_URL = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
         // Música ambiente: subcarpeta del mismo bucket.
@@ -111,6 +120,12 @@
 
         const getSampleUrl = (inst, ni, oo) => `${BASE_URL}/${inst}/${encodeURIComponent(NOTES[ni])}${4 + oo}.mp3`;
         const getMusicTrackUrl = (trackId) => `${MUSIC_BASE}/${encodeURIComponent(trackId)}`;
+        const instrumentLabel = (instrument) => instrument === 'random'
+            ? t.randomInstrument
+            : (t.instrumentNames[instrument] || instrument);
+        const resolveInstrument = (instrument) => instrument === 'random'
+            ? INSTRUMENTS[Math.floor(Math.random() * INSTRUMENTS.length)]
+            : instrument;
         const shuffleArray = (items) => {
             const shuffled = [...items];
             for (let i = shuffled.length - 1; i > 0; i--) {
@@ -126,26 +141,85 @@
             return { note: NOTES[((midi % 12) + 12) % 12], index: ((midi % 12) + 12) % 12, octave: Math.floor(midi / 12) - 1, cents: Math.floor((noteNum - Math.round(noteNum)) * 100), frequency: freq };
         };
 
-        const autoCorrelate = (buf, sr) => {
-            let SIZE = buf.length, rms = 0;
-            for (let i = 0; i < SIZE; i++) rms += buf[i] * buf[i];
-            rms = Math.sqrt(rms / SIZE);
-            if (rms < 0.002) return -1;
-            let r1 = 0, r2 = SIZE - 1;
-            for (let i = 0; i < SIZE / 2; i++) if (Math.abs(buf[i]) < 0.05) { r1 = i; break; }
-            for (let i = 1; i < SIZE / 2; i++) if (Math.abs(buf[SIZE - i]) < 0.05) { r2 = SIZE - i; break; }
-            buf = buf.slice(r1, r2); SIZE = buf.length;
-            if (SIZE < 2) return -1;
-            let c = new Array(SIZE).fill(0);
-            for (let i = 0; i < SIZE; i++) for (let j = 0; j < SIZE - i; j++) c[i] += buf[j] * buf[j + i];
-            let d = 0; while (d < SIZE - 1 && c[d] > c[d + 1]) d++;
-            let maxval = -1, maxpos = -1;
-            for (let i = d; i < SIZE; i++) if (c[i] > maxval) { maxval = c[i]; maxpos = i; }
-            if (maxpos < 1 || maxpos >= SIZE - 1) return -1;
-            let T0 = maxpos, x1 = c[T0 - 1], x2 = c[T0], x3 = c[T0 + 1], a = (x1 + x3 - 2 * x2) / 2, b = (x3 - x1) / 2;
-            if (a) T0 -= b / (2 * a);
-            return sr / T0;
+        const foldCentsToPitchClass = (cents) => cents - Math.round(cents / 1200) * 1200;
+        const median = (values) => {
+            if (!values.length) return 0;
+            const sorted = [...values].sort((a, b) => a - b);
+            const mid = sorted.length >> 1;
+            return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
         };
+
+        class PitchTrackerV2 {
+            constructor() { this.stop(); }
+            start(targetFrequency) {
+                this.targetFrequency = targetFrequency;
+                this.active = true;
+                this.currentFrequency = 0;
+                this.currentCentsOff = 0;
+                this.recentCents = [];
+                this.voicedStreak = 0;
+                this.holdSeconds = 0;
+                this.offPitchSeconds = 0;
+                this.onPitchNow = false;
+                this.lastFrameT = 0;
+                this.lastFrameWallMs = 0;
+            }
+            stop() {
+                this.active = false;
+                this.targetFrequency = 0;
+                this.currentFrequency = 0;
+                this.currentCentsOff = 0;
+                this.recentCents = [];
+                this.voicedStreak = 0;
+                this.holdSeconds = 0;
+                this.offPitchSeconds = 0;
+                this.onPitchNow = false;
+                this.lastFrameT = 0;
+                this.lastFrameWallMs = 0;
+            }
+            handleFrame(frame) {
+                if (!this.active) return;
+                const dt = this.lastFrameT > 0
+                    ? Math.min(0.1, Math.max(0, frame.t - this.lastFrameT))
+                    : 0.0213;
+                this.lastFrameT = frame.t;
+                this.lastFrameWallMs = performance.now();
+                const voiced = frame.frequency > 65 && frame.frequency < 1200;
+                if (voiced) {
+                    this.voicedStreak += 1;
+                    this.currentFrequency = frame.frequency;
+                    const cents = 1200 * Math.log2(frame.frequency / this.targetFrequency);
+                    this.recentCents.push(foldCentsToPitchClass(cents));
+                    if (this.recentCents.length > 5) this.recentCents.shift();
+                    this.currentCentsOff = median(this.recentCents);
+                } else {
+                    this.voicedStreak = 0;
+                    this.currentFrequency = 0;
+                }
+                const onPitch = voiced && this.voicedStreak >= 3 && Math.abs(this.currentCentsOff) <= 50;
+                if (onPitch) {
+                    this.onPitchNow = true;
+                    this.offPitchSeconds = 0;
+                    this.holdSeconds += dt;
+                } else {
+                    this.onPitchNow = false;
+                    this.offPitchSeconds += dt;
+                    if (this.offPitchSeconds > 0.25) this.holdSeconds = 0;
+                }
+            }
+            getState() {
+                if (this.active && this.lastFrameWallMs > 0 && performance.now() - this.lastFrameWallMs > 150) {
+                    this.onPitchNow = false;
+                    this.currentFrequency = 0;
+                }
+                return {
+                    frequency: this.currentFrequency,
+                    centsOff: this.currentCentsOff,
+                    isOnPitch: this.onPitchNow,
+                    holdProgress: Math.min(1, this.holdSeconds / 1.5)
+                };
+            }
+        }
 
         const createStarfield = (n = 2000) => {
             const geo = new THREE.BufferGeometry(), pos = new Float32Array(n * 3), col = new Float32Array(n * 3);
@@ -664,16 +738,16 @@
             return { updateShootingStars };
         };
 
-        const generatePlanet = (id, pos, numMoons) => {
+        const generatePlanet = (id, pos, numMoons, instrumentOption) => {
             const notes = [];
-            for (let i = 0; i < numMoons; i++) {
-                const semitone = Math.floor(Math.random() * 60);
+            const semitones = shuffleArray(Array.from({ length: 60 }, (_, i) => i)).slice(0, numMoons);
+            for (const semitone of semitones) {
                 const ni = semitone % 12;
                 const octave = 2 + Math.floor(semitone / 12);
                 notes.push({ note: NOTES[ni], index: ni, octave, solved: false });
             }
             notes.sort((a, b) => a.octave !== b.octave ? a.octave - b.octave : a.index - b.index);
-            const instrument = INSTRUMENTS[Math.floor(Math.random() * INSTRUMENTS.length)];
+            const instrument = instrumentOption;
             return { id, position: pos, notes, instrument, size: 1.5 + numMoons * 0.3, primaryColor: NOTE_COLORS[notes[0].note], name: `${String.fromCharCode(65 + Math.floor(Math.random() * 26))}-${Math.floor(Math.random() * 999)}`, completed: false };
         };
 
@@ -705,6 +779,7 @@
         function App() {
             const [gameState, setGameState] = useState('intro');
             const [numMoons, setNumMoons] = useState(2);
+            const [selectedInstrument, setSelectedInstrument] = useState('Piano');
             const [gameDuration, setGameDuration] = useState(5); // Duración en minutos (3+)
             const [loadingProgress, setLoadingProgress] = useState(0);
             const [isLoaded, setIsLoaded] = useState(false);
@@ -722,6 +797,7 @@
             const [detectedNote, setDetectedNote] = useState({ note: '-', cents: 0, frequency: 0 });
             const [inputVolume, setInputVolume] = useState(0);
             const [isMatching, setIsMatching] = useState(false);
+            const [holdProgress, setHoldProgress] = useState(0);
             const [tunerPhase, setTunerPhase] = useState('playing');
             const [planetStartTime, setPlanetStartTime] = useState(null);
             const [scorePopup, setScorePopup] = useState(null);
@@ -742,18 +818,18 @@
             const raycasterRef = useRef(new THREE.Raycaster());
             const mouseRef = useRef(new THREE.Vector2());
             const audioCtxRef = useRef(null);
-            const analyserRef = useRef(null);
             const micStreamRef = useRef(null);
             const micSourceRef = useRef(null);
+            const micWorkletRef = useRef(null);
+            const micSinkRef = useRef(null);
+            const pitchTrackerRef = useRef(new PitchTrackerV2());
             const engineOscRef = useRef(null);
             const engineGainRef = useRef(null);
-            const pitchRafRef = useRef(null);
+            const pitchPollRef = useRef(null);
             const audioCacheRef = useRef({});
-            const matchStartRef = useRef(null);
             const hoveredPlanetRef = useRef(null);
             const activePlanetMeshRef = useRef(null);
             const animationRef = useRef(null);
-            const pitchDetectionActiveRef = useRef(false);
             const particleSystemRef = useRef(null);
             const ambientMusicRef = useRef(null);
             const musicQueueRef = useRef([]);
@@ -803,50 +879,70 @@
 
             const requestMicPermission = async () => {
                 try {
+                    setMicError(null);
+                    if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
+                        throw new Error('microphone-unsupported');
+                    }
                     const AudioContext = window.AudioContext || window.webkitAudioContext;
                     if (!audioCtxRef.current) audioCtxRef.current = new AudioContext();
                     if (audioCtxRef.current.state === 'suspended') await audioCtxRef.current.resume();
-                    
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        audio: {
+                            echoCancellation: true,
+                            noiseSuppression: true,
+                            autoGainControl: true
+                        }
+                    });
                     micStreamRef.current = stream;
-                    const analyser = audioCtxRef.current.createAnalyser();
-                    analyser.fftSize = 2048;
-                    analyserRef.current = analyser;
-                    audioCtxRef.current.createMediaStreamSource(stream).connect(analyser);
+                    await audioCtxRef.current.audioWorklet.addModule('/apps/cosmic-ear/pitch-processor.js?v=2');
+
+                    const source = audioCtxRef.current.createMediaStreamSource(stream);
+                    const worklet = new AudioWorkletNode(audioCtxRef.current, 'pitch-processor');
+                    const sink = audioCtxRef.current.createGain();
+                    sink.gain.value = 0;
+                    source.connect(worklet);
+                    worklet.connect(sink).connect(audioCtxRef.current.destination);
+                    micSourceRef.current = source;
+                    micWorkletRef.current = worklet;
+                    micSinkRef.current = sink;
+
+                    worklet.port.onmessage = ({ data: frame }) => {
+                        pitchTrackerRef.current.handleFrame(frame);
+                        setInputVolume(Math.min(100, Math.max(0, frame.rms * 800)));
+                        if (frame.frequency > 0) setDetectedNote(getNoteFromPitch(frame.frequency));
+                        else setDetectedNote(prev => ({ ...prev, frequency: 0 }));
+                    };
+
+                    if (pitchPollRef.current) clearInterval(pitchPollRef.current);
+                    pitchPollRef.current = setInterval(() => {
+                        const state = pitchTrackerRef.current.getState();
+                        setIsMatching(state.isOnPitch);
+                        setHoldProgress(state.holdProgress);
+                    }, 50);
+
+                    console.info('[Mic] Cosmic Ear afinador v2 activo — hold 1.5s, gracia 0.25s, mediana 5 frames');
                     setMicReady(true);
-                    startPitchDetection();
                 } catch (err) {
+                    try { micSourceRef.current?.disconnect(); } catch(e) {}
+                    try { micWorkletRef.current?.disconnect(); } catch(e) {}
+                    try { micSinkRef.current?.disconnect(); } catch(e) {}
+                    if (micStreamRef.current) micStreamRef.current.getTracks().forEach(track => track.stop());
+                    micStreamRef.current = null;
+                    micSourceRef.current = null;
+                    micWorkletRef.current = null;
+                    micSinkRef.current = null;
                     setMicError(err.name === 'NotAllowedError' ? t.micPermissionDenied : t.micError);
                 }
             };
 
-            const startPitchDetection = () => {
-                if (pitchDetectionActiveRef.current) return;
-                pitchDetectionActiveRef.current = true;
-                const detect = () => {
-                    if (!pitchDetectionActiveRef.current || !analyserRef.current || !audioCtxRef.current) {
-                        if (pitchDetectionActiveRef.current) pitchRafRef.current = requestAnimationFrame(detect);
-                        return;
-                    }
-                    try {
-                        const buf = new Float32Array(analyserRef.current.fftSize);
-                        analyserRef.current.getFloatTimeDomainData(buf);
-                        let rms = 0;
-                        for (let i = 0; i < buf.length; i++) rms += buf[i] * buf[i];
-                        setInputVolume(Math.min(100, Math.sqrt(rms / buf.length) * 500));
-                        const pitch = autoCorrelate(buf, audioCtxRef.current.sampleRate);
-                        if (pitch !== -1 && pitch > 55 && pitch < 4000) setDetectedNote(getNoteFromPitch(pitch));
-                        else setDetectedNote(prev => ({ ...prev, frequency: 0 }));
-                    } catch (e) {}
-                    pitchRafRef.current = requestAnimationFrame(detect);
-                };
-                detect();
-            };
-
             useEffect(() => {
                 return () => {
-                    pitchDetectionActiveRef.current = false;
-                    if (pitchRafRef.current) cancelAnimationFrame(pitchRafRef.current);
+                    if (pitchPollRef.current) clearInterval(pitchPollRef.current);
+                    pitchTrackerRef.current.stop();
+                    try { micSourceRef.current?.disconnect(); } catch(e) {}
+                    try { micWorkletRef.current?.disconnect(); } catch(e) {}
+                    try { micSinkRef.current?.disconnect(); } catch(e) {}
                     if (micStreamRef.current) micStreamRef.current.getTracks().forEach(t => t.stop());
                 };
             }, []);
@@ -923,7 +1019,8 @@
 
             const playSampleChord = (notes, inst) => {
                 notes.forEach(n => {
-                    const url = getSampleUrl(inst, n.index, n.octave - 4);
+                    const timbre = resolveInstrument(inst);
+                    const url = getSampleUrl(timbre, n.index, n.octave - 4);
                     if (audioCacheRef.current[url]) { const a = audioCacheRef.current[url]; a.currentTime = 0; a.volume = 0.4; a.play().catch(() => {}); }
                 });
             };
@@ -1034,7 +1131,7 @@
                 timeElapsed = Math.max(0.5, timeElapsed);
 
                 // Multiplicadores según número de notas
-                const multipliers = { 1: 1.0, 2: 1.5, 3: 2.5, 4: 4.0, 5: 6.0 };
+                const multipliers = { 1: 1.0, 2: 1.5, 3: 2.5, 4: 4.0, 5: 6.0, 6: 9.0 };
                 const multiplier = multipliers[numNotes] || 1.0;
 
                 // Fórmula: 100 * (1 / tiempo) * multiplicador
@@ -1056,7 +1153,8 @@
                 setNoteStatuses(pl.notes.map(n => n.solved ? 'correct' : 'pending'));
                 setTunerPhase('playing');
                 setIsMatching(false);
-                matchStartRef.current = null;
+                setHoldProgress(0);
+                pitchTrackerRef.current.stop();
                 activePlanetMeshRef.current = planetMesh;
                 planetMesh.userData.moonsOrbitPaused = true;
                 setTunerActive(true);
@@ -1081,6 +1179,9 @@
                     tunerListeningTimeoutRef.current = null;
                 }
                 if (activePlanetMeshRef.current) activePlanetMeshRef.current.userData.moonsOrbitPaused = false;
+                pitchTrackerRef.current.stop();
+                setHoldProgress(0);
+                setIsMatching(false);
                 setTunerActive(false);
                 setActivePlanet(null);
                 activePlanetMeshRef.current = null;
@@ -1088,53 +1189,57 @@
                 else resumeAmbientMusic();
             };
 
-            // Note matching effect
+            // Reinicia el objetivo v2 cada vez que cambia la luna activa.
             useEffect(() => {
                 if (!tunerActive || tunerPhase !== 'listening' || !activePlanet) return;
                 const planetMesh = activePlanetMeshRef.current;
                 if (!planetMesh) return;
-                
                 const realPlanetData = planetMesh.userData.planetData;
                 const currentUnsolved = realPlanetData.notes.findIndex((n, i) => !n.solved && i >= currentNoteIndex);
                 if (currentUnsolved === -1) return;
-
                 const target = realPlanetData.notes[currentUnsolved];
-                const match = detectedNote.frequency > 0 && detectedNote.note === target.note && Math.abs(detectedNote.cents) < 30;
-                
-                if (match) {
-                    if (!matchStartRef.current) matchStartRef.current = Date.now();
-                    setIsMatching(true);
-                    if (Date.now() - matchStartRef.current >= 700) {
-                        const successSoundDone = playSuccessSound();
-                        dissolveMoonWithParticles(currentUnsolved, NOTE_COLORS[target.note]);
-                        
-                        realPlanetData.notes[currentUnsolved].solved = true;
-                        setNoteStatuses(prev => { const n = [...prev]; n[currentUnsolved] = 'correct'; return n; });
+                const midi = (target.octave + 1) * 12 + target.index;
+                const targetFrequency = 440 * Math.pow(2, (midi - 69) / 12);
+                pitchTrackerRef.current.start(targetFrequency);
+                setHoldProgress(0);
+                setIsMatching(false);
+                return () => pitchTrackerRef.current.stop();
+            }, [tunerActive, tunerPhase, currentNoteIndex, activePlanet]);
 
-                        const remaining = realPlanetData.notes.filter(n => !n.solved);
-                        if (remaining.length === 0) {
-                            // Calcular puntos basados en tiempo
-                            const startTime = planetMesh.userData.startTime;
-                            const earnedPoints = calculatePlanetScore(realPlanetData.notes.length, startTime);
+            // Completa la luna cuando el afinador v2 llega a 1.5 s sostenidos.
+            useEffect(() => {
+                if (holdProgress < 1 || !tunerActive || tunerPhase !== 'listening' || !activePlanet) return;
+                const planetMesh = activePlanetMeshRef.current;
+                if (!planetMesh) return;
+                const realPlanetData = planetMesh.userData.planetData;
+                const currentUnsolved = realPlanetData.notes.findIndex((n, i) => !n.solved && i >= currentNoteIndex);
+                if (currentUnsolved === -1) return;
+                const target = realPlanetData.notes[currentUnsolved];
+                pitchTrackerRef.current.stop();
+                setHoldProgress(0);
+                setIsMatching(false);
 
-                            setScore(s => s + earnedPoints);
-                            setScorePopup({ points: earnedPoints, show: true });
-                            setTimeout(() => setScorePopup(null), 2000);
+                const successSoundDone = playSuccessSound();
+                dissolveMoonWithParticles(currentUnsolved, NOTE_COLORS[target.note]);
+                realPlanetData.notes[currentUnsolved].solved = true;
+                setNoteStatuses(prev => { const n = [...prev]; n[currentUnsolved] = 'correct'; return n; });
 
-                            realPlanetData.completed = true;
-                            setTunerPhase('success');
-                            successSoundDone.then(() => {
-                                if (activePlanetMeshRef.current === planetMesh) closeTuner({ restartMusic: true });
-                            });
-                        } else {
-                            const next = realPlanetData.notes.findIndex((n, i) => !n.solved && i > currentUnsolved);
-                            setCurrentNoteIndex(next !== -1 ? next : realPlanetData.notes.findIndex(n => !n.solved));
-                            matchStartRef.current = null;
-                            setIsMatching(false);
-                        }
-                    }
-                } else { matchStartRef.current = null; setIsMatching(false); }
-            }, [detectedNote, tunerActive, tunerPhase, currentNoteIndex, activePlanet]);
+                const remaining = realPlanetData.notes.filter(n => !n.solved);
+                if (remaining.length === 0) {
+                    const earnedPoints = calculatePlanetScore(realPlanetData.notes.length, planetMesh.userData.startTime);
+                    setScore(s => s + earnedPoints);
+                    setScorePopup({ points: earnedPoints, show: true });
+                    setTimeout(() => setScorePopup(null), 2000);
+                    realPlanetData.completed = true;
+                    setTunerPhase('success');
+                    successSoundDone.then(() => {
+                        if (activePlanetMeshRef.current === planetMesh) closeTuner({ restartMusic: true });
+                    });
+                } else {
+                    const next = realPlanetData.notes.findIndex((n, i) => !n.solved && i > currentUnsolved);
+                    setCurrentNoteIndex(next !== -1 ? next : realPlanetData.notes.findIndex(n => !n.solved));
+                }
+            }, [holdProgress, tunerActive, tunerPhase, currentNoteIndex, activePlanet]);
 
             useEffect(() => { hoveredPlanetRef.current = hoveredPlanet; }, [hoveredPlanet]);
 
@@ -1146,6 +1251,9 @@
                 if (engineOscRef.current) { try { engineOscRef.current.stop(); } catch(e) {} engineOscRef.current = null; }
                 if (thrusterNoiseRef.current) { try { thrusterNoiseRef.current.stop(); } catch(e) {} thrusterNoiseRef.current = null; }
                 stopAmbientMusic();
+                pitchTrackerRef.current.stop();
+                setHoldProgress(0);
+                setIsMatching(false);
                 setGameState('intro');
                 setScore(0);
                 setTunerActive(false);
@@ -1184,7 +1292,7 @@
                 for (let i = 0; i < 15; i++) {
                     const d = 25 + Math.random() * 150, t = Math.random() * Math.PI * 2, p = (Math.random() - 0.5) * Math.PI * 0.5;
                     const pos = new THREE.Vector3(d * Math.cos(p) * Math.cos(t), d * Math.sin(p), d * Math.cos(p) * Math.sin(t));
-                    const pl = generatePlanet(i, pos, numMoons);
+                    const pl = generatePlanet(i, pos, numMoons, selectedInstrument);
                     const mesh = createPlanetMesh(pl);
                     scene.add(mesh);
                     planetMeshesRef.current.push(mesh);
@@ -1357,7 +1465,7 @@
                     if (mountRef.current && renderer.domElement) mountRef.current.removeChild(renderer.domElement);
                     renderer.dispose();
                 };
-            }, [gameState === 'intro' ? 'intro' : 'game', numMoons]);
+            }, [gameState === 'intro' ? 'intro' : 'game', numMoons, selectedInstrument]);
 
             const startGame = async () => {
                 if (audioCtxRef.current?.state === 'suspended') await audioCtxRef.current.resume();
@@ -1377,8 +1485,8 @@
                     
                     {/* INTRO SCREEN */}
                     {gameState === 'intro' && (
-                        <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-purple-950 to-black flex items-center justify-center">
-                            <div className="bg-slate-900/90 p-8 rounded-2xl border border-cyan-500/50 text-center max-w-md w-full mx-4 shadow-2xl">
+                        <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-purple-950 to-black flex items-center justify-center overflow-y-auto p-4">
+                            <div className="bg-slate-900/90 p-6 rounded-2xl border border-cyan-500/50 text-center max-w-md w-full my-auto shadow-2xl">
                                 <h1 className="font-orbitron text-4xl font-bold mb-2 bg-gradient-to-r from-cyan-400 via-purple-500 to-yellow-400 bg-clip-text text-transparent">COSMIC EAR</h1>
                                 <p className="text-gray-400 mb-6 text-sm tracking-widest">{t.subtitle}</p>
                                 
@@ -1412,11 +1520,21 @@
                                     </div>
                                 )}
 
+                                <p className="text-gray-300 mb-3 text-xs uppercase tracking-widest">{t.instrument}</p>
+                                <div className="grid grid-cols-3 gap-2 mb-5">
+                                    {INSTRUMENT_OPTIONS.map(inst => (
+                                        <button key={inst} onClick={() => setSelectedInstrument(inst)}
+                                            className={`min-h-11 rounded-lg border-2 px-2 py-2 text-xs font-bold transition-all ${selectedInstrument === inst ? 'bg-purple-600 border-purple-400 text-white shadow-lg shadow-purple-500/40' : 'bg-slate-800 border-slate-600 text-gray-300 hover:bg-slate-700'}`}>
+                                            {instrumentLabel(inst)}
+                                        </button>
+                                    ))}
+                                </div>
+
                                 <p className="text-gray-300 mb-3 text-xs uppercase tracking-widest">{t.moonCount}</p>
-                                <div className="flex gap-3 justify-center mb-6">
-                                    {[1, 2, 3, 4, 5].map(n => (
+                                <div className="grid grid-cols-6 gap-2 mb-5">
+                                    {[1, 2, 3, 4, 5, 6].map(n => (
                                         <button key={n} onClick={() => setNumMoons(n)}
-                                            className={`relative w-14 h-14 rounded-xl border-2 font-bold font-orbitron text-xl transition-all ${numMoons === n ? 'bg-cyan-600 border-cyan-400 text-white scale-110 shadow-lg shadow-cyan-500/50' : 'bg-slate-800 border-slate-600 text-gray-400 hover:bg-slate-700'}`}>
+                                            className={`relative h-12 rounded-xl border-2 font-bold font-orbitron text-lg transition-all ${numMoons === n ? 'bg-cyan-600 border-cyan-400 text-white scale-105 shadow-lg shadow-cyan-500/50' : 'bg-slate-800 border-slate-600 text-gray-400 hover:bg-slate-700'}`}>
                                             {n}
                                         </button>
                                     ))}
@@ -1505,7 +1623,7 @@
                             {!tunerActive && (
                                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 px-6 py-3 rounded-xl border border-white/10 flex gap-6 text-sm backdrop-blur-sm">
                                     <div className="flex items-center gap-2"><span className="bg-slate-700 px-2 py-1 rounded font-mono text-xs">WASD</span><span className="text-gray-400">{t.direction}</span></div>
-                                    <div className="flex items-center gap-2"><span className="bg-slate-700 px-2 py-1 rounded font-mono text-xs">QE</span><span className="text-gray-400">Roll</span></div>
+                                    <div className="flex items-center gap-2"><span className="bg-slate-700 px-2 py-1 rounded font-mono text-xs">QE</span><span className="text-gray-400">{t.roll}</span></div>
                                     <div className="flex items-center gap-2"><span className="bg-slate-700 px-2 py-1 rounded font-mono text-xs">{t.spaceKey}</span><span className="text-gray-400">{t.accelerate}</span></div>
                                     <div className="flex items-center gap-2"><span className="bg-slate-700 px-2 py-1 rounded font-mono text-xs">CLICK</span><span className="text-gray-400">{t.sing}</span></div>
                                 </div>
@@ -1521,7 +1639,7 @@
                             {/* TUNER - Bottom right corner, doesn't block space view */}
                             {tunerActive && activePlanet && (
                                 <div className="absolute bottom-4 right-4 pointer-events-auto">
-                                    <div className="bg-black/85 border-2 border-cyan-500/70 rounded-2xl p-5 w-[320px] backdrop-blur-md shadow-2xl shadow-cyan-500/20">
+                                    <div className="bg-black/85 border-2 border-cyan-500/70 rounded-2xl p-5 backdrop-blur-md shadow-2xl shadow-cyan-500/20" style={{ width: 'min(420px, calc(100vw - 2rem))' }}>
                                         <div className="mb-3">
                                             <div className="font-orbitron text-lg text-purple-400 font-bold text-center">{activePlanet.name}</div>
                                         </div>
@@ -1539,9 +1657,9 @@
                                         </div>
 
                                         {/* Notes */}
-                                        <div className="flex justify-center gap-2 mb-4">
+                                        <div className="grid gap-2 mb-4" style={{ gridTemplateColumns: `repeat(${activePlanet.notes.length}, minmax(0, 1fr))` }}>
                                             {activePlanet.notes.map((n, i) => (
-                                                <div key={i} className={`w-14 h-14 rounded-lg flex flex-col items-center justify-center font-orbitron transition-all border-2 ${
+                                                <div key={i} className={`h-14 min-w-0 rounded-lg flex flex-col items-center justify-center font-orbitron transition-all border-2 ${
                                                     noteStatuses[i] === 'correct' ? 'bg-green-600/50 border-green-400 opacity-50 scale-90' :
                                                     i === currentNoteIndex && tunerPhase === 'listening' ? (isMatching ? 'bg-green-500/40 border-green-400 scale-105 shadow-lg shadow-green-500/50' : 'bg-cyan-600/40 border-cyan-400 animate-pulse') :
                                                     'bg-slate-800/50 border-slate-600'
@@ -1554,6 +1672,15 @@
 
                                         {/* Afinador visual removido: es entrenamiento auditivo puro (sin letras ni aguja). */}
 
+                                        {tunerPhase === 'listening' && (
+                                            <div className="h-2 overflow-hidden rounded-full bg-slate-800 border border-white/10">
+                                                <div
+                                                    className={`h-full transition-all duration-75 ${isMatching ? 'bg-green-400' : 'bg-cyan-500'}`}
+                                                    style={{ width: `${Math.round(holdProgress * 100)}%` }}
+                                                />
+                                            </div>
+                                        )}
+
                                         {/* Status */}
                                         <div className={`font-orbitron text-xs py-2 px-3 rounded-lg text-center mt-3 ${
                                             tunerPhase === 'playing' ? 'bg-purple-600/30 border border-purple-400 text-purple-300' :
@@ -1562,7 +1689,7 @@
                                             'bg-cyan-600/30 border border-cyan-400 text-cyan-300'
                                         }`}>
                                             {tunerPhase === 'playing' && t.playingStatus}
-                                            {tunerPhase === 'listening' && (isMatching ? t.holdStatus : t.listeningStatus)}
+                                            {tunerPhase === 'listening' && `${isMatching ? t.holdStatus : t.listeningStatus} ${Math.round(holdProgress * 100)}%`}
                                             {tunerPhase === 'success' && '🎉 +' + (activePlanet.notes.length * 100) + ' pts'}
                                         </div>
                                     </div>

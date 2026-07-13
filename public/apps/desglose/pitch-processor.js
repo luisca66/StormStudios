@@ -1,34 +1,28 @@
-/**
- * pitch-processor.js — AudioWorklet que detecta la frecuencia fundamental con YIN.
- *
- * Corre en el hilo de audio (no en el main thread): acumula ventanas de 2048
- * muestras con 50% de solape y publica la frecuencia estimada (Hz) por mensaje.
- * Es JS puro porque los worklets se cargan por URL en su propio realm.
- *
- * Referencia: de Cheveigné & Kawahara (2002), "YIN, a fundamental frequency
- * estimator for speech and music".
- */
+// Afinador vocal v2 (YIN/CMNDF).
+// Publica siempre un frame por hop: la máquina de sostén usa este flujo
+// constante y los timestamps del reloj de audio como base de tiempo.
 class PitchProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
     this.bufferSize = 2048;
-    this.hop = 1024; // 50% de solape
+    this.hop = 1024;
     this.buffer = new Float32Array(this.bufferSize);
     this.filled = 0;
-    this.threshold = 0.12; // umbral de claridad YIN
-    this.minRms = 0.01; // ignora silencio/ruido de fondo
+    this.threshold = 0.15;
+    this.minRms = 0.01;
   }
 
   process(inputs) {
     const channel = inputs[0] && inputs[0][0];
     if (!channel || channel.length === 0) return true;
 
-    for (let i = 0; i < channel.length; i++) {
-      this.buffer[this.filled++] = channel[i];
+    for (let i = 0; i < channel.length; i += 1) {
+      this.buffer[this.filled] = channel[i];
+      this.filled += 1;
       if (this.filled === this.bufferSize) {
-        const freq = this.detect(this.buffer, sampleRate);
-        if (freq > 0) this.port.postMessage(freq);
-        // Desliza la ventana un "hop" para mantener el solape.
+        const frame = this.detect(this.buffer, sampleRate);
+        frame.t = currentTime;
+        this.port.postMessage(frame);
         this.buffer.copyWithin(0, this.hop);
         this.filled = this.bufferSize - this.hop;
       }
@@ -36,47 +30,43 @@ class PitchProcessor extends AudioWorkletProcessor {
     return true;
   }
 
-  detect(buffer, sr) {
+  detect(buffer, sampleRateValue) {
     const size = buffer.length;
     const half = size >> 1;
 
-    // Puerta de energía: descarta tramos demasiado silenciosos.
     let sumSquares = 0;
-    for (let i = 0; i < size; i++) sumSquares += buffer[i] * buffer[i];
-    if (Math.sqrt(sumSquares / size) < this.minRms) return -1;
+    for (let i = 0; i < size; i += 1) sumSquares += buffer[i] * buffer[i];
+    const rms = Math.sqrt(sumSquares / size);
+    if (rms < this.minRms) return { frequency: -1, clarity: 0, rms };
 
     const yin = new Float32Array(half);
-
-    // Paso 1: función de diferencia.
-    for (let tau = 1; tau < half; tau++) {
+    for (let tau = 1; tau < half; tau += 1) {
       let sum = 0;
-      for (let i = 0; i < half; i++) {
+      for (let i = 0; i < half; i += 1) {
         const delta = buffer[i] - buffer[i + tau];
         sum += delta * delta;
       }
       yin[tau] = sum;
     }
 
-    // Paso 2: diferencia media acumulada normalizada.
     yin[0] = 1;
     let runningSum = 0;
-    for (let tau = 1; tau < half; tau++) {
+    for (let tau = 1; tau < half; tau += 1) {
       runningSum += yin[tau];
       yin[tau] = runningSum > 0 ? (yin[tau] * tau) / runningSum : 1;
     }
 
-    // Paso 3: umbral absoluto (primer mínimo bajo el umbral).
     let tauEstimate = -1;
-    for (let tau = 2; tau < half; tau++) {
+    for (let tau = 2; tau < half; tau += 1) {
       if (yin[tau] < this.threshold) {
-        while (tau + 1 < half && yin[tau + 1] < yin[tau]) tau++;
+        while (tau + 1 < half && yin[tau + 1] < yin[tau]) tau += 1;
         tauEstimate = tau;
         break;
       }
     }
-    if (tauEstimate === -1) return -1;
+    if (tauEstimate === -1) return { frequency: -1, clarity: 0, rms };
 
-    // Paso 4: interpolación parabólica para refinar tau.
+    const clarity = 1 - yin[tauEstimate];
     let betterTau = tauEstimate;
     const x0 = tauEstimate > 0 ? tauEstimate - 1 : tauEstimate;
     const x2 = tauEstimate + 1 < half ? tauEstimate + 1 : tauEstimate;
@@ -88,10 +78,11 @@ class PitchProcessor extends AudioWorkletProcessor {
       if (denom !== 0) betterTau = tauEstimate + (s2 - s0) / denom;
     }
 
-    const freq = sr / betterTau;
-    // Rango plausible para voz cantada / instrumentos (≈ B0 a C7).
-    if (freq < 30 || freq > 2100) return -1;
-    return freq;
+    const frequency = sampleRateValue / betterTau;
+    if (frequency < 30 || frequency > 2100) {
+      return { frequency: -1, clarity: 0, rms };
+    }
+    return { frequency, clarity, rms };
   }
 }
 

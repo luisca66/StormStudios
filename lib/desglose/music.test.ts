@@ -7,7 +7,13 @@ import {
   generateRandomChord,
   frequencyToPreciseMidi,
   gradeAttempt,
+  noteToFrequency,
 } from "./music";
+import {
+  CHORD_SIZES,
+  INSTRUMENT_OPTIONS,
+} from "../../apps-src/desglose/src/config";
+import { foldCentsToPitchClass } from "../../apps-src/desglose/src/audio/pitch";
 
 describe("noteToMidi / midiToNote", () => {
   it("ancla C4 = 60 y A4 = 69", () => {
@@ -85,6 +91,39 @@ describe("frequencyToPreciseMidi", () => {
   it("0 o negativo devuelve 0", () => {
     expect(frequencyToPreciseMidi(0)).toBe(0);
     expect(frequencyToPreciseMidi(-100)).toBe(0);
+  });
+});
+
+describe("noteToFrequency", () => {
+  it("convierte A4 a 440 Hz y conserva la relación de octava", () => {
+    expect(noteToFrequency("A4")).toBeCloseTo(440, 5);
+    expect(noteToFrequency("A3")).toBeCloseTo(220, 5);
+  });
+});
+
+describe("configuración visible de Desglose", () => {
+  it("incluye los cinco timbres y la opción aleatoria", () => {
+    expect(INSTRUMENT_OPTIONS).toEqual([
+      "Piano",
+      "Cello",
+      "Corno",
+      "Fagot",
+      "Coro",
+      "random",
+    ]);
+  });
+
+  it("permite acordes de dos a seis notas", () => {
+    expect(CHORD_SIZES).toEqual([2, 3, 4, 5, 6]);
+  });
+});
+
+describe("afinador v2 octava-agnóstico", () => {
+  it("pliega octavas completas a la misma clase de altura", () => {
+    expect(foldCentsToPitchClass(1200)).toBe(0);
+    expect(foldCentsToPitchClass(-1200)).toBe(0);
+    expect(foldCentsToPitchClass(1230)).toBe(30);
+    expect(foldCentsToPitchClass(-1175)).toBe(25);
   });
 });
 
