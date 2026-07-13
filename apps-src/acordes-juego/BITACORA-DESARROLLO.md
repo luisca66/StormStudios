@@ -379,3 +379,14 @@ Checklist §13 (resultado final):
 - `turnVelSmoothed` ahora sigue únicamente el timón propulsado de A/D o joystick.
   El mouse conserva la orientación de vista/rumbo para el siguiente avance, pero no
   activa motores, no inclina la cabina y no marca `isMoving` por sí solo.
+
+### ✅ Cabina panorámica definitiva (2026-07-12, Codex GPT-5)
+- Rediseño aprobado por Luis tras probarlo localmente, inspirado en una cúpula de
+  observación multipanel pero construido enteramente con HTML/CSS original.
+- Ojo circular central reducido a 31vmin + seis paños panorámicos alrededor,
+  separados por costillas diagonales/verticales finas; el mundo queda visible casi
+  a pantalla completa y el horizonte ya no lo corta una costilla horizontal.
+- Nuevo módulo cenital BTH-05 con lámparas y palancas; aro central metálico iluminado,
+  luces de estado y reflejos de cristal conservados.
+- Sonar/telemetría y estadísticas replegados al perímetro; consola de respuestas más
+  baja y estrecha. Verificado con HUD vacío y pregunta activa (3 botones) sin recortes.

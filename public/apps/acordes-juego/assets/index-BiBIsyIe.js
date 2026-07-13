@@ -3707,6 +3707,14 @@ void main() {
         <span class="frame-dot amber d3"></span>
         <span class="frame-dot red d4"></span>
       </div>
+      <div class="dome-ribs" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="overhead-cluster" aria-hidden="true">
+        <span class="overhead-label">BTH-05</span>
+        <div class="overhead-lamps"><b></b><b></b><b></b><b></b><b></b></div>
+        <div class="overhead-switches"><i></i><i></i><i></i><i></i></div>
+      </div>
       <div class="glass-fx"></div>
       <div id="hud-feedback" class="hud-feedback"></div>
       <button id="hud-abort" class="abort-btn" title="${i(`hud.abort`)}">✕ <span data-i18n="hud.abort">${i(`hud.abort`)}</span></button>
