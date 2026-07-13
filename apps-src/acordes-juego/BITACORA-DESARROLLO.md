@@ -372,3 +372,10 @@ Checklist §13 (resultado final):
   muestra `Acércate X m para escuchar` (y equivalente completo en inglés).
 - Raycast ampliado al radio máximo de spawn para que el aviso funcione incluso con
   objetivos lejanos. QA cubre umbral, redondeo y tolerancia de escucha.
+
+### ✅ Mouse silencioso, solo vista (2026-07-12, Codex GPT-5)
+- El drag horizontal se estaba midiendo como velocidad de giro de la nave; por eso
+  activaba el loop de thrusters y el banqueo aunque la posición no cambiara.
+- `turnVelSmoothed` ahora sigue únicamente el timón propulsado de A/D o joystick.
+  El mouse conserva la orientación de vista/rumbo para el siguiente avance, pero no
+  activa motores, no inclina la cabina y no marca `isMoving` por sí solo.

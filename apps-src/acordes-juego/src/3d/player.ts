@@ -1,7 +1,7 @@
 // Controlador de la nave (H2, PLAN-HITOS-2): la nave tiene RUMBO y permanece
 // SIEMPRE horizontal — nunca de cabeza. W/S = thrust horizontal según el rumbo,
-// A/D o drag horizontal = timón (girar), Q/E = vertical puro. El drag vertical
-// solo hace un "peek" de cámara limitado que se auto-recentra al soltar.
+// A/D = timón propulsado; drag horizontal = orientar la vista/rumbo SIN motores
+// ni banqueo. Q/E = vertical puro. El drag vertical solo hace un "peek" limitado.
 // Cursor SIEMPRE visible, SIN pointer lock; click corto = tocar criatura.
 
 import * as THREE from "three";
@@ -21,7 +21,6 @@ export class PlayerController {
 
   // Banqueo: velocidad de giro suavizada (rad/s) para roll cosmético.
   private turnVelSmoothed = 0;
-  private prevYaw = 0;
   private accelDip = 0;
 
   // Estado de drag para timón/peek / detectar click corto.
@@ -125,7 +124,8 @@ export class PlayerController {
     }
     if (!this.enabled || !this.dragMoved) return;
 
-    // Horizontal = timón (gira la NAVE); vertical = peek limitado de cámara.
+    // Horizontal = orientar vista/rumbo sin propulsión; vertical = peek de cámara.
+    // El banqueo y los thrusters se calculan solo desde A/D o el joystick.
     this.yawObject.rotation.y -= dx * PHYSICS.lookSensitivity;
     this.pitchObject.rotation.x = THREE.MathUtils.clamp(
       this.pitchObject.rotation.x - dy * PHYSICS.peekSensitivity,
@@ -246,7 +246,6 @@ export class PlayerController {
   setPose(x: number, y: number, z: number, yaw = 0, pitch = 0): void {
     this.yawObject.position.set(x, y, z);
     this.yawObject.rotation.y = yaw;
-    this.prevYaw = yaw;
     this.turnVelSmoothed = 0;
     this.accelDip = 0;
     this.pitchObject.rotation.x = THREE.MathUtils.clamp(
@@ -294,12 +293,12 @@ export class PlayerController {
     // ---------- Timón ----------
     this.yawObject.rotation.y += turnInput * PHYSICS.turnSpeed * dt;
 
-    // Velocidad de giro real (incluye drag), suavizada para el banqueo.
+    // Solo el timón A/D/joystick es giro propulsado. El mouse modifica el yaw
+    // directamente, pero no entra en isMoving ni produce banqueo/thrusters.
     const yaw = this.yawObject.rotation.y;
-    const rawTurnVel = dt > 0 ? (yaw - this.prevYaw) / dt : 0;
-    this.prevYaw = yaw;
+    const poweredTurnVel = turnInput * PHYSICS.turnSpeed;
     this.turnVelSmoothed +=
-      (rawTurnVel - this.turnVelSmoothed) * Math.min(1, 8 * dt);
+      (poweredTurnVel - this.turnVelSmoothed) * Math.min(1, 8 * dt);
 
     // ---------- Peek: se recentra solo al no arrastrar ----------
     if (!this.dragging) {
