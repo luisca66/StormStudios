@@ -248,7 +248,7 @@ export class Scenery {
     this.birds.push(
       new BirdFlock(scene, rng, {
         count: 40, color: 0x2b2f36, size: 0.85, layerY: [18, 240],
-        orbitR: [45, 85], speed: 0.14, flapHz: 5, vFormation: true,
+        orbitR: [45, 85], speed: 0.045, flapHz: 2.4, vFormation: true,
       }),
       new BirdFlock(scene, rng, {
         count: 6, color: 0x3d2f22, size: 1.7, layerY: [315, 430],

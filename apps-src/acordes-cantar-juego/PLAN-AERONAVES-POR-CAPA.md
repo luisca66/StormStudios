@@ -98,10 +98,11 @@ Presupuesto: ≤ 8 meshes por aeronave (idealmente fusionar con
 ```ts
 // Aeronaves ambientales por capa (PLAN-AERONAVES-POR-CAPA) [tunable].
 export const FLYBY = {
-  intervalMin: 35,   // s entre pasadas (min)
-  intervalMax: 90,   // s entre pasadas (max)
-  firstDelay: 15,    // s tras entrar a una capa antes del primer paso posible
+  intervalMin: 5,    // s entre pasadas (min)
+  intervalMax: 12,   // s entre pasadas (máximo pedido por Luis)
+  firstDelay: 5,     // s antes del primer paso posible
   yClearance: 15,    // |ΔY| mínimo respecto al jugador
+  yVariationMax: 55, // |ΔY| máximo para variar cada pasada
   edgeMargin: 20,    // u fuera del radio para nacer/morir
   speeds: { plane: 9, jet: 14, strato: 10, satellite: 5 }, // u/s
 } as const;
@@ -133,7 +134,7 @@ entrada en BITACORA. Sin commit hasta que Luis lo pida.
 
 ## 6. Criterios de aceptación
 
-1. En cada capa 2–5, esperando ~1–2 min, cruza su aeronave correspondiente;
+1. En cada capa 2–5, tras una pausa aleatoria de 5–12 s, cruza su aeronave correspondiente;
    en la 1 no pasa nada nuevo.
 2. Nunca hay dos a la vez; nacen y mueren fundidas en la niebla (sin pops).
 3. Radar, clicks, cuota y gameplay: intactos.

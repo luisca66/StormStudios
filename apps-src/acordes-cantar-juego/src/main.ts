@@ -371,6 +371,7 @@ let pausedGame = false;
 let freeFlying = false;
 let ghostTimers: number[] = [];
 let musicInteractionToken = 0;
+let windSuppressedForSinging = false;
 
 async function playReferenceWithMusicPaused(str: LanternString): Promise<void> {
   const token = ++musicInteractionToken;
@@ -387,6 +388,7 @@ async function playReferenceWithMusicPaused(str: LanternString): Promise<void> {
 
 function resumeMusicAfterSinging(token = ++musicInteractionToken): void {
   if (token !== musicInteractionToken || !playing || dockedString) return;
+  windSuppressedForSinging = false;
   samplePlayer.resumePlaylist("music", MUSIC_FADE_IN_MS);
 }
 
@@ -399,6 +401,7 @@ function resumeMusicAfterChord(token: number): void {
 
 function stopMusic(): void {
   musicInteractionToken++;
+  windSuppressedForSinging = false;
   samplePlayer.stopPlaylist("music");
 }
 
@@ -484,6 +487,8 @@ function dockString(str: LanternString): void {
   dockedString = str;
   str.docked = true;
   game.player.docked = true; // auto-hover: inputs de movimiento ignorados (§7.1)
+  windSuppressedForSinging = true;
+  synth?.setWind(0);
   synth?.click();
 
   stringCents = []; // precisión de ESTA cuerda (media de la pasada §7.6)
@@ -824,15 +829,22 @@ game.onFrame = (dt, elapsed) => {
   hud.renderCompass(blips, elapsed);
 
   if (synth) {
-    synth.setBurner(Math.max(0, game.player.verticalVelocity / PHYSICS.maxSpeedV));
-    synth.setWind(
-      Math.min(
-        1,
-        (game.player.position.y / WORLD.topY) * 0.7 +
-          (game.player.speed / PHYSICS.maxSpeedH) * 0.3 +
-          (game.player.turnRate / PHYSICS.turnSpeed) * 0.3,
-      ),
+    const inFlight = (playing || freeFlying) && !pausedGame;
+    synth.setBurner(
+      inFlight ? Math.max(0, game.player.verticalVelocity / PHYSICS.maxSpeedV) : 0,
     );
+    if (inFlight && !windSuppressedForSinging) {
+      synth.setWind(
+        Math.min(
+          1,
+          (game.player.position.y / WORLD.topY) * 0.7 +
+            (game.player.speed / PHYSICS.maxSpeedH) * 0.3 +
+            (game.player.turnRate / PHYSICS.turnSpeed) * 0.3,
+        ),
+      );
+    } else {
+      synth.setWind(0);
+    }
   }
 };
 
@@ -913,6 +925,7 @@ async function startGame(): Promise<void> {
   playing = true;
   pausedGame = false;
   freeFlying = false;
+  windSuppressedForSinging = false;
   undockCleanup();
   game.startAscent(startLayer);
   showScreen("hud");
@@ -939,6 +952,7 @@ function endGame(): void {
 // Vuelo libre QA: navegar sin loop de canto (sin mic).
 function startFreeFlight(): void {
   freeFlying = true;
+  windSuppressedForSinging = false;
   ensureSynth();
   game.startAscent(selectedLayer);
   showScreen("hud");

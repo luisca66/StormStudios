@@ -674,3 +674,57 @@ solo al completar la cuerda.
   depthWrite off = **1 draw call**; viaja rígida con el grupo (suficiente a distancia).
 - Total jet en pantalla: 8 draw calls. Build limpio; deploy a `public/`.
 - ⏳ QA visual de Luis en Cielo Abierto (capa 3).
+
+## F3 de PLAN-AERONAVES-POR-CAPA — Estratosférico (capa 4) · 2026-07-19 · COMPLETADA ✓
+
+- `KIND_BY_LAYER[4] = "strato"` y rama `buildStrato()` activa.
+- Silueta tipo U-2 en metal oscuro: fuselaje esbelto, morro cónico, alas de 13 u,
+  aleta vertical y plano de cola en T.
+- Estela única fina y larga reutilizando `buildContrail` (45 u, 0.18→0.7).
+- 5 meshes del avión + 1 estela = 6 draw calls; dispose incluido en el ciclo común.
+- Build limpio. QA de navegador forzando una pasada en Cielo de Auroras: modelo y
+  estela visibles, 60 fps, sin overlay ni errores.
+
+## F4 de PLAN-AERONAVES-POR-CAPA — Satélite (capa 5) · 2026-07-19 · COMPLETADA ✓
+
+- `KIND_BY_LAYER[5] = "satellite"` y rama `buildSatellite()` activa.
+- Satélite low-poly de 5 meshes: cuerpo dorado metalizado, dos paneles solares
+  azul-emisivo, antena y baliza roja. Sin estela y sin `PointLight`.
+- Pulso especular del cuerpo cada ~4 s (`emissiveIntensity` 0.12→2.02) y baliza
+  intermitente cada 1.6 s (0.08↔3.2); deriva casi horizontal a 5 u/s.
+- QA de navegador en Borde del Espacio: modelo visible, baliza animada, +5 draw calls
+  sobre la escena base (15→20), 60 fps, `reset()` libera la aeronave y sin errores.
+
+## Ajuste — Pasadas mucho más frecuentes · 2026-07-19 · COMPLETADO ✓
+
+- Pedido de Luis: que la siguiente aeronave no tarde más de 12 s.
+- `FLYBY.intervalMin` 35→5 s, `intervalMax` 90→12 s y `firstDelay` 15→5 s.
+- Se conserva una sola aeronave activa; el intervalo empieza cuando la anterior sale.
+- Las direcciones ya son totalmente aleatorias: ángulo de entrada 0–360°, cruce hacia
+  el lado opuesto con desviación lateral aleatoria ±40 u y altura variable por capa.
+
+## Fix — Ambiente de movimiento durante canto y menús · 2026-07-19 · COMPLETADO ✓
+
+- El ruido de aire por altitud es intencional, pero el frame loop lo recalculaba incluso
+  después de que `endGame()` lo pusiera en cero; por eso reaparecía en configuración.
+- Nuevo estado `windSuppressedForSinging`: al amarrar silencia inmediatamente el viento
+  y lo mantiene apagado durante referencia, canto y acorde final.
+- El viento vuelve junto con la música tras el acorde; también queda a cero en pausa,
+  resumen, configuración y cualquier estado fuera de partida/vuelo libre. El quemador
+  conserva su feedback propio durante la partida, pero se apaga fuera del vuelo.
+- La frecuencia de aeronaves se confirma global: todas las capas comparten exactamente
+  `intervalMin: 5`, `intervalMax: 12` y `firstDelay: 5`.
+
+## Ajuste — Altura variable por pasada · 2026-07-19 · COMPLETADO ✓
+
+- Cada aeronave sortea independientemente si cruza por arriba o por abajo del globo.
+- La diferencia vertical también se sortea entre 15 y 55 u; cerca del límite de una
+  capa solo se eligen direcciones que mantengan la aeronave dentro de su banda.
+- Se conserva un margen visual de 10 u respecto al techo y piso de cada capa.
+
+## Ajuste — Vuelo natural de aves en formación · 2026-07-19 · COMPLETADO ✓
+
+- La bandada en V orbitaba a `speed: 0.14` (una vuelta en ~7 s), demasiado rápida.
+- Velocidad reducida a `0.045` (una vuelta en ~22 s) y aleteo de 5→2.4 Hz para que
+  el desplazamiento y el movimiento de alas se perciban coordinados y naturales.
+- Los seis halcones solitarios de la capa 3 conservan su vuelo lento independiente.

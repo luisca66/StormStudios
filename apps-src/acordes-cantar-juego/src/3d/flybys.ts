@@ -1,7 +1,7 @@
 // Aeronaves ambientales por capa (PLAN-AERONAVES-POR-CAPA): UNA a la vez, cruza
 // el cilindro como cuerda lejos del jugador y muere fundida en la niebla. Puro
-// ambiente — sin radar, sin click, sin colisión. F1: avioneta de hélice (capa 2);
-// F2–F4 añadirán jet, estratosférico y satélite. Math.random() a propósito: el
+// ambiente — sin radar, sin click, sin colisión. F1–F4: avioneta, jet,
+// estratosférico y satélite. Math.random() a propósito: el
 // RNG sembrado del mundo no debe consumirse aquí (reproducibilidad de nubes).
 
 import * as THREE from "three";
@@ -12,7 +12,8 @@ type FlybyKind = "plane" | "jet" | "strato" | "satellite";
 const KIND_BY_LAYER: Partial<Record<number, FlybyKind>> = {
   2: "plane",
   3: "jet",
-  // 4: "strato" (F3) · 5: "satellite" (F4)
+  4: "strato",
+  5: "satellite",
 };
 
 class Flyby {
@@ -22,8 +23,14 @@ class Flyby {
   private readonly prop: THREE.Object3D | null;
   private readonly velocity: THREE.Vector3;
   private readonly disposables: (THREE.BufferGeometry | THREE.Material)[] = [];
+  private satelliteBodyMat: THREE.MeshStandardMaterial | null = null;
+  private satelliteBeaconMat: THREE.MeshStandardMaterial | null = null;
 
-  constructor(kind: FlybyKind, from: THREE.Vector3, to: THREE.Vector3) {
+  constructor(
+    private readonly kind: FlybyKind,
+    from: THREE.Vector3,
+    to: THREE.Vector3,
+  ) {
     this.prop = this.buildModel(kind);
     this.group.add(this.model);
     this.group.position.copy(from);
@@ -34,7 +41,23 @@ class Flyby {
   update(dt: number, elapsed: number): void {
     this.group.position.addScaledVector(this.velocity, dt);
     if (this.prop) this.prop.rotation.z += 26 * dt; // hélice
-    this.model.rotation.z = Math.sin(elapsed * 0.7) * 0.06; // balanceo sutil
+    if (this.kind === "satellite") {
+      // Casi horizontal: deriva orbital sobria, con destello especular cada ~4 s.
+      this.model.rotation.z = Math.sin(elapsed * 0.18) * 0.02;
+      const flash = Math.pow(
+        Math.max(0, Math.sin((elapsed * Math.PI * 2) / 4)),
+        18,
+      );
+      if (this.satelliteBodyMat) {
+        this.satelliteBodyMat.emissiveIntensity = 0.12 + flash * 1.9;
+      }
+      if (this.satelliteBeaconMat) {
+        const blink = Math.sin((elapsed * Math.PI * 2) / 1.6) > 0.72;
+        this.satelliteBeaconMat.emissiveIntensity = blink ? 3.2 : 0.08;
+      }
+    } else {
+      this.model.rotation.z = Math.sin(elapsed * 0.7) * 0.06; // balanceo sutil
+    }
   }
 
   get isGone(): boolean {
@@ -65,6 +88,10 @@ class Flyby {
     switch (kind) {
       case "jet":
         return this.buildJet();
+      case "strato":
+        return this.buildStrato();
+      case "satellite":
+        return this.buildSatellite();
       default:
         return this.buildPlane();
     }
@@ -119,6 +146,70 @@ class Flyby {
     fin.rotation.x = -0.35; // aleta inclinada hacia atrás
 
     this.buildContrail([-1.7, 1.7], -0.5, -1.0, 30, 0.35, 1.3);
+    return null;
+  }
+
+  private buildStrato(): null {
+    // Avión estratosférico tipo U-2: esbelto, alas MUY largas y delgadas, cola
+    // en T, metal oscuro. Estela única fina y larga. 5 meshes + 1 = 6 draw calls.
+    const metal = this.mat(0x30343a, 0.45);
+
+    const fusGeo = new THREE.CylinderGeometry(0.28, 0.28, 6, 8);
+    fusGeo.rotateX(Math.PI / 2);
+    this.mesh(fusGeo, metal);
+    const noseGeo = new THREE.ConeGeometry(0.28, 1.2, 8);
+    noseGeo.rotateX(Math.PI / 2);
+    const nose = this.mesh(noseGeo, metal);
+    nose.position.set(0, 0, 3.6);
+    const wing = this.mesh(new THREE.BoxGeometry(13, 0.07, 0.9), metal);
+    wing.position.set(0, 0.05, 0.2);
+    // Cola en T: aleta vertical con el plano horizontal encima.
+    const fin = this.mesh(new THREE.BoxGeometry(0.07, 1.1, 0.8), metal);
+    fin.position.set(0, 0.6, -2.7);
+    const tailplane = this.mesh(new THREE.BoxGeometry(3.2, 0.06, 0.7), metal);
+    tailplane.position.set(0, 1.15, -2.7);
+
+    this.buildContrail([0], 0, -3.2, 45, 0.18, 0.7);
+    return null;
+  }
+
+  private buildSatellite(): null {
+    // Satélite low-poly: cuerpo de foil dorado, paneles solares emisivos, antena
+    // y baliza. Sin estela ni PointLight. 5 meshes = 5 draw calls.
+    const bodyMat = new THREE.MeshStandardMaterial({
+      color: 0xc9a227,
+      roughness: 0.32,
+      metalness: 0.85,
+      emissive: 0x5a3300,
+      emissiveIntensity: 0.12,
+    });
+    const panelMat = new THREE.MeshStandardMaterial({
+      color: 0x24558c,
+      roughness: 0.5,
+      metalness: 0.35,
+      emissive: 0x0a2d66,
+      emissiveIntensity: 0.55,
+    });
+    const antennaMat = this.mat(0xc7c9cc, 0.3);
+    const beaconMat = new THREE.MeshStandardMaterial({
+      color: 0xff5544,
+      roughness: 0.4,
+      emissive: 0xff1808,
+      emissiveIntensity: 0.08,
+    });
+    this.disposables.push(bodyMat, panelMat, beaconMat);
+    this.satelliteBodyMat = bodyMat;
+    this.satelliteBeaconMat = beaconMat;
+
+    this.mesh(new THREE.BoxGeometry(1.5, 1.1, 1.5), bodyMat);
+    for (const side of [-1, 1]) {
+      const panel = this.mesh(new THREE.BoxGeometry(3.6, 0.08, 1.4), panelMat);
+      panel.position.set(side * 2.55, 0, 0);
+    }
+    const antenna = this.mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.8, 6), antennaMat);
+    antenna.position.set(0, 1.42, 0);
+    const beacon = this.mesh(new THREE.SphereGeometry(0.16, 6, 4), beaconMat);
+    beacon.position.set(0, 2.35, 0);
     return null;
   }
 
@@ -213,16 +304,21 @@ export class FlybyManager {
   private spawn(kind: FlybyKind, playerPos: THREE.Vector3): void {
     const layer = layerAtY(playerPos.y);
     const band = LAYERS.find((l) => l.num === layer.num) ?? LAYERS[0];
-    // Y dentro de la banda, empujada a ≥ yClearance del jugador.
-    let y = band.yBottom + 10 + Math.random() * (band.yTop - band.yBottom - 20);
-    if (Math.abs(y - playerPos.y) < FLYBY.yClearance) {
-      const sign = y >= playerPos.y ? 1 : -1;
-      y = THREE.MathUtils.clamp(
-        playerPos.y + sign * FLYBY.yClearance,
-        band.yBottom + 10,
-        band.yTop - 10,
-      );
-    }
+    // Cada pasada sortea si va arriba o abajo y una separación distinta. Se
+    // conserva un margen de 10 u respecto a los límites visuales de la capa.
+    const yMin = band.yBottom + 10;
+    const yMax = band.yTop - 10;
+    const roomBelow = playerPos.y - yMin;
+    const roomAbove = yMax - playerPos.y;
+    const directions: number[] = [];
+    if (roomBelow >= FLYBY.yClearance) directions.push(-1);
+    if (roomAbove >= FLYBY.yClearance) directions.push(1);
+    const sign = directions[Math.floor(Math.random() * directions.length)] ?? 1;
+    const available = sign > 0 ? roomAbove : roomBelow;
+    const maxOffset = Math.min(FLYBY.yVariationMax, available);
+    const offset =
+      FLYBY.yClearance + Math.random() * Math.max(0, maxOffset - FLYBY.yClearance);
+    const y = THREE.MathUtils.clamp(playerPos.y + sign * offset, yMin, yMax);
     const r = WORLD.radius + FLYBY.edgeMargin;
     const a = Math.random() * Math.PI * 2;
     const lateral = (Math.random() - 0.5) * 80; // offset ≤ 40 u para variedad

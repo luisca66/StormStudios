@@ -163,10 +163,11 @@ export const SKY_KEYFRAMES: readonly SkyKeyframe[] = [
 
 // Aeronaves ambientales por capa (PLAN-AERONAVES-POR-CAPA) [tunable].
 export const FLYBY = {
-  intervalMin: 35, // s entre pasadas (min)
-  intervalMax: 90, // s entre pasadas (max)
-  firstDelay: 15, // s antes del primer paso posible
+  intervalMin: 5, // s entre pasadas (min)
+  intervalMax: 12, // s entre pasadas (máximo pedido por Luis)
+  firstDelay: 5, // s antes del primer paso posible
   yClearance: 15, // |ΔY| mínimo respecto al jugador
+  yVariationMax: 55, // |ΔY| máximo para variar claramente cada pasada
   edgeMargin: 20, // u fuera del radio para nacer/morir
   speeds: { plane: 9, jet: 14, strato: 10, satellite: 5 }, // u/s
 } as const;
