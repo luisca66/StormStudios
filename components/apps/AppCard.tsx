@@ -49,6 +49,17 @@ export default function AppCard({ app, locale }: Props) {
                 Web
               </span>
             )}
+            {app.gameUrl && (
+              <span
+                className="ss-mono text-xs px-2 py-0.5 rounded-full text-white bg-gradient-to-r from-purple-600 to-cyan-600"
+                style={{
+                  border: "1px solid rgba(103,232,249,0.35)",
+                  boxShadow: "0 0 12px rgba(139,92,246,0.2)",
+                }}
+              >
+                {locale === "es" ? "Juego" : "Game"}
+              </span>
+            )}
           </div>
           <h3 className="ss-mono text-sm font-medium leading-tight transition-colors duration-200"
             style={{ color: "#f0eeff" }}>
