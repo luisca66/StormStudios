@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useFullscreen } from "./useFullscreen";
 import { FullscreenIcon } from "./FullscreenIcon";
 
@@ -64,6 +65,26 @@ export default function GameShell({
   const es = locale === "es";
   const { ref: containerRef, supported, isFullscreen, toggle: toggleFullscreen } =
     useFullscreen<HTMLDivElement>();
+
+  // El foco DEBE volver al iframe tras usar el botón de pantalla completa (o el
+  // cambio nativo con Esc): si se queda en la página, el teclado deja de llegar
+  // al juego y los controles "mueren" hasta que el usuario clickea dentro.
+  const focusGame = () => {
+    requestAnimationFrame(() => {
+      containerRef.current?.querySelector("iframe")?.focus();
+    });
+  };
+  const handleFullscreen = () => {
+    toggleFullscreen();
+    focusGame();
+  };
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      containerRef.current?.querySelector("iframe")?.focus();
+    });
+    return () => cancelAnimationFrame(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFullscreen]);
 
   const fsLabel = isFullscreen
     ? es
@@ -160,7 +181,7 @@ export default function GameShell({
           {supported && (
             <button
               type="button"
-              onClick={toggleFullscreen}
+              onClick={handleFullscreen}
               aria-label={fsLabel}
               title={`${fsLabel} (F)`}
               style={{

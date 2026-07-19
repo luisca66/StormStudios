@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Aerostato — Storm Studios</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Marcellus&family=Rajdhani:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <canvas id="game-canvas"></canvas>
+
+    <div id="ui-root">
+      <!-- MENÚ PRINCIPAL -->
+      <section id="menu-screen" class="screen active">
+        <div class="card menu-card">
+          <h1 class="title" data-i18n="app.title">AEROSTATO</h1>
+          <p class="subtitle" data-i18n="app.tagline">Asciende. Canta. Ilumina.</p>
+
+          <div class="config-group">
+            <h3 data-i18n="menu.mode">Modo de ascenso</h3>
+            <div id="mode-options" class="chip-row"></div>
+            <p id="mode-desc" class="mode-desc"></p>
+          </div>
+
+          <div class="config-group">
+            <h3 data-i18n="menu.register">Registro vocal</h3>
+            <div id="register-options" class="chip-row"></div>
+          </div>
+
+          <div class="config-group">
+            <h3 data-i18n="menu.instrument">Timbre</h3>
+            <div id="timbre-options" class="chip-row"></div>
+          </div>
+
+          <div class="config-group">
+            <h3 data-i18n="menu.reference">Nota de referencia</h3>
+            <div id="ref-options" class="chip-row"></div>
+            <label class="toggle-row">
+              <input id="shownames-toggle" type="checkbox" />
+              <span data-i18n="menu.showNames">Mostrar nombres de nota</span>
+            </label>
+          </div>
+
+          <div class="config-group" id="layer-group">
+            <h3 data-i18n="menu.startLayer">Capa inicial</h3>
+            <div id="layer-options" class="chip-row"></div>
+          </div>
+
+          <div class="config-group volume-group">
+            <h3 data-i18n="menu.volume">Volumen</h3>
+            <input id="volume-slider" type="range" min="0" max="100" value="80" />
+          </div>
+
+          <div class="menu-actions">
+            <button id="atlas-btn" class="btn secondary" data-i18n="menu.atlas">Atlas</button>
+            <button id="start-btn" class="btn primary" data-i18n="menu.start">INICIAR ASCENSO</button>
+          </div>
+
+          <p class="privacy" data-i18n="menu.privacy"></p>
+          <p class="credit" data-i18n="credit"></p>
+        </div>
+      </section>
+
+      <!-- PERMISO MIC DENEGADO (F2) -->
+      <section id="mic-denied-screen" class="screen hidden">
+        <div class="card menu-card">
+          <h2 class="title small" data-i18n="micdenied.title">Micrófono sin permiso</h2>
+          <p class="subtitle" data-i18n="micdenied.body"></p>
+          <div class="menu-actions">
+            <button id="mic-denied-back" class="btn secondary" data-i18n="micdenied.back">Volver al menú</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- HUD / CONSOLA DE LATÓN (§6) -->
+      <section id="hud" class="screen hidden hud-screen">
+        <div id="vignette"></div>
+        <div id="tears"></div>
+        <div id="hud-topright">
+          <div class="hud-stat"><span data-i18n="hud.score">Puntos</span> <b id="hud-score">0</b></div>
+          <div class="hud-stat"><span data-i18n="hud.streak">Racha</span> <b id="hud-streak">×0</b></div>
+        </div>
+        <div id="console">
+          <div class="console-side">
+            <div id="altimeter">
+              <div id="alt-meters">0 m</div>
+              <div id="alt-layer">—</div>
+            </div>
+            <canvas id="compass-canvas" width="160" height="56"></canvas>
+          </div>
+          <div class="console-center">
+            <div id="chord-row">
+              <span id="chord-name">—</span>
+              <span id="lantern-medals"></span>
+              <button id="ref-btn" title="R">🔊 <span data-i18n="hud.reference">Referencia</span></button>
+            </div>
+            <canvas id="console-tuner" width="260" height="90"></canvas>
+            <div id="wind-timer"><div id="wind-fill"></div></div>
+          </div>
+          <div class="console-side right">
+            <div id="mode-meter"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRANSICIÓN DE CAPA (F7) -->
+      <section id="layer-transition" class="screen hidden">
+        <div class="layer-card">
+          <div id="lt-name" class="lt-name"></div>
+          <div id="lt-meters" class="lt-meters"></div>
+          <div id="lt-family" class="lt-family"></div>
+        </div>
+      </section>
+
+      <!-- RESUMEN (F7) -->
+      <section id="summary-screen" class="screen hidden">
+        <div class="card menu-card">
+          <h2 class="title small" data-i18n="summary.title">Informe de ascenso</h2>
+          <p id="summary-reason" class="subtitle"></p>
+          <div id="summary-stats" class="summary-stats"></div>
+          <div class="menu-actions">
+            <button id="summary-retry" class="btn primary" data-i18n="summary.retry">Reintentar</button>
+            <button id="summary-menu" class="btn secondary" data-i18n="summary.menu">Menú</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ATLAS DEL AERONAUTA (F9) -->
+      <section id="atlas-screen" class="screen hidden">
+        <div class="card menu-card">
+          <h2 class="title small" data-i18n="atlas.title">Atlas del Aeronauta</h2>
+          <p class="subtitle"><span id="atlas-count">0/33</span> <span data-i18n="atlas.progress">catalogadas</span></p>
+          <div id="atlas-grid" class="atlas-grid"></div>
+          <div class="menu-actions">
+            <button id="atlas-back" class="btn secondary" data-i18n="atlas.back">Volver</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAUSA -->
+      <section id="pause-screen" class="screen hidden">
+        <div class="card" style="text-align:center">
+          <h2 class="title small" data-i18n="pause.title">Pausa</h2>
+          <div class="menu-actions">
+            <button id="pause-resume" class="btn primary" data-i18n="pause.resume">Reanudar</button>
+            <button id="pause-quit" class="btn secondary" data-i18n="pause.quit">Abandonar ascenso</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Utilidades -->
+      <div id="toast" class="toast"></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -39,6 +39,10 @@ export const routing = defineRouting({
       en: "/apps/acordes/game",
     },
     "/apps/acordes-cantar/jugar": "/apps/acordes-cantar/jugar",
+    "/apps/acordes-cantar/juego": {
+      es: "/apps/acordes-cantar/juego",
+      en: "/apps/acordes-cantar/game",
+    },
     "/apps/desglose/jugar": "/apps/desglose/jugar",
     "/apps/intervalos-cantados/jugar": {
       es: "/apps/intervalos-cantados/jugar",

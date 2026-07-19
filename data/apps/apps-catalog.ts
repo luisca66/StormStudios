@@ -218,7 +218,13 @@ export const APPS: AppEntry[] = [
       en: "Train your pitch by singing the notes of progressively challenging chords. The app listens to your voice through the microphone and evaluates your accuracy in real time.",
     },
     webUrl: "/apps/acordes-cantar/jugar",
+    gameUrl: "/apps/acordes-cantar/juego",
+    gameLabel: { es: "Modo juego 3D", en: "3D game mode" },
     features: [
+      {
+        es: "Modo juego 3D: Aerostato, asciende al borde del espacio encendiendo linternas con tu voz",
+        en: "3D game mode: Aerostat, ascend to the edge of space lighting lanterns with your voice",
+      },
       { es: "Detección de afinación por micrófono", en: "Microphone pitch detection" },
       { es: "Rangos vocales: varón F2–G4, dama G3–A5", en: "Vocal ranges: male F2–G4, female G3–A5" },
       { es: "Multi-tímbrica (5 timbres)", en: "Multi-timbral (5 timbres)" },
