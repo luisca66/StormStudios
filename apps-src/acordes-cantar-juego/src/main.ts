@@ -467,6 +467,14 @@ function clearGhostTimers(): void {
 /** Amarrarse (click o E). Amarrar otra suelta la anterior sin penalización. */
 function dockString(str: LanternString): void {
   if (!playing || pausedGame || str.isDying || dockedString === str) return;
+  // Fuera del anillo verde del radar no hay amarre: navega primero (paridad Batisfera).
+  const metersAway = Math.ceil(
+    str.group.position.distanceTo(game.player.position) - GAMEPLAY.interactMaxDistance,
+  );
+  if (metersAway > 0) {
+    showToast(t("feedback.approach").replace("{meters}", String(metersAway)));
+    return;
+  }
   if (dockedString) {
     dockedString.docked = false;
     dockedString.resetLanterns();
@@ -516,6 +524,9 @@ state.on("lantern", (index, midi, s) => {
   str.light(index); // enciende + suena su nota + revela nombre (§7.1)
   void samplePlayer.playNote(midiToNote(midi), str.instrument as Instrument);
   if (s.litCount < s.noteMidis.length) {
+    // Cada nota afinada celebra con acierto.mp3 (Luis 2026-07-19); en la última
+    // no: el evento "completed" que sigue ya lo toca con el acorde completo.
+    samplePlayer.playCorrect();
     currentTargetMidi = s.noteMidis[s.litCount];
     str.setActive(s.litCount);
     getPitchDetector().startListening(midiToFrequency(currentTargetMidi));
@@ -808,13 +819,19 @@ game.onFrame = (dt, elapsed) => {
     }
   }
 
-  const blips = playing || freeFlying ? game.lanterns.blips(game.player.position) : [];
-  hud.renderCompass(game.player.yaw, blips, elapsed);
+  const blips =
+    playing || freeFlying ? game.lanterns.blips(game.player.position, game.player.yaw) : [];
+  hud.renderCompass(blips, elapsed);
 
   if (synth) {
     synth.setBurner(Math.max(0, game.player.verticalVelocity / PHYSICS.maxSpeedV));
     synth.setWind(
-      Math.min(1, (game.player.position.y / WORLD.topY) * 0.7 + (game.player.speed / PHYSICS.maxSpeedH) * 0.3),
+      Math.min(
+        1,
+        (game.player.position.y / WORLD.topY) * 0.7 +
+          (game.player.speed / PHYSICS.maxSpeedH) * 0.3 +
+          (game.player.turnRate / PHYSICS.turnSpeed) * 0.3,
+      ),
     );
   }
 };
@@ -828,7 +845,7 @@ window.addEventListener("keydown", (e) => {
   if (k === "r") replayReference();
   else if (k === "e" && !dockedString) {
     const near = game.lanterns.nearest(game.player.position);
-    if (near && near.dist <= GAMEPLAY.proximityDockDistance) dockString(near.str);
+    if (near && near.dist <= GAMEPLAY.interactMaxDistance) dockString(near.str);
   } else if (k === "s" && dockedString && !e.repeat && sHoldTimer === 0) {
     sHoldTimer = window.setTimeout(() => {
       sHoldTimer = 0;
@@ -912,6 +929,7 @@ function endGame(): void {
   game.stopAscent();
   game.lanterns.reset();
   game.lanterns.onNeedQuestion = null;
+  game.flybys.reset();
   synth?.setBurner(0);
   synth?.setWind(0);
   rebuildLayerChips();
@@ -953,6 +971,21 @@ $("pause-resume").addEventListener("click", () => {
 });
 
 $("pause-quit").addEventListener("click", () => endGame());
+
+// Protocolo storm:back con el GameShell del sitio: el "← Volver" del marco
+// pregunta antes de salir. Fuera del menú → abandona al menú de configuración;
+// ya en el menú → autoriza la navegación real con storm:back-exit.
+window.addEventListener("message", (e) => {
+  if (e.origin !== window.location.origin) return;
+  if ((e.data as { type?: string } | null)?.type !== "storm:back") return;
+  const atMenu = !$("menu-screen").classList.contains("hidden");
+  if (atMenu) {
+    window.parent.postMessage({ type: "storm:back-exit" }, window.location.origin);
+  } else {
+    freeFlying = false;
+    endGame();
+  }
+});
 
 initI18n();
 buildMenu();

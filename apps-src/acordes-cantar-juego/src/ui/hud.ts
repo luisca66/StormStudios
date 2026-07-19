@@ -114,7 +114,7 @@ export class HUD {
     this.tuner.render(input);
   }
 
-  renderCompass(yaw: number, blips: CompassBlip[], elapsed: number): void {
-    this.compass.render(yaw, blips, elapsed);
+  renderCompass(blips: CompassBlip[], elapsed: number): void {
+    this.compass.render(blips, elapsed);
   }
 }

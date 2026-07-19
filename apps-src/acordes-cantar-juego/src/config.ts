@@ -98,7 +98,7 @@ export const GAMEPLAY = {
   spawnRadiusMax: 70,
   spawnMinSeparation: 20,
   despawnDistance: 90,
-  proximityDockDistance: 12, // tecla E (§8)
+  interactMaxDistance: 30, // alcance de amarre (click o E) = anillo verde del radar; obliga a navegar (paridad Batisfera)
   clickRadiusFactor: 1.5, // esfera de colisión = 1.5× el tamaño visual
   releaseHoldSeconds: 0.5, // S sostenida para soltar
 } as const;
@@ -161,6 +161,16 @@ export const SKY_KEYFRAMES: readonly SkyKeyframe[] = [
   { y: 750, zenith: 0x04061c, horizon: 0x131c3c, fogDensity: 0.001, ambient: 0.40, sun: 1.6, sunColor: 0xffffff },
 ];
 
+// Aeronaves ambientales por capa (PLAN-AERONAVES-POR-CAPA) [tunable].
+export const FLYBY = {
+  intervalMin: 35, // s entre pasadas (min)
+  intervalMax: 90, // s entre pasadas (max)
+  firstDelay: 15, // s antes del primer paso posible
+  yClearance: 15, // |ΔY| mínimo respecto al jugador
+  edgeMargin: 20, // u fuera del radio para nacer/morir
+  speeds: { plane: 9, jet: 14, strato: 10, satellite: 5 }, // u/s
+} as const;
+
 // Física de globo (PLAN §8) [tunable]. accelLerp equivale al α~0.03 por frame del
 // plan a 60 fps, expresado por segundo para independencia del framerate.
 export const PHYSICS = {
@@ -168,8 +178,18 @@ export const PHYSICS = {
   maxSpeedV: 4, // u/s vertical
   accelLerp: 1.8, // 1/s — masa de globo (más pesado que Batisfera)
   windSpeed: 0.4, // u/s deriva constante por capa
-  lookSensitivity: 0.0032, // rad/px del drag
-  pitchMax: (85 * Math.PI) / 180,
+  // Navegación con rumbo estilo Batisfera (Luis 2026-07-19): A/D = timón,
+  // drag = vista temporal que se recentra al soltar.
+  turnSpeed: 0.4, // rad/s de giro con A/D o ←/→ (Luis: la mitad, 2026-07-19)
+  lookSensitivity: 0.0035, // rad/px de drag horizontal (solo vista)
+  lookYawMax: (40 * Math.PI) / 180, // mirada lateral máxima respecto a la proa
+  lookRecenterLerp: 4, // recentrado horizontal al soltar
+  peekPitchMax: (25 * Math.PI) / 180, // peek vertical máximo de la cámara
+  peekSensitivity: 0.0028, // rad/px de drag vertical
+  peekRecenterLerp: 4, // recentrado del peek al soltar
+  bankMaxRoll: (5 * Math.PI) / 180, // banqueo cosmético máximo al girar
+  bankFactor: 0.22, // roll = -velocidadDeGiro × factor
+  accelDipMax: (2 * Math.PI) / 180, // cabeceo visual al acelerar/frenar
   camRollAmplitude: (1 * Math.PI) / 180, // balanceo ±1° (flotar, no nadar)
   camRollSpeed: 0.07, // Hz
 } as const;

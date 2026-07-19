@@ -117,15 +117,21 @@ export class LanternManager {
     return best;
   }
 
-  /** Blips del catalejo: acimut mundo hacia cada cuerda viva (§6). */
-  blips(playerPos: THREE.Vector3): CompassBlip[] {
+  /** Blips del radar: rumbo relativo a la proa (0 = al frente, + = derecha). */
+  blips(playerPos: THREE.Vector3, playerYaw: number): CompassBlip[] {
+    const fx = -Math.sin(playerYaw);
+    const fz = -Math.cos(playerYaw);
     return this.strings
       .filter((s) => !s.isDying)
       .map((s) => {
-        const dx = s.group.position.x - playerPos.x;
-        const dz = s.group.position.z - playerPos.z;
+        const vx = s.group.position.x - playerPos.x;
+        const vz = s.group.position.z - playerPos.z;
+        const dot = fx * vx + fz * vz;
+        const crossY = fx * vz - fz * vx;
         return {
-          azimuth: Math.atan2(dx, -dz),
+          bearing: Math.atan2(crossY, dot),
+          distance: Math.hypot(vx, vz),
+          inRange: s.group.position.distanceTo(playerPos) <= GAMEPLAY.interactMaxDistance,
           color: `#${s.familyColor.getHexString()}`,
           active: s.docked,
         };

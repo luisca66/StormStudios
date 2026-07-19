@@ -43,6 +43,13 @@ type GameShellProps = {
   backColor?: string;
   /** color de la tagline de la derecha */
   taglineColor?: string;
+  /**
+   * "← Volver" pregunta primero al juego vía postMessage ({type:"storm:back"}):
+   * si el juego NO está en su menú, él mismo vuelve al menú y no se navega; si ya
+   * está en el menú, responde {type:"storm:back-exit"} y entonces se va a backHref.
+   * El juego embebido debe implementar ese protocolo (hoy: Aerostato).
+   */
+  backAsksGame?: boolean;
   children: React.ReactNode;
 };
 
@@ -60,6 +67,7 @@ export default function GameShell({
   dividerColor = "rgba(255,255,255,0.2)",
   backColor = "rgba(255,255,255,0.6)",
   taglineColor = "rgba(255,255,255,0.35)",
+  backAsksGame = false,
   children,
 }: GameShellProps) {
   const es = locale === "es";
@@ -85,6 +93,27 @@ export default function GameShell({
     return () => cancelAnimationFrame(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFullscreen]);
+
+  // Protocolo storm:back (ver backAsksGame): el juego autoriza la salida real.
+  const handleBack = (e: React.MouseEvent) => {
+    if (!backAsksGame) return; // navegación normal del <a>
+    const win = containerRef.current?.querySelector("iframe")?.contentWindow;
+    if (!win) return;
+    e.preventDefault();
+    win.postMessage({ type: "storm:back" }, window.location.origin);
+    focusGame();
+  };
+  useEffect(() => {
+    if (!backAsksGame) return;
+    const onMsg = (e: MessageEvent) => {
+      if (e.origin !== window.location.origin) return;
+      if ((e.data as { type?: string } | null)?.type === "storm:back-exit") {
+        window.location.assign(backHref);
+      }
+    };
+    window.addEventListener("message", onMsg);
+    return () => window.removeEventListener("message", onMsg);
+  }, [backAsksGame, backHref]);
 
   const fsLabel = isFullscreen
     ? es
@@ -120,6 +149,7 @@ export default function GameShell({
         <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
           <a
             href={backHref}
+            onClick={handleBack}
             style={{
               color: backColor,
               fontSize: "0.72rem",

@@ -8,6 +8,7 @@ import { PlayerController } from "./player";
 import { Scenery } from "./scenery";
 import { Basket } from "./basket";
 import { LanternManager } from "./lanterns/manager";
+import { FlybyManager } from "./flybys";
 import type { LanternString } from "./lanterns/string";
 import { PHYSICS } from "@/config";
 
@@ -23,6 +24,7 @@ export class Game3D {
   readonly scenery: Scenery;
   readonly basket: Basket;
   readonly lanterns: LanternManager;
+  readonly flybys: FlybyManager;
 
   private raycaster = new THREE.Raycaster();
   private ndc = new THREE.Vector2();
@@ -65,6 +67,7 @@ export class Game3D {
     this.scene.add(this.player.yawObject);
     this.basket = new Basket(this.camera);
     this.lanterns = new LanternManager(this.scene);
+    this.flybys = new FlybyManager(this.scene);
     this.player.onTap = (x, y) => {
       const str = this.stringAt(x, y);
       if (str) this.onStringTapped?.(str);
@@ -130,6 +133,7 @@ export class Game3D {
     this.environment.applyAltitude(pos.y);
     this.environment.update(dt, pos, this.elapsed);
     this.scenery.update(dt, pos, this.elapsed);
+    this.flybys.update(dt, pos, this.elapsed);
     this.basket.update(
       dt,
       this.elapsed,

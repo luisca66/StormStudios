@@ -1,8 +1,9 @@
-// Controlador del globo (PLAN §8): navegación libre 3D con inercia de globo.
-// W/S avanzar hacia donde miras (plano horizontal), A/D strafe, Q/E-Space/Shift
-// vertical, drag = mirar (yaw libre, pitch ±85°). Cursor SIEMPRE visible, SIN
-// pointer lock. Click corto (<5 px, <250 ms) = amarrar (F6). Deriva de viento
-// constante por capa. Durante AMARRADO el movimiento se ignora (docked).
+// Controlador del globo — navegación estilo Batisfera (patrón acordes-juego H2):
+// el globo tiene RUMBO y permanece SIEMPRE horizontal. W/S = thrust horizontal
+// según el rumbo, A/D = timón propulsado, Q/E-Space/Shift = vertical (3D libre).
+// Drag = mirar temporalmente SIN alterar el rumbo; la vista se recentra al soltar.
+// Cursor SIEMPRE visible, SIN pointer lock. Click corto (<5 px, <250 ms) = amarrar.
+// Deriva de viento constante por capa. Durante AMARRADO el movimiento se ignora.
 
 import * as THREE from "three";
 import { PHYSICS, WORLD } from "@/config";
@@ -11,8 +12,9 @@ const CLICK_MAX_PX = 5;
 const CLICK_MAX_MS = 250;
 
 export class PlayerController {
-  // Rig: yawObject (posición + yaw) → pitchObject → cámara.
+  // Rig: yaw (rumbo del globo) → lookYaw (vista lateral) → pitch (vista vertical) → cámara.
   readonly yawObject = new THREE.Object3D();
+  private lookYawObject = new THREE.Object3D();
   private pitchObject = new THREE.Object3D();
 
   private keys = new Set<string>();
@@ -20,6 +22,10 @@ export class PlayerController {
   private enabled = false;
   /** AMARRADO: el globo se frena suave y los inputs de movimiento se ignoran (§7.1). */
   docked = false;
+
+  // Banqueo: velocidad de giro suavizada (rad/s) para roll cosmético.
+  private turnVelSmoothed = 0;
+  private accelDip = 0;
 
   private dragging = false;
   private dragMoved = false;
@@ -41,7 +47,8 @@ export class PlayerController {
 
   constructor(private camera: THREE.PerspectiveCamera, canvas: HTMLCanvasElement) {
     this.pitchObject.add(camera);
-    this.yawObject.add(this.pitchObject);
+    this.lookYawObject.add(this.pitchObject);
+    this.yawObject.add(this.lookYawObject);
 
     window.addEventListener("keydown", (e) => {
       if (e.target instanceof HTMLInputElement) return;
@@ -116,12 +123,17 @@ export class PlayerController {
     }
     if (!this.enabled || !this.dragMoved) return;
 
-    // Mirar: yaw libre + pitch clamp ±85° (§8). Amarrado también puedes mirar.
-    this.yawObject.rotation.y -= dx * PHYSICS.lookSensitivity;
+    // Horizontal y vertical son solo vista temporal; no cambian rumbo ni posición.
+    // Amarrado también puedes mirar.
+    this.lookYawObject.rotation.y = THREE.MathUtils.clamp(
+      this.lookYawObject.rotation.y - dx * PHYSICS.lookSensitivity,
+      -PHYSICS.lookYawMax,
+      PHYSICS.lookYawMax,
+    );
     this.pitchObject.rotation.x = THREE.MathUtils.clamp(
-      this.pitchObject.rotation.x - dy * PHYSICS.lookSensitivity,
-      -PHYSICS.pitchMax,
-      PHYSICS.pitchMax,
+      this.pitchObject.rotation.x - dy * PHYSICS.peekSensitivity,
+      -PHYSICS.peekPitchMax,
+      PHYSICS.peekPitchMax,
     );
   }
 
@@ -147,6 +159,7 @@ export class PlayerController {
     return this.yawObject.position;
   }
 
+  /** Rumbo (rotación Y) — el radar orienta sus blips con esto. */
   get yaw(): number {
     return this.yawObject.rotation.y;
   }
@@ -160,6 +173,11 @@ export class PlayerController {
     return this.velocity.y;
   }
 
+  /** Velocidad de giro suavizada |rad/s| — alimenta el viento del timón (A/D). */
+  get turnRate(): number {
+    return Math.abs(this.turnVelSmoothed);
+  }
+
   /** Empuje vertical instantáneo (recompensa de cuerda completada, §7.1). */
   addImpulse(dy: number): void {
     this.velocity.y += dy;
@@ -168,7 +186,14 @@ export class PlayerController {
   setPose(x: number, y: number, z: number, yaw = 0, pitch = 0): void {
     this.yawObject.position.set(x, y, z);
     this.yawObject.rotation.y = yaw;
-    this.pitchObject.rotation.x = THREE.MathUtils.clamp(pitch, -PHYSICS.pitchMax, PHYSICS.pitchMax);
+    this.lookYawObject.rotation.y = 0;
+    this.turnVelSmoothed = 0;
+    this.accelDip = 0;
+    this.pitchObject.rotation.x = THREE.MathUtils.clamp(
+      pitch,
+      -PHYSICS.peekPitchMax,
+      PHYSICS.peekPitchMax,
+    );
     this.velocity.set(0, 0, 0);
   }
 
@@ -184,28 +209,45 @@ export class PlayerController {
     this.elapsed += dt;
 
     // Balanceo procedural SIEMPRE (roll ±1°, seno lento — flotar, no nadar §6).
-    this.camera.rotation.z =
+    const floatRoll =
       Math.sin(this.elapsed * PHYSICS.camRollSpeed * Math.PI * 2) * PHYSICS.camRollAmplitude;
 
-    if (!this.enabled) return;
+    if (!this.enabled) {
+      this.camera.rotation.z = floatRoll;
+      return;
+    }
 
     // ── Ejes de entrada (ignorados durante AMARRADO: auto-hover §7.1) ──
     const forwardInput = this.docked
       ? 0
       : (this.key("w", "arrowup") ? 1 : 0) - (this.key("s", "arrowdown") ? 1 : 0);
-    const strafeInput = this.docked
+    // A/← = girar a la izquierda (+yaw); D/→ = derecha (−yaw).
+    const turnInput = this.docked
       ? 0
-      : (this.key("d", "arrowright") ? 1 : 0) - (this.key("a", "arrowleft") ? 1 : 0);
+      : (this.key("a", "arrowleft") ? 1 : 0) - (this.key("d", "arrowright") ? 1 : 0);
     const verticalInput = this.docked
       ? 0
       : (this.key("q", " ") ? 1 : 0) - (this.key("e", "shift") ? 1 : 0);
 
-    // ── Velocidad objetivo en el plano horizontal del yaw de la vista ──
+    // ── Timón ──
+    this.yawObject.rotation.y += turnInput * PHYSICS.turnSpeed * dt;
     const yaw = this.yawObject.rotation.y;
+    const poweredTurnVel = turnInput * PHYSICS.turnSpeed;
+    this.turnVelSmoothed += (poweredTurnVel - this.turnVelSmoothed) * Math.min(1, 8 * dt);
+
+    // ── Vista temporal: ambos ejes se recentran al soltar ──
+    if (!this.dragging) {
+      this.lookYawObject.rotation.y +=
+        (0 - this.lookYawObject.rotation.y) * Math.min(1, PHYSICS.lookRecenterLerp * dt);
+      this.pitchObject.rotation.x +=
+        (0 - this.pitchObject.rotation.x) * Math.min(1, PHYSICS.peekRecenterLerp * dt);
+    }
+
+    // ── Thrust: SIEMPRE en el plano horizontal del rumbo + eje vertical ──
     const target = new THREE.Vector3(
-      (-Math.sin(yaw) * forwardInput + Math.cos(yaw) * strafeInput) * PHYSICS.maxSpeedH,
+      -Math.sin(yaw) * forwardInput * PHYSICS.maxSpeedH,
       verticalInput * PHYSICS.maxSpeedV,
-      (-Math.cos(yaw) * forwardInput + Math.sin(yaw) * strafeInput) * PHYSICS.maxSpeedH,
+      -Math.cos(yaw) * forwardInput * PHYSICS.maxSpeedH,
     );
 
     // Inercia exponencial LENTA en ambos sentidos (masa de globo §8): también
@@ -218,6 +260,18 @@ export class PlayerController {
 
     // Deriva de viento constante por capa (no amortiguada por la inercia).
     if (!this.docked) pos.addScaledVector(this.wind, dt);
+
+    // ── Cosmética: banqueo al girar + cabeceo al acelerar ──
+    const bank = THREE.MathUtils.clamp(
+      -this.turnVelSmoothed * PHYSICS.bankFactor,
+      -PHYSICS.bankMaxRoll,
+      PHYSICS.bankMaxRoll,
+    );
+    this.camera.rotation.z = floatRoll + bank;
+
+    const dipTarget = -forwardInput * PHYSICS.accelDipMax;
+    this.accelDip += (dipTarget - this.accelDip) * Math.min(1, 3 * dt);
+    this.camera.rotation.x = this.accelDip;
 
     // ── Límites del mundo ──
     const ceiling = this.altitudeLimit ?? WORLD.topY - 2;

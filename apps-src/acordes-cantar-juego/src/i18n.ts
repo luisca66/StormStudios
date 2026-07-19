@@ -64,6 +64,7 @@ const dict: Record<Lang, Record<string, string>> = {
     "hud.gas": "Gas",
     "hud.fabric": "Tela",
     "feedback.lockOpen": "¡Esclusa abierta! Puedes ascender",
+    "feedback.approach": "Acércate {meters} m para amarrar",
 
     "summary.title": "Informe de ascenso",
     "summary.top": "¡Techo del mundo alcanzado: 41 000 m!",
@@ -155,6 +156,7 @@ const dict: Record<Lang, Record<string, string>> = {
     "hud.gas": "Gas",
     "hud.fabric": "Fabric",
     "feedback.lockOpen": "Wind lock open! You may ascend",
+    "feedback.approach": "Move {meters} m closer to moor",
 
     "summary.title": "Ascent report",
     "summary.top": "World ceiling reached: 41,000 m!",

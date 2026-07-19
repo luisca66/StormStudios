@@ -122,7 +122,9 @@ export class SamplePlayer {
     ]);
   }
 
-  private playUrl(url: string, volume: number): void {
+  /** track=false: SFX (acierto/error) que stopChord NO debe cortar — sin él,
+   * el stopChord() del acorde armónico mataba el acierto.mp3 en el mismo tick. */
+  private playUrl(url: string, volume: number, track = true): void {
     const base = this.cache.get(url);
     const audio = base ? (base.cloneNode() as HTMLAudioElement) : new Audio(url);
     audio.volume = Math.max(0, Math.min(1, volume));
@@ -130,6 +132,7 @@ export class SamplePlayer {
       // NotAllowedError es recuperable con el siguiente gesto; no es un fallo del asset.
       if (!this.isAutoplayBlock(err)) console.warn("Audio no disponible:", err);
     });
+    if (!track) return;
     this.activeAudios.push(audio);
     audio.addEventListener(
       "ended",
@@ -171,11 +174,11 @@ export class SamplePlayer {
   }
 
   playCorrect(): void {
-    this.playUrl(`${AUDIO_BASE}/acierto.mp3`, this.volume);
+    this.playUrl(`${AUDIO_BASE}/acierto.mp3`, this.volume, false);
   }
 
   playIncorrect(): void {
-    this.playUrl(`${AUDIO_BASE}/error.mp3`, this.volume);
+    this.playUrl(`${AUDIO_BASE}/error.mp3`, this.volume, false);
   }
 
   // Sonido ambiental en loop. Requiere gesto previo del usuario (autoplay policy) —

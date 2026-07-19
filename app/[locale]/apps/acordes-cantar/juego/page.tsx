@@ -34,6 +34,7 @@ export default async function AerostatoPage({ params }: Props) {
       background="#0a1428"
       backHref={`/${locale}/apps/acordes-cantar`}
       backLabel={es ? "Volver" : "Back"}
+      backAsksGame
       title={es ? "Aerostato" : "Aerostat"}
       badge={{
         label: es ? "Modo juego 3D" : "3D game mode",

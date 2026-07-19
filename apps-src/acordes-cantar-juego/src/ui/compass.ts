@@ -1,15 +1,21 @@
-// Catalejo de viento (PLAN §6): franja de brújula con blips = cuerdas activas
-// según el yaw de la cámara. Es el "sonar" de Aerostato.
+// Radar circular de la consola (estilo sonar de Batisfera, Luis 2026-07-19):
+// blips relativos al RUMBO del globo — arriba = hacia donde apunta la proa.
+// Canvas 2D autónomo; recibe datos por frame desde hud.renderCompass().
 
-import { PALETTE } from "@/config";
+import { GAMEPLAY, PALETTE } from "@/config";
 
 export interface CompassBlip {
-  azimuth: number; // rad, ángulo mundo hacia el objetivo
-  color: string;
+  /** Rumbo relativo a la proa: 0 = al frente, + = a la derecha (radianes). */
+  bearing: number;
+  /** Distancia horizontal en unidades de mundo. */
+  distance: number;
+  /** La cuerda ya está a distancia de amarre por proximidad (tecla E). */
+  inRange: boolean;
+  color: string; // color de familia
   active?: boolean; // cuerda amarrada: blip destacado
 }
 
-const FOV = Math.PI * 0.9; // apertura visible de la franja
+const RANGE = GAMEPLAY.spawnRadiusMax; // distancia máx representada
 
 export class CompassView {
   private readonly ctx: CanvasRenderingContext2D;
@@ -30,68 +36,68 @@ export class CompassView {
     this.ctx = ctx;
   }
 
-  /** yaw = rotación Y del jugador (three: 0 mira a −z; crece a la izquierda). */
-  render(yaw: number, blips: CompassBlip[], elapsed: number): void {
+  render(blips: CompassBlip[], elapsed: number): void {
     const { ctx, w, h } = this;
+    const cx = w / 2;
+    const cy = h / 2;
+    const radius = Math.min(cx, cy) - 3;
     ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = "rgba(36,24,17,0.92)";
-    ctx.strokeStyle = "rgba(201,162,39,0.4)";
-    ctx.lineWidth = 1.5;
+
+    // Fondo de madera oscura y anillos de latón.
+    ctx.fillStyle = "rgba(36, 24, 17, 0.92)";
     ctx.beginPath();
-    ctx.roundRect(0.5, 0.5, w - 1, h - 1, 8);
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
     ctx.fill();
-    ctx.stroke();
-
-    // Rumbo de cámara en convención brújula: heading = −yaw (0 = norte = −z).
-    const heading = -yaw;
-    const toX = (azWorld: number) => {
-      // Delta angular normalizado a [−π, π] respecto al rumbo.
-      let d = azWorld - heading;
-      while (d > Math.PI) d -= Math.PI * 2;
-      while (d < -Math.PI) d += Math.PI * 2;
-      return w / 2 + (d / (FOV / 2)) * (w / 2 - 8);
-    };
-
-    // Marcas cada 15° + cardinales.
-    ctx.textAlign = "center";
-    ctx.font = "600 9px Rajdhani, sans-serif";
-    const midY = h * 0.52;
-    for (let deg = 0; deg < 360; deg += 15) {
-      const az = (deg * Math.PI) / 180;
-      const x = toX(az);
-      if (x < 6 || x > w - 6) continue;
-      const cardinal = deg % 90 === 0;
-      ctx.strokeStyle = cardinal ? PALETTE.brass : "rgba(201,162,39,0.35)";
-      ctx.lineWidth = cardinal ? 1.8 : 1;
+    ctx.strokeStyle = "rgba(201, 162, 39, 0.4)";
+    ctx.lineWidth = 1;
+    for (const f of [1, 0.66, 0.33]) {
       ctx.beginPath();
-      ctx.moveTo(x, midY - (cardinal ? 8 : 4));
-      ctx.lineTo(x, midY + (cardinal ? 8 : 4));
+      ctx.arc(cx, cy, radius * f, 0, Math.PI * 2);
       ctx.stroke();
-      if (cardinal) {
-        ctx.fillStyle = PALETTE.cream;
-        ctx.fillText(["N", "E", "S", "O"][deg / 90], x, midY - 12);
-      }
     }
-
-    // Blips de cuerdas: pulso suave; el activo, más grande y lleno.
-    for (const b of blips) {
-      const x = toX(b.azimuth);
-      if (x < 4 || x > w - 4) continue;
-      const pulse = 0.75 + Math.sin(elapsed * 3 + b.azimuth * 5) * 0.25;
-      ctx.fillStyle = b.color;
-      ctx.globalAlpha = b.active ? 1 : 0.65 * pulse;
-      ctx.beginPath();
-      ctx.arc(x, h * 0.78, b.active ? 4.5 : 3, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.globalAlpha = 1;
-    }
-
-    // Aguja central (rumbo actual).
+    // Anillo verde punteado: alcance real del amarre (click o E).
+    ctx.strokeStyle = "rgba(74, 222, 128, 0.62)";
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius * (GAMEPLAY.interactMaxDistance / RANGE), 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Marca de proa (arriba = hacia donde apuntas).
     ctx.strokeStyle = PALETTE.cream;
     ctx.lineWidth = 1.6;
     ctx.beginPath();
-    ctx.moveTo(w / 2, 4);
-    ctx.lineTo(w / 2, h - 4);
+    ctx.moveTo(cx, cy - radius);
+    ctx.lineTo(cx, cy - radius + 6);
     ctx.stroke();
+
+    // Barrido dorado.
+    const grad = ctx.createConicGradient((elapsed * 1.6) % (Math.PI * 2), cx, cy);
+    grad.addColorStop(0, "rgba(201, 162, 39, 0.30)");
+    grad.addColorStop(0.12, "rgba(201, 162, 39, 0)");
+    grad.addColorStop(1, "rgba(201, 162, 39, 0)");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Blips de cuerdas: color de familia; halo verde cuando ya puedes amarrar (E).
+    for (const b of blips) {
+      const d = Math.min(1, b.distance / RANGE) * radius * 0.92;
+      const x = cx + Math.sin(b.bearing) * d;
+      const y = cy - Math.cos(b.bearing) * d;
+      ctx.fillStyle = b.color;
+      ctx.globalAlpha = b.active ? 1 : 0.85;
+      ctx.beginPath();
+      ctx.arc(x, y, b.active ? 4.5 : 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      if (b.inRange && !b.active) {
+        ctx.strokeStyle = "rgba(74, 222, 128, 0.9)";
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.arc(x, y, 5.5, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
   }
 }

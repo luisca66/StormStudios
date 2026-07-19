@@ -557,3 +557,120 @@ que sigue el lomo; amarrado, el globo se mueve con ella; ganancia al completar =
   `public/apps/acordes-cantar-juego/`.
 
 ---
+
+## Extra — Navegación con rumbo + radar circular (paridad Batisfera) · 2026-07-19 · EN LOCAL, SIN DEPLOY
+
+Pedido de Luis: que la navegación y el radar se parezcan a los de la Batisfera.
+
+- **`3d/player.ts`**: adoptado el rig de la Batisfera (yaw rumbo → lookYaw → pitch →
+  cámara). A/D = timón propulsado (0.8 rad/s), W/S = thrust horizontal según el rumbo,
+  Q/E-Space/Shift = vertical (navegación 3D libre). El drag ahora es vista TEMPORAL
+  (lookYaw ±40°, peek ±25°) que se recentra al soltar — ya no altera el rumbo.
+  Banqueo cosmético al girar y cabeceo al acelerar. Se conservan los rasgos de globo:
+  inercia lenta en ambos sentidos (sin freno instantáneo), deriva de viento por capa,
+  AMARRADO con auto-hover, límites de altitud y cilindro del mundo.
+- **`config.ts`**: PHYSICS gana los tunables de la Batisfera (turnSpeed, lookYawMax,
+  peekPitchMax, bankFactor…); `pitchMax` (±85°) eliminado.
+- **`ui/compass.ts`**: la franja de brújula (N/E/S/O, ilegible para Luis) se reemplaza
+  por un RADAR CIRCULAR estilo sonar: arriba = proa, anillos de latón, barrido dorado,
+  anillo verde punteado = distancia de amarre por proximidad (tecla E), blips con color
+  de familia y halo verde cuando ya puedes amarrar. Canvas 110×110 en `index.html`.
+- **`lanterns/manager.ts`**: `blips(pos, yaw)` calcula bearing relativo a la proa +
+  distancia + inRange (mismo cálculo dot/cross que las criaturas de la Batisfera).
+- `.claude/launch.json`: añadida config `aerostato` (vite, puerto 5174).
+- Verificación: `tsc --noEmit` limpio; el juego arranca con `?fakemic=1` sin errores de
+  consola. ⏳ QA manual de las sensaciones de vuelo (timón, banqueo, radar) por Luis.
+- Pendiente detectado: en móvil el drag ya no gira el rumbo (ahora es peek); la
+  Batisfera lo resuelve con joystick táctil — Aerostato aún no tiene controles táctiles
+  de timón/thrust.
+
+## Extra — Amarre solo dentro del anillo del radar · 2026-07-19 · DEPLOY LOCAL ✓
+
+Pedido de Luis: como en la Batisfera, tocar un globo fuera del anillo punteado no debe
+amarrar — debe pedirte que te acerques, para que navegar el globo sea parte del juego.
+
+- **`config.ts`**: `proximityDockDistance: 12` → `interactMaxDistance: 30` (mismo
+  valor que la Batisfera; una sola distancia para click, tecla E y anillo del radar).
+- **`main.ts`**: compuerta en `dockString()` — si la cuerda está a >30 u (3D), toast
+  «Acércate {n} m para amarrar» y no pasa nada más. Cubre click, tecla E y la ballena.
+- **`i18n.ts`**: nueva clave `feedback.approach` es/en.
+- **radar/blips**: anillo verde y halo de blips ahora dibujan `interactMaxDistance`.
+- `tsc` limpio; `npm run deploy` actualizó `public/apps/acordes-cantar-juego/`.
+
+## Extra — Timón a la mitad + sonido de giro · 2026-07-19 · DEPLOY LOCAL ✓
+
+- **`config.ts`**: `turnSpeed` 0.8 → 0.4 rad/s (Luis: la mitad — mismo ajuste que
+  pidió en la Batisfera el 2026-07-12).
+- **Sonido del timón**: A/D ahora suenan como el resto de las teclas de movimiento.
+  Nuevo getter `player.turnRate` (|velocidad de giro suavizada|); en `main.ts` entra
+  a `synth.setWind()` con el mismo peso (0.3) que la velocidad lineal de W/S — girar
+  produce el mismo woosh de viento que avanzar. (Q/E ya rugían por el quemador.)
+- `npm run deploy` actualizó `public/apps/acordes-cantar-juego/`.
+
+## Extra — "← Volver" del sitio vuelve primero al menú del juego · 2026-07-19 · DEPLOY LOCAL ✓
+
+Pedido de Luis: el Volver del marco te sacaba a la página de la app aunque estuvieras
+en plena partida; debe llevarte primero a la pantalla de configuración del juego.
+
+- Nuevo protocolo **storm:back** entre GameShell y el juego embebido (postMessage,
+  con verificación de origin en ambos lados):
+  - `components/apps/GameShell.tsx`: prop opcional `backAsksGame` (default false —
+    Batisfera y demás apps sin cambios). Con ella, el click en "← Volver" manda
+    `{type:"storm:back"}` al iframe en vez de navegar, y solo navega a `backHref`
+    cuando el juego responde `{type:"storm:back-exit"}`.
+  - `main.ts` (Aerostato): fuera del menú (partida, pausa, atlas, resumen, vuelo
+    libre…) → `endGame()` al menú de configuración; ya en el menú → autoriza salida.
+  - `app/[locale]/apps/acordes-cantar/juego/page.tsx`: activa `backAsksGame`.
+- `npm run deploy` actualizó `public/apps/acordes-cantar-juego/`; `tsc` del sitio limpio.
+
+## Fix — acierto.mp3 no sonaba al completar cuerda · 2026-07-19 · DEPLOY LOCAL ✓
+
+Reporte de Luis: el SFX de acierto dejó de escucharse.
+
+- Causa raíz (carrera en `state.on("completed")`): `playCorrect()` arrancaba
+  `acierto.mp3` y lo registraba en `activeAudios`; el `playChord()` inmediato
+  empieza con `stopChord()`, que pausa TODO `activeAudios` — mataba el acierto en
+  el mismo tick. `error.mp3` sobrevivía porque el arpegio fantasma usa `playNote`
+  (sin `stopChord`), por eso solo fallaba el acierto.
+- Fix en `samples.ts`: `playUrl(url, vol, track=false)` para SFX — acierto/error ya
+  no entran a `activeAudios`, así `stopChord` corta solo notas/acordes/referencia.
+- `npm run deploy` actualizó `public/apps/acordes-cantar-juego/`.
+
+## Extra — acierto.mp3 en cada nota afinada · 2026-07-19 · DEPLOY LOCAL ✓
+
+Pedido de Luis: el acierto es muy buen feedback — que suene en cada linterna, no
+solo al completar la cuerda.
+
+- `main.ts`, evento "lantern": cada nota validada toca `playCorrect()` junto a su
+  nota de instrumento. EXCEPTO la última de la cuerda: ahí el evento "completed"
+  inmediato ya lo toca con el acorde armónico (evita el acierto doble).
+- `npm run deploy` actualizó `public/apps/acordes-cantar-juego/`.
+
+## F1 de PLAN-AERONAVES-POR-CAPA — Manager + avioneta (capa 2) · 2026-07-19 · DEPLOY LOCAL ✓
+
+- **`src/3d/flybys.ts` nuevo**: `FlybyManager` (una aeronave activa a la vez, timer
+  aleatorio 35–90 s, spawn solo si la capa del jugador tiene aeronave asignada) y
+  `Flyby` (cuerda del cilindro a Y constante con offset lateral ≤40 u, Y a ≥15 u del
+  jugador, lookAt al destino, dispose de geometrías/materiales al salir del radio).
+  `Math.random()` a propósito — no consume el RNG sembrado del mundo.
+- **Avioneta capa 2**: ala alta tipo Cessna en primitivas (crema/rojo), 6 draw calls,
+  hélice girando (26 rad/s) y balanceo sutil del modelo. `KIND_BY_LAYER` deja
+  rampa lista para jet (F2), estratosférico (F3) y satélite (F4).
+- **`config.ts`**: bloque `FLYBY` con todos los tunables (incluye speeds de los
+  4 tipos futuros). **`renderer.ts`**: instancia + update en el frame loop (corre
+  también de fondo en el menú). **`main.ts`**: `game.flybys.reset()` en `endGame`.
+- Tropiezo TS: `timer` infería el tipo literal `15` del `as const` — anotado `number`.
+- Build limpio; `npm run deploy` actualizó `public/`. ⏳ QA visual de Luis en capa 2
+  (esperar 15 s + intervalo; el primer paso puede tardar ~1 min).
+
+## F2 de PLAN-AERONAVES-POR-CAPA — Jet comercial + estela (capa 3) · 2026-07-19 · DEPLOY LOCAL ✓
+
+- `KIND_BY_LAYER[3] = "jet"`; `buildModel` ramificado en `buildPlane`/`buildJet`.
+- **Jet**: fuselaje cilíndrico blanco + morro cónico, alas en flecha (rotación y
+  ±0.42), 2 motores bajo el ala, aleta azul inclinada — 7 meshes.
+- **Estela doble** (`buildContrail`, reutilizable para F3): cintas en CRUZ tras cada
+  motor (30 u, se ensanchan 0.35→1.3), TODAS en un solo BufferGeometry con alpha por
+  vértice (0.5 en cabeza → 0 en cola), MeshBasicMaterial vertexColors RGBA +
+  depthWrite off = **1 draw call**; viaja rígida con el grupo (suficiente a distancia).
+- Total jet en pantalla: 8 draw calls. Build limpio; deploy a `public/`.
+- ⏳ QA visual de Luis en Cielo Abierto (capa 3).
