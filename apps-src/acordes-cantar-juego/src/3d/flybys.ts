@@ -7,7 +7,12 @@
 import * as THREE from "three";
 import { FLYBY, LAYERS, WORLD, layerAtY } from "@/config";
 
-type FlybyKind = "plane" | "jet" | "strato" | "satellite";
+export type FlybyKind = "plane" | "jet" | "strato" | "satellite";
+
+export interface FlybySoundState {
+  kind: FlybyKind;
+  distance: number;
+}
 
 const KIND_BY_LAYER: Partial<Record<number, FlybyKind>> = {
   2: "plane",
@@ -27,7 +32,7 @@ class Flyby {
   private satelliteBeaconMat: THREE.MeshStandardMaterial | null = null;
 
   constructor(
-    private readonly kind: FlybyKind,
+    readonly kind: FlybyKind,
     from: THREE.Vector3,
     to: THREE.Vector3,
   ) {
@@ -294,6 +299,15 @@ export class FlybyManager {
       this.active = null;
     }
     this.timer = FLYBY.firstDelay;
+  }
+
+  /** Datos mínimos para que audio aplique el SFX y su atenuación por distancia. */
+  soundState(playerPos: THREE.Vector3): FlybySoundState | null {
+    if (!this.active) return null;
+    return {
+      kind: this.active.kind,
+      distance: this.active.group.position.distanceTo(playerPos),
+    };
   }
 
   private armTimer(): void {

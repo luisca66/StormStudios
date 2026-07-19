@@ -2,7 +2,13 @@
 // tomado del port ya probado de Batisfera (apps-src/acordes-juego/src/audio/samples.ts).
 // HTMLAudioElement con cache y clonado para solapar notas (patrón de la casa).
 
-import { AUDIO_BASE, INSTRUMENTS, type Instrument, type InstrumentChoice } from "@/config";
+import {
+  AUDIO_BASE,
+  FLYBY_SFX_URLS,
+  INSTRUMENTS,
+  type Instrument,
+  type InstrumentChoice,
+} from "@/config";
 
 // WAV PCM de cuatro muestras silenciosas. Se reproduce durante el primer gesto para
 // dejar habilitado HTMLAudioElement antes de cualquier espera de red.
@@ -26,6 +32,13 @@ interface PlaylistEntry {
   stopped: boolean;
 }
 
+interface LoopEntry {
+  audio: HTMLAudioElement;
+  url: string;
+  volumeScale: number;
+  active: boolean;
+}
+
 /** Baraja un ciclo completo y evita repetir entre el final y el inicio de ciclos. */
 export function shuffleTrackIndices(
   length: number,
@@ -46,7 +59,7 @@ export function shuffleTrackIndices(
 export class SamplePlayer {
   private cache = new Map<string, HTMLAudioElement>();
   private activeAudios: HTMLAudioElement[] = [];
-  private loops = new Map<string, { audio: HTMLAudioElement; volumeScale: number }>();
+  private loops = new Map<string, LoopEntry>();
   private playlists = new Map<string, PlaylistEntry>();
   private volume = 0.8;
   private unlocked = false;
@@ -71,6 +84,9 @@ export class SamplePlayer {
 
   setVolume(v: number): void {
     this.volume = Math.max(0, Math.min(1, v));
+    for (const entry of this.loops.values()) {
+      entry.audio.volume = Math.max(0, Math.min(1, this.volume * entry.volumeScale));
+    }
     for (const entry of this.playlists.values()) {
       entry.audio.volume = Math.max(0, Math.min(1, this.volume * entry.currentScale));
     }
@@ -119,6 +135,7 @@ export class SamplePlayer {
     await Promise.all([
       this.preload(`${AUDIO_BASE}/acierto.mp3`),
       this.preload(`${AUDIO_BASE}/error.mp3`),
+      ...Object.values(FLYBY_SFX_URLS).map((url) => this.preload(url)),
     ]);
   }
 
@@ -190,10 +207,19 @@ export class SamplePlayer {
       const audio = new Audio(url);
       audio.loop = true;
       audio.preload = "auto";
-      entry = { audio, volumeScale };
+      entry = { audio, url, volumeScale, active: true };
       this.loops.set(name, entry);
+    } else {
+      if (entry.url !== url) {
+        entry.audio.pause();
+        entry.audio.src = url;
+        entry.audio.load();
+        entry.url = url;
+      }
+      entry.volumeScale = volumeScale;
+      entry.active = true;
     }
-    entry.audio.volume = Math.max(0, Math.min(1, volumeScale));
+    entry.audio.volume = Math.max(0, Math.min(1, this.volume * entry.volumeScale));
     if (entry.audio.paused) {
       entry.audio.play().catch((err: unknown) => {
         if (this.isAutoplayBlock(err)) this.armLoopRetry();
@@ -215,7 +241,7 @@ export class SamplePlayer {
       window.removeEventListener("keydown", retry, true);
       this.loopRetryArmed = false;
       for (const [name, entry] of this.loops) {
-        if (!entry.audio.paused) continue;
+        if (!entry.active || !entry.audio.paused) continue;
         entry.audio.play().catch((err: unknown) => {
           if (this.isAutoplayBlock(err)) this.armLoopRetry();
           else console.warn(`Loop "${name}" no disponible:`, err);
@@ -235,10 +261,18 @@ export class SamplePlayer {
 
   stopLoop(name: string): void {
     const entry = this.loops.get(name);
-    if (entry && !entry.audio.paused) {
-      entry.audio.pause();
-      entry.audio.currentTime = 0;
-    }
+    if (!entry) return;
+    entry.active = false;
+    entry.audio.pause();
+    entry.audio.currentTime = 0;
+  }
+
+  /** Ajusta un loop vivo sin reiniciarlo; se usa para distancia de aeronaves. */
+  setLoopVolume(name: string, volumeScale: number): void {
+    const entry = this.loops.get(name);
+    if (!entry) return;
+    entry.volumeScale = Math.max(0, volumeScale);
+    entry.audio.volume = Math.max(0, Math.min(1, this.volume * entry.volumeScale));
   }
 
   /** Playlist aleatoria sin repetir pistas hasta agotar el ciclo completo. */

@@ -18,6 +18,14 @@ export const MUSIC_FADE_OUT_MS = 320;
 export const MUSIC_FADE_IN_MS = 900;
 export const MUSIC_RESUME_AFTER_CHORD_MS = 1000;
 
+// SFX de las aeronaves ambientales (misma carpeta R2 que la música).
+export const FLYBY_SFX_URLS = {
+  plane: `${AUDIO_BASE}/music/aerostat/cessna.mp3`,
+  jet: `${AUDIO_BASE}/music/aerostat/jet.mp3`,
+  strato: `${AUDIO_BASE}/music/aerostat/spy-jet.mp3`,
+  satellite: `${AUDIO_BASE}/music/aerostat/satellite.mp3`,
+} as const;
+
 // Nombres EXACTOS de carpeta en el CDN.
 export const INSTRUMENTS = ["Piano", "Coro", "Corno", "Cello", "Fagot"] as const;
 export type Instrument = (typeof INSTRUMENTS)[number];
@@ -70,7 +78,7 @@ export const LAYER_FAMILIES: Record<number, string[]> = {
 
 // Modos de juego (PLAN §7.4) [tunable].
 export const MODES = {
-  EXPEDITION: { quota: 6 },
+  EXPEDITION: { quota: 20 },
   TIME_ATTACK: { quota: 3, gasStart: 120, gasPerLantern: 6, gasPerString: 15 },
   SURVIVAL: { quota: 4, fabric: 3 },
 } as const;
@@ -170,6 +178,10 @@ export const FLYBY = {
   yVariationMax: 55, // |ΔY| máximo para variar claramente cada pasada
   edgeMargin: 20, // u fuera del radio para nacer/morir
   speeds: { plane: 9, jet: 14, strato: 10, satellite: 5 }, // u/s
+  audioNearDistance: 15, // u: a esta distancia alcanza su volumen máximo
+  audioFarDistance: 150, // u: fuera de aquí queda inaudible
+  // El sample del jet requiere más ganancia que los demás para conservar presencia.
+  audioMaxVolumes: { plane: 0.5, jet: 0.8, strato: 0.5, satellite: 0.5 },
 } as const;
 
 // Física de globo (PLAN §8) [tunable]. accelLerp equivale al α~0.03 por frame del

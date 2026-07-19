@@ -728,3 +728,18 @@ solo al completar la cuerda.
 - Velocidad reducida a `0.045` (una vuelta en ~22 s) y aleteo de 5→2.4 Hz para que
   el desplazamiento y el movimiento de alas se perciban coordinados y naturales.
 - Los seis halcones solitarios de la capa 3 conservan su vuelo lento independiente.
+
+## F6 — SFX de aeronaves por capa · 2026-07-19 · COMPLETADO ✓
+
+- Se conectaron los cuatro MP3 de `music/aerostat/`: `cessna` en capa 2, `jet` en
+  capa 3, `spy-jet` en capa 4 y `satellite` en capa 5.
+- Cada sonido corre en loop únicamente mientras su aeronave está activa y el jugador
+  está volando; se detiene en pausa, menú, resumen o al desaparecer la aeronave.
+- El volumen sigue una curva suave por distancia y respeta el volumen general del
+  juego. Los cuatro archivos se precargan junto con los demás efectos.
+
+## Ajuste — Jet más presente y cuota 20/20 · 2026-07-19 · COMPLETADO ✓
+
+- El jet comercial usa una ganancia máxima de 0.8; las otras aeronaves conservan 0.5.
+- Cada capa de Expedición ahora exige 20 acordes completados para abrir la siguiente
+  esclusa. Contrarreloj y Supervivencia conservan sus cuotas especiales de 3 y 4.

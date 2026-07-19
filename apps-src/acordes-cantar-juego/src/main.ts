@@ -5,6 +5,8 @@ import "./style.css";
 import { initI18n, t, applyI18n, getLang } from "./i18n";
 import {
   GAME_MODES,
+  FLYBY,
+  FLYBY_SFX_URLS,
   INSTRUMENT_CHOICES,
   LAYERS,
   MUSIC_FADE_IN_MS,
@@ -65,6 +67,7 @@ import { LanternString } from "@/3d/lanterns/string";
 import { Vector3 } from "three";
 import type { SpawnInfo } from "@/3d/lanterns/manager";
 import type { Instrument } from "@/config";
+import type { FlybyKind } from "@/3d/flybys";
 
 // Settings persistidos (PLAN §7.7: aerostato-settings).
 interface Settings {
@@ -372,6 +375,36 @@ let freeFlying = false;
 let ghostTimers: number[] = [];
 let musicInteractionToken = 0;
 let windSuppressedForSinging = false;
+let activeFlybySfx: FlybyKind | null = null;
+
+function stopFlybySfx(): void {
+  if (!activeFlybySfx) return;
+  samplePlayer.stopLoop("flyby");
+  activeFlybySfx = null;
+}
+
+function updateFlybySfx(inFlight: boolean): void {
+  const flyby = inFlight ? game.flybys.soundState(game.player.position) : null;
+  if (!flyby) {
+    stopFlybySfx();
+    return;
+  }
+
+  if (activeFlybySfx !== flyby.kind) {
+    samplePlayer.startLoop("flyby", FLYBY_SFX_URLS[flyby.kind], 0);
+    activeFlybySfx = flyby.kind;
+  }
+
+  const distanceRange = FLYBY.audioFarDistance - FLYBY.audioNearDistance;
+  const proximity = 1 - Math.max(
+    0,
+    Math.min(1, (flyby.distance - FLYBY.audioNearDistance) / distanceRange),
+  );
+  samplePlayer.setLoopVolume(
+    "flyby",
+    FLYBY.audioMaxVolumes[flyby.kind] * proximity * proximity,
+  );
+}
 
 async function playReferenceWithMusicPaused(str: LanternString): Promise<void> {
   const token = ++musicInteractionToken;
@@ -789,6 +822,7 @@ game.onAltitude = (meters, y) => {
 
 game.onFrame = (dt, elapsed) => {
   const inGame = playing && !pausedGame;
+  const inFlight = (playing || freeFlying) && !pausedGame;
   if (inGame) state.update(dt);
 
   // La cuerda de la ballena viaja en su lomo; amarrado a ella, el globo la
@@ -827,9 +861,9 @@ game.onFrame = (dt, elapsed) => {
   const blips =
     playing || freeFlying ? game.lanterns.blips(game.player.position, game.player.yaw) : [];
   hud.renderCompass(blips, elapsed);
+  updateFlybySfx(inFlight);
 
   if (synth) {
-    const inFlight = (playing || freeFlying) && !pausedGame;
     synth.setBurner(
       inFlight ? Math.max(0, game.player.verticalVelocity / PHYSICS.maxSpeedV) : 0,
     );
@@ -935,6 +969,7 @@ async function startGame(): Promise<void> {
 function endGame(): void {
   playing = false;
   stopMusic();
+  stopFlybySfx();
   pausedGame = false;
   clearGhostTimers();
   undockCleanup();
@@ -951,6 +986,8 @@ function endGame(): void {
 
 // Vuelo libre QA: navegar sin loop de canto (sin mic).
 function startFreeFlight(): void {
+  samplePlayer.unlock();
+  samplePlayer.setVolume(settings.volume);
   freeFlying = true;
   windSuppressedForSinging = false;
   ensureSynth();
