@@ -109,6 +109,17 @@ const nextConfig: NextConfig = {
   // ─── Redirects: legacy WordPress URLs y rutas obsoletas ────────────────────
   async redirects() {
     return [
+      // ── Batería: conservar enlaces antiguos con URL canónica v9.6 ─────────
+      {
+        source: "/apps/storm-bateria-v9.5.html",
+        destination: "/apps/storm-bateria-v9.6.html",
+        permanent: true,
+      },
+      {
+        source: "/apps/storm-bateria-v9.5-en.html",
+        destination: "/apps/storm-bateria-v9.6-en.html",
+        permanent: true,
+      },
       // ── WordPress date-based posts ────────────────────────────────────────
       {
         source: "/:year(\\d{4})/:month(\\d{2})/:day(\\d{2})/:slug*",
