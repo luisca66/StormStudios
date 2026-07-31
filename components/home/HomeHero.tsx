@@ -1,7 +1,10 @@
 import { WaveVisualizer } from "@/components/WaveVisualizer";
 import { StatItem } from "@/components/home/StatItem";
 import { Link } from "@/i18n/navigation";
+import { APPS } from "@/data/apps/apps-catalog";
 import { getTranslations } from "next-intl/server";
+
+const PUBLISHED_APP_COUNT = APPS.filter(({ isTool }) => !isTool).length;
 
 export async function HomeHero() {
   const t = await getTranslations("home.hero");
@@ -152,7 +155,7 @@ export async function HomeHero() {
       >
         <StatItem value="60" label={t("stats.lessons")} />
         <div className="ss-divider" style={{ width: "1px", alignSelf: "stretch" }} />
-        <StatItem value="10" label={t("stats.freeApps")} />
+        <StatItem value={String(PUBLISHED_APP_COUNT)} label={t("stats.freeApps")} />
         <div className="ss-divider" style={{ width: "1px", alignSelf: "stretch" }} />
         <StatItem value="IA" label={t("stats.evaluation")} />
         <div className="ss-divider" style={{ width: "1px", alignSelf: "stretch" }} />

@@ -1,0 +1,21 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function ownsDocument(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    match /mnemonic_words/{uid} {
+      allow read, create, update, delete: if ownsDocument(uid);
+    }
+
+    match /mnemonic_words_en/{uid} {
+      allow read, create, update, delete: if ownsDocument(uid);
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
