@@ -163,10 +163,10 @@ function LevelScreen({ level, onMap }) {
   const config = LEVEL_CONFIG[level] ?? LEVEL_CONFIG[1];
 
   return (
-    <div className="h-full flex flex-col bg-[#08090f] overflow-hidden relative">
+    <div className="h-full flex flex-col bg-[#08090f] relative">
       <Scanlines />
 
-      <div className="flex items-center gap-3 px-4 py-2 bg-[#0a0b14] border-b-2 border-[#14161e] shrink-0 z-10 relative">
+      <div className="flex items-center gap-3 px-4 py-2 bg-[#0a0b14] border-b-2 border-[#14161e] shrink-0 sticky top-16 z-30">
         <button
           onClick={onMap}
           className="font-[family-name:var(--font-press-start-2p)] text-[0.46rem] bg-transparent text-[#3a3a3a] border-2 border-[#202020] px-3 py-2 rounded-sm cursor-pointer transition-all shrink-0 hover:text-[#888] hover:border-[#555]"
