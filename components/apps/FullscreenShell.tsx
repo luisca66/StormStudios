@@ -18,6 +18,8 @@ type FullscreenShellProps = {
   style?: React.CSSProperties;
   /** esquina del botón flotante; usa "left" si la app ya tiene controles arriba a la derecha */
   align?: "left" | "right";
+  /** offset superior (px) cuando no está en pantalla completa; por defecto 74 (justo bajo el nav global de 64px) */
+  nonFullscreenTop?: number;
   children: React.ReactNode;
 };
 
@@ -26,6 +28,7 @@ export default function FullscreenShell({
   className,
   style,
   align = "right",
+  nonFullscreenTop = 74,
   children,
 }: FullscreenShellProps) {
   const es = locale === "es";
@@ -62,7 +65,7 @@ export default function FullscreenShell({
             position: "fixed",
             // Debajo del nav global (64px) cuando no está en pantalla completa;
             // pegado arriba cuando el nav ya no está.
-            top: isFullscreen ? "12px" : "74px",
+            top: isFullscreen ? "12px" : `${nonFullscreenTop}px`,
             ...(align === "left" ? { left: "16px" } : { right: "16px" }),
             zIndex: 60,
             display: "inline-flex",

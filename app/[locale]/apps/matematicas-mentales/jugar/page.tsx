@@ -39,6 +39,7 @@ export default async function JugarPage({ params }: Props) {
     <FullscreenShell
       locale={locale}
       align="left"
+      nonFullscreenTop={128}
       className={`min-h-screen bg-[#08090f] text-zinc-100 ${pressStart2P.variable}`}
     >
       <ElefantitoApp initialLocale={locale} />
