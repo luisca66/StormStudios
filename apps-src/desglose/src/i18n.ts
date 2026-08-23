@@ -24,7 +24,7 @@ interface Strings {
   rangeEnd: string;
   chord: string;
   chordSize: string;
-  notes: string;
+  notes: (count: number) => string;
   volume: string;
   volumeHint: string;
   newQuestion: string;
@@ -35,7 +35,7 @@ interface Strings {
   listening: string;
   holdProgress: (percent: number) => string;
   promptStart: string;
-  promptActive: string;
+  promptActive: (count: number) => string;
   stageReady: string;
   chordActive: string;
   // estados de marcador
@@ -71,7 +71,7 @@ const ES: Strings = {
   rangeEnd: "Fin",
   chord: "Acorde",
   chordSize: "Tamaño del acorde",
-  notes: "notas",
+  notes: (count) => count === 1 ? "nota" : "notas",
   volume: "Volumen",
   volumeHint: "Bájalo si las muestras saturan en tu dispositivo.",
   newQuestion: "Nueva pregunta",
@@ -82,7 +82,9 @@ const ES: Strings = {
   listening: "Escuchando…",
   holdProgress: (percent) => `Sostén ${percent}%`,
   promptStart: "Presiona Nueva pregunta para empezar",
-  promptActive: "Escucha el acorde y canta las notas",
+  promptActive: (count) => count === 1
+    ? "Escucha la nota y cántala"
+    : "Escucha el acorde y canta las notas",
   stageReady: "Escenario listo",
   chordActive: "Acorde activo",
   statePending: "Preparada",
@@ -122,7 +124,7 @@ const EN: Strings = {
   rangeEnd: "End",
   chord: "Chord",
   chordSize: "Chord size",
-  notes: "notes",
+  notes: (count) => count === 1 ? "note" : "notes",
   volume: "Volume",
   volumeHint: "Lower it if the samples distort on your device.",
   newQuestion: "New question",
@@ -133,7 +135,9 @@ const EN: Strings = {
   listening: "Listening…",
   holdProgress: (percent) => `Hold ${percent}%`,
   promptStart: "Press New question to start",
-  promptActive: "Listen to the chord and sing the notes",
+  promptActive: (count) => count === 1
+    ? "Listen to the note and sing it"
+    : "Listen to the chord and sing the notes",
   stageReady: "Stage ready",
   chordActive: "Chord active",
   statePending: "Ready",

@@ -25,8 +25,8 @@ export const DEFAULT_INSTRUMENT: Instrument = "Piano";
 export const DEFAULT_CHORD_SIZE = 2;
 export const DEFAULT_VOLUME = 0.72;
 
-/** Tamaños de acorde seleccionables. */
-export const CHORD_SIZES = [2, 3, 4, 5, 6] as const;
+/** Cantidades de notas seleccionables (1 sirve como iniciación antes de los acordes). */
+export const CHORD_SIZES = [1, 2, 3, 4, 5, 6] as const;
 
 /** Tiempo máximo para completar el sostén v2 de 1.5 segundos. */
 export const LISTEN_WINDOW_MS = 5000;

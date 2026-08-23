@@ -156,12 +156,12 @@ export function mountUI(root: HTMLElement, controller: GameController, lang: Lan
     const active = state.currentChord.length > 0;
     kicker.textContent = active ? t.chordActive : t.stageReady;
     title.textContent = state.questionText;
-    sub.textContent = `${instrumentLabel(state.instrument, t)} • ${state.numberOfNotes} ${t.notes}`;
+    sub.textContent = `${instrumentLabel(state.instrument, t)} • ${state.numberOfNotes} ${t.notes(state.numberOfNotes)}`;
 
     // HUD
     hudInstrument.value.textContent = instrumentLabel(state.instrument, t);
     hudRange.value.textContent = `${state.startNote} – ${state.endNote}`;
-    hudChord.value.textContent = `${state.numberOfNotes} ${t.notes}`;
+    hudChord.value.textContent = `${state.numberOfNotes} ${t.notes(state.numberOfNotes)}`;
     hudVolume.value.textContent = `${Math.round(state.volume * 100)}%`;
 
     // Selección de chips
@@ -303,18 +303,11 @@ function renderAnswers(
   container.replaceChildren();
   if (state.currentChord.length === 0) return;
 
-  // Silenciar notas
-  const muteSection = el("section", "dg-section");
-  muteSection.append(el("span", "dg-section-title", t.muteNotes));
-  const muteRow = el("div", "dg-chips");
-  state.currentChord.forEach((_, index) => {
-    const chip = el("button", "dg-chip dg-mute", t.note(index + 1));
-    chip.type = "button";
-    chip.dataset.mute = String(index);
-    chip.addEventListener("click", () => controller.toggleMute(index));
-    muteRow.append(chip);
-  });
-  muteSection.append(muteRow);
+  // Silenciar sirve para aislar voces dentro de un acorde; con una sola nota
+  // ocultamos el control porque únicamente produciría silencio.
+  const muteSection = state.currentChord.length > 1
+    ? buildMuteSection(state, t, controller)
+    : null;
 
   // Escucha y responde
   const answerSection = el("section", "dg-section");
@@ -330,8 +323,28 @@ function renderAnswers(
   });
   answerSection.append(answerRow);
 
-  container.append(muteSection, answerSection);
+  if (muteSection) container.append(muteSection);
+  container.append(answerSection);
   updateAnswers(container, state, t);
+}
+
+function buildMuteSection(
+  state: GameState,
+  t: ReturnType<typeof strings>,
+  controller: GameController,
+): HTMLElement {
+  const section = el("section", "dg-section");
+  section.append(el("span", "dg-section-title", t.muteNotes));
+  const row = el("div", "dg-chips");
+  state.currentChord.forEach((_, index) => {
+    const chip = el("button", "dg-chip dg-mute", t.note(index + 1));
+    chip.type = "button";
+    chip.dataset.mute = String(index);
+    chip.addEventListener("click", () => controller.toggleMute(index));
+    row.append(chip);
+  });
+  section.append(row);
+  return section;
 }
 
 function updateAnswers(container: HTMLElement, state: GameState, t: ReturnType<typeof strings>): void {

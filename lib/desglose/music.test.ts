@@ -77,6 +77,12 @@ describe("generateRandomChord", () => {
     expect([...midis]).toEqual([...midis].sort((a, b) => a - b));
   });
 
+  it("permite generar un ejercicio de una sola nota", () => {
+    const chord = generateRandomChord(available, 1, mulberry32(123));
+    expect(chord).toHaveLength(1);
+    expect(available).toContain(chord[0]);
+  });
+
   it("devuelve vacío si no hay suficientes notas", () => {
     expect(generateRandomChord(["C4", "D4"], 5)).toEqual([]);
   });
@@ -113,8 +119,8 @@ describe("configuración visible de Desglose", () => {
     ]);
   });
 
-  it("permite acordes de dos a seis notas", () => {
-    expect(CHORD_SIZES).toEqual([2, 3, 4, 5, 6]);
+  it("permite ejercicios de una a seis notas", () => {
+    expect(CHORD_SIZES).toEqual([1, 2, 3, 4, 5, 6]);
   });
 });
 

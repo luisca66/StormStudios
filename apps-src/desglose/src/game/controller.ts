@@ -164,7 +164,7 @@ export class GameController {
       mutedNotes: new Set(),
       noteBeingRecorded: null,
       pitchHoldProgress: 0,
-      questionText: this.t.promptActive,
+      questionText: this.t.promptActive(this.state.numberOfNotes),
       resultMessage: "",
       resultKind: "none",
     });
