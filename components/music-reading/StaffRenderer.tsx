@@ -1,8 +1,24 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { Formatter, Renderer, Stave, StaveNote, Voice } from "vexflow";
+import { useEffect, useRef, useState } from "react";
+import type { StaveNote } from "vexflow";
 import type { Clef, Exercise, ExerciseNote } from "@/lib/music-reading";
+
+// VexFlow pesa ~1.1 MB sin comprimir, así que se carga bajo demanda en lugar de
+// entrar al bundle inicial de la página: el resto de la interfaz pinta de
+// inmediato y el pentagrama aparece en cuanto la librería termina de bajar.
+// El tipo se importa aparte (import type) porque TypeScript lo borra al compilar
+// y no arrastra la librería al bundle.
+type VexFlowModule = typeof import("vexflow");
+
+let vexflowPromise: Promise<VexFlowModule> | null = null;
+
+// Una sola promesa compartida: si el componente se remonta o cambia de
+// ejercicio, se reutiliza el módulo ya cargado en vez de pedirlo otra vez.
+function loadVexFlow(): Promise<VexFlowModule> {
+  vexflowPromise ??= import("vexflow");
+  return vexflowPromise;
+}
 
 interface StaffRendererProps {
   exercise: Exercise;
@@ -33,12 +49,14 @@ const COPY = {
     of: "de",
     staffLabel: "Pentagrama en",
     renderError: "No se pudo dibujar el pentagrama.",
+    loading: "Cargando pentagrama…",
   },
   en: {
     note: "Note",
     of: "of",
     staffLabel: "Staff in",
     renderError: "The staff could not be rendered.",
+    loading: "Loading staff…",
   },
 };
 
@@ -49,6 +67,7 @@ export function StaffRenderer({
 }: StaffRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
+  const [isLoadingVexFlow, setIsLoadingVexFlow] = useState(true);
   const copy = COPY[locale];
   const clefLabel = CLEF_LABELS[locale][exercise.clef];
 
@@ -59,20 +78,41 @@ export function StaffRenderer({
       return;
     }
 
+    let cancelled = false;
+
     container.replaceChildren();
     hideRenderError(errorRef.current);
 
-    try {
-      drawExercise(container, exercise, activeNoteIndex);
-    } catch (error) {
-      container.replaceChildren();
-      showRenderError(
-        errorRef.current,
-          error instanceof Error
-            ? error.message
-          : copy.renderError,
-      );
-    }
+    loadVexFlow()
+      .then((vexflow) => {
+        if (cancelled) {
+          return;
+        }
+
+        setIsLoadingVexFlow(false);
+
+        try {
+          drawExercise(vexflow, container, exercise, activeNoteIndex);
+        } catch (error) {
+          container.replaceChildren();
+          showRenderError(
+            errorRef.current,
+            error instanceof Error ? error.message : copy.renderError,
+          );
+        }
+      })
+      .catch(() => {
+        if (cancelled) {
+          return;
+        }
+
+        setIsLoadingVexFlow(false);
+        showRenderError(errorRef.current, copy.renderError);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [activeNoteIndex, copy.renderError, exercise]);
 
   return (
@@ -85,12 +125,22 @@ export function StaffRenderer({
           {exercise.notes.length}
         </span>
       </div>
-      <div
-        aria-label={`${copy.staffLabel} ${clefLabel}`}
-        className="min-h-[14rem] overflow-hidden rounded-md bg-[#f8fafc]"
-        ref={containerRef}
-        role="img"
-      />
+      <div className="relative min-h-[14rem]">
+        <div
+          aria-label={`${copy.staffLabel} ${clefLabel}`}
+          className="min-h-[14rem] overflow-hidden rounded-md bg-[#f8fafc]"
+          ref={containerRef}
+          role="img"
+        />
+        {isLoadingVexFlow ? (
+          <p
+            className="absolute inset-0 flex items-center justify-center text-sm text-[#64748b]"
+            role="status"
+          >
+            {copy.loading}
+          </p>
+        ) : null}
+      </div>
       <p
         className="mt-3 hidden rounded-md border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-800"
         ref={errorRef}
@@ -121,10 +171,13 @@ function showRenderError(
 }
 
 function drawExercise(
+  vexflow: VexFlowModule,
   container: HTMLDivElement,
   exercise: Exercise,
   activeNoteIndex: number,
 ) {
+  const { Formatter, Renderer, Stave, Voice } = vexflow;
+
   const renderer = new Renderer(container, Renderer.Backends.SVG);
   renderer.resize(WIDTH, HEIGHT);
 
@@ -137,7 +190,7 @@ function drawExercise(
   stave.setContext(context).draw();
 
   const notes = exercise.notes.map((note, index) =>
-    createStaveNote(note, exercise.clef, index === activeNoteIndex),
+    createStaveNote(vexflow, note, exercise.clef, index === activeNoteIndex),
   );
 
   const voice = new Voice({
@@ -153,10 +206,13 @@ function drawExercise(
 }
 
 function createStaveNote(
+  vexflow: VexFlowModule,
   note: ExerciseNote,
   clef: Clef,
   isActive: boolean,
 ): StaveNote {
+  const { StaveNote } = vexflow;
+
   const staveNote = new StaveNote({
     autoStem: true,
     clef,
