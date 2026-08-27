@@ -10,13 +10,13 @@
     {
       "name": "batisfera",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "C:/Users/Luis/dev-acordes-juego"],
+      "runtimeArgs": ["run", "dev", "--prefix", "apps-src/acordes-juego"],
       "port": 5173
     },
     {
       "name": "aerostato",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "C:/Users/Luis/Documents/storm-studios/StormStudios/apps-src/acordes-cantar-juego"],
+      "runtimeArgs": ["run", "dev", "--prefix", "apps-src/acordes-cantar-juego"],
       "port": 5174
     }
   ]
