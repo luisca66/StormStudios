@@ -18,6 +18,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "apps-src/acordes-cantar-juego"],
       "port": 5174
+    },
+    {
+      "name": "expreso-tonal",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "apps-src/grados-mayores-juego"],
+      "port": 5175
     }
   ]
 }
