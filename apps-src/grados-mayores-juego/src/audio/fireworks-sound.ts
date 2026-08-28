@@ -19,8 +19,12 @@ import { sfxUrl } from "@/audio/samples";
 
 const FIREWORKS_URL = sfxUrl("fireworks.mp3");
 
-/** Fuerte de más taparía la escala de los 8 arcos, que es lo que se viene a oír. */
-const MIX = 0.5;
+/**
+ * Cuánto del volumen general se lleva el castillo. A 0.5 se quedaba tímido: la gala es
+ * el premio del viaje perfecto y tiene que sentirse. El techo lo pone la escala de los
+ * 8 arcos, que es lo que se viene a oír — de ahí que no llegue a 1.
+ */
+const MIX = 0.8;
 
 /**
  * Detonaciones del clip: `[segundo del golpe, fuerza 0–1]`. Medidas, no estimadas.
