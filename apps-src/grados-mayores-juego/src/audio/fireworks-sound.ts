@@ -20,11 +20,12 @@ import { sfxUrl } from "@/audio/samples";
 const FIREWORKS_URL = sfxUrl("fireworks.mp3");
 
 /**
- * Cuánto del volumen general se lleva el castillo. A 0.5 se quedaba tímido: la gala es
- * el premio del viaje perfecto y tiene que sentirse. El techo lo pone la escala de los
- * 8 arcos, que es lo que se viene a oír — de ahí que no llegue a 1.
+ * Cuánto del volumen general se lleva el castillo. Es el premio del viaje perfecto y
+ * tiene que sentirse, así que va al tope: 1 = todo el volumen que pidió el jugador.
+ * Más que esto no cabe por aquí — `HTMLAudioElement.volume` corta en 1, y subirlo
+ * pediría enrutar el clip por WebAudio con un gain, como hace el tren.
  */
-const MIX = 0.8;
+const MIX = 1;
 
 /**
  * Detonaciones del clip: `[segundo del golpe, fuerza 0–1]`. Medidas, no estimadas.

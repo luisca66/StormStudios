@@ -128,11 +128,20 @@ export class SamplePlayer {
     this.playUrl(audioUrl(path), this.volume * volumeScale);
   }
 
-  /** Tríada de la cadencia (PLAN §3.5): 3 samples de nota simultáneos. */
+  /**
+   * Tríada de la cadencia (PLAN §3.5) y del silbato-tónica: 3 samples simultáneos.
+   *
+   * Sonaban las tres a volumen completo, así que se sumaban a ~3× la amplitud de una
+   * nota sola y saturaban. Se reparte por EQUIPOTENCIA (1/√n): la tríada queda igual de
+   * presente que una nota suelta, pero sin el pico que la hacía clipear. 1/n sería el
+   * reparto "correcto" en amplitud y deja el acorde demasiado tímido — con sonidos que
+   * no están en fase, la raíz es la mezcla que oye el oído.
+   */
   async playTriad(relPaths: string[], volumeScale = 1): Promise<void> {
     this.unlock();
     await Promise.all(relPaths.map((p) => this.preload(p)));
-    for (const p of relPaths) this.playUrl(audioUrl(p), this.volume * volumeScale);
+    const spread = 1 / Math.sqrt(Math.max(1, relPaths.length));
+    for (const p of relPaths) this.playUrl(audioUrl(p), this.volume * volumeScale * spread);
   }
 
   /**
