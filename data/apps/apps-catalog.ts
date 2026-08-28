@@ -241,7 +241,10 @@ export const APPS: AppEntry[] = [
       en: "Develop perception of the tonal function of each note in major keys. Recognize diatonic and chromatic degrees in context.",
     },
     webUrl: "/apps/grados-mayores/jugar",
+    gameUrl: "/apps/grados-mayores/juego",
+    gameLabel: { es: "Modo juego 3D", en: "3D game mode" },
     features: [
+      { es: "Modo juego 3D: Expreso Tonal, conduce el tren a la Terminal decidiendo cada grado de oído", en: "3D game mode: Tonal Express, drive the train to the Terminal by recognizing each degree by ear" },
       { es: "15 tonalidades mayores y 5 timbres", en: "15 major keys and 5 timbres" },
       { es: "Modos clásico, contrarreloj y supervivencia", en: "Classic, time attack, and survival modes" },
       { es: "Grados diatónicos y cromáticos", en: "Diatonic and chromatic degrees" },

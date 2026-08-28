@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Expreso Tonal — Storm Studios</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="./assets/index-DQvYNgiO.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BquWebAG.css">
+  </head>
+  <body>
+    <canvas id="game-canvas"></canvas>
+
+    <div id="ui-root">
+      <!-- MENÚ PRINCIPAL -->
+      <section id="menu-screen" class="screen active">
+        <div class="card menu-card">
+          <div class="marquee">
+            <h1 class="title" data-i18n="app.title">EXPRESO TONAL</h1>
+            <p class="subtitle" data-i18n="app.tagline">Escucha. Decide. Llega.</p>
+          </div>
+
+          <div class="config-group">
+            <h3 data-i18n="menu.route">Ruta (tonalidad)</h3>
+            <div id="route-options" class="chip-row"></div>
+            <p id="route-desc" class="option-desc"></p>
+          </div>
+
+          <div class="config-group">
+            <h3 data-i18n="menu.timbre">Timbre</h3>
+            <div id="timbre-options" class="chip-row"></div>
+          </div>
+
+          <div class="config-group">
+            <h3 data-i18n="menu.speed">Velocidad</h3>
+            <div id="speed-options" class="chip-row"></div>
+            <p id="speed-desc" class="option-desc"></p>
+          </div>
+
+          <div class="config-group">
+            <h3>
+              <span data-i18n="menu.degrees">Grados a trabajar</span>
+              <span id="degrees-count" class="degrees-count"></span>
+            </h3>
+            <div class="degrees-quick">
+              <button id="only-diatonic-btn" class="btn tiny" data-i18n="menu.onlyDiatonic">Solo diatónicos</button>
+              <button id="all-degrees-btn" class="btn tiny" data-i18n="menu.all">Todo</button>
+            </div>
+            <div id="diatonic-options" class="chip-row"></div>
+            <div id="chromatic-options" class="chip-row"></div>
+            <p id="degrees-warning" class="warning hidden" data-i18n="menu.min2">Selecciona al menos 2 grados para que haya decisión que tomar.</p>
+          </div>
+
+          <div class="config-group volume-group">
+            <h3 data-i18n="menu.volume">Volumen</h3>
+            <input id="volume-slider" type="range" min="0" max="100" value="80" />
+          </div>
+
+          <div class="menu-actions">
+            <button id="salon-btn" class="btn secondary" data-i18n="menu.salon">Salón de Rutas</button>
+            <button id="start-btn" class="btn primary" data-i18n="menu.start">INICIAR VIAJE</button>
+          </div>
+
+          <p class="credit" data-i18n="credit"></p>
+        </div>
+      </section>
+
+      <!-- HUD / CONSOLA DE LATÓN (F5) -->
+      <section id="hud" class="screen hidden"></section>
+
+      <!-- LLEGADA (F8) -->
+      <section id="arrival-screen" class="screen hidden"></section>
+
+      <!-- RESUMEN -->
+      <section id="summary-screen" class="screen hidden">
+        <div class="card menu-card">
+          <h2 class="title small" data-i18n="summary.title">Parte de viaje</h2>
+          <p id="summary-medal" class="subtitle"></p>
+          <div id="summary-stats" class="summary-stats"></div>
+          <div class="menu-actions">
+            <button id="summary-retry" class="btn primary" data-i18n="summary.retry">Reintentar ruta</button>
+            <button id="summary-menu" class="btn secondary" data-i18n="summary.menu">Menú</button>
+            <button id="summary-salon" class="btn secondary" data-i18n="menu.salon">Salón de Rutas</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SALÓN DE RUTAS (F9) -->
+      <section id="salon-screen" class="screen hidden">
+        <div class="card menu-card">
+          <h2 class="title small" data-i18n="salon.title">Salón de Rutas</h2>
+          <div id="salon-board" class="salon-board"></div>
+          <div id="salon-degrees" class="salon-degrees"></div>
+          <div class="menu-actions">
+            <button id="salon-back" class="btn secondary" data-i18n="salon.back">Volver</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAUSA -->
+      <section id="pause-screen" class="screen hidden">
+        <div class="card" style="text-align:center">
+          <h2 class="title small" data-i18n="pause.title">Pausa</h2>
+          <div class="menu-actions">
+            <button id="pause-resume" class="btn primary" data-i18n="pause.resume">Reanudar</button>
+            <button id="pause-quit" class="btn secondary" data-i18n="pause.quit">Abandonar viaje</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Utilidades -->
+      <div id="toast" class="toast"></div>
+    </div>
+
+  </body>
+</html>

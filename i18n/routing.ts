@@ -66,6 +66,10 @@ export const routing = defineRouting({
     },
     "/apps/matematicas-mentales/jugar": "/apps/matematicas-mentales/jugar",
     "/apps/grados-mayores/jugar": "/apps/grados-mayores/jugar",
+    "/apps/grados-mayores/juego": {
+      es: "/apps/grados-mayores/juego",
+      en: "/apps/grados-mayores/game",
+    },
     "/apps/grados-menores/jugar": {
       es: "/apps/grados-menores/jugar",
       en: "/apps/grados-menores/play",
