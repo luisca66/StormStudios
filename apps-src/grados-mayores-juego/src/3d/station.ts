@@ -145,6 +145,16 @@ export class Station {
 
   /** Orienta y coloca el grupo con la cuerda boca→fondo (ver nota en `build`). */
   private placeGroup(group: THREE.Object3D, distance: number): void {
+    // `frameAt` RECORTA lo que le pidas al final de la spline generada, sin avisar: si
+    // la vía no llega tan lejos, devuelve su tope y la Terminal se planta corta. Como el
+    // streaming solo va SEGMENTS_AHEAD por delante del tren, un `relocate` que la empuja
+    // cuatro segmentos cae siempre fuera. Se extiende la vía ANTES de preguntar.
+    //
+    // Va aquí y no en quien llama porque es esta función la que consulta `frameAt`, y lo
+    // necesita hasta `distance + VAULT_DEPTH` para la cuerda boca→fondo. Extender la
+    // spline no dibuja nada ni altera su forma: los frames salen del mismo RNG en el
+    // mismo orden, solo que antes.
+    this.track.ensureReach(distance + VAULT_DEPTH + 80);
     this.track.frameAt(distance, this.frame);
     const mouth = this.frame.pos.clone();
     this.track.frameAt(distance + VAULT_DEPTH, this.frame);

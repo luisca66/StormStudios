@@ -1025,3 +1025,53 @@ cronómetro, sale clavado medido en viaje simulado — 12.50 / 9.09 / 6.25 / 4.0
 **Pendiente de Luis:** jugar una partida fallando a propósito después de que asome la
 Terminal y confirmar que ahora sí se llega. El salto de 560 u en gris tampoco lo puedo
 juzgar yo: si se nota, se reparte a lo largo del ramal en vez de aplicarlo de golpe.
+
+---
+
+## 2026-08-28 — La Terminal se movía de número pero no de sitio (Claude Opus 5)
+
+Luis: "cuando ya aparece la estación final, si se cometen errores la pista se alarga
+pero la terminal se queda en su sitio... la pista atraviesa la terminal y al final solo
+aparecen los postes".
+
+**No era la aritmética.** El arreglo de `beginDetour` (DETOUR_COST + 2 segmentos) está
+bien, y `catedral.mjs` lo confirma con margen +281 en los 7 casos. El fallo estaba una
+capa más abajo, en la GEOMETRÍA.
+
+`placeGroup` coloca la Terminal preguntándole a la vía con `frameAt`, y `frameAt`
+**recorta en silencio** lo que le pidas al final de la spline generada:
+
+```js
+const d = Math.max(fs[0].dist, Math.min(dist, fs[fs.length - 1].dist));
+```
+
+Para eso existe `ensureReach` — su propio comentario dice que sirve "para plantar cosas
+lejanas (la Terminal)". Se llamaba en `revealStation` y en `beginArrival`, pero NO en
+`beginDetour`, que es el único sitio donde la Terminal se mueve. Como el streaming solo
+va `SEGMENTS_AHEAD` (420 u) por delante del tren y cada desvío empuja la Terminal 560 u,
+la petición caía siempre fuera: `this.distance` se actualizaba y el edificio se quedaba
+donde alcanzara la vía. Medido con el `TrackManager` real: el primer desvío pedía 3640
+con la vía en 3326 — 314 u de recorte, y los siguientes ~138 u cada uno.
+
+De ahí los dos síntomas: la vía se seguía generando por encima de la catedral mal
+plantada, y `beginArrival` —que sí hace `ensureReach`— montaba los arcos en el
+`stationDistance` verdadero, lejos. Por eso al final solo se veían los postes.
+
+**El arreglo va en `placeGroup`**, no en quien llama: es esa función la que consulta
+`frameAt` y la que necesita la vía hasta `distance + VAULT_DEPTH` para la cuerda
+boca→fondo. Así quedan cubiertos `build` y `relocate` de una vez, y cualquier futuro
+llamador. Extender la spline no dibuja nada ni cambia su forma: los frames salen del
+mismo RNG en el mismo orden, solo que antes.
+
+**`dev/terminal.mjs`**, la regresión que sí lo caza: `catedral.mjs` valida la aritmética
+sobre un espejo de las constantes y nunca toca la vía ni la geometría, así que esto se
+le escapaba por diseño. La nueva usa la `Station` y el `TrackManager` DE VERDAD y compara
+la posición del grupo contra la que le toca. Sin el arreglo falla los 5 casos; con él,
+error de 0.00 u. (Para instanciar la `Station` en Node basta un stub de canvas 2D: three
+solo guarda el canvas de las texturas, no lo sube sin renderer.)
+
+**De paso, `dev/` no corría en Windows.** `new URL("..", import.meta.url).pathname` da
+`/C:/...` con los `%20` de "Claude Cowork" sin decodificar, y la guarda de `pilotar.mjs`
+comparaba contra `file://${process.argv[1]}`, que con contrabarras no coincide nunca: el
+script abría vite y se colgaba sin ejecutar nada. `fileURLToPath` y `pathToFileURL` lo
+arreglan en los dos sistemas.

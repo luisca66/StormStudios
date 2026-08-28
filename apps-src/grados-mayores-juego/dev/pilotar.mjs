@@ -1,9 +1,10 @@
 // Piloto headless del Expreso Tonal.
 // Maneja GameStateManager con un reloj sintético: sin navegador, sin rAF, sin pixeles.
 // Usa la API de Node de Vite para resolver TS y los alias "@/" del propio proyecto.
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { createServer } from "vite";
 
-const RAIZ = new URL("..", import.meta.url).pathname;
+const RAIZ = fileURLToPath(new URL("..", import.meta.url));
 
 const vite = await createServer({
   root: RAIZ,
@@ -91,7 +92,10 @@ const ESCENARIOS = [
   ["Alternar acierto/fallo",       (n) => (n % 2 ? "incorrecto" : "correcto")],
 ];
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// `file://` + argv[1] no coincide en Windows (contrabarras, y "C:" sin la tercera
+// barra): con eso la guarda nunca entraba, el script abría vite y se colgaba sin
+// ejecutar nada. `pathToFileURL` da la misma forma que `import.meta.url` en los dos.
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   for (const [nombre, politica] of ESCENARIOS) {
     const r = viajar({ politica });
     const res = r.eventos.filter((e) => e.t === "resuelto");

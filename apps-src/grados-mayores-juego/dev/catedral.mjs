@@ -6,9 +6,10 @@
 //
 // Aquí se replica la colocación de `renderer.ts` sobre la lógica real del viaje y se
 // comprueba el margen. Si alguien vuelve a tocar la fórmula, esto lo caza.
+import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
 
-const RAIZ = new URL("..", import.meta.url).pathname;
+const RAIZ = fileURLToPath(new URL("..", import.meta.url));
 const vite = await createServer({
   root: RAIZ, server: { middlewareMode: true }, appType: "custom", logLevel: "error",
 });
