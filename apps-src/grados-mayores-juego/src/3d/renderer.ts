@@ -3,8 +3,8 @@
 
 import * as THREE from "three";
 import {
-  CAMERA_FOV, DECISIONS_TO_ARRIVE, SEGMENT_LENGTH, SPRINT_FACTOR, WORLD_SEED_BASE,
-  routeForScale, type SpeedSpec,
+  CAMERA_FOV, DECISIONS_TO_ARRIVE, DETOUR_COST, SEGMENT_LENGTH, SPRINT_FACTOR,
+  WORLD_SEED_BASE, routeForScale, type SpeedSpec,
 } from "@/config";
 import { SCALES } from "@/music/degrees";
 import { TrainSound } from "@/audio/train-sound";
@@ -231,11 +231,18 @@ export class JourneyRenderer {
   beginDetour(startDistance: number): void {
     this.detour.begin(startDistance, detourSideFor(startDistance));
     this.stormSound.start();
-    // Un desvío añade un segmento entero de viaje: la Terminal se aleja otro tanto para
-    // no quedar alcanzable antes de tiempo. Es el ÚNICO caso en que se mueve, y ocurre
-    // con el mundo en gris, donde no se nota.
+    // Un desvío alarga el viaje MÁS que el ramal en sí, y la Terminal tiene que alejarse
+    // lo mismo o el tren la pasa de largo sin llegar. Son DETOUR_COST + 2 segmentos:
+    //   1              el ramal, que ocupa un segmento entero sin plantear pregunta;
+    //   DETOUR_COST+1  el vaivén de progreso, porque ese tramo restó DETOUR_COST en vez
+    //                  de sumar 1, y hay que reponer la diferencia entera.
+    // Antes se movía un solo segmento y faltaban los otros DETOUR_COST + 1: con un fallo
+    // la catedral quedaba 140 u corta, con tres casi 1000. Es el ÚNICO caso en que se
+    // mueve, y ocurre con el mundo en gris, donde no se nota.
     if (this.station.isBuilt() && !this.isArriving()) {
-      this.station.relocate(this.station.stationDistance() + SEGMENT_LENGTH);
+      this.station.relocate(
+        this.station.stationDistance() + (DETOUR_COST + 2) * SEGMENT_LENGTH,
+      );
     }
   }
 

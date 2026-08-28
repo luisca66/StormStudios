@@ -982,3 +982,46 @@ el bucket responde 206 con CORS a `http://localhost:3000`.
 
 El CSP del sitio ya cubría esto sin tocar nada: `media-src` lleva `https:` y
 `connect-src` lleva `*.r2.dev`.
+
+---
+
+## 2026-08-28 — La Terminal alcanzable tras un desvío (Claude Opus 5)
+
+**El bug de Luis:** "la catedral aparece cuando faltan 3 preguntas. Si te equivocas el
+recorrido se alarga pero la catedral se queda en el mismo lugar y la pasas".
+
+La Terminal se planta una sola vez y `beginDetour` ya la alejaba… **un segmento, cuando un
+desvío alarga el viaje cuatro**. La cuenta: 1 del ramal, que ocupa un segmento entero sin
+plantear pregunta, más `DETOUR_COST + 1` del vaivén de progreso, porque ese tramo restó 2
+en vez de sumar 1 y hay que reponer la diferencia entera. Faltaban 3 segmentos por desvío
+(420 u); los ~2 de colchón tapaban el primero a medias y de ahí en adelante el tren la
+pasaba de largo. Fallar ANTES de que se plante nunca rompió nada: la fórmula inicial ya lee
+el progreso.
+
+**Arreglo:** `(DETOUR_COST + 2) * SEGMENT_LENGTH`, derivado de la constante en vez de un 4
+a mano. Se conserva lo que pediste en su día —plantada e inmóvil— y el salto sigue cayendo
+con el mundo en gris.
+
+**Se descartó** recalcular la posición desde el progreso vivo, que sería más robusto ante el
+piso 0: en `resolve()` el progreso se resta (línea 337) **antes** de llamar a `beginDetour`
+(361), pero el `emit()` viene **después** (365), así que el renderer todavía tiene el
+`gameProgress` viejo. Habría que reordenar el emit —tocando el orden de eventos de todo lo
+demás— para ganar un caso que solo alarga el viaje, nunca lo rompe.
+
+**Cómo se cazó y cómo se prueba.** Se añadió `dev/pilotar.mjs`: como `state.ts` es lógica
+pura con todo saliendo por `JourneyPorts`, se maneja un viaje entero desde Node con puertos
+falsos y un reloj sintético — sin navegador y sin `requestAnimationFrame`, que no corre con
+la pestaña en segundo plano. Resuelve TS y los alias con la API de Node de Vite, así que no
+añade dependencias.
+
+`npm run qa:catedral` replica la colocación de `renderer.ts` sobre la lógica real y exige
+margen ≥ 0. Con el arreglo, los 7 casos dan **+281 constante** —el mismo margen que el viaje
+perfecto— incluidos 5 fallos seguidos y la ruta de "sin respuesta". Verificado que la prueba
+CAZA la regresión: con el valor viejo fallan 5 de 7 y sale con código 1.
+
+**De paso, un pendiente menos:** el cronometraje de las 4 ventanas, que esperaba tu
+cronómetro, sale clavado medido en viaje simulado — 12.50 / 9.09 / 6.25 / 4.00 s.
+
+**Pendiente de Luis:** jugar una partida fallando a propósito después de que asome la
+Terminal y confirmar que ahora sí se llega. El salto de 560 u en gris tampoco lo puedo
+juzgar yo: si se nota, se reparte a lo largo del ramal en vez de aplicarlo de golpe.
