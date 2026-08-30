@@ -2,8 +2,11 @@
 
 Registro por fases (PLAN §0.2). El agente que continúe empieza leyendo esto.
 
-> ⚠️ **Recordatorio permanente (PLAN §0.4):** nada se sube hasta que Luis pruebe el
-> juego en local. Sin `git push`, sin `npm run deploy`, sin páginas del sitio.
+> ✅ **PUBLICADO el 2026-08-30.** Luis lo probó en local, encontró el bug de la consola,
+> se arregló, y dio el OK explícito para publicar. Vive en
+> `/es/apps/grados-menores/juego` y `/en/apps/grados-menores/game`.
+> A partir de aquí, cada cambio que se quiera en línea necesita `npm run deploy` en esta
+> carpeta (que recompila y copia a `public/apps/`) **más** commit y push a `main`.
 
 ---
 
@@ -700,3 +703,46 @@ argumento a favor de que Luis juegue antes de publicar, ahora con un caso concre
 Tonal** que sigue pendiente desde F4 (la hebra dorada sobre el planeta natal, §5.6), y
 conviene revisar de una vez el `500`/`404` de consola que no logré atribuir (ver F5) y el
 criterio de fps, ambos con un navegador de verdad. Criterios en PLAN §13-F10.
+
+---
+
+## 2026-08-30 — F11 Publicación ✅ (Claude Fable 5)
+
+**Autorizado por Luis** tras probarlo en local: "Creo que lo puedes publicar ya. […] es
+casi personal ahora, casi nadie lo usa, y es más mi laboratorio por ahora."
+
+Yo había recomendado esperar a F10 por el hueco de los fps; Luis reafirmó con contexto
+que yo no tenía (el sitio es su laboratorio, no una plataforma con tráfico), así que
+adelante. Queda dicho para que el siguiente agente no lo lea como un salto de fase.
+
+**Hecho, siguiendo el patrón del Expreso (§15):**
+- `scripts/copy-dist.mjs` con target `public/apps/grados-menores-juego`, y
+  `npm run deploy` ejecutado.
+- `app/[locale]/apps/grados-menores/juego/page.tsx` calcada de la del Expreso:
+  `noIndex`, fondo `#0e1428`, badge de hielo, tagline "Escucha · Decide · Vuelve" /
+  "Listen · Decide · Return", iframe con `allow="autoplay"` y SIN `microphone`.
+- `data/apps/apps-catalog.ts`: `gameUrl`, `gameLabel` y la característica nueva al inicio.
+- `i18n/routing.ts`: ruta `/apps/grados-menores/juego` con su alias inglés `/game`.
+  **El `proxy.ts` NO se toca**: el Expreso tampoco está ahí, y next-intl resuelve el alias
+  con solo la entrada de `routing.ts`. Comprobado en el sitio, no supuesto.
+
+**Verificado ANTES de subir, en el sitio de verdad (localhost:3000):**
+- `/es/apps/grados-menores/juego` carga con su cabecera "El Cometa · MODO JUEGO 3D" y el
+  juego dentro del iframe.
+- `/en/apps/grados-menores/game` carga en inglés de punta a punta: la cáscara ("← Back",
+  "3D GAME MODE", "Listen · Decide · Return") y el juego dentro
+  ("THE COMET", "Constellation (key)", "Degrees to train", presets Harmonic/Melodic).
+- La ficha `/es/apps/grados-menores` muestra el botón "🚀 Modo juego 3D" y la
+  característica nueva.
+- `tsc --noEmit` del sitio limpio.
+
+**Fuera del commit a propósito:** `AGENTS.md`, que es de Luis y de agosto, no tiene que
+ver con el juego y nunca ha estado versionado.
+
+**Lo que sigue pendiente y no se debe olvidar por estar ya publicado:**
+1. El **checklist §14** completo (F10): timbre Aleatorio en partida real, teclado
+   completo, que la pausa congele con pregunta viva, layout en ventana angosta.
+2. El **guiño al Expreso Tonal** sobre el planeta natal (§5.6), pendiente desde F4.
+3. Los **fps** en un navegador real: sigue sin medirse.
+4. El `500`/`404` de consola que no logré atribuir (ver F5) — conviene mirarlo ya en
+   producción, donde el entorno es el de verdad.
