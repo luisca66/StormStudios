@@ -311,7 +311,10 @@ export const APPS: AppEntry[] = [
       en: "Train absolute-note recognition with real classical-guitar samples by string. You can choose exactly which notes to study, enable looping for focused listening, and practice in classic, time attack, or survival mode. The app saves local statistics so you can see which notes need more work.",
     },
     webUrl: "/apps/oido-absoluto-guitarra/jugar",
+    gameUrl: "/apps/oido-absoluto-guitarra/juego",
+    gameLabel: { es: "Modo juego 3D", en: "3D game mode" },
     features: [
+      { es: "Modo juego 3D: Resonancia, recorre un diapasón gigante y abre la roseta reconociendo notas", en: "3D game mode: Resonance, explore a giant fretboard and unlock the rosette by recognizing notes" },
       { es: "Samples reales de guitarra clásica organizados por cuerda", en: "Real classical-guitar samples organized by string" },
       { es: "Selección precisa de notas para sesiones enfocadas", en: "Precise note selection for focused sessions" },
       { es: "Modos clásico, contrarreloj y supervivencia", en: "Classic, time attack, and survival modes" },
