@@ -251,3 +251,452 @@ a ~1 fps** aunque `document.visibilityState` diga "visible". Consecuencias:
 twinkle, nebulosas de canvas, estrella natal que crece con el progreso, keyframes de
 color por región/variante) y `scenery.ts` con Nebulosa Lumbre y Cinturón de Rocas.
 Criterios en PLAN §13-F3.
+
+---
+
+## 2026-08-30 — F3 Cielo y regiones ✅ (Claude Fable 5)
+
+**Hecho:**
+- `3d/environment.ts`: domo con shader (gradiente sutil + **nebulosa de canvas aditiva**
+  sembrada por ruta), **campo de 1600 estrellas con twinkle** (un seno por estrella con
+  fase propia, en el vertex shader), **estrella natal** que crece con el progreso, niebla
+  que comparte color con el fondo, paletas de las **5 regiones** y tinte de las 15
+  variantes, y el gancho `setDriftGrey` listo para la deriva de F7.
+- `3d/scenery.ts`: escenografía por chunks (construye por delante, libera por detrás) con
+  las dos primeras regiones — **Nebulosa Lumbre** (pilares de gas, huevos de estrella,
+  polvo luminoso) y **Cinturón de Rocas** (cinturón de asteroides girando y
+  asteroide-catedral con vetas de cristal).
+- `3d/renderer.ts`: fuera el cielo provisional de F2; ahora orquesta Environment y
+  Scenery, y expone `setProgress` para dirigir el progreso desde fuera.
+
+**Tres bugs encontrados y corregidos:**
+1. **Los `THREE.Points` sin textura se dibujan como CUADRADOS.** El polvo cercano y las
+   motas de la Nebulosa salían como cuadraditos naranjas sobre el cielo. Se les puso una
+   mota redonda de canvas. Apuntado en el código de los dos sitios, porque es un fallo
+   que se repite en cuanto uno añade partículas.
+2. **La estrella natal no se veía.** Estaba a +46 de altura y quedaba SIEMPRE por encima
+   del dintel de la ventana: creciendo pero invisible, que es tanto como no tenerla. Bajó
+   a +14 y ahora se planta en el punto de fuga de la ruta — la estela lleva a casa.
+3. **`setProgress` no servía para nada.** El loop recalculaba el progreso desde la
+   distancia CADA frame, así que pisaba el valor externo al frame siguiente. Ahora hay un
+   flag `progressDriven`: en cuanto alguien manda el progreso, el loop deja de estimarlo.
+   Es el mismo patrón de trampa que ya me mordió midiendo el murmullo en F2 — **cuando el
+   loop y una llamada manual escriben lo mismo, gana el loop.**
+
+**Decisión de rendimiento: el cinturón pasa a InstancedMesh.** Primero lo escribí con una
+malla suelta por asteroide y comenté que instanciar "saldría más caro" por tener que
+recomponer matrices. Lo medí y era falso: instanciado cuesta **menos** (0.037 ms/frame
+frente a 0.048) y baja los draw calls de **151 a 90**. Las geometrías y el material ya se
+compartían; lo que faltaba era compartir también la llamada de dibujo. El comentario
+equivocado está corregido en el archivo.
+
+**Verificado (criterios F3):**
+- **Am y Gm se distinguen de un vistazo:** Am es la Nebulosa Lumbre (cielo granate,
+  pilares de gas naranja, huevos de estrella); Gm es el Cinturón de Rocas (cielo casi
+  negro, campo denso de asteroides y cristales turquesa). Capturas comparadas.
+- **La estrella natal crece:** escala 14 → 132 y luz 0.97 → 2.4 entre progreso 0.05 y 1,
+  y se VE hacerlo (comprobado ocultando la escenografía para aislarla).
+- **Los asteroides giran sin coste perceptible:** 151 rocas vivas, la matriz de instancia
+  cambia frame a frame, y la escenografía entera cuesta **0.037 ms por frame**.
+- **Draw calls dentro de presupuesto:** LUMBRE 114, ROCAS 90, de 200.
+- `npm run build` limpio; **0 errores** en consola.
+
+**A vigilar en F4:** en LUMBRE, **93 de los 114 draw calls son sprites** (cada bocanada de
+gas es uno). Las tres regiones que faltan no se suman a ésta (solo hay una activa por
+ruta), pero si al añadir fauna, cometa hermano y guiños alguna región se acerca a 200, el
+arreglo conocido es pasar las bocanadas a un `THREE.Points` con tamaño por partícula en
+el shader: un draw call por chunk en vez de ~23.
+
+**Sigue pendiente de Luis:** el criterio de **≥50 fps** no se puede medir aquí (el pane
+estrangula rAF a ~1 fps, ver la nota de F2). Hay que comprobarlo en un navegador real.
+
+**Siguiente fase: F4** — Regiones restantes y vida: Anillos de Hielo (gigante gaseoso),
+Cúmulo de Faroles (estrellas binarias §5.7), El Vacío (galaxia de canto), fauna de polvo,
+cometa hermano con doppler y los guiños a Expreso y Aerostato. Criterios en PLAN §13-F4.
+
+---
+
+## 2026-08-30 — F4 Regiones restantes y vida ✅ (Claude Fable 5)
+
+**Hecho:**
+- **Anillos de Hielo:** se viaja DENTRO del plano de anillos. Bandas de partículas con
+  huecos de Cassini (el radio se sortea por bandas, no uniforme), lunas pastoras,
+  géiseres de hielo y un **gigante gaseoso** con bandeado ondulado de canvas.
+- **Cúmulo de Faroles:** cientos de soles cercanos y las **estrellas binarias** (§5.7),
+  dos hermanas casi idénticas orbitándose — el par mutable del modo menor puesto en el
+  paisaje, sin una palabra. Más una estación-faro de latón que barre su haz.
+- **El Vacío:** casi nada, y por eso todo se ve. Su lujo es la **galaxia vista de canto**
+  cruzando el cielo, con bulbo central y veta de polvo.
+- **Fauna:** bandada de polvo en formación de V que vuela por delante, ondulando con un
+  seno por individuo (patrón de las golondrinas de Aerostato). Un solo `THREE.Points`.
+- **Cometa hermano:** núcleo de hielo + cola, cruza en sentido contrario, con
+  **rugido de doppler** sintetizado (cluster de ruido, filtro que barre de agudo a grave
+  y paneo que cruza) — sin altura reconocible, como manda §2.11.
+- **Guiño al Aerostato:** el globo dorado asoma muy alto durante los dos primeros
+  segmentos y se apaga.
+- `nebulaStrength` por región en `environment.ts`, y el interruptor `ambientAllowed` que
+  F6 usará para la regla de silencio.
+
+**Decisión de arquitectura repetida a conciencia:** todo lo masivo va en `THREE.Points`
+—soles del cúmulo, anillos, géiseres, bandada, cola del hermano—. Con un sprite por
+cuerpo, el Cúmulo solo habría costado cientos de draw calls. Es la misma lección que las
+rocas de F3, aplicada antes de tropezar esta vez.
+
+**Tres cosas que hubo que corregir mirando la pantalla:**
+1. **Faroles salía como una niebla marrón.** Supuse que eran los soles acumulándose en
+   aditivo; los oculté para comprobarlo y el marrón seguía ahí — era la nebulosa del
+   domo. En vez de trastear con el número de manchas, cada región tiene ahora su
+   `nebulaStrength`: alta donde el gas es el protagonista (Lumbre 1.0), baja donde lo son
+   los cuerpos (Faroles 0.30). El cúmulo pasó a leerse como soles y no como sopa.
+2. **La galaxia de canto salió como una hilera de agujeros redondos.** La veta de polvo
+   la había pintado con círculos negros sueltos y grandes, que recortan el disco en vez
+   de cruzarlo. Ahora es una **banda continua** con degradado vertical y unas
+   irregularidades pequeñas encima. Al segundo intento se lee como la Vía Láctea.
+3. El **gigante gaseoso** no se veía de frente: está a un lado fijo de la ruta, que es lo
+   correcto (es un planeta, no un decorado que persigue al jugador). Se comprobó girando
+   la vista hacia él — y ahí domina el cielo entero.
+
+**Verificado (criterios F4):**
+- **Las 15 rutas cargan** con su combinación región×variante de §5.4: 15 de 15, cero
+  errores, y cada región con los cuerpos que le tocan (Rocas 81–114, Hielo 1–2 lunas,
+  Faroles su torre, Vacío 0–1).
+- **El cometa hermano solo aparece en zona muerta:** de 63 apariciones muestreadas,
+  **todas** cayeron dentro de los primeros 40 u del segmento (máximo 39.9) y **ninguna**
+  fuera. Con la regla de silencio activada (`ambientAllowed = false`), **0 apariciones**
+  en 20 000 frames.
+- **Draw calls < 200 en las cinco regiones:** Lumbre 111, Rocas 91, Hielo 68, Faroles 73,
+  Vacío 67. El máximo bajó respecto a F3 pese a triplicar el contenido.
+- El **globo del Aerostato** se ve al partir y se apaga pasados dos segmentos.
+- `npm run build` limpio; **0 errores** en consola recorriendo las cinco regiones.
+
+**Pendiente por diseño (no es olvido):** el **guiño al Expreso Tonal** —la hebra dorada
+con una lucecita avanzando sobre el planeta natal— necesita el planeta, que se construye
+en F8. Queda anotado ahí.
+
+**Sigue pendiente de Luis:** el criterio de **≥50 fps** (el pane estrangula rAF; ver F2).
+
+**Siguiente fase: F5** — Consola y HUD: `ui/hud.ts` con las palancas de los 11 grados en
+orden canónico y los pares mutables enlazados, `ui/constellation.ts` con el mapa de
+progreso, la carlinga 3D completa (orrery, sextante, llave del radiofaro) y la viñeta.
+Criterios en PLAN §13-F5.
+
+---
+
+## 2026-08-30 — F5 Consola y HUD ✅ (Claude Fable 5)
+
+**Hecho:**
+- `ui/hud.ts`: la **consola de latón y hielo** completa — bitácora de a bordo, ventana de
+  respuesta, marcadores (puntos/racha/velocidad), palancas de grado, radiofaros con sus
+  iconos, botón de repetir y el teclado de §8. No tiene lógica de juego: pinta un
+  `HudState` y avisa por callbacks, así que F6 puede enchufarle el estado real sin
+  tocarla.
+- `ui/constellation.ts`: el **mapa de progreso**. Es el análogo de la tira de ruta del
+  Expreso, pero aquí el progreso DIBUJA la figura de la tonalidad: 20 estrellas que se
+  encienden una por acierto, con la siguiente señalada en hielo y las líneas de la
+  constelación tenues de fondo (la figura existe antes de recorrerla).
+- `3d/cab.ts`: el tablero de bronce — **orrery** de tres planetas girando a distinta
+  velocidad, **sextante**, **manómetro de empuje de cola** cuya aguja persigue la lectura
+  con inercia, y la **llave del radiofaro** que baja al transmitir y vuelve sola.
+- `style.css`: consola, palancas con sus estados, aritos de los pares, panel derecho y la
+  **viñeta fría**. La capa del HUD es `pointer-events:none` y solo la consola lo reactiva,
+  para no robarle al canvas el drag de la mirada.
+- `main.ts`: un **simulador** que da vida a la consola (§F5 pide "datos simulados"). Está
+  marcado como desechable: F6 lo sustituye entero por el `GameStateManager`.
+
+**Decisión de diseño:** los pares mutables se hermanan en su arito **solo si los DOS
+están activos**. Con uno solo no hay confusión posible que señalar, y dibujar el arito
+alrededor de una palanca suelta sería decorar sin decir nada. Por eso en el preset
+Natural no aparece ningún arito y en Melódica aparecen los dos.
+
+**Verificado (criterios F5):**
+- **Consola completa y viva** con el simulador: la ventana se vacía, la bitácora revela
+  nota y grado al resolverse, y los marcadores se mueven.
+- **Palancas correctas**: con el preset Melódica salen las 9 activas en orden canónico
+  intercalado con sus teclas (1–6, E, 7, R) y **los dos pares hermanados** (VI+VImel,
+  VIIST+VIIsen), leído del DOM, no a ojo.
+- **Estados de palanca**: al pulsar I con la respuesta III, la I quedó *incorrecta* (roja),
+  la III *correcta* (verde) y el resto *bloqueadas*; la bitácora dijo "Deriva. Era III
+  (Mediante)". El camino de tiempo agotado también revela: "Sin respuesta. Era VIIsen
+  (VII sensible (#7))".
+- **Radiofaros**: dos pulsaciones de `B` dejaron 2 iconos gastados y 1 disponible.
+- **La constelación enciende estrellas** y marca las derivas como cicatrices aparte.
+- `npm run build` limpio.
+
+**⚠️ Anomalía sin atribuir (honestidad, no la vendo como resuelta):** la consola del
+navegador reporta un `500 Internal Server Error` en cada carga, pero **no he podido
+atribuirlo a la app**: el log de vite está limpio, los 22 recursos que pide la página
+devuelven 200/304, y `/favicon.ico` da 404 (no 500). Reinicié el servidor por si era
+caché y persiste. El juego funciona por completo. Sospecho que viene de la maquinaria
+del propio pane de vista previa, pero **no está demostrado** — conviene volver a mirarlo
+en un navegador de verdad, junto con la comprobación de fps.
+
+**Siguiente fase: F6** — Loop de juego: `game/state.ts` con la máquina de estados §7.1,
+anillos funcionales con sus espadines, la baliza que dispara la pregunta, respuesta por
+click/teclado, acierto con clang + slingshot, radiofaro con descuento y la cadencia de
+salida i–iv–V–i al abrirse la cúpula. Criterios en PLAN §13-F6.
+
+---
+
+## 2026-08-30 — F6 Loop de juego ✅ (Claude Fable 5)
+
+**El juego ya se juega.** Suena la cadencia, la baliza dispara la nota, respondes con la
+palanca o la tecla, el anillo se alinea o se queda cruzado, y a las 20 decisiones se
+llega al Perihelio.
+
+**Hecho:**
+- `game/state.ts`: la máquina de estados de §7.1 como **lógica pura** — no importa nada
+  de `3d/` ni de `ui/`, así que se ejercita entera desde consola (y así se verificó todo
+  lo de abajo). Todo efecto sale por `JourneyPorts`.
+- `3d/rings.ts`: la señalización diegética. **Baliza** (púlsar de latón que late y gira)
+  al salir de la zona muerta, y **anillo de navegación** al final del segmento con
+  espadines de luz que se alinean en ~0.4 s al acertar y se quedan cruzados al fallar.
+- `main.ts`: los **puertos** que unen lógica y mundo, la **cadencia de salida** y el
+  cambio del simulador de F5 por el juego real. El HUD no se enteró del cambio: sigue
+  pintando un `HudState`, que era justamente el objetivo de separarlo.
+- Un detalle del modo menor que ya viaja en la resolución: `mutableMix` marca cuándo la
+  confusión fue entre las dos hermanas de un par (VI↔VImel, VIIST↔VIIsen). La bitácora
+  ya lo nombra, y F7 lo usará para comparar las dos notas en la nebulosa.
+
+**Verificado (criterios F6):**
+- **Partida completa forzando aciertos**: 20 decisiones, fase ARRIVED, medalla de oro y
+  **gala** (0 derivas, 0 radiofaros).
+- **La fórmula de puntos §7.5 cuadra al punto.** No me fié del número: registré la racha
+  y la ventana EXACTA de cada acierto, recalculé
+  `(10 + racha×2 + round(5×ventana)) × 1.25` + llegada + radiofaros + gala por separado,
+  y dio **1220 esperados contra 1220 reales**.
+- **La cadencia suena MENOR**, comprobado por los archivos que de verdad se reproducen:
+  **i** = A3+C4+E4, **iv** = D3+F3+A3, **V** = E3+**G#3**+B3 (mi MAYOR, con la sensible),
+  e **i** final con el sample `Minor Chords/Aminor.mp3` — el mismo sonido del radiofaro.
+  Y acto seguido la primera nota de pregunta. El cometa no se suelta hasta que termina.
+- **Regla de silencio §2.11**: con pregunta viva, el bed baja a `duck 0.3` y el ambiente
+  queda suprimido (nada de cometas hermanos); al resolver, ambos vuelven a 1 y a true.
+- **Radiofaros**: tres usos válidos y el cuarto rechazado, con el botón deshabilitado.
+- **Fallo**: respondiendo I cuando era VIIST, la racha cae a 0, el progreso baja con piso
+  en 0, y el anillo de ese segmento queda `wrong` con los espadines cruzados (`aligned 0`).
+- **El selector se reparte bien en una partida real**: con 7 grados en 20 preguntas salió
+  3/3/3/3/3/3/2 — la bolsa barajada haciendo su trabajo.
+- `npm run build` limpio.
+
+**Añadido de paso:** un **favicon** en línea (SVG de un cometa, cero assets). El
+navegador pedía `/favicon.ico` en cada carga y no existía.
+
+**Anomalía del entorno, sin novedad:** siguen apareciendo un `500` y un `404` en la
+consola del pane que **no logro atribuir a la app** (ver F5). Todos los recursos propios
+cargan: los mp3 de R2 responden con estado 0, que es lo normal para audio opaco entre
+orígenes. Insisto en comprobarlo en un navegador de verdad.
+
+**Siguiente fase: F7** — La deriva: el lazo físico por la nebulosa gris, el feedback
+pedagógico (revelación + tónica→nota + la comparación del par mutable que ya viaja en
+`mutableMix`), progreso −2 con piso 0 y reintento del segmento con pregunta nueva.
+El hueco donde engancha está marcado en `state.ts` con `DERIVA-F7`. Criterios en
+PLAN §13-F7.
+
+---
+
+## 2026-08-30 — F7 La deriva ✅ (Claude Fable 5)
+
+**El juego ya tiene consecuencias.** Fallar echa al cometa fuera de la ruta, a un lazo
+por la nebulosa oscura donde el mundo se apaga y se revela la respuesta.
+
+**Hecho:**
+- `3d/drift.ts`: el lazo. NO es otra spline —es un **desvío lateral sobre la misma ruta**
+  que ocupa un segmento, con garganta suave a la entrada y a la salida para que no haya
+  tirón. Decorado: polvo denso y un **pecio** a la deriva con su luz oxidada parpadeando
+  (dos senos desfasados, nunca un parpadeo regular). El pecio es lo que convierte el
+  castigo en un LUGAR y no en una pausa gris.
+- `game/state.ts`: fase **DRIFT** integrada en el hueco que dejó F6, con la revelación a
+  media deriva y la reincorporación al llegar al segmento siguiente.
+- `main.ts`: el **re-anclaje del oído** — tónica, y en caso de par mutable, la nota que
+  respondiste seguida de la que era.
+
+**El lazo ocupa EXACTAMENTE un segmento a propósito**, no un tiempo fijo: así la
+reincorporación cae en un límite de segmento y la pregunta siguiente llega con ventana
+COMPLETA, en vez de a media zona muerta con la mitad del tiempo. Es una lección heredada
+del Expreso, igual que la de no forzar "ROLLING" al cruzar segmento (si no, el caso "sin
+respuesta" —que resuelve justo en el límite— se comería la fase DRIFT entera).
+
+**Decisión pedagógica que conviene que Luis revise al jugarlo.** El PLAN §2.6 pide
+"tónica → nota" en la revelación. El **Expreso acabó quitando la nota** (bitácora del
+2026-08-26: "volver a soltarla la regala en vez de reanclar") y dejó solo el acorde.
+Aquí se sigue el plan y la nota SÍ suena, porque en menor la nota suele ser justo la que
+distingue una escala de otra — pero es un tunable: `DRIFT_REVEAL_NOTE` en `config.ts`.
+Si al jugarlo convence más la versión del Expreso, es cambiar `true` por `false`.
+
+**Verificado (criterios F7):**
+- **Fallar en la decisión 19 NO regresa a 0**: con progreso 18, responder mal deja **16**
+  y entra en DRIFT; el viaje continúa y termina en ARRIVED con medalla de plata y sin
+  gala.
+- **El mundo se apaga y vuelve**: gris a 1 de golpe al entrar, desvío lateral hasta las
+  26 u fuera del eje, y el color regresa a 0 en los 2 s de §5.5.
+- **"Sin respuesta" tiene su mensaje propio**: *"El anillo no recibió rumbo. Sin
+  respuesta. Era B (II — Supertónica)."*
+- **La comparación del par mutable funciona**, que era lo más importante de esta fase:
+  con la pregunta en **VIIST** (subtónica, G) respondí **VIIsen** (sensible), `mutableMix`
+  se marcó, y en la deriva sonó **tónica (Aminor) → G#4 (la que dije) → G4 (la que era)**.
+  Las dos hermanas seguidas sobre la tónica, que es la única forma de separarlas de oído.
+- **Tras la deriva llega pregunta NUEVA**: antes `Piano/B4` (II), después `Piano/E6` (V),
+  y el segmento avanzó 0 → 2 porque el lazo consumió el 1.
+- `npm run build` limpio; **27 recursos, 0 fallidos**.
+
+**Dos fallos que cacé mirando la pantalla:**
+1. **El polvo de la deriva salía como CUADRADOS.** Es exactamente el mismo fallo que
+   documenté en F3 (un `THREE.Points` sin `map` se dibuja como un cuadrado) y volví a
+   cometerlo. Ya está la mota redonda, y el comentario del archivo lo dice con todas las
+   letras por si reaparece una tercera vez.
+2. **El mundo quedaba a medias.** El domo y la niebla se apagaban, pero la escenografía
+   —el gas, los cuerpos, el latón— seguía en color, lo que es peor que no apagar nada.
+   Ahora `scenery.setDim()` atenúa los materiales compartidos de una vez.
+
+**Siguiente fase: F8** — El Perihelio: la estrella natal con su planeta y el observatorio
+en la montaña, la espiral de 15 anillos que sube melódica y baja natural (ya la calcula
+`scaleWalkFiles`), el rosetón, la gala y el resumen. Aquí entra también el guiño al
+Expreso que quedó pendiente en F4. Criterios en PLAN §13-F8.
+
+---
+
+## 2026-08-30 — F8 El Perihelio ✅ (Claude Fable 5)
+
+**El viaje ya tiene final.** Al llegar a las 20 decisiones el cometa deja de conducirse
+solo, la espiral de anillos se enrosca hacia la estrella natal, la escala se canta anillo
+a anillo y el cometa queda en órbita junto a casa.
+
+**Hecho:**
+- `3d/perihelion.ts`: la **estrella natal** (granulación que hierve + doble corona), el
+  **planeta natal** de noche con sus ciudades y el **observatorio en su montaña con la
+  cúpula abierta** —el lugar exacto del menú, visto desde el cielo—, el **rosetón** de 12
+  medallones (los del viaje encendidos), **auroras** en el limbo del planeta, **lluvia de
+  meteoros** y el **haz vertical** del observatorio saludando en la gala.
+- `3d/renderer.ts`: la ceremonia con su ritardando, y el resumen.
+- `main.ts`: la espiral cantada, el rosetón por tonalidad y la pantalla de bitácora final.
+
+**Lo delicado era la sincronía, y se resolvió como el Expreso**: los 15 anillos NO se
+colocan a distancia fija. Se integra el perfil de velocidad para que cada uno se cruce
+exactamente a un pulso del anterior; como el cometa frena, los anillos se van JUNTANDO.
+El ritardando es del vehículo, pero la escala se mantiene clavada. Y los anillos se
+disparan por POSICIÓN, no por reloj, para que el latón y la nota caigan en el mismo frame
+aunque el navegador dé un tirón.
+
+**Verificado (criterios F8):**
+- **La espiral canta melódica arriba y natural abajo con la ortografía de cada tonalidad**:
+  C#m sube `C#4 D#4 E4 F#4 G#4 A#4 B#4 C#5` (con A#=#6 y B#=#7) y baja
+  `B4 A4 G#4 F#4 E4 D#4 C#4` (con B=♭7 y A=♭6); A♭m sube `A♭4 B♭4 C♭5 D♭5 E♭5 F5 G5 A♭5`
+  y baja `G♭5 F♭5 E♭5 D♭5 C♭5 B♭4 A♭4`. 15 anillos en ambas.
+- **El acorde final es el sample `Minor Chords`** de la tonalidad elegida: jugando en C#m
+  desde el menú sonó `Minor Chords/C#minor.mp3` — el mismo sonido del radiofaro.
+- **La gala solo con 0 derivas y 0 radiofaros**: partida limpia → "🥇 Medalla de oro ·
+  ¡PERIHELIO DE GALA!"; con 2 derivas → "🥈 Medalla de plata" y sin gala, 91 % de
+  precisión (20 de 22).
+- **Saltable solo tras 5 s**: un Esc inmediato NO corta la ceremonia; a los 5.2 s sí, y
+  aterriza directo en el resumen.
+- `npm run build` limpio.
+
+**Dos fallos que cacé mirando la pantalla:**
+1. **El cometa volaba hacia DENTRO del sol.** Había colocado la estrella con
+   `tan * -230`, o sea 230 unidades por detrás del punto de llegada, y el planeta casi
+   sobre el eje de la ruta. Corregido: la estrella va por delante y arriba, el planeta
+   bien apartado a un lado (se pasa a su lado y se le ve girar), y el rosetón centrado en
+   la ruta para cruzarlo por dentro como un pórtico.
+2. **La consola NO se podía ocultar.** `#hud.hud-layer { display:block }` lleva un ID y
+   ganaba por especificidad a `.screen.hidden`, así que las palancas seguían visibles
+   debajo del resumen. Añadida `#hud.hud-layer.hidden { display:none }`. El fallo estaba
+   ahí desde F5 y solo se hizo visible cuando algo se puso por encima.
+
+**Nota de método (me pasó dos veces hoy):** conducir el juego por API desde consola es
+potente, pero **la ceremonia lee `settings.scale`, que es lo que eligió el MENÚ**. En mi
+primer intento pasé otra tonalidad a `game.start()` sin tocar el menú y la espiral sonó
+en Am: parecía un bug de ortografía y era mi test. Para cualquier cosa que dependa de la
+configuración, hay que **elegirla haciendo clic en el menú**, como un jugador. Además,
+un bucle síncrono no deja resolver las promesas de audio: hay que ceder el hilo o las
+notas se encolan todas al final.
+
+**Pendiente del PLAN, no olvidado:** el **guiño al Expreso Tonal** (la hebra dorada con
+una lucecita avanzando sobre el planeta natal, §5.6) sigue sin poner. Ya existe el
+planeta donde plantarlo; es candidato natural para el pulido de F10.
+
+**Siguiente fase: F9** — Planetario y persistencia: `game/persistence.ts` con `cometa-stats`,
+`cometa-rutas` y `cometa-settings`, la pantalla del Planetario con las 15 placas de
+constelación, medallas, estadísticas por grado con los pares enlazados, y guardado tras
+CADA decisión. Criterios en PLAN §13-F9.
+
+---
+
+## 2026-08-30 — F9 Planetario y persistencia ✅ (Claude Fable 5)
+
+**El juego ya recuerda.** Lo que se conquista se queda, y el Planetario lo enseña.
+
+**Hecho:**
+- `game/persistence.ts`: los tres almacenes de §7.7 (`cometa-stats`, `cometa-rutas`,
+  `cometa-settings`), lógica pura y a prueba de fallos —modo privado, cuota agotada o
+  JSON corrupto no rompen la partida, solo dejan de recordar—.
+- `ui/planetarium.ts`: la cúpula por dentro. **15 placas**, una por constelación, con la
+  figura dibujada SIEMPRE (la constelación existe aunque no la hayas viajado) y encendida
+  solo si llegaste, en dorado pleno si fue de gala. Debajo, la **precisión por grado** en
+  el orden canónico de los 11, con los pares mutables hermanados en su arito.
+- `main.ts`: guardado tras cada decisión, registro de llegada, ajustes que se restauran
+  al arrancar y el Planetario accesible desde el menú y desde el resumen.
+
+**Verificado (criterios F9):**
+- **Cerrar y reabrir conserva todo**: jugué en C#m con preset Melódica y velocidad
+  Rápido; al recargar, el menú volvió con C#m, Melódica (9 activos, con sus dos aritos) y
+  Rápido ya seleccionados.
+- **Los récords SOLO MEJORAN**, que era la regla sutil: sobre una plata de 1285 puntos con
+  racha 20 a Rápido, registré un viaje peor (bronce, 400, racha 5, Lento) y **no degradó
+  nada** — solo subió el contador de llegadas. Un viaje mejor (oro, 1600, gala) sí
+  ascendió medalla, puntuación, velocidad récord y gala, dejando intacta la fecha de
+  primera llegada.
+- **Borrar pide confirmación**: el primer clic arma el botón ("¿Seguro? Pulsa otra vez")
+  y no toca nada; el segundo limpia los tres almacenes y el Planetario vuelve a quedar en
+  blanco.
+- **Las 15 placas muestran sus estados** y las figuras se reconocen: la W de Casiopea, la
+  cruz del Cisne, Orión, la Cruz del Sur.
+- **El almacén de la webapp seria queda INTACTO**: puse un centinela en
+  `GradosMenoresStats` antes de jugar y sobrevivió a la partida, a la recarga y al
+  borrado completo del progreso del juego. Son dos prácticas distintas con dos
+  historiales distintos, y borrar una no puede llevarse la otra.
+- `npm run build` limpio.
+
+**Detalle de diseño:** la **gala no se pierde**. Una vez conseguida en una ruta, queda
+marcada aunque después juegues peor: es una hazaña, no un estado actual. Lo mismo vale
+para la medalla y la mejor racha; la única cifra que baja es ninguna.
+
+**Limpieza:** desapareció el helper `toast()`. Existía solo para decir "en construcción"
+en los botones que aún no hacían nada, y ya no queda ninguno.
+
+---
+
+## 2026-08-30 — 🐞 Sin controles para contestar (lo encontró Luis jugando)
+
+**Síntoma:** empiezas el viaje, suena la cadencia, suena la nota… y no hay consola con la
+que responder.
+
+**Causa:** `hideAllScreens()` recorría **todos** los elementos con clase `.screen`, y
+`#hud` es uno de ellos. En `startJourney` la secuencia era `hud.show()` y, dos líneas
+después, `hideAllScreens()` — que se llevaba por delante la consola recién mostrada. Lo
+mismo pasaba al reanudar desde la pausa.
+
+**Por qué no salió antes:** el fallo estaba latente desde F5, pero hasta F8 la regla CSS
+`#hud.hud-layer { display:block }` ganaba por especificidad a `.hidden` y la consola se
+veía igual. Al arreglar esa especificidad en F8 —para que el resumen no dejara las
+palancas asomando— destapé el bug de verdad. **Un arreglo correcto sacó a la luz otro
+error correcto que llevaba semanas escondido.**
+
+**Arreglo:** la consola NO es una pantalla modal. `showScreen()` y `hideAllScreens()`
+operan ahora sobre `modalScreens()`, que excluye `#hud`, y la visibilidad de la consola la
+gobiernan solo `hud.show()` y `hud.hide()`.
+
+**Verificado jugando de verdad**, no por API: con pregunta viva la consola está visible y
+las 9 palancas habilitadas; al pausar sigue visible con la tarjeta de pausa encima; al
+reanudar sigue habilitada; y una respuesta por clic marca las dos palancas y escribe
+"Deriva. Era D# (II — Supertónica)".
+
+**Lección:** esto no lo habría encontrado yo. Conducir el juego por API salta justo el
+camino donde vivía el fallo —el de arrancar por el menú y mirar la pantalla—. Es el
+argumento a favor de que Luis juegue antes de publicar, ahora con un caso concreto.
+
+---
+
+**Siguiente fase: F10** — Pulido y QA: el checklist §14 completo, pases de rendimiento,
+`npm run build` + `npm run preview` + `?lang=en` íntegro. Entra aquí el **guiño al Expreso
+Tonal** que sigue pendiente desde F4 (la hebra dorada sobre el planeta natal, §5.6), y
+conviene revisar de una vez el `500`/`404` de consola que no logré atribuir (ver F5) y el
+criterio de fps, ambos con un navegador de verdad. Criterios en PLAN §13-F10.

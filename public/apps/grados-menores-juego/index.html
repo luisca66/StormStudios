@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>El Cometa — Storm Studios</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 fill=%27%230e1428%27/%3E%3Ccircle cx=%2721%27 cy=%2711%27 r=%274.5%27 fill=%27%239fd8e8%27/%3E%3Cpath d=%27M18 14 L5 27%27 stroke=%27%23c9a227%27 stroke-width=%273%27 stroke-linecap=%27round%27/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="./assets/index-BOvHTpQt.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DAQvQM0D.css">
+  </head>
+  <body>
+    <canvas id="game-canvas"></canvas>
+
+    <div id="ui-root">
+      <!-- MENÚ PRINCIPAL = EL OBSERVATORIO -->
+      <section id="menu-screen" class="screen active">
+        <div class="observatory-sky" aria-hidden="true"></div>
+        <div class="card menu-card">
+          <div class="marquee">
+            <h1 class="title" data-i18n="app.title">EL COMETA</h1>
+            <p class="subtitle" data-i18n="app.tagline">Toda órbita vuelve a casa.</p>
+          </div>
+
+          <div class="config-group">
+            <h3 data-i18n="menu.route">Constelación (tonalidad)</h3>
+            <div id="route-options" class="chip-row"></div>
+            <p id="route-desc" class="option-desc"></p>
+          </div>
+
+          <div class="config-group">
+            <h3 data-i18n="menu.timbre">Timbre</h3>
+            <div id="timbre-options" class="chip-row"></div>
+          </div>
+
+          <div class="config-group">
+            <h3 data-i18n="menu.speed">Velocidad</h3>
+            <div id="speed-options" class="chip-row"></div>
+            <p id="speed-desc" class="option-desc"></p>
+          </div>
+
+          <div class="config-group">
+            <h3>
+              <span data-i18n="menu.degrees">Grados a trabajar</span>
+              <span id="degrees-count" class="degrees-count"></span>
+            </h3>
+            <div id="preset-options" class="degrees-quick"></div>
+            <div id="degree-options" class="chip-row degree-row"></div>
+            <p id="degrees-warning" class="warning hidden" data-i18n="menu.min2">Selecciona al menos 2 grados para que haya decisión que tomar.</p>
+            <p id="degrees-note" class="option-desc hidden"></p>
+          </div>
+
+          <div class="config-group volume-group">
+            <h3 data-i18n="menu.volume">Volumen</h3>
+            <input id="volume-slider" type="range" min="0" max="100" value="80" />
+          </div>
+
+          <div class="menu-actions">
+            <button id="planetarium-btn" class="btn secondary" data-i18n="menu.planetarium">Planetario</button>
+            <button id="start-btn" class="btn primary" data-i18n="menu.start">INICIAR VIAJE</button>
+          </div>
+
+          <p class="credit" data-i18n="credit"></p>
+        </div>
+      </section>
+
+      <!-- HUD / CONSOLA DE LATÓN Y HIELO (F5) -->
+      <section id="hud" class="screen hidden"></section>
+
+      <!-- LLEGADA AL PERIHELIO (F8) -->
+      <section id="arrival-screen" class="screen hidden"></section>
+
+      <!-- RESUMEN -->
+      <section id="summary-screen" class="screen hidden">
+        <div class="card menu-card">
+          <h2 class="title small" data-i18n="summary.title">Bitácora de a bordo</h2>
+          <p id="summary-medal" class="subtitle"></p>
+          <div id="summary-stats" class="summary-stats"></div>
+          <div class="menu-actions">
+            <button id="summary-retry" class="btn primary" data-i18n="summary.retry">Reintentar ruta</button>
+            <button id="summary-menu" class="btn secondary" data-i18n="summary.menu">Menú</button>
+            <button id="summary-planetarium" class="btn secondary" data-i18n="menu.planetarium">Planetario</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PLANETARIO (F9) -->
+      <section id="planetarium-screen" class="screen hidden">
+        <div class="card menu-card">
+          <h2 class="title small" data-i18n="planetarium.title">Planetario</h2>
+          <div id="planetarium-board" class="planetarium-board"></div>
+          <div id="planetarium-degrees" class="planetarium-degrees"></div>
+          <div class="menu-actions">
+            <button id="planetarium-back" class="btn secondary" data-i18n="planetarium.back">Volver</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAUSA -->
+      <section id="pause-screen" class="screen hidden">
+        <div class="card" style="text-align:center">
+          <h2 class="title small" data-i18n="pause.title">Pausa</h2>
+          <div class="menu-actions">
+            <button id="pause-resume" class="btn primary" data-i18n="pause.resume">Reanudar</button>
+            <button id="pause-quit" class="btn secondary" data-i18n="pause.quit">Abandonar viaje</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Utilidades -->
+      <div id="toast" class="toast"></div>
+    </div>
+
+  </body>
+</html>

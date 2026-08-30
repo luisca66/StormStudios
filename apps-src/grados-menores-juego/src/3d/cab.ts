@@ -54,10 +54,12 @@ interface Mote {
 }
 
 export interface CabReadings {
-  /** 0–1 respecto a la velocidad máxima posible (para futuros instrumentos, F5). */
+  /** 0–1 respecto a la velocidad máxima posible: mueve la aguja del empuje de cola. */
   speed: number;
   /** 0–1: cuánto queda del slingshot; la estela se enciende con él. */
   slingshot: number;
+  /** 0–1: la llave del radiofaro baja al usarlo y vuelve sola. */
+  beaconPull?: number;
 }
 
 export class Cab {
@@ -67,6 +69,13 @@ export class Cab {
   private readonly trailColors: Float32Array;
   private readonly trailGeo = new THREE.BufferGeometry();
   private spawnAccumulator = 0;
+
+  // Instrumentos vivos del tablero (§6).
+  private readonly orreryArms: Array<{ arm: THREE.Group; speed: number }> = [];
+  private needle: THREE.Mesh | null = null;
+  private needlePivot: THREE.Group | null = null;
+  private beaconLever: THREE.Mesh | null = null;
+  private elapsed = 0;
 
   constructor(anchor: THREE.Object3D) {
     const ice = iceTexture();
@@ -161,7 +170,94 @@ export class Cab {
     trail.frustumCulled = false; // vive pegado a la cámara; el culling solo daría tirones
     this.group.add(trail);
 
+    this.buildInstruments(brassMat, ice);
+
     anchor.add(this.group);
+  }
+
+  /**
+   * El tablero de bronce (PLAN §6): un ORRERY en miniatura girando, un sextante y el
+   * manómetro de empuje de cola, más la llave del radiofaro. Van bajo el alféizar, en
+   * la periferia inferior: se ven al bajar la vista, no tapan el juego.
+   */
+  private buildInstruments(brass: THREE.Material, ice: THREE.Texture): void {
+    const board = new THREE.Group();
+    board.position.set(0, -1.16, -0.72);
+    board.rotation.x = -0.55; // inclinado hacia el piloto, como una mesa de cartas
+    this.group.add(board);
+
+    // Tablero de madera helada.
+    const top = new THREE.Mesh(
+      new THREE.BoxGeometry(3.0, 0.09, 0.85),
+      new THREE.MeshStandardMaterial({ map: ice, color: "#3d5f74", roughness: 0.7 }),
+    );
+    board.add(top);
+
+    // --- Orrery: un sol y tres planetitas de latón en anillos concéntricos.
+    const orrery = new THREE.Group();
+    orrery.position.set(-0.95, 0.1, 0);
+    board.add(orrery);
+    const sun = new THREE.Mesh(new THREE.SphereGeometry(0.075, 10, 8), brass);
+    orrery.add(sun);
+    const planetGeo = new THREE.SphereGeometry(0.036, 8, 6);
+    for (let i = 0; i < 3; i++) {
+      const radius = 0.17 + i * 0.11;
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.005, 5, 28), brass);
+      ring.rotation.x = Math.PI / 2;
+      orrery.add(ring);
+      const arm = new THREE.Group();
+      const planet = new THREE.Mesh(planetGeo, brass);
+      planet.position.x = radius;
+      arm.add(planet);
+      orrery.add(arm);
+      // Más lejos, más lento: es un sistema solar, no un ventilador.
+      this.orreryArms.push({ arm, speed: 0.9 / (i + 1.4) });
+    }
+
+    // --- Sextante: arco graduado con su brazo.
+    const sextant = new THREE.Group();
+    sextant.position.set(0, 0.09, 0);
+    board.add(sextant);
+    const arc = new THREE.Mesh(
+      new THREE.TorusGeometry(0.28, 0.012, 6, 24, Math.PI * 0.6), brass,
+    );
+    arc.rotation.x = Math.PI / 2;
+    arc.rotation.z = Math.PI * 0.7;
+    sextant.add(arc);
+    const armBar = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.012, 0.3), brass);
+    armBar.position.z = -0.13;
+    sextant.add(armBar);
+
+    // --- Manómetro de empuje de cola: esfera con aguja que sigue la velocidad.
+    const gauge = new THREE.Group();
+    gauge.position.set(0.95, 0.1, 0);
+    board.add(gauge);
+    const dial = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.19, 0.03, 20), brass);
+    gauge.add(dial);
+    const face = new THREE.Mesh(
+      new THREE.CircleGeometry(0.16, 20),
+      new THREE.MeshStandardMaterial({ color: "#0d1424", roughness: 0.6 }),
+    );
+    face.rotation.x = -Math.PI / 2;
+    face.position.y = 0.017;
+    gauge.add(face);
+    this.needle = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.008, 0.14), brass);
+    this.needle.position.set(0, 0.026, -0.06);
+    const needlePivot = new THREE.Group();
+    needlePivot.position.y = 0.001;
+    needlePivot.add(this.needle);
+    gauge.add(needlePivot);
+    this.needlePivot = needlePivot;
+
+    // --- Llave del radiofaro: palanca de telégrafo que baja al transmitir.
+    const key = new THREE.Group();
+    key.position.set(0.5, 0.09, 0.22);
+    board.add(key);
+    const base = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.03, 0.1), brass);
+    key.add(base);
+    this.beaconLever = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.02, 0.22), brass);
+    this.beaconLever.position.set(0, 0.06, -0.05);
+    key.add(this.beaconLever);
   }
 
   /**
@@ -170,6 +266,9 @@ export class Cab {
    * quedándose atrás. Más velocidad = más caudal y más brillo.
    */
   update(dt: number, readings: CabReadings): void {
+    this.elapsed += dt;
+    this.updateInstruments(dt, readings);
+
     const rate = 14 + readings.speed * 46 + readings.slingshot * 40;
     this.spawnAccumulator += rate * dt;
     while (this.spawnAccumulator >= 1) {
@@ -204,6 +303,24 @@ export class Cab {
     }
     this.trailGeo.attributes.position.needsUpdate = true;
     this.trailGeo.attributes.color.needsUpdate = true;
+  }
+
+  /** Los instrumentos viven: el orrery gira, la aguja sigue la velocidad y la llave baja. */
+  private updateInstruments(dt: number, readings: CabReadings): void {
+    for (const { arm, speed } of this.orreryArms) arm.rotation.y += speed * dt;
+
+    if (this.needlePivot) {
+      // La aguja barre 240° de esfera y persigue la lectura, no salta a ella: un
+      // instrumento de bronce tiene inercia.
+      const target = (-120 + readings.speed * 240) * (Math.PI / 180);
+      this.needlePivot.rotation.y += (target - this.needlePivot.rotation.y) * Math.min(1, dt * 6);
+    }
+
+    if (this.beaconLever) {
+      // La llave del telégrafo baja al transmitir y vuelve sola.
+      const pull = readings.beaconPull ?? 0;
+      this.beaconLever.rotation.x = pull * 0.42;
+    }
   }
 
   private spawnMote(readings: CabReadings): void {

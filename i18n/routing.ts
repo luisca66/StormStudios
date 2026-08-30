@@ -74,6 +74,10 @@ export const routing = defineRouting({
       es: "/apps/grados-menores/jugar",
       en: "/apps/grados-menores/play",
     },
+    "/apps/grados-menores/juego": {
+      es: "/apps/grados-menores/juego",
+      en: "/apps/grados-menores/game",
+    },
     "/apps/oido-absoluto-guitarra/jugar": {
       es: "/apps/oido-absoluto-guitarra/jugar",
       en: "/apps/oido-absoluto-guitarra/play",

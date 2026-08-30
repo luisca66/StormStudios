@@ -286,3 +286,13 @@ export function constellationStars(id: ConstellationId, count = DECISIONS_TO_ARR
   }
   return out;
 }
+
+/**
+ * ¿La revelación de la deriva incluye la NOTA además del acorde de tónica? (§2.6)
+ *
+ * El PLAN dice que sí. El Expreso Tonal acabó quitándola —Luis pidió que solo sonara el
+ * acorde, porque "volver a soltar la nota la regala en vez de reanclar"—, pero aquí la
+ * nota suele ser justo la que distingue una escala menor de otra, así que se mantiene.
+ * Si al jugarlo convence más la versión del Expreso, basta poner esto en false.
+ */
+export const DRIFT_REVEAL_NOTE = true;

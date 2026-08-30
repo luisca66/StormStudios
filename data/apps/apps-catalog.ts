@@ -265,7 +265,10 @@ export const APPS: AppEntry[] = [
       en: "Practice recognizing minor-scale degrees with a tonal center, multiple timbres, classic, time attack, and survival modes, plus local per-degree statistics.",
     },
     webUrl: "/apps/grados-menores/jugar",
+    gameUrl: "/apps/grados-menores/juego",
+    gameLabel: { es: "Modo juego 3D", en: "3D game mode" },
     features: [
+      { es: "Modo juego 3D: El Cometa, pilota tu cometa de vuelta a casa reconociendo cada grado de oído", en: "3D game mode: The Comet, pilot your comet back home by recognizing each degree by ear" },
       { es: "15 tonalidades menores y 5 timbres", en: "15 minor keys and 5 timbres" },
       { es: "Modos clásico, contrarreloj y supervivencia", en: "Classic, time attack, and survival modes" },
       { es: "Grados diatónicos y cromáticos del modo menor", en: "Minor-mode diatonic and chromatic degrees" },

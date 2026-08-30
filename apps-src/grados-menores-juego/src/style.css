@@ -334,5 +334,321 @@ html, body {
 }
 
 /* ==========================================================================
-   CONSOLA DE LATÓN Y HIELO — HUD del viaje (PLAN §6): llega en F5.
+   CONSOLA DE LATÓN Y HIELO — HUD del viaje (PLAN §6)
+   La capa entera es pointer-events:none y solo la consola lo reactiva: si no, el
+   overlay le robaría al canvas el drag de la mirada.
    ========================================================================== */
+
+#hud.hud-layer {
+  display: block;
+  padding: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+/* La regla de arriba lleva un ID, así que gana a `.screen.hidden` por especificidad y
+   dejaba la consola visible AUNQUE se pidiera ocultarla (se veía debajo del resumen del
+   Perihelio). Esta regla la vence con el mismo ID más la clase. */
+#hud.hud-layer.hidden { display: none; }
+
+/* Viñeta fría: oscurece los bordes y vende la carlinga sin geometría. */
+.cab-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 55%, transparent 52%, rgba(5, 8, 18, 0.55) 100%),
+    linear-gradient(180deg, rgba(5, 8, 18, 0.45) 0%, transparent 22%);
+}
+
+.console {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(1180px, 98vw);
+  padding: 0.5rem 1rem 0.7rem;
+  pointer-events: auto;
+  background: linear-gradient(180deg, rgba(10, 15, 30, 0.72), rgba(6, 10, 22, 0.95));
+  border-top: 2px solid rgba(201, 162, 39, 0.5);
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.55);
+}
+
+/* Bitácora de a bordo: la línea que revela nota y grado al resolverse. */
+.logline {
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ivory);
+  min-height: 1.4em;
+  margin-bottom: 0.35rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* Ventana de respuesta: barra fina que se vacía con la distancia baliza→anillo. */
+.answer-window {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(159, 216, 232, 0.14);
+  overflow: hidden;
+  margin-bottom: 0.6rem;
+}
+.answer-window-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--ice), var(--brass-bright));
+  transition: width 0.08s linear;
+}
+.answer-window.idle .answer-window-fill { opacity: 0; }
+/* En Maestro parpadea en el último 25 %: el tirano avisa. */
+.answer-window.urgent .answer-window-fill {
+  background: linear-gradient(90deg, var(--signal-red), var(--brass-bright));
+  animation: window-pulse 0.45s ease-in-out infinite;
+}
+@keyframes window-pulse { 50% { opacity: 0.35; } }
+
+.console-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* ---------- Marcadores ---------- */
+.scoreboard { display: flex; gap: 1.1rem; min-width: 190px; }
+.score-cell { display: flex; flex-direction: column; align-items: flex-start; }
+.score-label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--brass);
+  opacity: 0.85;
+}
+.score-value {
+  font-family: var(--font-title);
+  font-size: 1.25rem;
+  color: var(--brass-bright);
+  line-height: 1.1;
+}
+
+/* ---------- Palancas de grado (el instrumento principal) ---------- */
+.lever-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.lever {
+  position: relative;
+  font-family: var(--font-ui);
+  min-width: 3.1rem;
+  padding: 0.4rem 0.5rem 0.85rem;
+  cursor: pointer;
+  color: var(--ivory);
+  background: linear-gradient(180deg, rgba(38, 50, 84, 0.95), rgba(16, 22, 42, 0.95));
+  border: 1px solid rgba(201, 162, 39, 0.42);
+  border-radius: 7px;
+  box-shadow: inset 0 1px 0 rgba(232, 230, 220, 0.10), 0 2px 6px rgba(0, 0, 0, 0.5);
+  transition: transform 0.05s, border-color 0.15s, background 0.15s, opacity 0.15s;
+}
+.lever:hover:not(:disabled) { border-color: var(--brass-bright); }
+.lever:active:not(:disabled) { transform: translateY(2px); }
+
+.lever-roman {
+  display: block;
+  font-family: var(--font-title);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.03em;
+}
+.lever-suffix {
+  display: block;
+  font-size: 0.68rem;
+  opacity: 0.72;
+  line-height: 1.2;
+}
+/* La tecla vive en una esquinita: se aprende sola, sin ocupar sitio. */
+.lever-key {
+  position: absolute;
+  right: 3px;
+  bottom: 2px;
+  font-size: 0.58rem;
+  font-family: var(--font-ui);
+  opacity: 0.5;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  padding: 0 0.18em;
+  line-height: 1.3;
+}
+
+/* Estados de la palanca (PLAN §6). */
+.lever:disabled { cursor: not-allowed; opacity: 0.45; }
+.lever.locked { opacity: 0.3; }
+.lever.correct {
+  background: linear-gradient(180deg, rgba(56, 209, 124, 0.9), rgba(28, 120, 72, 0.9));
+  border-color: var(--signal-green);
+  color: #04180d;
+  opacity: 1;
+}
+.lever.wrong {
+  background: linear-gradient(180deg, rgba(224, 69, 69, 0.9), rgba(130, 30, 30, 0.9));
+  border-color: var(--signal-red);
+  color: #fff;
+  opacity: 1;
+}
+
+/* Los pares mutables, hermanados como binarias (§5.7). */
+.lever-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  padding: 0.2rem 0.3rem;
+  border: 1px dashed rgba(159, 216, 232, 0.45);
+  border-radius: 999px;
+  background: rgba(159, 216, 232, 0.06);
+}
+
+/* ---------- Panel derecho: constelación y radiofaros ---------- */
+.console-right {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 300px;
+  justify-content: flex-end;
+}
+
+.constellation-map {
+  width: 200px;
+  height: 130px;
+  border: 1px solid rgba(201, 162, 39, 0.28);
+  border-radius: 8px;
+  background: rgba(5, 8, 18, 0.55);
+}
+
+.console-tools { display: flex; flex-direction: column; gap: 0.32rem; align-items: stretch; }
+
+.beacon-icons { display: flex; gap: 0.25rem; justify-content: center; }
+.beacon-icon { font-size: 0.95rem; filter: none; transition: filter 0.2s, opacity 0.2s; }
+/* Gastado: queda en silueta, no desaparece — se ve lo que te queda y lo que gastaste. */
+.beacon-icon.spent { filter: grayscale(1) brightness(0.4); opacity: 0.45; }
+
+.btn.tiny.brass {
+  background: linear-gradient(180deg, rgba(201, 162, 39, 0.9), rgba(150, 115, 20, 0.9));
+  color: #241a08;
+  border-color: var(--brass-bright);
+}
+.btn.tiny kbd {
+  font-family: var(--font-ui);
+  font-size: 0.62rem;
+  opacity: 0.65;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  padding: 0 0.2em;
+}
+
+/* En pantallas estrechas la consola se apila en vez de desbordarse. */
+@media (max-width: 900px) {
+  .console-row { flex-wrap: wrap; justify-content: center; }
+  .console-right { min-width: 0; }
+  .constellation-map { width: 150px; height: 100px; }
+}
+
+/* ==========================================================================
+   PLANETARIO — la colección (PLAN §7.6)
+   ========================================================================== */
+#planetarium-screen .menu-card { width: min(1000px, 96vw); }
+
+.planetarium-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+  gap: 0.6rem;
+}
+
+.plate {
+  border: 1px solid rgba(159, 216, 232, 0.18);
+  border-radius: 8px;
+  padding: 0.5rem;
+  background: rgba(5, 8, 18, 0.55);
+  text-align: center;
+}
+/* Ruta conquistada: el latón entra. De gala: el latón manda. */
+.plate.arrived { border-color: rgba(201, 162, 39, 0.45); }
+.plate.gala {
+  border-color: var(--brass-bright);
+  background: rgba(201, 162, 39, 0.10);
+  box-shadow: inset 0 0 22px rgba(201, 162, 39, 0.12);
+}
+
+.plate-figure { width: 132px; height: 92px; display: block; margin: 0 auto; }
+.plate-name {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  color: var(--brass-bright);
+  line-height: 1.2;
+}
+.plate-constellation { font-size: 0.75rem; opacity: 0.7; }
+.plate-state {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--brass);
+  margin-top: 0.15rem;
+}
+.plate.gala .plate-state { color: var(--brass-bright); font-weight: 700; }
+
+.plate-records {
+  margin-top: 0.35rem;
+  padding-top: 0.3rem;
+  border-top: 1px solid rgba(201, 162, 39, 0.2);
+  font-size: 0.72rem;
+}
+.plate-records > div { display: flex; justify-content: space-between; gap: 0.4rem; }
+.plate-records span { opacity: 0.65; }
+.plate-records strong { color: var(--ivory); font-weight: 600; }
+
+/* ---------- Precisión por grado ---------- */
+.planetarium-degrees h3 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--brass);
+  margin-bottom: 0.5rem;
+}
+.degree-stats { display: grid; gap: 0.26rem; }
+.stat-row { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; }
+.stat-row.untouched { opacity: 0.4; }
+.stat-name { min-width: 4.2rem; font-weight: 600; color: var(--ivory); }
+.stat-bar {
+  flex: 1;
+  height: 7px;
+  border-radius: 4px;
+  background: rgba(159, 216, 232, 0.12);
+  overflow: hidden;
+}
+.stat-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ice), var(--brass-bright));
+}
+.stat-value { min-width: 7.5rem; text-align: right; opacity: 0.8; font-size: 0.78rem; }
+
+/* Los pares mutables, hermanados también en las estadísticas (§5.7). */
+.stat-pair {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.22rem 0.34rem;
+  border: 1px dashed rgba(159, 216, 232, 0.35);
+  border-radius: 10px;
+  background: rgba(159, 216, 232, 0.05);
+}
+
+.btn.tiny.wipe { margin-top: 0.9rem; border-color: rgba(224, 69, 69, 0.45); }
+.btn.tiny.wipe.armed {
+  background: var(--signal-red);
+  color: #fff;
+  border-color: var(--signal-red);
+}

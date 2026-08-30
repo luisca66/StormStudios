@@ -157,6 +157,56 @@ export class CometSound {
     source.stop(now + duration);
   }
 
+  /**
+   * Rugido del cometa hermano al cruzarse (PLAN §5.6, §9).
+   *
+   * Es un CLUSTER DE RUIDO, no un oscilador: la regla §2.11 prohíbe que nada del mundo
+   * tenga altura reconocible, porque la única altura del juego es la del material
+   * pedagógico. El doppler se hace a mano —el filtro barre de agudo a grave mientras el
+   * paneo cruza de un lado al otro— que es exactamente lo que hace un cuerpo al pasar.
+   */
+  playSiblingRoar(fromLeft: boolean, duration: number): void {
+    const context = this.ensureContext();
+    if (!context || this.masterVolume <= 0.001) return;
+    void context.resume();
+
+    const now = context.currentTime;
+    const frames = Math.ceil(context.sampleRate * duration);
+    const buffer = context.createBuffer(1, frames, context.sampleRate);
+    const data = buffer.getChannelData(0);
+    let last = 0;
+    for (let i = 0; i < frames; i++) {
+      const white = Math.random() * 2 - 1;
+      last = (last + 0.05 * white) / 1.05;
+      data[i] = last * 3;
+    }
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+
+    // Doppler: acercándose suena más agudo, alejándose más grave.
+    const filter = context.createBiquadFilter();
+    filter.type = "bandpass";
+    filter.Q.value = 0.8;
+    filter.frequency.setValueAtTime(760, now);
+    filter.frequency.exponentialRampToValueAtTime(180, now + duration);
+
+    // Paneo: entra por el lado por el que viene y sale por el contrario.
+    const panner = context.createStereoPanner();
+    panner.pan.setValueAtTime(fromLeft ? -0.85 : 0.85, now);
+    panner.pan.linearRampToValueAtTime(fromLeft ? 0.85 : -0.85, now + duration);
+
+    // Envolvente en campana: nace, pasa y se va.
+    const gain = context.createGain();
+    const peak = this.masterVolume * 0.22 * this.duck;
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, peak), now + duration * 0.42);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+    source.connect(filter).connect(panner).connect(gain).connect(context.destination);
+    source.start(now);
+    source.stop(now + duration);
+  }
+
   private stopNodes(): void {
     try {
       this.noise?.stop();
