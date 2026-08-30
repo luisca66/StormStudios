@@ -136,9 +136,10 @@ function startGame() {
   queuedSample = null;
   currentChallenge = null;
   previousSample = null;
-  feedback = { kind: "neutral", title: "Busca la primera resonancia", detail: "La brújula señala el nodo más cercano." };
+  feedback = { kind: "neutral", title: "Resuelve el primer laberinto", detail: "La brújula señala el destino, no el camino." };
   screen = "gameplay";
   progress = progressRepository.startSession(LEVELS[levelIndex].id);
+  audio.startMusic(LEVELS[levelIndex].id);
   world.setGameplay(true);
   world.resetPlayer();
   world.setMovement(true);
@@ -180,6 +181,7 @@ async function answer(pitch: Pitch) {
   resolving = true;
   const sample = currentChallenge;
   const correct = sample.pitch === pitch;
+  audio.nextTrack();
 
   if (correct) {
     streak += 1;
@@ -219,7 +221,7 @@ async function answer(pitch: Pitch) {
   render();
   window.setTimeout(() => {
     resolving = false;
-    feedback = { kind: "neutral", title: "La resonancia cambió de lugar", detail: "Encuéntrala y escucha de nuevo." };
+    feedback = { kind: "neutral", title: "El laberinto cambió a tu alrededor", detail: "Desde aquí, resuélvelo para volver a escuchar la misma nota." };
     world.resolveWrong();
     world.setMovement(true);
     render();
@@ -285,9 +287,11 @@ function updateTelemetry() {
   const distance = document.querySelector<HTMLElement>("[data-distance]");
   const needle = document.querySelector<HTMLElement>("[data-needle]");
   const label = document.querySelector<HTMLElement>("[data-destination]");
+  const route = document.querySelector<HTMLElement>("[data-route]");
   if (distance) distance.textContent = `${telemetry.distance} m`;
   if (needle) needle.style.transform = `rotate(${telemetry.bearing}rad)`;
   if (label) label.textContent = telemetry.destination === "portal" ? "Roseta" : "Resonancia";
+  if (route) route.textContent = telemetry.routeSeconds ? `Ruta mínima ~${telemetry.routeSeconds} s` : "Camino liberado";
 }
 
 function render() {
@@ -307,11 +311,11 @@ function renderMenu() {
         <div class="string-signature" aria-hidden="true">${Array.from({ length: 6 }, (_, i) => `<i style="--i:${i}"></i>`).join("")}</div>
         <p class="kicker">Oído absoluto · Guitarra clásica</p>
         <h1>Resonancia</h1>
-        <p class="intro">Recorre un instrumento convertido en territorio. Encuentra cada vibración, reconoce su altura y despierta la roseta.</p>
+        <p class="intro">Resuelve un laberinto nuevo sobre el diapasón. La música borra la referencia anterior; al final, reconoce la nota que emerge sobre ella.</p>
         <div class="rule-copy">
           <span>La misión</span>
           <strong>${TARGET_STREAK} aciertos consecutivos</strong>
-          <p>Un error reinicia la racha, pero te devuelve la misma nota para volver a escucharla.</p>
+          <p>Cada resonancia exige un camino distinto. Un error reinicia la racha y oculta la misma nota tras otro laberinto.</p>
         </div>
         <button class="ledger-link" data-action="stats">
           <span>Bitácora del luthier</span>
@@ -394,7 +398,7 @@ function renderWarmup() {
       <button class="text-button" data-action="back-groups">← Cambiar familia</button>
       <p class="kicker">Calentamiento coclear</p>
       <h1>Escucha antes de caminar</h1>
-      <p class="intro narrow">Pulsa cada altura. La muestra cambia de cuerda para que memorices la nota, no una única digitación.</p>
+      <p class="intro narrow">Pulsa cada altura. Después caminarás con música de fondo y cada muestra aparecerá sólo al resolver su laberinto.</p>
       <div class="warmup-notes">
         ${pitches.map((pitch, index) => `
           <button data-action="warmup-note" data-pitch="${pitch}" style="--delay:${index * 35}ms">
@@ -433,7 +437,7 @@ function renderGameplay() {
 
       <aside class="compass-card">
         <div class="compass-face"><i data-needle>↑</i><span></span></div>
-        <div><span data-destination>Resonancia</span><strong data-distance>— m</strong></div>
+        <div><span data-destination>Resonancia</span><strong data-distance>— m</strong><small data-route>Calculando ruta…</small></div>
       </aside>
 
       ${feedback ? `

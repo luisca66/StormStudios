@@ -225,6 +225,7 @@ h1 {
 .compass-card > div:last-child span, .compass-card > div:last-child strong { display: block; }
 .compass-card > div:last-child span { color: var(--muted); font-size: .58rem; text-transform: uppercase; letter-spacing: .1em; }
 .compass-card > div:last-child strong { font-family: "IBM Plex Mono", monospace; font-size: .8rem; }
+.compass-card > div:last-child small { display: block; margin-top: 2px; color: var(--brass); font-family: "IBM Plex Mono", monospace; font-size: .48rem; white-space: nowrap; }
 
 .feedback { position: fixed; top: 96px; left: 20px; max-width: min(520px, calc(100vw - 190px)); display: flex; gap: 12px; align-items: center; padding: 11px 16px; }
 .feedback > i { display: block; width: 6px; height: 34px; background: var(--muted); }

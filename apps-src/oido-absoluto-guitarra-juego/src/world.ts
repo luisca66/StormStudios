@@ -1,12 +1,15 @@
 import * as THREE from "three";
+import { generateMaze, type MazeLayout } from "./maze";
+import { animateRobot, createRobot, reactRobot, type RobotRig } from "./robot";
 
 type WorldCallbacks = {
   onNodeReached: () => void;
   onPortalEntered: () => void;
 };
 
-const STRING_X = [-7.1, -4.25, -1.4, 1.4, 4.25, 7.1];
+const STRING_X = [-15, -9, -3, 3, 9, 15];
 const NODE_COLORS = [0x74c7c9, 0xd8a64b, 0xcf6d82, 0x8ea4dd, 0xe8d8b5];
+const PLAYER_RADIUS = 0.62;
 
 export class GuitarWorld {
   private renderer: THREE.WebGLRenderer;
@@ -14,8 +17,11 @@ export class GuitarWorld {
   private camera = new THREE.PerspectiveCamera(54, innerWidth / innerHeight, 0.1, 260);
   private clock = new THREE.Clock();
   private player = new THREE.Group();
-  private playerAura!: THREE.PointLight;
+  private robotRig!: RobotRig;
   private strings: THREE.Mesh[] = [];
+  private mazeGroup = new THREE.Group();
+  private mazeWalls: { minX: number; maxX: number; minZ: number; maxZ: number }[] = [];
+  private currentMaze: MazeLayout | null = null;
   private target: THREE.Group | null = null;
   private targetHalo: THREE.Mesh | null = null;
   private targetReady = false;
@@ -62,6 +68,7 @@ export class GuitarWorld {
     this.player.visible = enabled;
     if (!enabled) {
       this.removeTarget();
+      this.removeMaze();
       this.lockPortal();
     }
   }
@@ -78,6 +85,10 @@ export class GuitarWorld {
 
   spawnNode() {
     this.removeTarget();
+    const nextStart = this.currentMaze?.goal;
+    const preservedPosition = nextStart ? this.player.position.clone() : null;
+    const maze = generateMaze(nextStart);
+    this.buildMaze(maze, preservedPosition ?? undefined);
     const node = new THREE.Group();
     const color = NODE_COLORS[Math.floor(Math.random() * NODE_COLORS.length)];
     const material = new THREE.MeshStandardMaterial({
@@ -106,13 +117,21 @@ export class GuitarWorld {
     node.add(new THREE.PointLight(color, 8, 13, 2));
 
     this.target = node;
-    this.relocateTarget(false);
+    this.target.position.set(maze.goalPosition.x, 2.4, maze.goalPosition.z);
+    this.target.rotation.set(Math.random(), Math.random(), Math.random());
     this.scene.add(node);
     this.targetReady = true;
+    if (preservedPosition) {
+      this.player.position.copy(preservedPosition);
+      this.speed = 0;
+    } else {
+      this.resetPlayer();
+    }
   }
 
   resolveCorrect() {
     if (!this.target) return;
+    reactRobot(this.robotRig, true);
     this.pulseStrings();
     const target = this.target;
     target.scale.setScalar(1.7);
@@ -127,14 +146,14 @@ export class GuitarWorld {
   }
 
   resolveWrong() {
-    this.resetPlayer();
-    this.relocateTarget(true);
-    this.targetReady = true;
+    reactRobot(this.robotRig, false);
+    this.spawnNode();
   }
 
   unlockPortal() {
     this.gateUnlocked = true;
     this.setMovement(false);
+    this.removeMaze();
     this.portalFocusTime = this.reducedMotion ? 0.45 : 2.35;
     this.portalCore.visible = true;
     this.portalCore.scale.setScalar(0.01);
@@ -158,7 +177,8 @@ export class GuitarWorld {
   }
 
   resetPlayer() {
-    this.player.position.set(0, 1.1, 53);
+    const start = this.currentMaze?.startPosition ?? { x: 0, z: 53 };
+    this.player.position.set(start.x, 1.1, start.z);
     this.yaw = 0;
     this.player.rotation.y = 0;
     this.speed = 0;
@@ -179,7 +199,7 @@ export class GuitarWorld {
 
   getTelemetry() {
     const destination = this.gateUnlocked ? this.portal.position : this.target?.position;
-    if (!destination) return { distance: 0, bearing: 0, destination: "node" as const };
+    if (!destination) return { distance: 0, bearing: 0, destination: "node" as const, routeSeconds: 0 };
     const dx = destination.x - this.player.position.x;
     const dz = destination.z - this.player.position.z;
     const absoluteBearing = Math.atan2(dx, -dz);
@@ -190,6 +210,7 @@ export class GuitarWorld {
       distance: Math.round(Math.hypot(dx, dz)),
       bearing,
       destination: this.gateUnlocked ? "portal" as const : "node" as const,
+      routeSeconds: this.currentMaze ? Math.round(this.currentMaze.estimatedSeconds) : 0,
     };
   }
 
@@ -238,14 +259,14 @@ export class GuitarWorld {
     waistRight.position.x = 12;
     this.scene.add(waistRight);
 
-    const neck = new THREE.Mesh(new THREE.BoxGeometry(19.2, 1.25, 130), ebony);
+    const neck = new THREE.Mesh(new THREE.BoxGeometry(36.8, 1.25, 130), ebony);
     neck.position.set(0, 0, 9);
     neck.receiveShadow = true;
     this.scene.add(neck);
 
     for (let i = 0; i < 18; i += 1) {
       const z = 55 - i * 6.75;
-      const fret = new THREE.Mesh(new THREE.BoxGeometry(19.4, 0.16, 0.2), brass);
+      const fret = new THREE.Mesh(new THREE.BoxGeometry(37, 0.16, 0.2), brass);
       fret.position.set(0, 0.72, z);
       this.scene.add(fret);
       if ([3, 5, 7, 9, 12, 15, 17].includes(i)) {
@@ -291,29 +312,86 @@ export class GuitarWorld {
     this.scene.add(new THREE.Points(geometry, new THREE.PointsMaterial({ color: 0xd8bd83, size: 0.1, transparent: true, opacity: 0.42 })));
   }
 
+  private buildMaze(layout: MazeLayout, clearAt?: THREE.Vector3) {
+    this.removeMaze();
+    this.currentMaze = layout;
+    this.mazeGroup = new THREE.Group();
+    this.mazeGroup.name = "Varetaje laberíntico";
+    this.mazeWalls = [];
+
+    const wood = new THREE.MeshStandardMaterial({
+      color: 0x704127,
+      emissive: 0x24110a,
+      emissiveIntensity: 0.22,
+      roughness: 0.7,
+      metalness: 0.03,
+    });
+    const brass = new THREE.MeshStandardMaterial({
+      color: 0xc6a25a,
+      emissive: 0x563817,
+      emissiveIntensity: 0.45,
+      roughness: 0.34,
+      metalness: 0.64,
+    });
+
+    layout.walls.forEach((wall) => {
+      const clearance = PLAYER_RADIUS + 0.22;
+      if (clearAt &&
+        clearAt.x + clearance > wall.x - wall.width / 2 &&
+        clearAt.x - clearance < wall.x + wall.width / 2 &&
+        clearAt.z + clearance > wall.z - wall.depth / 2 &&
+        clearAt.z - clearance < wall.z + wall.depth / 2
+      ) return;
+
+      const panel = new THREE.Mesh(new THREE.BoxGeometry(wall.width, 1.18, wall.depth), wood);
+      panel.position.set(wall.x, 1.16, wall.z);
+      panel.castShadow = true;
+      panel.receiveShadow = true;
+      this.mazeGroup.add(panel);
+
+      const inlay = new THREE.Mesh(new THREE.BoxGeometry(wall.width + 0.03, 0.07, wall.depth + 0.03), brass);
+      inlay.position.set(wall.x, 1.79, wall.z);
+      this.mazeGroup.add(inlay);
+
+      this.mazeWalls.push({
+        minX: wall.x - wall.width / 2,
+        maxX: wall.x + wall.width / 2,
+        minZ: wall.z - wall.depth / 2,
+        maxZ: wall.z + wall.depth / 2,
+      });
+    });
+
+    const entrance = new THREE.Mesh(
+      new THREE.RingGeometry(0.65, 0.92, 32),
+      new THREE.MeshBasicMaterial({ color: 0x74c7c9, transparent: true, opacity: 0.66, side: THREE.DoubleSide }),
+    );
+    entrance.rotation.x = -Math.PI / 2;
+    entrance.position.set(layout.startPosition.x, 0.78, layout.startPosition.z);
+    this.mazeGroup.add(entrance);
+
+    this.scene.add(this.mazeGroup);
+  }
+
+  private removeMaze() {
+    this.scene.remove(this.mazeGroup);
+    const geometries = new Set<THREE.BufferGeometry>();
+    const materials = new Set<THREE.Material>();
+    this.mazeGroup.traverse((child) => {
+      if (!(child instanceof THREE.Mesh)) return;
+      geometries.add(child.geometry);
+      const meshMaterials = Array.isArray(child.material) ? child.material : [child.material];
+      meshMaterials.forEach((material) => materials.add(material));
+    });
+    geometries.forEach((geometry) => geometry.dispose());
+    materials.forEach((material) => material.dispose());
+    this.mazeGroup = new THREE.Group();
+    this.mazeWalls = [];
+    this.currentMaze = null;
+  }
+
   private buildPlayer() {
-    const wood = new THREE.MeshStandardMaterial({ color: 0xa7653b, roughness: 0.58 });
-    const linen = new THREE.MeshStandardMaterial({ color: 0xe6d7ba, roughness: 0.88 });
-    const brass = new THREE.MeshStandardMaterial({ color: 0xd8a64b, emissive: 0x6d4417, emissiveIntensity: 0.45, metalness: 0.62 });
-    const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.48, 0.76, 6, 12), wood);
-    body.position.y = 0.75;
-    body.castShadow = true;
-    this.player.add(body);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.43, 18, 14), linen);
-    head.position.y = 1.7;
-    head.castShadow = true;
-    this.player.add(head);
-    const halo = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.035, 8, 32), brass);
-    halo.position.y = 2.35;
-    halo.rotation.x = Math.PI / 2;
-    this.player.add(halo);
-    const forwardMark = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.65, 8), brass);
-    forwardMark.rotation.x = -Math.PI / 2;
-    forwardMark.position.set(0, 1.05, -0.72);
-    this.player.add(forwardMark);
-    this.playerAura = new THREE.PointLight(0xd8a64b, 4.5, 12, 2);
-    this.playerAura.position.y = 2.2;
-    this.player.add(this.playerAura);
+    this.robotRig = createRobot();
+    this.player = this.robotRig.root;
     this.player.visible = false;
     this.scene.add(this.player);
   }
@@ -344,40 +422,6 @@ export class GuitarWorld {
     this.portal.add(new THREE.PointLight(0x74c7c9, 14, 32, 2));
     this.scene.add(this.portal);
     this.lockPortal();
-  }
-
-  private relocateTarget(keepAppearance: boolean) {
-    if (!this.target) return;
-    let x = 0;
-    let z = 0;
-    let found = false;
-    for (let attempts = 0; attempts < 40; attempts += 1) {
-      const angle = (Math.random() - 0.5) * Math.PI * 0.82;
-      const distance = 22 + Math.random() * 18;
-      const forwardX = Math.sin(this.yaw);
-      const forwardZ = -Math.cos(this.yaw);
-      const sideX = Math.cos(this.yaw);
-      const sideZ = Math.sin(this.yaw);
-      const candidateX = this.player.position.x + forwardX * Math.cos(angle) * distance + sideX * Math.sin(angle) * distance;
-      const candidateZ = this.player.position.z + forwardZ * Math.cos(angle) * distance + sideZ * Math.sin(angle) * distance;
-      if (candidateZ < -48 || candidateZ > 48) continue;
-      x = STRING_X.reduce((closest, stringX) =>
-        Math.abs(stringX - candidateX) < Math.abs(closest - candidateX) ? stringX : closest,
-      STRING_X[0]);
-      z = candidateZ;
-      if (Math.hypot(x - this.player.position.x, z - this.player.position.z) > 19) {
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      x = STRING_X[Math.floor(Math.random() * STRING_X.length)];
-      z = this.player.position.z > 0
-        ? THREE.MathUtils.clamp(this.player.position.z - 26, -48, 48)
-        : THREE.MathUtils.clamp(this.player.position.z + 26, -48, 48);
-    }
-    this.target.position.set(x, 2.4, z);
-    if (!keepAppearance) this.target.rotation.set(Math.random(), Math.random(), Math.random());
   }
 
   private removeTarget() {
@@ -431,6 +475,7 @@ export class GuitarWorld {
 
     if (this.gameplayEnabled) {
       this.updatePlayer(delta);
+      animateRobot(this.robotRig, time, this.speed, delta);
       this.updateTarget(time, delta);
       this.updatePortal(time, delta);
       if (this.portalFocusTime > 0) {
@@ -455,10 +500,9 @@ export class GuitarWorld {
       const targetSpeed = thrust * (thrust > 0 ? 8.8 : 4.2);
       this.speed = THREE.MathUtils.damp(this.speed, targetSpeed, 5.5, delta);
       const direction = new THREE.Vector3(Math.sin(this.yaw), 0, -Math.cos(this.yaw));
-      this.player.position.addScaledVector(direction, this.speed * delta);
-      this.player.position.x = THREE.MathUtils.clamp(this.player.position.x, -8.4, 8.4);
-      this.player.position.z = THREE.MathUtils.clamp(this.player.position.z, -76, 60);
-      this.player.rotation.y = this.yaw;
+      const movement = direction.multiplyScalar(this.speed * delta);
+      this.movePlayer(movement.x, movement.z);
+      this.player.rotation.y = -this.yaw;
       this.player.position.y = 1.1 + Math.sin(this.clock.elapsedTime * 6) * Math.min(Math.abs(this.speed) / 65, 0.1);
     }
 
@@ -471,6 +515,25 @@ export class GuitarWorld {
       this.gateUnlocked = false;
       this.callbacks.onPortalEntered();
     }
+  }
+
+  private movePlayer(deltaX: number, deltaZ: number) {
+    const nextX = this.player.position.x + deltaX;
+    if (!this.collides(nextX, this.player.position.z)) this.player.position.x = nextX;
+    else this.speed *= 0.42;
+
+    const nextZ = this.player.position.z + deltaZ;
+    if (!this.collides(this.player.position.x, nextZ)) this.player.position.z = nextZ;
+    else this.speed *= 0.42;
+  }
+
+  private collides(x: number, z: number) {
+    return this.mazeWalls.some((wall) =>
+      x + PLAYER_RADIUS > wall.minX &&
+      x - PLAYER_RADIUS < wall.maxX &&
+      z + PLAYER_RADIUS > wall.minZ &&
+      z - PLAYER_RADIUS < wall.maxZ,
+    );
   }
 
   private updateTarget(time: number, delta: number) {
@@ -503,10 +566,10 @@ export class GuitarWorld {
       return;
     }
     const forward = new THREE.Vector3(Math.sin(this.yaw), 0, -Math.cos(this.yaw));
-    const behind = forward.clone().multiplyScalar(-10.5);
-    const desired = this.player.position.clone().add(behind).add(new THREE.Vector3(0, 6.6, 0));
+    const behind = forward.clone().multiplyScalar(-11.8);
+    const desired = this.player.position.clone().add(behind).add(new THREE.Vector3(0, 8.8, 0));
     this.camera.position.lerp(desired, 1 - Math.exp(-delta * 5.2));
-    const look = this.player.position.clone().add(forward.multiplyScalar(4.2)).add(new THREE.Vector3(0, 1.25, 0));
+    const look = this.player.position.clone().add(forward.multiplyScalar(5.4)).add(new THREE.Vector3(0, 0.9, 0));
     this.camera.lookAt(look);
   }
 }
