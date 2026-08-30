@@ -1,0 +1,338 @@
+/* style.css — Observatorio de noche, latón y hielo (PLAN §4, §6, §10).
+   Paleta: latón #c9a227 · azul noche #0e1428 · índigo #1a2340 · marfil lunar #e8e6dc
+   hielo #9fd8e8 · verde señal #38d17c · rojo señal #e04545
+   El latón se comparte con el Expreso Tonal a propósito: son hermanos. */
+
+:root {
+  --brass: #c9a227;
+  --brass-bright: #e8c65a;
+  --ivory: #e8e6dc;
+  --night: #0e1428;
+  --night-deep: #070b18;
+  --indigo: #1a2340;
+  --ice: #9fd8e8;
+  --signal-green: #38d17c;
+  --signal-red: #e04545;
+  --font-title: "Playfair Display", serif;
+  --font-ui: "Rajdhani", sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--night-deep);
+  font-family: var(--font-ui);
+  color: var(--ivory);
+  touch-action: none; /* PLAN §2.15: no bloquear el futuro móvil */
+}
+
+#game-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ---------- Sistema de pantallas ---------- */
+#ui-root { position: fixed; inset: 0; pointer-events: none; }
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 1.5rem;
+  pointer-events: auto;
+}
+.screen.hidden { display: none; }
+.screen.active { display: flex; }
+
+/* Con ninguna pantalla activa, el drag llega al canvas para mirar desde la carlinga. */
+.toast { pointer-events: none; }
+
+/* ---------- El observatorio: fondo del menú ----------
+   Cielo nocturno con la cúpula insinuada abajo y un resplandor cálido de la lámpara
+   del telescopio. Las estrellas son un patrón fijo de radial-gradients: cero assets. */
+#menu-screen {
+  background:
+    radial-gradient(ellipse at 50% 118%, rgba(201, 162, 39, 0.20), transparent 58%),
+    radial-gradient(ellipse at 78% 8%, rgba(159, 216, 232, 0.12), transparent 45%),
+    linear-gradient(180deg, #060a16 0%, var(--night) 55%, #131a2e 100%);
+}
+
+.observatory-sky {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.75;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 18%, rgba(232, 230, 220, 0.9), transparent),
+    radial-gradient(1px 1px at 27% 42%, rgba(232, 230, 220, 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 41% 12%, rgba(159, 216, 232, 0.8), transparent),
+    radial-gradient(1px 1px at 58% 31%, rgba(232, 230, 220, 0.6), transparent),
+    radial-gradient(2px 2px at 71% 15%, rgba(232, 230, 220, 0.95), transparent),
+    radial-gradient(1px 1px at 84% 38%, rgba(159, 216, 232, 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 9% 61%, rgba(232, 230, 220, 0.65), transparent),
+    radial-gradient(1px 1px at 91% 68%, rgba(232, 230, 220, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 33% 74%, rgba(159, 216, 232, 0.6), transparent),
+    radial-gradient(1px 1px at 64% 82%, rgba(232, 230, 220, 0.55), transparent);
+}
+
+/* ---------- Tarjetas ---------- */
+.card {
+  position: relative;
+  background: linear-gradient(180deg, rgba(26, 35, 64, 0.96), rgba(10, 15, 30, 0.97));
+  border: 1px solid rgba(201, 162, 39, 0.45);
+  border-radius: 10px;
+  box-shadow:
+    0 0 0 4px rgba(201, 162, 39, 0.08),
+    0 18px 50px rgba(0, 0, 0, 0.7);
+  padding: 1.6rem 2rem;
+}
+
+.menu-card {
+  width: min(680px, 94vw);
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+/* Marquesina del título — lámina astronómica de época */
+.marquee {
+  text-align: center;
+  border-bottom: 2px solid rgba(201, 162, 39, 0.4);
+  padding-bottom: 0.9rem;
+  margin-bottom: 1.1rem;
+}
+
+.title {
+  font-family: var(--font-title);
+  font-weight: 900;
+  font-size: 2.4rem;
+  letter-spacing: 0.14em;
+  color: var(--brass-bright);
+  text-shadow: 0 2px 0 #050810, 0 0 30px rgba(201, 162, 39, 0.35);
+}
+.title.small { font-size: 1.4rem; }
+
+.subtitle {
+  margin-top: 0.3rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ivory);
+  opacity: 0.85;
+}
+
+/* ---------- Grupos de configuración ---------- */
+.config-group { margin: 1rem 0; }
+
+.config-group h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--brass);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.degrees-count { color: var(--ivory); opacity: 0.7; font-weight: 600; letter-spacing: 0.05em; }
+
+.option-desc {
+  margin-top: 0.4rem;
+  font-size: 0.9rem;
+  opacity: 0.75;
+  min-height: 1.2em;
+}
+.option-desc.hidden { display: none; }
+
+.warning {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--signal-red);
+  font-weight: 600;
+}
+.warning.hidden { display: none; }
+
+/* ---------- Chips ---------- */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+}
+
+.chip {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ivory);
+  background: rgba(26, 35, 64, 0.75);
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  border-radius: 6px;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.05s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.chip:hover { border-color: var(--brass-bright); }
+.chip:active { transform: translateY(1px); }
+.chip.selected {
+  background: linear-gradient(180deg, rgba(201, 162, 39, 0.85), rgba(160, 122, 24, 0.85));
+  border-color: var(--brass-bright);
+  color: #241a08;
+  text-shadow: none;
+}
+.chip:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.chip .swatch {
+  width: 0.65em;
+  height: 0.65em;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+/* El sufijo del cromático (♭2, #4, #6, #7) vive dentro del chip, más pequeño. */
+.chip .suffix {
+  font-size: 0.78em;
+  opacity: 0.72;
+  letter-spacing: 0.02em;
+}
+.chip.selected .suffix { opacity: 0.85; }
+
+.degrees-quick { display: flex; gap: 0.5rem; margin-bottom: 0.4rem; flex-wrap: wrap; }
+
+/* ---------- Pares mutables = estrellas binarias (PLAN §5.7) ----------
+   VI/VImel y VIIST/VIIsen van visualmente hermanados: el arito de latón que los une
+   es la misma idea que las binarias del Cúmulo de Faroles. */
+.pair-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.22rem 0.34rem;
+  border: 1px dashed rgba(159, 216, 232, 0.45);
+  border-radius: 999px;
+  background: rgba(159, 216, 232, 0.06);
+}
+
+/* ---------- Botones ---------- */
+.btn {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border-radius: 6px;
+  padding: 0.65rem 1.4rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: filter 0.15s, transform 0.05s;
+}
+.btn:active { transform: translateY(1px); }
+.btn:hover { filter: brightness(1.12); }
+
+.btn.primary {
+  background: linear-gradient(180deg, var(--brass-bright), var(--brass) 55%, #9a7a18);
+  color: #241a08;
+  border-color: #f0d98a;
+  box-shadow: 0 4px 14px rgba(201, 162, 39, 0.35);
+}
+
+.btn.secondary {
+  background: rgba(26, 35, 64, 0.8);
+  color: var(--ivory);
+  border-color: rgba(201, 162, 39, 0.4);
+}
+
+.btn.tiny {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.7rem;
+  background: rgba(10, 15, 30, 0.85);
+  color: var(--ivory);
+  border-color: rgba(201, 162, 39, 0.3);
+}
+.btn.tiny.selected {
+  background: linear-gradient(180deg, rgba(201, 162, 39, 0.8), rgba(160, 122, 24, 0.8));
+  color: #241a08;
+  border-color: var(--brass-bright);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: none;
+}
+
+.menu-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 1.3rem;
+  flex-wrap: wrap;
+}
+
+/* ---------- Volumen ---------- */
+.volume-group input[type="range"] {
+  width: 100%;
+  accent-color: var(--brass);
+}
+
+/* ---------- Resumen / Planetario ---------- */
+.summary-stats { margin: 1rem 0; display: grid; gap: 0.4rem; }
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding: 0.35rem 0.7rem;
+  border-bottom: 1px solid rgba(201, 162, 39, 0.18);
+  letter-spacing: 0.04em;
+}
+.summary-row strong {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  color: var(--brass-bright);
+}
+.planetarium-board, .planetarium-degrees { margin: 1rem 0; }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(10, 15, 30, 0.96);
+  border: 1px solid var(--brass);
+  color: var(--ivory);
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ---------- Crédito ---------- */
+.credit {
+  margin-top: 1.2rem;
+  text-align: center;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  opacity: 0.6;
+}
+
+/* ==========================================================================
+   CONSOLA DE LATÓN Y HIELO — HUD del viaje (PLAN §6): llega en F5.
+   ========================================================================== */

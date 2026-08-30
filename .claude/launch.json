@@ -24,6 +24,13 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "apps-src/grados-mayores-juego"],
       "port": 5175
+    },
+    {
+      "name": "el-cometa",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "apps-src/grados-menores-juego"],
+      "port": 5176,
+      "url": "http://127.0.0.1:5176"
     }
   ]
 }
