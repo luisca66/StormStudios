@@ -36,7 +36,7 @@ export default async function ContactoPage({ params }: Props) {
         {es ? "Contacto Storm Studios Learning" : "Contact Storm Studios Learning"}
       </h1>
       <p className="ss-mono ss-reveal mb-10"
-        style={{ fontSize: "1rem", color: "rgba(240,238,255,0.5)", animationDelay: "0.1s" }}>
+        style={{ fontSize: "1rem", color: "var(--ss-muted)", animationDelay: "0.1s" }}>
         {es ? "Clases privadas, talleres grupales o cualquier pregunta sobre el método." : "Private lessons, group workshops, or any question about the method."}
       </p>
       <div className="ss-divider mb-12" />
@@ -49,7 +49,7 @@ export default async function ContactoPage({ params }: Props) {
             <span style={{ fontSize: "1.4rem" }}>📍</span>
             <div>
               <p className="ss-mono text-sm font-medium" style={{ color: "#f0eeff" }}>Ciudad de México</p>
-              <p className="ss-mono text-xs mt-1" style={{ color: "rgba(240,238,255,0.4)" }}>México</p>
+              <p className="ss-mono text-xs mt-1" style={{ color: "var(--ss-muted)" }}>México</p>
             </div>
           </div>
           <div className="ss-glass rounded-xl p-5 flex items-start gap-4"
@@ -60,7 +60,7 @@ export default async function ContactoPage({ params }: Props) {
                 style={{ color: "#60a5fa" }}>
                 55 5103 1758
               </a>
-              <p className="ss-mono text-xs mt-1" style={{ color: "rgba(240,238,255,0.4)" }}>
+              <p className="ss-mono text-xs mt-1" style={{ color: "var(--ss-muted)" }}>
                 {es ? "Lunes–Viernes, 9am–7pm" : "Mon–Fri, 9am–7pm"}
               </p>
             </div>

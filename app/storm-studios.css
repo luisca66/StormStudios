@@ -12,6 +12,9 @@
   --ss-green:  #10b981;
   --ss-bg:     #050508;
   --ss-text:   #f0eeff;
+  --ss-muted: #c6c3d5;
+  --ss-violet-text: #ddd6fe;
+  --ss-green-text: #86efac;
 }
 
 /* ── Base ── */
@@ -84,6 +87,7 @@
   .ss-root *::before,
   .ss-root *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
@@ -306,3 +310,21 @@ body:has(.ss-root) .ss-site-header :focus-visible {
     opacity: 0;
   }
 }
+
+/* Compact first screen while preserving the musical display type. */
+@media (max-width: 640px) {
+  .ss-home-hero { --ss-hero-padding: 2rem 1.25rem 3rem; }
+  .ss-home-hero h1 { max-width: 18ch; }
+  .ss-home-hero > p { margin-bottom: 1.5rem !important; line-height: 1.6 !important; }
+  .ss-home-hero > div:first-child { margin-bottom: 1.5rem !important; }
+  .ss-home-hero > div:nth-of-type(2) { margin-bottom: 2.5rem !important; }
+}
+.ss-root :focus-visible { outline: 2px solid #ddd6fe; outline-offset: 4px; }
+.ss-root .ss-content { color: var(--ss-text); }
+.ss-root .ss-content p, .ss-root .ss-content li { color: var(--ss-muted); line-height: 1.8; }
+.ss-root .ss-content a:not(.text-white) { color: #bfdbfe; }
+.ss-root .ss-content a.text-white { color: #fff; }
+.ss-root .ss-content a.ss-primary { color: white; background: #1d4ed8; }
+.ss-root .ss-content h1, .ss-root .ss-content h2 { color: var(--ss-text); }
+.ss-root form.space-y-5 p.text-gray-600 { color: var(--ss-muted); }
+.ss-root form.space-y-5 a.text-blue-700 { color: #93c5fd; }

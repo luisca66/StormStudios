@@ -1,3 +1,4 @@
+import ProgressBackup from "@/components/course/ProgressBackup";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
@@ -69,10 +70,10 @@ export default async function CursoArmoniaPage({ params }: Props) {
             : <>{`Traditional `}<span className="ss-text-gradient">Harmony</span>{` Course`}</>}
         </h1>
         <p className="ss-mono ss-reveal text-center"
-          style={{ fontSize: "1rem", color: "rgba(240,238,255,0.5)", maxWidth: "560px", margin: "0 auto 3.5rem", lineHeight: 1.7, animationDelay: "0.1s" }}>
+          style={{ fontSize: "1rem", color: "var(--ss-muted)", maxWidth: "560px", margin: "0 auto 3.5rem", lineHeight: 1.7, animationDelay: "0.1s" }}>
           {es
-            ? "El Legado Shostakovich–Hernández Medrano, ahora accesible en línea con retroalimentación de IA."
-            : "The Shostakovich–Hernández Medrano Legacy, now accessible online with AI feedback."}
+            ? "El Legado Shostakovich–Hernández Medrano, ahora accesible en línea con revisión automática de ejercicios MIDI."
+            : "The Shostakovich–Hernández Medrano Legacy, now accessible online with automatic MIDI exercise feedback."}
         </p>
 
         {/* Retratos */}
@@ -88,7 +89,7 @@ export default async function CursoArmoniaPage({ params }: Props) {
                   ? <Image src={p.src} alt={p.name} width={160} height={160} className="object-cover w-full h-full" />
                   : <span style={{ fontSize: "2rem" }}>🎓</span>}
               </div>
-              <p className="ss-mono text-xs" style={{ color: "rgba(240,238,255,0.5)" }}>{p.name}</p>
+              <p className="ss-mono text-xs" style={{ color: "var(--ss-muted)" }}>{p.name}</p>
             </div>
           ))}
         </div>
@@ -111,10 +112,10 @@ export default async function CursoArmoniaPage({ params }: Props) {
               style={{ background: "rgba(139,92,246,0.15)", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.25)" }}>
               ·
             </div>
-            <span className="ss-mono text-sm" style={{ color: "rgba(240,238,255,0.8)" }}>
+            <span className="ss-mono text-sm" style={{ color: "var(--ss-muted)" }}>
               {INTRO_LESSON.title[locale as "es" | "en"]}
             </span>
-            <span className="ml-auto ss-mono text-sm" style={{ color: "rgba(139,92,246,0.7)" }}>→</span>
+            <span className="ml-auto ss-mono text-sm" style={{ color: "var(--ss-violet-text)" }}>→</span>
           </Link>
 
           {/* Módulo Propedéutico — acordeón */}
@@ -124,10 +125,10 @@ export default async function CursoArmoniaPage({ params }: Props) {
                 style={{ background: "rgba(139,92,246,0.15)", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.25)" }}>
                 ·
               </div>
-              <span className="ss-mono text-sm flex-1" style={{ color: "rgba(240,238,255,0.8)" }}>
+              <span className="ss-mono text-sm flex-1" style={{ color: "var(--ss-muted)" }}>
                 {es ? "Módulo Propedéutico" : "Preparatory Module"}
               </span>
-              <span className="ss-mono text-xs" style={{ color: "rgba(139,92,246,0.6)" }}>
+              <span className="ss-mono text-xs" style={{ color: "var(--ss-violet-text)" }}>
                 4 {es ? "lecciones" : "lessons"} ▾
               </span>
             </summary>
@@ -137,11 +138,11 @@ export default async function CursoArmoniaPage({ params }: Props) {
                   key={lesson.slug}
                   href={{ pathname: "/curso-armonia/[slug]", params: { slug: getLessonUrlSlug(lesson.slug, currentLocale) } }}
                   className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors"
-                  style={{ color: "rgba(240,238,255,0.65)" }}
+                  style={{ color: "var(--ss-muted)" }}
                 >
                   <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "rgba(139,92,246,0.5)" }} />
                   <span className="ss-mono text-sm">{lesson.title[locale as "es" | "en"]}</span>
-                  <span className="ml-auto ss-mono text-xs" style={{ color: "rgba(139,92,246,0.5)" }}>→</span>
+                  <span className="ml-auto ss-mono text-xs" style={{ color: "var(--ss-violet-text)" }}>→</span>
                 </Link>
               ))}
             </div>
@@ -159,7 +160,7 @@ export default async function CursoArmoniaPage({ params }: Props) {
                 style={{ background: "rgba(139,92,246,0.15)", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.25)" }}>
                 {lesson.lessonNumber ?? lesson.order}
               </div>
-              <span className="ss-mono text-sm" style={{ color: "rgba(240,238,255,0.8)" }}>
+              <span className="ss-mono text-sm" style={{ color: "var(--ss-muted)" }}>
                 {lesson.title[locale as "es" | "en"]}
               </span>
               {lesson.status === "construction" ? (
@@ -167,14 +168,14 @@ export default async function CursoArmoniaPage({ params }: Props) {
                   🚧 {es ? "En construcción" : "Under construction"}
                 </span>
               ) : (
-                <span className="ml-auto ss-mono text-sm" style={{ color: "rgba(139,92,246,0.7)" }}>→</span>
+                <span className="ml-auto ss-mono text-sm" style={{ color: "var(--ss-violet-text)" }}>→</span>
               )}
             </Link>
           ))}
 
           <div className="rounded-xl p-4 text-center ss-mono text-sm"
-            style={{ border: "1px dashed rgba(255,255,255,0.12)", color: "rgba(240,238,255,0.3)" }}>
-            {es ? "📚 Más lecciones próximamente (hasta 60 en total)" : "📚 More lessons coming soon (up to 60 total)"}
+            style={{ border: "1px dashed rgba(255,255,255,0.12)", color: "var(--ss-muted)" }}>
+            {es ? "📚 El curso continúa en desarrollo. Nuevas lecciones se publicarán aquí." : "📚 The course is being developed. New lessons will be published here."}
           </div>
         </div>
 
@@ -186,7 +187,7 @@ export default async function CursoArmoniaPage({ params }: Props) {
             <p className="ss-serif mb-1" style={{ fontSize: "1.2rem", color: "#f0eeff" }}>
               {es ? "Storm Sequencer v3.0" : "Storm Sequencer v3.0"}
             </p>
-            <p className="ss-mono text-sm" style={{ color: "rgba(240,238,255,0.45)", lineHeight: 1.6 }}>
+            <p className="ss-mono text-sm" style={{ color: "var(--ss-muted)", lineHeight: 1.6 }}>
               {es
                 ? "Compón tus ejercicios directamente en el navegador, exporta MIDI y súbelo al Maestro Virtual para recibir retroalimentación."
                 : "Compose your exercises directly in the browser, export MIDI and upload it to the Virtual Teacher for feedback."}
@@ -206,7 +207,7 @@ export default async function CursoArmoniaPage({ params }: Props) {
             <h2 className="ss-serif mb-3" style={{ fontSize: "1.35rem", color: "#f0eeff" }}>
               {es ? "Sigue estudiando por tema" : "Keep studying by topic"}
             </h2>
-            <p className="ss-mono text-sm mb-6" style={{ color: "rgba(240,238,255,0.5)", lineHeight: 1.7 }}>
+            <p className="ss-mono text-sm mb-6" style={{ color: "var(--ss-muted)", lineHeight: 1.7 }}>
               {es
                 ? "Complementa el curso con guias sobre armonia tradicional, teoria musical, intervalos y entrenamiento auditivo."
                 : "Complement the course with guides on traditional harmony, music theory, intervals and ear training."}
@@ -227,14 +228,15 @@ export default async function CursoArmoniaPage({ params }: Props) {
 
       </div>
 
+      <div className="relative z-10 max-w-3xl mx-auto px-6"><ProgressBackup locale={locale} /></div>
       {/* JSON-LD — Course */}
       <JsonLd data={{
         "@context": "https://schema.org",
         "@type": "Course",
         "name": es ? "Curso de Armonía Tradicional" : "Traditional Harmony Course",
         "description": es
-          ? "Curso completo y gratuito de Armonía Tradicional con el método Shostakovich. Incluye Maestro Virtual con IA para corrección de ejercicios MIDI."
-          : "Complete free Traditional Harmony course using the Shostakovich method. Includes AI-powered Virtual Teacher for MIDI exercise feedback.",
+          ? "Curso gratuito de armonía tradicional en desarrollo. Incluye introducción, propedéutico y lecciones 1–3, con validación automática de ejercicios MIDI en las lecciones 1–3."
+          : "Free traditional harmony course in development. Includes an introduction, preparatory units and lessons 1–3, with automatic MIDI exercise checks in lessons 1–3.",
         "url": `https://www.stormstudios.com.mx${es ? "/es/curso-armonia" : "/en/harmony-course"}`,
         "provider": {
           "@type": "Organization",

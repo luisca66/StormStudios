@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PracticeExample from "@/components/resources/PracticeExample";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -74,7 +75,7 @@ export default async function ResourcePage({ params }: Props) {
             color: "rgba(196,181,253,0.95)",
           }}
         >
-          {es ? "Recurso SEO" : "SEO resource"}
+          {es ? "Guía de estudio" : "Study guide"}
         </span>
         <h1
           className="ss-serif mb-4"
@@ -82,12 +83,14 @@ export default async function ResourcePage({ params }: Props) {
         >
           {resource.title[locale as Locale]}
         </h1>
-        <p className="ss-mono" style={{ color: "rgba(240,238,255,0.56)", lineHeight: 1.85 }}>
+        <p className="ss-mono" style={{ color: "var(--ss-muted)", lineHeight: 1.85 }}>
           {resource.intro[locale as Locale]}
         </p>
       </header>
 
       <div className="ss-divider mb-10" />
+      <p className="text-sm mb-6" style={{ color: "var(--ss-muted)" }}>{es ? "Storm Studios Learning · Actualizado el 7 de septiembre de 2026" : "Storm Studios Learning · Updated September 7, 2026"}</p>
+      <PracticeExample resourceKey={resource.key} locale={locale} />
 
       <div className="flex flex-col gap-10">
         {resource.sections.map((section) => (
@@ -100,7 +103,7 @@ export default async function ResourcePage({ params }: Props) {
                 <p
                   key={paragraph.en}
                   className="ss-mono"
-                  style={{ color: "rgba(240,238,255,0.56)", lineHeight: 1.9 }}
+                  style={{ color: "var(--ss-muted)", lineHeight: 1.9 }}
                 >
                   {paragraph[locale as Locale]}
                 </p>
@@ -112,7 +115,7 @@ export default async function ResourcePage({ params }: Props) {
                   <li
                     key={bullet.en}
                     className="ss-mono flex items-start gap-3"
-                    style={{ color: "rgba(240,238,255,0.64)", lineHeight: 1.75 }}
+                    style={{ color: "var(--ss-muted)", lineHeight: 1.75 }}
                   >
                     <span style={{ color: "#93c5fd" }}>•</span>
                     <span>{bullet[locale as Locale]}</span>
@@ -128,7 +131,7 @@ export default async function ResourcePage({ params }: Props) {
         <h2 className="ss-serif mb-3" style={{ fontSize: "1.45rem", color: "#f0eeff" }}>
           {resource.cta.title[locale as Locale]}
         </h2>
-        <p className="ss-mono text-sm mb-6" style={{ color: "rgba(240,238,255,0.54)", lineHeight: 1.8 }}>
+        <p className="ss-mono text-sm mb-6" style={{ color: "var(--ss-muted)", lineHeight: 1.8 }}>
           {resource.cta.description[locale as Locale]}
         </p>
         <Link
@@ -155,7 +158,7 @@ export default async function ResourcePage({ params }: Props) {
               <h3 className="ss-serif mb-2" style={{ fontSize: "1.2rem", color: "#f0eeff" }}>
                 {link.label[locale as Locale]}
               </h3>
-              <p className="ss-mono text-sm" style={{ color: "rgba(240,238,255,0.54)", lineHeight: 1.75 }}>
+              <p className="ss-mono text-sm" style={{ color: "var(--ss-muted)", lineHeight: 1.75 }}>
                 {link.description[locale as Locale]}
               </p>
             </Link>

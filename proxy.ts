@@ -38,7 +38,7 @@ const APP_ROUTE_PATTERNS = [
 
 const GONE_PATTERNS = [
   /^\/(?:(?:es|en)\/)?(?:category|tag|author)(?:\/.*)?$/i,
-  /^\/(?:(?:es|en)\/)?(?:feed|comments\/feed)(?:\/.*)?$/i,
+  /^\/(?:(?:es|en)\/)?(?:feed|comments\/feed|wp-json)(?:\/.*)?$/i,
   /^\/(?:(?:es|en)\/)?page\/\d+$/i,
   /^\/(?:(?:es|en)\/)?\d{4}\/\d{2}\/\d{2}\/[^/]+$/i,
 ];
@@ -100,6 +100,6 @@ export default function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next|api(?:/|$)|favicon.ico|robots.txt|sitemap.xml|tools(?:/|$)|apps(?:/|$)|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|mp3|mp4|pdf|html)).*)",
+    "/((?!_next|api(?:/|$)|favicon.ico|og(?:/|$)|catalog.json|robots.txt|sitemap.xml|tools(?:/|$)|apps(?:/|$)|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico|mp3|mp4|pdf|html)).*)",
   ],
 };

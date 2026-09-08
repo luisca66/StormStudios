@@ -21,7 +21,7 @@ export async function HomeCTA() {
         </h2>
         <p
           className="ss-mono ss-reveal"
-          style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.45)", marginBottom: "2rem", position: "relative", zIndex: 1, animationDelay: "0.2s" }}
+          style={{ fontSize: "0.85rem", color: "var(--ss-muted)", marginBottom: "2rem", position: "relative", zIndex: 1, animationDelay: "0.2s" }}
         >
           {t("description")}
         </p>

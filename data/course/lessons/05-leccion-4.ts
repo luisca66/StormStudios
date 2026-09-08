@@ -57,8 +57,8 @@ export const lesson: LessonConfig = {
 
   feedback: {
     "first-inversion-doubling": {
-      es: "En primera inversión evita duplicar la tercera del acorde (salvo que sea la sensible). Compás {measure}.",
-      en: "In first inversion, avoid doubling the third of the chord (unless it is the leading tone). Measure {measure}.",
+      es: "En primera inversión evita duplicar la tercera del acorde; no dupliques la sensible. Compás {measure}.",
+      en: "In first inversion, avoid doubling the third of the chord; do not double the leading tone. Measure {measure}.",
     },
     "cadence-satb": {
       es: "La cadencia auténtica perfecta requiere V→I con fundamental en soprano y bajo. Revisa el final.",

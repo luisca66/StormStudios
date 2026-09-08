@@ -9,6 +9,7 @@ export type MDXFrontmatter = {
   description?: string;
   image?: string;
   date?: string;
+  updatedAt?: string;
   author?: string;
   tags?: string[];
   [key: string]: unknown;
@@ -19,7 +20,7 @@ export type MDXContent = {
   content: string;
   slug: string;
   sourcePath: string;
-  lastModified: Date;
+  lastModified?: Date;
 };
 
 /**
@@ -99,16 +100,22 @@ export async function getBlogPost(
 function readMDXFile(filePath: string, slug: string): MDXContent | null {
   try {
     const raw = fs.readFileSync(filePath, "utf-8");
-    const stats = fs.statSync(filePath);
+
     const { data, content } = matter(raw);
     return {
       frontmatter: data as MDXFrontmatter,
       content,
       slug,
       sourcePath: filePath,
-      lastModified: stats.mtime,
+      lastModified: editorialDate(data.updatedAt ?? data.date),
     };
   } catch {
     return null;
   }
+}
+
+function editorialDate(value: unknown): Date | undefined {
+  if (typeof value !== "string") return undefined;
+  const date = new Date(value);
+  return Number.isFinite(date.getTime()) ? date : undefined;
 }

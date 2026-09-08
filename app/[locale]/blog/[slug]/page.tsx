@@ -31,7 +31,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         "description": post.frontmatter.description,
         "url": postUrl,
         "datePublished": post.frontmatter.date,
-        "dateModified": post.frontmatter.date,
+        "dateModified": post.lastModified?.toISOString(),
         "author": {
           "@type": "Organization",
           "@id": "https://www.stormstudios.com.mx/#organization",
@@ -80,7 +80,7 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
     keywords: post.frontmatter.tags,
     type: "article",
     publishedTime: post.frontmatter.date,
-    modifiedTime: post.frontmatter.date,
+    modifiedTime: post.lastModified?.toISOString(),
     authors: post.frontmatter.author ? [post.frontmatter.author] : undefined,
     tags: post.frontmatter.tags,
   });

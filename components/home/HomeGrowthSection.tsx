@@ -1,5 +1,5 @@
 import { Link } from "@/i18n/navigation";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 interface GrowthItem {
   key: "available" | "building" | "return";
@@ -31,6 +31,7 @@ const growthItems: GrowthItem[] = [
 
 export async function HomeGrowthSection() {
   const t = await getTranslations("home.growth");
+  const es = (await getLocale()) === "es";
 
   return (
     <section style={{ padding: "0 2rem 6rem", position: "relative", zIndex: 1, maxWidth: "1280px", margin: "0 auto" }}>
@@ -66,7 +67,7 @@ export async function HomeGrowthSection() {
               fontSize: "0.68rem",
               letterSpacing: "0.14em",
               textTransform: "uppercase",
-              color: "rgba(255,255,255,0.68)",
+              color: "var(--ss-muted)",
               marginBottom: "1.5rem",
               padding: "0.45rem 0.95rem",
               borderRadius: "9999px",
@@ -101,7 +102,7 @@ export async function HomeGrowthSection() {
                   maxWidth: "760px",
                   fontSize: "0.92rem",
                   lineHeight: 1.9,
-                  color: "rgba(255,255,255,0.56)",
+                  color: "var(--ss-muted)",
                 }}
               >
                 {t("description")}
@@ -109,6 +110,7 @@ export async function HomeGrowthSection() {
             </div>
           </div>
 
+          <details><summary className="ss-mono cursor-pointer underline mb-5" style={{ color: "var(--ss-violet-text)" }}>{es ? "Ver avances y próximos pasos" : "See progress and next steps"}</summary>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1rem" }}>
             {growthItems.map((item, index) => (
               <Link
@@ -167,7 +169,7 @@ export async function HomeGrowthSection() {
                   style={{
                     fontSize: "0.8rem",
                     lineHeight: 1.85,
-                    color: "rgba(255,255,255,0.54)",
+                    color: "var(--ss-muted)",
                     marginBottom: "auto",
                   }}
                 >
@@ -180,6 +182,7 @@ export async function HomeGrowthSection() {
               </Link>
             ))}
           </div>
+          </details>
 
           <p
             className="ss-mono"
@@ -187,7 +190,7 @@ export async function HomeGrowthSection() {
               marginTop: "1.5rem",
               fontSize: "0.78rem",
               lineHeight: 1.8,
-              color: "rgba(255,255,255,0.42)",
+              color: "var(--ss-muted)",
               maxWidth: "720px",
             }}
           >

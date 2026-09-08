@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { getAllLessons, getCourseConfig, getLessonUrlSlug } from "@/lib/course";
 import type { Locale } from "@/i18n/routing";
@@ -13,6 +13,26 @@ type Props = {
 
 export default function LessonSidebar({ currentSlug, locale }: Props) {
   const [isOpen, setIsOpen] = useState(false);
+  const panelRef = useRef<HTMLElement>(null);
+  const openRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  function close() { setIsOpen(false); openRef.current?.focus(); }
+  useEffect(() => {
+    if (!isOpen || window.matchMedia("(min-width: 768px)").matches) return;
+    closeRef.current?.focus();
+    function onKey(event: KeyboardEvent) {
+      if (window.matchMedia("(min-width: 768px)").matches) return;
+      if (event.key === "Escape") { setIsOpen(false); openRef.current?.focus(); }
+      if (event.key !== "Tab") return;
+      const items = panelRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+      if (!items?.length) return;
+      const first = items[0], last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [isOpen]);
   const lessons = getAllLessons();
   const course = getCourseConfig();
   const es = locale === "es";
@@ -21,6 +41,9 @@ export default function LessonSidebar({ currentSlug, locale }: Props) {
     <>
       {/* Botón móvil para abrir el índice */}
       <button
+        ref={openRef}
+        aria-expanded={isOpen}
+        aria-controls="course-sidebar"
         onClick={() => setIsOpen(true)}
         className="md:hidden fixed bottom-6 right-6 z-40 bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-blue-700 transition"
         aria-label={es ? "Ver índice del curso" : "View course index"}
@@ -32,12 +55,14 @@ export default function LessonSidebar({ currentSlug, locale }: Props) {
       {isOpen && (
         <div
           className="md:hidden fixed inset-0 bg-black/50 z-40"
-          onClick={() => setIsOpen(false)}
+          onClick={close}
         />
       )}
 
       {/* Sidebar */}
       <aside
+        ref={panelRef}
+        id="course-sidebar"
         className={`
           fixed md:sticky top-0 md:top-20 z-50 md:z-auto
           h-full md:h-auto md:max-h-[calc(100vh-5rem)]
@@ -45,7 +70,7 @@ export default function LessonSidebar({ currentSlug, locale }: Props) {
           bg-white border-r md:border border-gray-200 md:rounded-xl
           overflow-y-auto
           transition-transform md:transition-none
-          ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+          ${isOpen ? "visible translate-x-0" : "invisible md:visible -translate-x-full md:translate-x-0"}
           shadow-xl md:shadow-none
           flex-shrink-0
         `}
@@ -56,9 +81,10 @@ export default function LessonSidebar({ currentSlug, locale }: Props) {
             {course.title[locale as "es" | "en"]}
           </h2>
           <button
-            onClick={() => setIsOpen(false)}
-            className="md:hidden text-gray-400 hover:text-gray-600 p-1"
-            aria-label="Cerrar"
+            ref={closeRef}
+            onClick={close}
+            className="md:hidden text-gray-600 hover:text-gray-600 p-1"
+            aria-label={es ? "Cerrar" : "Close"}
           >
             ✕
           </button>
@@ -71,7 +97,7 @@ export default function LessonSidebar({ currentSlug, locale }: Props) {
             if (modLessons.length === 0) return null;
             return (
               <div key={mod.id} className="mb-4">
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-2 mb-1">
+                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider px-2 mb-1">
                   {mod.title[locale as "es" | "en"]}
                 </p>
                 {modLessons.map((lesson) => (
@@ -89,7 +115,7 @@ export default function LessonSidebar({ currentSlug, locale }: Props) {
 
           {/* Próximas lecciones */}
           <div className="mt-2 px-2 py-3 bg-gray-50 rounded-lg border border-dashed border-gray-200">
-            <p className="text-xs text-gray-400 text-center">
+            <p className="text-xs text-gray-600 text-center">
               {es
                 ? "📚 Más lecciones próximamente"
                 : "📚 More lessons coming soon"}

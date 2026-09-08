@@ -15,7 +15,7 @@ export function StatItem({ value, label }: StatItemProps) {
           fontSize: "0.65rem",
           letterSpacing: "0.15em",
           textTransform: "uppercase",
-          color: "rgba(255,255,255,0.4)",
+          color: "var(--ss-muted)",
         }}
       >
         {label}

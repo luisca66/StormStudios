@@ -54,7 +54,7 @@ export default async function AppsPage({ params }: Props) {
             style={{ fontSize: "clamp(2.5rem,6vw,4rem)", lineHeight: 1.05, color: "#f0eeff" }}>
             {es ? <>Apps de <span className="ss-text-gradient">Entrenamiento Auditivo</span></> : <>Ear Training <span className="ss-text-gradient">Apps</span></>}
           </h1>
-          <p className="ss-mono" style={{ fontSize: "1rem", color: "rgba(240,238,255,0.5)", maxWidth: "520px", margin: "0 auto", lineHeight: 1.7 }}>
+          <p className="ss-mono" style={{ fontSize: "1rem", color: "var(--ss-muted)", maxWidth: "520px", margin: "0 auto", lineHeight: 1.7 }}>
             {es
               ? "Herramientas gratis para entrenamiento auditivo, teoría musical, memoria y práctica musical dentro del ecosistema de Storm Studios Learning."
               : "Free tools for ear training, music theory, memory and practical musicianship inside the Storm Studios Learning ecosystem."}
@@ -70,7 +70,7 @@ export default async function AppsPage({ params }: Props) {
             <span>🎧</span>
             Web Apps
             <span className="ss-mono text-xs px-2 py-0.5 rounded-full ml-2"
-              style={{ background: "rgba(139,92,246,0.12)", color: "rgba(196,181,253,0.8)", border: "1px solid rgba(139,92,246,0.2)", fontSize: "0.7rem" }}>
+              style={{ background: "rgba(139,92,246,0.12)", color: "var(--ss-violet-text)", border: "1px solid rgba(139,92,246,0.2)", fontSize: "0.7rem" }}>
               {webApps.length}
             </span>
           </h2>
@@ -103,7 +103,7 @@ export default async function AppsPage({ params }: Props) {
           <p className="ss-serif mb-2" style={{ fontSize: "1.2rem", color: "#f0eeff" }}>
             {es ? "Herramientas profesionales. Acceso gratuito." : "Professional tools. Free access."}
           </p>
-          <p className="ss-mono text-sm" style={{ color: "rgba(240,238,255,0.45)", lineHeight: 1.7 }}>
+          <p className="ss-mono text-sm" style={{ color: "var(--ss-muted)", lineHeight: 1.7 }}>
             {es
               ? "Siguiendo nuestro compromiso con la formación accesible, estas aplicaciones están disponibles completamente gratis — basadas en los principios del método, incluyendo entrenamiento multi-tímbrico."
               : "Following our commitment to accessible training, these apps are available completely free — based on the method's principles, including multi-timbral training."}
@@ -115,7 +115,7 @@ export default async function AppsPage({ params }: Props) {
             <h2 className="ss-serif mb-3" style={{ fontSize: "1.4rem", color: "#f0eeff" }}>
               {es ? "Conecta estas apps con tu curso" : "Connect these apps with your course"}
             </h2>
-            <p className="ss-mono text-sm mb-6" style={{ color: "rgba(240,238,255,0.5)", lineHeight: 1.7 }}>
+            <p className="ss-mono text-sm mb-6" style={{ color: "var(--ss-muted)", lineHeight: 1.7 }}>
               {es
                 ? "Las apps rinden mejor cuando se combinan con el curso de armonía, el método y nuestras guías temáticas de estudio."
                 : "The apps work best when combined with the harmony course, the method and our topic guides."}

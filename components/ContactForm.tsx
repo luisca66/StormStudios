@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Link } from "@/i18n/navigation";
 
 type Props = { locale: string };
 type ContactErrorCode =
@@ -144,7 +145,7 @@ export default function ContactForm({ locale }: Props) {
 
   if (status === "success") {
     return (
-      <div className="p-6 bg-green-50 border border-green-200 rounded-xl text-green-800 font-medium text-center">
+      <div role="status" aria-live="polite" className="p-6 bg-green-50 border border-green-200 rounded-xl text-green-800 font-medium text-center">
         ✅ {l.success}
       </div>
     );
@@ -178,6 +179,8 @@ export default function ContactForm({ locale }: Props) {
           name="name"
           type="text"
           required
+          maxLength={100}
+          autoComplete="name"
           placeholder={l.namePlaceholder}
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
         />
@@ -191,6 +194,7 @@ export default function ContactForm({ locale }: Props) {
           name="email"
           type="email"
           required
+          autoComplete="email"
           placeholder={l.emailPlaceholder}
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
         />
@@ -204,9 +208,15 @@ export default function ContactForm({ locale }: Props) {
           name="message"
           required
           rows={5}
+          minLength={10}
+          maxLength={2000}
+          aria-describedby="message-help"
           placeholder={l.messagePlaceholder}
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition resize-none"
         />
+        <p id="message-help" className="mt-2 text-sm text-gray-600">
+          {locale === "es" ? "Entre 10 y 2,000 caracteres. No incluyas datos sensibles." : "10–2,000 characters. Do not include sensitive information."}
+        </p>
       </div>
 
       {status === "error" && (
@@ -221,6 +231,12 @@ export default function ContactForm({ locale }: Props) {
         </p>
       )}
 
+      <p className="text-sm text-gray-600">
+        {locale === "es" ? "Luis Cárdenas usará tus datos para atender tu consulta. Consulta el " : "Luis Cárdenas will use your details to respond to your enquiry. Read the "}
+        <Link href="/privacidad" className="underline text-blue-700">
+          {locale === "es" ? "aviso de privacidad" : "privacy notice"}
+        </Link>.
+      </p>
       <button
         type="submit"
         disabled={status === "sending"}

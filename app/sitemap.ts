@@ -12,9 +12,6 @@ import {
 import { routing, type Locale } from "@/i18n/routing";
 
 const LOCALES = routing.locales;
-const STATIC_LAST_MODIFIED = process.env.VERCEL_GIT_COMMIT_DATE
-  ? new Date(process.env.VERCEL_GIT_COMMIT_DATE)
-  : new Date("2026-03-29T00:00:00.000Z");
 
 const STATIC_ROUTES = [
   { route: "/", priority: 1.0, changeFrequency: "weekly" },
@@ -24,6 +21,7 @@ const STATIC_ROUTES = [
   { route: "/herramientas/lectura-musical", priority: 0.78, changeFrequency: "monthly" },
   { route: "/herramientas/lectura-ritmica", priority: 0.78, changeFrequency: "monthly" },
   { route: "/apps", priority: 0.8, changeFrequency: "monthly" },
+  { route: "/maestro-virtual", priority: 0.7, changeFrequency: "monthly" },
   { route: "/el-libro", priority: 0.8, changeFrequency: "monthly" },
   { route: "/quien-soy", priority: 0.7, changeFrequency: "monthly" },
   { route: "/mi-metodo", priority: 0.7, changeFrequency: "monthly" },
@@ -47,9 +45,9 @@ function buildLanguageAlternates(urls: Record<Locale, string>) {
 }
 
 function getMostRecentDate(dates: Array<Date | undefined>) {
-  const validDates = dates.filter((date): date is Date => Boolean(date));
+  const validDates = dates.filter((date): date is Date => Boolean(date && Number.isFinite(date.getTime())));
   if (validDates.length === 0) {
-    return STATIC_LAST_MODIFIED;
+    return undefined;
   }
 
   return new Date(Math.max(...validDates.map((date) => date.getTime())));
@@ -76,7 +74,7 @@ async function getStaticRouteLastModified(route: KnownStaticRoute) {
     return getMostRecentDate(pages.map((page) => page?.lastModified));
   }
 
-  return STATIC_LAST_MODIFIED;
+  return undefined;
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -101,7 +99,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // 2. Lecciones del curso con ruta localizada
-  for (const lesson of getAllLessons()) {
+  for (const lesson of getAllLessons().filter(lesson => lesson.status !== "construction")) {
     const urls = getLocalizedRouteUrlsByLocaleParams(
       "/curso-armonia/[slug]",
       getLessonRouteParams(lesson)
@@ -129,7 +127,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const locale of LOCALES) {
       entries.push({
         url: `${BASE_URL}${urls[locale]}`,
-        lastModified: STATIC_LAST_MODIFIED,
+        lastModified: undefined,
         changeFrequency: "monthly",
         priority: 0.72,
         alternates: {
@@ -175,7 +173,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const locale of LOCALES) {
       entries.push({
         url: `${BASE_URL}${urls[locale]}`,
-        lastModified: STATIC_LAST_MODIFIED,
+        lastModified: undefined,
         changeFrequency: "monthly",
         priority: 0.74,
         alternates: {

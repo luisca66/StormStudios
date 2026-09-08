@@ -1,3 +1,4 @@
+import { StudyPaths } from "@/components/home/StudyPaths";
 import { MusicPlayer } from "@/components/MusicPlayer";
 import { HomeCTA } from "@/components/home/HomeCTA";
 import { HomeFeatures } from "@/components/home/HomeFeatures";
@@ -64,8 +65,9 @@ export default async function HomePage({
       <div className="ss-orb ss-orb-c" />
 
       <HomeHero />
+      <StudyPaths />
 
-      <HomeGrowthSection />
+
 
       <div
         className="ss-divider"
@@ -77,6 +79,8 @@ export default async function HomePage({
       <HomeResourcesSection />
 
       <HomeCTA />
+
+      <HomeGrowthSection />
 
       <MusicPlayer />
       <HomeStructuredData />

@@ -57,16 +57,16 @@ export const RESOURCES: ResourceEntry[] = [
       {
         title: {
           en: "A harmony course built on lineage, not shortcuts",
-          es: "Un curso de armonia construido sobre linaje, no sobre atajos",
+          es: "Un curso de armonía construido sobre linaje, no sobre atajos",
         },
         paragraphs: [
           {
             en: "The course is rooted in the pedagogical lineage that runs from the Russian conservatory tradition through Dmitri Shostakovich, Humberto Hernandez Medrano and Luis Cardenas. That lineage matters because it treats harmony as a way of hearing and thinking, not only as a set of labels.",
-            es: "El curso esta basado en el linaje pedagogico que va de la tradicion del conservatorio ruso a Dmitri Shostakovich, Humberto Hernandez Medrano y Luis Cardenas. Ese linaje importa porque trata la armonia como una forma de escuchar y pensar, no solo como un conjunto de etiquetas.",
+            es: "El curso está basado en el linaje pedagógico que va de la tradición del conservatorio ruso a Dmitri Shostakovich, Humberto Hernández Medrano y Luis Cárdenas. Ese linaje importa porque trata la armonía como una forma de escuchar y pensar, no solo como un conjunto de etiquetas.",
           },
           {
             en: "Instead of jumping straight to chord recipes, students work with intervals, voice ranges, SATB writing and harmonic analysis so that traditional harmony becomes usable in real music.",
-            es: "En lugar de saltar directo a recetas de acordes, los estudiantes trabajan con intervalos, registros de voz, escritura SATB y analisis armonico para que la armonia tradicional se vuelva util en musica real.",
+            es: "En lugar de saltar directo a recetas de acordes, los estudiantes trabajan con intervalos, registros de voz, escritura SATB y análisis armónico para que la armonía tradicional se vuelva útil en música real.",
           },
         ],
       },
@@ -78,13 +78,13 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "The free harmony lessons begin with preparatory material and move toward four-part writing, voice leading, harmonic function and analytical listening. The goal is to develop musicians who can write, hear and evaluate harmony with control.",
-            es: "Las lecciones gratis de armonia comienzan con material propedeutico y avanzan hacia la escritura a cuatro voces, la conduccion de voces, la funcion armonica y la escucha analitica. La meta es formar musicos que puedan escribir, escuchar y evaluar armonia con control.",
+            es: "Las lecciones gratis de armonía comienzan con material propedeutico y avanzan hacia la escritura a cuatro voces, la conduccion de voces, la función armonica y la escucha analitica. La meta es formar músicos que puedan escribir, escuchar y evaluar armonía con control.",
           },
         ],
         bullets: [
           {
             en: "Traditional harmony and tonal analysis",
-            es: "Armonia tradicional y analisis tonal",
+            es: "Armonía tradicional y análisis tonal",
           },
           {
             en: "SATB voice leading and harmonic grammar",
@@ -92,7 +92,7 @@ export const RESOURCES: ResourceEntry[] = [
           },
           {
             en: "Ear training that supports written harmony",
-            es: "Entrenamiento auditivo que sostiene la armonia escrita",
+            es: "Entrenamiento auditivo que sostiene la armonía escrita",
           },
         ],
       },
@@ -104,7 +104,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "A traditional harmony course only works when the ear develops alongside the written work. That is why Storm Studios connects the course with apps, interval work and the Virtual Teacher instead of treating harmony and ear training as separate subjects.",
-            es: "Un curso de armonia tradicional solo funciona cuando el oido se desarrolla junto con el trabajo escrito. Por eso Storm Studios conecta el curso con apps, trabajo de intervalos y el Maestro Virtual en lugar de tratar armonia y entrenamiento auditivo como materias separadas.",
+            es: "Un curso de armonía tradicional solo funciona cuando el oído se desarrolla junto con el trabajo escrito. Por eso Storm Studios conecta el curso con apps, trabajo de intervalos y el Maestro Virtual en lugar de tratar armonía y entrenamiento auditivo como materias separadas.",
           },
         ],
       },
@@ -113,7 +113,7 @@ export const RESOURCES: ResourceEntry[] = [
       href: "/curso-armonia",
       title: {
         en: "Start the free harmony course",
-        es: "Empieza el curso de armonia gratis",
+        es: "Empieza el curso de armonía gratis",
       },
       description: {
         en: "Go from the overview to the actual lessons, exercises and sequencer workflow.",
@@ -140,22 +140,22 @@ export const RESOURCES: ResourceEntry[] = [
         href: "/mi-metodo",
         label: {
           en: "Read about the method",
-          es: "Leer sobre el metodo",
+          es: "Leer sobre el método",
         },
         description: {
           en: "See the wider philosophy behind the course.",
-          es: "Conoce la filosofia mas amplia detras del curso.",
+          es: "Conoce la filosofia más amplia detras del curso.",
         },
       },
       {
         href: "/blog",
         label: {
           en: "Explore harmony articles",
-          es: "Explorar articulos de armonia",
+          es: "Explorar articulos de armonía",
         },
         description: {
           en: "Read analysis and pedagogical essays that support the course.",
-          es: "Lee analisis y ensayos pedagogicos que complementan el curso.",
+          es: "Lee análisis y ensayos pedagogicos que complementan el curso.",
         },
       },
     ],
@@ -191,7 +191,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "Storm Studios uses ear training exercises that support real musicianship: hearing intervals in context, recognizing tonal function, separating voices and checking what you write against what you actually hear.",
-            es: "Storm Studios usa ejercicios de entrenamiento auditivo que apoyan una musicalidad real: escuchar intervalos en contexto, reconocer funcion tonal, separar voces y comprobar lo que escribes contra lo que realmente oyes.",
+            es: "Storm Studios usa ejercicios de entrenamiento auditivo que apoyan una musicalidad real: escuchar intervalos en contexto, reconocer función tonal, separar voces y comprobar lo que escribes contra lo que realmente oyes.",
           },
         ],
         bullets: [
@@ -217,7 +217,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "Ear training, music theory and harmony lessons work best together. When students analyze a progression, sing intervals and write voices in parallel, they build inner hearing instead of disconnected skills.",
-            es: "El entrenamiento auditivo, la teoria musical y las lecciones de armonia funcionan mejor juntos. Cuando los estudiantes analizan una progresion, cantan intervalos y escriben voces en paralelo, construyen oido interno en lugar de habilidades desconectadas.",
+            es: "El entrenamiento auditivo, la teoría musical y las lecciones de armonía funcionan mejor juntos. Cuando los estudiantes analizan una progresion, cantan intervalos y escriben voces en paralelo, construyen oído interno en lugar de habilidades desconectadas.",
           },
         ],
       },
@@ -229,7 +229,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "Short, focused sessions are more valuable than random repetition. Choose one listening target, work slowly, sing back what you hear and connect each exercise with a practical goal inside the course or your instrument.",
-            es: "Sesiones cortas y enfocadas valen mas que la repeticion aleatoria. Elige un objetivo auditivo, trabaja lento, canta lo que oyes y conecta cada ejercicio con una meta practica dentro del curso o de tu instrumento.",
+            es: "Sesiones cortas y enfocadas valen más que la repetición aleatoria. Elige un objetivo auditivo, trabaja lento, canta lo que oyes y conecta cada ejercicio con una meta práctica dentro del curso o de tu instrumento.",
           },
         ],
       },
@@ -254,11 +254,11 @@ export const RESOURCES: ResourceEntry[] = [
         href: "/curso-armonia",
         label: {
           en: "Harmony course",
-          es: "Curso de armonia",
+          es: "Curso de armonía",
         },
         description: {
           en: "Use ear training in direct connection with written harmony.",
-          es: "Usa el entrenamiento auditivo en conexion directa con la armonia escrita.",
+          es: "Usa el entrenamiento auditivo en conexion directa con la armonía escrita.",
         },
       },
       {
@@ -280,7 +280,7 @@ export const RESOURCES: ResourceEntry[] = [
         },
         description: {
           en: "Browse more topic pages for music theory and interval work.",
-          es: "Consulta mas paginas tematicas sobre teoria musical e intervalos.",
+          es: "Consulta más paginas tematicas sobre teoría musical e intervalos.",
         },
       },
     ],
@@ -316,7 +316,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "Learning intervals is not just memorizing a list of names. It improves melodic hearing, harmonic awareness and the ability to anticipate how voices move inside tonal music.",
-            es: "Aprender intervalos no es solo memorizar una lista de nombres. Mejora la escucha melodica, la conciencia armonica y la capacidad de anticipar como se mueven las voces dentro de la musica tonal.",
+            es: "Aprender intervalos no es solo memorizar una lista de nombres. Mejora la escucha melodica, la conciencia armonica y la capacidad de anticipar como se mueven las voces dentro de la música tonal.",
           },
         ],
       },
@@ -328,7 +328,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "Work both melodically and harmonically. Hear the interval, sing it back, then place it inside scales, chords and real lines. That is how interval recognition becomes useful in music theory and harmony lessons.",
-            es: "Trabaja de forma melodica y armonica. Escucha el intervalo, cantalo de regreso y luego colocalo dentro de escalas, acordes y lineas reales. Asi es como el reconocimiento de intervalos se vuelve util en teoria musical y en las lecciones de armonia.",
+            es: "Trabaja de forma melodica y armonica. Escucha el intervalo, cantalo de regreso y luego colocalo dentro de escalas, acordes y lineas reales. Asi es como el reconocimiento de intervalos se vuelve útil en teoría musical y en las lecciones de armonía.",
           },
         ],
         bullets: [
@@ -354,7 +354,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "Interval work supports the broader method by strengthening the ear before and during harmonic writing. It prepares students for more advanced listening tasks such as chord recognition, voice separation and harmonic analysis.",
-            es: "El trabajo de intervalos apoya el metodo mas amplio al fortalecer el oido antes y durante la escritura armonica. Prepara a los estudiantes para tareas auditivas mas avanzadas como reconocimiento de acordes, separacion de voces y analisis armonico.",
+            es: "El trabajo de intervalos apoya el método más amplio al fortalecer el oído antes y durante la escritura armonica. Prepara a los estudiantes para tareas auditivas más avanzadas como reconocimiento de acordes, separacion de voces y análisis armónico.",
           },
         ],
       },
@@ -379,18 +379,18 @@ export const RESOURCES: ResourceEntry[] = [
         href: "/curso-armonia",
         label: {
           en: "Why intervals matter in harmony",
-          es: "Por que importan los intervalos en armonia",
+          es: "Por que importan los intervalos en armonía",
         },
         description: {
           en: "Connect interval practice with four-part writing and analysis.",
-          es: "Conecta la practica de intervalos con la escritura a cuatro voces y el analisis.",
+          es: "Conecta la práctica de intervalos con la escritura a cuatro voces y el análisis.",
         },
       },
       {
         href: "/mi-metodo",
         label: {
           en: "Read the method",
-          es: "Leer el metodo",
+          es: "Leer el método",
         },
         description: {
           en: "See how listening, body and memory are integrated.",
@@ -405,7 +405,7 @@ export const RESOURCES: ResourceEntry[] = [
         },
         description: {
           en: "Go deeper with analysis and explanatory writing.",
-          es: "Profundiza con analisis y textos explicativos.",
+          es: "Profundiza con análisis y textos explicativos.",
         },
       },
     ],
@@ -441,7 +441,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "A strong beginner foundation includes notation, clefs, intervals, scales, tonal function and the beginnings of voice leading. Those topics support every later step in harmony lessons and ear training.",
-            es: "Una base solida para principiantes incluye notacion, claves, intervalos, escalas, funcion tonal y los inicios de la conduccion de voces. Esos temas sostienen cada paso posterior en las lecciones de armonia y en el entrenamiento auditivo.",
+            es: "Una base solida para principiantes incluye notacion, claves, intervalos, escalas, función tonal y los inicios de la conduccion de voces. Esos temas sostienen cada paso posterior en las lecciones de armonía y en el entrenamiento auditivo.",
           },
         ],
         bullets: [
@@ -455,7 +455,7 @@ export const RESOURCES: ResourceEntry[] = [
           },
           {
             en: "Applying theory in writing and analysis",
-            es: "Aplicar teoria en escritura y analisis",
+            es: "Aplicar teoría en escritura y análisis",
           },
         ],
       },
@@ -467,7 +467,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "Storm Studios treats music theory as something you hear and test, not only something you name. That makes the basics more durable and prepares students for practical harmony work.",
-            es: "Storm Studios trata la teoria musical como algo que se escucha y se pone a prueba, no solo como algo que se nombra. Eso vuelve mas duraderos los fundamentos y prepara a los estudiantes para el trabajo armonico practico.",
+            es: "Storm Studios trata la teoría musical como algo que se escucha y se pone a prueba, no solo como algo que se nombra. Eso vuelve más duraderos los fundamentos y prepara a los estudiantes para el trabajo armónico práctico.",
           },
         ],
       },
@@ -479,7 +479,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "Once the basics are stable, students can move into traditional harmony, voice leading, interval work and analytical listening. That progression is exactly how the course is structured.",
-            es: "Una vez que los fundamentos estan estables, los estudiantes pueden pasar a armonia tradicional, conduccion de voces, trabajo de intervalos y escucha analitica. Esa progresion es exactamente como esta estructurado el curso.",
+            es: "Una vez que los fundamentos estan estables, los estudiantes pueden pasar a armonía tradicional, conduccion de voces, trabajo de intervalos y escucha analitica. Esa progresion es exactamente como esta estructurado el curso.",
           },
         ],
       },
@@ -508,7 +508,7 @@ export const RESOURCES: ResourceEntry[] = [
         },
         description: {
           en: "Reinforce the basics through ear and memory tools.",
-          es: "Refuerza los fundamentos con herramientas de oido y memoria.",
+          es: "Refuerza los fundamentos con herramientas de oído y memoria.",
         },
       },
       {
@@ -519,7 +519,7 @@ export const RESOURCES: ResourceEntry[] = [
         },
         description: {
           en: "Add context with essays on method and analysis.",
-          es: "Agrega contexto con textos sobre metodo y analisis.",
+          es: "Agrega contexto con textos sobre método y análisis.",
         },
       },
       {
@@ -530,7 +530,7 @@ export const RESOURCES: ResourceEntry[] = [
         },
         description: {
           en: "Move from theory basics into harmony and interval topics.",
-          es: "Pasa de los fundamentos de teoria a temas de armonia e intervalos.",
+          es: "Pasa de los fundamentos de teoría a temas de armonía e intervalos.",
         },
       },
     ],

@@ -1,31 +1,8 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 
-const STORAGE_KEY = "stormstudios_course_progress";
-const STORAGE_EVENT = "stormstudios-course-progress-change";
-
-type Progress = {
-  completed: Record<string, boolean>; // slug → completed
-};
-
-function loadProgress(): Progress {
-  if (typeof window === "undefined") return { completed: {} };
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : { completed: {} };
-  } catch {
-    return { completed: {} };
-  }
-}
-
-function saveProgress(p: Progress) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
-  } catch {
-    // silently fail
-  }
-}
+import { PROGRESS_EVENT as STORAGE_EVENT, readCourseProgress as loadProgress, writeCourseProgress as saveProgress } from "@/lib/course-progress";
 
 function subscribe(callback: () => void) {
   if (typeof window === "undefined") {
@@ -58,17 +35,19 @@ export default function ProgressTracker({ lessonSlug, locale }: Props) {
     () => false
   );
   const es = locale === "es";
+  const [saveError, setSaveError] = useState(false);
 
   function toggle() {
     const p = loadProgress();
     const newVal = !isCompleted;
     p.completed[lessonSlug] = newVal;
-    saveProgress(p);
+    try { saveProgress(p); setSaveError(false); } catch { setSaveError(true); }
     window.dispatchEvent(new Event(STORAGE_EVENT));
   }
 
   return (
-    <button
+    <><button
+      aria-pressed={isCompleted}
       onClick={toggle}
       className={`
         flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all border
@@ -87,6 +66,6 @@ export default function ProgressTracker({ lessonSlug, locale }: Props) {
         : es
         ? "Marcar como completada"
         : "Mark as complete"}
-    </button>
+    </button>{saveError && <p role="alert">{es ? "No se pudo guardar. Permite el almacenamiento del navegador." : "Could not save. Allow browser storage."}</p>}</>
   );
 }

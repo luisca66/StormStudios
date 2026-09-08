@@ -64,7 +64,7 @@ export function FeatureCard({ icon, tag, tagColor, accentHex, title, description
         {title}
       </h3>
 
-      <p className="ss-mono" style={{ fontSize: "0.8rem", lineHeight: 1.8, color: "rgba(255,255,255,0.5)" }}>
+      <p className="ss-mono" style={{ fontSize: "0.8rem", lineHeight: 1.8, color: "var(--ss-muted)" }}>
         {description}
       </p>
 

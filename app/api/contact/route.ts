@@ -273,6 +273,12 @@ export async function POST(request: NextRequest) {
         <p><strong>Mensaje:</strong></p>
         <p>${safeMessage.replace(/\n/g, "<br>")}</p>
       `,
+    }, {
+      // Stable for retries of the same form attempt, including across instances.
+      // Hash the payload so the provider key contains no readable personal data.
+      idempotencyKey: `contact-${createHash("sha256")
+        .update(JSON.stringify({ name, email, message, startedAt }))
+        .digest("hex")}`,
     });
 
     if (error || !data?.id) {

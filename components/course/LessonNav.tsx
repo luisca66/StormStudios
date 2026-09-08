@@ -23,11 +23,11 @@ export default function LessonNav({ prev, next, locale }: Props) {
               pathname: "/curso-armonia/[slug]",
               params: { slug: getLessonUrlSlug(prev, currentLocale) },
             }}
-            className="group flex items-center gap-3 p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all"
+            className="bg-white group flex items-center gap-3 p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all"
           >
             <span className="text-2xl text-gray-400 group-hover:text-blue-500 transition">←</span>
             <div className="min-w-0">
-              <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">
+              <p className="text-xs text-gray-600 uppercase tracking-wide mb-0.5">
                 {es ? "Anterior" : "Previous"}
               </p>
               <p className="text-sm font-semibold text-gray-800 group-hover:text-blue-700 transition truncate">
@@ -48,10 +48,10 @@ export default function LessonNav({ prev, next, locale }: Props) {
               pathname: "/curso-armonia/[slug]",
               params: { slug: getLessonUrlSlug(next, currentLocale) },
             }}
-            className="group flex items-center gap-3 p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all text-right"
+            className="bg-white group flex items-center gap-3 p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all text-right"
           >
             <div className="min-w-0">
-              <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">
+              <p className="text-xs text-gray-600 uppercase tracking-wide mb-0.5">
                 {es ? "Siguiente" : "Next"}
               </p>
               <p className="text-sm font-semibold text-gray-800 group-hover:text-blue-700 transition truncate">

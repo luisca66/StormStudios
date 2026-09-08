@@ -10,9 +10,18 @@ export async function HomeStructuredData() {
         "@context": "https://schema.org",
         "@graph": [
           {
+            "@type": "Person",
+            "@id": "https://www.stormstudios.com.mx/#luis-cardenas",
+            name: "Luis Cárdenas",
+            url: "https://www.stormstudios.com.mx/es/quien-soy",
+            jobTitle: "Compositor y maestro de música",
+            worksFor: { "@id": "https://www.stormstudios.com.mx/#organization" },
+          },
+          {
             "@type": "EducationalOrganization",
             "@id": "https://www.stormstudios.com.mx/#organization",
             name: t("organization.name"),
+            founder: { "@id": "https://www.stormstudios.com.mx/#luis-cardenas" },
             url: "https://www.stormstudios.com.mx",
             logo: "https://www.stormstudios.com.mx/images/logo-storm.png",
             sameAs: [
@@ -23,6 +32,7 @@ export async function HomeStructuredData() {
             contactPoint: {
               "@type": "ContactPoint",
               contactType: "customer support",
+              email: "info@stormstudios.com.mx",
               availableLanguage: ["Spanish", "English"],
             },
           },

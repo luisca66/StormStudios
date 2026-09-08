@@ -42,6 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "/curso-armonia/[slug]",
       getLessonRouteParams(lesson)
     ),
+    noIndex: lesson.status === "construction",
     title: lesson.title[currentLocale],
     description: lesson.description[currentLocale],
     keywords: lesson.tags,
@@ -84,7 +85,7 @@ function LessonPlaceholder({ locale }: { locale: string }) {
       <h2 className="ss-serif mb-3" style={{ fontSize: "1.2rem", color: "#f0eeff" }}>
         {es ? "Contenido próximamente" : "Content coming soon"}
       </h2>
-      <p className="ss-mono text-sm" style={{ color: "rgba(240,238,255,0.45)", lineHeight: 1.6 }}>
+      <p className="ss-mono text-sm" style={{ color: "var(--ss-muted)", lineHeight: 1.6 }}>
         {es
           ? "El contenido detallado estará disponible pronto. Mientras tanto, revisa el ejercicio y las reglas activas."
           : "Detailed content will be available soon. In the meantime, review the exercise and active rules below."}

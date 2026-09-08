@@ -45,7 +45,7 @@ export function BlogCard({ post, locale }: BlogCardProps) {
                 className="ss-mono text-xs px-2 py-0.5 rounded-full uppercase tracking-widest"
                 style={{
                   background: TAG_COLORS[tag.toLowerCase()] ?? "rgba(255,255,255,0.08)",
-                  color: "rgba(255,255,255,0.7)",
+                  color: "var(--ss-muted)",
                   border: "1px solid rgba(255,255,255,0.1)",
                 }}
               >
@@ -64,7 +64,7 @@ export function BlogCard({ post, locale }: BlogCardProps) {
         {frontmatter.description && (
           <p
             className="ss-mono text-sm leading-relaxed flex-1"
-            style={{ color: "rgba(240,238,255,0.55)" }}
+            style={{ color: "var(--ss-muted)" }}
           >
             {frontmatter.description}
           </p>
@@ -75,11 +75,11 @@ export function BlogCard({ post, locale }: BlogCardProps) {
           className="flex items-center justify-between ss-mono text-xs pt-3"
           style={{
             borderTop: "1px solid rgba(255,255,255,0.06)",
-            color: "rgba(240,238,255,0.35)",
+            color: "var(--ss-muted)",
           }}
         >
           {formattedDate && <span>{formattedDate}</span>}
-          <span style={{ color: "rgba(139,92,246,0.8)" }}>
+          <span style={{ color: "var(--ss-violet-text)" }}>
             {locale === "es" ? "Leer →" : "Read →"}
           </span>
         </div>

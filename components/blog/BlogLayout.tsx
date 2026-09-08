@@ -32,7 +32,7 @@ export function BlogLayout({ frontmatter, locale, children }: BlogLayoutProps) {
         <Link
           href={backHref}
           className="ss-mono text-sm transition-colors duration-200 mb-10 inline-block"
-          style={{ color: "rgba(139,92,246,0.8)" }}
+          style={{ color: "var(--ss-violet-text)" }}
         >
           {backLabel}
         </Link>
@@ -63,7 +63,7 @@ export function BlogLayout({ frontmatter, locale, children }: BlogLayoutProps) {
           </h1>
 
           {frontmatter.description && (
-            <p className="ss-mono ss-reveal" style={{ fontSize: "1.1rem", color: "rgba(240,238,255,0.55)", lineHeight: 1.7, animationDelay: "0.1s" }}>
+            <p className="ss-mono ss-reveal" style={{ fontSize: "1.1rem", color: "var(--ss-muted)", lineHeight: 1.7, animationDelay: "0.1s" }}>
               {frontmatter.description}
             </p>
           )}
@@ -71,7 +71,7 @@ export function BlogLayout({ frontmatter, locale, children }: BlogLayoutProps) {
           {/* Meta */}
           <div
             className="flex items-center gap-6 ss-mono text-sm mt-8 pt-6"
-            style={{ borderTop: "1px solid rgba(255,255,255,0.08)", color: "rgba(240,238,255,0.35)" }}
+            style={{ borderTop: "1px solid rgba(255,255,255,0.08)", color: "var(--ss-muted)" }}
           >
             {frontmatter.author && <span>{frontmatter.author}</span>}
             {formattedDate && <span>{formattedDate}</span>}
@@ -94,10 +94,10 @@ export function BlogLayout({ frontmatter, locale, children }: BlogLayoutProps) {
           <p className="ss-serif mb-2" style={{ fontSize: "1.3rem", color: "#f0eeff" }}>
             {locale === "es" ? "¿Listo para practicar?" : "Ready to practice?"}
           </p>
-          <p className="ss-mono text-sm mb-6" style={{ color: "rgba(240,238,255,0.5)" }}>
+          <p className="ss-mono text-sm mb-6" style={{ color: "var(--ss-muted)" }}>
             {locale === "es"
-              ? "Aplica estos conceptos en el Curso de Armonía con retroalimentación de IA."
-              : "Apply these concepts in the Harmony Course with AI feedback."}
+              ? "Aplica estos conceptos en el Curso de Armonía con revisión automática de ejercicios MIDI."
+              : "Apply these concepts in the Harmony Course with automatic MIDI exercise feedback."}
           </p>
           <Link
             href={`/${locale}/curso-armonia`}

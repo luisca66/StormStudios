@@ -48,7 +48,7 @@ export default async function MiMetodoPage({ params }: Props) {
       </h1>
       {page.frontmatter.description && (
         <p className="ss-mono ss-reveal mb-10"
-          style={{ fontSize: "1.05rem", color: "rgba(240,238,255,0.5)", animationDelay: "0.1s" }}>
+          style={{ fontSize: "1.05rem", color: "var(--ss-muted)", animationDelay: "0.1s" }}>
           {page.frontmatter.description}
         </p>
       )}

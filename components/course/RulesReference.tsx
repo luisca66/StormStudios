@@ -44,7 +44,7 @@ export default function RulesReference({
         {/* Reglas nuevas */}
         {newRules.length > 0 && (
           <div>
-            <p className="text-xs font-semibold text-green-600 uppercase tracking-wide mb-2">
+            <p className="text-xs font-semibold text-green-700 uppercase tracking-wide mb-2">
               ✨ {es ? "Nuevas en esta lección" : "New in this lesson"}
             </p>
             {newRules.map((rule) => (
@@ -57,7 +57,7 @@ export default function RulesReference({
         {previousRules.length > 0 && (
           <div>
             {newRules.length > 0 && (
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2 mt-4">
+              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2 mt-4">
                 {es ? "Acumuladas de lecciones anteriores" : "From previous lessons"}
               </p>
             )}

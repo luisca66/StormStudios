@@ -107,4 +107,17 @@ describe("POST /api/contact", () => {
     expect(sendEmail).toHaveBeenCalledOnce();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
+
+  it("uses the same opaque provider key when the same request is retried", async () => {
+    process.env.RESEND_API_KEY = "re_test";
+    sendEmail.mockResolvedValue({ data: { id: "email_retry" }, error: null });
+    const request = contactRequest("198.51.100.30");
+    const retry = request.clone() as NextRequest;
+    expect((await POST(request)).status).toBe(200);
+    expect((await POST(retry)).status).toBe(200);
+    const firstKey = sendEmail.mock.calls[0][1].idempotencyKey;
+    expect(firstKey).toMatch(/^contact-[a-f0-9]{64}$/);
+    expect(sendEmail.mock.calls[1][1].idempotencyKey).toBe(firstKey);
+    expect(firstKey).not.toContain("persona@example.com");
+  });
 });

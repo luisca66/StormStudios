@@ -29,14 +29,14 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
       {/* Breadcrumb */}
       <div className="relative z-10 px-4 pt-20 pb-0">
         <div className="max-w-7xl mx-auto flex items-center gap-2 ss-mono text-xs"
-          style={{ color: "rgba(240,238,255,0.35)" }}>
+          style={{ color: "var(--ss-muted)" }}>
           <Link href="/" className="transition-colors hover:text-violet-400">{es ? "Inicio" : "Home"}</Link>
           <span>›</span>
           <Link href="/curso-armonia" className="transition-colors hover:text-violet-400">
             {course.title[locale as "es" | "en"]}
           </Link>
           <span>›</span>
-          <span style={{ color: "rgba(240,238,255,0.6)" }} className="truncate max-w-xs">
+          <span style={{ color: "var(--ss-muted)" }} className="truncate max-w-xs">
             {lesson.title[locale as "es" | "en"]}
           </span>
         </div>
@@ -57,11 +57,11 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
                 {lesson.lessonNumber ?? lesson.order}
               </div>
               <p className="ss-mono text-xs uppercase tracking-widest"
-                style={{ color: "rgba(139,92,246,0.8)" }}>
+                style={{ color: "var(--ss-violet-text)" }}>
                 {es ? "Lección" : "Lesson"} {lesson.lessonNumber ?? lesson.order}
               </p>
               {lesson.estimatedMinutes && (
-                <span className="ss-mono text-xs ml-auto" style={{ color: "rgba(240,238,255,0.3)" }}>
+                <span className="ss-mono text-xs ml-auto" style={{ color: "var(--ss-muted)" }}>
                   ⏱ ~{lesson.estimatedMinutes} min
                 </span>
               )}
@@ -93,13 +93,13 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
                   {(() => {
                     const embedSrc =
                       locale === "en"
-                        ? (video.embedUrlEn ?? (video.youtubeIdEn ? `https://www.youtube.com/embed/${video.youtubeIdEn}` : video.embedUrl ?? `https://www.youtube.com/embed/${video.youtubeId}`))
-                        : (video.embedUrl ?? `https://www.youtube.com/embed/${video.youtubeId}`);
+                        ? (video.embedUrlEn ?? (video.youtubeIdEn ? `https://www.youtube-nocookie.com/embed/${video.youtubeIdEn}` : video.embedUrl ?? `https://www.youtube-nocookie.com/embed/${video.youtubeId}`))
+                        : (video.embedUrl ?? `https://www.youtube-nocookie.com/embed/${video.youtubeId}`);
 
                     return (
                   <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, borderRadius: "12px", overflow: "hidden", border: "1px solid rgba(139,92,246,0.2)" }}>
                     <iframe
-                      src={embedSrc}
+                      src={embedSrc.replace("www.youtube.com/embed", "www.youtube-nocookie.com/embed")}
                       title={video.title?.[locale as "es" | "en"] ?? "Video"}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerPolicy="strict-origin-when-cross-origin"
@@ -111,7 +111,7 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
                   })()}
                   {/* Descripción del video */}
                   {video.description && (
-                    <p className="ss-mono text-xs mt-2" style={{ color: "rgba(240,238,255,0.4)", lineHeight: 1.6 }}>
+                    <p className="ss-mono text-xs mt-2" style={{ color: "var(--ss-muted)", lineHeight: 1.6 }}>
                       {video.description[locale as "es" | "en"]}
                     </p>
                   )}
@@ -124,7 +124,7 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
           {lessonTools && lessonTools.length > 0 && (
             <div className="mb-10">
               <h3 className="ss-mono font-semibold mb-4 uppercase tracking-widest text-xs"
-                style={{ color: "rgba(52,211,153,0.7)" }}>
+                style={{ color: "var(--ss-green-text)" }}>
                 🛠 {es ? "Herramientas de esta lección" : "Lesson Tools"}
               </h3>
               <div className="flex flex-col gap-4">
@@ -157,7 +157,7 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
                         <p className="ss-mono text-sm font-semibold mb-0.5" style={{ color: "#f0eeff" }}>
                           {tool.title[locale as "es" | "en"]}
                         </p>
-                        <p className="ss-mono text-xs" style={{ color: "rgba(240,238,255,0.4)", lineHeight: 1.55 }}>
+                        <p className="ss-mono text-xs" style={{ color: "var(--ss-muted)", lineHeight: 1.55 }}>
                           {tool.description[locale as "es" | "en"]}
                         </p>
                       </div>
@@ -232,7 +232,7 @@ function ConstructionBanner({ locale }: { locale: string }) {
       <h2 className="ss-serif mb-3" style={{ fontSize: "1.3rem", color: "#f0eeff" }}>
         {es ? "Lección en construcción" : "Lesson under construction"}
       </h2>
-      <p className="ss-mono text-sm" style={{ color: "rgba(240,238,255,0.5)", lineHeight: 1.7, maxWidth: "440px", margin: "0 auto" }}>
+      <p className="ss-mono text-sm" style={{ color: "var(--ss-muted)", lineHeight: 1.7, maxWidth: "440px", margin: "0 auto" }}>
         {es
           ? "Estamos preparando esta lección. Muy pronto estará disponible con su video, su teoría y el Maestro Virtual."
           : "We're preparing this lesson. It will soon be available with its video, theory and the Virtual Teacher."}

@@ -35,7 +35,7 @@ export async function HomeFeatures() {
       title: t("items.virtualTeacher.title"),
       description: t("items.virtualTeacher.description"),
       delay: "0.4s",
-      href: "/curso-armonia",
+      href: "/maestro-virtual",
       ctaLabel: t("exploreCta"),
     },
     {
@@ -81,7 +81,7 @@ export async function HomeFeatures() {
         </h2>
         <p
           className="ss-mono ss-reveal"
-          style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.45)", maxWidth: "480px", margin: "0 auto", lineHeight: 1.8, animationDelay: "0.2s" }}
+          style={{ fontSize: "0.875rem", color: "var(--ss-muted)", maxWidth: "480px", margin: "0 auto", lineHeight: 1.8, animationDelay: "0.2s" }}
         >
           {t("description")}
         </p>

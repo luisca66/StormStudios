@@ -32,7 +32,7 @@ export async function HomeResourcesSection() {
           <br />
           <span className="ss-text-gradient">{es ? "por tema" : "by topic"}</span>
         </h2>
-        <p className="ss-mono" style={{ maxWidth: "700px", margin: "0 auto", color: "rgba(255,255,255,0.5)", lineHeight: 1.85 }}>
+        <p className="ss-mono" style={{ maxWidth: "700px", margin: "0 auto", color: "var(--ss-muted)", lineHeight: 1.85 }}>
           {es
             ? "Desde curso de armonia tradicional hasta reconocimiento de intervalos: estas paginas enlazan los temas mas buscados con el curso, las apps y el blog."
             : "From traditional harmony to interval recognition: these pages connect the most searched topics with the course, apps and blog."}
@@ -62,7 +62,7 @@ export async function HomeResourcesSection() {
             <h3 className="ss-serif" style={{ fontSize: "1.35rem", lineHeight: 1.2, color: "white" }}>
               {resource.title[locale as "es" | "en"]}
             </h3>
-            <p className="ss-mono" style={{ fontSize: "0.8rem", lineHeight: 1.8, color: "rgba(255,255,255,0.54)", marginBottom: "auto" }}>
+            <p className="ss-mono" style={{ fontSize: "0.8rem", lineHeight: 1.8, color: "var(--ss-muted)", marginBottom: "auto" }}>
               {resource.metaDescription[locale as "es" | "en"]}
             </p>
             <span className="ss-mono" style={{ fontSize: "0.78rem", color: "#93c5fd" }}>

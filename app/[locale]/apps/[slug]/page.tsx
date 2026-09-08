@@ -1,3 +1,5 @@
+import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
+import { JsonLd } from "@/components/JsonLd";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -34,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale === "es"
         ? [appName, "app musical", "entrenamiento auditivo", "educacion musical"]
         : [appName, "music education app", "ear training app", "music practice tool"],
-    image: app.icon ?? undefined,
+    image: `/og/apps/${locale}/${slug}`,
   });
 }
 
@@ -54,7 +56,8 @@ export default async function AppDetailPage({ params }: Props) {
   const gameLabel = app.gameLabel?.[locale as "es" | "en"] || (locale === "es" ? "Modo juego" : "Game mode");
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <DarkPageLayout maxWidth="1000px"><div className="ss-content">
+      <JsonLd data={{ "@context": "https://schema.org", "@graph": [{ "@type": "SoftwareApplication", "@id": `https://www.stormstudios.com.mx/${locale}/apps/${slug}#app`, name, description, applicationCategory: "EducationalApplication", operatingSystem: "Web browser", url: `https://www.stormstudios.com.mx/${locale}/apps/${slug}`, inLanguage: locale, author: { "@id": "https://www.stormstudios.com.mx/#luis-cardenas" }, ...(app.webUrl ? { isAccessibleForFree: true } : {}), featureList: app.features?.map((feature) => feature[locale as "es" | "en"]) }, { "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Apps", item: `https://www.stormstudios.com.mx/${locale}/apps` }, { "@type": "ListItem", position: 2, name, item: `https://www.stormstudios.com.mx/${locale}/apps/${slug}` }] }] }} />
       {/* Back link */}
       <Link
         href="/apps"
@@ -93,13 +96,13 @@ export default async function AppDetailPage({ params }: Props) {
                 href={app.webUrl as Parameters<typeof Link>[0]["href"]}
                 className="inline-flex items-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition font-medium shadow-md"
               >
-                🎮 {locale === "es" ? "Jugar en el navegador" : "Play in browser"}
+                🎮 {locale === "es" ? "Abrir práctica" : "Open practice"}
               </Link>
             )}
             {app.gameUrl && (
               <Link
                 href={app.gameUrl as Parameters<typeof Link>[0]["href"]}
-                className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-purple-600 to-cyan-600 text-white rounded-xl hover:from-purple-700 hover:to-cyan-700 transition font-medium shadow-md"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-purple-800 to-blue-800 text-white rounded-xl hover:from-purple-700 hover:to-cyan-700 transition font-medium shadow-md"
               >
                 🚀 {gameLabel}
               </Link>
@@ -109,7 +112,7 @@ export default async function AppDetailPage({ params }: Props) {
                 href={apkUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition font-medium shadow-md"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-green-800 text-white rounded-xl hover:bg-green-700 transition font-medium shadow-md"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M17.523 15.341l-1.86-1.055A6.95 6.95 0 0 0 17 11a7 7 0 0 0-7-7 7 7 0 0 0-7 7 7 7 0 0 0 7 7c1.657 0 3.179-.578 4.373-1.532l1.873 1.064A9 9 0 0 1 10 20a9 9 0 0 1-9-9 9 9 0 0 1 9-9 9 9 0 0 1 9 9 8.964 8.964 0 0 1-1.477 4.341zM14 11l-4 4-4-4h2.5V7h3v4H14z"/>
@@ -144,6 +147,7 @@ export default async function AppDetailPage({ params }: Props) {
         </div>
       </div>
 
+      <div className="ss-glass rounded-xl p-5 mt-8"><h2 className="text-xl mb-3">{locale === "es" ? "Antes de empezar" : "Before you start"}</h2><p>{locale === "es" ? "Abre la práctica, lee sus instrucciones y comienza con una dificultad que puedas resolver. Activa el sonido desde la app y ajusta el volumen a un nivel cómodo." : "Open practice, read its instructions and start at a manageable difficulty. Enable sound within the app and set a comfortable volume."}</p>{app.gameUrl && <p className="mt-3">{locale === "es" ? "La práctica y el modo juego son dos experiencias distintas: usa la primera para trabajar la habilidad y la segunda para aplicarla en el juego." : "Practice and game mode are separate experiences: use the first to work on the skill and the second to apply it in the game."}</p>}<p className="mt-3"><Link href="/privacidad" className="underline">{locale === "es" ? "Permisos y datos de las apps" : "App permissions and data"}</Link></p></div>
       {/* Descripción larga */}
       {longDescriptionParagraphs.length > 0 && (
         <div className="mt-12 prose prose-lg prose-gray max-w-none">
@@ -169,6 +173,6 @@ export default async function AppDetailPage({ params }: Props) {
           </ul>
         </div>
       )}
-    </div>
+    </div></DarkPageLayout>
   );
 }

@@ -81,17 +81,17 @@
   "home": {
     "hero": {
       "badge": "Shostakovich · Medrano · Cárdenas Lineage",
-      "titlePrefix": "Traditional Harmony",
-      "titleEmphasis": "Course",
-      "titleSuffix": "with Ear Training & Music Theory",
-      "description": "Study traditional harmony, ear training and music theory through the Shostakovich-Medrano-Cárdenas lineage.\nStart free harmony lessons, practice with music education apps,\nand use the Virtual Teacher to review your written work with AI-assisted feedback.",
+      "titlePrefix": "Learn",
+      "titleEmphasis": "harmony",
+      "titleSuffix": "by training your ear",
+      "description": "Free lessons and music practice in your browser. Start with musical notes or build your listening skills with an exercise.",
       "primaryCta": "Start Free Harmony Lessons →",
       "secondaryCta": "Explore Ear Training Apps →",
       "analysisLabel": "analysis · sonata op. 64 nº 2 — shostakovich",
       "stats": {
-        "lessons": "Lessons",
+        "lessons": "Available units",
         "freeApps": "Music Apps",
-        "evaluation": "AI Feedback",
+        "evaluation": "Automatic feedback",
         "access": "Free Access"
       }
     },
@@ -113,9 +113,9 @@
           "description": "Apps for interval recognition, listening, memory and practical ear training on the web and Android."
         },
         "virtualTeacher": {
-          "tag": "AI + Pedagogy",
+          "tag": "Guided practice",
           "title": "Virtual Teacher",
-          "description": "Upload MIDI exercises from the sequencer and get AI-assisted feedback that supports the method instead of replacing it."
+          "description": "Check MIDI exercises for major scales, modes and minor scales. Explore the Virtual Teacher’s criteria and limitations."
         },
         "book": {
           "tag": "Digital Book",

@@ -151,7 +151,7 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
               <span className="text-purple-700">
                 Do · Sol · Re · La · Mi · Si · Fa# · Do#
               </span>
-              <span className="text-gray-400 ml-2">
+              <span className="text-gray-600 ml-2">
                 {es ? "(quintas ascendentes)" : "(ascending fifths)"}
               </span>
             </p>
@@ -160,11 +160,11 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
               <span className="text-blue-700">
                 Fa · Sib · Mib · Lab · Reb · Solb · Dob
               </span>
-              <span className="text-gray-400 ml-2">
+              <span className="text-gray-600 ml-2">
                 {es ? "(quintas descendentes)" : "(descending fifths)"}
               </span>
             </p>
-            <p className="text-gray-400 mt-1">
+            <p className="text-gray-600 mt-1">
               {es
                 ? "8 notas por escala (I→I′) · 120 notas total · 1 canal (Soprano)"
                 : "8 notes per scale (I→I′) · 120 notes total · 1 channel (Soprano)"}
@@ -186,7 +186,7 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
                   : "Ionian · Dorian · Phrygian · Lydian · Mixolydian · Aeolian · Locrian"}
               </span>
             </p>
-            <p className="text-gray-400 mt-1">
+            <p className="text-gray-600 mt-1">
               {es
                 ? "Modos paralelos desde una tónica libre (cualquier nota) · 8 notas ascendentes por modo · 7 modos · 56 notas total · 1 canal (Soprano)"
                 : "Parallel modes from a free tonic (any note) · 8 ascending notes per mode · 7 modes · 56 notes total · 1 channel (Soprano)"}
@@ -232,10 +232,10 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
                       ? "Arrastra tu archivo MIDI aquí"
                       : "Drag your MIDI file here"}
                   </span>
-                  <span className="block text-sm text-gray-400">
+                  <span className="block text-sm text-gray-600">
                     {es ? "o haz clic para seleccionar" : "or click to select"}
                   </span>
-                  <span className="block text-xs text-gray-300 mt-2">.mid / .midi</span>
+                  <span className="block text-xs text-gray-600 mt-2">.mid / .midi</span>
                 </>
               )}
             </button>

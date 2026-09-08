@@ -21,12 +21,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     urls: getLocalizedRouteUrls("/clases-taller"),
     title:
       locale === "es"
-        ? "Clases de Armonía, Entrenamiento Auditivo y Taller Musical"
-        : "Harmony Classes, Ear Training and Music Workshop",
+        ? "Entrenamiento Auditivo, Composición y Clases de Instrumento"
+        : "Ear Training, Composition and Instrument Lessons",
     description:
       locale === "es"
-        ? "Conoce las modalidades de formación de Storm Studios Learning: clases presenciales, acompañamiento y herramientas digitales para armonía y entrenamiento auditivo."
-        : "Explore Storm Studios Learning training options: in-person classes, guided study and digital tools for harmony and ear training.",
+        ? "Estudia con Luis Cárdenas: entrenamiento auditivo, composición, film scoring, guitarra, bajo, batería y piano. Consulta disponibilidad."
+        : "Study with Luis Cárdenas: ear training, composition, film scoring, guitar, bass, drums and piano. Contact us for availability.",
     keywords:
       locale === "es"
         ? ["clases de armonía", "entrenamiento auditivo", "taller musical", "clases de música ciudad de méxico"]
@@ -48,7 +48,7 @@ export default async function ClasesTallerPage({ params }: Props) {
       </h1>
       {page.frontmatter.description && (
         <p className="ss-mono ss-reveal mb-10"
-          style={{ fontSize: "1.05rem", color: "rgba(240,238,255,0.5)", animationDelay: "0.1s" }}>
+          style={{ fontSize: "1.05rem", color: "var(--ss-muted)", animationDelay: "0.1s" }}>
           {page.frontmatter.description}
         </p>
       )}
@@ -61,7 +61,7 @@ export default async function ClasesTallerPage({ params }: Props) {
         <p className="ss-serif mb-2" style={{ fontSize: "1.3rem", color: "#f0eeff" }}>
           {locale === "es" ? "¿Te interesa alguna modalidad?" : "Interested in any option?"}
         </p>
-        <p className="ss-mono text-sm mb-6" style={{ color: "rgba(240,238,255,0.5)" }}>
+        <p className="ss-mono text-sm mb-6" style={{ color: "var(--ss-muted)" }}>
           {locale === "es" ? "Escríbenos y encontramos el formato ideal para ti." : "Write to us and we'll find the ideal format for you."}
         </p>
         <Link href="/contacto"

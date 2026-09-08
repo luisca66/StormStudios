@@ -45,13 +45,13 @@ export default function AppCard({ app, locale }: Props) {
             </span>
             {app.webUrl && (
               <span className="ss-mono text-xs px-2 py-0.5 rounded-full"
-                style={{ background: "rgba(16,185,129,0.12)", color: "rgba(52,211,153,0.9)", border: "1px solid rgba(16,185,129,0.2)" }}>
+                style={{ background: "rgba(16,185,129,0.12)", color: "var(--ss-green-text)", border: "1px solid rgba(16,185,129,0.2)" }}>
                 Web
               </span>
             )}
             {app.gameUrl && (
               <span
-                className="ss-mono text-xs px-2 py-0.5 rounded-full text-white bg-gradient-to-r from-purple-600 to-cyan-600"
+                className="ss-mono text-xs px-2 py-0.5 rounded-full text-white bg-gradient-to-r from-purple-800 to-blue-800"
                 style={{
                   border: "1px solid rgba(103,232,249,0.35)",
                   boxShadow: "0 0 12px rgba(139,92,246,0.2)",
@@ -71,7 +71,7 @@ export default function AppCard({ app, locale }: Props) {
       {/* Descripción */}
       <div className="px-6 pb-4">
         <p className="ss-mono text-xs leading-relaxed line-clamp-2"
-          style={{ color: "rgba(240,238,255,0.45)" }}>
+          style={{ color: "var(--ss-muted)" }}>
           {description}
         </p>
       </div>
@@ -81,7 +81,7 @@ export default function AppCard({ app, locale }: Props) {
         <div className="flex gap-2 flex-wrap">
           {app.playStoreUrl && (
             <span className="ss-mono text-xs px-2 py-1 rounded-md flex items-center gap-1"
-              style={{ border: "1px solid rgba(255,255,255,0.08)", color: "rgba(240,238,255,0.35)" }}>
+              style={{ border: "1px solid rgba(255,255,255,0.08)", color: "var(--ss-muted)" }}>
               <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3 20.5v-17c0-.83 1-.98 1.4-.38l14.6 8.5c.4.23.4.87 0 1.1L4.4 20.88C4 21.48 3 21.33 3 20.5z" />
               </svg>
@@ -90,18 +90,18 @@ export default function AppCard({ app, locale }: Props) {
           )}
           {hasAndroidDownload && (
             <span className="ss-mono text-xs px-2 py-1 rounded-md"
-              style={{ border: "1px solid rgba(255,255,255,0.08)", color: "rgba(240,238,255,0.35)" }}>
+              style={{ border: "1px solid rgba(255,255,255,0.08)", color: "var(--ss-muted)" }}>
               Android
             </span>
           )}
           {app.kindleManualUrl && (
             <span className="ss-mono text-xs px-2 py-1 rounded-md"
-              style={{ border: "1px solid rgba(255,255,255,0.08)", color: "rgba(240,238,255,0.35)" }}>
+              style={{ border: "1px solid rgba(255,255,255,0.08)", color: "var(--ss-muted)" }}>
               📖 Kindle
             </span>
           )}
         </div>
-        <span className="ss-mono text-xs" style={{ color: "rgba(139,92,246,0.7)" }}>→</span>
+        <span className="ss-mono text-xs" style={{ color: "var(--ss-violet-text)" }}>→</span>
       </div>
     </Link>
   );

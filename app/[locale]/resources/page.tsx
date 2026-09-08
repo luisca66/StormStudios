@@ -58,7 +58,7 @@ export default async function ResourcesIndexPage({ params }: Props) {
         </h1>
         <p
           className="ss-mono"
-          style={{ maxWidth: "720px", color: "rgba(240,238,255,0.56)", lineHeight: 1.8 }}
+          style={{ maxWidth: "720px", color: "var(--ss-muted)", lineHeight: 1.8 }}
         >
           {es
             ? "Estas páginas resumen los temas que más suelen buscar los estudiantes y los conectan con el curso, las apps y el método de Storm Studios Learning."
@@ -83,7 +83,7 @@ export default async function ResourcesIndexPage({ params }: Props) {
             <h2 className="ss-serif mb-3" style={{ fontSize: "1.55rem", color: "#f0eeff", lineHeight: 1.2 }}>
               {resource.title[locale as Locale]}
             </h2>
-            <p className="ss-mono text-sm" style={{ color: "rgba(240,238,255,0.54)", lineHeight: 1.8 }}>
+            <p className="ss-mono text-sm" style={{ color: "var(--ss-muted)", lineHeight: 1.8 }}>
               {resource.metaDescription[locale as Locale]}
             </p>
             <span className="ss-mono text-sm mt-6 inline-block" style={{ color: "rgba(147,197,253,0.92)" }}>
@@ -97,7 +97,7 @@ export default async function ResourcesIndexPage({ params }: Props) {
         <h2 className="ss-serif mb-3" style={{ fontSize: "1.4rem", color: "#f0eeff" }}>
           {es ? "Siguiente paso" : "Next step"}
         </h2>
-        <p className="ss-mono text-sm mb-6" style={{ color: "rgba(240,238,255,0.52)", lineHeight: 1.8 }}>
+        <p className="ss-mono text-sm mb-6" style={{ color: "var(--ss-muted)", lineHeight: 1.8 }}>
           {es
             ? "Usa estas guías como puerta de entrada y después trabaja con las lecciones, las apps o el método completo."
             : "Use these guides as an entry point, then continue with the lessons, the apps or the full method."}

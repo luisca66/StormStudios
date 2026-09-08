@@ -1,6 +1,7 @@
 import { WaveVisualizer } from "@/components/WaveVisualizer";
 import { StatItem } from "@/components/home/StatItem";
 import { Link } from "@/i18n/navigation";
+import { getAllLessons } from "@/lib/course";
 import { APPS } from "@/data/apps/apps-catalog";
 import { getTranslations } from "next-intl/server";
 
@@ -10,10 +11,10 @@ export async function HomeHero() {
   const t = await getTranslations("home.hero");
 
   return (
-    <section
+    <section className="ss-home-hero"
       style={{
         textAlign: "center",
-        padding: "5rem 2rem 8rem",
+        padding: "var(--ss-hero-padding, 4rem 2rem 5rem)",
         maxWidth: "1280px",
         margin: "0 auto",
         position: "relative",
@@ -34,7 +35,7 @@ export async function HomeHero() {
           marginBottom: "2.5rem",
           fontSize: "0.72rem",
           letterSpacing: "0.1em",
-          color: "rgba(255,255,255,0.65)",
+          color: "var(--ss-muted)",
           animationDelay: "0s",
         }}
       >
@@ -55,7 +56,7 @@ export async function HomeHero() {
       <h1
         className="ss-serif ss-reveal"
         style={{
-          fontSize: "clamp(3rem,9vw,7rem)",
+          fontSize: "clamp(2.15rem,6vw,5.5rem)",
           lineHeight: 1,
           marginBottom: "1.5rem",
           animationDelay: "0.12s",
@@ -72,7 +73,7 @@ export async function HomeHero() {
           maxWidth: "600px",
           fontSize: "1rem",
           lineHeight: 1.75,
-          color: "rgba(255,255,255,0.5)",
+          color: "var(--ss-muted)",
           marginBottom: "3rem",
           animationDelay: "0.24s",
           whiteSpace: "pre-line",
@@ -113,7 +114,7 @@ export async function HomeHero() {
           href="/apps"
           className="ss-glass ss-mono"
           style={{
-            color: "rgba(255,255,255,0.7)",
+            color: "var(--ss-muted)",
             padding: "1rem 2.2rem",
             borderRadius: "0.875rem",
             fontSize: "0.85rem",
@@ -140,7 +141,7 @@ export async function HomeHero() {
                 <div key={c} style={{ width: "12px", height: "12px", borderRadius: "50%", background: c }} />
               ))}
             </div>
-            <span className="ss-mono" style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.28)", letterSpacing: "0.08em" }}>
+            <span className="ss-mono" style={{ fontSize: "0.65rem", color: "var(--ss-muted)", letterSpacing: "0.08em" }}>
               {t("analysisLabel")}
             </span>
             <div className="ss-blink" style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 10px #22c55e" }} />
@@ -153,11 +154,11 @@ export async function HomeHero() {
         className="ss-reveal"
         style={{ display: "flex", flexWrap: "wrap", gap: "3rem", justifyContent: "center", marginTop: "5rem", animationDelay: "0.6s" }}
       >
-        <StatItem value="60" label={t("stats.lessons")} />
+        <StatItem value={String(getAllLessons().filter(lesson => lesson.status !== "construction").length)} label={t("stats.lessons")} />
         <div className="ss-divider" style={{ width: "1px", alignSelf: "stretch" }} />
         <StatItem value={String(PUBLISHED_APP_COUNT)} label={t("stats.freeApps")} />
         <div className="ss-divider" style={{ width: "1px", alignSelf: "stretch" }} />
-        <StatItem value="IA" label={t("stats.evaluation")} />
+        <StatItem value="MIDI" label={t("stats.evaluation")} />
         <div className="ss-divider" style={{ width: "1px", alignSelf: "stretch" }} />
         <StatItem value="∞" label={t("stats.access")} />
       </div>

@@ -81,17 +81,17 @@
   "home": {
     "hero": {
       "badge": "Linaje Shostakovich · Medrano · Cárdenas",
-      "titlePrefix": "Curso de",
-      "titleEmphasis": "Armonía",
-      "titleSuffix": "Tradicional con Entrenamiento Auditivo y Teoría Musical",
-      "description": "Estudia armonía tradicional, entrenamiento auditivo y teoría musical dentro del linaje Shostakovich-Medrano-Cárdenas.\nEmpieza con lecciones gratis de armonía, practica con apps educativas\ny usa el Maestro Virtual como apoyo para revisar tu trabajo escrito.",
+      "titlePrefix": "Aprende",
+      "titleEmphasis": "armonía",
+      "titleSuffix": "entrenando el oído",
+      "description": "Lecciones gratuitas y práctica musical en el navegador. Empieza desde las notas o refuerza tu oído con un ejercicio.",
       "primaryCta": "Empezar lecciones gratis →",
       "secondaryCta": "Explorar apps auditivas →",
       "analysisLabel": "análisis · sonata op. 64 nº 2 — shostakovich",
       "stats": {
-        "lessons": "Lecciones",
+        "lessons": "Unidades disponibles",
         "freeApps": "Apps Musicales",
-        "evaluation": "Apoyo con IA",
+        "evaluation": "Revisión automática",
         "access": "Acceso Gratis"
       }
     },
@@ -113,9 +113,9 @@
           "description": "Apps para reconocimiento de intervalos, escucha, memoria y práctica auditiva en web y Android."
         },
         "virtualTeacher": {
-          "tag": "IA + Pedagogía",
+          "tag": "Práctica guiada",
           "title": "Maestro Virtual",
-          "description": "Sube ejercicios MIDI desde el secuenciador y recibe retroalimentación con IA que acompaña al método, no lo sustituye."
+          "description": "Revisa ejercicios MIDI de escalas mayores, modos y escalas menores. Consulta los criterios y los límites del Maestro Virtual."
         },
         "book": {
           "tag": "Libro Digital",

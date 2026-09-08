@@ -6,6 +6,8 @@ export default defineConfig({
     environment: "node",
     include: [
       "app/api/**/*.test.ts",
+      "app/catalog.json/**/*.test.ts",
+      "lib/course-progress.test.ts",
       "components/rhythm-reading/_tests/**/*.test.ts",
       "data/**/*.test.ts",
       "lib/acordes-cantar/**/*.test.ts",
@@ -15,6 +17,7 @@ export default defineConfig({
       // imports relativos, así que corren bien bajo este runner raíz. Tests que
       // usen el alias "@" propio del sub-proyecto deben quedarse en su toolchain.
       "apps-src/ap-guitar/src/**/*.test.ts",
+      "apps-src/ap-multi/src/**/*.test.ts",
       "apps-src/intervalos-cantados/src/**/*.test.ts",
     ],
   },

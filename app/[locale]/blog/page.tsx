@@ -33,7 +33,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
             style={{
               background: "rgba(139,92,246,0.12)",
               border: "1px solid rgba(139,92,246,0.25)",
-              color: "rgba(196,181,253,0.8)",
+              color: "var(--ss-violet-text)",
             }}
           >
             {es ? "• Artículos y guías" : "• Articles and guides"}
@@ -63,7 +63,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
             className="ss-mono"
             style={{
               fontSize: "1.05rem",
-              color: "rgba(240,238,255,0.5)",
+              color: "var(--ss-muted)",
               maxWidth: "560px",
               lineHeight: 1.7,
             }}
@@ -85,7 +85,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
             <p className="ss-serif mb-3" style={{ fontSize: "1.4rem", color: "#f0eeff" }}>
               {es ? "Próximamente" : "Coming Soon"}
             </p>
-            <p className="ss-mono text-sm" style={{ color: "rgba(240,238,255,0.4)" }}>
+            <p className="ss-mono text-sm" style={{ color: "var(--ss-muted)" }}>
               {es
                 ? "Los artículos están en camino."
                 : "Articles are on their way."}
