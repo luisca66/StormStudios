@@ -109,7 +109,7 @@
         const INSTRUMENTS = ["Piano", "Cello", "Corno", "Coro", "Fagot"];
         const INSTRUMENT_OPTIONS = [...INSTRUMENTS, "random"];
         // Samples e instrumentos: bucket R2 (mismo que usa la webapp Desglose).
-        const BASE_URL = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+        const BASE_URL = "https://samples.stormstudios.com.mx";
         // Música ambiente: subcarpeta del mismo bucket.
         const MUSIC_BASE = `${BASE_URL}/music/desglose`;
         const NOTE_COLORS = { "C": 0xff0000, "C#": 0xff4400, "D": 0xff8800, "D#": 0xffcc00, "E": 0xffff00, "F": 0x88ff00, "F#": 0x00ff00, "G": 0x00ff88, "G#": 0x00ffff, "A": 0x0088ff, "A#": 0x0000ff, "B": 0x8800ff };

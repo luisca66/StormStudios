@@ -26,7 +26,7 @@ const GAME_SCRIPT_CDNS = [
 // porque Next inyecta scripts de hidratación inline sin nonce en render estático;
 // En producción quitamos 'unsafe-eval' y los CDNs externos. media-src permite
 // https para el audio servido vía <audio> (lectura musical, memoria, elefantito);
-// connect-src añade *.r2.dev porque la lectura rítmica carga sus samples con
+// connect-src permite los tres dominios de audio porque la lectura rítmica carga samples con
 // fetch()+decodeAudioData (Web Audio), que se rige por connect-src, no media-src.
 const appScriptSrc =
   process.env.NODE_ENV === "development"
@@ -40,7 +40,7 @@ const appCsp = [
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob: https:",
   "media-src 'self' data: blob: https:",
-  "connect-src 'self' https://*.googleapis.com https://*.gstatic.com https://*.firebaseio.com https://*.firebasestorage.app https://*.r2.dev wss://*.firebaseio.com",
+  "connect-src 'self' https://*.googleapis.com https://*.gstatic.com https://*.firebaseio.com https://*.firebasestorage.app https://samples.stormstudios.com.mx https://musica.stormstudios.com.mx https://sfx.stormstudios.com.mx https://*.r2.dev wss://*.firebaseio.com",
   "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
   "frame-ancestors 'self'",
   "base-uri 'self'",

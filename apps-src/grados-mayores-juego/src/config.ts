@@ -67,7 +67,7 @@ export const SILVER_MAX_DETOURS = 2;
 // ---------------------------------------------------------------------------
 // Audio (PLAN §3.3, §9)
 // ---------------------------------------------------------------------------
-export const AUDIO_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+export const AUDIO_BASE = "https://samples.stormstudios.com.mx";
 
 // Los sfx (lluvia, truenos, tren, fuegos) viven en R2 junto a los samples, bajo
 // `expreso-tonal/`: son 11 MB de mp3 que no tienen por qué viajar en el bundle ni

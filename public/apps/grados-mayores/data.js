@@ -3,7 +3,7 @@
 
 // Audio servido desde Cloudflare R2 (mismo bucket que las demás ear-training apps).
 // Para desarrollo offline puedes cambiarlo a "audio" (folder local incluido en el repo).
-export const AUDIO_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+export const AUDIO_BASE = "https://samples.stormstudios.com.mx";
 
 // Tonalidades mayores disponibles (mismo orden que la app).
 export const SCALES = ["C♭", "C", "C#", "D♭", "D", "E♭", "E", "F", "F#", "G♭", "G", "A♭", "A", "B♭", "B"];

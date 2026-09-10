@@ -11,7 +11,7 @@ import { loadBuffer } from './samples';
 
 // ── URLs del kit ──────────────────────────────────────────────────────────────
 
-const KIT_BASE = 'https://pub-d7ddf9faaf4e4e83b747c800e18466a7.r2.dev';
+const KIT_BASE = 'https://sfx.stormstudios.com.mx';
 
 export const TIMBRES = [
   { id: 'hh',    label: 'Hi-Hat',    url: `${KIT_BASE}/hh.wav`    },

@@ -18,7 +18,7 @@ export default defineConfig({
     // mismo origen. (Lección heredada del Expreso Tonal.)
     proxy: {
       "/r2": {
-        target: "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev",
+        target: "https://samples.stormstudios.com.mx",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/r2/, ""),
       },

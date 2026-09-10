@@ -17,7 +17,7 @@ export default defineConfig({
     // sin CORS suena a silencio. Servirlos por aquí los vuelve del mismo origen.
     proxy: {
       "/r2": {
-        target: "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev",
+        target: "https://samples.stormstudios.com.mx",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/r2/, ""),
       },

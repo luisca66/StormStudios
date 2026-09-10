@@ -67,7 +67,7 @@ export const SILVER_MAX_DRIFTS = 2;
 // ---------------------------------------------------------------------------
 // Audio (PLAN §3.3, §9)
 // ---------------------------------------------------------------------------
-export const AUDIO_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+export const AUDIO_BASE = "https://samples.stormstudios.com.mx";
 
 // Los sfx propios del juego vivirán en R2 junto a los samples, bajo `el-cometa/`.
 // En dev van por el proxy `/r2` de vite.config.ts: el audio del cometa se enruta por

@@ -2,7 +2,7 @@
 // Portado desde la app Android appgradosmenoresmulti de Storm Studios.
 
 // Audio servido desde Cloudflare R2 (mismo bucket que las demás ear-training apps).
-export const AUDIO_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+export const AUDIO_BASE = "https://samples.stormstudios.com.mx";
 
 // Tonalidades menores disponibles (mismo orden que la app Android).
 export const SCALES = [

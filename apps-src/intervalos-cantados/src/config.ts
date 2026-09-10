@@ -1,4 +1,4 @@
-export const AUDIO_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+export const AUDIO_BASE = "https://samples.stormstudios.com.mx";
 export const DEFAULT_VOLUME = 0.78;
 export const LISTEN_WINDOW_MS = 3000;
 export const TUNING_TOLERANCE = 0.25;

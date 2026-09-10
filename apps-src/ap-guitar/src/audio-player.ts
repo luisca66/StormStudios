@@ -49,7 +49,7 @@ export class AssetAudioPlayer {
   }
 }
 
-const defaultAudioBaseUrl = "https://pub-905d3540e35b4c49bb36ccc2d2d99752.r2.dev";
+const defaultAudioBaseUrl = "https://musica.stormstudios.com.mx";
 const configuredAudioBaseUrl = import.meta.env.VITE_AP_GUITAR_AUDIO_BASE_URL?.trim();
 
 export function toAudioUrl(assetPath: string) {

@@ -10,7 +10,7 @@ import { getAudioContext } from './engine';
 
 // ── URLs de Cloudflare (llenar con las rutas reales) ─────────────────────────
 
-const CLOUDFLARE_BASE = 'https://pub-905d3540e35b4c49bb36ccc2d2d99752.r2.dev';
+const CLOUDFLARE_BASE = 'https://musica.stormstudios.com.mx';
 
 /** URL del sonido de acierto. */
 export const SAMPLE_ACIERTO_URL = `${CLOUDFLARE_BASE}/acierto.mp3`;

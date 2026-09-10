@@ -22,8 +22,8 @@
 
 const strip = (s: string) => s.replace(/\/+$/, ""); // strip trailing slashes
 const PRODUCTION_ASSET_BASE =
-  "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/music/oido-absoluto-multi";
-const PRODUCTION_NOTES_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+  "https://samples.stormstudios.com.mx/music/oido-absoluto-multi";
+const PRODUCTION_NOTES_BASE = "https://samples.stormstudios.com.mx";
 
 // ASSET_BASE: background music (nivel-X/) and game SFX/loops (samples/).
 // Local default = ./assets. On R2 = .../music/oido-absoluto-multi

@@ -45,8 +45,8 @@ El criterio de producto es conservar y transmitir conocimiento musical. La pági
 
 ## Pendientes externos y límites reales
 
-1. **Cloudflare, P2-14:** conectar dominios de producción, validar CORS/caché y migrar referencias directas. Luis decidió realizarlo acompañado; procedimiento en [cloudflare-audio.md](cloudflare-audio.md). El proxy configurable es preparación, no una migración terminada.
-2. **Publicación:** comprobar el workflow de GitHub, el despliegue asociado en Vercel y las páginas públicas después de publicar el lote.
+1. **Cloudflare, P2-14:** el 9 de septiembre Terra activó `samples`, `musica` y `sfx`; se migraron las referencias de esos tres buckets y se validaron CORS, descargas parciales y decodificación Web Audio. Queda el cuarto bucket de APK y voces iniciales de Elefantito; conserva su URL funcional. Detalles y política de caché en [cloudflare-audio.md](cloudflare-audio.md).
+2. **Publicación:** el lote original `4d49274` se publicó el 8 de septiembre, con GitHub y Vercel correctos y revisión pública completada. La actualización de audio del 9 de septiembre requiere su propia comprobación de despliegue.
 3. **Servicios en producción, P3-24:** la consulta autenticada a Vercel identificó el proyecto y no devolvió errores en el rango consultado. Esto no demuestra ausencia histórica de incidentes. Verificar en consola el WAF y las reglas efectivamente desplegadas de Firebase; el archivo local no basta. La entrega real por Resend requiere un envío autorizado y confirmación de recepción; las pruebas realizadas usan mocks/intercepción.
 4. **Pedagogía SATB, P2-10:** antes de publicar la lección 4, Luis debe revisar el temario, los ejemplos y las reglas de duplicación/conducción. Completar materiales y pruebas del validador futuro. La corrección del borrador no constituye aprobación del curso futuro.
 5. **Accesibilidad de juegos, P2-16:** completar recorridos extensos de juego, dispositivos reales, lectores de pantalla y pruebas con micrófono físico. Los cambios y pruebas de este lote no garantizan accesibilidad universal de juegos 3D.
@@ -60,4 +60,4 @@ El criterio de producto es conservar y transmitir conocimiento musical. La pági
 
 ## Próxima sesión
 
-Continuar por Cloudflare: confirmar nombre del bucket asociado a `pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev` y presencia de la zona `stormstudios.com.mx`. Después conectar el primer dominio y verificar un objeto antes de cambiar código. Para publicar el lote actual, revisar primero el diff completo y conservar los archivos ajenos a esta intervención.
+Completar el dominio del cuarto bucket cuando esté disponible en Cloudflare. Después priorizar la revisión pedagógica de la lección 4 y las verificaciones de servicios señaladas arriba. No desactivar las URLs anteriores mientras existan apps móviles o clientes externos que dependan de ellas.

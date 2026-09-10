@@ -5,7 +5,7 @@ export type GameMode = "EXPEDITION" | "TIME_ATTACK" | "SURVIVAL";
 export const GAME_MODES: GameMode[] = ["EXPEDITION", "TIME_ATTACK", "SURVIVAL"];
 
 // Samples CDN R2 (PLAN §3.3) — ya en producción, no requiere setup.
-export const AUDIO_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+export const AUDIO_BASE = "https://samples.stormstudios.com.mx";
 
 // Música ambiental propia de Aerostato (bucket R2 storm-samples/music/aerostat/).
 export const MUSIC_TRACK_URLS = Array.from(

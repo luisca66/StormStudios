@@ -1,4 +1,4 @@
-export const AUDIO_BASE_URL = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+export const AUDIO_BASE_URL = "https://samples.stormstudios.com.mx";
 
 export const AUDIO_ASSETS = {
   effects: {

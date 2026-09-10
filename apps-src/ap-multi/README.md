@@ -25,13 +25,13 @@ http://127.0.0.1:5176/apps/ap-multi/
 Los samples usan el mismo bucket R2 que las demas apps multi-timbricas:
 
 ```text
-https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev
+https://samples.stormstudios.com.mx
 ```
 
 Las rutas quedan como:
 
 ```text
-https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/Cello/F%232.mp3
+https://samples.stormstudios.com.mx/Cello/F%232.mp3
 ```
 
 `npm run sync:assets` solo copia las imagenes de marca necesarias para trabajar localmente. No copia samples al `dist`.

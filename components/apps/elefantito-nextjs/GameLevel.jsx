@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "./LanguageContext";
 
 const MAX_BARRELS = 20;
-const MUSIC_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/music/elefantito/";
+const MUSIC_BASE = "https://samples.stormstudios.com.mx/music/elefantito/";
 const MUSIC_TRACKS = Array.from({ length: 24 }, (_, i) => `${MUSIC_BASE}mate-${String(i + 1).padStart(2, "0")}.mp3`);
 
 const DECIMAL_FRACTIONS = [
@@ -540,8 +540,8 @@ export default function GameLevel({ level, problemTypes, onComplete }) {
 
   return (
     <div className="w-full flex flex-col md:flex-row gap-3 h-[80vh] min-h-[550px] relative font-[family-name:var(--font-press-start-2p)]">
-      <audio ref={correctSoundRef} src="https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/acierto.mp3" preload="auto" />
-      <audio ref={errorSoundRef}   src="https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/error.mp3"   preload="auto" />
+      <audio ref={correctSoundRef} src="https://samples.stormstudios.com.mx/acierto.mp3" preload="auto" />
+      <audio ref={errorSoundRef}   src="https://samples.stormstudios.com.mx/error.mp3"   preload="auto" />
 
       {/* GAME AREA */}
       <div ref={gameAreaRef} className="flex-1 relative bg-[#060810] border-[3px] border-[#14161e] rounded-sm overflow-hidden flex flex-col">

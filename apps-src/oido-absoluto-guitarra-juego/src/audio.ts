@@ -1,7 +1,7 @@
 import type { GuitarSample } from "./catalog";
 
-const DEFAULT_AUDIO_BASE = "https://pub-905d3540e35b4c49bb36ccc2d2d99752.r2.dev";
-const DEFAULT_MUSIC_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/music/oido-absoluto-multi";
+const DEFAULT_AUDIO_BASE = "https://musica.stormstudios.com.mx";
+const DEFAULT_MUSIC_BASE = "https://samples.stormstudios.com.mx/music/oido-absoluto-multi";
 const configuredBase = import.meta.env.VITE_AP_GUITAR_AUDIO_BASE_URL?.trim();
 const configuredMusicBase = import.meta.env.VITE_MULTI_MUSIC_BASE?.trim();
 

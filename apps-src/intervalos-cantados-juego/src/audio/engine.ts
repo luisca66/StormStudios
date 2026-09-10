@@ -1,6 +1,6 @@
 import { ALL_NOTES } from "@/music/core";
 
-export const AUDIO_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+export const AUDIO_BASE = "https://samples.stormstudios.com.mx";
 const VOCAL_ARCADE_SFX_BASE = `${AUDIO_BASE}/vocal-arcade`;
 const REMOTE_SFX_LEVELS = new Set([1, 2, 3, 4, 5]);
 

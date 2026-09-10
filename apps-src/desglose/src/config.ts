@@ -1,7 +1,7 @@
 /** config.ts — Constantes de Desglose (samples, rango, parámetros de juego). */
 
 /** Bucket público R2 con los samples (compartido con "Cantar Acordes"). */
-export const R2_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+export const R2_BASE = "https://samples.stormstudios.com.mx";
 
 export const FEEDBACK_OK_URL = `${R2_BASE}/acierto.mp3`;
 export const FEEDBACK_ERROR_URL = `${R2_BASE}/error.mp3`;

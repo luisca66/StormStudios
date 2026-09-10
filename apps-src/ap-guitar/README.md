@@ -27,7 +27,7 @@ http://127.0.0.1:5175/apps/ap-guitar/
 Los audios se sirven desde Cloudflare R2:
 
 ```text
-https://pub-905d3540e35b4c49bb36ccc2d2d99752.r2.dev
+https://musica.stormstudios.com.mx
 ```
 
 Si despues conectamos un dominio custom al bucket, cambia `VITE_AP_GUITAR_AUDIO_BASE_URL` en `.env`.

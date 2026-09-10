@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useGame } from "./GameContext";
 import { useLanguage } from "./LanguageContext";
 
-const MUSIC_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev/music/elefantito/";
+const MUSIC_BASE = "https://samples.stormstudios.com.mx/music/elefantito/";
 const MUSIC_TRACKS = Array.from({ length: 24 }, (_, i) => `${MUSIC_BASE}mate-${String(i + 1).padStart(2, "0")}.mp3`);
 
 const TX = {

@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 
-const AUDIO_BUCKET_BASE = process.env.AUDIO_BUCKET_BASE_URL || "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+const AUDIO_BUCKET_BASE = process.env.AUDIO_BUCKET_BASE_URL || "https://samples.stormstudios.com.mx";
 const UPSTREAM_TIMEOUT_MS = 15_000;
 const SAFE_SEGMENT = /^[\w .#%()-]+$/;
 

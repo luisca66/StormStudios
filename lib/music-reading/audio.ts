@@ -1,7 +1,7 @@
 import type { Pitch } from "./types";
 
 export const SAMPLE_BASE_URL =
-  "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+  "https://samples.stormstudios.com.mx";
 
 export const SAMPLE_INSTRUMENTS = [
   "Piano",

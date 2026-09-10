@@ -1,5 +1,5 @@
 (() => {
-  const AUDIO_BASE = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+  const AUDIO_BASE = "https://samples.stormstudios.com.mx";
   const STATS_KEY = "storm.intervalos.reconocimiento.stats.v1";
   const RECORD_KEY = "storm.intervalos.reconocimiento.record.v1";
   const VOLUME_KEY = "storm.intervalos.reconocimiento.volume.v1";

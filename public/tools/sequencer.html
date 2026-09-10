@@ -497,7 +497,7 @@
         const NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
         const BASE_FREQ_C4 = 261.63;
         const INSTRUMENTS = ["Piano", "Cello", "Corno", "Coro", "Fagot"];
-        const BASE_URL = "https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev";
+        const BASE_URL = "https://samples.stormstudios.com.mx";
         const SAMPLE_VOLUME = 0.5;
 
         const TICKS_PER_QUARTER = 4;
@@ -1941,10 +1941,10 @@
 
         function getPianoRollTickFromX(mouseX) {
             const adjustedX = mouseX - PIANO_ROLL_CONFIG.KEYBOARD_WIDTH;
-            
+
             // Use linear calculation - simple and uniform
             const tick = getTickFromLinearX(adjustedX);
-            
+
             // Clamp to valid range
             const totalTicks = getTotalTicks();
             return Math.max(0, Math.min(tick, totalTicks - 1));
@@ -2299,7 +2299,7 @@
                 const tempFormatter = new VF.Formatter();
                 const minWidth = tempFormatter.preCalculateMinTotalWidth([vS,vA,vT,vB]);
                 const width = Math.max(MIN_STAVE_WIDTH, minWidth + (m===0?180:30) + 80);
-                
+
                 const yS = STAVE_Y_START, yA = yS + QUARTET_STAFF_GAP, yT = yA + QUARTET_STAFF_GAP, yB = yT + QUARTET_STAFF_GAP;
                 const ss = new VF.Stave(currentX, yS, width);
                 const sa = new VF.Stave(currentX, yA, width);
@@ -2319,11 +2319,11 @@
                 const startX = Math.max(ss.getNoteStartX(), sa.getNoteStartX(), st.getNoteStartX(), sb.getNoteStartX());
                 [ss,sa,st,sb].forEach(s=>{ s.setNoteStartX(startX); s.setContext(context).draw(); });
                 generatedStaves.push({ soprano: ss, alto: sa, tenor: st, bass: sb });
-                
+
                 // FIX: Use formatToStave which properly aligns all voices to the same reference stave
                 const formatter = new VF.Formatter();
                 formatter.formatToStave([vS, vA, vT, vB], ss, { align_rests: false });
-                
+
                 vS.draw(context, ss);
                 vA.draw(context, sa);
                 vT.draw(context, st);
@@ -2656,7 +2656,7 @@
             svg.appendChild(gridGroup);
         }
 
-        
+
         function sanitizeNotesToPianoRollRange() {
             const tracks = (projectData.mode === 'quartet') ? ['soprano', 'alto', 'tenor', 'bass'] : ['melody'];
             tracks.forEach(trackName => {
