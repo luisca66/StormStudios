@@ -61,3 +61,27 @@ El criterio de producto es conservar y transmitir conocimiento musical. La pági
 ## Próxima sesión
 
 Completar el dominio del cuarto bucket cuando esté disponible en Cloudflare. Después priorizar la revisión pedagógica de la lección 4 y las verificaciones de servicios señaladas arriba. No desactivar las URLs anteriores mientras existan apps móviles o clientes externos que dependan de ellas.
+
+## Seguimiento de auditoría — 10 de septiembre de 2026
+
+### Evidencia obtenida
+
+- Producción: `https://www.stormstudios.com.mx/api/contact` y `https://www.stormstudios.com.mx/api/maestro-virtual/check` respondieron desde Vercel a solicitudes deliberadamente inválidas, sin cuerpo sensible ni entrega de correo. Contacto devolvió `400` y `Cache-Control: no-store`; Maestro Virtual devolvió `400`. El dominio sin `www` redirige al canónico.
+- Código local: las reglas de Firestore restringen lectura y escritura de `mnemonic_words/{uid}` y `mnemonic_words_en/{uid}` a `request.auth.uid == uid`; toda otra ruta queda denegada. La app crea y usa el documento con el UID de Firebase Auth anónimo. Esto demuestra el diseño y su prueba lógica, no la versión desplegada.
+- Código local: contacto limita 5 solicitudes por IP cada 10 minutos y Maestro Virtual 10 cada 10 minutos. Ambos usan mapas en memoria del proceso y no comparten estado entre instancias serverless; son una defensa contra ráfagas pequeñas, no un límite distribuido ni una prueba de que el WAF de Vercel esté activo.
+- Pruebas locales: `npm test -- --run app/api/contact/route.test.ts app/api/maestro-virtual/check/route.test.ts` aprobó 8 pruebas. Después se añadió `no-store` a las respuestas de error de Maestro Virtual y su prueba focalizada aprobó 4 pruebas. Su publicación debe confirmarse contra el endpoint de producción antes de considerarla verificada.
+- La lección 4 permanece en construcción; su ficha de revisión está en [revision-leccion-4-2026-09.md](revision-leccion-4-2026-09.md).
+
+### Pendientes que requieren consola o autorización
+
+1. **Firebase desplegado:** comprobar en Firebase Console o con credenciales de solo lectura que la release activa de Firestore coincide con el hash/reglas locales. La consulta de consola de esta sesión llegó al inicio de sesión de Google; no había una sesión disponible y no se introdujeron credenciales. No se hicieron escrituras ni se crearon usuarios anónimos de prueba.
+2. **WAF/rate limit distribuido:** comprobar en Vercel Firewall las reglas efectivas para `/api/contact` y `/api/maestro-virtual/check`, incluyendo ventana, umbral y acción. No se ejecutó una ráfaga contra producción para inferir esos controles.
+3. **Resend:** la clave existe en el entorno local, pero no se expuso ni se puede inferir que esté configurada en Production sin acceso de lectura a Vercel o un envío autorizado. No se envió correo. Una respuesta exitosa de Resend sólo acredita aceptación del proveedor: Luis debe confirmar recepción en `info@stormstudios.com.mx`.
+4. **Dispositivos reales:** no había Chrome conectado ni micrófono físico disponible para esta sesión. Las páginas y sus iframes publicados declaran `allow="autoplay; microphone"`, y el código contempla permiso denegado/recuperación; falta comprobar concedido, denegado y recuperación en un teléfono y un escritorio reales, además de lector de pantalla y teclado.
+
+### Revisión editorial propuesta
+
+- `content/pages/es/mi-metodo.mdx` presenta «principios de neurociencia» y optimización de foco/memoria sin fuente ni alcance. Propuesta: describirlo como marco pedagógico propio y retirar la inferencia de eficacia hasta citar evidencia específica.
+- `content/pages/es/quien-soy.mdx` atribuye al entrenamiento auditivo moldear el cerebro y mejorar la percepción de manera tangible. Propuesta: mantenerlo como experiencia personal o matizarlo a «la práctica puede mejorar tareas entrenadas; los resultados varían».
+- `components/apps/elefantito-nextjs/{es,en}.json` contiene afirmaciones fuertes sobre corteza prefrontal, transferencia cognitiva y beneficios bidireccionales de cálculo mental y música. Requiere revisión especializada y fuentes primarias antes de publicarse como explicación científica; no se modificaron APK ni voces iniciales de Elefantito.
+- Para oído absoluto, evitar prometer adquisición o resultados de alumnos. Estudios con adultos muestran aprendizaje posible para algunas personas, con resultados heterogéneos y dependientes del entrenamiento, no una garantía individual: [Van Hedger et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31550277/) y [Wong et al., 2020](https://pubmed.ncbi.nlm.nih.gov/31686378/). Los estudios de neuroimagen describen asociaciones, no prueban que una actividad educativa concreta produzca esos cambios: [Loui et al., 2013](https://pubmed.ncbi.nlm.nih.gov/23302811/).

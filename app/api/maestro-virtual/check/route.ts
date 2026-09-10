@@ -17,6 +17,7 @@ const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 10;
 const MAX_RATE_LIMIT_ENTRIES = 10_000;
 const RATE_LIMIT_SALT = randomBytes(16).toString('hex');
+const NO_STORE_HEADERS = { 'Cache-Control': 'no-store' };
 
 // Protección local por instancia. Complementar con rate limiting/WAF distribuido
 // antes de producción, porque las instancias serverless no comparten memoria.
@@ -27,7 +28,10 @@ export const runtime = 'nodejs';
 export const maxDuration = 10;
 
 function invalidRequest(message: string, status = 400) {
-  return NextResponse.json({ error: message }, { status });
+  return NextResponse.json(
+    { error: message },
+    { status, headers: NO_STORE_HEADERS }
+  );
 }
 
 function getClientIp(request: NextRequest): string {
@@ -341,7 +345,7 @@ export async function POST(request: NextRequest) {
     console.error('[Maestro Virtual] Unexpected exercise review failure');
     return NextResponse.json(
       { error: 'Error interno del servidor' },
-      { status: 500 }
+      { status: 500, headers: NO_STORE_HEADERS }
     );
   }
 }

@@ -20,6 +20,7 @@ describe('POST /api/maestro-virtual/check', () => {
     const response = await POST(midiRequest('__proto__'));
 
     expect(response.status).toBe(404);
+    expect(response.headers.get('cache-control')).toBe('no-store');
     await expect(response.json()).resolves.toEqual({ error: 'Lección desconocida' });
   });
 
@@ -36,6 +37,7 @@ describe('POST /api/maestro-virtual/check', () => {
     const response = await POST(midiRequest('05-leccion-4', 'en\nforged-log-line'));
 
     expect(response.status).toBe(501);
+    expect(response.headers.get('cache-control')).toBe('no-store');
     await expect(response.json()).resolves.toEqual({
       error: 'La retroalimentación SATB todavía no está disponible.',
     });
