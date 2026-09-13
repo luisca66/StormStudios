@@ -105,7 +105,7 @@ Queda como pendiente heredado de la bitácora (F5): animar las agujas de los man
 | Medusa Luna | ✅ Blender (JSON) |
 | Cardumen Prisma | ✅ Blender (JSON, instanciado) |
 | Calamar Vela, Rape Abisal, Sifonóforo, Pulpo Dumbo, Leviatán | ⏳ siguen con primitivas (`species.ts`) |
-| Cabina sci-fi | ⏳ **brief listo** (`BRIEF-CABINA-SCIFI.md`), concepto v1 pendiente de revisión de Luis; `src/3d/cockpit.ts` sigue siendo el marco viejo |
+| Cabina sci-fi | ✅ Blender (JSON por módulos anclados a pantalla, 8 draw calls) · local, sin publicar; falta prueba en teléfono real |
 | Entorno (fosa, arrecifes) | ⏳ primitivas; el brief lo deja para otra fase |
 
 ### Aerostato — `acordes-cantar-juego` (acordes cantados, puerto 5174)

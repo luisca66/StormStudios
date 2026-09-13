@@ -171,6 +171,8 @@ volumeSlider.addEventListener("input", () => {
 // ---------- Mundo 3D (F2) y HUD (F3) ----------
 const game = new Game3D(el<HTMLCanvasElement>("game-canvas"));
 const hud = new HUD(el("hud"));
+hud.setLayout(game.cockpit.layout);
+game.cockpit.onLayout = (layout) => hud.setLayout(layout);
 
 function showScreen(id: string): void {
   for (const section of document.querySelectorAll<HTMLElement>("#ui-root .screen")) {

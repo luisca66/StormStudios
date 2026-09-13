@@ -1,5 +1,7 @@
 # Cabina Batisfera — brief de implementación para Terra
 
+> **Estado (2026-09-13):** concepto v1 aprobado por Luis e implementado en local — ver la sección «Cabina sci-fi» de README.md.
+
 Luis aprobó implementar una cabina submarina con aire sci-fi usando la imagen adjunta como referencia. Implementar ahora, únicamente en local. No publicar, push, deploy ni copiar builds a public/apps. Esta tarea original lleva diseño; Terra realiza modelado, integración y pruebas.
 
 ## Dirección visual

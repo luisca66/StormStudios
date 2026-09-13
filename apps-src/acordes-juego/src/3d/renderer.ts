@@ -19,6 +19,7 @@ export class Game3D {
   readonly player: PlayerController;
   readonly environment: Environment;
   readonly creatures: CreatureManager;
+  readonly cockpit: Cockpit;
 
   private raycaster = new THREE.Raycaster();
   private ndc = new THREE.Vector2();
@@ -51,6 +52,8 @@ export class Game3D {
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    // Dos pasadas por frame: mundo y cabina (Cockpit.render limpia solo la profundidad).
+    this.renderer.autoClear = false;
 
     this.environment = new Environment(this.scene);
     this.player = new PlayerController(this.camera, canvas);
@@ -65,7 +68,8 @@ export class Game3D {
     this.spotlight.target = spotTarget;
     this.camera.add(this.spotlight);
 
-    new Cockpit(this.camera);
+    this.cockpit = new Cockpit(this.renderer);
+    this.cockpit.resize(window.innerWidth, window.innerHeight);
 
     this.creatures = new CreatureManager(this.scene, () => null);
     this.player.onTap = (x, y) => this.handleTap(x, y);
@@ -81,6 +85,7 @@ export class Game3D {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.cockpit.resize(window.innerWidth, window.innerHeight);
   }
 
   /** Coloca al jugador al inicio de una zona y habilita los controles. */
@@ -140,6 +145,8 @@ export class Game3D {
     this.onDepth?.(depthMeters(pos.y), pos.y);
     this.onFrame?.(dt, this.elapsed);
 
+    this.renderer.clear();
     this.renderer.render(this.scene, this.camera);
+    this.cockpit.render(this.renderer);
   }
 }

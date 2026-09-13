@@ -1,12 +1,12 @@
-// Consola de la batisfera (PLAN §8), rediseñada según art/cabina-submarino.png:
-// ventana CIRCULAR con marco metálico oscuro, paneles de instrumentos en las
-// franjas laterales (sonar/dial a la izquierda, pantallas de datos a la derecha)
-// y consola central inferior con joysticks decorativos y botones de respuesta.
+// Consola de la batisfera (PLAN §8). Marco, consolas e instrumental son el modelo de
+// Blender (3d/cockpit.ts); este HUD pone encima los datos y botones reales, alineados
+// con las pantallas del modelo mediante setLayout().
 
 import { getLang, t } from "../i18n";
 import { chordName, type ChordType } from "@/music/chords";
 import { Sonar, type SonarBlip } from "./sonar";
 import { INTERACTION } from "@/config";
+import type { CockpitLayout, ScreenRect } from "../3d/cockpit";
 
 export class HUD {
   private sonar: Sonar;
@@ -30,23 +30,6 @@ export class HUD {
   constructor(private root: HTMLElement) {
     root.innerHTML = `
       <div id="hull-cracks" class="hull-cracks"></div>
-      <div class="cockpit-frame">
-        <span class="frame-light tl"></span>
-        <span class="frame-light tr"></span>
-        <span class="frame-dot red d1"></span>
-        <span class="frame-dot green d2"></span>
-        <span class="frame-dot amber d3"></span>
-        <span class="frame-dot red d4"></span>
-      </div>
-      <div class="dome-ribs" aria-hidden="true">
-        <i></i><i></i><i></i><i></i><i></i><i></i>
-      </div>
-      <div class="overhead-cluster" aria-hidden="true">
-        <span class="overhead-label">BTH-05</span>
-        <div class="overhead-lamps"><b></b><b></b><b></b><b></b><b></b></div>
-        <div class="overhead-switches"><i></i><i></i><i></i><i></i></div>
-      </div>
-      <div class="glass-fx"></div>
       <div id="hud-feedback" class="hud-feedback"></div>
       <button id="hud-abort" class="abort-btn" title="${t("hud.abort")}">✕ <span data-i18n="hud.abort">${t("hud.abort")}</span></button>
 
@@ -58,34 +41,33 @@ export class HUD {
             <b id="target-distance">—</b>
           </div>
         </div>
-        <div class="dial"><i></i></div>
-        <div class="light-strip">
-          <b class="on"></b><b></b><b class="warn on"></b><b></b><b class="on"></b>
-        </div>
       </aside>
 
       <aside class="side-panel right">
-        <div class="crt stat-screen">
+        <div class="crt stat-screen depth-screen">
           <label data-i18n="hud.depth">${t("hud.depth")}</label>
           <div id="depth-value" class="depth-value">0 m</div>
           <div id="zone-name" class="zone-name"></div>
         </div>
-        <div class="crt stat-screen">
-          <label data-i18n="hud.score">${t("hud.score")}</label>
-          <b id="hud-score" class="stat-big">0</b>
-          <label data-i18n="hud.streak">${t("hud.streak")}</label>
-          <b id="hud-streak" class="stat-big">0</b>
-          <label data-i18n="hud.quota">${t("hud.quota")}</label>
-          <b id="hud-quota" class="stat-big">0/8</b>
+        <div class="crt stat-screen stat-grid">
+          <div>
+            <label data-i18n="hud.score">${t("hud.score")}</label>
+            <b id="hud-score" class="stat-big">0</b>
+          </div>
+          <div>
+            <label data-i18n="hud.streak">${t("hud.streak")}</label>
+            <b id="hud-streak" class="stat-big">0</b>
+          </div>
+          <div>
+            <label data-i18n="hud.quota">${t("hud.quota")}</label>
+            <b id="hud-quota" class="stat-big">0/8</b>
+          </div>
         </div>
         <div id="o2-meter" class="meter hidden">
           <span data-i18n="hud.oxygen">${t("hud.oxygen")}</span>
           <div class="o2-bar"><div id="o2-fill" class="o2-fill"></div></div>
         </div>
         <div id="hull-meter" class="meter hidden"></div>
-        <div class="light-strip">
-          <b class="on"></b><b class="warn"></b><b class="on"></b><b></b><b class="warn on"></b>
-        </div>
       </aside>
 
       <div class="touch-controls">
@@ -96,13 +78,10 @@ export class HUD {
         </div>
       </div>
       <div class="console-bottom">
-        <div class="joystick"><i></i></div>
         <div class="console-panel">
           <div id="answer-prompt" class="answer-prompt hidden"></div>
           <div id="answer-area" class="answer-area"></div>
-          <div class="knob-row"><u></u><u></u><u></u><u></u><u></u><u></u></div>
         </div>
-        <div class="joystick"><i></i></div>
       </div>
     `;
 
@@ -124,6 +103,21 @@ export class HUD {
     this.feedback = q("#hud-feedback");
     this.abortBtn = q("#hud-abort");
     this.sonar = new Sonar(q<HTMLCanvasElement>("#sonar-canvas"));
+  }
+
+  /** Alinea sonar, datos y respuestas con las pantallas del modelo 3D (px CSS). */
+  setLayout(layout: CockpitLayout): void {
+    this.root.classList.toggle("cabin-narrow", layout.narrow);
+    const set = (name: string, rect?: ScreenRect): void => {
+      if (!rect) return;
+      this.root.style.setProperty(`--${name}-x`, `${rect.x.toFixed(1)}px`);
+      this.root.style.setProperty(`--${name}-y`, `${rect.y.toFixed(1)}px`);
+      this.root.style.setProperty(`--${name}-w`, `${rect.width.toFixed(1)}px`);
+      this.root.style.setProperty(`--${name}-h`, `${rect.height.toFixed(1)}px`);
+    };
+    set("sonar", layout.sonar);
+    set("stats", layout.stats);
+    set("answers", layout.answers);
   }
 
   show(): void {

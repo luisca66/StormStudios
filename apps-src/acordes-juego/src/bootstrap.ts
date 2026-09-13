@@ -1,5 +1,6 @@
 import { preloadBlenderJellyfish } from "./3d/creatures/blender-jellyfish";
 import { preloadBlenderSchool } from "./3d/creatures/blender-school";
+import { preloadCockpit } from "./3d/cockpit";
 
 const start = document.querySelector<HTMLButtonElement>("#start-btn")!;
 const label = start.textContent;
@@ -8,7 +9,7 @@ start.textContent = "Cargando criaturas…";
 
 async function boot(): Promise<void> {
   try {
-    await Promise.all([preloadBlenderJellyfish(), preloadBlenderSchool()]);
+    await Promise.all([preloadBlenderJellyfish(), preloadBlenderSchool(), preloadCockpit()]);
     start.textContent = label;
     await import("./main");
     start.disabled = false;

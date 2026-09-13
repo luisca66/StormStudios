@@ -419,3 +419,15 @@ Checklist §13 (resultado final):
   inmersión como al terminar cada pista; QA cubre extremos y anti-repetición inmediata.
 - Balance final pedido por Luis: música 0.14→0.35 relativo; fades y silencio del
   acorde sin cambios.
+
+### ✅ Cabina sci-fi modelada en Blender (2026-09-13, Claude Opus 5)
+- Concepto v1 aprobado por Luis. `art/blender/modelar-cabina.py` → `src/3d/assets/cabina-scifi.json`:
+  ventanal octagonal, pilares con rendija lateral, consolas inclinadas y consola central.
+- `3d/cockpit.ts` reescrito: 10 módulos anclados a la pantalla, fusionados por material
+  (8 draw calls, 17.7k tri), segunda pasada con `clearDepth` y luces propias.
+- HUD: se retiraron aro, costillas, consola cenital, dial, luces y joysticks CSS.
+  `HUD.setLayout()` alinea sonar, datos y respuestas con las pantallas del modelo;
+  aspecto < 1.1 usa la disposición compacta (sin consolas laterales).
+- La cabina también se ve detrás del menú, la pausa y el resumen.
+- Verificado: build + QA, pregunta/respuesta, pausa, abortar, 4 aspectos (2 táctiles), ~60 FPS.
+  Pendiente: prueba en teléfono real. Sin deploy.
