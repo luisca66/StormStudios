@@ -559,6 +559,26 @@ if (debugEnabled) {
   addBtn("✔ acierto.mp3", () => player.playCorrect());
   addBtn("✘ error.mp3", () => player.playIncorrect());
 
+  if (import.meta.env.DEV) {
+    addBtn("Acercar Cardumen Prisma", () => {
+      const school = game.creatures.all.find((c) => c.speciesId === "school" && c.state === "IDLE");
+      if (!school) { showToast("Espera a que aparezca un cardumen durante la inmersión."); return; }
+      const position = game.player.position.clone().set(0, 0, -9);
+      game.player.yawObject.localToWorld(position);
+      school.setHome(position);
+    });
+    addBtn("Acercar Medusa Luna", () => {
+      const medusa = game.creatures.all.find((c) => c.speciesId === "jellyfish" && c.state === "IDLE");
+      if (!medusa) {
+        showToast("Espera a que aparezca una medusa durante la inmersión.");
+        return;
+      }
+      const position = game.player.position.clone().set(0, 0, -8);
+      game.player.yawObject.localToWorld(position);
+      medusa.setHome(position);
+    });
+  }
+
   // Lectura de profundidad en vivo (verificación F2) — encadena sin robar el callback del HUD.
   const depthReadout = document.createElement("div");
   depthReadout.style.cssText = "color:#7dd3fc;font-family:monospace";

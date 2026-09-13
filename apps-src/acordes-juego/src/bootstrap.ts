@@ -1,0 +1,27 @@
+import { preloadBlenderJellyfish } from "./3d/creatures/blender-jellyfish";
+import { preloadBlenderSchool } from "./3d/creatures/blender-school";
+
+const start = document.querySelector<HTMLButtonElement>("#start-btn")!;
+const label = start.textContent;
+start.disabled = true;
+start.textContent = "Cargando criaturas…";
+
+async function boot(): Promise<void> {
+  try {
+    await Promise.all([preloadBlenderJellyfish(), preloadBlenderSchool()]);
+    start.textContent = label;
+    await import("./main");
+    start.disabled = false;
+  } catch (error) {
+    console.error("No se pudo iniciar Batisfera", error);
+    start.disabled = false;
+    start.textContent = "Reintentar carga";
+    start.addEventListener("click", () => {
+      start.disabled = true;
+      start.textContent = "Cargando criaturas…";
+      void boot();
+    }, { once: true });
+  }
+}
+
+void boot();

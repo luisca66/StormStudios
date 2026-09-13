@@ -1,9 +1,11 @@
-// Las 7 especies procedurales (PLAN §7). Cero assets externos: primitivas three.js
+// Especies de Batisfera: Medusa Luna y Cardumen Prisma modelados en Blender; las otras cinco usan primitivas
 // + sprites de halo con textura canvas compartida. Cada fábrica recibe el color de
 // bioluminiscencia (según familia del acorde) y devuelve un CreatureVisual.
 
 import * as THREE from "three";
 import type { CreatureVisual } from "./base";
+import { buildBlenderJellyfish } from "./blender-jellyfish";
+import { buildBlenderSchool } from "./blender-school";
 
 // ---------- Halo compartido ----------
 let glowTexture: THREE.CanvasTexture | null = null;
@@ -51,115 +53,7 @@ function glowMat(color: number, base = 0x0a1016, intensity = 0.9): THREE.MeshSta
 }
 
 // ---------- 1. Medusa Luna (zonas 1–2) ----------
-function buildJellyfish(color: number): CreatureVisual {
-  const group = new THREE.Group();
-  const bellMat = glowMat(color, 0x0c1420, 0.8);
-  bellMat.transparent = true;
-  bellMat.opacity = 0.82;
-  const bell = new THREE.Mesh(
-    new THREE.SphereGeometry(1.1, 20, 12, 0, Math.PI * 2, 0, Math.PI / 2),
-    bellMat,
-  );
-  group.add(bell);
-
-  // H4a: material propio por tentáculo para destellar nota a nota.
-  const tentacleMats: THREE.MeshStandardMaterial[] = [];
-  const tentacles: THREE.Mesh[] = [];
-  for (let i = 0; i < 9; i++) {
-    const a = (i / 9) * Math.PI * 2;
-    const mat = glowMat(color, 0x0a1016, 0.7);
-    const tentacle = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.008, 1.7, 4), mat);
-    tentacle.position.set(Math.cos(a) * 0.55, -0.9, Math.sin(a) * 0.55);
-    tentacleMats.push(mat);
-    tentacles.push(tentacle);
-    group.add(tentacle);
-  }
-  group.add(makeHalo(color, 3.6));
-
-  return {
-    group,
-    glowMaterials: [bellMat, ...tentacleMats],
-    glowSprites: group.children.filter((c): c is THREE.Sprite => c instanceof THREE.Sprite),
-    bodyRadius: 1.6,
-    animate(_dt, elapsed) {
-      const pulse = 1 + Math.sin(elapsed * 2.2) * 0.13;
-      bell.scale.set(1 / Math.sqrt(pulse), pulse, 1 / Math.sqrt(pulse));
-      for (let i = 0; i < tentacles.length; i++) {
-        tentacles[i].rotation.x = Math.sin(elapsed * 1.8 + i) * 0.14;
-        tentacles[i].rotation.z = Math.cos(elapsed * 1.5 + i) * 0.14;
-      }
-    },
-    flashSegment(index, intensity) {
-      tentacleMats[index % tentacleMats.length].emissiveIntensity += intensity * 3;
-    },
-  };
-}
-
 // ---------- 2. Cardumen Prisma (zonas 1–2) ----------
-function buildSchool(color: number): CreatureVisual {
-  const group = new THREE.Group();
-  const COUNT = 46;
-  const mat = glowMat(color, 0x0d141c, 0.8);
-  const school = new THREE.InstancedMesh(new THREE.ConeGeometry(0.11, 0.42, 5), mat, COUNT);
-  group.add(school);
-  group.add(makeHalo(color, 4.5, 0.25));
-
-  // Órbitas individuales (elipses inclinadas con fase propia).
-  const params = Array.from({ length: COUNT }, () => ({
-    r: 1.2 + Math.random() * 2.2,
-    tilt: (Math.random() - 0.5) * 0.9,
-    phase: Math.random() * Math.PI * 2,
-    speed: 0.9 + Math.random() * 0.7,
-    yOff: (Math.random() - 0.5) * 2.2,
-  }));
-  const dummy = new THREE.Object3D();
-  // H4a: destello por sub-racimo (escala de instancia); H4c: huida compactando órbitas.
-  const flashes = new Float32Array(COUNT);
-  let fleeK = 0;
-
-  const animate = (_dt: number, elapsed: number): void => {
-    const orbitShrink = 1 - fleeK * 0.75; // H4c: los peces se compactan al huir
-    for (let i = 0; i < COUNT; i++) {
-      const p = params[i];
-      const a = elapsed * p.speed + p.phase;
-      const r = p.r * orbitShrink;
-      dummy.position.set(
-        Math.cos(a) * r,
-        (p.yOff + Math.sin(a * 1.3) * 0.4 + Math.sin(a) * r * p.tilt * 0.3) * orbitShrink,
-        Math.sin(a) * r,
-      );
-      // El cono apunta hacia donde nada (tangente de la órbita).
-      dummy.lookAt(
-        dummy.position.x - Math.sin(a) * r,
-        dummy.position.y,
-        dummy.position.z + Math.cos(a) * r,
-      );
-      dummy.rotateX(Math.PI / 2);
-      dummy.scale.setScalar(1 + flashes[i] * 1.2);
-      dummy.updateMatrix();
-      school.setMatrixAt(i, dummy.matrix);
-    }
-    school.instanceMatrix.needsUpdate = true;
-  };
-
-  return {
-    group,
-    glowMaterials: [mat],
-    glowSprites: group.children.filter((c): c is THREE.Sprite => c instanceof THREE.Sprite),
-    bodyRadius: 3.2,
-    animate,
-    flashSegment(index, intensity, noteCount) {
-      const j0 = Math.floor((index * COUNT) / noteCount);
-      const j1 = Math.floor(((index + 1) * COUNT) / noteCount);
-      for (let j = j0; j < j1; j++) flashes[j] = intensity;
-    },
-    fleeAnimate(dt, elapsed, progress) {
-      fleeK = Math.min(1, progress);
-      animate(dt, elapsed);
-    },
-  };
-}
-
 // ---------- 3. Calamar Vela (zonas 2–3) ----------
 function buildSquid(color: number): CreatureVisual {
   const group = new THREE.Group();
@@ -430,8 +324,8 @@ export interface SpeciesDef {
 }
 
 export const SPECIES: SpeciesDef[] = [
-  { id: "jellyfish", es: "Medusa Luna", en: "Moon Jelly", zones: [1, 2], build: buildJellyfish },
-  { id: "school", es: "Cardumen Prisma", en: "Prism School", zones: [1, 2], build: buildSchool },
+  { id: "jellyfish", es: "Medusa Luna", en: "Moon Jelly", zones: [1, 2], build: buildBlenderJellyfish },
+  { id: "school", es: "Cardumen Prisma", en: "Prism School", zones: [1, 2], build: buildBlenderSchool },
   { id: "squid", es: "Calamar Vela", en: "Sail Squid", zones: [2, 3], build: buildSquid },
   { id: "angler", es: "Rape Abisal", en: "Anglerfish", zones: [3, 4], build: buildAnglerfish },
   { id: "siphonophore", es: "Sifonóforo", en: "Siphonophore", zones: [3, 4, 5], build: buildSiphonophore },

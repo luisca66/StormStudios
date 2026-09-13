@@ -208,6 +208,7 @@ export class Creature {
   dispose(): void {
     this.group.traverse((obj) => {
       if (obj instanceof THREE.Mesh) {
+        if (obj instanceof THREE.InstancedMesh) obj.dispose();
         obj.geometry.dispose();
         const mat = obj.material as THREE.Material | THREE.Material[];
         if (Array.isArray(mat)) mat.forEach((m) => m.dispose());
