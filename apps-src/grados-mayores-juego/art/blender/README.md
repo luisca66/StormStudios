@@ -66,3 +66,22 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 
 Para verlo pasar sin esperar: `npm run dev`, abrir con `?dev=1`, iniciar viaje y en consola
 `ExpresoF2.journey.crossing.spawn({ distance: ExpresoF2.journey.train.distance + 70, fromLeft: false, fired: true })`.
+
+## 3. Estación Terminal
+
+`modelar-terminal.py` → `terminal.blend` / `.glb` / `terminal-llegada.png` / `-fachada.png` /
+`-nave.png` y `../../src/3d/assets/terminal.json` (5.5 MB; 708 kB con gzip).
+
+- Mismas medidas que la versión de primitivas (semiancho 34, altura 62, fondo 150, torres en
+  x = ±41, tope en z = −142): la ceremonia de llegada no cambió.
+- Fachada con arco de dovelas, clave con lira, óculos y pantalla de vidrio en abanico de sol
+  naciente; bóveda de cerchas de celosía con correas y linterna; torres con basamento,
+  ventanales encendidos, reloj-rosetón, campanario y cúpula de cobre; andenes con
+  columnas-palmera, faroles, bancas y carritos; gran reloj colgante sobre la vía; portones
+  iluminados del vestíbulo frente al tope; piso de piedra.
+- Piezas: `static` (edificio por material), `spokes` (24 husos sueltos: el juego enciende
+  los diatónicos de la tonalidad), `gate` (pórtico de columnas estriadas) y `medallion`.
+- Materiales con `fog: false` para lo iluminado: la Terminal se ve desde 1300 u.
+
+Para verla sin jugar el viaje: `?dev=1`, iniciar viaje y en consola
+`const j = ExpresoF2.journey; j.onTick = null; j.setGameProgress(0.95); j.revealStation(); j.beginArrival('C', true, { onArch() {}, onFinalChord() {}, onStopped() {} })`.

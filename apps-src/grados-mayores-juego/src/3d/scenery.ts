@@ -331,6 +331,8 @@ export class Scenery {
   private route: RouteSpec | null = null;
   private seed = 1;
   private chunks = new Map<number, SceneryChunk>();
+  /** Zona vedada al decorado (la huella de la Terminal): árboles y postes no entran. */
+  private keepOut: ((worldPosition: THREE.Vector3) => boolean) | null = null;
   private tunnel: THREE.Group | null = null;
   private readonly frame: TrackFrame = newTrackFrame();
   private readonly basis = new THREE.Matrix4();
@@ -362,6 +364,7 @@ export class Scenery {
 
   reset(route: RouteSpec, seed: number): void {
     this.clear();
+    this.keepOut = null;
     this.route = route;
     this.seed = seed;
     this.elapsed = 0;
@@ -421,7 +424,9 @@ export class Scenery {
     const end = start + SEGMENT_LENGTH;
     const rng = makeRng(this.seed + index * 104729);
     const terrainGeometry = this.makeTerrain(start, end, rng);
-    group.add(new THREE.Mesh(terrainGeometry, TERRAIN_MATERIALS[this.route.biome] ?? fallbackTerrain));
+    const terrain = new THREE.Mesh(terrainGeometry, TERRAIN_MATERIALS[this.route.biome] ?? fallbackTerrain);
+    terrain.userData.terrain = true;
+    group.add(terrain);
 
     if (this.route.biome === "VALLE") this.populateValley(group, start, end, rng, index);
     if (this.route.biome === "SIERRA") this.populateSierra(group, start, end, rng, index);
@@ -433,6 +438,7 @@ export class Scenery {
     this.addTelegraphLine(group, start, end, index);
     this.addMilestones(group, start, end);
 
+    if (this.keepOut) this.cullInside(group, this.keepOut);
     this.scene.add(group);
     const ownedGeometries = [terrainGeometry];
     group.traverse((object) => {
@@ -442,6 +448,58 @@ export class Scenery {
       }
     });
     this.chunks.set(index, { index, group, ownedGeometries });
+  }
+
+  /**
+   * Veta el decorado dentro de una zona (la Terminal). Los chunks YA construidos se
+   * rehacen desde su semilla —salen idénticos— y se recortan; los siguientes se recortan
+   * al nacer. Rehacer en vez de ocultar sobre lo existente permite volver a llamarlo
+   * cuando un desvío mueve la estación: lo que quedó fuera reaparece sin huecos.
+   */
+  setKeepOut(test: ((worldPosition: THREE.Vector3) => boolean) | null): void {
+    this.keepOut = test;
+    for (const index of [...this.chunks.keys()]) {
+      const chunk = this.chunks.get(index)!;
+      this.scene.remove(chunk.group);
+      for (const geometry of chunk.ownedGeometries) geometry.dispose();
+      this.chunks.delete(index);
+      this.buildChunk(index);
+    }
+  }
+
+  /** Esconde instancias y piezas cuyo centro cae en la zona vedada (el terreno se queda). */
+  private cullInside(group: THREE.Group, test: (worldPosition: THREE.Vector3) => boolean): void {
+    const hidden = new THREE.Matrix4().makeScale(0, 0, 0);
+    const point = new THREE.Vector3();
+    group.traverse((object) => {
+      if (object.userData.terrain) return;
+      if (object instanceof THREE.InstancedMesh) {
+        let changed = false;
+        for (let i = 0; i < object.count; i++) {
+          object.getMatrixAt(i, this.matrix);
+          point.setFromMatrixPosition(this.matrix);
+          if (test(point)) { object.setMatrixAt(i, hidden); changed = true; }
+        }
+        if (changed) {
+          object.instanceMatrix.needsUpdate = true;
+          object.boundingSphere = null;
+        }
+      } else if (object instanceof THREE.Mesh || object instanceof THREE.Points || object instanceof THREE.Line) {
+        const geometry = object.geometry as THREE.BufferGeometry;
+        if (!geometry.boundingSphere) geometry.computeBoundingSphere();
+        object.updateWorldMatrix(true, false);
+        point.copy(geometry.boundingSphere!.center).applyMatrix4(object.matrixWorld);
+        // Las catenarias cruzan el chunk entero: se esconden si alguno de sus vértices entra.
+        let inside = test(point);
+        if (!inside && object instanceof THREE.Line) {
+          const positions = geometry.getAttribute("position");
+          for (let i = 0; i < positions.count && !inside; i++) {
+            inside = test(point.fromBufferAttribute(positions, i).applyMatrix4(object.matrixWorld));
+          }
+        }
+        if (inside) object.visible = false;
+      }
+    });
   }
 
   private makeTerrain(start: number, end: number, rng: () => number): THREE.BufferGeometry {

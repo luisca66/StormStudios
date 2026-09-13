@@ -2,35 +2,28 @@
 // AQUÍ". Nave de hierro y cristal, dos torres con rosetón de 12 husos, vitral de sol al
 // fondo, y los 8 arcos que cantan la escala mayor de la tonalidad del viaje.
 //
+// Desde 2026-09 la arquitectura está modelada en Blender (art/blender/modelar-terminal.py):
+// fachada con arco de dovelas y pantalla de sol naciente, bóveda de cerchas de celosía,
+// torres con campanario y cúpula de cobre, andenes con columnas-palmera y faroles, gran
+// reloj colgante sobre la vía y pórticos de celosía. Se conservaron las medidas de la
+// versión de primitivas, así que la ceremonia de llegada no cambió. Aquí solo se arma lo
+// que llega en el JSON, se deciden los husos encendidos y se pinta el vitral de canvas.
+//
 // La Terminal se planta en un PUNTO FIJO del mundo en cuanto asoma y ya no se mueve:
-// crece sola al acercarse el tren, con toda su geometría desde el primer instante. El
-// impostor de silueta de §12 se retiró porque hacía lo contrario — iba clavado a una
-// distancia fija POR DELANTE del tren y su tamaño palpitaba al recortarse contra el
-// final de la vía construida. Todo lo estático se fusiona por material.
+// crece sola al acercarse el tren, con toda su geometría desde el primer instante.
 
 import * as THREE from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { newTrackFrame, type TrackFrame, type TrackManager } from "./track";
 import { Fireworks } from "./fireworks";
+import terminalUrl from "./assets/terminal.json?url";
+import { metalEnvironment } from "./metal-env";
 
 const UP = new THREE.Vector3(0, 1, 0);
-const IRON = new THREE.MeshStandardMaterial({ color: "#2a2622", roughness: 0.62, metalness: 0.55 });
-const STONE = new THREE.MeshStandardMaterial({ color: "#c9b184", roughness: 0.9 });
-const STONE_DARK = new THREE.MeshStandardMaterial({ color: "#a08b62", roughness: 0.95 });
-// Las partes ILUMINADAS ignoran la niebla (`fog: false`). La Terminal se planta a más
-// de 1300 u y con la densidad de fog del bioma quedaba tapada al 93 %: invisible. Así
-// de lejos se ve el farol encendido en el horizonte —"la estación ES una linterna"
-// (§12)— y al acercarse emerge de la bruma el edificio entero. El hierro y la piedra sí
-// llevan niebla, que es lo que da la sensación de que aparece.
-const GLASS = new THREE.MeshStandardMaterial({
-  color: "#ffdca8", emissive: "#ffb960", emissiveIntensity: 1.15,
-  roughness: 0.25, transparent: true, opacity: 0.72, side: THREE.DoubleSide,
-  fog: false,
-});
-const LAMP = new THREE.MeshStandardMaterial({
-  color: "#ffe6b0", emissive: "#ffc46a", emissiveIntensity: 2.4, roughness: 0.4,
-  fog: false,
-});
+// Las partes ILUMINADAS ignoran la niebla (`fog: false`, lo marca el JSON). La Terminal
+// se planta a más de 1300 u y con la densidad de fog del bioma quedaba tapada al 93 %:
+// así de lejos se ve la linterna encendida en el horizonte y al acercarse emerge de la
+// bruma el edificio entero. La piedra y el hierro sí llevan niebla.
 const SPOKE_LIT = new THREE.MeshStandardMaterial({
   color: "#ffe9b8", emissive: "#ffc247", emissiveIntensity: 2.2, roughness: 0.4,
   fog: false,
@@ -41,24 +34,68 @@ const MEDALLION_ON = new THREE.MeshStandardMaterial({
   color: "#ffd97a", emissive: "#ffb52e", emissiveIntensity: 2.6, roughness: 0.35,
 });
 
-// --- Geometría de la nave ------------------------------------------------------------
-// Proporción de nave del XIX: ancha y alta. Con 26 de semiancho la parábola salía
-// apuntada y leía a aguja gótica, no a estación.
-const VAULT_HALF_WIDTH = 34;
-const VAULT_HEIGHT = 62;
-const VAULT_DEPTH = 150;
-const RIB_COUNT = 13;
-
-/** Arco parabólico de la bóveda: y = H · (1 − (x/W)²). El perfil del XIX. */
-function vaultArchPoints(segments: number): THREE.Vector3[] {
-  const points: THREE.Vector3[] = [];
-  for (let i = 0; i <= segments; i++) {
-    const x = -VAULT_HALF_WIDTH + (2 * VAULT_HALF_WIDTH * i) / segments;
-    const t = x / VAULT_HALF_WIDTH;
-    points.push(new THREE.Vector3(x, VAULT_HEIGHT * (1 - t * t), 0));
-  }
-  return points;
+interface Bucket { material: string; position: number[]; normal: number[]; color: number[]; index: number[] }
+interface MaterialData {
+  key: string; color: string; metalness: number; roughness: number; emissive: string;
+  emissiveIntensity: number; fog: boolean; opacity: number; doubleSide: boolean;
 }
+interface TerminalData {
+  materials: MaterialData[];
+  static: Bucket[];
+  spokes: Array<Bucket & { tower: number; spoke: number }>;
+  gate: Bucket[];
+  medallion: Bucket[];
+}
+interface TerminalAssets {
+  building: Array<{ geometry: THREE.BufferGeometry; material: THREE.MeshStandardMaterial }>;
+  spokes: Array<{ spoke: number; geometry: THREE.BufferGeometry }>;
+  gate: Array<{ geometry: THREE.BufferGeometry; material: THREE.MeshStandardMaterial }>;
+  medallion: THREE.BufferGeometry;
+}
+
+function bucketGeometry(b: Bucket): THREE.BufferGeometry {
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(b.position, 3));
+  geometry.setAttribute("normal", new THREE.Float32BufferAttribute(b.normal, 3));
+  geometry.setAttribute("color", new THREE.Float32BufferAttribute(b.color, 3));
+  geometry.setIndex(b.index);
+  geometry.computeBoundingSphere();
+  return geometry;
+}
+
+let assets: TerminalAssets | null = null;
+let loading: Promise<TerminalAssets> | null = null;
+
+/** Geometría COMPARTIDA entre construcciones: se crea una vez y no se dispone. */
+function loadTerminal(): Promise<TerminalAssets> {
+  return loading ??= fetch(terminalUrl).then(async (response) => {
+    if (!response.ok) throw new Error(`Terminal: HTTP ${response.status}`);
+    const data = await response.json() as TerminalData;
+    const env = metalEnvironment();
+    const materials = new Map<string, THREE.MeshStandardMaterial>();
+    for (const m of data.materials) {
+      materials.set(m.key, new THREE.MeshStandardMaterial({
+        color: m.color, metalness: m.metalness, roughness: m.roughness,
+        emissive: m.emissive, emissiveIntensity: m.emissiveIntensity,
+        vertexColors: true, fog: m.fog,
+        transparent: m.opacity < 1, opacity: m.opacity,
+        side: m.doubleSide ? THREE.DoubleSide : THREE.FrontSide,
+        envMap: m.metalness > 0.5 ? env : null,
+      }));
+    }
+    const pick = (b: Bucket) => ({ geometry: bucketGeometry(b), material: materials.get(b.material)! });
+    assets = {
+      building: data.static.map(pick),
+      spokes: data.spokes.map((b) => ({ spoke: b.spoke, geometry: bucketGeometry(b) })),
+      gate: data.gate.map(pick),
+      medallion: bucketGeometry(data.medallion[0]),
+    };
+    return assets;
+  }).catch((error: unknown) => { loading = null; throw error; });
+}
+
+// --- Medidas de la nave (las mismas que usa el modelo de Blender) ----------------------
+const VAULT_DEPTH = 150;
 
 /** Textura de canvas del vitral: sol radiante con rayos (§12). Cero assets de imagen. */
 function sunVitralTexture(): THREE.CanvasTexture {
@@ -117,16 +154,35 @@ export interface StationConfig {
 export class Station {
   private readonly frame: TrackFrame = newTrackFrame();
   private readonly basis = new THREE.Matrix4();
+  private readonly tmpLocal = new THREE.Vector3();
   private building: THREE.Group | null = null;
   private arches: THREE.Group | null = null;
   private owned: THREE.BufferGeometry[] = [];
+  private ownedMaterials: THREE.Material[] = [];
+  private ownedTextures: THREE.Texture[] = [];
+  private buildToken = 0;
+  /** Avisa cuando el edificio queda plantado o se mueve (el decorado se recorta). */
+  onBuilt: (() => void) | null = null;
   private medallions: THREE.InstancedMesh | null = null;
   private archLit = 0;
   private fireworks: Fireworks | null = null;
   private config: StationConfig | null = null;
   private distance = 0;
 
-  constructor(private readonly scene: THREE.Scene, private readonly track: TrackManager) {}
+  constructor(private readonly scene: THREE.Scene, private readonly track: TrackManager) {
+    void loadTerminal();
+  }
+
+  /**
+   * ¿Cae este punto del mundo dentro de la huella del edificio (nave, torres, muros y
+   * explanada)? Lo usa el decorado para no plantar árboles ni postes dentro de la nave.
+   */
+  contains(worldPosition: THREE.Vector3): boolean {
+    if (!this.building) return false;
+    const local = this.tmpLocal.copy(worldPosition);
+    this.building.worldToLocal(local);
+    return Math.abs(local.x) < 52 && local.z < 16 && local.z > -VAULT_DEPTH - 12;
+  }
 
   /** Dónde está plantada la boca de la nave, en distancia de vía. */
   stationDistance(): number {
@@ -141,6 +197,8 @@ export class Station {
     if (!this.building) return;
     this.distance = distance;
     this.placeGroup(this.building, distance);
+    this.building.updateMatrixWorld(true);
+    this.onBuilt?.();
   }
 
   /** Orienta y coloca el grupo con la cuerda boca→fondo (ver nota en `build`). */
@@ -172,152 +230,59 @@ export class Station {
     this.dispose();
     this.config = config;
     this.distance = config.distance;
+    if (!assets) {
+      // El JSON se precarga al crear la Station; si aún no llegó, se construye al llegar
+      // con la distancia vigente (un `relocate` intermedio ya la habrá actualizado).
+      const token = ++this.buildToken;
+      void loadTerminal().then(() => {
+        if (token === this.buildToken && this.config) this.build({ ...this.config, distance: this.distance });
+      });
+      return;
+    }
     const group = new THREE.Group();
-    const owned: THREE.BufferGeometry[] = [];
-
+    group.name = "Estación Terminal · Blender 4.5";
     this.placeGroup(group, config.distance);
 
-    this.buildVault(group, owned);
-    this.buildTowers(group, owned, config.tonicPitchClass);
-    this.buildBackdrop(group, owned);
-    this.buildPlatforms(group, owned);
+    for (const { geometry, material } of assets.building) group.add(new THREE.Mesh(geometry, material));
+    this.buildRosettes(group, assets, config.tonicPitchClass);
+    this.buildVitral(group);
 
+    group.updateMatrixWorld(true);
     this.scene.add(group);
     this.building = group;
-    this.owned = owned;
+    this.onBuilt?.();
   }
 
-  /** Bóveda de cañón: costillas parabólicas de hierro y paños de vidrio entre ellas. */
-  private buildVault(group: THREE.Group, owned: THREE.BufferGeometry[]): void {
-    const ribs: THREE.BufferGeometry[] = [];
-    const panes: THREE.BufferGeometry[] = [];
-    const arch = vaultArchPoints(26);
-    const curve = new THREE.CatmullRomCurve3(arch);
-
-    for (let i = 0; i < RIB_COUNT; i++) {
-      const z = -VAULT_DEPTH * (i / (RIB_COUNT - 1));
-      const rib = new THREE.TubeGeometry(curve, 40, 0.55, 6, false);
-      rib.translate(0, 0, z);
-      ribs.push(rib);
-      // Paño de vidrio entre esta costilla y la siguiente.
-      if (i < RIB_COUNT - 1) {
-        const dz = VAULT_DEPTH / (RIB_COUNT - 1);
-        const positions: number[] = [];
-        const indices: number[] = [];
-        for (let k = 0; k < arch.length; k++) {
-          const p = arch[k];
-          positions.push(p.x, p.y, z, p.x, p.y, z - dz);
-          if (k < arch.length - 1) {
-            const a = k * 2;
-            indices.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
-          }
-        }
-        const pane = new THREE.BufferGeometry();
-        pane.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-        pane.setIndex(indices);
-        pane.computeVertexNormals();
-        panes.push(pane);
-      }
-      // Montantes verticales de la costilla hasta el suelo.
-      for (const side of [-1, 1]) {
-        const post = new THREE.CylinderGeometry(0.5, 0.7, 6, 6);
-        post.translate(side * VAULT_HALF_WIDTH, 3, z);
-        ribs.push(post);
-      }
-    }
-
-    const ribGeo = mergeGeometries(ribs, false);
-    const paneGeo = mergeGeometries(panes, false);
-    for (const g of [...ribs, ...panes]) g.dispose();
-    if (ribGeo) { group.add(new THREE.Mesh(ribGeo, IRON)); owned.push(ribGeo); }
-    if (paneGeo) { group.add(new THREE.Mesh(paneGeo, GLASS)); owned.push(paneGeo); }
-  }
-
-  /** Torres de reloj con rosetón de 12 husos: los diatónicos del viaje van encendidos. */
-  private buildTowers(group: THREE.Group, owned: THREE.BufferGeometry[], tonic: string): void {
-    const shafts: THREE.BufferGeometry[] = [];
-    const lit: THREE.BufferGeometry[] = [];
-    const dark: THREE.BufferGeometry[] = [];
-
+  /** Rosetones de 12 husos: los diatónicos de la tonalidad del viaje van encendidos. */
+  private buildRosettes(group: THREE.Group, data: TerminalAssets, tonic: string): void {
     const tonicSemitone = semitoneOf(tonic);
     const MAJOR = [0, 2, 4, 5, 7, 9, 11];
-    const isDiatonic = (spoke: number): boolean =>
-      MAJOR.includes((((spoke - tonicSemitone) % 12) + 12) % 12);
-
-    for (const side of [-1, 1]) {
-      const x = side * (VAULT_HALF_WIDTH + 7);
-      const shaft = new THREE.BoxGeometry(11, 74, 11).translate(x, 37, -6);
-      // Rotar ANTES de trasladar: `rotateY` gira la geometría alrededor del ORIGEN, no
-      // de su propio centro. Al revés, el chapitel ya trasladado a x=41 salía despedido
-      // a (24.7, 80, −33.2) — se veía delante de su torre en vez de encima.
-      const cap = new THREE.ConeGeometry(8.6, 13, 4);
-      cap.rotateY(Math.PI / 4);
-      cap.translate(x, 80, -6);
-      shafts.push(shaft, cap);
-
-      // Rosetón: 12 husos radiales. La rotación del patrón cambia con la tónica, así
-      // que cada una de las 15 rutas tiene su reloj (detalle §12, sin una sola letra).
-      const faceZ = 1.2;
-      const ring = new THREE.TorusGeometry(5.2, 0.45, 6, 24).translate(x, 58, faceZ - 6);
-      shafts.push(ring);
-      for (let spoke = 0; spoke < 12; spoke++) {
-        const angle = (spoke / 12) * Math.PI * 2 - Math.PI / 2;
-        const wedge = new THREE.BoxGeometry(0.85, 4.4, 0.35);
-        wedge.translate(0, 2.6, 0);
-        wedge.rotateZ(-angle - Math.PI / 2);
-        wedge.translate(x, 58, faceZ - 6);
-        (isDiatonic(spoke) ? lit : dark).push(wedge);
-      }
+    const lit: THREE.BufferGeometry[] = [];
+    const dark: THREE.BufferGeometry[] = [];
+    for (const { spoke, geometry } of data.spokes) {
+      // La rotación del patrón cambia con la tónica: cada una de las 15 rutas tiene su reloj.
+      (MAJOR.includes((((spoke - tonicSemitone) % 12) + 12) % 12) ? lit : dark).push(geometry);
     }
-
-    for (const [parts, material] of [[shafts, STONE], [lit, SPOKE_LIT], [dark, SPOKE_DARK]] as const) {
-      const merged = mergeGeometries(parts as THREE.BufferGeometry[], false);
-      for (const g of parts as THREE.BufferGeometry[]) g.dispose();
-      if (merged) { group.add(new THREE.Mesh(merged, material)); owned.push(merged); }
+    for (const [parts, material] of [[lit, SPOKE_LIT], [dark, SPOKE_DARK]] as const) {
+      const merged = mergeGeometries(parts, false);
+      if (merged) { group.add(new THREE.Mesh(merged, material)); this.owned.push(merged); }
     }
   }
 
-  /** Vitral de sol al fondo de la nave: lo primero que se ve al entrar. */
-  private buildBackdrop(group: THREE.Group, owned: THREE.BufferGeometry[]): void {
-    const wallParts = [
-      new THREE.BoxGeometry(2 * VAULT_HALF_WIDTH + 8, VAULT_HEIGHT + 8, 2)
-        .translate(0, (VAULT_HEIGHT + 8) / 2, -VAULT_DEPTH - 1),
-    ];
-    const wall = mergeGeometries(wallParts, false);
-    for (const g of wallParts) g.dispose();
-    if (wall) { group.add(new THREE.Mesh(wall, STONE_DARK)); owned.push(wall); }
-
+  /** Vitral de sol en el rosetón del muro de fondo: lo primero que se ve al entrar. */
+  private buildVitral(group: THREE.Group): void {
     const vitral = new THREE.CircleGeometry(17, 40);
-    const mesh = new THREE.Mesh(vitral, new THREE.MeshStandardMaterial({
-      map: sunVitralTexture(), emissiveMap: sunVitralTexture(),
+    const texture = sunVitralTexture();
+    const material = new THREE.MeshStandardMaterial({
+      map: texture, emissiveMap: texture,
       emissive: "#ffffff", emissiveIntensity: 1.5, roughness: 0.6, fog: false,
-    }));
+    });
+    const mesh = new THREE.Mesh(vitral, material);
     mesh.position.set(0, 34, -VAULT_DEPTH + 0.2);
     group.add(mesh);
-    owned.push(vitral);
-  }
-
-  private buildPlatforms(group: THREE.Group, owned: THREE.BufferGeometry[]): void {
-    const stone: THREE.BufferGeometry[] = [];
-    const lamps: THREE.BufferGeometry[] = [];
-    for (const side of [-1, 1]) {
-      const x = side * 9.5;
-      stone.push(new THREE.BoxGeometry(11, 1.1, VAULT_DEPTH - 6)
-        .translate(x, 0.55, -VAULT_DEPTH / 2));
-      for (let i = 0; i < 9; i++) {
-        const z = -8 - i * ((VAULT_DEPTH - 20) / 8);
-        stone.push(new THREE.CylinderGeometry(0.22, 0.28, 5.2, 6).translate(x, 3.7, z));
-        lamps.push(new THREE.SphereGeometry(0.62, 8, 6).translate(x, 6.6, z));
-      }
-    }
-    // Tope de vía: el punto exacto donde el viaje termina.
-    stone.push(new THREE.BoxGeometry(4.4, 1.6, 1.2).translate(0, 0.8, -VAULT_DEPTH + 8));
-
-    for (const [parts, material] of [[stone, STONE], [lamps, LAMP]] as const) {
-      const merged = mergeGeometries(parts as THREE.BufferGeometry[], false);
-      for (const g of parts as THREE.BufferGeometry[]) g.dispose();
-      if (merged) { group.add(new THREE.Mesh(merged, material)); owned.push(merged); }
-    }
+    this.owned.push(vitral);
+    this.ownedMaterials.push(material);
+    this.ownedTextures.push(texture);
   }
 
   // -----------------------------------------------------------------------------------
@@ -326,15 +291,14 @@ export class Station {
 
   /** @param distances distancia sobre la vía de cada uno de los 8 arcos. */
   buildArches(distances: number[]): void {
-    const gate: THREE.BufferGeometry[] = [];
+    if (!assets) return;
     const group = new THREE.Group();
     const matrix = new THREE.Matrix4();
     const quat = new THREE.Quaternion();
     const scale = new THREE.Vector3(1, 1, 1);
+    const baked = new Map<THREE.Material, THREE.BufferGeometry[]>();
 
-    this.medallions = new THREE.InstancedMesh(
-      new THREE.CylinderGeometry(1.15, 1.15, 0.32, 16), MEDALLION_OFF, distances.length,
-    );
+    this.medallions = new THREE.InstancedMesh(assets.medallion, MEDALLION_OFF, distances.length);
     this.medallions.frustumCulled = false;
 
     for (let i = 0; i < distances.length; i++) {
@@ -343,27 +307,17 @@ export class Station {
       pos.y -= 0.7;
       this.basis.makeBasis(this.frame.right, this.frame.up, this.frame.tan.clone().negate());
       quat.setFromRotationMatrix(this.basis);
+      matrix.compose(pos, quat, scale);
 
-      // Pórtico: dos pies y un dintel curvo.
-      const portal: THREE.BufferGeometry[] = [];
-      for (const side of [-1, 1]) {
-        portal.push(new THREE.BoxGeometry(1.0, 11, 1.0).translate(side * 6.2, 5.5, 0));
-      }
-      const lintelCurve = new THREE.CatmullRomCurve3([
-        new THREE.Vector3(-6.2, 11, 0), new THREE.Vector3(0, 14.2, 0), new THREE.Vector3(6.2, 11, 0),
-      ]);
-      portal.push(new THREE.TubeGeometry(lintelCurve, 16, 0.42, 6, false));
-      const merged = mergeGeometries(portal, false);
-      for (const g of portal) g.dispose();
-      if (merged) {
-        merged.applyMatrix4(new THREE.Matrix4().compose(pos, quat, scale));
-        gate.push(merged);
+      // Pórtico de Blender horneado en coordenadas de mundo, fusionado por material.
+      for (const { geometry, material } of assets.gate) {
+        if (!baked.has(material)) baked.set(material, []);
+        baked.get(material)!.push(geometry.clone().applyMatrix4(matrix));
       }
 
       // Medallón en la clave del dintel: se enciende al cruzar (uno por grado).
       const medallionPos = pos.clone().addScaledVector(this.frame.up, 14.2);
       matrix.compose(medallionPos, quat, scale);
-      matrix.multiply(new THREE.Matrix4().makeRotationX(Math.PI / 2));
       this.medallions.setMatrixAt(i, matrix);
     }
     this.medallions.instanceMatrix.needsUpdate = true;
@@ -372,9 +326,11 @@ export class Station {
       new Float32Array(distances.length * 3).fill(0.42), 3,
     );
 
-    const gateGeo = mergeGeometries(gate, false);
-    for (const g of gate) g.dispose();
-    if (gateGeo) { group.add(new THREE.Mesh(gateGeo, IRON)); this.owned.push(gateGeo); }
+    for (const [material, parts] of baked) {
+      const merged = mergeGeometries(parts, false);
+      for (const g of parts) g.dispose();
+      if (merged) { group.add(new THREE.Mesh(merged, material)); this.owned.push(merged); }
+    }
     group.add(this.medallions);
     // Los arcos van SUELTOS en la escena: su geometría ya está horneada en coordenadas
     // de mundo. Colgarlos de `building` les aplicaría encima la transformación de la
@@ -428,7 +384,12 @@ export class Station {
         if (o instanceof THREE.InstancedMesh) o.dispose();
       });
     }
+    // Solo lo propio de esta construcción: la geometría del JSON es compartida.
     for (const geometry of this.owned) geometry.dispose();
+    for (const material of this.ownedMaterials) material.dispose();
+    for (const texture of this.ownedTextures) texture.dispose();
+    this.ownedMaterials = [];
+    this.ownedTextures = [];
     this.building = null;
     this.arches = null;
     this.fireworks?.dispose();

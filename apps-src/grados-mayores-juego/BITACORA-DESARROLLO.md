@@ -1165,3 +1165,48 @@ el canvas; lo fiable fue avanzar con `journey.frame(t)` sintético por lotes peq
 **Verificado:** `tsc` y `npm run build` limpios; convoy capturado acercándose de frente,
 pasando por la ventanilla (loco, ténder, cajas, cisterna, góndolas) y retirándose sin
 errores. JSON: cabina 2.85 MB / 392 kB gzip, tren 1.62 MB / 211 kB gzip.
+
+---
+
+## 2026-09-13 (noche) — Estación Terminal modelada en Blender (Claude Opus 5) — LOCAL
+
+Luis aprobó publicar cabina + tren (commit `f6bdbb1`, verificado en producción) y pidió
+seguir. La Terminal queda LOCAL para probarla juntos.
+
+**Diseño (`art/blender/modelar-terminal.py`).** Se conservaron TODAS las medidas de la
+versión de primitivas, así que `renderer.ts` (arcos, ritardando, tope) no se tocó. Fachada
+de piedra con arco de dovelas, pantalla de sol naciente, óculos y balaustrada; bóveda de
+cerchas de celosía; torres con reloj-rosetón, campanario y cúpula de cobre; andenes con
+columnas-palmera; reloj colgante sobre la vía; vestíbulo con portones iluminados frente al
+tope; pórticos de columnas estriadas con collarín dorado. ~21 draw calls de Terminal.
+
+**`station.ts`:** misma interfaz. Geometría compartida cargada una vez (fetch del JSON);
+`build` espera al JSON si aún no llegó. Los husos llegan sueltos y se funden en
+encendidos/apagados según la tónica. El vitral sigue siendo canvas.
+
+**Iteraciones que salieron de capturas reales:**
+1. Pórticos de celosía de 4 montantes: con el ritardando los 8 se juntan y leían a JAULA.
+   Pasaron a columnas esbeltas estriadas con collarines dorados.
+2. Al detenerse en el tope, la cabina miraba un muro liso (el vitral queda fuera de
+   cuadro por arriba). Se añadieron los portones iluminados del vestíbulo: la resolución
+   del viaje ahora tiene algo que ver.
+3. **El decorado del bioma se metía en la nave** (árboles, arbustos y postes de telégrafo
+   en medio de la estación; también pasaba con la versión anterior). Nuevo
+   `Station.contains(p)` + `Scenery.setKeepOut(test)`: los chunks existentes se rehacen
+   desde su semilla (salen idénticos) y se recortan; los nuevos se recortan al nacer.
+   Rehacer en vez de ocultar permite repetirlo en cada `relocate` sin dejar huecos. Más un
+   piso de piedra entre terreno (−0.02) y balasto (+0.4).
+4. Hueco abierto al cielo entre el pie de la bóveda y los muros: tejado lateral reorientado.
+
+**Trampa de QA:** avanzar `journey.frame(t)` sintético con la gala activa congeló la
+pestaña (lotes de cientos de frames con la Terminal + fuegos). En tiempo real va a
+52–58 fps de principio a fin; las capturas buenas salieron del rAF real
+(`requestAnimationFrame` → `toDataURL` en el mismo callback). `j.onTick = null` evita que
+la máquina de estados lance preguntas/desvíos durante la prueba.
+
+**`dev/terminal.mjs`** ahora sirve el JSON desde disco (stub de `fetch`) y espera a que la
+Station plante el edificio: 5/5 con error 0.00 u. `catedral.mjs` 7/7.
+
+**Verificado:** `tsc` + `npm run build` limpios; ceremonia completa en tiempo real con los
+8 arcos, acorde final y parada en el tope (−136); capturas de aproximación, arcos, nave,
+bóveda y tope.

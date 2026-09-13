@@ -11,6 +11,8 @@
 // `catedral.mjs` no podía cazarlo: valida la aritmética con un espejo de las constantes
 // y nunca toca la vía ni la geometría. Aquí se usan la `Station` y el `TrackManager` de
 // verdad y se compara la posición REAL del grupo contra la que le toca.
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
 
@@ -24,6 +26,12 @@ const canvas = () => ({ width: 0, height: 0, style: {}, getContext: () => ctx })
 globalThis.document = { createElement: canvas, createElementNS: canvas };
 
 const RAIZ = fileURLToPath(new URL("..", import.meta.url));
+// La geometría de la Terminal viene de Blender en un JSON que la Station pide con fetch
+// (`?url` en Vite). Aquí se sirve desde disco para usar el edificio de verdad.
+globalThis.fetch = async (url) => {
+  const file = path.join(RAIZ, decodeURIComponent(String(url)).replace(/^\//, "").replace(/\?.*$/, ""));
+  return { ok: true, status: 200, json: async () => JSON.parse(readFileSync(file, "utf8")) };
+};
 const vite = await createServer({
   root: RAIZ, server: { middlewareMode: true }, appType: "custom", logLevel: "error",
 });
@@ -59,7 +67,12 @@ track.ensureBuilt(tren);
 let distancia = tren + 10 * SEGMENT_LENGTH;
 station.build({ distance: distancia, tonicPitchClass: "C" });
 
-const grupo = scene.children.find((hijo) => hijo.type === "Group");
+// La Station planta el edificio cuando termina de cargar el JSON.
+let grupo;
+for (let espera = 0; espera < 100 && !grupo; espera++) {
+  grupo = scene.children.find((hijo) => hijo.type === "Group");
+  if (!grupo) await new Promise((listo) => setTimeout(listo, 50));
+}
 if (!grupo) throw new Error("no encuentro el grupo de la Terminal en la escena");
 
 /** Error entre donde está el edificio y donde dice su distancia que está. */

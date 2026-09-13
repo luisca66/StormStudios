@@ -110,6 +110,8 @@ export class JourneyRenderer {
     this.signals = new Signals(this.scene, this.track);
     this.detour = new Detour(this.scene, this.track);
     this.station = new Station(this.scene, this.track);
+    // Ni árboles ni postes dentro de la Terminal: el decorado se recorta con su huella.
+    this.station.onBuilt = () => this.scenery.setKeepOut((p) => this.station.contains(p));
     this.storm = new Storm(this.scene);
     this.crossing = new CrossingTrain(
       this.scene, this.track,
