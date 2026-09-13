@@ -7,7 +7,7 @@ Entregables: `pez-prisma.blend`, `pez-prisma.glb`, `pez-prisma-preview.png` y fu
 Desde la raíz del repositorio:
 
 ```powershell
-python -B -c "import sys; sys.path.insert(0,r'C:\Users\Luis\AppData\Local\codex-blender\python-module'); import runpy; runpy.run_path(r'apps-src\acordes-juego\art\blender\modelar-prisma.py',run_name='__main__')"
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bpy-run.ps1 apps-src\acordes-juego\art\blender\modelar-prisma.py
 ```
 
 Inspector: http://127.0.0.1:5183/dev/prisma.html . Permite cambiar entre un pez y 46, luces, destellos, captura y huida. El juego en http://127.0.0.1:5183/?debug=1 incluye un botón **Acercar Cardumen Prisma**, solo en desarrollo, para acercar un cardumen existente durante la inmersión.

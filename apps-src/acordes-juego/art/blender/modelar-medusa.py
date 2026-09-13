@@ -1,5 +1,5 @@
 """Medusa Luna: authored and evaluated in Blender 4.5 bpy; no runtime primitives.
-Run with Python 3.11 and the existing codex-blender/python-module on sys.path.
+Run with C:\\Users\\Luis\\blender-bpy\\bpy-run.ps1 (Python 3.11 + bpy 4.5.3).
 Outputs editable blend, animated GLB, Cycles preview and indexed game geometry.
 """
 import bpy

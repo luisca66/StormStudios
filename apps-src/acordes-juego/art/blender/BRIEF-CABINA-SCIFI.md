@@ -18,7 +18,7 @@ Inspeccionar `cabina-scifi-referencia.png` antes de modelar. Tomar sus marcos es
 
 Reutilizar el flujo real de bpy documentado en README.md y PRISMA.md de esta carpeta. Fuente principal con los modelos SIN COMMIT: `C:\Users\Luis\Documents\Claude Cowork\nuevo_website\storm-studios\StormStudios`. Si tu worktree no tiene los cambios, lee la fuente absoluta e incorpora solo lo necesario; no elimines ni sobrescribas otros cambios de Luis.
 
-Python 3.11 y módulo Blender 4.5.3 LTS: `C:\Users\Luis\AppData\Local\codex-blender\python-module`. No descargar Blender. Crear `modelar-cabina.py`, exportar `.blend`, `.glb`, render Cycles y geometría evaluada para Three.js, siguiendo los scripts existentes. Las piezas visibles de la cabina se modelan en Blender, no con primitivas de Three.js.
+Python 3.11 y módulo Blender 4.5.3 LTS: instalación propia en `C:\Users\Luis\blender-bpy\`; ejecutar desde `apps-src/acordes-juego` con `powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bpy-run.ps1 art\blender\modelar-cabina.py`. No descargar Blender. Crear `modelar-cabina.py`, exportar `.blend`, `.glb`, render Cycles y geometría evaluada para Three.js, siguiendo los scripts existentes. Las piezas visibles de la cabina se modelan en Blender, no con primitivas de Three.js.
 
 Revisar primero `src/3d/cockpit.ts`, `src/3d/renderer.ts`, `src/ui/hud.ts`, `src/style.css`, `src/bootstrap.ts` y los cargadores Blender existentes. La cabina actual combina cristal 3D con `.bubble-vignette` y overlays; evitar que el marco viejo se dibuje encima del nuevo. No rediseñar agua, criaturas, reglas pedagógicas ni audio en esta entrega.
 

@@ -21,10 +21,10 @@ Tras el primer render se suavizó la terminación de los brazos y se retiraron l
 ## Reproducir desde la raíz del repositorio, en PowerShell
 
 ```powershell
-python --version
-python -B -c "import sys; sys.path.insert(0,r'C:\Users\Luis\AppData\Local\codex-blender\python-module'); import bpy; print(bpy.app.version_string)"
-python -B -c "import sys; sys.path.insert(0,r'C:\Users\Luis\AppData\Local\codex-blender\python-module'); import runpy; runpy.run_path(r'apps-src\acordes-juego\art\blender\modelar-medusa.py',run_name='__main__')"
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bpy-run.ps1 apps-src\acordes-juego\art\blender\modelar-medusa.py
 ```
+
+Python 3.11 y bpy 4.5.3 viven en `C:\Users\Luis\blender-bpy\` (instalación propia, ver `PLAN-3D-BLENDER.md` en la raíz).
 
 El script reemplaza únicamente sus entregables y el JSON generado. No abre ni modifica los archivos del proyecto de carreras de Jonas.
 

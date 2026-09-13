@@ -1,0 +1,162 @@
+# PLAN 3D — Modelos de Blender para los juegos
+
+Guía maestra de arte 3D de los juegos de Storm Studios. Escrita el 2026-09-13.
+Cada juego conserva el detalle de sus modelos en su `art/blender/README.md`; este
+documento reúne el método común, el inventario y los pendientes.
+
+> **Regla:** nada se publica (`npm run deploy`, copia a `public/apps`, commit/push) sin
+> OK explícito de Luis. Los pendientes marcados **Propuesta** no están decididos.
+
+---
+
+## 1. Herramienta
+
+- **bpy 4.5.3 LTS + Python 3.11**, instalación propia en `C:\Users\Luis\blender-bpy\`.
+  No se abre ni se descarga el ejecutable de Blender. No usar la copia de Codex
+  (`AppData\Local\codex-blender`).
+- Lanzador (la ruta del script es relativa a la carpeta desde donde se ejecuta):
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bpy-run.ps1 ruta\al\modelar-x.py
+```
+
+- Reinstalar si se rompe: `uv pip install --python <python.exe> --target python-module bpy==4.5.3`
+  (en ese Python `ensurepip` falla; usar uv).
+- Render Cycles por CPU: el PNG de control se puede revisar con Read para corregir el
+  modelo antes de integrarlo.
+
+## 2. Método común
+
+Cada modelo es **un script reproducible** `art/blender/modelar-<pieza>.py` que genera
+todo lo demás. Nunca se edita a mano el `.blend` ni el JSON.
+
+| Salida | Para qué |
+|---|---|
+| `<pieza>.blend` | escena editable (modificadores vivos, materiales, cámara, luces) |
+| `<pieza>.glb` | modelo portable / visor glTF |
+| `<pieza>-*.png` | render Cycles de control (en cabinas: desde el ojo del jugador) |
+| `src/3d/**/assets/<pieza>.json` | *(opcional)* geometría evaluada para Three.js |
+
+### Dos formas de integrarlo en Three.js
+
+1. **JSON de geometría evaluada** (Expreso Tonal, Batisfera). El script exporta posiciones,
+   normales, colores de vértice, índices y pivotes; Three.js arma `BufferGeometry`.
+   Mallas fusionadas por material y partes vivas (ruedas, palancas, colas) exportadas
+   aparte con su pivote. Se carga con `fetch` una sola vez antes de jugar. Da más control
+   sobre draw calls e instancias. Plantilla: `grados-mayores-juego/art/blender/kit.py`.
+2. **GLB directo con `GLTFLoader`** (Aerostato). Más simple; la jerarquía de nodos con
+   nombre permite animar partes (`Aleta_Cola`, `Faro_Linterna_Giratoria`).
+
+**Para modelos nuevos se recomienda el JSON** en cualquier pieza que se instancie o que
+tenga que bajar draw calls, y el GLB para visitantes únicos y ligeros.
+
+### Convenciones
+
+- Autorar en el espacio de Three.js (Y arriba) y convertir a Blender (Z arriba) al crear
+  cada malla (`kit.py` lo resuelve).
+- Color horneado en vertex colors + pocas clases de material (pintura · metal · emisivo).
+- Cada modelo trae **inspector de desarrollo** (`dev/<pieza>.html`, fuera del build) y un
+  atajo en el juego (tecla o botón `?debug=1` / `?dev=1`) para verlo sin jugar la partida.
+- Cabinas: comprobar en el script que ninguna pieza tape la vista del jugador
+  (`below_sightline()` del Expreso) y dejar libre el 65–70 % central.
+- Liberar geometrías y materiales en `dispose()` al retirar la pieza.
+- Documentar en el README del juego: entregables, triángulos, draw calls, peso del JSON
+  (y con gzip), cómo verlo y los problemas encontrados.
+
+### Presupuestos orientativos
+
+| Tipo | Referencia actual |
+|---|---|
+| Criatura protagonista | Medusa Luna: 23 104 tri, 17 draw calls |
+| Instanciado (cardumen) | Pez Prisma: 5 691 tri/pez; 46 peces = 7 draw calls |
+| Cabina en primera persona | < 60 000 tri y < 20 draw calls añadidas (brief Batisfera) |
+| Hito lejano | Faro 1 893 tri · Ballena 1 173 tri |
+| JSON grande | Terminal 5,5 MB (708 kB gzip); no pasar de ahí sin medir la carga |
+
+Las mediciones de FPS hechas hasta ahora son **solo en la PC de Luis**; falta medir en
+teléfono real con varias piezas a la vez.
+
+### Problemas conocidos
+
+- Un booleano EXACT sobre una esfera aplanada dejó una malla con 0 caras.
+- `recalc_face_normals` con caras degeneradas voltea normales.
+- La iluminación de Cycles no coincide con la de tiempo real: aprobar el estilo en el juego,
+  no solo en el render.
+
+---
+
+## 3. Inventario por juego
+
+### Expreso Tonal — `grados-mayores-juego` (grados mayores, puerto 5175)
+
+| Pieza | Script | Estado |
+|---|---|---|
+| Cabina de vapor (POV maquinista) | `modelar-cabina.py` | ✅ integrada |
+| Tren de carga que se cruza | `modelar-tren-carga.py` | ✅ integrada |
+| Estación Terminal | `modelar-terminal.py` | ✅ integrada |
+| Landmarks de biomas (torre de agua, molino, viaducto, túnel, cascada, carreta, faro, estanque) | `modelar-landmarks.py` | ✅ integrada |
+
+Queda como pendiente heredado de la bitácora (F5): animar las agujas de los manómetros.
+
+### Batisfera — `acordes-juego` (acordes, puerto 5173/5183)
+
+| Pieza | Estado |
+|---|---|
+| Medusa Luna | ✅ Blender (JSON) |
+| Cardumen Prisma | ✅ Blender (JSON, instanciado) |
+| Calamar Vela, Rape Abisal, Sifonóforo, Pulpo Dumbo, Leviatán | ⏳ siguen con primitivas (`species.ts`) |
+| Cabina sci-fi | ⏳ **brief listo** (`BRIEF-CABINA-SCIFI.md`), concepto v1 pendiente de revisión de Luis; `src/3d/cockpit.ts` sigue siendo el marco viejo |
+| Entorno (fosa, arrecifes) | ⏳ primitivas; el brief lo deja para otra fase |
+
+### Aerostato — `acordes-cantar-juego` (acordes cantados, puerto 5174)
+
+| Pieza | Estado |
+|---|---|
+| Nube cúmulo (se atraviesa) | ✅ Blender (GLB) · tecla `C` |
+| Aguja alpina y faro | ✅ Blender (GLB) · tecla `F` |
+| Gran Ballena Celeste (capa 5) | ✅ Blender (GLB) · tecla `B` |
+| Aeronaves por capa: avioneta, jet, avión estratosférico, satélite (`flybys.ts`) | ⏳ primitivas |
+| Canasta/globo del jugador (`basket.ts`) | ⏳ primitivas |
+
+El `PLAN-AERONAVES-POR-CAPA.md` cita la regla original de "cero assets externos"; ya se
+relajó para los modelos de Blender.
+
+### Sin Blender todavía
+
+- **El Cometa** — `grados-menores-juego` (publicado): cabina (`cab.ts`), cometa, anillos y perihelio.
+- **Resonancia** — `oido-absoluto-guitarra-juego`: robot luthier (`robot.ts`). Hay un
+  prototipo sin commit, `robot_personaje_threejs.html` (robot jugable procedural), con su
+  sonido de pasos.
+- `oido-absoluto-multi-juego` e `intervalos-cantados-juego`.
+
+---
+
+## 4. Hacia dónde vamos
+
+Orden por impacto visual y porque cada paso reutiliza lo anterior. **Confirmado por Luis
+el 2026-09-13.**
+
+1. **Cabina sci-fi de Batisfera.** Brief completo y aprobado; solo falta el OK al concepto
+   v1. Es lo que el jugador ve todo el tiempo.
+2. **Criaturas restantes de Batisfera** (Calamar → Rape → Dumbo → Sifonóforo → Leviatán),
+   siguiendo `modelar-medusa.py`. Encaja con el hito H4 de `PLAN-HITOS-BATISFERA-2.md`
+   (destello por nota, tamaño por registro). Medir en teléfono con 6 criaturas.
+3. **Aeronaves del Aerostato** en un solo script con las 4 piezas y la hélice como parte viva.
+   Son siluetas lejanas: presupuesto bajo.
+4. **Globo/canasta del Aerostato.**
+5. **Robot de Resonancia.** Decidir antes si se usa el prototipo procedural o se modela en
+   Blender con partes articuladas para caminar.
+6. **El Cometa**: cabina y cometa. Va al final porque ya está publicado y funciona.
+
+Transversal: pasar Batisfera y Aerostato a `kit.py` compartido y medir rendimiento en
+teléfono real antes de publicar cualquier modelo nuevo.
+
+## 5. Cómo ejecutar una pieza (checklist por sesión)
+
+1. Leer este plan, el README de `art/blender/` del juego y los archivos que toque la pieza.
+2. Escribir `modelar-<pieza>.py` a partir del script hermano más parecido.
+3. Correrlo con `bpy-run.ps1`, revisar el render y corregir defectos.
+4. Integrar en Three.js + inspector `dev/` + atajo de desarrollo.
+5. `npm run build` y el QA del juego; probar escritorio y ventana angosta.
+6. Actualizar el README del juego, la bitácora (5–10 líneas) y el inventario de este plan.
+7. Detenerse. Publicar solo con OK de Luis.
