@@ -1210,3 +1210,42 @@ Station plante el edificio: 5/5 con error 0.00 u. `catedral.mjs` 7/7.
 **Verificado:** `tsc` + `npm run build` limpios; ceremonia completa en tiempo real con los
 8 arcos, acorde final y parada en el tope (−136); capturas de aproximación, arcos, nave,
 bóveda y tope.
+
+---
+
+## 2026-09-14 — Landmarks de los biomas en Blender (Claude Opus 5) — LOCAL
+
+Terminal publicada (`b07bf26`). Luis pidió seguir con los landmarks; quedan LOCALES.
+
+**Diagnóstico previo:** el "viaducto" eran cajas ENTERRADAS (el terreno sigue siempre a la
+vía, así que nunca se veían), no existía el molino de §5.4 y el túnel era un tubo tirado
+en la llanura.
+
+**Hecho (`art/blender/modelar-landmarks.py`, `src/3d/landmarks.ts`, `scenery.ts`):** torre
+de agua, molino con rueda que gira, **barranca real con viaducto de piedra** (el terreno
+del chunk 3 de la Sierra se hunde 32 u y el tren la cruza sobre 4 tramos, con río al
+fondo), montaña con portales sobre el túnel, cascada con poza, carreta abandonada, faro
+con haz giratorio y estanque helado con apacheta y observatorio. Mismas distancias y
+consumo de RNG que las primitivas: las rutas siguen siendo las mismas.
+
+**Decisiones y trampas:**
+1. **Viaducto asimétrico (−17…+5.5):** el ramal del desvío que nace en la aguja de ese
+   chunk sale SIEMPRE a la izquierda (detourSideFor) a 13 u; la barranca (40…110 del
+   chunk) termina antes de que el ramal empiece a volver (garganta 0.22). Así ni el tren
+   ni el apartadero quedan en el aire. El tren de carga en la Sierra solo aparece desde
+   el segmento 6 (`CrossingTrain.reset(..., firstSegment)`): su vía paralela cruzaría la
+   barranca.
+2. En la barranca se esconden árboles, rocas y niebla baja ANTES de añadir el viaducto;
+   postes y mojones llegan después y quedan sobre el tablero.
+3. **`frameAt` recorta en silencio (otra vez):** `refresh()` (cuando llega el JSON) y
+   `setKeepOut` rehacen chunks más allá del streaming y los 4 tramos salían apilados en
+   el tope de la vía. `buildChunk` ahora hace `track.ensureReach(end + 20)` primero.
+4. Booleano EXACT sobre la esfera aplanada de la montaña → 0 caras. Quitado: desde dentro
+   del túnel las caras de la montaña se ven por detrás y no se dibujan.
+5. La geometría de landmarks es COMPARTIDA: `clear()` del túnel solo dispone lo marcado
+   `ownedGeometry`.
+
+**QA:** capturas por bioma teletransportando el tren (`?dev=1`). Ojo: `setRunning(false)`
+no detiene el tren; lo fiable es `journey.resume()` → fijar distancia → unos
+`journey.frame(t)` → `pause()` → capturar. `tsc` + build limpios; `terminal.mjs` 5/5,
+`catedral.mjs` 7/7, `pilotar.mjs` sin cambios.

@@ -11,6 +11,7 @@ import {
   TELEGRAPH_SIDE_OFFSET, TELEGRAPH_SPACING, type BiomeId, type RouteSpec,
 } from "@/config";
 import { makeRng, newTrackFrame, type TrackFrame, type TrackManager } from "./track";
+import { landmark, landmarkPivot, landmarksReady, loadLandmarks, type LandmarkName } from "./landmarks";
 
 const UP = new THREE.Vector3(0, 1, 0);
 const CORRIDOR_HALF_WIDTH = 82;
@@ -22,12 +23,23 @@ const SEA_CENTER_OFFSET = COSTA_SHORE_HALF_WIDTH + 4 + SEA_WIDTH / 2;
 const TERRAIN_STEP = 14;
 const TUNNEL_START = SEGMENT_LENGTH * 1.45;
 const TUNNEL_LENGTH = 38;
+// Barranca del viaducto (Sierra, chunk 3): el terreno se hunde entre `from` y `to` (en
+// distancia desde el inicio del chunk) y el tren la cruza sobre tramos de 18 u. El tablero
+// va de −17 a +5.5: el ramal del desvío que nace en la aguja de este chunk sale SIEMPRE a
+// la izquierda (detourSideFor) a 13 u, y la barranca termina antes de que empiece a volver
+// (garganta 0.22 → 529 u), así que el tren nunca queda en el aire. El tren de carga, en
+// la Sierra, solo aparece a partir del segmento 6 (ver renderer.ts).
+const GORGE = { chunk: 3, from: 40, to: 110, depth: 32, span: 18 };
 
 interface SceneryChunk {
   index: number;
   group: THREE.Group;
   ownedGeometries: THREE.BufferGeometry[];
+  /** Partes vivas de los landmarks: rueda del molino (X) y haz del faro (Y). */
+  spinners: Spinner[];
 }
+
+interface Spinner { object: THREE.Object3D; axis: "x" | "y"; speed: number }
 
 const valleyTerrain = new THREE.MeshStandardMaterial({ color: "#879258", roughness: 1 });
 const sierraTerrain = new THREE.MeshStandardMaterial({ color: "#46564d", roughness: 1 });
@@ -40,7 +52,6 @@ const rockMaterial = new THREE.MeshStandardMaterial({ color: "#56605c", roughnes
 const waterMaterial = new THREE.MeshStandardMaterial({
   color: "#5f9daa", roughness: 0.18, metalness: 0.18, transparent: true, opacity: 0.82,
 });
-const stoneMaterial = new THREE.MeshStandardMaterial({ color: "#454842", roughness: 1 });
 const tunnelMaterial = new THREE.MeshStandardMaterial({ color: "#171b19", roughness: 1, side: THREE.BackSide });
 
 // --- Materiales F4 -----------------------------------------------------------------
@@ -59,7 +70,6 @@ const TERRAIN_MATERIALS: Record<BiomeId, THREE.MeshStandardMaterial> = {
 const mesaMaterial = new THREE.MeshStandardMaterial({ color: "#8f4a32", roughness: 1 });
 const agaveMaterial = new THREE.MeshStandardMaterial({ color: "#6e8d5c", roughness: 0.9 });
 const cactusMaterial = new THREE.MeshStandardMaterial({ color: "#48713f", roughness: 0.95 });
-const boneMaterial = new THREE.MeshStandardMaterial({ color: "#cabfa6", roughness: 0.95 });
 
 const palmTrunkMaterial = new THREE.MeshStandardMaterial({ color: "#7c6446", roughness: 1 });
 const palmLeafMaterial = new THREE.MeshStandardMaterial({
@@ -71,9 +81,6 @@ const saltMaterial = new THREE.MeshStandardMaterial({
   color: "#eaf2ec", roughness: 0.22, metalness: 0.16,
 });
 const lighthouseMaterial = new THREE.MeshStandardMaterial({ color: "#eae5da", roughness: 0.75 });
-const lanternMaterial = new THREE.MeshStandardMaterial({
-  color: "#ffe6a8", emissive: "#ffbf4d", emissiveIntensity: 1.6, roughness: 0.4,
-});
 const hullMaterial = new THREE.MeshStandardMaterial({ color: "#3b4550", roughness: 0.8 });
 const batisferaMaterial = new THREE.MeshStandardMaterial({
   color: "#b3c0c6", roughness: 0.4, metalness: 0.25,
@@ -333,6 +340,8 @@ export class Scenery {
   private chunks = new Map<number, SceneryChunk>();
   /** Zona vedada al decorado (la huella de la Terminal): árboles y postes no entran. */
   private keepOut: ((worldPosition: THREE.Vector3) => boolean) | null = null;
+  /** Spinners creados mientras se puebla el chunk en construcción. */
+  private pendingSpinners: Spinner[] = [];
   private tunnel: THREE.Group | null = null;
   private readonly frame: TrackFrame = newTrackFrame();
   private readonly basis = new THREE.Matrix4();
@@ -356,7 +365,24 @@ export class Scenery {
   private readonly scaleVec = new THREE.Vector3();
   private readonly posVec = new THREE.Vector3();
 
-  constructor(private readonly scene: THREE.Scene, private readonly track: TrackManager) {}
+  constructor(private readonly scene: THREE.Scene, private readonly track: TrackManager) {
+    // Si el viaje arrancó antes de que llegara el JSON, se rehacen chunks y túnel al llegar.
+    void loadLandmarks().then(() => this.refresh());
+  }
+
+  /** Reconstruye chunks y túnel con los landmarks ya disponibles (salen idénticos). */
+  private refresh(): void {
+    if (!this.route) return;
+    this.setKeepOut(this.keepOut);
+    if (this.tunnel) {
+      this.scene.remove(this.tunnel);
+      this.tunnel.traverse((object) => {
+        if (object instanceof THREE.Mesh && object.userData.ownedGeometry) object.geometry.dispose();
+      });
+      this.tunnel = null;
+      if (this.route.biome === "SIERRA") this.buildTunnel();
+    }
+  }
 
   chunkCount(): number {
     return this.chunks.size;
@@ -394,6 +420,9 @@ export class Scenery {
       }
     }
 
+    for (const chunk of this.chunks.values()) {
+      for (const spinner of chunk.spinners) spinner.object.rotation[spinner.axis] += spinner.speed * dt;
+    }
     this.updateFauna(trainDistance, dt);
     if (this.sea) {
       this.track.frameAt(trainDistance, this.frame);
@@ -422,8 +451,13 @@ export class Scenery {
     const group = new THREE.Group();
     const start = index * SEGMENT_LENGTH;
     const end = start + SEGMENT_LENGTH;
+    // `frameAt` recorta en silencio al final de la vía generada: un chunk rehecho por
+    // `refresh`/`setKeepOut` más allá del streaming plantaba todo en el tope de la vía
+    // (los cuatro tramos del viaducto salían en el mismo punto). Se extiende antes.
+    this.track.ensureReach(end + 20);
     const rng = makeRng(this.seed + index * 104729);
-    const terrainGeometry = this.makeTerrain(start, end, rng);
+    const gorge = this.route.biome === "SIERRA" && index === GORGE.chunk;
+    const terrainGeometry = this.makeTerrain(start, end, rng, gorge);
     const terrain = new THREE.Mesh(terrainGeometry, TERRAIN_MATERIALS[this.route.biome] ?? fallbackTerrain);
     terrain.userData.terrain = true;
     group.add(terrain);
@@ -447,7 +481,8 @@ export class Scenery {
         ownedGeometries.push(object.geometry);
       }
     });
-    this.chunks.set(index, { index, group, ownedGeometries });
+    this.chunks.set(index, { index, group, ownedGeometries, spinners: this.pendingSpinners });
+    this.pendingSpinners = [];
   }
 
   /**
@@ -502,7 +537,7 @@ export class Scenery {
     });
   }
 
-  private makeTerrain(start: number, end: number, rng: () => number): THREE.BufferGeometry {
+  private makeTerrain(start: number, end: number, rng: () => number, gorge = false): THREE.BufferGeometry {
     const positions: number[] = [];
     const colors: number[] = [];
     const indices: number[] = [];
@@ -515,7 +550,7 @@ export class Scenery {
       for (const side of [-1, 1]) {
         const p = this.frame.pos.clone()
           .addScaledVector(this.frame.right, side * this.corridorHalfWidth(side));
-        p.y = this.frame.pos.y - 0.72 + (rng() - 0.5) * 0.22;
+        p.y = this.frame.pos.y - 0.72 + (rng() - 0.5) * 0.22 - (gorge ? this.gorgeDepth(d - start) : 0);
         positions.push(p.x, p.y, p.z);
         const shade = 0.86 + rng() * 0.18;
         colors.push(color.r * shade, color.g * shade, color.b * shade);
@@ -558,7 +593,10 @@ export class Scenery {
     trees.instanceMatrix.needsUpdate = crowns.instanceMatrix.needsUpdate = corn.instanceMatrix.needsUpdate = true;
     group.add(trees, crowns, corn);
 
-    if (index % 4 === 2) this.addRiver(group, start + SEGMENT_LENGTH * 0.55);
+    if (index % 4 === 2) {
+      this.addRiver(group, start + SEGMENT_LENGTH * 0.55);
+      this.addMill(group, start + SEGMENT_LENGTH * 0.55);
+    }
     if (index === 1) this.addWaterTower(group, start + SEGMENT_LENGTH * 0.66);
   }
 
@@ -585,7 +623,24 @@ export class Scenery {
     }
     trunks.instanceMatrix.needsUpdate = pines.instanceMatrix.needsUpdate = rocks.instanceMatrix.needsUpdate = true;
     group.add(trunks, pines, rocks, this.makeLowFog(start, end, rng));
-    if (index === 3) this.addViaductPillars(group, start, end);
+    if (index === GORGE.chunk) {
+      // Lo que cae dentro de la barranca y fuera del tablero flotaría: se esconde antes
+      // de añadir el viaducto (que sí vive ahí).
+      const center = start + (GORGE.from + GORGE.to) / 2;
+      this.track.frameAt(center, this.frame);
+      const origin = this.frame.pos.clone();
+      const tangent = this.frame.tan.clone();
+      const half = (GORGE.to - GORGE.from) / 2;
+      const delta = new THREE.Vector3();
+      // Árboles, rocas y niebla baja fuera en todo el vano: los postes y mojones llegan
+      // DESPUÉS (buildChunk) y quedan sobre el tablero.
+      this.cullInside(group, (p) => {
+        delta.copy(p).sub(origin);
+        return Math.abs(delta.dot(tangent)) < half + 4;
+      });
+
+      this.addViaduct(group, start);
+    }
     if (index === 4) this.addCascade(group, start + SEGMENT_LENGTH * 0.5);
   }
 
@@ -648,19 +703,11 @@ export class Scenery {
   }
 
   /** Esqueleto de rueda de carreta medio enterrado: el landmark narrativo del desierto. */
+  /** Carreta abandonada medio enterrada: el landmark narrativo del desierto. */
   private addWagonWheel(group: THREE.Group, distance: number, rng: () => number): void {
-    this.track.frameAt(distance, this.frame);
-    const wheel = new THREE.Group();
-    wheel.position.copy(this.frame.pos).addScaledVector(this.frame.right, 15 + rng() * 6);
-    wheel.position.y -= 0.5;
-    wheel.rotation.set(1.2, rng() * Math.PI, 0.35);
-    wheel.add(boxMesh(new THREE.TorusGeometry(1.5, 0.12, 6, 16), boneMaterial));
-    for (let i = 0; i < 6; i++) {
-      const spoke = boxMesh(new THREE.BoxGeometry(0.09, 2.9, 0.09), boneMaterial);
-      spoke.rotation.z = (i / 6) * Math.PI;
-      wheel.add(spoke);
-    }
-    group.add(wheel);
+    const lateral = 15 + rng() * 6;
+    const wreck = this.plant(group, "wagonWreck", distance, lateral, -0.7);
+    wreck.rotateY(rng() * Math.PI);
   }
 
   // --- Costa de Salinas (F# · atardecer, B · mediodía, D♭ · amanecer) ----------------
@@ -706,23 +753,15 @@ export class Scenery {
   }
 
   /** Faro: el landmark de la Costa, siempre en la orilla. */
+  /** Faro: el landmark de la Costa, plantado en el agua poco después de la orilla. */
   private addLighthouse(group: THREE.Group, distance: number): void {
-    this.track.frameAt(distance, this.frame);
-    const faro = new THREE.Group();
-    // Plantado en el agua, poco después de la orilla: el faro se recorta contra el mar.
-    faro.position.copy(this.frame.pos)
-      .addScaledVector(this.frame.right, this.seaSide * 62);
-    faro.position.y -= 2.7;
-    const tower = boxMesh(new THREE.CylinderGeometry(2.1, 3.4, 22, 12), lighthouseMaterial);
-    tower.position.y = 11;
-    const gallery = boxMesh(new THREE.CylinderGeometry(2.9, 2.9, 0.6, 12), hullMaterial);
-    gallery.position.y = 22.3;
-    const lantern = boxMesh(new THREE.CylinderGeometry(1.6, 1.6, 2.4, 10), lanternMaterial);
-    lantern.position.y = 23.7;
-    const roof = boxMesh(new THREE.ConeGeometry(2.1, 1.8, 10), hullMaterial);
-    roof.position.y = 25.8;
-    faro.add(tower, gallery, lantern, roof);
-    group.add(faro);
+    const faro = this.plant(group, "lighthouse", distance, this.seaSide * 62, -2.7);
+    // La casa del farero mira a la vía: del lado izquierdo se gira media vuelta.
+    if (this.seaSide < 0) faro.rotateY(Math.PI);
+    const beam = landmark("lighthouseBeam");
+    beam.position.copy(landmarkPivot("lighthouseBeam"));
+    faro.add(beam);
+    this.pendingSpinners.push({ object: beam, axis: "y", speed: 0.9 });
   }
 
   // --- Páramo de Estrellas (C# · noche, C♭ · crepúsculo, G♭ · aurora) ---------------
@@ -748,11 +787,7 @@ export class Scenery {
   }
 
   private addFrozenPond(group: THREE.Group, distance: number): void {
-    this.track.frameAt(distance, this.frame);
-    const pond = boxMesh(new THREE.CylinderGeometry(16, 16, 0.1, 18), saltMaterial);
-    pond.position.copy(this.frame.pos).addScaledVector(this.frame.right, -42);
-    pond.position.y -= 0.72;
-    group.add(pond);
+    this.plant(group, "frozenPond", distance, -42, -0.72);
   }
 
   // --- Decorado transversal (todas las rutas) ---------------------------------------
@@ -1040,35 +1075,51 @@ export class Scenery {
   }
 
   private addWaterTower(group: THREE.Group, distance: number): void {
-    this.track.frameAt(distance, this.frame);
-    const landmark = new THREE.Group();
-    landmark.position.copy(this.frame.pos).addScaledVector(this.frame.right, -26);
-    landmark.position.y -= 0.7;
-    for (const x of [-1.2, 1.2]) for (const z of [-1.2, 1.2]) {
-      landmark.add(boxMesh(new THREE.BoxGeometry(0.22, 5, 0.22), FRAME_MATERIAL).translateX(x).translateZ(z).translateY(2.5));
-    }
-    const tank = boxMesh(new THREE.CylinderGeometry(2.3, 2.1, 2.6, 12), stoneMaterial);
-    tank.position.y = 5.6;
-    landmark.add(tank);
-    group.add(landmark);
+    // Lado izquierdo de la vía; la tolva de la pieza apunta a +X, hacia los rieles.
+    this.plant(group, "waterTower", distance, -26, -0.7);
   }
 
-  private addViaductPillars(group: THREE.Group, start: number, end: number): void {
-    for (let d = start + 15; d < end; d += 18) {
-      this.track.frameAt(d, this.frame);
-      const pillar = boxMesh(new THREE.BoxGeometry(2.8, 8, 2.8), stoneMaterial);
-      pillar.position.copy(this.frame.pos).add(new THREE.Vector3(0, -4.7, 0));
-      group.add(pillar);
+  /** Molino en la orilla lejana del río (el río va a +44 con 20 de ancho). */
+  private addMill(group: THREE.Group, distance: number): void {
+    const mill = this.plant(group, "mill", distance, 58, -0.7);
+    const wheel = landmark("millWheel");
+    wheel.position.copy(landmarkPivot("millWheel"));
+    mill.add(wheel);
+    this.pendingSpinners.push({ object: wheel, axis: "x", speed: -0.6 });
+  }
+
+  /** Profundidad de la barranca a `along` u del inicio del chunk (0 fuera de ella). */
+  private gorgeDepth(along: number): number {
+    const u = (along - GORGE.from) / (GORGE.to - GORGE.from);
+    if (u <= 0 || u >= 1) return 0;
+    return GORGE.depth * Math.sqrt(Math.sin(Math.PI * u));
+  }
+
+  /** Viaducto de piedra sobre la barranca, con su río al fondo. */
+  private addViaduct(group: THREE.Group, start: number): void {
+    for (let d = start + GORGE.from + GORGE.span / 2; d < start + GORGE.to; d += GORGE.span) {
+      this.plant(group, "viaductSpan", d, 0, -0.45);
     }
+    this.plant(group, "gorgeRiver", start + (GORGE.from + GORGE.to) / 2, 0, -0.72 - GORGE.depth + 0.35);
   }
 
   private addCascade(group: THREE.Group, distance: number): void {
+    this.plant(group, "cascade", distance, 34, -0.7);
+  }
+
+  /**
+   * Planta una pieza de Blender en un punto de vía: origen en la vía desplazado
+   * `lateral` a la derecha, `yOffset` bajo la vía, orientada con (right · up · −tangente).
+   */
+  private plant(group: THREE.Group, name: LandmarkName, distance: number, lateral: number, yOffset: number): THREE.Group {
     this.track.frameAt(distance, this.frame);
-    const fall = boxMesh(new THREE.BoxGeometry(0.12, 8, 5), waterMaterial);
-    fall.position.copy(this.frame.pos).addScaledVector(this.frame.right, 34);
-    fall.position.y += 2.5;
-    fall.rotation.y = Math.atan2(this.frame.tan.x, this.frame.tan.z);
-    group.add(fall);
+    const piece = landmark(name);
+    piece.position.copy(this.frame.pos).addScaledVector(this.frame.right, lateral);
+    piece.position.y += yOffset;
+    this.basis.makeBasis(this.frame.right, this.frame.up, this.frame.tan.clone().negate());
+    piece.quaternion.setFromRotationMatrix(this.basis);
+    group.add(piece);
+    return piece;
   }
 
   private buildTunnel(): void {
@@ -1080,12 +1131,13 @@ export class Scenery {
     group.quaternion.setFromRotationMatrix(this.basis);
     const tube = new THREE.Mesh(new THREE.CylinderGeometry(4.6, 4.6, TUNNEL_LENGTH, 14, 1, true), tunnelMaterial);
     tube.rotation.x = Math.PI / 2;
+    tube.userData.ownedGeometry = true;
     group.add(tube);
-    const ringGeo = new THREE.TorusGeometry(4.65, 0.65, 8, 18);
-    for (const z of [-TUNNEL_LENGTH / 2, TUNNEL_LENGTH / 2]) {
-      const ring = new THREE.Mesh(ringGeo, stoneMaterial);
-      ring.position.z = z;
-      group.add(ring);
+    // La montaña y sus portales de sillería (Blender): el pie va 0.7 bajo la vía.
+    if (landmarksReady()) {
+      const hill = landmark("tunnelHill");
+      hill.position.y = -0.7;
+      group.add(hill);
     }
     this.scene.add(group);
     this.tunnel = group;
@@ -1129,8 +1181,9 @@ export class Scenery {
     if (this.tunnel) {
       this.scene.remove(this.tunnel);
       const geometries = new Set<THREE.BufferGeometry>();
+      // Solo lo propio: la montaña de Blender comparte geometría entre viajes.
       this.tunnel.traverse((object) => {
-        if (object instanceof THREE.Mesh) geometries.add(object.geometry);
+        if (object instanceof THREE.Mesh && object.userData.ownedGeometry) geometries.add(object.geometry);
       });
       for (const geometry of geometries) geometry.dispose();
     }
@@ -1138,7 +1191,6 @@ export class Scenery {
   }
 }
 
-const FRAME_MATERIAL = new THREE.MeshStandardMaterial({ color: "#59615d", roughness: 0.9, metalness: 0.18 });
 
 function boxMesh(geometry: THREE.BufferGeometry, material: THREE.Material): THREE.Mesh {
   const mesh = new THREE.Mesh(geometry, material);

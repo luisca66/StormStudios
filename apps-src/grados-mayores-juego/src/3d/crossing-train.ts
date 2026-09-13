@@ -138,13 +138,14 @@ export class CrossingTrain {
     return this.group !== null;
   }
 
-  reset(seed: number, totalSegments: number): void {
+  /** @param firstSegment primer segmento candidato (la Sierra lo retrasa: su vía cruzaría la barranca). */
+  reset(seed: number, totalSegments: number, firstSegment = 2): void {
     this.despawn();
     const rng = makeRng(seed + 55021);
     this.rng = makeRng(seed + 77003);
     // Segmentos candidatos: ni el primero (arranque) ni los dos últimos (aproximación).
     const candidates: number[] = [];
-    for (let i = 2; i < Math.max(3, totalSegments - 2); i++) candidates.push(i);
+    for (let i = firstSegment; i < Math.max(firstSegment + 1, totalSegments - 2); i++) candidates.push(i);
     for (let i = candidates.length - 1; i > 0; i--) {
       const j = Math.floor(rng() * (i + 1));
       [candidates[i], candidates[j]] = [candidates[j], candidates[i]];

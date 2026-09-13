@@ -85,3 +85,26 @@ Para verlo pasar sin esperar: `npm run dev`, abrir con `?dev=1`, iniciar viaje y
 
 Para verla sin jugar el viaje: `?dev=1`, iniciar viaje y en consola
 `const j = ExpresoF2.journey; j.onTick = null; j.setGameProgress(0.95); j.revealStation(); j.beginArrival('C', true, { onArch() {}, onFinalChord() {}, onStopped() {} })`.
+
+## 4. Landmarks de los biomas
+
+`modelar-landmarks.py` → `landmarks.blend` / `.glb` / `landmarks-valle-costa.png` /
+`landmarks-sierra-paramo.png` y `../../src/3d/assets/landmarks.json` (1.4 MB; 182 kB gzip).
+Se cargan en `src/3d/landmarks.ts` y los planta `scenery.ts` con `plant()`.
+
+| Pieza | Bioma | Dónde |
+|---|---|---|
+| `waterTower` | Valle | chunk 1, a −26 (la tolva apunta a la vía) |
+| `mill` + `millWheel` (gira) | Valle | junto a cada río (chunk % 4 = 2), orilla lejana a +58 |
+| `viaductSpan` ×4 + `gorgeRiver` | Sierra | chunk 3: el terreno se hunde 32 u y el tren cruza la barranca |
+| `tunnelHill` | Sierra | montaña con portales de sillería sobre el túnel |
+| `cascade` | Sierra | chunk 4, a +34 |
+| `wagonWreck` | Desierto | chunk 2 |
+| `lighthouse` + `lighthouseBeam` (gira) | Costa | chunk 2, en el agua a 62 u |
+| `frozenPond` | Páramo | chunk 3: estanque, apacheta y observatorio |
+
+- El tablero del viaducto es asimétrico (x de −17 a +5.5): el ramal del desvío de ese
+  chunk sale siempre a la izquierda a 13 u y la barranca termina antes de que regrese.
+- Trampas: el booleano EXACT sobre una esfera aplanada dejaba la montaña con 0 caras (se
+  quitó: desde dentro del túnel no hace falta); `recalc_face_normals` en mallas con caras
+  degeneradas voltea normales.

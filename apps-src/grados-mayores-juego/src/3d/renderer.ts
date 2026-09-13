@@ -130,7 +130,8 @@ export class JourneyRenderer {
     this.environment.setRoute(route, seed);
     this.scenery.reset(route, seed);
     this.signals.reset();
-    this.crossing.reset(seed, DECISIONS_TO_ARRIVE);
+    // En la Sierra la vía paralela (−210…+400 u) cruzaría la barranca del viaducto (chunk 3).
+    this.crossing.reset(seed, DECISIONS_TO_ARRIVE, route.biome === "SIERRA" ? 6 : 2);
     this.tonicPitchClass = options.tonicPitchClass;
     this.gameProgress = 0;
     this.cruiseSpeed = options.speed.unitsPerSecond;
