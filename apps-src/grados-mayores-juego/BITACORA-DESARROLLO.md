@@ -1075,3 +1075,93 @@ solo guarda el canvas de las texturas, no lo sube sin renderer.)
 comparaba contra `file://${process.argv[1]}`, que con contrabarras no coincide nunca: el
 script abría vite y se colgaba sin ejecutar nada. `fileURLToPath` y `pathToFileURL` lo
 arreglan en los dos sistemas.
+
+---
+
+## 2026-09-13 — Cabina de vapor modelada en Blender (Claude Opus 5) — LOCAL, sin publicar
+
+Luis pidió pasar de primitivas de Three.js a modelado real en Blender, empezando por la
+cabina y la caldera, con **diseño propio** a partir de tres fotos (frente de caldera rojo
+óxido con latón; consolas con manómetros y pedestal de freno) y sin perder el esplendor
+de la vista. Todo local: nada de deploy ni commit hasta que Luis lo pruebe.
+
+**Herramienta.** bpy 4.5.3 en instalación propia `C:\Users\Luis\blender-bpy\` (Python
+3.11 standalone + `bpy-run.ps1`). La copia de Codex vivía virtualizada dentro de su
+paquete MSIX y no era visible desde fuera; ya no dependemos de ella.
+
+**Qué cambió.** `src/3d/cab.ts` deja de construir la cabina metropolitana y carga
+`src/3d/assets/cabina-vapor.json` (fetch `?url`, fuera del bundle). Interfaz intacta:
+`new Cab(anchor)` + `update(dt, readout)`; nada más del juego se tocó. Fuente y
+entregables en `art/blender/` (ver su README).
+
+**Diseño.** Las tres ventanas conservan EXACTAMENTE las medidas validadas. El frente de
+caldera es una consola baja: lomo remachado con flejes de latón, colector con tres
+volantes, dos manómetros sobre postes, tuberías de cobre (la izquierda sube por el
+montante como línea del silbato), placa esmaltada negra con dos manómetros (izq.), placa
+crema con indicador de velocidad y cuadrante del inversor (der.), palanca del silbato
+viva, freno de pedestal crema. Mirando abajo: puerta del hogar con aro remachado,
+rejilla y brasas que titilan; nivel de agua. Costados con ventanilla abierta, marco de
+latón y pasamanos; techo abovedado de tablas con costillas; viga superior de caoba.
+
+**Regla de encuadre automatizada.** `below_sightline()` en el script aborta si una pieza
+cruza la visual ojo→borde inferior del parabrisas.
+
+**Trampas encontradas (anotar):**
+1. **Metales negros sin entorno.** La escena no tiene envMap y un latón con metalness 1
+   se ve negro en Three. `cab.ts` le da a sus materiales un equirect de canvas (cielo ·
+   ventanal · madera); Three lo pre-filtra solo. No afecta al resto de la escena.
+2. **`recalc_face_normals` en mallas ABIERTAS voltea al azar.** Las brasas (un disco)
+   salían con la normal hacia la caldera y Three las descartaba. Discos y carátulas van
+   con `recalc=False`.
+3. **Ry(±90°) espeja un lado.** El marco de la ventanilla derecha salía invertido en z;
+   ambos lados usan Ry(−90°).
+4. Emisivo del hogar a 3.0 satura a amarillo con ACES: 1.5 conserva el naranja.
+
+**Verificado:** `npm run build` limpio (bundle JS 641 kB, 5 kB menos que el publicado;
+JSON aparte 2.5 MB / 330 kB gzip). Sin errores de consola. Capturas reales del canvas
+(receptor Node en 5209, método de arriba) de frente, izquierda, derecha y hacia abajo, y
+con la palanca del silbato tirada. ~19 draw calls de cabina (16 materiales + cristal +
+palanca + agujas), en línea con los ~18 de la metropolitana.
+
+**Pendiente de Luis:** jugarlo en local y decidir. La cabina metropolitana sigue en git
+(`git show HEAD:apps-src/grados-mayores-juego/src/3d/cab.ts`) por si se quiere volver.
+
+---
+
+## 2026-09-13 (tarde) — Cabina cerrada por detrás + tren de carga en Blender (Claude Opus 5) — LOCAL
+
+Luis dejó el orden a mi juicio. Sigue todo local, sin commit.
+
+**Cabina (`modelar-cabina.py`):** pared trasera abovedada con puerta al ténder y dos
+ventanillas redondas con aro de latón; pasarela estriada; mamparo, costados y carbón del
+ténder. Piso extendido hasta las paredes (había 30 cm de hueco con pasto visible al mirar
+atrás). Se descartaron 160 terrones de carbón: con el giro máximo de 100° la carbonera no
+entra en cuadro y solo sumaban peso.
+
+**Tren de carga (`modelar-tren-carga.py` + `crossing-train.ts` reescrito):** locomotora
+hermana de nuestra cabina, ténder y vagones de tres tipos mezclados por viaje con tinte
+propio por vagón. Vertex colors + 3 clases de material → ~15 draw calls con vía incluida.
+Ruedas motrices y del bogie giran con `travelled / radio`; las bielas se trasladan con el
+muñón (lado izquierdo un cuarto de vuelta adelantado).
+
+- **Antes la locomotora iba a la COLA:** el convoy avanza hacia distancias menores y la
+  loco estaba en `headDistance` con los vagones a distancias menores, o sea delante. Ahora
+  la cabeza lidera y los vagones van a `head + FIRST_WAGON_AT + i·WAGON_STEP`; la
+  retirada usa esa cola nueva.
+- Geometría compartida por todas las apariciones (no se dispone); al retirarse solo se
+  liberan vía, durmientes y buffers de instancias.
+- `metal-env.ts`: el equirect de reflejo sale de `cab.ts` para compartirlo con el tren.
+- `kit.py`: generadores de Blender compartidos. **Trampa:** `pipe`/`rivets` del kit no
+  conocen la pieza; sin envolverlos quedaban sin etiqueta → no se exportaban y en el render
+  las escaleras de los vagones aparecían clavadas frente a la locomotora.
+- Trampa de rueda izquierda: se gira 180° en Y, lo que invierte el giro en X; su ángulo va
+  con signo contrario.
+
+**QA de captura:** en esta sesión los frames reales del Browser pane se congelaban para
+el canvas; lo fiable fue avanzar con `journey.frame(t)` sintético por lotes pequeños
+(<45 s por llamada) y subir los JPEG al receptor 5209 aparte. Con `?dev=1`,
+`ExpresoF2.journey.crossing.spawn(...)` fuerza el convoy (README de `art/blender`).
+
+**Verificado:** `tsc` y `npm run build` limpios; convoy capturado acercándose de frente,
+pasando por la ventanilla (loco, ténder, cajas, cisterna, góndolas) y retirándose sin
+errores. JSON: cabina 2.85 MB / 392 kB gzip, tren 1.62 MB / 211 kB gzip.
