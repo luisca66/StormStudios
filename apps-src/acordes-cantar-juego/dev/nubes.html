@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nubes Cúmulo 3D · Inspector de Entorno · Aerostato</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #0f1c2e;
+      color: #e6f0fa;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow: hidden;
+    }
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      height: 100dvh;
+    }
+    #viewport {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      min-height: 0;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+    }
+    aside {
+      padding: 28px 22px;
+      background: #142338;
+      border-left: 1px solid #233c5c;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #ffd894;
+      background: rgba(255, 216, 148, 0.12);
+      border: 1px solid rgba(255, 216, 148, 0.25);
+      padding: 4px 10px;
+      border-radius: 999px;
+      width: fit-content;
+    }
+    h1 {
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 600;
+      margin: 4px 0 2px;
+      color: #fdfefe;
+    }
+    p.desc {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #9cb5d1;
+      margin: 0 0 8px;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #c0d4ea;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    select, button, input[type="range"] {
+      font: inherit;
+    }
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      background: #1a2f4a;
+      border: 1px solid #2c4c74;
+      border-radius: 6px;
+      color: #e6f0fa;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    select:focus-visible, button:focus-visible {
+      outline: 2px solid #ffd894;
+      outline-offset: 2px;
+    }
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    button {
+      padding: 10px;
+      background: #20395a;
+      border: 1px solid #33598a;
+      border-radius: 6px;
+      color: #f0f6fc;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    button:hover {
+      background: #2b4b75;
+      border-color: #ffd894;
+    }
+    button.active {
+      background: #395c8c;
+      border-color: #ffd894;
+      color: #ffd894;
+    }
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    input[type="range"] {
+      flex: 1;
+      accent-color: #ffd894;
+    }
+    .slider-val {
+      font-size: 12px;
+      color: #9cb5d1;
+      width: 32px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .telemetry-card {
+      margin-top: auto;
+      background: #0d1726;
+      border: 1px solid #1c304a;
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .telemetry-title {
+      font-weight: 600;
+      color: #ffd894;
+      margin-bottom: 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .telemetry-item {
+      display: flex;
+      justify-content: space-between;
+      color: #8da7c4;
+    }
+    .telemetry-item span {
+      color: #e2ecf7;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+    @media (max-width: 768px) {
+      main {
+        grid-template-columns: 1fr;
+        grid-template-rows: 55dvh 45dvh;
+      }
+      aside {
+        border-left: none;
+        border-top: 1px solid #233c5c;
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div id="viewport">
+      <canvas id="cloud-canvas" aria-label="Nube Cúmulo 3D interactiva"></canvas>
+    </div>
+    <aside>
+      <span class="badge">Blender 4.5 · bpy</span>
+      <h1>Isla de Nubes 3D</h1>
+      <p class="desc">Entorno para Aerostato. Arrastra con el ratón o dedo para orbitar en 360°, rueda para zoom.</p>
+
+      <div class="field">
+        <label for="lighting-preset">Momento Atmosférico</label>
+        <select id="lighting-preset">
+          <option value="sunrise">Amanecer Dorado (Capa 1)</option>
+          <option value="noon">Mediodía Diáfano (Capa 2)</option>
+          <option value="sunset">Atardecer Violeta (Capa 3)</option>
+          <option value="stratosphere">Estratosfera / Borde Espacio (Capa 5)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="sun-yaw">Orientación del Sol</label>
+        <div class="slider-row">
+          <input type="range" id="sun-yaw" min="0" max="360" value="45">
+          <span class="slider-val" id="sun-yaw-val">45°</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="sun-pitch">Elevación Solar</label>
+        <div class="slider-row">
+          <input type="range" id="sun-pitch" min="5" max="85" value="28">
+          <span class="slider-val" id="sun-pitch-val">28°</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="cloud-opacity">Traslucidez / Opacidad</label>
+        <div class="slider-row">
+          <input type="range" id="cloud-opacity" min="30" max="100" value="82">
+          <span class="slider-val" id="cloud-opacity-val">82%</span>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button id="btn-rotate" class="active">Rotación Auto</button>
+        <button id="btn-wire">Malla (Wire)</button>
+      </div>
+
+      <button id="btn-reset-cam">Centrar Cámara</button>
+
+      <div class="telemetry-card">
+        <div class="telemetry-title">Telemetría de Malla</div>
+        <div class="telemetry-item">Triángulos: <span id="stat-tris">—</span></div>
+        <div class="telemetry-item">Vértices: <span id="stat-verts">—</span></div>
+        <div class="telemetry-item">Llamadas Dibujo: <span id="stat-draws">1</span></div>
+        <div class="telemetry-item">Rendimiento: <span id="stat-fps">60 FPS</span></div>
+      </div>
+    </aside>
+  </main>
+  <script type="module" src="./nubes.ts"></script>
+</body>
+</html>

@@ -4,6 +4,7 @@
 // aves 6 dc · auroras 5 dc · globos lejanos ~7 dc. La ballena llega en F10.
 
 import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { PHYSICS, WORLD } from "@/config";
 import { makeRng } from "./environment";
 
@@ -15,6 +16,8 @@ export class Scenery {
   private cloudMeshes: THREE.InstancedMesh[] = [];
   private cloudData: { layer: number; drift: THREE.Vector3 }[][] = [];
   private cloudTimeUniforms: { value: number }[] = [];
+  private heroClouds: { group: THREE.Group; drift: THREE.Vector3 }[] = [];
+  private faroRotator: THREE.Object3D | null = null;
   private seaUniforms = { uTime: { value: 0 } };
   private auroraUniforms = { uTime: { value: 0 } };
   private birds: BirdFlock[] = [];
@@ -27,10 +30,13 @@ export class Scenery {
     scene.add(this.buildTerrain(rng));
     scene.add(this.buildSeaOfClouds());
     this.buildCumulus(scene, rng, windVectors);
+    this.buildHeroClouds(scene, windVectors);
+    this.buildLighthouse(scene);
     this.buildLenticulars(scene, rng);
     this.buildBirds(scene, rng);
     this.buildAuroras(scene, rng);
     this.buildBalloons(scene, rng);
+    this.activateWhale(scene);
   }
 
   // ── Terreno del valle (capas 1–2): plano desplazado con ruido + vertex colors.
@@ -216,6 +222,127 @@ export class Scenery {
     }
   }
 
+  // ── Nubes Cúmulo 3D Hero (Blender bpy): Formaciones volumétricas navegables
+  private buildHeroClouds(scene: THREE.Scene, wind: THREE.Vector3[]): void {
+    const glbUrl = new URL("../../art/blender/nube-cumulo.glb", import.meta.url).href;
+    const loader = new GLTFLoader();
+    loader.load(
+      glbUrl,
+      (gltf) => {
+        const template = gltf.scene;
+        // Posiciones panorámicas en Capas 1 y 2
+        const placements = [
+          // Capa 1 (Amanecer sobre el valle): frente al despegue
+          { x: 42, y: 28, z: -62, scale: 2.2, rotY: 0.4, layer: 1 },
+          { x: -70, y: 55, z: -88, scale: 2.6, rotY: -1.1, layer: 1 },
+          { x: 85, y: 48, z: 65, scale: 2.4, rotY: 2.2, layer: 1 },
+          // Capa 2 (Mar de nubes): emergiendo como cordillera flotante
+          { x: -28, y: 165, z: -52, scale: 3.0, rotY: 0.8, layer: 2 },
+          { x: 62, y: 230, z: -78, scale: 3.4, rotY: -0.5, layer: 2 },
+        ];
+
+        for (const p of placements) {
+          const cloud = template.clone(true);
+          cloud.position.set(p.x, p.y, p.z);
+          cloud.scale.setScalar(p.scale);
+          cloud.rotation.y = p.rotY;
+
+          cloud.traverse((child) => {
+            if ((child as THREE.Mesh).isMesh) {
+              const m = child as THREE.Mesh;
+              m.castShadow = false;
+              m.receiveShadow = false;
+              if (m.material) {
+                const mat = (m.material as THREE.Material).clone() as THREE.MeshStandardMaterial;
+                mat.roughness = 0.85;
+                mat.metalness = 0.0;
+                mat.transparent = true;
+                mat.opacity = 0.82;
+                mat.depthWrite = false;
+                mat.side = THREE.DoubleSide;
+
+                // Suavizado de cámara (Camera Near-Fade): las caras se desvanecen suavemente al acercarse
+                // permitiendo atravesar y penetrar la nube como vapor real, sin recortes geométricos duros.
+                mat.onBeforeCompile = (shader) => {
+                  shader.vertexShader = `
+                    varying float vViewDist;
+                    ${shader.vertexShader}
+                  `.replace(
+                    `#include <fog_vertex>`,
+                    `#include <fog_vertex>
+                    vViewDist = -mvPosition.z;`
+                  );
+
+                  shader.fragmentShader = `
+                    varying float vViewDist;
+                    ${shader.fragmentShader}
+                  `.replace(
+                    `#include <dithering_fragment>`,
+                    `#include <dithering_fragment>
+                    float nearFade = smoothstep(1.2, 8.5, vViewDist);
+                    gl_FragColor.a *= nearFade;`
+                  );
+                };
+
+                m.material = mat;
+                m.renderOrder = 3;
+              }
+            }
+          });
+
+          scene.add(cloud);
+          this.heroClouds.push({
+            group: cloud,
+            drift: wind[p.layer - 1] ?? new THREE.Vector3(0.5, 0, 0),
+          });
+        }
+      },
+      undefined,
+      (err) => console.warn("No se pudo cargar la nube 3D hero en Scenery:", err)
+    );
+  }
+
+  // ── Faro Atmosférico y Aguja Alpina (Blender bpy): Hito monumental de roca y luz
+  private buildLighthouse(scene: THREE.Scene): void {
+    const glbUrl = new URL("../../art/blender/faro-atmosferico.glb", import.meta.url).href;
+    const loader = new GLTFLoader();
+    loader.load(
+      glbUrl,
+      (gltf) => {
+        const lighthouse = gltf.scene;
+        // Escala monumental: la aguja de montaña se eleva ~135 m en el flanco del valle
+        lighthouse.scale.setScalar(3.8);
+        lighthouse.position.set(-115, 6, -135);
+        lighthouse.rotation.y = 0.55;
+
+        lighthouse.traverse((child) => {
+          if ((child as THREE.Mesh).isMesh) {
+            const m = child as THREE.Mesh;
+            m.castShadow = false;
+            m.receiveShadow = false;
+            if (m.material) {
+              const mat = (m.material as THREE.Material).clone() as THREE.MeshStandardMaterial;
+              if (m.name.toLowerCase().includes("haz") || mat.name.toLowerCase().includes("haz")) {
+                mat.transparent = true;
+                mat.opacity = 0.28;
+                mat.depthWrite = false;
+                mat.blending = THREE.AdditiveBlending;
+              }
+              m.material = mat;
+            }
+          }
+          if (child.name === "Faro_Linterna_Giratoria") {
+            this.faroRotator = child;
+          }
+        });
+
+        scene.add(lighthouse);
+      },
+      undefined,
+      (err) => console.warn("No se pudo cargar el faro atmosférico en Scenery:", err)
+    );
+  }
+
   // ── Lenticulares (capa 3): pilas de discos aplanados. Trivial.
   private buildLenticulars(scene: THREE.Scene, rng: () => number): void {
     const mat = new THREE.MeshBasicMaterial({
@@ -323,76 +450,65 @@ export class Scenery {
     place(makeBoxKite(), 60 + rng() * 50);
   }
 
-  // ── Ballena Celeste (§7.5): 1 vez por sesión en capa 5. Elipsoides
-  // encadenados + aletas planas + placas emisivas; órbita amplia y lenta.
+  // ── Gran Ballena Celeste (Blender bpy): El Leviatán del Éter (capa 5, +675m)
+  // Cetáceo rorcual de 26m con alas de manta marina, cresta bioluminiscente y arnés de latón.
   private whale: THREE.Group | null = null;
+  private whaleWingLeft: THREE.Object3D | null = null;
+  private whaleWingRight: THREE.Object3D | null = null;
+  private whaleTailFin: THREE.Object3D | null = null;
   private whaleAngle = 0;
-  private readonly whaleOrbitR = 48;
+  private readonly whaleOrbitR = 50;
   private readonly whaleY = 675;
-  private readonly whaleSpeed = 0.014; // rad/s — cruza lento el campo visual
+  private readonly whaleSpeed = 0.016; // rad/s — cruza sereno el campo visual
   readonly whaleVelocity = new THREE.Vector3();
 
   activateWhale(scene: THREE.Scene): void {
     if (this.whale) return;
     const g = new THREE.Group();
-    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x5a6b8c, roughness: 0.7 });
-    const bellyMat = new THREE.MeshStandardMaterial({ color: 0x8fa3c4, roughness: 0.8 });
-    // Cuerpo: elipsoides encadenados con caída hacia la cola.
-    const segs = [
-      { x: 0, s: [7, 4.4, 4.8], m: bodyMat },
-      { x: -6.5, s: [5.6, 3.8, 4.1], m: bodyMat },
-      { x: -12, s: [4, 2.9, 3], m: bodyMat },
-      { x: -16.5, s: [2.5, 1.8, 1.9], m: bodyMat },
-      { x: 1.5, s: [6.4, 3.6, 4.4], m: bellyMat },
-    ];
-    for (const sg of segs) {
-      const mesh = new THREE.Mesh(new THREE.SphereGeometry(1, 14, 10), sg.m);
-      mesh.position.set(sg.x, sg.m === bellyMat ? -1 : 0, 0);
-      mesh.scale.set(sg.s[0], sg.s[1], sg.s[2]);
-      g.add(mesh);
-    }
-    // Aletas planas + cola.
-    const finMat = new THREE.MeshStandardMaterial({
-      color: 0x46557a,
-      roughness: 0.8,
-      side: THREE.DoubleSide,
-    });
-    for (const side of [1, -1]) {
-      const fin = new THREE.Mesh(new THREE.PlaneGeometry(6, 2.6), finMat);
-      fin.position.set(1, -1.4, side * 4.4);
-      fin.rotation.set(side * 0.5, 0, -0.35);
-      g.add(fin);
-    }
-    const tail = new THREE.Mesh(new THREE.PlaneGeometry(5.5, 2.4), finMat);
-    tail.position.set(-19, 0.4, 0);
-    tail.rotation.x = Math.PI / 2;
-    g.add(tail);
-    // Placas emisivas en el lomo (bioluminiscencia celeste).
-    const plateMat = new THREE.MeshStandardMaterial({
-      color: 0x203040,
-      emissive: 0x7fffc8,
-      emissiveIntensity: 1.2,
-    });
-    for (let i = 0; i < 6; i++) {
-      const plate = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 6), plateMat);
-      plate.position.set(2 - i * 3.2, 3.6 - i * 0.35, (i % 2 === 0 ? 1 : -1) * 0.9);
-      plate.scale.set(1.4, 0.5, 1);
-      g.add(plate);
-    }
-    this.whaleAngle = 0;
     g.position.set(this.whaleOrbitR, this.whaleY, 0);
     scene.add(g);
     this.whale = g;
+    this.whaleAngle = 0;
+
+    const glbUrl = new URL("../../art/blender/ballena-celeste.glb", import.meta.url).href;
+    const loader = new GLTFLoader();
+    loader.load(
+      glbUrl,
+      (gltf) => {
+        const whaleModel = gltf.scene;
+        whaleModel.scale.setScalar(1.0);
+
+        whaleModel.traverse((child) => {
+          if ((child as THREE.Mesh).isMesh) {
+            const m = child as THREE.Mesh;
+            m.castShadow = false;
+            m.receiveShadow = false;
+          }
+          if (child.name === "Aleta_Pectoral_Izq") {
+            this.whaleWingLeft = child;
+          } else if (child.name === "Aleta_Pectoral_Der") {
+            this.whaleWingRight = child;
+          } else if (child.name === "Aleta_Cola") {
+            this.whaleTailFin = child;
+          }
+        });
+
+        g.add(whaleModel);
+      },
+      undefined,
+      (err) => console.warn("No se pudo cargar la Ballena Celeste en Scenery:", err)
+    );
   }
 
   get whaleActive(): boolean {
     return this.whale !== null;
   }
 
-  /** Punto del lomo donde cuelga la cuerda de linternas (§7.5). */
+  /** Punto del lomo donde cuelga la cuerda de linternas del acorde 13 (§7.5). */
   whaleBack(target: THREE.Vector3): THREE.Vector3 {
     if (!this.whale) return target.set(0, this.whaleY, 0);
-    return target.copy(this.whale.position).add(new THREE.Vector3(0, 4.5, 0));
+    // Anillo de latón victoriano en el lomo (0, 4.2, 0 en espacio local de la ballena)
+    return target.set(0, 4.2, 0).applyMatrix4(this.whale.matrixWorld);
   }
 
   update(dt: number, playerPos: THREE.Vector3, elapsed: number): void {
@@ -409,9 +525,27 @@ export class Scenery {
         Math.sin(a) * this.whaleOrbitR,
       );
       this.whaleVelocity.copy(this.whale.position).sub(prev).divideScalar(Math.max(dt, 1e-4));
-      // Mira hacia su tangente de avance.
-      this.whale.rotation.y = -a - Math.PI / 2 + Math.PI;
-      this.whale.rotation.z = Math.sin(elapsed * 0.35) * 0.05; // nado suave
+
+      // Orientación hacia el rumbo de avance con Three.js lookAt
+      const forward = this.whale.position.clone().add(this.whaleVelocity);
+      this.whale.lookAt(forward);
+      // Alabeo suave en las curvas
+      this.whale.rotateZ(Math.sin(elapsed * 0.35) * 0.05);
+      this.whale.updateMatrixWorld();
+
+      // Animación viva de nado: aleteo de mantas pectorales y ondulación caudal
+      if (this.whaleWingLeft && this.whaleWingRight) {
+        const wingFlap = Math.sin(elapsed * 1.6) * 0.15;
+        const wingFeather = Math.cos(elapsed * 1.6) * 0.04;
+        this.whaleWingLeft.rotation.x = wingFlap;
+        this.whaleWingLeft.rotation.z = wingFeather;
+        this.whaleWingRight.rotation.x = -wingFlap;
+        this.whaleWingRight.rotation.z = -wingFeather;
+      }
+      if (this.whaleTailFin) {
+        this.whaleTailFin.rotation.z = Math.sin(elapsed * 1.6 - 1.0) * 0.16;
+        this.whaleTailFin.rotation.y = Math.cos(elapsed * 1.6 - 1.2) * 0.04;
+      }
     }
 
     // Cúmulos: deriva por capa + wrap horizontal en la caja del mundo.
@@ -430,6 +564,18 @@ export class Scenery {
         mesh.setMatrixAt(i, this.dummy.matrix);
       }
       mesh.instanceMatrix.needsUpdate = true;
+    }
+
+    for (const hc of this.heroClouds) {
+      hc.group.position.addScaledVector(hc.drift, dt * 0.4);
+      if (hc.group.position.x > CLOUD_WRAP) hc.group.position.x -= CLOUD_WRAP * 2;
+      if (hc.group.position.x < -CLOUD_WRAP) hc.group.position.x += CLOUD_WRAP * 2;
+      if (hc.group.position.z > CLOUD_WRAP) hc.group.position.z -= CLOUD_WRAP * 2;
+      if (hc.group.position.z < -CLOUD_WRAP) hc.group.position.z += CLOUD_WRAP * 2;
+    }
+
+    if (this.faroRotator) {
+      this.faroRotator.rotation.z += dt * 0.85;
     }
 
     for (const flock of this.birds) flock.update(dt, elapsed);

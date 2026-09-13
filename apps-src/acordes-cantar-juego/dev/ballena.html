@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>La Gran Ballena Celeste · Inspector 3D · Aerostato</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #060b14;
+      color: #e6f0fa;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow: hidden;
+    }
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      height: 100dvh;
+    }
+    #viewport {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      min-height: 0;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+    }
+    aside {
+      padding: 24px 20px;
+      background: #0d1726;
+      border-left: 1px solid #1e3352;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #4df3c4;
+      background: rgba(77, 243, 196, 0.12);
+      border: 1px solid rgba(77, 243, 196, 0.3);
+      padding: 4px 10px;
+      border-radius: 999px;
+      width: fit-content;
+    }
+    h1 {
+      font-size: 22px;
+      line-height: 1.25;
+      font-weight: 600;
+      margin: 2px 0;
+      color: #f5f9fc;
+    }
+    p.desc {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #8da6c4;
+      margin: 0 0 6px;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #b0cbe8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      justify-content: space-between;
+    }
+    label span.val {
+      color: #4df3c4;
+      font-family: monospace;
+    }
+    select, button, input[type="range"] {
+      font: inherit;
+    }
+    select {
+      width: 100%;
+      padding: 9px 12px;
+      background: #142236;
+      border: 1px solid #233b5d;
+      border-radius: 6px;
+      color: #e6f0fa;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    select:focus-visible, button:focus-visible {
+      outline: 2px solid #4df3c4;
+      outline-offset: 2px;
+    }
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    button {
+      padding: 8px 12px;
+      background: #182a43;
+      border: 1px solid #27436b;
+      border-radius: 6px;
+      color: #e6f0fa;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    button:hover {
+      background: #203657;
+      border-color: #3b659d;
+    }
+    button.active {
+      background: #0f4044;
+      border-color: #4df3c4;
+      color: #e6fffa;
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: #4df3c4;
+      cursor: pointer;
+    }
+    .stats-card {
+      background: #101c2e;
+      border: 1px solid #1e3352;
+      border-radius: 8px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      text-align: center;
+    }
+    .stat-item .num {
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffd894;
+      font-family: monospace;
+    }
+    .stat-item .lbl {
+      font-size: 10px;
+      color: #7995b5;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+    }
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-top: 8px;
+      border-top: 1px solid #1e3352;
+      margin-top: auto;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 10px;
+      font-size: 12px;
+      color: #8da6c4;
+      text-decoration: none;
+      border-radius: 5px;
+      background: #101c2e;
+      transition: background 0.15s, color 0.15s;
+    }
+    .nav-link:hover {
+      background: #182a43;
+      color: #4df3c4;
+    }
+    .nav-link.primary {
+      color: #ffd894;
+      background: rgba(255, 216, 148, 0.08);
+      border: 1px solid rgba(255, 216, 148, 0.25);
+    }
+    .nav-link.primary:hover {
+      background: rgba(255, 216, 148, 0.16);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div id="viewport">
+      <canvas id="ballena-canvas"></canvas>
+    </div>
+    <aside>
+      <span class="badge">Nivel 5 · +675m Clímax</span>
+      <h1>La Gran Ballena Celeste</h1>
+      <p class="desc">El Leviatán del Éter. Cetáceo rorcual de 26m con alas de manta marina, cresta dorsal bioluminiscente y arnés victoriano del acorde 13.</p>
+
+      <div class="stats-card">
+        <div class="stat-item">
+          <div class="num" id="stat-tris">--</div>
+          <div class="lbl">Triángulos</div>
+        </div>
+        <div class="stat-item">
+          <div class="num" id="stat-draws">--</div>
+          <div class="lbl">Draw Calls</div>
+        </div>
+        <div class="stat-item">
+          <div class="num" id="stat-fps">--</div>
+          <div class="lbl">FPS</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="lighting-preset">Ambiente Estratosférico</label>
+        <select id="lighting-preset">
+          <option value="deep-space" selected>Estratósfera Nocturna (Juego)</option>
+          <option value="aurora">Aurora Boreal Esmeralda</option>
+          <option value="sunset">Atardecer Dorado (+675m)</option>
+          <option value="high-noon">Cenit Diurno Despejado</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="swim-speed">Velocidad de Nado <span class="val" id="swim-speed-val">1.0x</span></label>
+        <input type="range" id="swim-speed" min="0" max="250" value="100" step="10">
+      </div>
+
+      <div class="field">
+        <label for="bio-glow">Intensidad Bioluminiscencia <span class="val" id="bio-glow-val">1.0x</span></label>
+        <input type="range" id="bio-glow" min="20" max="300" value="100" step="10">
+      </div>
+
+      <div class="field">
+        <label>Animación y Cámara</label>
+        <div class="btn-group">
+          <button id="btn-swim" class="active">🌊 Nado Suave</button>
+          <button id="btn-rotate" class="active">🔄 Auto-órbita</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Puntos de Enfoque</label>
+        <div class="btn-group">
+          <button id="btn-focus-general">🐋 Completa</button>
+          <button id="btn-focus-head">👁 Ojos / Cresta</button>
+        </div>
+        <div class="btn-group" style="margin-top: 6px;">
+          <button id="btn-focus-harness">⚓ Arnés Latón</button>
+          <button id="btn-focus-tail">🐟 Aleta Caudal</button>
+        </div>
+      </div>
+
+      <div class="nav-links">
+        <a class="nav-link primary" href="../index.html">🎮 Volver al Juego (Toca B para ir a 675m)</a>
+        <a class="nav-link" href="faro.html">🏔 Faro Atmosférico (+380m)</a>
+        <a class="nav-link" href="nubes.html">☁ Inspector de Nubes Cúmulo</a>
+      </div>
+    </aside>
+  </main>
+  <script type="module" src="./ballena.ts"></script>
+</body>
+</html>

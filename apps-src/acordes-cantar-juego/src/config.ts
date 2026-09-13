@@ -188,8 +188,8 @@ export const FLYBY = {
 // plan a 60 fps, expresado por segundo para independencia del framerate.
 export const PHYSICS = {
   maxSpeedH: 6, // u/s horizontal
-  maxSpeedV: 4, // u/s vertical
-  accelLerp: 1.8, // 1/s — masa de globo (más pesado que Batisfera)
+  maxSpeedV: 8, // u/s vertical (ascenso más ágil y cómodo)
+  accelLerp: 2.2, // 1/s — respuesta del quemador más viva
   windSpeed: 0.4, // u/s deriva constante por capa
   // Navegación con rumbo estilo Batisfera (Luis 2026-07-19): A/D = timón,
   // drag = vista temporal que se recentra al soltar.

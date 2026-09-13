@@ -56,6 +56,28 @@ export class PlayerController {
         this.onEscape?.();
         return;
       }
+      // Atajo dev: tecla 'c' para colocarse frente a la Nube Heroica y probar atravesarla
+      if (e.key.toLowerCase() === "c" && this.enabled) {
+        this.setPose(42, 28, -35, Math.PI, 0);
+        return;
+      }
+      // Atajo dev: tecla 'f' para colocarse frente al Faro Atmosférico y Aguja Alpina
+      if (e.key.toLowerCase() === "f" && this.enabled) {
+        this.setPose(-115, 140, -85, 0, 0);
+        return;
+      }
+      // Atajos directos para teletransportarse a cualquiera de las 5 capas:
+      if (this.enabled) {
+        if (e.key === "1") { this.setPose(0, 25, -20, 0, 0); return; }
+        if (e.key === "2") { this.setPose(-115, 140, -85, 0, 0); return; }
+        if (e.key === "3") { this.setPose(0, 325, -20, 0, 0); return; }
+        if (e.key === "4") { this.setPose(0, 475, -20, 0, 0); return; }
+        if (e.key === "5" || e.key.toLowerCase() === "b") {
+          // Coloca al jugador frente a la órbita de la ballena (Y=675, X=50) a 35m
+          this.setPose(50, 672, -35, Math.PI, 0);
+          return;
+        }
+      }
       this.keys.add(e.key.toLowerCase());
       if (["arrowup", "arrowdown", "arrowleft", "arrowright", " "].includes(e.key.toLowerCase())) {
         // Con fakemic las flechas son del afinador; el juego usa WASD igual.
@@ -225,9 +247,13 @@ export class PlayerController {
     const turnInput = this.docked
       ? 0
       : (this.key("a", "arrowleft") ? 1 : 0) - (this.key("d", "arrowright") ? 1 : 0);
+    const isAscending = this.key("q", " ", "pageup");
+    const isDescending = this.key("e", "z", "pagedown");
+    const isTurbo = this.key("shift");
+    const verticalFactor = isTurbo ? 2.2 : 1.0;
     const verticalInput = this.docked
       ? 0
-      : (this.key("q", " ") ? 1 : 0) - (this.key("e", "shift") ? 1 : 0);
+      : ((isAscending ? 1 : 0) - (isDescending ? 1 : 0)) * verticalFactor;
 
     // ── Timón ──
     this.yawObject.rotation.y += turnInput * PHYSICS.turnSpeed * dt;
