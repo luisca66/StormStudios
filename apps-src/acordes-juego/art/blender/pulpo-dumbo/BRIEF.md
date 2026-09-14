@@ -11,7 +11,7 @@
 - Papel: quinta criatura de Batisfera (juego de reconocer acordes bajo el mar). El jugador la
   toca, suena un acorde y **cada brazo destella con una nota**; luego responde.
 - Dónde aparece: **zona 4 (4000–6000 m, abisal)** y **zona 5 (6000–11 000 m, fosa hadal)**, las más
-  oscuras del juego. Aquí suenan acordes de 9ª (5 notas) y de 11ª/13ª (hasta 7 notas).
+  oscuras del juego. Aquí suenan acordes de 9ª (5 notas) y de 11ª/13ª (también 5 notas).
 - Cuántos a la vez: hasta 6 criaturas de varias especies; normalmente 1–2 pulpos.
 - Distancia a la cámara: aparece a 25–70 u; el jugador la activa a **≤ 30 u**.
 - A 30 u ocupa ≈ 8 % de la altura de la pantalla → la silueta con las dos "orejas" debe leerse.
@@ -40,7 +40,7 @@ El **origen del objeto es su pivote**.
 | `body` | — | 1 | origen del modelo | giro lento del conjunto y leve respiración (incluye ojos) |
 | `ear` | — | 2 (izq./der.) | unión de la aleta al manto | aleteo lento y amplio, lados opuestos: es su forma de nadar |
 | `web` | — | 1 | base de la corona de brazos | la membrana entre brazos; se abre y cierra con un pulso suave de escala |
-| `arm` | `0` … `7` | **8 objetos, un brazo cada uno**, en orden alrededor de la corona | base de cada brazo | ondulación; **destello de la nota i** en el brazo `segment = i` (hasta 7 notas) |
+| `arm` | `0` … `7` | **8 objetos, un brazo cada uno**, en orden alrededor de la corona | base de cada brazo | ondulación; **destello de la nota i** en el brazo `segment = i` (hasta 5 notas; 8 brazos dan margen) |
 
 - `arm`: pigmento propio + emisión **neutra** muy baja (`#fff4f0`, 0.15–0.3): el juego la sube y la
   tiñe con la familia al destellar (novenas magenta `#ff7fd0` en zona 4, 11ª/13ª verde `#7fffc8` en

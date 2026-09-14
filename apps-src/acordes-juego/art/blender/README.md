@@ -157,7 +157,7 @@ Modelado por Astra (Codex), integrado por Claude. Encargo, entrega y fuente en `
   Al regenerar, volver a copiarlo. El script comprueba presupuesto, encuadre de cada render y el
   solape membrana–brazos.
 - `src/3d/creatures/blender-dumbo.ts`: orejas, brazos (giro radial con fase por ángulo), membrana
-  y respiración con los valores de `ENTREGA.md`. **Cada brazo destella con su nota** (hasta 7 en
+  y respiración con los valores de `ENTREGA.md`. **Cada brazo destella con su nota** (los acordes del juego tienen hasta 5; sobran brazos en
   11ª/13ª) con el color de la familia. Sustituye al dumbo de primitivas en `species.ts`.
 - Inspector: http://127.0.0.1:5173/dev/dumbo.html (novenas / oncenas y trecenas).
 - Juego: `?debug=1`, zona 4 o 5, botón **Acercar Pulpo Dumbo**.
