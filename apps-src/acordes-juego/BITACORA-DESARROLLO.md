@@ -453,3 +453,9 @@ Checklist §13 (resultado final):
 - Debug: botón **Acercar Pulpo Dumbo**; inspector `dev/dumbo.html`.
 - Se corrigió la codificación (acentos) de `modelar-dumbo.py` y `ENTREGA.md`; el JSON no cambió.
 - Verificado: build, QA, zona 4, ~60 FPS. Pendiente: zona 5 y teléfono. Sin deploy.
+
+### ✅ Sifonóforo de Blender integrado (2026-09-13, Astra modela · Claude integra)
+- Primer modelo por piezas encadenadas: `blender-siphonophore.ts` arma head + 14 nodos instanciados + tail sobre una curva que ondula.
+- Faroles por tramo con color de instancia multiplicando la emisión. `species.ts` ya no tiene el sifonóforo de primitivas.
+- Debug: botón **Acercar Sifonóforo**; inspector `dev/sifonoforo.html`.
+- Verificado: build, QA, zona 3, ~60 FPS. Pendiente: zonas 4–5 y teléfono. Sin deploy.

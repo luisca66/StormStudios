@@ -163,3 +163,23 @@ Modelado por Astra (Codex), integrado por Claude. Encargo, entrega y fuente en `
 - Juego: `?debug=1`, zona 4 o 5, botón **Acercar Pulpo Dumbo**.
 - Verificado 2026-09-13: build y QA; en zona 4 se tocó, destelló, preguntó novenas y huyó al
   fallar; sin errores de consola; ~60 FPS; el script regenera el mismo JSON. Falta zona 5 y teléfono.
+
+---
+
+# Sifonóforo — Batisfera
+
+Modelado por Astra (Codex), integrado por Claude. Encargo, entrega y fuente en `sifonoforo/`.
+
+- Cuatro piezas que el juego encadena: `head` (2 148 tri), `node` (492), `lantern` (128) y `tail`
+  (820); separación de 0.42 u entre nodos; JSON copiado a `src/3d/creatures/assets/sifonoforo.json`
+  (160 kB; 50 kB con gzip). Al regenerar, volver a copiarlo. El script comprueba presupuesto,
+  uniones con ±0.25 rad y escala 0.9–1.1, y el encuadre de los renders.
+- `src/3d/creatures/blender-siphonophore.ts`: curva recalculada por frame con separación exacta
+  (onda X ±0.32 u, Z ±0.10 u, 0.18 ciclos/s, fase 0.40 rad por nodo); 14 `node` y 14 `lantern`
+  con `InstancedMesh` (misma matriz, giro en espiral y ±10 % de escala), 4 llamadas de dibujo por
+  colonia. La emisión de los faroles se multiplica por el color de instancia (`onBeforeCompile`)
+  para encender un tramo por nota con el color de la familia. Sustituye al sifonóforo de primitivas.
+- Inspector: http://127.0.0.1:5173/dev/sifonoforo.html (sextas / oncenas y trecenas).
+- Juego: `?debug=1`, zona 3, 4 o 5, botón **Acercar Sifonóforo**.
+- Verificado 2026-09-13: build y QA; en zona 3 se tocó, preguntó sextas y huyó al fallar; sin
+  errores de consola; ~60 FPS; el script regenera el mismo JSON. Falta zonas 4–5 y teléfono.

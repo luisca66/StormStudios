@@ -599,6 +599,16 @@ if (debugEnabled) {
       game.player.yawObject.localToWorld(position);
       dumbo.setHome(position);
     });
+    addBtn("Acercar Sifonóforo", () => {
+      const colony = game.creatures.all.find((c) => c.speciesId === "siphonophore" && c.state === "IDLE");
+      if (!colony) {
+        showToast("Espera a que aparezca un sifonóforo (zonas 3–5) durante la inmersión.");
+        return;
+      }
+      const position = game.player.position.clone().set(0, 0, -14);
+      game.player.yawObject.localToWorld(position);
+      colony.setHome(position);
+    });
     addBtn("Acercar Medusa Luna", () => {
       const medusa = game.creatures.all.find((c) => c.speciesId === "jellyfish" && c.state === "IDLE");
       if (!medusa) {
