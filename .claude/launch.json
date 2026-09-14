@@ -14,6 +14,12 @@
       "port": 5173
     },
     {
+      "name": "batisfera-build",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "preview", "--prefix", "apps-src/acordes-juego"],
+      "port": 5173
+    },
+    {
       "name": "aerostato",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "apps-src/acordes-cantar-juego"],
