@@ -38,6 +38,9 @@ aislado. No modifiques ningún archivo fuera de esa carpeta.
 4. Los renders con los nombres que pide el brief.
 5. `ENTREGA.md` a partir de `plantillas-blender/ENTREGA.md`.
 
+Guarda scripts y Markdown en **UTF-8** y comprueba que los acentos se lean bien (sin `Ã³` ni `â€”`).
+No dejes logs ni archivos temporales en la carpeta.
+
 ## Revisión propia antes de entregar
 
 Mira cada render y corrige lo que falle antes de detenerte:

@@ -145,3 +145,21 @@ Modelado por Astra (Codex), integrado por Claude. Encargo, entrega y fuente en `
 - Verificado 2026-09-13: build y QA; en zona 3 se tocó, parpadeó, preguntó y huyó al fallar;
   sin errores de consola; ~55 FPS; el script de Astra regenera el mismo JSON con la instalación
   de Luis. v3 revisada también en zona 4 (señuelo magenta, silueta legible). Falta teléfono.
+
+---
+
+# Pulpo Dumbo — Batisfera
+
+Modelado por Astra (Codex), integrado por Claude. Encargo, entrega y fuente en `pulpo-dumbo/`.
+
+- 12 partes (cuerpo, 2 orejas, membrana y 8 brazos con `segment` 0–7), 11 820 triángulos, 2.7 u
+  de alto; JSON copiado a `src/3d/creatures/assets/pulpo-dumbo.json` (536 kB; 130 kB con gzip).
+  Al regenerar, volver a copiarlo. El script comprueba presupuesto, encuadre de cada render y el
+  solape membrana–brazos.
+- `src/3d/creatures/blender-dumbo.ts`: orejas, brazos (giro radial con fase por ángulo), membrana
+  y respiración con los valores de `ENTREGA.md`. **Cada brazo destella con su nota** (hasta 7 en
+  11ª/13ª) con el color de la familia. Sustituye al dumbo de primitivas en `species.ts`.
+- Inspector: http://127.0.0.1:5173/dev/dumbo.html (novenas / oncenas y trecenas).
+- Juego: `?debug=1`, zona 4 o 5, botón **Acercar Pulpo Dumbo**.
+- Verificado 2026-09-13: build y QA; en zona 4 se tocó, destelló, preguntó novenas y huyó al
+  fallar; sin errores de consola; ~60 FPS; el script regenera el mismo JSON. Falta zona 5 y teléfono.

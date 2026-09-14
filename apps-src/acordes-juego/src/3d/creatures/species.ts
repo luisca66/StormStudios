@@ -1,4 +1,4 @@
-// Especies de Batisfera: Medusa Luna, Cardumen Prisma, Calamar Vela y Rape Abisal modelados en Blender; las otras tres usan primitivas
+// Especies de Batisfera: Medusa Luna, Cardumen Prisma, Calamar Vela, Rape Abisal y Pulpo Dumbo modelados en Blender; Sifonóforo y Leviatán usan primitivas
 // + sprites de halo con textura canvas compartida. Cada fábrica recibe el color de
 // bioluminiscencia (según familia del acorde) y devuelve un CreatureVisual.
 
@@ -8,6 +8,7 @@ import { buildBlenderJellyfish } from "./blender-jellyfish";
 import { buildBlenderSchool } from "./blender-school";
 import { buildBlenderSquid } from "./blender-squid";
 import { buildBlenderAngler } from "./blender-angler";
+import { buildBlenderDumbo } from "./blender-dumbo";
 import { makeHalo } from "./halo";
 
 function glowMat(color: number, base = 0x0a1016, intensity = 0.9): THREE.MeshStandardMaterial {
@@ -69,61 +70,6 @@ function buildSiphonophore(color: number): CreatureVisual {
 }
 
 // ---------- 6. Pulpo Dumbo (zonas 4–5) ----------
-function buildDumbo(color: number): CreatureVisual {
-  const group = new THREE.Group();
-  const bodyMat = glowMat(color, 0x141219, 0.7);
-  const body = new THREE.Mesh(new THREE.SphereGeometry(0.85, 14, 10), bodyMat);
-  body.scale.set(1, 0.85, 0.95);
-  group.add(body);
-
-  const earMat = glowMat(color, 0x10141a, 0.9);
-  earMat.side = THREE.DoubleSide;
-  const ears: THREE.Mesh[] = [];
-  for (const side of [-1, 1]) {
-    const ear = new THREE.Mesh(new THREE.CircleGeometry(0.42, 10), earMat);
-    ear.position.set(side * 0.62, 0.5, 0);
-    ear.rotation.y = side * 0.6;
-    ears.push(ear);
-    group.add(ear);
-  }
-
-  // H4a: material propio por brazo — la nota i destella el par i.
-  const armMats: THREE.MeshStandardMaterial[] = [];
-  const arms: THREE.Mesh[] = [];
-  for (let i = 0; i < 8; i++) {
-    const a = (i / 8) * Math.PI * 2;
-    const mat = glowMat(color, 0x0d1016, 0.6);
-    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.02, 0.7, 4), mat);
-    arm.position.set(Math.cos(a) * 0.4, -0.75, Math.sin(a) * 0.4);
-    arm.rotation.z = Math.cos(a) * 0.5;
-    arm.rotation.x = -Math.sin(a) * 0.5;
-    armMats.push(mat);
-    arms.push(arm);
-    group.add(arm);
-  }
-  group.add(makeHalo(color, 3.0));
-
-  return {
-    group,
-    glowMaterials: [bodyMat, earMat, ...armMats],
-    glowSprites: group.children.filter((c): c is THREE.Sprite => c instanceof THREE.Sprite),
-    bodyRadius: 1.5,
-    animate(_dt, elapsed) {
-      ears[0].rotation.z = 0.4 + Math.sin(elapsed * 2.4) * 0.45;
-      ears[1].rotation.z = -0.4 - Math.sin(elapsed * 2.4) * 0.45;
-      group.rotation.y = Math.sin(elapsed * 0.3) * 0.8;
-      for (let i = 0; i < arms.length; i++) {
-        arms[i].rotation.y = Math.sin(elapsed * 1.6 + i) * 0.12;
-      }
-    },
-    flashSegment(index, intensity) {
-      const pair = (index * 2) % armMats.length;
-      armMats[pair].emissiveIntensity += intensity * 3;
-      armMats[pair + 1].emissiveIntensity += intensity * 3;
-    },
-  };
-}
-
 // ---------- 7. Leviatán (zona 5, raro, vale ×2) ----------
 function buildLeviathan(color: number): CreatureVisual {
   const group = new THREE.Group();
@@ -189,7 +135,7 @@ export const SPECIES: SpeciesDef[] = [
   { id: "squid", es: "Calamar Vela", en: "Sail Squid", zones: [2, 3], build: buildBlenderSquid },
   { id: "angler", es: "Rape Abisal", en: "Anglerfish", zones: [3, 4], build: buildBlenderAngler },
   { id: "siphonophore", es: "Sifonóforo", en: "Siphonophore", zones: [3, 4, 5], build: buildSiphonophore },
-  { id: "dumbo", es: "Pulpo Dumbo", en: "Dumbo Octopus", zones: [4, 5], build: buildDumbo },
+  { id: "dumbo", es: "Pulpo Dumbo", en: "Dumbo Octopus", zones: [4, 5], build: buildBlenderDumbo },
   { id: "leviathan", es: "Leviatán", en: "Leviathan", zones: [5], build: buildLeviathan },
 ];
 

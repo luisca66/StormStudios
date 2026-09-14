@@ -106,7 +106,8 @@ Queda como pendiente heredado de la bitácora (F5): animar las agujas de los man
 | Cardumen Prisma | ✅ Blender (JSON, instanciado) |
 | Calamar Vela | ✅ Blender (JSON por partes) · modelado por Astra, integrado por Claude |
 | Rape Abisal | ✅ Blender (JSON por partes) · modelado por Astra, integrado por Claude |
-| Sifonóforo, Pulpo Dumbo, Leviatán | ⏳ siguen con primitivas (`species.ts`) |
+| Pulpo Dumbo | ✅ Blender (JSON por partes) · modelado por Astra, integrado por Claude |
+| Sifonóforo, Leviatán | ⏳ siguen con primitivas (`species.ts`) |
 | Cabina sci-fi | ✅ Blender (JSON por módulos anclados a pantalla, 8 draw calls) · local, sin publicar; falta prueba en teléfono real |
 | Entorno (fosa, arrecifes) | ⏳ primitivas; el brief lo deja para otra fase |
 

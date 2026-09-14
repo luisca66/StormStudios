@@ -589,6 +589,16 @@ if (debugEnabled) {
       game.player.yawObject.localToWorld(position);
       angler.setHome(position);
     });
+    addBtn("Acercar Pulpo Dumbo", () => {
+      const dumbo = game.creatures.all.find((c) => c.speciesId === "dumbo" && c.state === "IDLE");
+      if (!dumbo) {
+        showToast("Espera a que aparezca un pulpo dumbo (zonas 4–5) durante la inmersión.");
+        return;
+      }
+      const position = game.player.position.clone().set(0, 0, -8);
+      game.player.yawObject.localToWorld(position);
+      dumbo.setHome(position);
+    });
     addBtn("Acercar Medusa Luna", () => {
       const medusa = game.creatures.all.find((c) => c.speciesId === "jellyfish" && c.state === "IDLE");
       if (!medusa) {

@@ -447,3 +447,9 @@ Checklist §13 (resultado final):
 - Cabeza ancha y aplanada, labios de grosor variable, aletas con radios y borde ondulado, pigmento con manchas.
 - JSON nuevo copiado; animación ajustada a los valores de `ENTREGA.md` (primer uso de la tabla eje/amplitud/velocidad).
 - Verificado: build, QA, zona 4 (pregunta de novenas, huida), ~52 FPS; el script regenera el mismo JSON.
+
+### ✅ Pulpo Dumbo de Blender integrado (2026-09-13, Astra modela · Claude integra)
+- `blender-dumbo.ts` + precarga; `species.ts` ya no tiene el dumbo de primitivas. Un brazo por nota.
+- Debug: botón **Acercar Pulpo Dumbo**; inspector `dev/dumbo.html`.
+- Se corrigió la codificación (acentos) de `modelar-dumbo.py` y `ENTREGA.md`; el JSON no cambió.
+- Verificado: build, QA, zona 4, ~60 FPS. Pendiente: zona 5 y teléfono. Sin deploy.
