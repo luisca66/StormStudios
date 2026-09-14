@@ -136,11 +136,15 @@ relajó para los modelos de Blender.
 Orden por impacto visual y porque cada paso reutiliza lo anterior. **Confirmado por Luis
 el 2026-09-13.**
 
-1. **Cabina sci-fi de Batisfera.** Brief completo y aprobado; solo falta el OK al concepto
-   v1. Es lo que el jugador ve todo el tiempo.
-2. **Criaturas restantes de Batisfera** (Calamar → Rape → Dumbo → Sifonóforo → Leviatán),
-   siguiendo `modelar-medusa.py`. Encaja con el hito H4 de `PLAN-HITOS-BATISFERA-2.md`
-   (destello por nota, tamaño por registro). Medir en teléfono con 6 criaturas.
+1. ✅ **Cabina sci-fi de Batisfera** (commit `7a1df76`, sin deploy). Pendiente: que Luis la vea
+   en el juego y en un teléfono real. La revisión de Astra la encuentra por debajo del
+   concepto (materiales uniformes, consolas vacías en el render). Si Luis coincide, se hace una
+   pasada de pulido en `modelar-cabina.py` **conservando** módulos, anclas, rieles estirables y
+   pantallas exportadas.
+2. **Criaturas restantes de Batisfera** con el flujo de la sección 6. **Primero solo el
+   Calamar Vela** (`art/blender/calamar-vela/BRIEF.md`) como prueba del flujo; si calidad y
+   rendimiento pasan (medir en teléfono con 6 criaturas), siguen Rape → Dumbo → Sifonóforo →
+   Leviatán. Encaja con el hito H4 de `PLAN-HITOS-BATISFERA-2.md`.
 3. **Aeronaves del Aerostato** en un solo script con las 4 piezas y la hélice como parte viva.
    Son siluetas lejanas: presupuesto bajo.
 4. **Globo/canasta del Aerostato.**
@@ -148,8 +152,11 @@ el 2026-09-13.**
    Blender con partes articuladas para caminar.
 6. **El Cometa**: cabina y cometa. Va al final porque ya está publicado y funciona.
 
-Transversal: pasar Batisfera y Aerostato a `kit.py` compartido y medir rendimiento en
-teléfono real antes de publicar cualquier modelo nuevo.
+**Por definir con Luis:** qué significa "renovar" en los juegos sin Blender todavía
+(`oido-absoluto-multi-juego`, `intervalos-cantados-juego`): solo modelos, o también
+entornos, iluminación y experiencia visual. Hasta entonces no tienen ruta.
+
+Transversal: medir rendimiento en teléfono real antes de publicar cualquier modelo nuevo.
 
 ## 5. Cómo ejecutar una pieza (checklist por sesión)
 
@@ -160,3 +167,27 @@ teléfono real antes de publicar cualquier modelo nuevo.
 5. `npm run build` y el QA del juego; probar escritorio y ventana angosta.
 6. Actualizar el README del juego, la bitácora (5–10 líneas) y el inventario de este plan.
 7. Detenerse. Publicar solo con OK de Luis.
+
+## 6. Flujo con Astra (Codex): modelado separado de la integración
+
+Astra gasta tokens solo en modelar. Claude o Gemini preparan el encargo, integran y prueban.
+
+| Paso | Quién | Entrega |
+|---|---|---|
+| 1. Brief con ficha técnica | integrador (Claude/Gemini) | `art/blender/<modelo>/BRIEF.md` desde `plantillas-blender/BRIEF.md`: escala, ejes, cámara, presupuesto, partes con `part`/`segment` y pivotes, renders pedidos. Astra no abre el código. |
+| 2. Modelado | **Astra** | en esa carpeta: `modelar-<modelo>.py`, `.blend`, `.glb`, `<modelo>.json` (`kit.export_parts`), renders y `ENTREGA.md` |
+| 3. Aprobación | **Luis** | aprueba los renders o pide cambios (máx. 2 rondas de Astra) |
+| 4. Integración | integrador | mueve el JSON a `src/`, carga, animación, destello, inspector, build, QA, escritorio/móvil, commit |
+
+- Instrucción permanente para Astra: `plantillas-blender/INSTRUCCIONES-ASTRA.md`.
+- Astra trabaja en el **checkout principal**, nunca en un worktree aislado; no toca nada fuera
+  de la carpeta del modelo, ni hace commit.
+- El script debe correr con `bpy-run.ps1` desde la instalación de Luis: si a Astra se le acaban
+  los tokens, Claude continúa el mismo `modelar-<modelo>.py`.
+- `kit.export_parts(ruta, meta)` (en `grados-mayores-juego/art/blender/kit.py`) exporta cada
+  objeto con `part` por separado: pivote, geometría relativa, índices, color de vértice y
+  material. Mismo formato que la Medusa Luna, más `segment`, `metalness` y `roughness`.
+- Modelos atados a la pantalla (cabinas) no se separan limpio: su brief debe fijar los módulos
+  y anclas desde el principio.
+- Los modelos nuevos van en subcarpeta `art/blender/<modelo>/`; los existentes no se mueven
+  (los juegos los cargan desde sus rutas actuales).
