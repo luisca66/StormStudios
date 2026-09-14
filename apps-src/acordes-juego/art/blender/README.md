@@ -107,3 +107,22 @@ del script):
   375×812 táctil (vertical). ~60 FPS en la PC de Luis; falta medirlo en un teléfono real.
 - Inspección: `npm run dev` → http://127.0.0.1:5173/?debug=1 (botones **Acercar Medusa
   Luna** y **Acercar Cardumen Prisma**); cambiar el tamaño de la ventana recoloca la cabina.
+
+---
+
+# Calamar Vela — Batisfera
+
+Modelado por Astra (Codex) con el flujo de `PLAN-3D-BLENDER.md` §6; integrado por Claude.
+Encargo, entrega y fuente en `calamar-vela/` (`BRIEF.md`, `ENTREGA.md`, `modelar-calamar.py`).
+
+- 11 partes, 11 714 triángulos, 4.55 u de largo; JSON copiado a
+  `src/3d/creatures/assets/calamar-vela.json` (533 kB; 124 kB con gzip). Al regenerar el modelo,
+  volver a copiarlo.
+- `src/3d/creatures/blender-squid.ts`: manto y fotóforos comparten el pulso de propulsión
+  (±9 %), las velas aletean acompañando al manto, brazos y tentáculos ondulan con fases
+  distintas. Fotóforos y brazos toman el color de la familia del acorde; el par de brazos
+  `segment = i` destella con la nota i. Sustituye al calamar de primitivas en `species.ts`.
+- Inspector: http://127.0.0.1:5173/dev/calamar.html (séptimas / sextas, destello, captura, huida).
+- Juego: `?debug=1`, zona 2 o 3, botón **Acercar Calamar Vela**.
+- Verificado 2026-09-13: build y QA; en zona 2 se tocó, destelló por nota y huyó al fallar;
+  sin errores de consola; 50–60 FPS en la PC de Luis. Falta revisar zona 3 (más oscura) y teléfono.

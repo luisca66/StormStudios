@@ -431,3 +431,9 @@ Checklist §13 (resultado final):
 - La cabina también se ve detrás del menú, la pausa y el resumen.
 - Verificado: build + QA, pregunta/respuesta, pausa, abortar, 4 aspectos (2 táctiles), ~60 FPS.
   Pendiente: prueba en teléfono real. Sin deploy.
+
+### ✅ Calamar Vela de Blender integrado (2026-09-13, Astra modela · Claude integra)
+- Primer modelo con el flujo Astra → integrador (`art/blender/calamar-vela/`).
+- `blender-squid.ts` + precarga en `bootstrap.ts`; `species.ts` ya no tiene el calamar de primitivas.
+- Debug: botón **Acercar Calamar Vela**; inspector `dev/calamar.html`.
+- Verificado: build, QA, destello por nota y huida en zona 2. Pendiente: zona 3 y teléfono. Sin deploy.

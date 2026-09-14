@@ -1,4 +1,4 @@
-// Especies de Batisfera: Medusa Luna y Cardumen Prisma modelados en Blender; las otras cinco usan primitivas
+// Especies de Batisfera: Medusa Luna, Cardumen Prisma y Calamar Vela modelados en Blender; las otras cuatro usan primitivas
 // + sprites de halo con textura canvas compartida. Cada fábrica recibe el color de
 // bioluminiscencia (según familia del acorde) y devuelve un CreatureVisual.
 
@@ -6,6 +6,7 @@ import * as THREE from "three";
 import type { CreatureVisual } from "./base";
 import { buildBlenderJellyfish } from "./blender-jellyfish";
 import { buildBlenderSchool } from "./blender-school";
+import { buildBlenderSquid } from "./blender-squid";
 
 // ---------- Halo compartido ----------
 let glowTexture: THREE.CanvasTexture | null = null;
@@ -55,62 +56,6 @@ function glowMat(color: number, base = 0x0a1016, intensity = 0.9): THREE.MeshSta
 // ---------- 1. Medusa Luna (zonas 1–2) ----------
 // ---------- 2. Cardumen Prisma (zonas 1–2) ----------
 // ---------- 3. Calamar Vela (zonas 2–3) ----------
-function buildSquid(color: number): CreatureVisual {
-  const group = new THREE.Group();
-  const bodyMat = glowMat(color, 0x101820, 0.75);
-  const body = new THREE.Mesh(new THREE.ConeGeometry(0.5, 2.3, 9), bodyMat);
-  body.rotation.x = Math.PI / 2; // punta hacia -Z (dirección de nado)
-  group.add(body);
-
-  const finMat = glowMat(color, 0x0c1319, 0.6);
-  finMat.side = THREE.DoubleSide;
-  const fins: THREE.Mesh[] = [];
-  for (const side of [-1, 1]) {
-    const fin = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.6), finMat);
-    fin.position.set(side * 0.35, 0, -0.75);
-    fin.rotation.z = side * 0.5;
-    fins.push(fin);
-    group.add(fin);
-  }
-
-  // H4a: material propio por tentáculo — la nota i destella el par i.
-  const tentacleMats: THREE.MeshStandardMaterial[] = [];
-  const tentacles: THREE.Mesh[] = [];
-  for (let i = 0; i < 8; i++) {
-    const a = (i / 8) * Math.PI * 2;
-    const mat = glowMat(color, 0x0a1016, 0.7);
-    const tentacle = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.01, 1.3, 4), mat);
-    tentacle.rotation.x = Math.PI / 2;
-    tentacle.position.set(Math.cos(a) * 0.22, Math.sin(a) * 0.22, 1.7);
-    tentacleMats.push(mat);
-    tentacles.push(tentacle);
-    group.add(tentacle);
-  }
-  group.add(makeHalo(color, 3.4));
-
-  return {
-    group,
-    glowMaterials: [bodyMat, finMat, ...tentacleMats],
-    glowSprites: group.children.filter((c): c is THREE.Sprite => c instanceof THREE.Sprite),
-    bodyRadius: 2.0,
-    animate(_dt, elapsed) {
-      const squeeze = 1 + Math.sin(elapsed * 3.2) * 0.09;
-      body.scale.set(1 / squeeze, 1, squeeze);
-      for (let i = 0; i < tentacles.length; i++) {
-        tentacles[i].rotation.z = Math.sin(elapsed * 2.6 + i * 0.7) * 0.2;
-      }
-      fins[0].rotation.y = Math.sin(elapsed * 2.0) * 0.35;
-      fins[1].rotation.y = -Math.sin(elapsed * 2.0) * 0.35;
-      group.rotation.y = Math.sin(elapsed * 0.4) * 0.5;
-    },
-    flashSegment(index, intensity) {
-      const pair = (index * 2) % tentacleMats.length;
-      tentacleMats[pair].emissiveIntensity += intensity * 3;
-      tentacleMats[pair + 1].emissiveIntensity += intensity * 3;
-    },
-  };
-}
-
 // ---------- 4. Rape Abisal (zonas 3–4) — el señuelo ES la luz clickeable ----------
 function buildAnglerfish(color: number): CreatureVisual {
   const group = new THREE.Group();
@@ -326,7 +271,7 @@ export interface SpeciesDef {
 export const SPECIES: SpeciesDef[] = [
   { id: "jellyfish", es: "Medusa Luna", en: "Moon Jelly", zones: [1, 2], build: buildBlenderJellyfish },
   { id: "school", es: "Cardumen Prisma", en: "Prism School", zones: [1, 2], build: buildBlenderSchool },
-  { id: "squid", es: "Calamar Vela", en: "Sail Squid", zones: [2, 3], build: buildSquid },
+  { id: "squid", es: "Calamar Vela", en: "Sail Squid", zones: [2, 3], build: buildBlenderSquid },
   { id: "angler", es: "Rape Abisal", en: "Anglerfish", zones: [3, 4], build: buildAnglerfish },
   { id: "siphonophore", es: "Sifonóforo", en: "Siphonophore", zones: [3, 4, 5], build: buildSiphonophore },
   { id: "dumbo", es: "Pulpo Dumbo", en: "Dumbo Octopus", zones: [4, 5], build: buildDumbo },

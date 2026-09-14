@@ -569,6 +569,16 @@ if (debugEnabled) {
       game.player.yawObject.localToWorld(position);
       school.setHome(position);
     });
+    addBtn("Acercar Calamar Vela", () => {
+      const squid = game.creatures.all.find((c) => c.speciesId === "squid" && c.state === "IDLE");
+      if (!squid) {
+        showToast("Espera a que aparezca un calamar (zonas 2–3) durante la inmersión.");
+        return;
+      }
+      const position = game.player.position.clone().set(0, 0, -10);
+      game.player.yawObject.localToWorld(position);
+      squid.setHome(position);
+    });
     addBtn("Acercar Medusa Luna", () => {
       const medusa = game.creatures.all.find((c) => c.speciesId === "jellyfish" && c.state === "IDLE");
       if (!medusa) {
