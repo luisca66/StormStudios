@@ -459,3 +459,8 @@ Checklist §13 (resultado final):
 - Faroles por tramo con color de instancia multiplicando la emisión. `species.ts` ya no tiene el sifonóforo de primitivas.
 - Debug: botón **Acercar Sifonóforo**; inspector `dev/sifonoforo.html`.
 - Verificado: build, QA, zona 3, ~60 FPS. Pendiente: zonas 4–5 y teléfono. Sin deploy.
+
+### ✅ Destello de captura (2026-09-13, Claude)
+- Pedido de Luis: la captura se veía seca. `creatures/capture-burst.ts`: halo del color de la familia que se abre, núcleo blanco con dos destellos y 56 chispas que se dispersan titilando (de blanco al color de la familia).
+- `base.ts`: la criatura se acerca hasta 7 u de la cámara (antes llegaba encima), se hincha un instante, sube su brillo y se encoge con curva suave en 1.2 s; el destello dura 1.7 s y se libera con la criatura. Vale para todas las especies.
+- Verificado: build, QA, inspector y captura real en zona 1 sin errores.

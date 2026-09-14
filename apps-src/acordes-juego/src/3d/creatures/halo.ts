@@ -5,7 +5,7 @@ import * as THREE from "three";
 
 let glowTexture: THREE.CanvasTexture | null = null;
 
-function getGlowTexture(): THREE.CanvasTexture {
+export function getGlowTexture(): THREE.CanvasTexture {
   if (glowTexture) return glowTexture;
   const size = 128;
   const canvas = document.createElement("canvas");

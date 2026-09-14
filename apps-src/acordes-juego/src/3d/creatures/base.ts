@@ -4,8 +4,9 @@
 
 import * as THREE from "three";
 import type { ChordType } from "@/music/chords";
-import { INTERACTION } from "@/config";
+import { FAMILY_GLOW, INTERACTION } from "@/config";
 import { noteToMidi } from "@/music/theory";
+import { CaptureBurst } from "./capture-burst";
 
 export type CreatureState = "IDLE" | "LISTENING" | "FLEEING" | "CAPTURED" | "GONE";
 
@@ -31,7 +32,10 @@ export interface CreatureVisual {
 }
 
 const FLEE_DURATION = 1.6;
-const CAPTURE_DURATION = 1.25;
+// La criatura se disuelve en 1.2 s; el destello (CaptureBurst) sigue un poco más.
+const CAPTURE_DURATION = 1.2;
+// Al capturarla se acerca a la cámara, pero se detiene a esta distancia.
+const CAPTURE_STOP_DISTANCE = 7;
 const GLOW_DECAY_SECONDS = 1.6;
 // H4a: escalonado y mini-envolvente de cada nota del acorde.
 const NOTE_STAGGER = 0.09;
@@ -57,6 +61,8 @@ export class Creature {
   // H4a: cuántas notas destellan y el reloj desde el pulse().
   private pulseNotes = 0;
   private pulseTime = 0;
+  private burst: CaptureBurst | null = null;
+  private toPlayer = new THREE.Vector3();
   /** H4b: escala por registro (fundamental grave = criatura grande). */
   readonly baseScale: number;
 
@@ -192,12 +198,24 @@ export class Creature {
         return this.stateTime < FLEE_DURATION;
       }
       case "CAPTURED": {
-        // Nada hacia la cámara mientras se encoge y brilla blanco.
-        this.group.position.lerp(playerPos, Math.min(1, 2.2 * dt));
-        const k = Math.max(0.06, 1 - this.stateTime / CAPTURE_DURATION);
-        this.group.scale.setScalar(k * this.baseScale); // H4b: respeta el tamaño base
+        // Nada hacia la cámara, se hincha un instante, brilla blanco y se disuelve en luz.
+        this.toPlayer.subVectors(playerPos, this.group.position);
+        const gap = this.toPlayer.length() - CAPTURE_STOP_DISTANCE;
+        if (gap > 0) this.group.position.addScaledVector(this.toPlayer.normalize(), gap * Math.min(1, 2.2 * dt));
+        const progress = Math.min(1, this.stateTime / CAPTURE_DURATION);
+        const swell = 1 + 0.12 * Math.sin(Math.min(1, progress * 2.5) * Math.PI);
+        const k = Math.max(0, 1 - progress ** 2.2) * swell;
+        this.group.scale.setScalar(Math.max(0.001, k) * this.baseScale); // H4b: respeta el tamaño base
+        this.group.visible = progress < 1;
+        for (const m of this.visual.glowMaterials) m.emissiveIntensity += progress * 3;
         this.visual.animate(dt * 1.5, elapsed);
-        return this.stateTime < CAPTURE_DURATION;
+
+        if (!this.burst && this.group.parent) {
+          const radius = Math.min(4, this.visual.bodyRadius * this.baseScale);
+          this.burst = new CaptureBurst(this.group.parent, FAMILY_GLOW[this.chord.family], radius);
+        }
+        const sparkling = this.burst?.update(dt, this.group.position) ?? false;
+        return progress < 1 || sparkling;
       }
       case "GONE":
         return false;
@@ -206,6 +224,8 @@ export class Creature {
 
   /** Libera geometrías/materiales propios (la textura de halo es compartida). */
   dispose(): void {
+    this.burst?.dispose();
+    this.burst = null;
     this.group.traverse((obj) => {
       if (obj instanceof THREE.Mesh) {
         if (obj instanceof THREE.InstancedMesh) obj.dispose();
