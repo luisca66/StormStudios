@@ -16,7 +16,7 @@
 | `<modelo>.blend` | escena editable |
 | `<modelo>.glb` | modelo portable (con animación de muestra si aplica) |
 | `<modelo>.json` | geometría para el juego (`kit.export_parts`) |
-| `render-juego.png`, `render-perfil.png`, `render-detalle.png` | revisión |
+| `render-juego.png`, `render-cerca.png`, `render-perfil.png`, `render-detalle.png` | revisión |
 
 Regenerar (desde la carpeta del modelo):
 
@@ -34,12 +34,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 | Triángulos totales | <…> |
 | Mallas exportadas | <…> |
 | Peso del JSON | <… kB> |
+| Puntos en `meta` | <nombre = (x, y, z) Three, para qué sirve; "ninguno"> |
 
 ## Partes
 
-| Objeto | `part` | `segment` | Pivote (Three) | Material | Notas de animación |
-|---|---|---|---|---|---|
-| <…> | <…> | <…> | <x, y, z> | <…> | <eje y amplitud sugeridos> |
+| Objeto | `part` | `segment` | Pivote (Three) | Material | Eje (Three) | Amplitud | Velocidad | Notas |
+|---|---|---|---|---|---|---|---|---|
+| <…> | <…> | <…> | <x, y, z> | <…> | <X/Y/Z o escala> | <± rad / ± %> | <ciclos por s o rad/s> | <fase, lados opuestos, estática…> |
 
 ## Materiales
 

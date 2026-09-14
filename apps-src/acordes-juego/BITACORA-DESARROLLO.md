@@ -437,3 +437,8 @@ Checklist §13 (resultado final):
 - `blender-squid.ts` + precarga en `bootstrap.ts`; `species.ts` ya no tiene el calamar de primitivas.
 - Debug: botón **Acercar Calamar Vela**; inspector `dev/calamar.html`.
 - Verificado: build, QA, destello por nota y huida en zona 2. Pendiente: zona 3 y teléfono. Sin deploy.
+
+### ✅ Rape Abisal de Blender integrado (2026-09-13, Astra modela · Claude integra)
+- `blender-angler.ts` + precarga; `species.ts` ya no tiene el rape de primitivas; el halo pasó a `creatures/halo.ts`.
+- Debug: botón **Acercar Rape Abisal**; inspector `dev/rape.html`.
+- Verificado: build, QA, parpadeo del señuelo, pregunta y huida en zona 3 (el calamar también se lee en zona 3). Pendiente: zona 4 y teléfono. Sin deploy.

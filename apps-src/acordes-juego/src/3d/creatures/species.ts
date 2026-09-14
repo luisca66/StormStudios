@@ -1,4 +1,4 @@
-// Especies de Batisfera: Medusa Luna, Cardumen Prisma y Calamar Vela modelados en Blender; las otras cuatro usan primitivas
+// Especies de Batisfera: Medusa Luna, Cardumen Prisma, Calamar Vela y Rape Abisal modelados en Blender; las otras tres usan primitivas
 // + sprites de halo con textura canvas compartida. Cada fábrica recibe el color de
 // bioluminiscencia (según familia del acorde) y devuelve un CreatureVisual.
 
@@ -7,41 +7,8 @@ import type { CreatureVisual } from "./base";
 import { buildBlenderJellyfish } from "./blender-jellyfish";
 import { buildBlenderSchool } from "./blender-school";
 import { buildBlenderSquid } from "./blender-squid";
-
-// ---------- Halo compartido ----------
-let glowTexture: THREE.CanvasTexture | null = null;
-
-function getGlowTexture(): THREE.CanvasTexture {
-  if (glowTexture) return glowTexture;
-  const size = 128;
-  const canvas = document.createElement("canvas");
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext("2d")!;
-  const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-  grad.addColorStop(0, "rgba(255,255,255,1)");
-  grad.addColorStop(0.35, "rgba(255,255,255,0.45)");
-  grad.addColorStop(1, "rgba(255,255,255,0)");
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, size, size);
-  glowTexture = new THREE.CanvasTexture(canvas);
-  return glowTexture;
-}
-
-function makeHalo(color: number, scale: number, opacity = 0.4): THREE.Sprite {
-  const sprite = new THREE.Sprite(
-    new THREE.SpriteMaterial({
-      map: getGlowTexture(),
-      color,
-      transparent: true,
-      opacity,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-    }),
-  );
-  sprite.scale.set(scale, scale, 1);
-  return sprite;
-}
+import { buildBlenderAngler } from "./blender-angler";
+import { makeHalo } from "./halo";
 
 function glowMat(color: number, base = 0x0a1016, intensity = 0.9): THREE.MeshStandardMaterial {
   return new THREE.MeshStandardMaterial({
@@ -57,58 +24,6 @@ function glowMat(color: number, base = 0x0a1016, intensity = 0.9): THREE.MeshSta
 // ---------- 2. Cardumen Prisma (zonas 1–2) ----------
 // ---------- 3. Calamar Vela (zonas 2–3) ----------
 // ---------- 4. Rape Abisal (zonas 3–4) — el señuelo ES la luz clickeable ----------
-function buildAnglerfish(color: number): CreatureVisual {
-  const group = new THREE.Group();
-  const bodyMat = glowMat(color, 0x11151a, 0.25); // cuerpo casi apagado
-  const body = new THREE.Mesh(new THREE.SphereGeometry(0.95, 14, 10), bodyMat);
-  body.scale.set(1, 0.82, 1.2);
-  group.add(body);
-
-  const jaw = new THREE.Mesh(
-    new THREE.SphereGeometry(0.55, 12, 8, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2),
-    bodyMat,
-  );
-  jaw.position.set(0, -0.28, -0.62);
-  group.add(jaw);
-
-  // Caña + señuelo brillante.
-  const rod = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.018, 0.018, 1.15, 4),
-    glowMat(color, 0x0a1016, 0.4),
-  );
-  rod.position.set(0, 0.85, -0.55);
-  rod.rotation.x = 0.7;
-  group.add(rod);
-
-  const lureMat = glowMat(color, 0x1a2026, 2.6);
-  const lure = new THREE.Mesh(new THREE.SphereGeometry(0.17, 10, 8), lureMat);
-  lure.position.set(0, 1.22, -1.02);
-  group.add(lure);
-  const lureHalo = makeHalo(color, 1.6, 0.6);
-  lureHalo.position.copy(lure.position);
-  group.add(lureHalo);
-
-  return {
-    group,
-    glowMaterials: [lureMat, bodyMat],
-    glowSprites: group.children.filter((c): c is THREE.Sprite => c instanceof THREE.Sprite),
-    bodyRadius: 1.6,
-    animate(_dt, elapsed) {
-      const sway = Math.sin(elapsed * 1.4) * 0.18;
-      rod.rotation.z = sway;
-      lure.position.x = Math.sin(elapsed * 1.4) * 0.2;
-      lureHalo.position.x = lure.position.x;
-      group.rotation.z = Math.sin(elapsed * 0.9) * 0.06;
-      jaw.rotation.x = Math.max(0, Math.sin(elapsed * 0.7)) * 0.25;
-    },
-    // Las notas llegan escalonadas → el señuelo parpadea n veces, una por nota.
-    flashSegment(_index, intensity) {
-      lureMat.emissiveIntensity += intensity * 4;
-      lureHalo.material.opacity = Math.min(1, lureHalo.material.opacity + intensity * 0.4);
-    },
-  };
-}
-
 // ---------- 5. Sifonóforo (zonas 3–5) — cadena ondulante de faroles ----------
 function buildSiphonophore(color: number): CreatureVisual {
   const group = new THREE.Group();
@@ -272,7 +187,7 @@ export const SPECIES: SpeciesDef[] = [
   { id: "jellyfish", es: "Medusa Luna", en: "Moon Jelly", zones: [1, 2], build: buildBlenderJellyfish },
   { id: "school", es: "Cardumen Prisma", en: "Prism School", zones: [1, 2], build: buildBlenderSchool },
   { id: "squid", es: "Calamar Vela", en: "Sail Squid", zones: [2, 3], build: buildBlenderSquid },
-  { id: "angler", es: "Rape Abisal", en: "Anglerfish", zones: [3, 4], build: buildAnglerfish },
+  { id: "angler", es: "Rape Abisal", en: "Anglerfish", zones: [3, 4], build: buildBlenderAngler },
   { id: "siphonophore", es: "Sifonóforo", en: "Siphonophore", zones: [3, 4, 5], build: buildSiphonophore },
   { id: "dumbo", es: "Pulpo Dumbo", en: "Dumbo Octopus", zones: [4, 5], build: buildDumbo },
   { id: "leviathan", es: "Leviatán", en: "Leviathan", zones: [5], build: buildLeviathan },

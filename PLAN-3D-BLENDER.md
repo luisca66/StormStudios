@@ -105,7 +105,8 @@ Queda como pendiente heredado de la bitácora (F5): animar las agujas de los man
 | Medusa Luna | ✅ Blender (JSON) |
 | Cardumen Prisma | ✅ Blender (JSON, instanciado) |
 | Calamar Vela | ✅ Blender (JSON por partes) · modelado por Astra, integrado por Claude |
-| Rape Abisal, Sifonóforo, Pulpo Dumbo, Leviatán | ⏳ siguen con primitivas (`species.ts`) |
+| Rape Abisal | ✅ Blender (JSON por partes) · modelado por Astra, integrado por Claude |
+| Sifonóforo, Pulpo Dumbo, Leviatán | ⏳ siguen con primitivas (`species.ts`) |
 | Cabina sci-fi | ✅ Blender (JSON por módulos anclados a pantalla, 8 draw calls) · local, sin publicar; falta prueba en teléfono real |
 | Entorno (fosa, arrecifes) | ⏳ primitivas; el brief lo deja para otra fase |
 
@@ -180,7 +181,7 @@ Astra gasta tokens solo en modelar. Claude o Gemini preparan el encargo, integra
 | 3. Aprobación | **Luis** | aprueba los renders o pide cambios (máx. 2 rondas de Astra) |
 | 4. Integración | integrador | mueve el JSON a `src/`, carga, animación, destello, inspector, build, QA, escritorio/móvil, commit |
 
-- Instrucción permanente para Astra: `plantillas-blender/INSTRUCCIONES-ASTRA.md`.
+- Instrucción permanente para Astra: `plantillas-blender/INSTRUCCIONES-ASTRA.md` (incluye su revisión propia antes de entregar). Prompts listos para pegar (modelo nuevo y ronda de corrección): `plantillas-blender/PROMPTS-ASTRA.md`.
 - Astra trabaja en el **checkout principal**, nunca en un worktree aislado; no toca nada fuera
   de la carpeta del modelo, ni hace commit.
 - El script debe correr con `bpy-run.ps1` desde la instalación de Luis: si a Astra se le acaban

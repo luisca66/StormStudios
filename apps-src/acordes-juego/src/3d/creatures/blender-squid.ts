@@ -5,9 +5,10 @@ import type { CreatureVisual } from "./base";
 // Calamar Vela modelado por Astra en Blender (art/blender/calamar-vela/, kit.export_parts).
 // Punta del manto hacia −Z, brazos hacia +Z; cada parte llega con su pivote.
 
-interface PartData {
+/** Parte exportada por `kit.export_parts` (flujo Astra, PLAN-3D-BLENDER.md §6). */
+export interface PartData {
   name: string;
-  part: "mantle" | "fin" | "head" | "arm" | "tentacle" | "glow";
+  part: string;
   segment?: number;
   pivot: number[];
   position: number[];

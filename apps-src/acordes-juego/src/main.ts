@@ -579,6 +579,16 @@ if (debugEnabled) {
       game.player.yawObject.localToWorld(position);
       squid.setHome(position);
     });
+    addBtn("Acercar Rape Abisal", () => {
+      const angler = game.creatures.all.find((c) => c.speciesId === "angler" && c.state === "IDLE");
+      if (!angler) {
+        showToast("Espera a que aparezca un rape (zonas 3–4) durante la inmersión.");
+        return;
+      }
+      const position = game.player.position.clone().set(0, 0, -9);
+      game.player.yawObject.localToWorld(position);
+      angler.setHome(position);
+    });
     addBtn("Acercar Medusa Luna", () => {
       const medusa = game.creatures.all.find((c) => c.speciesId === "jellyfish" && c.state === "IDLE");
       if (!medusa) {

@@ -51,9 +51,10 @@ familia del acorde; el resto conserva su pigmento">.
 
 Cycles, 32–48 muestras, denoise, fondo <color>. Nombres fijos:
 
-1. `render-juego.png` — <desde la distancia y ángulo típicos del juego, FOV 60, 1600×900>
-2. `render-perfil.png` — <perfil completo, 1200×900>
-3. `render-detalle.png` — <acercamiento a…, 1200×900>
+1. `render-juego.png` — <distancia típica del juego (p. ej. 25 u), FOV 60, 1600×900>: ¿se lee la silueta?
+2. `render-cerca.png` — <≈ 10 u, vista 3/4, FOV 60, 1600×900>: lo que ve el jugador al activarla; aquí se juzga el estilo.
+3. `render-perfil.png` — <perfil completo, 1200×900>
+4. `render-detalle.png` — <acercamiento a…, 1200×900>
 
 ## 6. Criterios de aceptación
 
@@ -61,6 +62,9 @@ Cycles, 32–48 muestras, denoise, fondo <color>. Nombres fijos:
 - [ ] Presupuesto de triángulos y mallas respetado (lo imprime `kit.export_parts`).
 - [ ] Todas las partes de la sección 3 existen con `part`/`segment` y pivote correcto.
 - [ ] La silueta se lee en `render-juego.png`.
+- [ ] En `render-cerca.png` no hay caras planas visibles en curvas ni formas de primitiva suelta.
+- [ ] El `.glb` muestra el pigmento (colores de vértice conectados al material).
+- [ ] `ENTREGA.md` trae eje, amplitud y velocidad de animación para cada parte móvil.
 - [ ] <criterios artísticos objetivos del modelo>
 - [ ] El script corre con `bpy-run.ps1` desde la instalación de Luis y regenera todo.
 

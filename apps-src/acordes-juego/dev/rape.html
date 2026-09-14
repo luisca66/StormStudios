@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rape Abisal · Prueba local de Batisfera</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#061a27;color:#d9edf0;font-family:system-ui,sans-serif}
+    main{display:grid;grid-template-columns:minmax(0,1fr) 300px;height:100dvh}canvas{width:100%;height:100%;display:block;touch-action:none}
+    aside{padding:32px 24px;background:#102b39;overflow:auto}h1{font-size:30px;line-height:1.1;font-weight:550;margin:12px 0 20px}
+    p{font-size:14px;line-height:1.6;color:#a9c7ce}button,select,a{font:inherit}button,select{width:100%;padding:12px;margin:6px 0;border:1px solid #537685;border-radius:7px;background:#183d4b;color:#e1f6fa;cursor:pointer}button:hover{background:#285360}
+    button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #98ebd9;outline-offset:3px}label{display:block;margin-top:20px;font-size:14px}a{color:#97e9d8}output{display:block;font-size:13px;color:#b9d9de;margin:18px 0;line-height:1.7}#viewport{min-width:0;min-height:0}
+    @media(max-width:700px){main{height:auto;grid-template-columns:1fr}#viewport{height:60dvh}aside{padding:24px}h1{font-size:26px}}
+  </style>
+</head>
+<body><main>
+  <div id="viewport"><canvas aria-label="Rape Abisal interactivo en tres dimensiones"></canvas></div>
+  <aside><a href="/">Abrir Batisfera</a><h1>Rape Abisal</h1>
+    <p>Criatura de las zonas de medianoche y abisal, modelada por Astra. El señuelo parpadea una vez por nota. Arrastra para girar y usa la rueda para acercarte.</p>
+    <label for="palette">Familia del acorde</label><select id="palette"><option value="SIXTHS">Sextas · zona 3</option><option value="EXT_9">Novenas · zona 4</option></select>
+    <label for="lighting">Iluminación</label><select id="lighting"><option value="studio">Estudio submarino</option><option value="shallow">Aguas someras</option><option value="deep">Profundidad</option></select>
+    <button id="pulse">Destello de acorde</button><button id="capture">Probar captura</button><button id="flee">Probar huida</button><button id="reset">Restablecer rape</button><button id="pause" aria-pressed="false">Pausar animación</button>
+    <output id="status" aria-live="polite">Cargando modelo de Blender…</output><output id="stats"></output>
+    <p>Prueba local. Los destellos de esta vista son visuales; el audio se prueba en Batisfera.</p>
+  </aside>
+</main><script type="module" src="./rape.ts"></script></body></html>
