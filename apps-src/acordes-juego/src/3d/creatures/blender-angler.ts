@@ -7,6 +7,7 @@ import { makeHalo } from "./halo";
 // Rape Abisal modelado por Astra en Blender (art/blender/rape-abisal/, kit.export_parts).
 // Boca hacia −Z. El señuelo cuelga de la punta de la caña y ES la luz que el jugador ve.
 
+const TAU = Math.PI * 2;
 let parts: PartData[] | undefined;
 let pending: Promise<void> | undefined;
 
@@ -87,13 +88,15 @@ export function buildBlenderAngler(color: number): CreatureVisual {
     glowMaterials: [lureMat],
     glowSprites: [lureHalo],
     bodyRadius: 1.6,
+    // Amplitudes y frecuencias de ENTREGA.md (ciclos/s → rad/s con TAU).
     animate(_dt, elapsed) {
-      rod.rotation.z = Math.sin(elapsed * 1.4) * 0.18;
-      rod.rotation.x = Math.sin(elapsed * 0.9 + 0.5) * 0.06;
-      jaw.rotation.x = -Math.max(0, Math.sin(elapsed * 0.7)) * 0.25;
-      tail.rotation.y = Math.sin(elapsed * 1.8) * 0.22;
-      for (const { mesh, side } of fins) mesh.rotation.z = side * Math.sin(elapsed * 1.6) * 0.18;
-      group.rotation.z = Math.sin(elapsed * 0.9) * 0.06;
+      rod.rotation.z = Math.sin(elapsed * TAU * 0.28) * 0.18;
+      rod.rotation.x = Math.sin(elapsed * TAU * 0.21 + 0.5) * 0.045;
+      lure.scale.setScalar(1 + Math.sin(elapsed * TAU * 0.8) * 0.05);
+      jaw.rotation.x = -Math.max(0, Math.sin(elapsed * TAU * 0.22)) * 0.25;
+      tail.rotation.y = Math.sin(elapsed * TAU * 0.42) * 0.2;
+      for (const { mesh, side } of fins) mesh.rotation.z = side * Math.sin(elapsed * TAU * 0.55) * 0.16;
+      group.rotation.z = Math.sin(elapsed * TAU * 0.16) * 0.045;
     },
     // Las notas llegan escalonadas → el señuelo parpadea una vez por nota.
     flashSegment(_index, intensity) {

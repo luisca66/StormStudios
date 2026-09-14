@@ -55,14 +55,29 @@ class Geo:
         if bad:bmesh.ops.delete(bm,geom=bad,context='FACES')
         bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(ob.data);bm.free();ob.data.update()
         return ob
-# Open ellipsoidal body, frontal rim and genuinely recessed oral cavity.
-g=Geo();N=40;v=[];f=[];c=[]
-profiles=[(-.91,.66,.51,-.03),(-.70,.78,.65,.015),(-.35,.85,.75,0),(.05,.83,.72,0),(.4,.70,.60,-.015),(.72,.48,.39,-.03),(.99,.24,.21,-.04),(1.1,.09,.13,-.04)]
-for ri,(z,rx,ry,yc) in enumerate(profiles):
+# Broad, flattened head with a distinct shoulder and taper; folds live in the skin.
+def skin_color(x,y,z):
+    belly=max(0,min(1,(-y+.04)/.65))
+    col=Vector(kit.lin('3d3029')).lerp(Vector(kit.lin('8a7560')),belly*.85)
+    mottles=math.sin(11*x+2*math.sin(5*z))*math.sin(12*z+2*math.sin(7*y))
+    col*=.65+.65*(mottles+1)/2
+    if mottles<-.15:col*=.45
+    mouth=math.exp(-((z+.91)/.20)**2)
+    return tuple(col*(1-.42*mouth))
+profiles=[(-.91,.66,.51,-.03),(-.78,.79,.61,-.02),(-.61,.85,.71,-.02),(-.40,.85,.75,0),(-.18,.79,.71,-.015),(.02,.71,.62,-.02),(.22,.60,.51,-.03),(.43,.49,.40,-.04),(.65,.37,.30,-.04),(.85,.26,.23,-.04),(.99,.18,.17,-.04),(1.1,.09,.13,-.04)]
+def surface(z,a):
+    for lo,hi in zip(profiles,profiles[1:]):
+        if lo[0]<=z<=hi[0]:
+            t=(z-lo[0])/(hi[0]-lo[0]);rx=lo[1]*(1-t)+hi[1]*t;ry=lo[2]*(1-t)+hi[2]*t;yc=lo[3]*(1-t)+hi[3]*t;break
+    sn=math.sin(a)
+    flatten=min(1,max(0,(z+.91)/.25))
+    top=sn if sn<0 else sn*(1-flatten)+(1-(1-sn)**2)*.84*flatten
+    fold=.018*math.sin(34*z+5*a)*math.sin(a*3)**2*math.sin(math.pi*(z+.91)/2.01)
+    return ((rx+fold)*math.cos(a),yc+ry*top+fold*.55,z)
+g=Geo();N=48;v=[];f=[];c=[]
+for z,rx,ry,yc in profiles:
     for j in range(N):
-        a=j*math.tau/N;x=rx*math.cos(a);y=yc+ry*math.sin(a);v.append((x,y,z))
-        col=Vector(kit.lin('342b27')).lerp(Vector(kit.lin('625044')),max(0,-math.sin(a))*.7)
-        col*=rng.uniform(.76,1.16);c.append(tuple(col))
+        pt=surface(z,j*math.tau/N);v.append(pt);c.append(skin_color(*pt))
 for i in range(len(profiles)-1):
     for j in range(N):a=i*N+j;b=i*N+(j+1)%N;f.append((a,b,b+N,a+N))
 f.append(tuple((len(profiles)-1)*N+j for j in range(N)));g.add(v,f,c)
@@ -73,16 +88,30 @@ for z,rx,ry in [(-.915,.658,.508),(-.66,.57,.43),(-.37,.36,.29),(-.22,.02,.02)]:
 for i in range(3):
     for j in range(N):a=i*N+j;b=i*N+(j+1)%N;f.append((a,a+N,b+N,b))
 f.append(tuple(3*N+j for j in range(N)));g.add(v,f,'211518')
-# Upper lip, modest overhanging brow.
-path=[(.665*math.cos(a),-.03+.515*math.sin(a),-.926) for a in [i*math.pi/24 for i in range(25)]]
-g.tube(path,[.052]*len(path),'574237',8)
+# Lip is an asymmetric fleshy strip merging back into the cheek, not a round tube.
+def lip(g,lower=False):
+    v=[];f=[];colors=[];steps=36
+    for i in range(steps+1):
+        a=(math.pi if lower else 0)+math.pi*i/steps
+        sn=math.sin(a);cs=math.cos(a)
+        width=(.105 if lower else .052)*(1+.23*math.sin(7*a)+.12*math.cos(13*a))
+        for j in range(5):
+            t=j/4;bulge=math.sin(math.pi*t)
+            x=(.645+width*t)*cs;y=-.03+(.50+width*t)*sn
+            z=-.924-(.07*abs(sn) if lower else 0)-bulge*width*.75+.16*t*t
+            pt=(x,y,z);v.append(pt)
+            colors.append(tuple(Vector(skin_color(*pt)).lerp(Vector(kit.lin('705444' if lower else '554034')),bulge*.50)))
+    for i in range(steps):
+        for j in range(4):a=i*5+j;f.append((a,a+1,a+6,a+5))
+    g.add(v,f,colors)
+lip(g)
 for side in (-1,1):
-    g.sphere((side*.59,.40,-.69),(.19,.18,.16),'3f322b',16,8)
-    g.sphere((side*.642,.426,-.80),(.078,.083,.047),'11191b',20,10,.24)
+    g.sphere((side*.59,.40,-.69),(.19,.15,.16),'3f322b',12,6)
+    g.sphere((side*.642,.426,-.80),(.078,.083,.047),'11191b',16,8,.24)
     g.sphere((side*.655,.455,-.837),(.017,.013,.005),'829197',8,4,.22)
     brow=kit.catmull([(side*.43,.48,-.81),(side*.58,.58,-.71),(side*.74,.47,-.56)],5)
     # Eye socket blends directly into the head; no expressive eyebrow.
-    line=kit.catmull([(side*.77,.12,-.47),(side*.83,.08,-.04),(side*.69,.07,.42),(side*.43,.05,.76)],4)
+    line=[surface(-.47+i*1.23/12,.14 if side==1 else math.pi-.14) for i in range(13)]
     g.tube(line,[.016]*len(line),'6a5746',6)
 # Nine upper teeth, curved toward the throat; ivory is vertex pigment.
 for i in range(9):
@@ -91,35 +120,28 @@ for i in range(9):
     pts=[base,base+Vector((-.02*math.cos(a),-length*.50,-.01)),base+Vector((-.035*math.cos(a),-length,.07))]
     p=kit.catmull(pts,3);g.tube(p,[.020*(1-k/(len(p)-1))+.0015 for k in range(len(p))],'d9cfad',6,.34)
 # Low dorsal crest and sparse blunt dermal papillae.
-crest=[(0,.64,.03),(0,.72,.27),(0,.55,.52),(0,.49,.7),(0,.24,.96)]
+crest=[(0,surface(z,math.pi/2)[1]+height,z) for z,height in [(.03,.035),(.27,.14),(.52,.12),(.7,.10),(.96,.015)]]
 g.tube(crest,[.025,.025,.022,.018,.008],'49392f',7)
 v=[];f=[]
 for x,y,z in crest:
     for lo,hi in zip(profiles,profiles[1:]):
         if lo[0]<=z<=hi[0]:
-            t=(z-lo[0])/(hi[0]-lo[0]);base=(lo[2]+lo[3])*(1-t)+(hi[2]+hi[3])*t-.025;break
+            t=(z-lo[0])/(hi[0]-lo[0]);base=surface(z,math.pi/2)[1]-.025;break
     v.extend([(-.018,base,z),(.018,base,z),(0,y,z)])
 for i in range(len(crest)-1):
     for j in range(3):
         a=i*3+j;b=i*3+(j+1)%3;f.append((a,b,b+3,a+3))
 f.extend([(2,1,0),(12,13,14)]);g.add(v,f,'49392f')
-for i in range(12):
-    z=rng.uniform(-.4,.55);a=rng.uniform(.20,math.pi-.20)
-    # fit sampled body rings rather than offset arbitrary spots.
-    for q in range(len(profiles)-1):
-        lo,hi=profiles[q],profiles[q+1]
-        if lo[0]<=z<=hi[0]:
-            t=(z-lo[0])/(hi[0]-lo[0]);rx=lo[1]*(1-t)+hi[1]*t;ry=lo[2]*(1-t)+hi[2]*t;yc=lo[3]*(1-t)+hi[3]*t;break
-    g.sphere((rx*math.cos(a),yc+ry*math.sin(a),z),(.025,.026,.027),'554436',8,4)
+for i in range(22):
+    z=rng.uniform(-.68,.68);a=rng.uniform(0,math.tau)
+    pt=surface(z,a);size=rng.uniform(.018,.039)
+    g.sphere(pt,(size,size*.8,size*1.3),'65513f',7,3)
 body=g.object('Cuerpo ojos dientes superiores','body')
 # Lower jaw: overlapping crescent rests around the lower oral rim.
-g=Geo();path=[]
-for i in range(25):
-    a=math.pi+math.pi*i/24;path.append((.66*math.cos(a),-.03+.515*math.sin(a),-.95-.07*(-math.sin(a))))
-g.tube(path,[.07+.035*math.sin(i*math.pi/24) for i in range(25)],'685042',8)
+g=Geo();lip(g,True)
 # A small chin under the rim, blended by intersection; interior tongue behind it.
-g.sphere((0,-.50,-.79),(.53,.16,.23),'594335',24,8)
-g.sphere((0,-.424,-.70),(.43,.055,.22),'3d2022',20,6)
+g.sphere((0,-.50,-.79),(.53,.16,.23),'594335',20,6)
+g.sphere((0,-.424,-.70),(.43,.055,.22),'3d2022',16,5)
 for i in range(8):
     a=math.pi+.23+(math.pi-.46)*i/7;base=Vector((.595*math.cos(a),-.03+.475*math.sin(a),-.992))
     length=.22+.095*(-math.sin(a));p=kit.catmull([base,base+Vector((-.01*math.cos(a),length*.55,-.015)),base+Vector((-.02*math.cos(a),length,.085))],3)
@@ -157,25 +179,33 @@ def fin_patch(g,rows,col,normal=(0,1,0)):
     for (a,b),uses in edges.items():
         if uses==1:ff.append((a,b,b+count,a+count))
     g.add(vv,ff,col)
+# Smooth closed membranes; corrugation makes raised rays continuous with the web.
 for side in (-1,1):
     g=Geo();base=Vector((side*.72,-.24,.05));rows=[]
-    for i in range(9):
-        t=i/8;row=[]
-        for j in range(7):
-            s=j/6;row.append((side*(.72+.41*s*math.sin(math.pi*t)**.55),-.24-.23*s+.035*math.sin(t*math.tau),.05+.68*t*s))
+    for i in range(25):
+        t=i/24;row=[]
+        for j in range(9):
+            s=j/8;edge=1+.065*math.cos(8*math.pi*t)
+            row.append((side*(.72+.41*s*math.sin(math.pi*t)**.55*edge),-.24-.23*s+.05*math.sin(math.pi*s)+.018*s*math.cos(8*math.pi*t),.05+.68*t*s*edge))
         rows.append(row)
     fin_patch(g,rows,'58483c')
-    for i in (1,3,5,7):g.tube(rows[i],[.016-.011*j/6 for j in range(7)],'82705a',6)
+    for k,pt in enumerate(g.v):
+        i=(k%(25*9))//9;j=k%9
+        ray=max(0,math.cos(8*math.pi*i/24))**4
+        g.c[k]=tuple(Vector(kit.lin('44382f')).lerp(Vector(kit.lin('998066')),ray*.70+j/8*.13))
     ob=g.object('Pectoral '+str(side),'fin',base)
-g=Geo();g.sphere((0,-.04,1.04),(.18,.20,.24),'3f342c',16,8)
+g=Geo();g.sphere((0,-.04,1.04),(.18,.20,.24),'3f342c',12,6)
 rows=[]
-for i in range(11):
-    t=i/10;row=[]
-    for j in range(6):
-        s=j/5;row.append((.025*math.sin(t*math.pi)*s,-.04+(t-.5)*(.22+.64*s),1.13+.54*s-.055*s*math.cos(t*math.tau)))
+for i in range(31):
+    t=i/30;row=[]
+    for j in range(9):
+        s=j/8;wave=math.cos(10*math.pi*t)
+        row.append((.055*math.sin(t*math.pi)*math.sin(s*math.pi)+.016*s*wave,-.04+(t-.5)*(.22+.64*s),1.13+.53*s-.045*s*math.cos(t*math.tau)+.018*s**3*wave))
     rows.append(row)
-fin_patch(g,rows,'57483a',(1,0,0))
-for i in (0,2,4,6,8,10):g.tube(rows[i],[.016-.009*j/5 for j in range(6)],'817058',6)
+off=len(g.v);fin_patch(g,rows,'57483a',(1,0,0))
+for k in range(off,len(g.v)):
+    i=((k-off)%(31*9))//9;j=(k-off)%9;ray=max(0,math.cos(10*math.pi*i/30))**4
+    g.c[k]=tuple(Vector(kit.lin('43382e')).lerp(Vector(kit.lin('998066')),ray*.70+j/8*.13))
 tail=g.object('Cola caudal corta','tail',(0,-.04,.94))
 meshes=[o for o in bpy.context.scene.objects if o.type=='MESH'];bpy.context.view_layer.update()
 parts,tris=kit.export_parts(ROOT/'rape-abisal.json',meta=dict(forward='-Z',rodTip=list(LURE)))
@@ -199,15 +229,24 @@ def camera(pos,target,res,color):
     scene.render.resolution_x,scene.render.resolution_y=res;bg.inputs[0].default_value=(*kit.lin(color),1)
     lamp.location=cam.location;lamp.rotation_euler=cam.rotation_euler;lamp.data.energy=(cam.location-kit.B(target)).length**2*42
 GAME_TARGET=Vector((0,.22,.1));GAME_POS=GAME_TARGET+Vector((.62,.25,-.74)).normalized()*25
-for name,pos,target,res,color in [('render-juego.png',GAME_POS,GAME_TARGET,(1600,900),'050d18'),('render-perfil.png',(4.1,.10,.15),(0,.18,.20),(1200,900),'0b2438'),('render-detalle.png',(1.95,.95,-3.1),(0,.27,-.52),(1200,900),'050d18')]:
+for name,pos,target,res,color in [('render-juego.png',GAME_POS,GAME_TARGET,(1600,900),'050d18'),('render-cerca.png',GAME_TARGET+Vector((.62,.25,-.74)).normalized()*10,GAME_TARGET,(1600,900),'050d18'),('render-perfil.png',(4.1,.10,.15),(0,.18,.20),(1200,900),'0b2438'),('render-detalle.png',(1.95,.95,-3.1),(0,.27,-.52),(1200,900),'050d18')]:
     camera(pos,target,res,color);scene.render.filepath=str(ROOT/name);bpy.ops.render.render(write_still=True)
 camera(GAME_POS,GAME_TARGET,(1600,900),'050d18');scene.render.filepath=str(ROOT/'render-juego.png');bpy.context.preferences.filepaths.save_version=0;bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'rape-abisal.blend'))
+animations={
+'body':('Z','±0.045 rad','0.16 ciclos/s','Balanceo desde padre común'),
+'jaw':('X','−0.25 a 0 rad','0.22 ciclos/s','Bisagra; apertura hacia abajo'),
+'rod':('Z / X','±0.18 / ±0.045 rad','0.28 / 0.21 ciclos/s','Lure sigue rodTip transformado'),
+'lure':('Escala XYZ / emisión','±5% / 0–2.7','0.8 ciclos/s / pulso de 0.18 s por nota','Escala desde centro; pulsos según acorde'),
+'fin':('Z','±0.16 rad','0.55 ciclos/s','Signos opuestos izquierda/derecha'),
+ 'tail':('Y','±0.20 rad','0.42 ciclos/s','Ondulación lateral')}
 rows=[]
-for o in meshes:rows.append(f"| {o.name} | {o['part']} | — | {', '.join(f'{x:.3f}' for x in kit._three(o.location))} | {o.data.materials[0].name} | Ver notas |")
+for o in meshes:
+    axis,amp,speed,note=animations[o['part']]
+    rows.append(f"| {o.name} | {o['part']} | — | {', '.join(f'{x:.3f}' for x in kit._three(o.location))} | {o.data.materials[0].name} | {axis} | {amp} | {speed} | {note} |")
 report=f'''# ENTREGA — Rape Abisal · Batisfera
 
 ## Estado
-- Versión / ronda: v2, ronda de corrección 1
+- Versión / ronda: v3, ronda de corrección 1 solicitada por Luis (archivo previo rotulado v2)
 - Fecha: 2026-09-13
 - Lista para: revisión de Luis
 
@@ -218,7 +257,7 @@ report=f'''# ENTREGA — Rape Abisal · Batisfera
 | `rape-abisal.blend` | Escena editable, cámara de juego, foco y materiales |
 | `rape-abisal.glb` | Modelo portable con pigmento por vértice y propiedades part |
 | `rape-abisal.json` | Geometría generada con kit.export_parts |
-| `render-juego.png`, `render-perfil.png`, `render-detalle.png` | Cycles, 40 muestras, denoise |
+| `render-juego.png`, `render-perfil.png`, `render-detalle.png`, `render-cerca.png` | Cycles, 40 muestras, denoise |
 
 Regenerar desde esta carpeta:
 ```powershell
@@ -229,7 +268,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\Luis\\blender-bpy
 | Dato | Valor |
 |---|---|
 | Tamaño total largo × alto × ancho | {dims[2]:.3f} × {dims[1]:.3f} × {dims[0]:.3f} u |
-| Cuerpo sin caña, cola ni pectorales | ≈2.1 × 1.5 × 1.7 u |
+| Cuerpo sin caña, cola ni pectorales | ≈2.1 × 1.38 × 1.7 u (corona aplanada) |
 | Origen | Centro del cuerpo (0,0,0) |
 | Frente | −Z Three; +Y Blender |
 | Triángulos totales | {tris} |
@@ -239,8 +278,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\Luis\\blender-bpy
 | Centro / pivote lure (Three) | (0.000, 1.055, -1.100), coincidente con punta rod |
 
 ## Partes
-| Objeto | part | segment | Pivote Three | Material | Notas |
-|---|---|---|---|---|---|
+| Objeto | part | segment | Pivote Three | Material | Eje Three | Amplitud | Velocidad | Notas |
+|---|---|---|---|---|---|---|---|---|
 '''+ '\n'.join(rows)+'''
 
 ## Materiales
@@ -249,14 +288,21 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\Luis\\blender-bpy
 | Piel, cavidad, dientes | Blanco base × Pigment: piel #342b27–#625044; cavidad #211518; dientes #d9cfad / #e3d7b6 | 0 / 0.76; atributo Satin baja dientes a 0.34 y ojos a 0.24 en Blender | 0 | 1 | Activar vertexColors; no texturas externas |
 | Esca | Blanco base × Pigment #f7f3e8 | 0 / 0.76 | #f7f3e8, 2.7 | 1 | Teñir base y emisión con la familia; halo externo |
 
+## Cambios de esta corrección
+Cabeza ancha con corona aplanada, hombro marcado y cuerpo afinado. Pliegues en la superficie y 22 papilas dispersas. Labios de sección variable integrados hacia la piel, inferior más grueso. Pectorales de 25 × 9 muestras y caudal de 31 × 9, cerradas, curvas, con borde ondulado y radios elevados pigmentados. Manchas pardas, vientre más claro y contorno oral oscuro. Se conserva origen, ejes, siete partes, pivotes, dientes y rodTip. Render cercano nuevo a 10 u del objetivo, 3/4 frontal, FOV vertical 60°, 1600 × 900.
+
 ## Diferencias con el brief
-El JSON compartido exporta una rugosidad uniforme por parte (0.76); el acabado satinado de dientes/ojos se define por atributo en Blender, que kit.export_parts no transporta. El pigmento sí se conserva en JSON y GLB. No hay transparencias ni otras partes emisivas.
+Corona aplanada: altura de piel ≈1.38 u, dentro del tamaño aproximado; cabeza conserva 1.7 u de ancho. El JSON compartido exporta una rugosidad uniforme por parte (0.76); el acabado satinado de dientes/ojos se define por atributo en Blender, que kit.export_parts no transporta. El pigmento sí se conserva en JSON y GLB. No hay transparencias ni otras partes emisivas.
+
+## Revisión propia
+Se revisaron los cuatro renders: silueta y señuelo legibles a distancia; boca y dientes visibles; labios curvos de grosor variable; aletas cerradas con radios y borde ondulado; pliegues y pigmento de piel. Cresta y línea lateral adaptadas a la nueva superficie. Exportación comprueba siete mallas, presupuesto y largo máximo. Ejes y pivotes conservados, rodTip coincide con lure.
 
 ## Sugerencias para integrar
 Mandíbula: bisagra sobre X en (0,-0.035,-0.72), abrir hacia abajo hasta 0.25 rad de magnitud (rotación X negativa en Three). Rod: vaivén ±0.18 rad desde su base, mantener lure unido a la punta transformada, sin aplicarle dos veces la traslación. Lure parpadea por nota y usa su centro como origen. Tail oscila sobre Y. Pectorales aletean con lados opuestos. Mantener balanceo general desde un padre común. La boca tiene cavidad real, 9 dientes superiores y 8 inferiores. Sin animación horneada ni integración.
 '''
 (ROOT/'ENTREGA.md').write_text(report,encoding='utf-8')
 print('EXPORT',parts,'partes',tris,'triangulos','DIMENSIONS',dims,flush=True)
+
 
 
 

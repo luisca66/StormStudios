@@ -133,15 +133,15 @@ Encargo, entrega y fuente en `calamar-vela/` (`BRIEF.md`, `ENTREGA.md`, `modelar
 
 Modelado por Astra (Codex), integrado por Claude. Encargo, entrega y fuente en `rape-abisal/`.
 
-- 7 partes, 9 468 triángulos, 2.9 u de largo; JSON copiado a
-  `src/3d/creatures/assets/rape-abisal.json` (430 kB; 87 kB con gzip). Al regenerar, volver a copiarlo.
+- v3 (ronda de corrección 1): 7 partes, 9 992 triángulos, 2.9 u de largo; JSON copiado a
+  `src/3d/creatures/assets/rape-abisal.json` (458 kB; 107 kB con gzip). Al regenerar, volver a copiarlo.
 - `src/3d/creatures/blender-angler.ts`: la caña gira desde su base y lleva colgado el señuelo
   (punta de caña = centro del señuelo, anotado en el JSON como `rodTip`); mandíbula, aletas y
-  cola animadas desde sus pivotes. El señuelo toma el color de la familia, lleva el halo aditivo
+  cola animadas desde sus pivotes con las amplitudes y frecuencias de `ENTREGA.md`. El señuelo toma el color de la familia, lleva el halo aditivo
   (`creatures/halo.ts`, ahora compartido) y parpadea una vez por nota. El cuerpo no emite: se ve
   con el foco del submarino. Sustituye al rape de primitivas en `species.ts`.
 - Inspector: http://127.0.0.1:5173/dev/rape.html (sextas / novenas).
 - Juego: `?debug=1`, zona 3 o 4, botón **Acercar Rape Abisal**.
 - Verificado 2026-09-13: build y QA; en zona 3 se tocó, parpadeó, preguntó y huyó al fallar;
   sin errores de consola; ~55 FPS; el script de Astra regenera el mismo JSON con la instalación
-  de Luis. Falta zona 4 y teléfono.
+  de Luis. v3 revisada también en zona 4 (señuelo magenta, silueta legible). Falta teléfono.

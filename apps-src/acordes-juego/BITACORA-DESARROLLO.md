@@ -442,3 +442,8 @@ Checklist §13 (resultado final):
 - `blender-angler.ts` + precarga; `species.ts` ya no tiene el rape de primitivas; el halo pasó a `creatures/halo.ts`.
 - Debug: botón **Acercar Rape Abisal**; inspector `dev/rape.html`.
 - Verificado: build, QA, parpadeo del señuelo, pregunta y huida en zona 3 (el calamar también se lee en zona 3). Pendiente: zona 4 y teléfono. Sin deploy.
+
+### ✅ Rape Abisal v3 — ronda de corrección de Astra (2026-09-13)
+- Cabeza ancha y aplanada, labios de grosor variable, aletas con radios y borde ondulado, pigmento con manchas.
+- JSON nuevo copiado; animación ajustada a los valores de `ENTREGA.md` (primer uso de la tabla eje/amplitud/velocidad).
+- Verificado: build, QA, zona 4 (pregunta de novenas, huida), ~52 FPS; el script regenera el mismo JSON.
