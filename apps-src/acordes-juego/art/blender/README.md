@@ -183,3 +183,29 @@ Modelado por Astra (Codex), integrado por Claude. Encargo, entrega y fuente en `
 - Juego: `?debug=1`, zona 3, 4 o 5, botón **Acercar Sifonóforo**.
 - Verificado 2026-09-13: build y QA; en zona 3 se tocó, preguntó sextas y huyó al fallar; sin
   errores de consola; ~60 FPS; el script regenera el mismo JSON. Falta zonas 4–5 y teléfono.
+
+---
+
+# Leviatán — Batisfera
+
+Modelado por Astra (Codex) en tres entregas (v1 y dos rondas de corrección), integrado por Claude.
+Encargo, entrega y fuente en `leviatan/`.
+
+- 19 piezas: `head` (con mandíbula, ojos y pectorales), `body` 1–8, `tail` y `plate` 0–8;
+  29 774 triángulos. Pivotes en P0…P8 a 4.6 u; plate 0 comparte pivote con head y plate i con
+  body i. JSON copiado a `src/3d/creatures/assets/leviatan.json` (1.3 MB; 265 kB con gzip). Al
+  regenerar, volver a copiarlo. El script comprueba presupuesto y uniones con ±0.20 rad de giro y
+  ±0.08 de cabeceo.
+- `src/3d/creatures/blender-leviathan.ts`: rumbo por tramo con onda lateral (longitud 36.8 u,
+  periodo 10 s, pendiente máxima ≈ 0.24 rad que crece del 60 % al 100 % hacia la cola) y cabeceo
+  suave; el giro entre vecinas se limita a ±0.19 rad y el cabeceo a ±0.07. La cadena se centra en
+  Z = 17 para que la esfera de click cubra el cuerpo. Cabeza y cola balancean según ENTREGA.md.
+  Una piel compartida; cada placa tiene material propio (emisión × color de vértice vía
+  `onBeforeCompile`) para encenderse por nota; el bramido de aparición es `pulse(9)`.
+  19 llamadas de dibujo.
+- Inspector: http://127.0.0.1:5173/dev/leviatan.html (oncenas y trecenas / séptimas; botón Bramido).
+- Juego: `?debug=1`, zona 5, botón **Acercar Leviatán** (la primera pulsación fuerza que el
+  siguiente spawn sea el Leviatán; la segunda lo trae a 26 u).
+- Verificado 2026-09-14: build y QA; en zona 5 apareció, se activó a 25 m, preguntó oncenas y huyó
+  al fallar; captura, huida y bramido en el inspector; sin errores propios en consola (los
+  `computeBoundingSphere NaN` vienen de `Cockpit.render` y existían antes). Falta FPS y teléfono.

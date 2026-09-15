@@ -36,6 +36,8 @@ export class CreatureManager {
   private leviathanBlipTimer = 0;
   /** F5 lo apaga durante transiciones/resumen. */
   spawningEnabled = true;
+  /** Debug: la próxima aparición en la Fosa es el Leviatán, sin azar ni límite por visita. */
+  forceLeviathan = false;
 
   constructor(private scene: THREE.Scene, private assignChord: ChordAssigner) {}
 
@@ -104,7 +106,8 @@ export class CreatureManager {
     // Leviatán: una vez por visita a la Fosa (PLAN §7), 12% de probabilidad por spawn.
     let species: SpeciesDef;
     const wantLeviathan =
-      zoneIndex === 5 && !this.leviathanSpawnedThisVisit && Math.random() < 0.12;
+      zoneIndex === 5 &&
+      (this.forceLeviathan || (!this.leviathanSpawnedThisVisit && Math.random() < 0.12));
     if (wantLeviathan) {
       species = LEVIATHAN;
     } else {
@@ -140,6 +143,7 @@ export class CreatureManager {
     this.scene.add(creature.group);
     if (creature.isLeviathan) {
       this.leviathanSpawnedThisVisit = true;
+      this.forceLeviathan = false;
       // H4c: "bramido" de aparición — ola de destellos recorriendo las 9 placas
       // (reusa el destello por-nota escalonado) + blip grande en el sonar 3 s.
       creature.pulse(9);

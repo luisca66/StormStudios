@@ -609,6 +609,18 @@ if (debugEnabled) {
       game.player.yawObject.localToWorld(position);
       colony.setHome(position);
     });
+    addBtn("Acercar Leviatán", () => {
+      const leviathan = game.creatures.all.find((c) => c.isLeviathan && c.state === "IDLE");
+      if (!leviathan) {
+        game.creatures.forceLeviathan = true;
+        showToast("El próximo spawn en la Fosa (zona 5) será el Leviatán; vuelve a pulsar cuando aparezca.");
+        return;
+      }
+      // Dentro del alcance de activación (30 u) para probar placas por nota, captura y huida.
+      const position = game.player.position.clone().set(0, 0, -26);
+      game.player.yawObject.localToWorld(position);
+      leviathan.setHome(position);
+    });
     addBtn("Acercar Medusa Luna", () => {
       const medusa = game.creatures.all.find((c) => c.speciesId === "jellyfish" && c.state === "IDLE");
       if (!medusa) {
