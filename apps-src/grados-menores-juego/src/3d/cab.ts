@@ -1,34 +1,37 @@
-// cab.ts — La carlinga (PLAN §6), versión F2: marco de ventana de latón engastado en
-// hielo, la proa del cometa por delante, portillas laterales y la ESTELA propia.
-// Los instrumentos (orrery, sextante, llave del radiofaro) llegan en F5.
+// cab.ts — La carlinga (PLAN §6), modelada en Blender (art/blender/carlinga/modelar-carlinga.py):
+// marco de hielo con portillas de latón empotradas, la proa del cometa por delante con sus
+// grietas luminosas y el tablero de madera con orrery, sextante, manómetro y llave del
+// radiofaro. La estela de motas sigue siendo código.
 //
 // Todo cuelga del `cabAnchor` del cometa, no de la cámara: la carlinga es del vehículo,
-// así que la mirada se pasea por ella en vez de arrastrarla. Texturas SOLO de canvas.
+// así que la mirada se pasea por ella en vez de arrastrarla. El origen del modelo es el ojo.
 
 import * as THREE from "three";
 import { TRAIL_SPRITE_MAX } from "@/config";
+import carlingaUrl from "./assets/carlinga.json?url";
 
-const BRASS = "#c9a227";
+interface PartData {
+  name: string;
+  part: string;
+  segment?: number;
+  pivot: number[];
+  position: number[];
+  normal: number[];
+  index: number[];
+  vertexColor?: number[];
+  /** Solo la proa: emisión por vértice (grietas claras sobre núcleo oscuro). */
+  emissionVertexColor?: number[];
+  color: number[];
+  metalness: number;
+  roughness: number;
+  emission: number;
+  emissionColor: number[];
+}
 
-/** Veta de hielo: ruido de líneas claras sobre azul, para el engaste del marco. */
-function iceTexture(): THREE.CanvasTexture {
-  const c = document.createElement("canvas");
-  c.width = c.height = 128;
-  const g = c.getContext("2d")!;
-  g.fillStyle = "#20415a";
-  g.fillRect(0, 0, 128, 128);
-  for (let i = 0; i < 90; i++) {
-    g.strokeStyle = `rgba(190,233,245,${0.05 + Math.random() * 0.22})`;
-    g.lineWidth = Math.random() * 1.6;
-    g.beginPath();
-    const x = Math.random() * 128, y = Math.random() * 128;
-    g.moveTo(x, y);
-    g.lineTo(x + (Math.random() - 0.5) * 46, y + (Math.random() - 0.5) * 46);
-    g.stroke();
-  }
-  const tex = new THREE.CanvasTexture(c);
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  return tex;
+interface CarlingaData {
+  instrumentAxisY: number[];
+  orbitSpeeds: number[];
+  meshes: PartData[];
 }
 
 /** Mota de hielo con halo suave: la partícula de la estela. */
@@ -44,6 +47,12 @@ function moteTexture(): THREE.CanvasTexture {
   g.fillRect(0, 0, 64, 64);
   return new THREE.CanvasTexture(c);
 }
+
+// Aguja del manómetro: +120° (izquierda) en reposo, barre 240° hacia la derecha.
+const GAUGE_REST = (120 * Math.PI) / 180;
+const GAUGE_SWEEP = (240 * Math.PI) / 180;
+// La emisión de Cycles satura en tiempo real sin bloom: se atenúa para que las grietas brillen sin quemar.
+const NOSE_GLOW = 0.55;
 
 interface Mote {
   alive: boolean;
@@ -70,85 +79,15 @@ export class Cab {
   private readonly trailGeo = new THREE.BufferGeometry();
   private spawnAccumulator = 0;
 
-  // Instrumentos vivos del tablero (§6).
-  private readonly orreryArms: Array<{ arm: THREE.Group; speed: number }> = [];
+  // Instrumentos vivos del tablero (§6): pivotes y ejes vienen del modelo.
+  private readonly planets: Array<{ mesh: THREE.Mesh; speed: number; angle: number }> = [];
   private needle: THREE.Mesh | null = null;
-  private needlePivot: THREE.Group | null = null;
+  private needleAngle = GAUGE_REST;
   private beaconLever: THREE.Mesh | null = null;
+  private readonly instrumentAxis = new THREE.Vector3(0, 1, 0);
   private elapsed = 0;
 
   constructor(anchor: THREE.Object3D) {
-    const ice = iceTexture();
-
-    // --- Proa de hielo: el cuerpo del cometa que va por delante (análogo de la caldera).
-    // Escala calibrada mirando por la ventana: tiene que ASOMAR por el borde inferior,
-    // no comerse el encuadre — el juego ocurre al frente, no en la proa.
-    const noseGeo = new THREE.ConeGeometry(0.95, 5.4, 7);
-    const noseMat = new THREE.MeshStandardMaterial({
-      map: ice, color: "#6fa8c4", roughness: 0.35, metalness: 0.05,
-      emissive: new THREE.Color("#12303f"), emissiveIntensity: 0.6,
-      flatShading: true,
-    });
-    const nose = new THREE.Mesh(noseGeo, noseMat);
-    nose.rotation.x = -Math.PI / 2; // la punta mira hacia −Z (adelante)
-    nose.position.set(0, -2.3, -6.2);
-    this.group.add(nose);
-
-    // Bloques de hielo irregulares alrededor de la proa: el núcleo no es liso.
-    const shardGeo = new THREE.DodecahedronGeometry(0.42, 0);
-    for (let i = 0; i < 7; i++) {
-      const shard = new THREE.Mesh(shardGeo, noseMat);
-      const a = (i / 7) * Math.PI * 2;
-      shard.position.set(Math.cos(a) * 0.9, -2.3 + Math.sin(a) * 0.4, -4.1 - (i % 3) * 0.8);
-      shard.rotation.set(a, a * 1.7, a * 0.5);
-      shard.scale.setScalar(0.7 + (i % 3) * 0.25);
-      this.group.add(shard);
-    }
-
-    // --- Marco de la ventana frontal: montantes de latón engastados en hielo.
-    const brassMat = new THREE.MeshStandardMaterial({
-      color: BRASS, roughness: 0.35, metalness: 0.85,
-      emissive: new THREE.Color(BRASS), emissiveIntensity: 0.12,
-    });
-    const frameMat = new THREE.MeshStandardMaterial({
-      map: ice, color: "#4a7d96", roughness: 0.55, metalness: 0.2,
-    });
-
-    const bar = (w: number, h: number, d: number, x: number, y: number, z: number, mat: THREE.Material) => {
-      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-      m.position.set(x, y, z);
-      this.group.add(m);
-      return m;
-    };
-
-    // Dintel, alféizar y jambas. Las jambas se meten hacia dentro para que se VEAN por
-    // los bordes: a 1.8 u de la cámara con FOV 60 solo entran ~2.8 u de ancho.
-    bar(3.4, 0.3, 0.3, 0, 1.28, -1.5, frameMat);
-    bar(3.4, 0.46, 0.42, 0, -0.98, -1.5, frameMat);
-    bar(0.3, 2.4, 0.3, -1.55, 0.15, -1.5, frameMat);
-    bar(0.3, 2.4, 0.3, 1.55, 0.15, -1.5, frameMat);
-    // Sin montante central: un poste en mitad del encuadre parte el juego en dos. El
-    // carácter de época lo dan el alféizar remachado y las jambas.
-    // Remaches del alféizar.
-    const rivetGeo = new THREE.SphereGeometry(0.05, 6, 5);
-    for (let i = -3; i <= 3; i++) {
-      const r = new THREE.Mesh(rivetGeo, brassMat);
-      r.position.set(i * 0.44, -0.8, -1.32);
-      this.group.add(r);
-    }
-    // Filo de latón del alféizar: da un remate cálido al borde inferior de la vista.
-    bar(3.4, 0.07, 0.1, 0, -0.74, -1.36, brassMat);
-
-    // --- Portillas laterales de bronce: venden la periferia y la velocidad al girar
-    // la vista (yaw ±100°), así que viven fuera del encuadre de reposo.
-    const ringGeo = new THREE.TorusGeometry(0.62, 0.075, 8, 20);
-    for (const side of [-1, 1]) {
-      const ring = new THREE.Mesh(ringGeo, brassMat);
-      ring.position.set(side * 2.3, 0.15, -0.2);
-      ring.rotation.y = side * Math.PI * 0.42;
-      this.group.add(ring);
-    }
-
     // --- Estela propia: motas de hielo que salen hacia atrás desde la proa (§5.6).
     // Van en UN solo THREE.Points (1 draw call) en vez de un sprite por mota: con
     // sprites, además, el material se comparte y la opacidad de uno sería la de todos.
@@ -170,94 +109,71 @@ export class Cab {
     trail.frustumCulled = false; // vive pegado a la cámara; el culling solo daría tirones
     this.group.add(trail);
 
-    this.buildInstruments(brassMat, ice);
+    // Farol de cabina: luz cálida tenue y de corto alcance sobre el tablero. Sin ella, la
+    // madera se pierde en la oscuridad del espacio; no llega a la proa ni al mundo.
+    const lamp = new THREE.PointLight(0xffc98a, 3.2, 3.4, 2);
+    lamp.position.set(0, 0.45, -0.15);
+    this.group.add(lamp);
 
     anchor.add(this.group);
+
+    // El modelo se descarga en segundo plano; hasta que llega, solo se ve la estela.
+    fetch(carlingaUrl)
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`Carlinga: HTTP ${response.status}`);
+        this.buildModel((await response.json()) as CarlingaData);
+      })
+      .catch((error: unknown) => console.warn(error));
   }
 
-  /**
-   * El tablero de bronce (PLAN §6): un ORRERY en miniatura girando, un sextante y el
-   * manómetro de empuje de cola, más la llave del radiofaro. Van bajo el alféizar, en
-   * la periferia inferior: se ven al bajar la vista, no tapan el juego.
-   */
-  private buildInstruments(brass: THREE.Material, ice: THREE.Texture): void {
-    const board = new THREE.Group();
-    board.position.set(0, -1.16, -0.72);
-    board.rotation.x = -0.55; // inclinado hacia el piloto, como una mesa de cartas
-    this.group.add(board);
+  /** Crea las 10 partes del modelo; cada malla queda en su pivote dentro del espacio del ojo. */
+  private buildModel(data: CarlingaData): void {
+    this.instrumentAxis.fromArray(data.instrumentAxisY).normalize();
+    for (const part of data.meshes) {
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute("position", new THREE.Float32BufferAttribute(part.position, 3));
+      geometry.setAttribute("normal", new THREE.Float32BufferAttribute(part.normal, 3));
+      if (part.vertexColor) geometry.setAttribute("color", new THREE.Float32BufferAttribute(part.vertexColor, 3));
+      geometry.setIndex(part.index);
+      geometry.computeBoundingSphere();
 
-    // Tablero de madera helada.
-    const top = new THREE.Mesh(
-      new THREE.BoxGeometry(3.0, 0.09, 0.85),
-      new THREE.MeshStandardMaterial({ map: ice, color: "#3d5f74", roughness: 0.7 }),
-    );
-    board.add(top);
+      const material = new THREE.MeshStandardMaterial({
+        color: new THREE.Color().setRGB(part.color[0], part.color[1], part.color[2]),
+        vertexColors: Boolean(part.vertexColor),
+        metalness: part.metalness,
+        roughness: part.roughness,
+        emissive: new THREE.Color().setRGB(part.emissionColor[0], part.emissionColor[1], part.emissionColor[2]),
+        emissiveIntensity: part.emission,
+      });
+      if (part.emissionVertexColor) {
+        // Grietas de la proa: la emisión viene por vértice (núcleo oscuro, fisuras cian).
+        geometry.setAttribute("emissionTint", new THREE.Float32BufferAttribute(part.emissionVertexColor, 3));
+        material.emissive.set(0xffffff);
+        material.emissiveIntensity = part.emission * NOSE_GLOW;
+        material.onBeforeCompile = (shader) => {
+          shader.vertexShader = shader.vertexShader
+            .replace("#include <common>", "#include <common>\nattribute vec3 emissionTint;\nvarying vec3 vEmissionTint;")
+            .replace("#include <begin_vertex>", "#include <begin_vertex>\nvEmissionTint = emissionTint;");
+          shader.fragmentShader = shader.fragmentShader
+            .replace("#include <common>", "#include <common>\nvarying vec3 vEmissionTint;")
+            .replace("#include <emissivemap_fragment>", "#include <emissivemap_fragment>\ntotalEmissiveRadiance *= vEmissionTint;");
+        };
+      }
 
-    // --- Orrery: un sol y tres planetitas de latón en anillos concéntricos.
-    const orrery = new THREE.Group();
-    orrery.position.set(-0.95, 0.1, 0);
-    board.add(orrery);
-    const sun = new THREE.Mesh(new THREE.SphereGeometry(0.075, 10, 8), brass);
-    orrery.add(sun);
-    const planetGeo = new THREE.SphereGeometry(0.036, 8, 6);
-    for (let i = 0; i < 3; i++) {
-      const radius = 0.17 + i * 0.11;
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.005, 5, 28), brass);
-      ring.rotation.x = Math.PI / 2;
-      orrery.add(ring);
-      const arm = new THREE.Group();
-      const planet = new THREE.Mesh(planetGeo, brass);
-      planet.position.x = radius;
-      arm.add(planet);
-      orrery.add(arm);
-      // Más lejos, más lento: es un sistema solar, no un ventilador.
-      this.orreryArms.push({ arm, speed: 0.9 / (i + 1.4) });
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.name = part.name;
+      mesh.position.fromArray(part.pivot);
+      this.group.add(mesh);
+
+      if (part.part === "orrery_planet") {
+        const segment = part.segment ?? 0;
+        this.planets.push({ mesh, speed: data.orbitSpeeds[segment] ?? 0.4, angle: 0 });
+      } else if (part.part === "gauge_needle") {
+        this.needle = mesh;
+      } else if (part.part === "beacon_lever") {
+        this.beaconLever = mesh;
+      }
     }
-
-    // --- Sextante: arco graduado con su brazo.
-    const sextant = new THREE.Group();
-    sextant.position.set(0, 0.09, 0);
-    board.add(sextant);
-    const arc = new THREE.Mesh(
-      new THREE.TorusGeometry(0.28, 0.012, 6, 24, Math.PI * 0.6), brass,
-    );
-    arc.rotation.x = Math.PI / 2;
-    arc.rotation.z = Math.PI * 0.7;
-    sextant.add(arc);
-    const armBar = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.012, 0.3), brass);
-    armBar.position.z = -0.13;
-    sextant.add(armBar);
-
-    // --- Manómetro de empuje de cola: esfera con aguja que sigue la velocidad.
-    const gauge = new THREE.Group();
-    gauge.position.set(0.95, 0.1, 0);
-    board.add(gauge);
-    const dial = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.19, 0.03, 20), brass);
-    gauge.add(dial);
-    const face = new THREE.Mesh(
-      new THREE.CircleGeometry(0.16, 20),
-      new THREE.MeshStandardMaterial({ color: "#0d1424", roughness: 0.6 }),
-    );
-    face.rotation.x = -Math.PI / 2;
-    face.position.y = 0.017;
-    gauge.add(face);
-    this.needle = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.008, 0.14), brass);
-    this.needle.position.set(0, 0.026, -0.06);
-    const needlePivot = new THREE.Group();
-    needlePivot.position.y = 0.001;
-    needlePivot.add(this.needle);
-    gauge.add(needlePivot);
-    this.needlePivot = needlePivot;
-
-    // --- Llave del radiofaro: palanca de telégrafo que baja al transmitir.
-    const key = new THREE.Group();
-    key.position.set(0.5, 0.09, 0.22);
-    board.add(key);
-    const base = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.03, 0.1), brass);
-    key.add(base);
-    this.beaconLever = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.02, 0.22), brass);
-    this.beaconLever.position.set(0, 0.06, -0.05);
-    key.add(this.beaconLever);
   }
 
   /**
@@ -307,19 +223,24 @@ export class Cab {
 
   /** Los instrumentos viven: el orrery gira, la aguja sigue la velocidad y la llave baja. */
   private updateInstruments(dt: number, readings: CabReadings): void {
-    for (const { arm, speed } of this.orreryArms) arm.rotation.y += speed * dt;
+    // Los vértices del modelo ya traen la inclinación del tablero: se gira alrededor de su
+    // normal (instrumentAxisY) en el espacio común, sin volver a inclinar.
+    for (const planet of this.planets) {
+      planet.angle += planet.speed * dt;
+      planet.mesh.quaternion.setFromAxisAngle(this.instrumentAxis, planet.angle);
+    }
 
-    if (this.needlePivot) {
-      // La aguja barre 240° de esfera y persigue la lectura, no salta a ella: un
-      // instrumento de bronce tiene inercia.
-      const target = (-120 + readings.speed * 240) * (Math.PI / 180);
-      this.needlePivot.rotation.y += (target - this.needlePivot.rotation.y) * Math.min(1, dt * 6);
+    if (this.needle) {
+      // La aguja barre 240° de esfera (izquierda en reposo, derecha a tope) y persigue la
+      // lectura, no salta a ella: un instrumento de latón tiene inercia.
+      const target = GAUGE_REST - readings.speed * GAUGE_SWEEP;
+      this.needleAngle += (target - this.needleAngle) * Math.min(1, dt * 6);
+      this.needle.quaternion.setFromAxisAngle(this.instrumentAxis, this.needleAngle);
     }
 
     if (this.beaconLever) {
-      // La llave del telégrafo baja al transmitir y vuelve sola.
-      const pull = readings.beaconPull ?? 0;
-      this.beaconLever.rotation.x = pull * 0.42;
+      // La llave del telégrafo baja al transmitir y vuelve sola (sobre su bisagra, eje X).
+      this.beaconLever.rotation.x = (readings.beaconPull ?? 0) * 0.42;
     }
   }
 

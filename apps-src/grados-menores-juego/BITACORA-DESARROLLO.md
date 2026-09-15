@@ -746,3 +746,21 @@ ver con el juego y nunca ha estado versionado.
 3. Los **fps** en un navegador real: sigue sin medirse.
 4. El `500`/`404` de consola que no logré atribuir (ver F5) — conviene mirarlo ya en
    producción, donde el entorno es el de verdad.
+
+## 2026-09-15 — Carlinga de Blender ✅ (Astra modela · Claude integra)
+
+- Brief en `art/blender/carlinga/BRIEF.md`. Astra entregó v1 y dos rondas; Luis autorizó una tercera.
+  Esa ronda bajó el filo de latón que cruzaba los instrumentos, cambió el tablero de "plástico" a
+  madera oscura con escarcha, empotró las portillas en paredes de hielo sin tubos y subió la proa.
+- v5 (Claude): las grietas de la proa eran zigzags paralelos que parecían puntadas. Ahora una
+  fisura principal quebrada recorre el lomo y siete ramas bajan por los costados, con emisión por
+  vértice (`emissionVertexColor`). 19 854 tri, 10 partes.
+- `src/3d/cab.ts`: las primitivas (conos, cajas, toros, texturas canvas) se sustituyen por
+  `src/3d/assets/carlinga.json`, descargado en segundo plano. La estela de motas sigue igual.
+  - Instrumentos: los planetas giran sobre `instrumentAxisY` a sus velocidades; la aguja barre
+    240° según la velocidad, con inercia; la llave del radiofaro baja sobre su bisagra.
+  - Grietas: shader con `emissionTint` por vértice, atenuado ×0.55 porque no hay bloom.
+  - Farol de cabina: luz cálida tenue sobre el tablero. Sin ella, la madera se perdía en negro.
+- Verificado: build; partida real en reposo (proa y grietas sobre el HUD) y mirando abajo (tablero,
+  orrery girando, aguja y telégrafo legibles, sin reflejo quemado); sin errores de consola.
+  Pendiente: fps y teléfono real.

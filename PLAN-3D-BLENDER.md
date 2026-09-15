@@ -127,7 +127,7 @@ relajó para los modelos de Blender.
 
 ### Sin Blender todavía
 
-- **El Cometa** — `grados-menores-juego` (publicado): cabina (`cab.ts`), cometa, anillos y perihelio.
+- **El Cometa** — `grados-menores-juego` (publicado): ✅ carlinga de Blender (2026-09-15, Astra + grietas de Claude). Siguen procedurales el cometa visto desde fuera, los anillos y el perihelio.
   Brief listo para Astra: `art/blender/carlinga/BRIEF.md` (2026-09-15) — carlinga + proa de hielo.
 - **Resonancia** — `oido-absoluto-guitarra-juego`: ✅ robot luthier en Blender, articulado
   (codos y rodillas), con mochila de guitarra y pisadas sincronizadas (2026-09-14, Claude). El
@@ -158,10 +158,9 @@ el 2026-09-13.**
 6. ✅ **Rehacer la Ballena Celeste** (2026-09-15): Astra entregó en 2 rondas, Claude integró
    (ruta del GLB, ejes de aleteo/cola y pulso de placas exactos al contrato de `ENTREGA.md`),
    commit/push hecho.
-7. **El Cometa: carlinga y proa de hielo** (siguiente). Brief listo:
-   `apps-src/grados-menores-juego/art/blender/carlinga/BRIEF.md`. Sustituye las primitivas de
-   `cab.ts` (marco de ventana, proa de hielo, tablero con orrery/sextante/manómetro/telégrafo).
-   Va al final porque el juego ya está publicado y funciona con la versión procedural.
+7. ✅ **El Cometa: carlinga y proa de hielo** (2026-09-15). Astra hizo v1, dos rondas y una extra
+   autorizada por Luis. Claude rehízo las grietas de la proa e integró en `cab.ts` (instrumentos
+   vivos, emisión por vértice y farol de cabina). Publicado.
 
 **Por definir con Luis:** qué significa "renovar" en los juegos sin Blender todavía
 (`oido-absoluto-multi-juego`, `intervalos-cantados-juego`): solo modelos, o también
