@@ -64,7 +64,8 @@ class Geo:
         bad=[f for f in bm.faces if f.calc_area()<1e-10]
         if bad:bmesh.ops.delete(bm,geom=bad,context='FACES')
         bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(mesh);bm.free()
-        for p in mesh.polygons:p.use_smooth=True
+        # Cristales (crestas y núcleo) con facetas planas; piel, latón y faroles suaves.
+        for p,mi in zip(mesh.polygons,self.mi):p.use_smooth=mi not in (3,4)
         ob=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(ob);ob.location=pivot;ob['part']=name
         return ob
 
@@ -179,7 +180,7 @@ def crest(y,height,length,width,mi=3):
         for j in range(n):
             a=TAU*j/n;p=(width*factor*math.cos(a),y+length*.5*factor*math.sin(a)+.45*t,base+height*t)
             rx,rz,cz=section(p[1]);p=(p[0],p[1],cz+rz*math.sqrt(max(0,1-(p[0]/rx)**2))-.20+height*t)
-            v.append(p);cols.append(mix(lin('245e72'),lin('a9ffdf'),t**.6))
+            v.append(p);cols.append(mix(lin('1f3563'),lin('33507f'),t) if mi==0 else mix(lin('245e72'),lin('a9ffdf'),t**.6))  # dorsal con piel
     for i in range(steps):
         for j in range(n):a=i*n+j;b=i*n+(j+1)%n;f.append((a,b,b+n,a+n))
     body.add(v,f,cols,mi)
@@ -190,7 +191,38 @@ def crest(y,height,length,width,mi=3):
             t=i/6;factor=(1-t)**.65 if i<6 else .012;py=y-length*.5*factor+.45*t
             rx,rz,cz=section(py);path.append((0,py,cz+rz-.20+height*t))
         body.tube(path,[.030,.035,.035,.027,.018,.005],5,'c7fff1',4)
-for y,h,l,w in [(-5.1,1.75,1.65,.36),(-3.2,1.55,1.5,.33),(1.7,1.36,1.4,.30),(3.5,1.18,1.3,.27),(5.2,1.0,1.2,.23),(6.75,.85,1.05,.20),(8.1,.7,.9,.17)]:crest(y,h,l,w)
+# v4 (Claude, 2026-09-15): las crestas eran cuchillas planas tipo estegosaurio. Ahora cada placa es
+# un racimo de cristales hexagonales que nace hundido en el lomo: núcleo nacarado alto al centro y
+# tres cristales turquesa inclinados hacia fuera y atrás, de mayor a menor hacia la cola.
+def crystal(base,axis,height,radius,mi,twist):
+    axis=Vector(axis).normalized();u=axis.cross(Vector((1,0,0))).normalized();w=axis.cross(u)
+    v=[];f=[];cols=[];n=6
+    rings=[(-.28,1.0),(.62,.92),(.80,.55)]
+    for k,(t,rf) in enumerate(rings):
+        for j in range(n):
+            a=TAU*j/n+twist;r=radius*rf*(1+.10*math.sin(3*a+twist*5))
+            p=Vector(base)+axis*height*t+(u*math.cos(a)+w*math.sin(a))*r
+            v.append(tuple(p))
+    v.append(tuple(Vector(base)+axis*height))
+    for k in range(len(rings)-1):
+        for j in range(n):a=k*n+j;b=k*n+(j+1)%n;f.append((a,b,b+n,a+n))
+    top=len(v)-1;last=(len(rings)-1)*n
+    for j in range(n):f.append((last+j,last+(j+1)%n,top))
+    f.append(tuple(reversed(range(n))))
+    root,tip=('245e72','a9ffdf') if mi==3 else ('9fe8dc','f4fffb')
+    for i,p in enumerate(v):
+        t=1.0 if i==top else max(0,rings[i//n][0])
+        cols.append(mix(lin(root),lin(tip),clamp(t)**.7))
+    body.add(v,f,cols,mi)
+def crest_cluster(y,height,radius):
+    rx,rz,cz=section(y);top=cz+rz
+    body_base=(0,y,top-.22)
+    crystal(body_base,(0,.18,1),height,radius*.62,4,.3)
+    for k,(sx,sy) in enumerate(((-1,.1),(1,.1),(0,.85))):
+        lean=(sx*.55,.35+sy*.5,1)
+        base=(sx*radius*.75,y+sy*radius*.9,top-.2-abs(sx)*.02)
+        crystal(base,lean,height*(.66 if sy<.5 else .5),radius*.55,3,k*1.1+y)
+for y,h in [(-5.1,1.25),(-3.2,1.12),(1.7,1.0),(3.5,.9),(5.2,.78),(6.75,.66),(8.1,.55)]:crest_cluster(y,h,.42*h+.12)
 crest(6.15,1.40,2,.32,0)
 
 # One fitted cinch. Elliptical ribbon samples actual body, rather than a torus approximation.
@@ -228,7 +260,7 @@ for sign in (-1,1):
     for a in (0,math.pi/2,math.pi,3*math.pi/2):body.tube([(cx+.23*math.cos(a),.23*math.sin(a),-.38),(cx+.23*math.cos(a),.23*math.sin(a),.32)],.029,5,'c5a369',1)
 central=body.object('Ballena_Cuerpo_Central',(0,0,0));parts.insert(0,central)
 for ob in parts[1:]:ob.parent=central
-central['forward']='+Z';central['mooringRing_Three']=[0,4.2,0];central['crestCount']=7
+central['forward']='+Z';central['mooringRing_Three']=[0,4.2,0];central['crestCount']=7;central['crestStyle']='cristales v4'
 
 # Geometry verification, independent of rendering and game integration.
 def three(v):return (round(v[0],4),round(v[2],4),round(-v[1],4))
@@ -311,7 +343,7 @@ for ob in parts:
 delivery=f'''# ENTREGA — Gran Ballena Celeste · Aerostato
 
 ## Estado
-- Versión / ronda: v3, ronda de corrección 2/2 (final).
+- Versión / ronda: v4. Rondas de Astra agotadas (2/2); crestas rehechas por Claude el 2026-09-15.
 - Fecha: 2026-09-15.
 - Lista para: revisión de Luis.
 
@@ -355,8 +387,8 @@ Las rotaciones iniciales son identidad, escalas unitarias. Pectorales y cola son
 | Piel satinada | #1f3563 → #3a5a94; vientre #d8e4ee | 0 / 0.5 | 0 | 1 | COLOR_0 conectado a Base Color |
 | Latón remachado | #c4a05e | 0.85 / 0.3 | 0 | 1 | Anillo, montura y herrajes |
 | Cuero | #473932 | 0 / 0.87 | 0 | 1 | Una cincha ajustada |
-| Crestas celestes · pulso | Raíz #245e72 → punta #a9ffdf | 0 / 0.32 | #5fe8d0 × 2.5 | 1 | Siete crestas, un material compartido |
-| Núcleo nacarado | #c7fff1 | 0 / 0.3 | #c7fff1 × 2.5 | 1 | Nervadura de las crestas |
+| Crestas celestes · pulso | Raíz #245e72 → punta #a9ffdf | 0 / 0.32 | #5fe8d0 × 2.5 | 1 | Tres cristales turquesa por cresta, facetas planas, un material compartido |
+| Núcleo nacarado | #c7fff1 | 0 / 0.3 | #c7fff1 × 2.5 | 1 | Cristal central alto de cada cresta, facetas planas |
 | Faroles | Rojo babor / verde estribor | 0 / 0.3 | #ff463b / #58ff9c × 2.5 | 1 | Fijos a la cincha, jaula de latón |
 | Ojos | #111d2b | 0 / 0.5 | 0 | 1 | Comparten piel; ojos pequeños, sin sonrisa |
 
@@ -371,7 +403,7 @@ Las rotaciones iniciales son identidad, escalas unitarias. Pectorales y cola son
 Sin JSON, conforme al encargo específico de GLB. El BRIEF.md original se conserva como documento fuente. Las siete crestas comparten material: admiten pulso simultáneo, no individual. Los ojos comparten el acabado satinado de la piel para limitar el GLB a diez primitivas de material. La geometría rígida contiene componentes solapados e integrados visualmente, no es una única superficie soldada.
 
 ## Revisión propia
-Se revisan los cinco renders: silueta completa de rorcual, garganta con surcos, aletas de espesor real, cola horizontal bilobulada, siete crestas y dorsal menor. Corrección 1: pigmento menos contrastado, aro con sección continua, crestas ajustadas al lomo y encuadres de perfil/arnés más próximos. Las cicatrices y percebes quedan discretos. Corrección 2: nervaduras luminosas ajustadas a las crestas, sin puntas sobresalientes. Los renders se entregan para la valoración artística de Luis.
+Se revisan los cinco renders: silueta completa de rorcual, garganta con surcos, aletas de espesor real, cola horizontal bilobulada, siete crestas y dorsal menor. Corrección 1: pigmento menos contrastado, aro con sección continua, crestas ajustadas al lomo y encuadres de perfil/arnés más próximos. Las cicatrices y percebes quedan discretos. Corrección 2: nervaduras luminosas ajustadas a las crestas, sin puntas sobresalientes. v4 (Claude): las cuchillas planas se leían como placas de estegosaurio; cada cresta es ahora un racimo de cristales hexagonales hundido en el lomo (núcleo nacarado y tres cristales turquesa inclinados) y la aleta dorsal toma el color de la piel. Los renders se entregan para la valoración artística de Luis.
 
 ## Sugerencias para integrar
 Buscar por nombre los cuatro nodos, aunque GLTFLoader represente el cuerpo multimaterial como grupo con primitivas hijas. Usar su transformación como pivote; no mover las primitivas por separado. Aleteo Z en espejo, ±0.16 rad a 0.10 ciclos/s; cola X ±0.16 rad a 0.12 ciclos/s. Límite comprobado: ±0.2 rad. Pulso simultáneo del material de crestas y núcleo: intensidad 2.5 ±0.5 a 0.08 ciclos/s. Faroles constantes. La cuerda se conecta al centro local (0,4.2,0). Sin animaciones horneadas.

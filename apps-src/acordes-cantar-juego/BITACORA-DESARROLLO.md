@@ -757,9 +757,24 @@ solo al completar la cuerda.
 - Inspector: `dev/aeronaves.html`.
 - Verificado: build; inspector con las cuatro; simulación de 1 000 s por capa con el
   `FlybyManager` real (aeronave correcta por capa, una a la vez, nunca a menos de 15 u, sin restos
-  en escena). Pendiente: verlas cruzar en vuelo real y teléfono. Sin deploy.
+  en escena). Pendiente: verlas cruzar en vuelo real y teléfono. Publicado el 2026-09-14 (`b8c5119`).
 
-## Ballena Celeste de Blender integrada · 2026-09-15 · DEPLOY LOCAL ✓ (Claude)
+## Canastilla de Blender enmarcando la vista · 2026-09-14 · COMPLETADO ✓ (Claude)
+
+- Luis eligió la composición "enmarcada". Antes casi no se veía la canastilla: el borde quedaba
+  a 41° bajo el horizonte y la boca del globo fuera de la vista incluso asomándose.
+- `art/blender/canasta/modelar-canasta.py` (Claude, sin tokens de Astra): 4 módulos anclados a
+  los bordes de la pantalla. Abajo, borde de cuero sobre mimbre con altímetro, argollas, saco y
+  cuerda. A los lados, postes de cuero con amarres y cable. Arriba, barra del marco, quemador doble
+  con serpentines de cobre, mangueras y faldón a gajos. 22 404 tri, 9 partes.
+- `src/3d/basket.ts`: carga el JSON y recoloca los módulos al cambiar la proporción. En teléfono
+  las piezas se afinan y los postes conservan el alto y se arriman al borde. Dos llamas con
+  flicker nacen en las boquillas; los serpentines se ponen al rojo con el ascenso y el rugido.
+- Verificado: build; escritorio 16:9 y teléfono 375×812 en juego real, sin errores. El HUD de
+  latón queda apoyado sobre el borde de mimbre. Pendiente: ver la llama en ascenso sostenido y
+  probar en teléfono real. Aparte: en 375 px la consola HTML ya se salía del ancho. Publicado el 2026-09-14 (`1a81473`).
+
+## Ballena Celeste de Blender integrada · 2026-09-15 · COMPLETADO ✓ (Astra modela · Claude integra)
 
 Astra entregó `art/blender/ballena-celeste/` v3 (ronda de corrección 2/2, final); Luis dio el
 visto bueno para integrarla y continuar.
@@ -782,19 +797,10 @@ visto bueno para integrarla y continuar.
   correctos; aleteo y pulso oscilan en vivo dentro de los rangos del contrato (medido con
   `stepFrame()` real, no simulado); sin errores de consola. `npm run build` limpio.
 - `npm run deploy` actualizó `public/apps/acordes-cantar-juego/` (GLB de 413.71 KiB incluido
-  en `dist/assets`). Sin commit/push (§15.6, pendiente de que Luis lo pida).
-
-## Canastilla de Blender enmarcando la vista · 2026-09-14 · COMPLETADO ✓ (Claude)
-
-- Luis eligió la composición "enmarcada". Antes casi no se veía la canastilla: el borde quedaba
-  a 41° bajo el horizonte y la boca del globo fuera de la vista incluso asomándose.
-- `art/blender/canasta/modelar-canasta.py` (Claude, sin tokens de Astra): 4 módulos anclados a
-  los bordes de la pantalla. Abajo, borde de cuero sobre mimbre con altímetro, argollas, saco y
-  cuerda. A los lados, postes de cuero con amarres y cable. Arriba, barra del marco, quemador doble
-  con serpentines de cobre, mangueras y faldón a gajos. 22 404 tri, 9 partes.
-- `src/3d/basket.ts`: carga el JSON y recoloca los módulos al cambiar la proporción. En teléfono
-  las piezas se afinan y los postes conservan el alto y se arriman al borde. Dos llamas con
-  flicker nacen en las boquillas; los serpentines se ponen al rojo con el ascenso y el rugido.
-- Verificado: build; escritorio 16:9 y teléfono 375×812 en juego real, sin errores. El HUD de
-  latón queda apoyado sobre el borde de mimbre. Pendiente: ver la llama en ascenso sostenido y
-  probar en teléfono real. Aparte: en 375 px la consola HTML ya se salía del ancho. Sin deploy.
+  en `dist/assets`). Publicado el 2026-09-15 (`31d3984`).
+- **v4, crestas (Claude, 2026-09-15):** a pedido de Luis. Las 7 crestas eran cuchillas planas que
+  se leían como placas de estegosaurio. En `modelar-ballena-celeste.py` cada cresta es ahora un
+  racimo de cristales hexagonales de facetas planas, hundido en el lomo: un núcleo nacarado alto y
+  tres cristales turquesa inclinados hacia fuera y atrás. La aleta dorsal toma el color de la piel.
+  Mismos nombres de nodos y de materiales, así que `scenery.ts` no cambia y el pulso sigue igual.
+  15 674 tri; el script pasa todas sus comprobaciones.

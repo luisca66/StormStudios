@@ -118,7 +118,7 @@ Queda como pendiente heredado de la bitácora (F5): animar las agujas de los man
 |---|---|
 | Nube cúmulo (se atraviesa) | ✅ Blender (GLB) · tecla `C` |
 | Aguja alpina y faro | ✅ Blender (GLB) · tecla `F` |
-| Gran Ballena Celeste (capa 5) | ✅ Blender (GLB, 15 786 tri) · rehecha por Astra en 2 rondas (2026-09-15), integrada por Claude · tecla `B`/`5` |
+| Gran Ballena Celeste (capa 5) | ✅ Blender (GLB, 15 674 tri) · rehecha por Astra en 2 rondas e integrada por Claude; crestas de cristal v4 por Claude (2026-09-15) · tecla `B`/`5` |
 | Aeronaves por capa: avioneta, jet, avión estratosférico, satélite (`flybys.ts`) | ✅ Blender (un JSON por aeronave) · modeladas por Astra; estratosférico corregido e integración por Claude |
 | Canasta/globo del jugador (`basket.ts`) | ✅ Blender (4 módulos anclados a pantalla: borde, postes y quemador con faldón) · Claude |
 

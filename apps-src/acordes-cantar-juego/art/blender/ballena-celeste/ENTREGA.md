@@ -1,7 +1,7 @@
 # ENTREGA — Gran Ballena Celeste · Aerostato
 
 ## Estado
-- Versión / ronda: v3, ronda de corrección 2/2 (final).
+- Versión / ronda: v4. Rondas de Astra agotadas (2/2); crestas rehechas por Claude el 2026-09-15.
 - Fecha: 2026-09-15.
 - Lista para: revisión de Luis.
 
@@ -25,12 +25,12 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 | Altura del cuerpo sin crestas | 6.96 u aproximadamente |
 | Origen | (0, 0, 0), bajo el anillo |
 | Frente | +Z Three / −Y Blender |
-| Triángulos | 15786 |
+| Triángulos | 15674 |
 | Mallas | 4; varias primitivas de material dentro del cuerpo |
-| GLB | 404.0 KiB |
+| GLB | 453.1 KiB |
 | Punto de amarre | (0, 4.2, 0) Three, propiedad extra `mooringRing_Three` del cuerpo |
 
-Triángulos por objeto: Ballena_Cuerpo_Central: 13106, Aleta_Pectoral_Izq: 696, Aleta_Pectoral_Der: 696, Aleta_Cola: 1288.
+Triángulos por objeto: Ballena_Cuerpo_Central: 12994, Aleta_Pectoral_Izq: 696, Aleta_Pectoral_Der: 696, Aleta_Cola: 1288.
 
 ## Partes
 | Objeto | part | segment | Pivote (Three) | Material | Eje (Three) | Amplitud | Velocidad | Notas |
@@ -48,8 +48,8 @@ Las rotaciones iniciales son identidad, escalas unitarias. Pectorales y cola son
 | Piel satinada | #1f3563 → #3a5a94; vientre #d8e4ee | 0 / 0.5 | 0 | 1 | COLOR_0 conectado a Base Color |
 | Latón remachado | #c4a05e | 0.85 / 0.3 | 0 | 1 | Anillo, montura y herrajes |
 | Cuero | #473932 | 0 / 0.87 | 0 | 1 | Una cincha ajustada |
-| Crestas celestes · pulso | Raíz #245e72 → punta #a9ffdf | 0 / 0.32 | #5fe8d0 × 2.5 | 1 | Siete crestas, un material compartido |
-| Núcleo nacarado | #c7fff1 | 0 / 0.3 | #c7fff1 × 2.5 | 1 | Nervadura de las crestas |
+| Crestas celestes · pulso | Raíz #245e72 → punta #a9ffdf | 0 / 0.32 | #5fe8d0 × 2.5 | 1 | Tres cristales turquesa por cresta, facetas planas, un material compartido |
+| Núcleo nacarado | #c7fff1 | 0 / 0.3 | #c7fff1 × 2.5 | 1 | Cristal central alto de cada cresta, facetas planas |
 | Faroles | Rojo babor / verde estribor | 0 / 0.3 | #ff463b / #58ff9c × 2.5 | 1 | Fijos a la cincha, jaula de latón |
 | Ojos | #111d2b | 0 / 0.5 | 0 | 1 | Comparten piel; ojos pequeños, sin sonrisa |
 
@@ -64,7 +64,7 @@ Las rotaciones iniciales son identidad, escalas unitarias. Pectorales y cola son
 Sin JSON, conforme al encargo específico de GLB. El BRIEF.md original se conserva como documento fuente. Las siete crestas comparten material: admiten pulso simultáneo, no individual. Los ojos comparten el acabado satinado de la piel para limitar el GLB a diez primitivas de material. La geometría rígida contiene componentes solapados e integrados visualmente, no es una única superficie soldada.
 
 ## Revisión propia
-Se revisan los cinco renders: silueta completa de rorcual, garganta con surcos, aletas de espesor real, cola horizontal bilobulada, siete crestas y dorsal menor. Corrección 1: pigmento menos contrastado, aro con sección continua, crestas ajustadas al lomo y encuadres de perfil/arnés más próximos. Las cicatrices y percebes quedan discretos. Corrección 2: nervaduras luminosas ajustadas a las crestas, sin puntas sobresalientes. Los renders se entregan para la valoración artística de Luis.
+Se revisan los cinco renders: silueta completa de rorcual, garganta con surcos, aletas de espesor real, cola horizontal bilobulada, siete crestas y dorsal menor. Corrección 1: pigmento menos contrastado, aro con sección continua, crestas ajustadas al lomo y encuadres de perfil/arnés más próximos. Las cicatrices y percebes quedan discretos. Corrección 2: nervaduras luminosas ajustadas a las crestas, sin puntas sobresalientes. v4 (Claude): las cuchillas planas se leían como placas de estegosaurio; cada cresta es ahora un racimo de cristales hexagonales hundido en el lomo (núcleo nacarado y tres cristales turquesa inclinados) y la aleta dorsal toma el color de la piel. Los renders se entregan para la valoración artística de Luis.
 
 ## Sugerencias para integrar
 Buscar por nombre los cuatro nodos, aunque GLTFLoader represente el cuerpo multimaterial como grupo con primitivas hijas. Usar su transformación como pivote; no mover las primitivas por separado. Aleteo Z en espejo, ±0.16 rad a 0.10 ciclos/s; cola X ±0.16 rad a 0.12 ciclos/s. Límite comprobado: ±0.2 rad. Pulso simultáneo del material de crestas y núcleo: intensidad 2.5 ±0.5 a 0.08 ciclos/s. Faroles constantes. La cuerda se conecta al centro local (0,4.2,0). Sin animaciones horneadas.
