@@ -456,6 +456,7 @@ export class Scenery {
   private whaleWingLeft: THREE.Object3D | null = null;
   private whaleWingRight: THREE.Object3D | null = null;
   private whaleTailFin: THREE.Object3D | null = null;
+  private whalePulseMaterials: THREE.MeshStandardMaterial[] = [];
   private whaleAngle = 0;
   private readonly whaleOrbitR = 50;
   private readonly whaleY = 675;
@@ -470,7 +471,10 @@ export class Scenery {
     this.whale = g;
     this.whaleAngle = 0;
 
-    const glbUrl = new URL("../../art/blender/ballena-celeste.glb", import.meta.url).href;
+    const glbUrl = new URL(
+      "../../art/blender/ballena-celeste/ballena-celeste.glb",
+      import.meta.url,
+    ).href;
     const loader = new GLTFLoader();
     loader.load(
       glbUrl,
@@ -483,6 +487,18 @@ export class Scenery {
             const m = child as THREE.Mesh;
             m.castShadow = false;
             m.receiveShadow = false;
+            const mats = Array.isArray(m.material) ? m.material : [m.material];
+            for (const mat of mats) {
+              const name = (mat.name || "").toLowerCase();
+              const isPulseMaterial = name.includes("cresta") || name.includes("núcleo") || name.includes("nucleo");
+              if (
+                isPulseMaterial &&
+                (mat as THREE.MeshStandardMaterial).isMeshStandardMaterial &&
+                !this.whalePulseMaterials.includes(mat as THREE.MeshStandardMaterial)
+              ) {
+                this.whalePulseMaterials.push(mat as THREE.MeshStandardMaterial);
+              }
+            }
           }
           if (child.name === "Aleta_Pectoral_Izq") {
             this.whaleWingLeft = child;
@@ -533,18 +549,21 @@ export class Scenery {
       this.whale.rotateZ(Math.sin(elapsed * 0.35) * 0.05);
       this.whale.updateMatrixWorld();
 
-      // Animación viva de nado: aleteo de mantas pectorales y ondulación caudal
+      // Animación viva de nado (contrato de ENTREGA.md): aleteo Z en espejo ±0.16 rad
+      // a 0.10 ciclos/s (izq fase 0, der fase π); cola X ±0.16 rad a 0.12 ciclos/s,
+      // desfasada π/2. Límite comprobado por Astra: ±0.2 rad.
       if (this.whaleWingLeft && this.whaleWingRight) {
-        const wingFlap = Math.sin(elapsed * 1.6) * 0.15;
-        const wingFeather = Math.cos(elapsed * 1.6) * 0.04;
-        this.whaleWingLeft.rotation.x = wingFlap;
-        this.whaleWingLeft.rotation.z = wingFeather;
-        this.whaleWingRight.rotation.x = -wingFlap;
-        this.whaleWingRight.rotation.z = -wingFeather;
+        const wingFlap = 0.16 * Math.sin(elapsed * Math.PI * 2 * 0.1);
+        this.whaleWingLeft.rotation.z = wingFlap;
+        this.whaleWingRight.rotation.z = -wingFlap;
       }
       if (this.whaleTailFin) {
-        this.whaleTailFin.rotation.z = Math.sin(elapsed * 1.6 - 1.0) * 0.16;
-        this.whaleTailFin.rotation.y = Math.cos(elapsed * 1.6 - 1.2) * 0.04;
+        this.whaleTailFin.rotation.x = 0.16 * Math.sin(elapsed * Math.PI * 2 * 0.12 + Math.PI / 2);
+      }
+      // Pulso de crestas bioluminiscentes y núcleo: intensidad 2.5 ±0.5 a 0.08 ciclos/s.
+      if (this.whalePulseMaterials.length) {
+        const pulse = 2.5 + 0.5 * Math.sin(elapsed * Math.PI * 2 * 0.08);
+        for (const mat of this.whalePulseMaterials) mat.emissiveIntensity = pulse;
       }
     }
 

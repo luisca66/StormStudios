@@ -759,6 +759,31 @@ solo al completar la cuerda.
   `FlybyManager` real (aeronave correcta por capa, una a la vez, nunca a menos de 15 u, sin restos
   en escena). Pendiente: verlas cruzar en vuelo real y teléfono. Sin deploy.
 
+## Ballena Celeste de Blender integrada · 2026-09-15 · DEPLOY LOCAL ✓ (Claude)
+
+Astra entregó `art/blender/ballena-celeste/` v3 (ronda de corrección 2/2, final); Luis dio el
+visto bueno para integrarla y continuar.
+
+- **`src/3d/scenery.ts`**: la carga por GLTFLoader que ya apuntaba a un `ballena-celeste.glb`
+  suelto (ruta obsoleta de antes de que Astra entregara en subcarpeta con renders/`.blend`)
+  se corrigió a `art/blender/ballena-celeste/ballena-celeste.glb`. Se sustituyó la animación
+  de aleteo/cola por la del contrato exacto de `ENTREGA.md`: pectorales en eje **Z** en espejo
+  ±0.16 rad a 0.10 ciclos/s (antes mezclaba X/Z con otra frecuencia, heredado de un rig
+  anterior), cola en eje **X** ±0.16 rad a 0.12 ciclos/s con desfase π/2. Nuevo
+  `whalePulseMaterials`: busca por nombre los materiales "Crestas celestes · pulso" y "Núcleo
+  nacarado" dentro del GLB y anima su `emissiveIntensity` 2.5 ±0.5 a 0.08 ciclos/s (antes sin
+  pulso real). Faroles quedan constantes según el brief.
+- Sin rotación ni offset adicional: el generador de Astra ya deja el hocico en +Z Three y el
+  anillo de amarre en (0, 4.2, 0) local, que es lo que ya usaba `whaleBack()`.
+- **Verificado en `?qa=1&fakemic=1`** (`player.setPose(50, 672, -35, Math.PI, 0)`, atajo de
+  tecla "5"/"b" ya existente): los 4 nodos (`Ballena_Cuerpo_Central`,
+  `Aleta_Pectoral_Izq/Der`, `Aleta_Cola`) y 2 materiales de pulso se encuentran tras la carga;
+  silueta de rorcual, crestas turquesa, arnés de latón y faroles rojo/verde visibles y
+  correctos; aleteo y pulso oscilan en vivo dentro de los rangos del contrato (medido con
+  `stepFrame()` real, no simulado); sin errores de consola. `npm run build` limpio.
+- `npm run deploy` actualizó `public/apps/acordes-cantar-juego/` (GLB de 413.71 KiB incluido
+  en `dist/assets`). Sin commit/push (§15.6, pendiente de que Luis lo pida).
+
 ## Canastilla de Blender enmarcando la vista · 2026-09-14 · COMPLETADO ✓ (Claude)
 
 - Luis eligió la composición "enmarcada". Antes casi no se veía la canastilla: el borde quedaba
