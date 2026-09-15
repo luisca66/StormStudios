@@ -743,3 +743,18 @@ solo al completar la cuerda.
 - El jet comercial usa una ganancia máxima de 0.8; las otras aeronaves conservan 0.5.
 - Cada capa de Expedición ahora exige 20 acordes completados para abrir la siguiente
   esclusa. Contrarreloj y Supervivencia conservan sus cuotas especiales de 3 y 4.
+
+## Aeronaves de Blender · 2026-09-14 · COMPLETADO ✓ (Astra modela · Claude integra)
+
+- `art/blender/aeronaves/modelar-aeronaves.py` genera avioneta, jet, estratosférico y satélite,
+  cada uno con su JSON (`kit.export_parts`). Astra entregó los cuatro; el estratosférico lo corrigió
+  Claude al agotarse sus tokens: tomas de aire, tobera, alas con perfil suavizado y variación de tono.
+- `src/3d/flybys.ts`: las primitivas se sustituyen por los modelos (JSON copiados a
+  `src/3d/assets/aeronaves/`, geometría compartida entre pasadas). Hélice a 26 rad/s, paneles del
+  satélite ±0.3 rad, baliza y destello como antes; las estelas nacen en `contrailOrigins`. Si un
+  modelo aún no ha descargado, esa capa se salta la pasada.
+- Draw calls por aeronave: avioneta 2, jet 2, estratosférico 2, satélite 4 (antes 6–8).
+- Inspector: `dev/aeronaves.html`.
+- Verificado: build; inspector con las cuatro; simulación de 1 000 s por capa con el
+  `FlybyManager` real (aeronave correcta por capa, una a la vez, nunca a menos de 15 u, sin restos
+  en escena). Pendiente: verlas cruzar en vuelo real y teléfono. Sin deploy.

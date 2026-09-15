@@ -1,17 +1,73 @@
 // Aeronaves ambientales por capa (PLAN-AERONAVES-POR-CAPA): UNA a la vez, cruza
 // el cilindro como cuerda lejos del jugador y muere fundida en la niebla. Puro
-// ambiente — sin radar, sin click, sin colisión. F1–F4: avioneta, jet,
-// estratosférico y satélite. Math.random() a propósito: el
-// RNG sembrado del mundo no debe consumirse aquí (reproducibilidad de nubes).
+// ambiente — sin radar, sin click, sin colisión. Modelos de Blender
+// (art/blender/aeronaves/): avioneta, jet, estratosférico y satélite. Math.random()
+// a propósito: el RNG sembrado del mundo no debe consumirse aquí (reproducibilidad de nubes).
 
 import * as THREE from "three";
 import { FLYBY, LAYERS, WORLD, layerAtY } from "@/config";
+import planeUrl from "./assets/aeronaves/avioneta.json?url";
+import jetUrl from "./assets/aeronaves/jet.json?url";
+import stratoUrl from "./assets/aeronaves/estratosferico.json?url";
+import satelliteUrl from "./assets/aeronaves/satelite.json?url";
 
 export type FlybyKind = "plane" | "jet" | "strato" | "satellite";
 
 export interface FlybySoundState {
   kind: FlybyKind;
   distance: number;
+}
+
+/** Parte exportada por `kit.export_parts` (PLAN-3D-BLENDER.md §6). */
+interface PartData {
+  name: string;
+  part: string;
+  segment?: number;
+  pivot: number[];
+  position: number[];
+  normal: number[];
+  index: number[];
+  vertexColor?: number[];
+  color: number[];
+  metalness: number;
+  roughness: number;
+  emission: number;
+  emissionColor: number[];
+}
+
+interface AircraftModel {
+  contrailOrigins: number[][];
+  parts: { data: PartData; geometry: THREE.BufferGeometry }[];
+}
+
+const MODEL_URLS: Record<FlybyKind, string> = {
+  plane: planeUrl,
+  jet: jetUrl,
+  strato: stratoUrl,
+  satellite: satelliteUrl,
+};
+
+// Geometrías compartidas entre pasadas: se crean una vez y no se liberan (son pequeñas).
+const models: Partial<Record<FlybyKind, AircraftModel>> = {};
+
+async function loadModel(kind: FlybyKind): Promise<void> {
+  const response = await fetch(MODEL_URLS[kind]);
+  if (!response.ok) throw new Error(`Aeronave ${kind}: HTTP ${response.status}`);
+  const data = (await response.json()) as { contrailOrigins?: number[][]; meshes: PartData[] };
+  models[kind] = {
+    contrailOrigins: data.contrailOrigins ?? [],
+    parts: data.meshes.map((part) => {
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute("position", new THREE.Float32BufferAttribute(part.position, 3));
+      geometry.setAttribute("normal", new THREE.Float32BufferAttribute(part.normal, 3));
+      if (part.vertexColor) {
+        geometry.setAttribute("color", new THREE.Float32BufferAttribute(part.vertexColor, 3));
+      }
+      geometry.setIndex(part.index);
+      geometry.computeBoundingSphere();
+      return { data: part, geometry };
+    }),
+  };
 }
 
 const KIND_BY_LAYER: Partial<Record<number, FlybyKind>> = {
@@ -25,7 +81,8 @@ class Flyby {
   readonly group = new THREE.Group();
   /** Sub-grupo del modelo: recibe el balanceo sin pelearse con el lookAt. */
   private readonly model = new THREE.Group();
-  private readonly prop: THREE.Object3D | null;
+  private prop: THREE.Object3D | null = null;
+  private readonly panels: { mesh: THREE.Object3D; phase: number }[] = [];
   private readonly velocity: THREE.Vector3;
   private readonly disposables: (THREE.BufferGeometry | THREE.Material)[] = [];
   private satelliteBodyMat: THREE.MeshStandardMaterial | null = null;
@@ -33,13 +90,14 @@ class Flyby {
 
   constructor(
     readonly kind: FlybyKind,
+    model: AircraftModel,
     from: THREE.Vector3,
     to: THREE.Vector3,
   ) {
-    this.prop = this.buildModel(kind);
+    this.buildModel(model);
     this.group.add(this.model);
     this.group.position.copy(from);
-    this.group.lookAt(to); // los modelos se construyen con el morro hacia +z
+    this.group.lookAt(to); // los modelos llegan con el morro hacia +z
     this.velocity = to.clone().sub(from).normalize().multiplyScalar(FLYBY.speeds[kind]);
   }
 
@@ -60,8 +118,14 @@ class Flyby {
         const blink = Math.sin((elapsed * Math.PI * 2) / 1.6) > 0.72;
         this.satelliteBeaconMat.emissiveIntensity = blink ? 3.2 : 0.08;
       }
+      // Paneles orientándose al sol: ±0.3 rad sobre el eje del brazo (ENTREGA.md).
+      for (const { mesh, phase } of this.panels) {
+        mesh.rotation.x = Math.sin(elapsed * Math.PI * 2 * 0.04 + phase) * 0.3;
+      }
+    } else if (this.kind === "plane") {
+      this.model.rotation.z = Math.sin(elapsed * Math.PI * 2 * 0.22) * 0.06; // balanceo vivo
     } else {
-      this.model.rotation.z = Math.sin(elapsed * 0.7) * 0.06; // balanceo sutil
+      this.model.rotation.z = Math.sin(elapsed * 0.7) * 0.03; // balanceo sutil
     }
   }
 
@@ -72,162 +136,39 @@ class Flyby {
 
   dispose(scene: THREE.Scene): void {
     scene.remove(this.group);
+    // Materiales y estelas propios; las geometrías del modelo son compartidas.
     for (const d of this.disposables) d.dispose();
   }
 
-  private mat(color: number, roughness = 0.85): THREE.MeshStandardMaterial {
-    const m = new THREE.MeshStandardMaterial({ color, roughness });
-    this.disposables.push(m);
-    return m;
-  }
+  private buildModel(model: AircraftModel): void {
+    for (const { data, geometry } of model.parts) {
+      const [er, eg, eb] = data.emissionColor;
+      const material = new THREE.MeshStandardMaterial({
+        color: new THREE.Color().setRGB(data.color[0], data.color[1], data.color[2]),
+        vertexColors: Boolean(data.vertexColor),
+        metalness: data.metalness,
+        roughness: data.roughness,
+        emissive: data.emission > 0 ? new THREE.Color().setRGB(er, eg, eb) : new THREE.Color(0),
+        emissiveIntensity: data.emission,
+      });
+      this.disposables.push(material);
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.name = data.name;
+      mesh.position.fromArray(data.pivot);
+      this.model.add(mesh);
 
-  private mesh(geo: THREE.BufferGeometry, mat: THREE.Material): THREE.Mesh {
-    this.disposables.push(geo);
-    const m = new THREE.Mesh(geo, mat);
-    this.model.add(m);
-    return m;
-  }
-
-  /** Devuelve el nodo de la hélice si el modelo la tiene. */
-  private buildModel(kind: FlybyKind): THREE.Object3D | null {
-    switch (kind) {
-      case "jet":
-        return this.buildJet();
-      case "strato":
-        return this.buildStrato();
-      case "satellite":
-        return this.buildSatellite();
-      default:
-        return this.buildPlane();
+      if (data.part === "prop") this.prop = mesh;
+      if (data.part === "panel") this.panels.push({ mesh, phase: (data.segment ?? 0) * Math.PI });
+      if (data.part === "beacon") this.satelliteBeaconMat = material;
+      if (this.kind === "satellite" && data.part === "body") this.satelliteBodyMat = material;
     }
-  }
-
-  private buildPlane(): THREE.Object3D {
-    // Avioneta de ala alta tipo Cessna: crema + rojo, 6 draw calls.
-    const cream = this.mat(0xf3ead7);
-    const red = this.mat(0xb5402e);
-    const dark = this.mat(0x2a2a2a, 0.6);
-
-    this.mesh(new THREE.BoxGeometry(0.7, 0.7, 3.2), cream); // fuselaje
-    const noseGeo = new THREE.ConeGeometry(0.34, 0.7, 6);
-    noseGeo.rotateX(Math.PI / 2); // punta hacia +z (morro)
-    const nose = this.mesh(noseGeo, red);
-    nose.position.set(0, 0, 1.9);
-    const wing = this.mesh(new THREE.BoxGeometry(7, 0.1, 1.1), red); // ala alta
-    wing.position.set(0, 0.42, 0.35);
-    const tailplane = this.mesh(new THREE.BoxGeometry(2.2, 0.07, 0.7), cream);
-    tailplane.position.set(0, 0.1, -1.5);
-    const fin = this.mesh(new THREE.BoxGeometry(0.07, 0.85, 0.7), red);
-    fin.position.set(0, 0.55, -1.5);
-    const prop = this.mesh(new THREE.BoxGeometry(0.14, 1.7, 0.06), dark);
-    prop.position.set(0, 0, 2.3);
-    return prop;
-  }
-
-  private buildJet(): null {
-    // Jet comercial: fuselaje blanco, alas en flecha, 2 motores + estela doble.
-    // 7 meshes + 1 de estela = 8 draw calls mientras está en pantalla.
-    const white = this.mat(0xf4f4f0, 0.7);
-    const blue = this.mat(0x3a5a8c, 0.7);
-    const dark = this.mat(0x2a2a2a, 0.6);
-
-    const fusGeo = new THREE.CylinderGeometry(0.45, 0.45, 5, 8);
-    fusGeo.rotateX(Math.PI / 2); // eje a lo largo de z
-    this.mesh(fusGeo, white);
-    const noseGeo = new THREE.ConeGeometry(0.45, 1.1, 8);
-    noseGeo.rotateX(Math.PI / 2); // punta hacia +z
-    const nose = this.mesh(noseGeo, white);
-    nose.position.set(0, 0, 3.05);
-    for (const side of [-1, 1]) {
-      const wing = this.mesh(new THREE.BoxGeometry(4.2, 0.1, 1.3), white);
-      wing.position.set(side * 2.1, -0.15, -0.2);
-      wing.rotation.y = side * 0.42; // flecha hacia atrás
-      const engine = this.mesh(new THREE.CylinderGeometry(0.26, 0.26, 1.1, 8), dark);
-      engine.geometry.rotateX(Math.PI / 2);
-      engine.position.set(side * 1.7, -0.5, 0.4);
-    }
-    const fin = this.mesh(new THREE.BoxGeometry(0.09, 1.4, 1.1), blue);
-    fin.position.set(0, 0.9, -2.3);
-    fin.rotation.x = -0.35; // aleta inclinada hacia atrás
-
-    this.buildContrail([-1.7, 1.7], -0.5, -1.0, 30, 0.35, 1.3);
-    return null;
-  }
-
-  private buildStrato(): null {
-    // Avión estratosférico tipo U-2: esbelto, alas MUY largas y delgadas, cola
-    // en T, metal oscuro. Estela única fina y larga. 5 meshes + 1 = 6 draw calls.
-    const metal = this.mat(0x30343a, 0.45);
-
-    const fusGeo = new THREE.CylinderGeometry(0.28, 0.28, 6, 8);
-    fusGeo.rotateX(Math.PI / 2);
-    this.mesh(fusGeo, metal);
-    const noseGeo = new THREE.ConeGeometry(0.28, 1.2, 8);
-    noseGeo.rotateX(Math.PI / 2);
-    const nose = this.mesh(noseGeo, metal);
-    nose.position.set(0, 0, 3.6);
-    const wing = this.mesh(new THREE.BoxGeometry(13, 0.07, 0.9), metal);
-    wing.position.set(0, 0.05, 0.2);
-    // Cola en T: aleta vertical con el plano horizontal encima.
-    const fin = this.mesh(new THREE.BoxGeometry(0.07, 1.1, 0.8), metal);
-    fin.position.set(0, 0.6, -2.7);
-    const tailplane = this.mesh(new THREE.BoxGeometry(3.2, 0.06, 0.7), metal);
-    tailplane.position.set(0, 1.15, -2.7);
-
-    this.buildContrail([0], 0, -3.2, 45, 0.18, 0.7);
-    return null;
-  }
-
-  private buildSatellite(): null {
-    // Satélite low-poly: cuerpo de foil dorado, paneles solares emisivos, antena
-    // y baliza. Sin estela ni PointLight. 5 meshes = 5 draw calls.
-    const bodyMat = new THREE.MeshStandardMaterial({
-      color: 0xc9a227,
-      roughness: 0.32,
-      metalness: 0.85,
-      emissive: 0x5a3300,
-      emissiveIntensity: 0.12,
-    });
-    const panelMat = new THREE.MeshStandardMaterial({
-      color: 0x24558c,
-      roughness: 0.5,
-      metalness: 0.35,
-      emissive: 0x0a2d66,
-      emissiveIntensity: 0.55,
-    });
-    const antennaMat = this.mat(0xc7c9cc, 0.3);
-    const beaconMat = new THREE.MeshStandardMaterial({
-      color: 0xff5544,
-      roughness: 0.4,
-      emissive: 0xff1808,
-      emissiveIntensity: 0.08,
-    });
-    this.disposables.push(bodyMat, panelMat, beaconMat);
-    this.satelliteBodyMat = bodyMat;
-    this.satelliteBeaconMat = beaconMat;
-
-    this.mesh(new THREE.BoxGeometry(1.5, 1.1, 1.5), bodyMat);
-    for (const side of [-1, 1]) {
-      const panel = this.mesh(new THREE.BoxGeometry(3.6, 0.08, 1.4), panelMat);
-      panel.position.set(side * 2.55, 0, 0);
-    }
-    const antenna = this.mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.8, 6), antennaMat);
-    antenna.position.set(0, 1.42, 0);
-    const beacon = this.mesh(new THREE.SphereGeometry(0.16, 6, 4), beaconMat);
-    beacon.position.set(0, 2.35, 0);
-    return null;
+    if (this.kind === "jet") this.buildContrail(model.contrailOrigins, 30, 0.35, 1.3);
+    if (this.kind === "strato") this.buildContrail(model.contrailOrigins, 45, 0.18, 0.7);
   }
 
   /** Estela: cintas en cruz con alpha por vértice que muere hacia la cola.
    * UN solo mesh para todas (1 draw call); viaja rígida con el grupo. */
-  private buildContrail(
-    xs: number[],
-    y: number,
-    zHead: number,
-    length: number,
-    wHead: number,
-    wTail: number,
-  ): void {
+  private buildContrail(origins: number[][], length: number, wHead: number, wTail: number): void {
     const pos: number[] = [];
     const col: number[] = [];
     const quad = (a: number[], b: number[], c: number[], d: number[], aHead: number) => {
@@ -235,8 +176,9 @@ class Flyby {
       pos.push(...a, ...b, ...c, ...b, ...d, ...c);
       col.push(1, 1, 1, aHead, 1, 1, 1, aHead, 1, 1, 1, 0, 1, 1, 1, aHead, 1, 1, 1, 0, 1, 1, 1, 0);
     };
-    const zTail = zHead - length;
-    for (const x of xs) {
+    // Nace en cada salida que marca el modelo (motores del jet, tobera del estratosférico).
+    for (const [x, y, zHead] of origins) {
+      const zTail = zHead - length;
       // Cinta horizontal + cinta vertical (cruz: visible desde cualquier ángulo).
       quad(
         [x - wHead / 2, y, zHead],
@@ -271,7 +213,12 @@ export class FlybyManager {
   private active: Flyby | null = null;
   private timer: number = FLYBY.firstDelay;
 
-  constructor(private scene: THREE.Scene) {}
+  constructor(private scene: THREE.Scene) {
+    // Descarga en segundo plano; mientras falte un modelo, su capa no tiene pasada.
+    for (const kind of Object.keys(MODEL_URLS) as FlybyKind[]) {
+      loadModel(kind).catch((error: unknown) => console.warn(error));
+    }
+  }
 
   update(dt: number, playerPos: THREE.Vector3, elapsed: number): void {
     if (this.active) {
@@ -286,11 +233,12 @@ export class FlybyManager {
     this.timer -= dt;
     if (this.timer > 0) return;
     const kind = KIND_BY_LAYER[layerAtY(playerPos.y).num];
-    if (!kind) {
-      this.armTimer(); // capa sin aeronave (1, o aún no implementada)
+    const model = kind && models[kind];
+    if (!kind || !model) {
+      this.armTimer(); // capa sin aeronave (1) o modelo aún descargándose
       return;
     }
-    this.spawn(kind, playerPos);
+    this.spawn(kind, model, playerPos);
   }
 
   reset(): void {
@@ -315,7 +263,7 @@ export class FlybyManager {
   }
 
   /** Cuerda del cilindro a Y constante, lejos del jugador en vertical. */
-  private spawn(kind: FlybyKind, playerPos: THREE.Vector3): void {
+  private spawn(kind: FlybyKind, model: AircraftModel, playerPos: THREE.Vector3): void {
     const layer = layerAtY(playerPos.y);
     const band = LAYERS.find((l) => l.num === layer.num) ?? LAYERS[0];
     // Cada pasada sortea si va arriba o abajo y una separación distinta. Se
@@ -342,7 +290,17 @@ export class FlybyManager {
       y,
       -Math.sin(a) * r + Math.cos(a) * lateral,
     );
-    this.active = new Flyby(kind, from, to);
+    this.active = new Flyby(kind, model, from, to);
     this.scene.add(this.active.group);
   }
+}
+
+/** Inspector `dev/aeronaves.html`: una aeronave quieta en el origen con su animación real. */
+export async function createAircraftPreview(kind: FlybyKind): Promise<{
+  group: THREE.Group;
+  update(dt: number, elapsed: number): void;
+  dispose(scene: THREE.Scene): void;
+}> {
+  if (!models[kind]) await loadModel(kind);
+  return new Flyby(kind, models[kind]!, new THREE.Vector3(), new THREE.Vector3(0, 0, 1));
 }

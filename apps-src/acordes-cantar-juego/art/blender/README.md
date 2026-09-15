@@ -73,3 +73,22 @@ powershell -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bpy-run.ps1 a
 powershell -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bpy-run.ps1 apps-src\acordes-cantar-juego\art\blender\modelar-ballena.py
 ```
 
+---
+
+## 4. Aeronaves por capa (avioneta, jet, estratosférico y satélite)
+
+Modeladas por Astra (Codex) e integradas por Claude; el estratosférico lo corrigió Claude (v4).
+Encargo, entrega y fuente en `aeronaves/`.
+
+- `modelar-aeronaves.py` genera `aeronaves.blend`, un `.glb` y un `.json` por aeronave, los renders y
+  `ENTREGA.md`. Triángulos: avioneta 1 788, jet 2 254, estratosférico 1 700, satélite 1 316.
+  Morro hacia +Z. `meta.contrailOrigins` marca dónde nace cada estela (jet y estratosférico).
+- Partes: avioneta `body` + `prop` (gira sobre su +Z local); satélite `body` (destello), `panel` 0–1
+  (giro sobre el brazo) y `beacon` (parpadeo); jet y estratosférico, solo `body`.
+- Los JSON se copian a `src/3d/assets/aeronaves/`: al regenerar, volver a copiarlos.
+- Visor: `http://127.0.0.1:5174/dev/aeronaves.html` (selector de aeronave, vista a 60 u y a 15 u).
+- En el juego: teclas `2`–`5` llevan a cada capa; su aeronave cruza tras 5–12 s.
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bpy-run.ps1 apps-src\acordes-cantar-juego\art\blender\aeronaves\modelar-aeronaves.py
+```

@@ -119,7 +119,7 @@ Queda como pendiente heredado de la bitácora (F5): animar las agujas de los man
 | Nube cúmulo (se atraviesa) | ✅ Blender (GLB) · tecla `C` |
 | Aguja alpina y faro | ✅ Blender (GLB) · tecla `F` |
 | Gran Ballena Celeste (capa 5) | ✅ Blender (GLB) · tecla `B` |
-| Aeronaves por capa: avioneta, jet, avión estratosférico, satélite (`flybys.ts`) | ⏳ primitivas · brief para Astra listo (`art/blender/aeronaves/BRIEF.md`, 2026-09-14) |
+| Aeronaves por capa: avioneta, jet, avión estratosférico, satélite (`flybys.ts`) | ✅ Blender (un JSON por aeronave) · modeladas por Astra; estratosférico corregido e integración por Claude |
 | Canasta/globo del jugador (`basket.ts`) | ⏳ primitivas |
 
 El `PLAN-AERONAVES-POR-CAPA.md` cita la regla original de "cero assets externos"; ya se
@@ -149,8 +149,8 @@ el 2026-09-13.**
    Calamar Vela** (`art/blender/calamar-vela/BRIEF.md`) como prueba del flujo; si calidad y
    rendimiento pasan (medir en teléfono con 6 criaturas), siguen Rape → Dumbo → Sifonóforo →
    Leviatán. Encaja con el hito H4 de `PLAN-HITOS-BATISFERA-2.md`.
-3. **Aeronaves del Aerostato** en un solo script con las 4 piezas y la hélice como parte viva.
-   Son siluetas lejanas: presupuesto bajo.
+3. ✅ **Aeronaves del Aerostato** en un solo script con las 4 piezas y la hélice como parte viva
+   (2026-09-14). Pendiente: verlas en vuelo real y en teléfono.
 4. **Globo/canasta del Aerostato.**
 5. **Robot de Resonancia.** Decidir antes si se usa el prototipo procedural o se modela en
    Blender con partes articuladas para caminar.
