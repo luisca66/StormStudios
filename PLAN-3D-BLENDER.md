@@ -120,7 +120,7 @@ Queda como pendiente heredado de la bitácora (F5): animar las agujas de los man
 | Aguja alpina y faro | ✅ Blender (GLB) · tecla `F` |
 | Gran Ballena Celeste (capa 5) | ✅ Blender (GLB) · tecla `B` |
 | Aeronaves por capa: avioneta, jet, avión estratosférico, satélite (`flybys.ts`) | ✅ Blender (un JSON por aeronave) · modeladas por Astra; estratosférico corregido e integración por Claude |
-| Canasta/globo del jugador (`basket.ts`) | ⏳ primitivas |
+| Canasta/globo del jugador (`basket.ts`) | ✅ Blender (4 módulos anclados a pantalla: borde, postes y quemador con faldón) · Claude |
 
 El `PLAN-AERONAVES-POR-CAPA.md` cita la regla original de "cero assets externos"; ya se
 relajó para los modelos de Blender.
@@ -151,7 +151,7 @@ el 2026-09-13.**
    Leviatán. Encaja con el hito H4 de `PLAN-HITOS-BATISFERA-2.md`.
 3. ✅ **Aeronaves del Aerostato** en un solo script con las 4 piezas y la hélice como parte viva
    (2026-09-14). Pendiente: verlas en vuelo real y en teléfono.
-4. **Globo/canasta del Aerostato.**
+4. ✅ **Globo/canasta del Aerostato** (2026-09-14, composición enmarcada elegida por Luis).
 5. **Robot de Resonancia.** Decidir antes si se usa el prototipo procedural o se modela en
    Blender con partes articuladas para caminar.
 6. **El Cometa**: cabina y cometa. Va al final porque ya está publicado y funciona.

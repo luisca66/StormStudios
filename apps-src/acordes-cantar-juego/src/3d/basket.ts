@@ -1,79 +1,58 @@
-// La canastilla (PLAN §6): hijos de la cámara — borde de mimbre al mirar abajo,
-// 4 cuerdas subiendo, y al mirar arriba la boca del globo con el QUEMADOR que
-// ruge (escala + brillo de llama). Es el "efecto firma" del juego.
+// La canastilla (PLAN §6), modelada en Blender (art/blender/canasta/modelar-canasta.py).
+// Hija de la cámara y enmarcando la vista: borde de mimbre con altímetro abajo, postes de
+// cuero a los lados y, arriba, el quemador con su llama y el faldón del globo. Los módulos
+// se anclan a los bordes de la pantalla y se recolocan al cambiar la proporción; el centro
+// queda libre. El QUEMADOR que ruge (llama + serpentines al rojo) es el "efecto firma".
 
 import * as THREE from "three";
+import dataUrl from "./assets/canasta/canasta.json?url";
+
+interface PartData {
+  name: string;
+  part: string;
+  position: number[];
+  normal: number[];
+  index: number[];
+  vertexColor?: number[];
+  color: number[];
+  metalness: number;
+  roughness: number;
+}
+
+interface ModuleSpec {
+  parts: string[];
+  anchor: [number, number];
+  depth: number;
+  /** Postes: en pantallas estrechas adelgazan, pero conservan el alto. */
+  keepHeight?: boolean;
+}
+
+interface BasketData {
+  layout: { H: number; refHalfWidth: number; minScale: number };
+  modules: Record<string, ModuleSpec>;
+  flameOrigins: number[][];
+  meshes: PartData[];
+}
 
 export class Basket {
-  private flame: THREE.Sprite;
-  private flameBase = 0.9;
+  private readonly root = new THREE.Group();
+  private readonly modules: { spec: ModuleSpec; group: THREE.Group }[] = [];
+  private readonly flames: THREE.Sprite[] = [];
+  private coilMat: THREE.MeshStandardMaterial | null = null;
+  private layout: BasketData["layout"] | null = null;
+  private aspect = 0;
   private burn = 0; // 0..1 intensidad actual (suavizada)
   private burstT = 0; // rugido puntual (cuerda completada)
 
-  constructor(camera: THREE.PerspectiveCamera) {
-    const group = new THREE.Group();
-
-    // Borde de la canastilla: toro + pared baja con textura de mimbre.
-    const wicker = makeWickerTexture();
-    const rimMat = new THREE.MeshStandardMaterial({ map: wicker, color: 0xa9834f, roughness: 0.9 });
-    const rim = new THREE.Mesh(new THREE.TorusGeometry(1.18, 0.09, 8, 24), rimMat);
-    rim.rotation.x = Math.PI / 2;
-    rim.position.y = -1.05;
-    group.add(rim);
-    const wall = new THREE.Mesh(
-      new THREE.CylinderGeometry(1.18, 1.1, 0.85, 20, 1, true),
-      new THREE.MeshStandardMaterial({
-        map: wicker,
-        color: 0x8d6b3e,
-        roughness: 1,
-        side: THREE.BackSide,
-      }),
-    );
-    wall.position.y = -1.5;
-    group.add(wall);
-
-    // 4 cuerdas hacia el globo, fuera del encuadre.
-    const ropeMat = new THREE.MeshStandardMaterial({ color: 0xc9b48a, roughness: 0.9 });
-    for (const [x, z] of [[1, 1], [-1, 1], [1, -1], [-1, -1]] as const) {
-      const rope = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 5.4, 5), ropeMat);
-      rope.position.set(x * 1.02, 1.4, z * 1.02);
-      rope.rotation.z = -x * 0.16;
-      rope.rotation.x = z * 0.16;
-      group.add(rope);
-    }
-
-    // Boca del globo al mirar arriba: disco interior con gradiente cálido.
-    const mouth = new THREE.Mesh(
-      new THREE.CircleGeometry(2.5, 28),
-      new THREE.MeshBasicMaterial({ map: makeMouthTexture(), side: THREE.DoubleSide, fog: false }),
-    );
-    mouth.rotation.x = Math.PI / 2;
-    mouth.position.y = 4.6;
-    group.add(mouth);
-
-    // Quemador: cono de latón + llama (sprite aditivo).
-    const burner = new THREE.Mesh(
-      new THREE.ConeGeometry(0.16, 0.3, 8),
-      new THREE.MeshStandardMaterial({ color: 0x8c6f2f, metalness: 0.6, roughness: 0.4 }),
-    );
-    burner.position.y = 1.9;
-    group.add(burner);
-
-    this.flame = new THREE.Sprite(
-      new THREE.SpriteMaterial({
-        map: makeFlameTexture(),
-        color: 0xffc46a,
-        transparent: true,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-        opacity: 0.55,
-      }),
-    );
-    this.flame.position.y = 2.35;
-    this.flame.scale.set(0.5, 0.9, 1);
-    group.add(this.flame);
-
-    camera.add(group);
+  constructor(private camera: THREE.PerspectiveCamera) {
+    camera.add(this.root);
+    // Descarga en segundo plano: hasta que llegue, el vuelo sigue sin marco.
+    fetch(dataUrl)
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`Canastilla: HTTP ${response.status}`);
+        this.build((await response.json()) as BasketData);
+      })
+      .catch((error: unknown) => console.warn(error));
   }
 
   /** Rugido puntual (cuerda completada §7.1). */
@@ -83,73 +62,101 @@ export class Basket {
 
   /** intensity 0..1 (ascenso actual). Anima llama: escala + brillo + flicker. */
   update(dt: number, elapsed: number, intensity: number): void {
+    if (this.camera.aspect !== this.aspect) this.place();
     this.burstT = Math.max(0, this.burstT - dt * 1.4);
     const target = Math.max(intensity, this.burstT);
     this.burn += (target - this.burn) * Math.min(1, 6 * dt);
-    const flicker = 0.9 + Math.sin(elapsed * 31) * 0.06 + Math.sin(elapsed * 47) * 0.05;
-    const k = this.flameBase * (0.45 + this.burn * 1.5) * flicker;
-    this.flame.scale.set(0.45 * k, 1.0 * k, 1);
-    const mat = this.flame.material as THREE.SpriteMaterial;
-    mat.opacity = 0.35 + this.burn * 0.6;
+    for (let i = 0; i < this.flames.length; i++) {
+      const flicker = 0.9 + Math.sin(elapsed * 31 + i * 1.7) * 0.06 + Math.sin(elapsed * 47 + i) * 0.05;
+      const k = (0.25 + this.burn * 0.95) * flicker;
+      const flame = this.flames[i];
+      flame.scale.set(0.09 * k, 0.26 * k, 1);
+      // El sprite crece hacia arriba desde la boquilla: solo asoma su base.
+      flame.position.y = flame.userData.baseY + flame.scale.y * 0.42;
+      (flame.material as THREE.SpriteMaterial).opacity = 0.25 + this.burn * 0.7;
+    }
+    if (this.coilMat) this.coilMat.emissiveIntensity = 0.05 + this.burn * 1.6;
   }
-}
 
-function makeWickerTexture(): THREE.CanvasTexture {
-  const canvas = document.createElement("canvas");
-  canvas.width = 128;
-  canvas.height = 64;
-  const ctx = canvas.getContext("2d")!;
-  ctx.fillStyle = "#7a5a33";
-  ctx.fillRect(0, 0, 128, 64);
-  ctx.strokeStyle = "rgba(60,40,18,0.7)";
-  ctx.lineWidth = 3;
-  for (let x = -8; x < 140; x += 10) {
-    ctx.beginPath();
-    ctx.moveTo(x, -4);
-    ctx.lineTo(x + 20, 68);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x + 20, -4);
-    ctx.lineTo(x, 68);
-    ctx.stroke();
-  }
-  ctx.strokeStyle = "rgba(210,175,120,0.35)";
-  ctx.lineWidth = 1.4;
-  for (let y = 4; y < 64; y += 8) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(128, y);
-    ctx.stroke();
-  }
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(4, 1);
-  return tex;
-}
+  private build(data: BasketData): void {
+    this.layout = data.layout;
+    const byPart = new Map(data.meshes.map((m) => [m.part, m]));
+    const flameTexture = makeFlameTexture();
 
-function makeMouthTexture(): THREE.CanvasTexture {
-  const canvas = document.createElement("canvas");
-  canvas.width = 128;
-  canvas.height = 128;
-  const ctx = canvas.getContext("2d")!;
-  const g = ctx.createRadialGradient(64, 64, 4, 64, 64, 64);
-  g.addColorStop(0, "#ffdba0");
-  g.addColorStop(0.3, "#c86a2e");
-  g.addColorStop(0.75, "#5a2c14");
-  g.addColorStop(1, "#2a140a");
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, 128, 128);
-  // Gajos de la tela.
-  ctx.strokeStyle = "rgba(30,12,6,0.55)";
-  ctx.lineWidth = 2;
-  for (let i = 0; i < 12; i++) {
-    const a = (i / 12) * Math.PI * 2;
-    ctx.beginPath();
-    ctx.moveTo(64, 64);
-    ctx.lineTo(64 + Math.cos(a) * 64, 64 + Math.sin(a) * 64);
-    ctx.stroke();
+    for (const [name, spec] of Object.entries(data.modules)) {
+      const group = new THREE.Group();
+      group.name = `Canastilla · ${name}`;
+      for (const partName of spec.parts) {
+        const part = byPart.get(partName);
+        if (!part) throw new Error(`Canastilla: falta la parte ${partName}`);
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute("position", new THREE.Float32BufferAttribute(part.position, 3));
+        geometry.setAttribute("normal", new THREE.Float32BufferAttribute(part.normal, 3));
+        if (part.vertexColor) {
+          geometry.setAttribute("color", new THREE.Float32BufferAttribute(part.vertexColor, 3));
+        }
+        geometry.setIndex(part.index);
+        const isCoil = part.part === "coil";
+        const material = new THREE.MeshStandardMaterial({
+          color: new THREE.Color().setRGB(part.color[0], part.color[1], part.color[2]),
+          vertexColors: Boolean(part.vertexColor),
+          metalness: part.metalness,
+          roughness: part.roughness,
+          // Las superficies abiertas (mimbre, faldón) se ven por ambas caras.
+          side: THREE.DoubleSide,
+          fog: false,
+          emissive: isCoil ? 0xff6a14 : 0x000000,
+          emissiveIntensity: isCoil ? 0.05 : 0,
+        });
+        if (isCoil) this.coilMat = material;
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.name = part.name;
+        // Viaja con la cámara: la esfera de encuadre no aplica.
+        mesh.frustumCulled = false;
+        group.add(mesh);
+      }
+      if (name === "burner") {
+        for (const [x, y, z] of data.flameOrigins) {
+          const flame = new THREE.Sprite(
+            new THREE.SpriteMaterial({
+              map: flameTexture,
+              color: 0xffc46a,
+              transparent: true,
+              blending: THREE.AdditiveBlending,
+              depthWrite: false,
+              fog: false,
+            }),
+          );
+          flame.position.set(x, y, z + 0.01);
+          flame.userData.baseY = y;
+          flame.frustumCulled = false;
+          this.flames.push(flame);
+          group.add(flame);
+        }
+      }
+      this.modules.push({ spec, group });
+      this.root.add(group);
+    }
+    this.place();
   }
-  return new THREE.CanvasTexture(canvas);
+
+  /** Coloca cada módulo en su borde de pantalla para la proporción actual de la cámara. */
+  private place(): void {
+    this.aspect = this.camera.aspect;
+    if (!this.layout) return;
+    const { H, refHalfWidth, minScale } = this.layout;
+    const halfW = H * this.aspect;
+    // Piezas completas en panorámico; más finas en teléfono vertical.
+    const k = THREE.MathUtils.clamp(halfW / refHalfWidth, minScale, 1);
+    for (const { spec, group } of this.modules) {
+      const [ax, ay] = spec.anchor;
+      const d = spec.depth;
+      group.position.set(ax * halfW * d, ay * H * d, -d);
+      group.scale.set(k, spec.keepHeight ? 1 : k, k);
+      // En pantallas estrechas los postes se arriman al borde para no comerse el ancho.
+      if (spec.keepHeight) group.position.x += ax * (1 - k) * 0.05 * d;
+    }
+  }
 }
 
 function makeFlameTexture(): THREE.CanvasTexture {
@@ -157,10 +164,11 @@ function makeFlameTexture(): THREE.CanvasTexture {
   canvas.width = 64;
   canvas.height = 96;
   const ctx = canvas.getContext("2d")!;
-  const g = ctx.createRadialGradient(32, 60, 2, 32, 52, 46);
+  const g = ctx.createRadialGradient(32, 78, 2, 32, 60, 52);
   g.addColorStop(0, "rgba(255,255,235,1)");
-  g.addColorStop(0.25, "rgba(255,210,110,0.9)");
-  g.addColorStop(0.6, "rgba(255,130,40,0.45)");
+  g.addColorStop(0.22, "rgba(170,205,255,0.95)");
+  g.addColorStop(0.4, "rgba(255,210,110,0.85)");
+  g.addColorStop(0.7, "rgba(255,130,40,0.4)");
   g.addColorStop(1, "rgba(255,90,20,0)");
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, 64, 96);

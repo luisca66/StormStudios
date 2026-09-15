@@ -758,3 +758,18 @@ solo al completar la cuerda.
 - Verificado: build; inspector con las cuatro; simulación de 1 000 s por capa con el
   `FlybyManager` real (aeronave correcta por capa, una a la vez, nunca a menos de 15 u, sin restos
   en escena). Pendiente: verlas cruzar en vuelo real y teléfono. Sin deploy.
+
+## Canastilla de Blender enmarcando la vista · 2026-09-14 · COMPLETADO ✓ (Claude)
+
+- Luis eligió la composición "enmarcada". Antes casi no se veía la canastilla: el borde quedaba
+  a 41° bajo el horizonte y la boca del globo fuera de la vista incluso asomándose.
+- `art/blender/canasta/modelar-canasta.py` (Claude, sin tokens de Astra): 4 módulos anclados a
+  los bordes de la pantalla. Abajo, borde de cuero sobre mimbre con altímetro, argollas, saco y
+  cuerda. A los lados, postes de cuero con amarres y cable. Arriba, barra del marco, quemador doble
+  con serpentines de cobre, mangueras y faldón a gajos. 22 404 tri, 9 partes.
+- `src/3d/basket.ts`: carga el JSON y recoloca los módulos al cambiar la proporción. En teléfono
+  las piezas se afinan y los postes conservan el alto y se arriman al borde. Dos llamas con
+  flicker nacen en las boquillas; los serpentines se ponen al rojo con el ascenso y el rugido.
+- Verificado: build; escritorio 16:9 y teléfono 375×812 en juego real, sin errores. El HUD de
+  latón queda apoyado sobre el borde de mimbre. Pendiente: ver la llama en ascenso sostenido y
+  probar en teléfono real. Aparte: en 375 px la consola HTML ya se salía del ancho. Sin deploy.

@@ -92,3 +92,23 @@ Encargo, entrega y fuente en `aeronaves/`.
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bpy-run.ps1 apps-src\acordes-cantar-juego\art\blender\aeronaves\modelar-aeronaves.py
 ```
+
+---
+
+## 5. Canastilla en primera persona
+
+Modelada por Claude con bpy. Fuente y renders en `canasta/`.
+
+- `modelar-canasta.py` genera `canasta.json` (kit.export_parts, 22 404 tri, 9 partes),
+  `canasta.glb`, `canasta.blend` y dos renders POV: `render-pov-panoramica.png` y `render-pov-telefono.png`.
+- Módulos del `meta` (origen de cada parte = punto de anclaje, a la profundidad `depth`):
+  `rim` (0,−1) · `postL` (−1,0) y `postR` (1,0) con `keepHeight` · `burner` (0,1). `flameOrigins`
+  marca las dos boquillas. `layout.H = tan 30°`, `refHalfWidth` = 16:9, `minScale` 0.55.
+- `src/3d/basket.ts` coloca cada módulo en `(ax·halfW·d, ay·H·d, −d)` con escala
+  `k = clamp(halfW / refHalfWidth, 0.55, 1)`. Los postes solo escalan en X/Z y se arriman al borde
+  en pantallas estrechas. Los renders del script usan la misma regla.
+- El JSON se copia a `src/3d/assets/canasta/`: al regenerar, volver a copiarlo.
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bpy-run.ps1 apps-src\acordes-cantar-juego\art\blender\canasta\modelar-canasta.py
+```
