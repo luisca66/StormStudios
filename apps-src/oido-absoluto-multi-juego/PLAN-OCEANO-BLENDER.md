@@ -52,9 +52,10 @@ de pasar a la siguiente.
    desde el primer cuadro. Falta reajustar colisionadores cuando llegue la pieza 3.
 2. ✅ Pecera de vidrio eliminada (2026-09-15): el fondo es una hondonada de arena que sube en los bordes
    (`getFloorHeight`); pez y notas no bajan de ella. Pendiente: poblar el borde con el kit de arrecife
-   (pieza 6) y darle color de arena (punto 4); hoy se ve como una ladera oscura.
+   (pieza 6).
 3. Iluminación: cáusticas animadas en la arena, rayos de sol, superficie del agua vista desde abajo,
    niebla turquesa por profundidad.
-4. Arena con textura/relieve suave en lugar del plano oscuro.
+4. ✅ Arena (2026-09-15): textura procedural con ondas y grano, manchas por vértice y dunas suaves.
+   Bajo la luz azul actual tira a verde-gris; el calor final llega con la iluminación (punto 3).
 5. Inspector `dev/` y atajo `?dev=1` para ver cada pieza sin jugar.
 6. Medir FPS en escritorio y teléfono con todo el nivel cargado antes de publicar.

@@ -420,6 +420,41 @@ export class LevelEnvironment {
     return texture;
   }
 
+  // Sand: warm base with fine grain and faint wave ripples (level 2 sea floor)
+  private generateSandTexture(floorSize: number): THREE.CanvasTexture {
+    const canvas = document.createElement("canvas");
+    canvas.width = 512;
+    canvas.height = 512;
+    const ctx = canvas.getContext("2d")!;
+    // Warmer than the #d9c28f target: the blue underwater light cools it back down
+    ctx.fillStyle = "#f2cf86";
+    ctx.fillRect(0, 0, 512, 512);
+
+    // Ripples: bands that wander sideways; whole periods across the canvas so it tiles
+    for (let x = 0; x < 512; x += 4) {
+      const bend = Math.sin((x / 512) * Math.PI * 2 * 2) * 10 + Math.sin((x / 512) * Math.PI * 2 * 5) * 3;
+      for (let y = 0; y < 512; y += 2) {
+        const wave = Math.sin(((y + bend) / 512) * Math.PI * 2 * 9);
+        ctx.fillStyle = wave > 0 ? `rgba(255, 244, 215, ${wave * 0.14})` : `rgba(125, 90, 45, ${-wave * 0.12})`;
+        ctx.fillRect(x, y, 4, 2);
+      }
+    }
+    // Grain
+    for (let i = 0; i < 30000; i++) {
+      const light = Math.random() < 0.5;
+      ctx.fillStyle = light ? `rgba(255, 246, 220, ${0.15 + Math.random() * 0.25})` : `rgba(110, 85, 50, ${0.12 + Math.random() * 0.2})`;
+      ctx.fillRect(Math.random() * 512, Math.random() * 512, 1.5, 1.5);
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(floorSize / 24, floorSize / 24); // one tile ≈ 24 m
+    texture.anisotropy = 4;
+    return texture;
+  }
+
   private generateStoneTexture(): THREE.CanvasTexture {
     const canvas = document.createElement("canvas");
     canvas.width = 256;
@@ -988,7 +1023,20 @@ export class LevelEnvironment {
       fp.setY(i, LevelEnvironment.oceanFloorHeight(fp.getX(i), fp.getZ(i), this.arenaSize));
     }
     floorGeo.computeVertexNormals();
-    const floorMat = new THREE.MeshStandardMaterial({ color: 0x0a141b, roughness: 1.0 });
+    // Per-vertex tint: soft patches of lighter/darker sand, cooler and darker up the rim
+    const floorColors = new Float32Array(fp.count * 3);
+    const tint = new THREE.Color();
+    const half = this.arenaSize / 2;
+    for (let i = 0; i < fp.count; i++) {
+      const x = fp.getX(i), z = fp.getZ(i);
+      const patch = 0.9 + Math.sin(x * 0.07 + Math.cos(z * 0.05) * 2.0) * Math.cos(z * 0.06) * 0.1;
+      const d = Math.pow(Math.pow(Math.abs(x), 6) + Math.pow(Math.abs(z), 6), 1 / 6);
+      const rim = THREE.MathUtils.clamp((d - (half - 25)) / 35, 0, 1);
+      tint.setRGB(patch, patch, patch).lerp(new THREE.Color(0.62, 0.66, 0.68), rim * 0.6);
+      floorColors.set([tint.r, tint.g, tint.b], i * 3);
+    }
+    floorGeo.setAttribute("color", new THREE.BufferAttribute(floorColors, 3));
+    const floorMat = new THREE.MeshStandardMaterial({ map: this.generateSandTexture(floorSize), vertexColors: true, roughness: 1.0 });
     this.group.add(new THREE.Mesh(floorGeo, floorMat));
 
     // Seaweed (algas)
