@@ -77,6 +77,18 @@
       ],
       "port": 5178,
       "url": "http://127.0.0.1:5178"
+    },
+    {
+      "name": "oido-multi",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "apps-src/oido-absoluto-multi-juego"
+      ],
+      "port": 5173,
+      "url": "http://127.0.0.1:5173"
     }
   ]
 }

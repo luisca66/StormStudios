@@ -132,7 +132,10 @@ relajó para los modelos de Blender.
 - **Resonancia** — `oido-absoluto-guitarra-juego`: ✅ robot luthier en Blender, articulado
   (codos y rodillas), con mochila de guitarra y pisadas sincronizadas (2026-09-14, Claude). El
   prototipo procedural suelto se borró; el entorno del laberinto sigue procedural.
-- `oido-absoluto-multi-juego` e `intervalos-cantados-juego`.
+- **Walking AP Multi** — `oido-absoluto-multi-juego`: rediseño completo empezando por el nivel 2 «El Océano»
+  (2026-09-15, modelos + entorno + iluminación). Plan: `PLAN-OCEANO-BLENDER.md`. Brief listo para Astra:
+  `art/blender/pez/BRIEF.md` (pez protagonista).
+- `intervalos-cantados-juego`.
 
 ---
 
