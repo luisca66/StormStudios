@@ -128,9 +128,9 @@ relajó para los modelos de Blender.
 ### Sin Blender todavía
 
 - **El Cometa** — `grados-menores-juego` (publicado): cabina (`cab.ts`), cometa, anillos y perihelio.
-- **Resonancia** — `oido-absoluto-guitarra-juego`: robot luthier (`robot.ts`). Hay un
-  prototipo sin commit, `robot_personaje_threejs.html` (robot jugable procedural), con su
-  sonido de pasos.
+- **Resonancia** — `oido-absoluto-guitarra-juego`: ✅ robot luthier en Blender, articulado
+  (codos y rodillas), con mochila de guitarra y pisadas sincronizadas (2026-09-14, Claude). El
+  prototipo procedural suelto se borró; el entorno del laberinto sigue procedural.
 - `oido-absoluto-multi-juego` e `intervalos-cantados-juego`.
 
 ---
@@ -152,8 +152,8 @@ el 2026-09-13.**
 3. ✅ **Aeronaves del Aerostato** en un solo script con las 4 piezas y la hélice como parte viva
    (2026-09-14). Pendiente: verlas en vuelo real y en teléfono.
 4. ✅ **Globo/canasta del Aerostato** (2026-09-14, composición enmarcada elegida por Luis).
-5. **Robot de Resonancia.** Decidir antes si se usa el prototipo procedural o se modela en
-   Blender con partes articuladas para caminar.
+5. ✅ **Robot de Resonancia** (2026-09-14): Luis eligió Blender articulado e integrar el sonido de
+   pasos.
 6. **El Cometa**: cabina y cometa. Va al final porque ya está publicado y funciona.
 
 **Por definir con Luis:** qué significa "renovar" en los juegos sin Blender todavía
