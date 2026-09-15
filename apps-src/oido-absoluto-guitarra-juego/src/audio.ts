@@ -1,5 +1,4 @@
 import type { GuitarSample } from "./catalog";
-import footstepsUrl from "./assets/pasos-robot.mp3?url";
 
 const DEFAULT_AUDIO_BASE = "https://musica.stormstudios.com.mx";
 const DEFAULT_MUSIC_BASE = "https://samples.stormstudios.com.mx/music/oido-absoluto-multi";
@@ -7,6 +6,7 @@ const configuredBase = import.meta.env.VITE_AP_GUITAR_AUDIO_BASE_URL?.trim();
 const configuredMusicBase = import.meta.env.VITE_MULTI_MUSIC_BASE?.trim();
 
 // Sprite de pisadas (del WAV de pasos del robot): 6 variaciones de 0.33 s cada 0.5 s.
+// Vive en R2 (bucket samples-guitarra) junto a acierto.mp3 y error.mp3.
 const FOOTSTEP_VARIANTS = 6;
 const FOOTSTEP_SLOT = 0.5;
 const FOOTSTEP_LENGTH = 0.34;
@@ -118,7 +118,7 @@ export class GuitarAudio {
     void context.resume();
     if (this.stepBuffer || this.stepLoading) return;
     this.stepLoading = true;
-    fetch(footstepsUrl)
+    fetch(assetUrl("pasos-robot.mp3"))
       .then((response) => response.arrayBuffer())
       .then((bytes) => context.decodeAudioData(bytes))
       .then((buffer) => { this.stepBuffer = buffer; })

@@ -37,7 +37,8 @@ Modelado por Claude con bpy (2026-09-14). Fuente y renders en `art/blender/robot
 - `src/robot.ts` arma la jerarquía y anima el paso: muslo y brazo opuestos, rodilla que se dobla en
   el avance, codo flexionado, balanceo de cadera y mochila. `animateRobot` devuelve `true` en cada
   pisada.
-- Pisadas: `src/assets/pasos-robot.mp3` (37 KB, 6 variaciones de 0.33 s cada 0.5 s), recortadas del
+- Pisadas: `pasos-robot.mp3` en R2 (bucket `samples-guitarra`, `https://musica.stormstudios.com.mx/pasos-robot.mp3`;
+  37 KB, 6 variaciones de 0.33 s cada 0.5 s, caché de un año), recortadas del
   WAV de pasos. `GuitarAudio.playFootstep` las reproduce con Web Audio, sin repetir la anterior y
   con ±7 % de tono; el volumen sigue a la velocidad. El contexto se habilita en el primer clic.
 - El JSON se copia a `src/assets/robot.json`: al regenerar, volver a copiarlo.
