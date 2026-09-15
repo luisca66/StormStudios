@@ -118,7 +118,7 @@ Queda como pendiente heredado de la bitácora (F5): animar las agujas de los man
 |---|---|
 | Nube cúmulo (se atraviesa) | ✅ Blender (GLB) · tecla `C` |
 | Aguja alpina y faro | ✅ Blender (GLB) · tecla `F` |
-| Gran Ballena Celeste (capa 5) | ✅ Blender (GLB) · tecla `B` |
+| Gran Ballena Celeste (capa 5) | ⚠️ Blender (GLB de Gemini) · **rehacer**: placas sueltas, arnés sin sentido, aletas planas, 1 173 tri. Luis pidió rehacerla (2026-09-14) · tecla `B` |
 | Aeronaves por capa: avioneta, jet, avión estratosférico, satélite (`flybys.ts`) | ✅ Blender (un JSON por aeronave) · modeladas por Astra; estratosférico corregido e integración por Claude |
 | Canasta/globo del jugador (`basket.ts`) | ✅ Blender (4 módulos anclados a pantalla: borde, postes y quemador con faldón) · Claude |
 
@@ -154,7 +154,12 @@ el 2026-09-13.**
 4. ✅ **Globo/canasta del Aerostato** (2026-09-14, composición enmarcada elegida por Luis).
 5. ✅ **Robot de Resonancia** (2026-09-14): Luis eligió Blender articulado e integrar el sonido de
    pasos.
-6. **El Cometa**: cabina y cometa. Va al final porque ya está publicado y funciona.
+6. **Rehacer la Ballena Celeste** (próxima sesión; lo primero). Contrato que el juego ya usa y
+   debe conservarse:
+   - Nodos `Aleta_Pectoral_Izq`, `Aleta_Pectoral_Der` y `Aleta_Cola`, que `scenery.ts` anima.
+   - Anillo de amarre en `(0, 4.2, 0)`, donde cuelga la cuerda ×2 del acorde 13.
+   - Hocico hacia +Z y largo ≈ 26 m.
+7. **El Cometa**: cabina y cometa. Va al final porque ya está publicado y funciona.
 
 **Por definir con Luis:** qué significa "renovar" en los juegos sin Blender todavía
 (`oido-absoluto-multi-juego`, `intervalos-cantados-juego`): solo modelos, o también
