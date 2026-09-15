@@ -31,6 +31,7 @@ export class Game3DRenderer {
   private cutsceneActive = false;
   private cutsceneTime = 0;
   private cutsceneDuration = 3.0; // 3 seconds total
+  private snapCamera = false; // place the camera behind the player on the first frame of a level
 
   constructor(canvasId: string, private stateManager: GameStateManager) {
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
@@ -103,6 +104,7 @@ export class Game3DRenderer {
     // 4. Spawnea la primera nota
     this.spawnNextChallenge();
 
+    this.snapCamera = true;
     this.clock.getDelta(); // reset clock
   }
 
@@ -190,6 +192,7 @@ export class Game3DRenderer {
       targetY = playerPos.y + (Math.random() - 0.5) * 16.0;
     }
 
+    if (this.environment) targetY = Math.max(targetY, this.environment.getFloorHeight(targetX, targetZ) + 4);
     this.activeNotePos.set(targetX, targetY, targetZ);
     this.noteFloatingOffset = Math.random() * Math.PI * 2;
 
@@ -230,6 +233,7 @@ export class Game3DRenderer {
     else if (state.currentLevel === 4) py = 1.0 + Math.random() * 1.5;
     else if (state.currentLevel === 5) py = (Math.random() - 0.5) * 16;
 
+    if (this.environment) py = Math.max(py, this.environment.getFloorHeight(px, pz) + 4);
     this.activeNotePos.set(px, py, pz);
     if (this.activeNoteMesh) {
       this.activeNoteMesh.position.copy(this.activeNotePos);
@@ -415,6 +419,10 @@ export class Game3DRenderer {
       const displacement = this.environment.checkCollisions(this.player.mesh.position, 0.9);
       this.player.mesh.position.add(displacement);
 
+      // Keep the swimmer above the sand basin (level 2 rim is the world boundary)
+      const floorY = this.environment.getFloorHeight(this.player.mesh.position.x, this.player.mesh.position.z);
+      if (this.player.mesh.position.y < floorY + 2) this.player.mesh.position.y = floorY + 2;
+
       // 3. Update active gate open animation and check trigger
       this.gate.update(delta, time);
       if (state.isGateUnlocked && this.gate.checkTrigger(this.player.mesh.position)) {
@@ -471,7 +479,7 @@ export class Game3DRenderer {
           const isCroc = state.currentLevel === 4;
           const relativeOffset = isCroc ? new THREE.Vector3(0, 4.0, -8.5) : new THREE.Vector3(0, 2.5, -6.0);
           camOffset = relativeOffset.applyMatrix4(this.player.mesh.matrixWorld);
-          this.camera.position.lerp(camOffset, delta * 6.0);
+          this.camera.position.lerp(camOffset, this.snapCamera ? 1 : delta * 6.0);
           const lookY = this.player.mesh.position.y + (isCroc ? 0.6 : 1.2);
           this.camera.lookAt(this.player.mesh.position.x, lookY, this.player.mesh.position.z);
           this.camera.up.set(0, 1, 0); // Always upright in terrestrial
@@ -486,7 +494,7 @@ export class Game3DRenderer {
             .addScaledVector(playerForward, back)
             .addScaledVector(playerUp, up);
 
-          this.camera.position.lerp(camOffset, delta * 5.0);
+          this.camera.position.lerp(camOffset, this.snapCamera ? 1 : delta * 5.0);
           this.camera.up.copy(playerUp);
           if (isUnicorn) {
             const lookAt = this.player.mesh.position.clone().addScaledVector(playerForward, 5.0).addScaledVector(playerUp, 1.0);
@@ -496,6 +504,8 @@ export class Game3DRenderer {
           }
         }
       }
+
+      this.snapCamera = false;
 
       // Update Search Radar
       if (this.radar) {

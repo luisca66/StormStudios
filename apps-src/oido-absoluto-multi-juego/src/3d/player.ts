@@ -87,7 +87,9 @@ export class PlayerController {
     this.mesh.rotation.set(0, 0, 0);
     this.speed = 0;
     if (this.level === 2) {
-      this.mesh.position.y = -20; // Start middle depth
+      // Start mid-water south of Atlantis, facing it (+Z). The old (0,-20,0) spawn
+      // sat inside the palace dome collider.
+      this.mesh.position.set(0, -12, -105);
     } else if (this.level === 3) {
       this.mesh.position.y = 0;
     } else if (this.level === 4) {

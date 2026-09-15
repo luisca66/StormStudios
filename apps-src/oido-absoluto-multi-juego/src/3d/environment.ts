@@ -24,6 +24,26 @@ export class LevelEnvironment {
     this.buildEnvironment();
   }
 
+  // Sea-floor height at (x, z). Level 2 is a basin: flat sand at -50 that rises
+  // into a rim near the arena edge, replacing the old glass "fish-tank" walls.
+  // Other levels have no terrain height (returns -Infinity).
+  public getFloorHeight(x: number, z: number): number {
+    if (this.level !== 2) return -Infinity;
+    return LevelEnvironment.oceanFloorHeight(x, z, this.arenaSize);
+  }
+
+  private static oceanFloorHeight(x: number, z: number, arenaSize: number): number {
+    const half = arenaSize / 2;
+    // Rounded-square distance so the rim follows the square arena without sharp corners
+    const d = Math.pow(Math.pow(Math.abs(x), 6) + Math.pow(Math.abs(z), 6), 1 / 6);
+    const start = half - 25, end = half + 10;
+    const t = THREE.MathUtils.clamp((d - start) / (end - start), 0, 1);
+    const rim = t * t * (3 - 2 * t) * 42;
+    // Gentle dunes so the sand isn't a perfect plane
+    const dunes = Math.sin(x * 0.045) * Math.cos(z * 0.038) * 0.6 + Math.sin((x + z) * 0.021) * 0.4;
+    return -50 + rim + dunes * (1 - t * 0.5);
+  }
+
   public getObstacles(): Obstacle[] {
     return this.obstacles;
   }
@@ -955,19 +975,21 @@ export class LevelEnvironment {
     this.scene.fog = new THREE.FogExp2(new THREE.Color(0.06, 0.2, 0.4).getHex(), 0.008); // softer blue fog
     this.scene.background = new THREE.Color(0.05, 0.18, 0.35);
 
-    this.spawnAquarium();
-
     // Atlantis Castle in the deep center floor (y=-50)
     this.buildAtlantisCastle(0, -50, 0);
 
-    // Boundary walls (glass walls) - 6 boundaries
-    // Floor is solid sand (-50m)
-    const floorGeo = new THREE.PlaneGeometry(this.arenaSize, this.arenaSize);
+    // Sand basin: flat around Atlantis, rising into a rim at the arena edge (the
+    // world boundary). Extends past the arena so the rim fades into the fog.
+    const floorSize = this.arenaSize + 160;
+    const floorGeo = new THREE.PlaneGeometry(floorSize, floorSize, 96, 96);
+    floorGeo.rotateX(-Math.PI / 2);
+    const fp = floorGeo.attributes.position as THREE.BufferAttribute;
+    for (let i = 0; i < fp.count; i++) {
+      fp.setY(i, LevelEnvironment.oceanFloorHeight(fp.getX(i), fp.getZ(i), this.arenaSize));
+    }
+    floorGeo.computeVertexNormals();
     const floorMat = new THREE.MeshStandardMaterial({ color: 0x0a141b, roughness: 1.0 });
-    const floor = new THREE.Mesh(floorGeo, floorMat);
-    floor.position.y = -50.0;
-    floor.rotation.x = -Math.PI / 2;
-    this.group.add(floor);
+    this.group.add(new THREE.Mesh(floorGeo, floorMat));
 
     // Seaweed (algas)
     const algaMat = new THREE.MeshStandardMaterial({ color: 0x1b5e3a, roughness: 0.8 });
@@ -977,7 +999,7 @@ export class LevelEnvironment {
       // Ensure we don't spawn seaweed inside the center castle zone
       const dist = Math.sqrt(ax*ax + az*az);
       if (dist > 18.0) {
-        this.spawnSeaweed(ax, -50.0, az, algaMat);
+        this.spawnSeaweed(ax, this.getFloorHeight(ax, az), az, algaMat);
       }
     }
 
@@ -991,7 +1013,7 @@ export class LevelEnvironment {
           new THREE.SphereGeometry(0.6 + Math.random() * 0.8, 8, 8),
           new THREE.MeshStandardMaterial({ color: coralColors[i % coralColors.length], roughness: 0.9 })
         );
-        coral.position.set(cx, -49.6, cz);
+        coral.position.set(cx, this.getFloorHeight(cx, cz) + 0.4, cz);
         coral.scale.set(1.5, 0.4, 1.2);
         this.group.add(coral);
       }
@@ -1017,37 +1039,6 @@ export class LevelEnvironment {
     }
   }
 
-  private spawnAquarium(): void {
-    // Faint glass "fish-tank" walls + glowing corner edges (decorative; the boundary
-    // is enforced by the player's altitude/edge clamps, so no collision needed here).
-    const half = this.arenaSize / 2;
-    const floorY = -50, ceilY = 20;
-    const height = ceilY - floorY, centerY = (floorY + ceilY) / 2;
-    const glass = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(0.3, 0.6, 0.8), transparent: true, opacity: 0.06,
-      roughness: 0.0, metalness: 0.2, side: THREE.DoubleSide, depthWrite: false
-    });
-    const walls: [number, number, number, number, number, number][] = [
-      [0, centerY, -half, half * 2, height, 1], [0, centerY, half, half * 2, height, 1],
-      [half, centerY, 0, 1, height, half * 2], [-half, centerY, 0, 1, height, half * 2],
-      [0, ceilY, 0, half * 2, 1, half * 2]
-    ];
-    for (const w of walls) {
-      const wall = new THREE.Mesh(new THREE.BoxGeometry(w[3], w[4], w[5]), glass);
-      wall.position.set(w[0], w[1], w[2]);
-      this.group.add(wall);
-    }
-    // Glowing vertical corner edges
-    const edgeMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.2, 0.5, 0.7), transparent: true, opacity: 0.5 });
-    for (const sx of [-half, half]) {
-      for (const sz of [-half, half]) {
-        const edge = new THREE.Mesh(new THREE.BoxGeometry(0.5, height, 0.5), edgeMat);
-        edge.position.set(sx, centerY, sz);
-        this.group.add(edge);
-      }
-    }
-  }
-
   private spawnOceanRocks(): void {
     const half = this.arenaSize / 2 - 20;
     for (let i = 0; i < 30; i++) {
@@ -1057,7 +1048,7 @@ export class LevelEnvironment {
       const shade = 0.1 + Math.random() * 0.1;
       const rock = new THREE.Mesh(new THREE.SphereGeometry(r, 8, 6),
         new THREE.MeshStandardMaterial({ color: new THREE.Color(shade, shade + 0.02, shade + 0.05), roughness: 0.95 }));
-      rock.position.set(x, -50 + Math.random() * r * 0.5, z);
+      rock.position.set(x, this.getFloorHeight(x, z) + Math.random() * r * 0.5, z);
       rock.scale.set(0.8 + Math.random() * 0.5, (0.8 + Math.random() * 0.8) * 0.5, 0.8 + Math.random() * 0.5);
       this.group.add(rock);
     }
@@ -1070,7 +1061,7 @@ export class LevelEnvironment {
 
   private spawnCrab(x: number, z: number): void {
     const root = new THREE.Group();
-    root.position.set(x, -49.25, z);
+    root.position.set(x, this.getFloorHeight(x, z) + 0.75, z);
     root.scale.setScalar(2.5);
 
     const redMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(0.88, 0.07, 0.05), roughness: 0.35, metalness: 0.08, emissive: new THREE.Color(0.45, 0.02, 0.0), emissiveIntensity: 0.18 });
