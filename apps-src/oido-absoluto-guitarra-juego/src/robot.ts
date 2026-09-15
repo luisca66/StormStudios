@@ -1,189 +1,193 @@
+// Autómata luthier modelado en Blender (art/blender/robot/modelar-robot.py): mochila con forma de
+// caja de guitarra, clavijas de afinación como orejas y articulaciones de hombro, codo, cadera y
+// rodilla. Cada parte llega con su pivote; aquí se arma la jerarquía y se anima el paso.
 import * as THREE from "three";
+import robotUrl from "./assets/robot.json?url";
+
+type PartData = {
+  name: string;
+  part: string;
+  segment?: number;
+  pivot: number[];
+  position: number[];
+  normal: number[];
+  index: number[];
+  vertexColor?: number[];
+  color: number[];
+  metalness: number;
+  roughness: number;
+  emission: number;
+  emissionColor: number[];
+};
+
+type RobotData = {
+  parents: Record<string, string | null>;
+  meshes: PartData[];
+};
 
 type RobotParts = {
-  body: THREE.Group;
+  hips: THREE.Group;
   head: THREE.Group;
-  arms: THREE.Group[];
-  legs: THREE.Group[];
-  halo: THREE.Group;
-  haloRings: THREE.Mesh[];
+  pack: THREE.Group;
+  upperArms: THREE.Group[];
+  forearms: THREE.Group[];
+  thighs: THREE.Group[];
+  shins: THREE.Group[];
+  haloRings: THREE.Group[];
   coreMaterial: THREE.MeshStandardMaterial;
+  eyeMaterial: THREE.MeshStandardMaterial;
 };
 
 export type RobotRig = {
   root: THREE.Group;
-  parts: RobotParts;
+  parts: RobotParts | null;
   walkPhase: number;
   reaction: number;
 };
 
-const makeMesh = (
-  geometry: THREE.BufferGeometry,
-  material: THREE.Material,
-  parent: THREE.Object3D,
-  position: [number, number, number] = [0, 0, 0],
-  rotation: [number, number, number] = [0, 0, 0],
-  scale: [number, number, number] = [1, 1, 1],
-) => {
-  const mesh = new THREE.Mesh(geometry, material);
-  mesh.position.set(...position);
-  mesh.rotation.set(...rotation);
-  mesh.scale.set(...scale);
-  mesh.castShadow = true;
-  mesh.receiveShadow = true;
-  parent.add(mesh);
-  return mesh;
-};
+const HIP_Y = 0.83;
+let dataPromise: Promise<RobotData> | null = null;
 
-function cylinderBetween(
-  parent: THREE.Object3D,
-  a: [number, number, number],
-  b: [number, number, number],
-  radius: number,
-  material: THREE.Material,
-) {
-  const start = new THREE.Vector3(...a);
-  const end = new THREE.Vector3(...b);
-  const midpoint = start.clone().add(end).multiplyScalar(0.5);
-  const cylinder = makeMesh(
-    new THREE.CylinderGeometry(radius, radius, start.distanceTo(end), 12),
-    material,
-    parent,
-    [midpoint.x, midpoint.y, midpoint.z],
-  );
-  cylinder.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), end.clone().sub(start).normalize());
-  return cylinder;
+function loadRobot(): Promise<RobotData> {
+  return (dataPromise ??= fetch(robotUrl).then(async (response) => {
+    if (!response.ok) throw new Error(`Robot: HTTP ${response.status}`);
+    return (await response.json()) as RobotData;
+  }).catch((error: unknown) => {
+    dataPromise = null;
+    throw error;
+  }));
 }
 
 export function createRobot(): RobotRig {
   const root = new THREE.Group();
   root.name = "Autómata luthier";
-  const model = new THREE.Group();
-  model.rotation.y = Math.PI;
-  model.scale.setScalar(1.08);
-  root.add(model);
+  const rig: RobotRig = { root, parts: null, walkPhase: 0, reaction: 0 };
+  // Descarga en segundo plano: el robot solo se muestra al entrar al diapasón.
+  loadRobot().then((data) => buildRig(rig, data)).catch((error: unknown) => console.warn(error));
+  return rig;
+}
 
-  const copper = new THREE.MeshStandardMaterial({ color: 0x9d5e35, metalness: 0.78, roughness: 0.34 });
-  const copperDark = new THREE.MeshStandardMaterial({ color: 0x5d321f, metalness: 0.85, roughness: 0.38 });
-  const brass = new THREE.MeshStandardMaterial({ color: 0xba8050, metalness: 0.82, roughness: 0.28 });
-  const dark = new THREE.MeshStandardMaterial({ color: 0x1e2728, metalness: 0.72, roughness: 0.28 });
-  const eyeMaterial = new THREE.MeshStandardMaterial({
-    color: 0xbff8ff,
-    emissive: 0x59dff8,
-    emissiveIntensity: 5,
-    metalness: 0.05,
-    roughness: 0.15,
-  });
-  const coreMaterial = new THREE.MeshStandardMaterial({
-    color: 0x92f4ff,
-    emissive: 0x39cfe8,
-    emissiveIntensity: 6,
-    metalness: 0.15,
-    roughness: 0.12,
-  });
+function buildRig(rig: RobotRig, data: RobotData) {
+  const nodes = new Map<string, { group: THREE.Group; pivot: THREE.Vector3; part: PartData }>();
+  const key = (part: string, segment?: number) => (segment === undefined ? part : `${part}:${segment}`);
+  let coreMaterial: THREE.MeshStandardMaterial | null = null;
+  let eyeMaterial: THREE.MeshStandardMaterial | null = null;
 
-  const body = new THREE.Group();
-  body.position.y = 1.55;
-  model.add(body);
-
-  makeMesh(new THREE.CylinderGeometry(0.48, 0.54, 0.74, 20), copper, body, [0, 0.05, 0]);
-  makeMesh(new THREE.SphereGeometry(0.5, 20, 14), copper, body, [0, 0.39, 0], [0, 0, 0], [1, 0.5, 1]);
-  makeMesh(new THREE.SphereGeometry(0.54, 20, 14), copperDark, body, [0, -0.34, 0], [0, 0, 0], [1, 0.38, 1]);
-
-  for (let index = 0; index < 8; index += 1) {
-    const angle = index / 8 * Math.PI * 2;
-    makeMesh(new THREE.SphereGeometry(0.035, 8, 6), brass, body, [Math.sin(angle) * 0.49, 0.05, Math.cos(angle) * 0.49]);
+  for (const part of data.meshes) {
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute(part.position, 3));
+    geometry.setAttribute("normal", new THREE.Float32BufferAttribute(part.normal, 3));
+    if (part.vertexColor) geometry.setAttribute("color", new THREE.Float32BufferAttribute(part.vertexColor, 3));
+    geometry.setIndex(part.index);
+    geometry.computeBoundingSphere();
+    const glowing = part.emission > 0;
+    const material = new THREE.MeshStandardMaterial({
+      color: new THREE.Color().setRGB(part.color[0], part.color[1], part.color[2]),
+      vertexColors: Boolean(part.vertexColor),
+      metalness: part.metalness,
+      roughness: part.roughness,
+      emissive: glowing
+        ? new THREE.Color().setRGB(part.emissionColor[0], part.emissionColor[1], part.emissionColor[2])
+        : new THREE.Color(0),
+      emissiveIntensity: part.emission,
+    });
+    if (part.part === "core") coreMaterial = material;
+    if (part.part === "eyes") eyeMaterial = material;
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.name = part.name;
+    mesh.castShadow = !glowing;
+    mesh.receiveShadow = !glowing;
+    const group = new THREE.Group();
+    group.name = part.name;
+    group.add(mesh);
+    nodes.set(key(part.part, part.segment), { group, pivot: new THREE.Vector3().fromArray(part.pivot), part });
   }
 
-  makeMesh(new THREE.CylinderGeometry(0.16, 0.16, 0.055, 24), dark, body, [0, 0.08, -0.505], [Math.PI / 2, 0, 0]);
-  makeMesh(new THREE.CylinderGeometry(0.105, 0.105, 0.07, 24), coreMaterial, body, [0, 0.08, -0.54], [Math.PI / 2, 0, 0]);
-  const coreLight = new THREE.PointLight(0x58e8ff, 4.5, 3, 2);
-  coreLight.position.set(0, 0.08, -0.72);
-  body.add(coreLight);
+  // Jerarquía: cada pivote cuelga de su padre; brazo→antebrazo y muslo→espinilla comparten lado.
+  for (const { group, pivot, part } of nodes.values()) {
+    const parentName = data.parents[part.part];
+    const parent = parentName
+      ? nodes.get(key(parentName, part.segment)) ?? nodes.get(parentName)
+      : undefined;
+    if (parent) {
+      group.position.copy(pivot).sub(parent.pivot);
+      parent.group.add(group);
+    } else {
+      group.position.copy(pivot);
+      rig.root.add(group);
+    }
+  }
 
-  makeMesh(new THREE.CylinderGeometry(0.18, 0.18, 0.15, 16), dark, body, [0, 0.62, 0]);
-  const head = new THREE.Group();
-  head.position.set(0, 0.93, 0);
-  body.add(head);
-  makeMesh(new THREE.SphereGeometry(0.47, 22, 18), copper, head);
-  makeMesh(new THREE.SphereGeometry(0.43, 18, 14), copperDark, head, [0, -0.14, 0], [0, 0, 0], [1, 0.48, 1]);
-  makeMesh(new THREE.SphereGeometry(0.48, 18, 12, 0, Math.PI * 2, 0, Math.PI / 2), brass, head, [0, 0.02, 0]);
-  makeMesh(new THREE.CylinderGeometry(0.1, 0.1, 0.12, 12), dark, head, [-0.5, -0.03, 0], [0, 0, Math.PI / 2]);
-  makeMesh(new THREE.CylinderGeometry(0.1, 0.1, 0.12, 12), dark, head, [0.5, -0.03, 0], [0, 0, Math.PI / 2]);
-  makeMesh(new THREE.SphereGeometry(0.085, 16, 12), eyeMaterial, head, [-0.17, -0.03, 0.423], [0, 0, 0], [1, 0.82, 0.42]);
-  makeMesh(new THREE.SphereGeometry(0.085, 16, 12), eyeMaterial, head, [0.17, -0.03, 0.423], [0, 0, 0], [1, 0.82, 0.42]);
-  makeMesh(new THREE.BoxGeometry(0.22, 0.035, 0.035), dark, head, [0, -0.24, 0.435]);
+  const get = (part: string, segment?: number) => {
+    const node = nodes.get(key(part, segment));
+    if (!node) throw new Error(`Robot: falta la parte ${key(part, segment)}`);
+    return node.group;
+  };
+  const hips = get("torso");
+  const head = get("head");
+  if (!coreMaterial || !eyeMaterial) throw new Error("Robot: faltan los materiales luminosos");
+
+  // Luz propia de la boca de la guitarra (hacia la cámara) y de los ojos (hacia delante).
+  // Separada de la tapa para bañar el suelo sin quemar la madera.
+  const coreLight = new THREE.PointLight(0x58e8ff, 2.2, 4, 2);
+  coreLight.position.set(0, 0.2, 1.7);
+  hips.add(coreLight);
   const eyeLight = new THREE.PointLight(0x6defff, 3.5, 2.2, 2);
-  eyeLight.position.set(0, -0.02, 0.65);
+  eyeLight.position.set(0, 0.36, -0.75);
   head.add(eyeLight);
-  cylinderBetween(head, [0, 0.43, 0], [0, 0.68, 0], 0.025, brass);
-  makeMesh(new THREE.SphereGeometry(0.07, 12, 10), brass, head, [0, 0.72, 0]);
 
-  const halo = new THREE.Group();
-  halo.position.set(0, 0.77, 0);
-  head.add(halo);
-  const haloRings = [
-    makeMesh(new THREE.TorusGeometry(0.56, 0.012, 8, 64), coreMaterial, halo, [0, 0, 0], [Math.PI / 2.2, 0, 0.2]),
-    makeMesh(new THREE.TorusGeometry(0.69, 0.01, 8, 64), brass, halo, [0, 0.06, 0], [Math.PI / 2.7, 0.55, -0.35]),
-    makeMesh(new THREE.TorusGeometry(0.43, 0.009, 8, 64), eyeMaterial, halo, [0, -0.04, 0], [Math.PI / 2, -0.45, 0.3]),
-  ];
-
-  const arms: THREE.Group[] = [];
-  ([-1, 1] as const).forEach((side) => {
-    const arm = new THREE.Group();
-    arm.position.set(side * 0.58, 0.37, 0);
-    body.add(arm);
-    arms.push(arm);
-    makeMesh(new THREE.SphereGeometry(0.16, 14, 10), brass, arm);
-    cylinderBetween(arm, [side * 0.02, -0.08, 0], [side * 0.1, -0.39, 0], 0.09, copperDark);
-    makeMesh(new THREE.SphereGeometry(0.115, 12, 9), dark, arm, [side * 0.11, -0.47, 0]);
-    cylinderBetween(arm, [side * 0.11, -0.52, 0], [side * 0.1, -0.79, 0.03], 0.08, copper);
-    makeMesh(new THREE.SphereGeometry(0.1, 12, 9), brass, arm, [side * 0.1, -0.88, 0.04], [0, 0, 0], [0.85, 1.05, 0.75]);
-  });
-
-  makeMesh(new THREE.CylinderGeometry(0.34, 0.38, 0.18, 16), dark, body, [0, -0.78, 0]);
-  const legs: THREE.Group[] = [];
-  ([-1, 1] as const).forEach((side) => {
-    const leg = new THREE.Group();
-    leg.position.set(side * 0.23, -0.86, 0);
-    body.add(leg);
-    legs.push(leg);
-    makeMesh(new THREE.SphereGeometry(0.13, 12, 10), brass, leg);
-    cylinderBetween(leg, [0, -0.08, 0], [side * 0.01, -0.44, 0], 0.095, copperDark);
-    makeMesh(new THREE.SphereGeometry(0.12, 12, 9), dark, leg, [side * 0.01, -0.52, 0]);
-    cylinderBetween(leg, [side * 0.01, -0.59, 0], [side * 0.005, -0.86, 0], 0.09, copper);
-    makeMesh(new THREE.BoxGeometry(0.3, 0.15, 0.43), brass, leg, [0, -0.99, 0.06]);
-    makeMesh(new THREE.BoxGeometry(0.27, 0.05, 0.32), dark, leg, [0, -1.08, 0.1]);
-  });
-
-  return {
-    root,
-    parts: { body, head, arms, legs, halo, haloRings, coreMaterial },
-    walkPhase: 0,
-    reaction: 0,
+  rig.parts = {
+    hips,
+    head,
+    pack: get("pack"),
+    upperArms: [get("upperArm", 0), get("upperArm", 1)],
+    forearms: [get("forearm", 0), get("forearm", 1)],
+    thighs: [get("thigh", 0), get("thigh", 1)],
+    shins: [get("shin", 0), get("shin", 1)],
+    haloRings: [get("halo", 0), get("halo", 1), get("halo", 2)],
+    coreMaterial,
+    eyeMaterial,
   };
 }
 
-export function animateRobot(rig: RobotRig, time: number, speed: number, delta: number) {
+/** Anima el paso. Devuelve true en el instante en que una bota toca el suelo (para el sonido). */
+export function animateRobot(rig: RobotRig, time: number, speed: number, delta: number): boolean {
+  const parts = rig.parts;
+  if (!parts) return false;
   const moving = Math.abs(speed) > 0.35;
+  const previousPhase = rig.walkPhase;
   rig.walkPhase += delta * (moving ? 7.5 + Math.abs(speed) * 0.25 : 2);
   rig.reaction = THREE.MathUtils.damp(rig.reaction, 0, 3.2, delta);
-  const amplitude = moving ? 0.58 : 0.05;
-  const { arms, legs, body, head, halo, haloRings, coreMaterial } = rig.parts;
+  const phase = rig.walkPhase;
+  const amplitude = moving ? 0.52 : 0.04;
+  const { hips, head, pack, upperArms, forearms, thighs, shins, haloRings, coreMaterial, eyeMaterial } = parts;
 
-  arms[0].rotation.x = Math.sin(rig.walkPhase) * amplitude;
-  arms[1].rotation.x = -Math.sin(rig.walkPhase) * amplitude;
-  legs[0].rotation.x = -Math.sin(rig.walkPhase) * amplitude * 0.58;
-  legs[1].rotation.x = Math.sin(rig.walkPhase) * amplitude * 0.58;
-  body.position.y = 1.55 + Math.sin(moving ? rig.walkPhase * 2 : time * 2.2) * (moving ? 0.035 : 0.018);
-  head.rotation.y = moving ? 0 : Math.sin(time * 0.85) * 0.1;
+  for (let side = 0; side < 2; side += 1) {
+    const swing = Math.sin(phase + side * Math.PI);
+    // Pierna: el muslo oscila y la rodilla se dobla mientras el pie va hacia delante.
+    thighs[side].rotation.x = swing * amplitude * 0.62;
+    shins[side].rotation.x = -Math.max(0, Math.cos(phase + side * Math.PI)) * amplitude * 1.05;
+    // Brazo contrario a la pierna, con el codo algo doblado.
+    upperArms[side].rotation.x = -swing * amplitude * 0.8;
+    upperArms[side].rotation.z = (side === 0 ? 1 : -1) * 0.06;
+    forearms[side].rotation.x = 0.22 + Math.max(0, -swing) * amplitude * 0.6;
+  }
+
+  hips.position.y = HIP_Y + (moving ? Math.abs(Math.cos(phase)) * 0.05 - 0.025 : Math.sin(time * 2.2) * 0.018);
+  hips.rotation.y = moving ? Math.sin(phase) * 0.06 : 0;
+  pack.rotation.x = moving ? Math.sin(phase * 2) * 0.025 : 0;
+  head.rotation.y = moving ? -Math.sin(phase) * 0.05 : Math.sin(time * 0.85) * 0.1;
   head.rotation.z = (moving ? 0 : Math.sin(time * 1.1) * 0.025) - Math.max(0, -rig.reaction) * 0.13;
-  halo.rotation.y = time * 1.35;
-  haloRings[0].rotation.z = time * 0.8;
-  haloRings[1].rotation.z = -time * 0.55;
-  haloRings[2].rotation.z = time * 1.1;
-  halo.scale.setScalar(1 + Math.max(0, rig.reaction) * 0.18);
+  haloRings[0].rotation.y = time * 1.35;
+  haloRings[1].rotation.y = -time * 0.9;
+  haloRings[2].rotation.y = time * 1.7;
+  const haloScale = 1 + Math.max(0, rig.reaction) * 0.18;
+  haloRings.forEach((ring) => ring.scale.setScalar(haloScale));
   coreMaterial.emissiveIntensity = 5.3 + Math.sin(time * 4.2) + Math.abs(rig.reaction) * 5;
+  eyeMaterial.emissiveIntensity = 5 + Math.max(0, rig.reaction) * 3;
+
+  // Pisada: cada medio ciclo, cuando el pie que baja termina su arco.
+  return moving && Math.floor(previousPhase / Math.PI) !== Math.floor(phase / Math.PI);
 }
 
 export function reactRobot(rig: RobotRig, correct: boolean) {

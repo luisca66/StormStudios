@@ -44,6 +44,7 @@ let feedback: Feedback = null;
 const world = new GuitarWorld(canvas, {
   onNodeReached: () => void hearChallenge(),
   onPortalEntered: completeLevel,
+  onFootstep: (intensity) => audio.playFootstep(intensity),
 });
 
 world.setGameplay(false);
@@ -53,6 +54,8 @@ app.addEventListener("click", (event) => {
   const target = (event.target as HTMLElement).closest<HTMLElement>("[data-action]");
   if (!target) return;
   const action = target.dataset.action;
+  // El primer gesto habilita el audio web de las pisadas.
+  audio.primeFootsteps();
 
   if (action === "toggle-string") toggleString(target.dataset.string as StringId);
   if (action === "choose-level") openGroups(Number(target.dataset.level));

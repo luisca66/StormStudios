@@ -1,9 +1,15 @@
 import type { GuitarSample } from "./catalog";
+import footstepsUrl from "./assets/pasos-robot.mp3?url";
 
 const DEFAULT_AUDIO_BASE = "https://musica.stormstudios.com.mx";
 const DEFAULT_MUSIC_BASE = "https://samples.stormstudios.com.mx/music/oido-absoluto-multi";
 const configuredBase = import.meta.env.VITE_AP_GUITAR_AUDIO_BASE_URL?.trim();
 const configuredMusicBase = import.meta.env.VITE_MULTI_MUSIC_BASE?.trim();
+
+// Sprite de pisadas (del WAV de pasos del robot): 6 variaciones de 0.33 s cada 0.5 s.
+const FOOTSTEP_VARIANTS = 6;
+const FOOTSTEP_SLOT = 0.5;
+const FOOTSTEP_LENGTH = 0.34;
 
 const PLAYLISTS: Record<number, { directory: string; prefix: string; count: number }> = {
   1: { directory: "nivel-1", prefix: "jazz", count: 35 },
@@ -31,6 +37,10 @@ export class GuitarAudio {
   private trackIndex = 0;
   private trackFailures = 0;
   private volume = 0.88;
+  private stepContext: AudioContext | null = null;
+  private stepBuffer: AudioBuffer | null = null;
+  private stepLoading = false;
+  private lastStep = -1;
 
   preload(samples: GuitarSample[]) {
     samples.slice(0, 24).forEach((sample) => {
@@ -93,6 +103,43 @@ export class GuitarAudio {
     if (this.activeNote) this.activeNote.volume = this.volume;
     if (this.activeSfx) this.activeSfx.volume = this.volume * 0.74;
     if (this.background) this.background.volume = this.volume * 0.4;
+  }
+
+  /** Llamar desde un gesto del usuario: crea el contexto de audio y descarga las pisadas. */
+  primeFootsteps() {
+    if (!this.stepContext) {
+      try {
+        this.stepContext = new AudioContext();
+      } catch {
+        return;
+      }
+    }
+    const context = this.stepContext;
+    void context.resume();
+    if (this.stepBuffer || this.stepLoading) return;
+    this.stepLoading = true;
+    fetch(footstepsUrl)
+      .then((response) => response.arrayBuffer())
+      .then((bytes) => context.decodeAudioData(bytes))
+      .then((buffer) => { this.stepBuffer = buffer; })
+      .catch((error: unknown) => console.warn("No se pudieron cargar las pisadas.", error))
+      .finally(() => { this.stepLoading = false; });
+  }
+
+  /** Una pisada del robot; intensity 0..1 según la velocidad. Nunca repite la variación anterior. */
+  playFootstep(intensity: number) {
+    const context = this.stepContext;
+    if (!context || !this.stepBuffer || context.state !== "running" || this.volume === 0) return;
+    let variant = Math.floor(Math.random() * (FOOTSTEP_VARIANTS - 1));
+    if (variant >= this.lastStep) variant += 1;
+    this.lastStep = variant;
+    const source = context.createBufferSource();
+    source.buffer = this.stepBuffer;
+    source.playbackRate.value = 0.93 + Math.random() * 0.14;
+    const gain = context.createGain();
+    gain.gain.value = this.volume * (0.3 + 0.35 * intensity);
+    source.connect(gain).connect(context.destination);
+    source.start(0, variant * FOOTSTEP_SLOT, FOOTSTEP_LENGTH);
   }
 
   getVolume() {

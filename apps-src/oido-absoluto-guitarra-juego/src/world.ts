@@ -5,6 +5,7 @@ import { animateRobot, createRobot, reactRobot, type RobotRig } from "./robot";
 type WorldCallbacks = {
   onNodeReached: () => void;
   onPortalEntered: () => void;
+  onFootstep?: (intensity: number) => void;
 };
 
 const STRING_X = [-15, -9, -3, 3, 9, 15];
@@ -475,7 +476,9 @@ export class GuitarWorld {
 
     if (this.gameplayEnabled) {
       this.updatePlayer(delta);
-      animateRobot(this.robotRig, time, this.speed, delta);
+      if (animateRobot(this.robotRig, time, this.speed, delta)) {
+        this.callbacks.onFootstep?.(Math.min(1, Math.abs(this.speed) / 8.8));
+      }
       this.updateTarget(time, delta);
       this.updatePortal(time, delta);
       if (this.portalFocusTime > 0) {
