@@ -119,7 +119,7 @@ Queda como pendiente heredado de la bitácora (F5): animar las agujas de los man
 | Nube cúmulo (se atraviesa) | ✅ Blender (GLB) · tecla `C` |
 | Aguja alpina y faro | ✅ Blender (GLB) · tecla `F` |
 | Gran Ballena Celeste (capa 5) | ✅ Blender (GLB) · tecla `B` |
-| Aeronaves por capa: avioneta, jet, avión estratosférico, satélite (`flybys.ts`) | ⏳ primitivas |
+| Aeronaves por capa: avioneta, jet, avión estratosférico, satélite (`flybys.ts`) | ⏳ primitivas · brief para Astra listo (`art/blender/aeronaves/BRIEF.md`, 2026-09-14) |
 | Canasta/globo del jugador (`basket.ts`) | ⏳ primitivas |
 
 El `PLAN-AERONAVES-POR-CAPA.md` cita la regla original de "cero assets externos"; ya se

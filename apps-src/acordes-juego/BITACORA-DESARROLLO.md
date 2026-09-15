@@ -470,4 +470,4 @@ Checklist §13 (resultado final):
 - `blender-leviathan.ts` encadena head, body 1–8 y tail en P0…P8 (4.6 u) con onda lateral de 36.8 u y 10 s que crece hacia la cola; limita el giro entre vecinas a ±0.19 rad y el cabeceo a ±0.07. Cada placa es hija de su pieza y su emisión se modula con el pigmento.
 - El bramido y las placas por nota reutilizan `pulse()`/`flashSegment`. `species.ts` ya no tiene primitivas: las 7 especies son de Blender.
 - Debug: botón **Acercar Leviatán** (si no hay uno, fuerza que el siguiente spawn de zona 5 lo sea y luego lo trae a 26 u); inspector `dev/leviatan.html`.
-- Verificado: build, QA, inspector (bramido, captura, huida) y zona 5 real (aparición, activación a 25 m, pregunta de oncenas, huida). Pendiente: FPS y teléfono real. Sin deploy.
+- Verificado: build, QA, inspector (bramido, captura, huida) y zona 5 real (aparición, activación a 25 m, pregunta de oncenas, huida). Pendiente: FPS y teléfono real. Publicado el 2026-09-14 (`92ee9a4`).
