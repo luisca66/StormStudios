@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { AudioEngine } from "@/audio/engine";
 import { ASSET_BASE } from "@/config";
+import { buildBlenderFish, preloadBlenderFish } from "./blender-fish";
 
 export class PlayerController {
   public mesh: THREE.Group;
@@ -31,6 +32,7 @@ export class PlayerController {
   private leftFin?: THREE.Object3D;
   private rightFin?: THREE.Object3D;
   private tailPivot?: THREE.Object3D;
+  private dorsalFin?: THREE.Object3D;
 
   private wingLeft?: THREE.Object3D;
   private wingRight?: THREE.Object3D;
@@ -193,7 +195,7 @@ export class PlayerController {
     this.rightHand = rightHandMesh;
   }
 
-  // LEVEL 2: FISH (Red Fish)
+  // LEVEL 2: FISH — modelo de Blender (art/blender/pez/), partes animadas por el juego.
   private buildFish(): void {
     // Movement configuration - forward speed restored, rotation kept at 0.3
     this.maxSpeed = 6.0;
@@ -203,99 +205,21 @@ export class PlayerController {
     this.yawSpeed = 0.3;
     this.rollSpeed = 0.3;
 
-    // Colors matching FishPlayer.gd
-    const skinColor = 0xe61a1a;   // Color(0.9, 0.1, 0.1)
-    const bellyColor = 0xffd93d;  // Color(1.0, 0.85, 0.24)
-    const finColor = 0xd90d0d;    // Color(0.85, 0.05, 0.05)
-    const dorsalColor = 0xbc0000; // fin_color.darkened(0.1)
-    const mouthColor = 0x800000;  // Color(0.5, 0.0, 0.0)
+    // Contenedor del pez: es lo que el juego estira y balancea.
+    const bodyRoot = new THREE.Group();
+    this.mesh.add(bodyRoot);
+    this.bodyMesh = bodyRoot as unknown as THREE.Mesh;
 
-    // Body: sphere of radius 1.0
-    const bodyGeo = new THREE.SphereGeometry(1.0, 24, 16);
-    const bodyMat = new THREE.MeshStandardMaterial({ color: skinColor, roughness: 0.4, metalness: 0.05 });
-    this.bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
-    this.bodyMesh.scale.set(0.6, 0.8, 1.0);
-    this.bodyMesh.castShadow = true;
-    this.bodyMesh.receiveShadow = true;
-    this.mesh.add(this.bodyMesh);
-
-    // Belly: lower sphere (yellow)
-    const bellyGeo = new THREE.SphereGeometry(0.95, 24, 12);
-    const bellyMat = new THREE.MeshStandardMaterial({ color: bellyColor, roughness: 0.4 });
-    const belly = new THREE.Mesh(bellyGeo, bellyMat);
-    belly.position.set(0, -0.3, 0);
-    belly.scale.set(0.6, 0.5, 1.0);
-    belly.castShadow = true;
-    belly.receiveShadow = true;
-    this.bodyMesh.add(belly);
-
-    // Mouth: torus at front
-    const mouthGeo = new THREE.TorusGeometry(0.14, 0.06, 12, 12);
-    const mouthMat = new THREE.MeshStandardMaterial({ color: mouthColor, roughness: 0.6 });
-    const mouth = new THREE.Mesh(mouthGeo, mouthMat);
-    mouth.position.set(0, -0.15, 0.95);
-    mouth.rotation.x = Math.PI / 2.0;
-    mouth.castShadow = true;
-    this.bodyMesh.add(mouth);
-
-    // Eyes: white base + black pupil (no eyes for Glub, but Fish has eyes!)
-    const eyeGeo = new THREE.SphereGeometry(0.2, 12, 12);
-    const pupilGeo = new THREE.SphereGeometry(0.1, 8, 8);
-    const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 });
-    const blackMat = new THREE.MeshStandardMaterial({ color: 0x000000 });
-
-    for (const side of [-1.0, 1.0]) {
-      const eye = new THREE.Mesh(eyeGeo, whiteMat);
-      eye.position.set(side * 0.35, -0.1, 0.45);
-      eye.scale.set(1.0, 1.0, 0.7);
-      eye.castShadow = true;
-      this.bodyMesh.add(eye);
-
-      const pupil = new THREE.Mesh(pupilGeo, blackMat);
-      pupil.position.set(side * 0.35, -0.1, 0.55);
-      pupil.castShadow = true;
-      this.bodyMesh.add(pupil);
-    }
-
-    // Left & Right Fins: Cylinder top=0.04, bottom=0.52, height=0.9 (Enlarged for visibility)
-    const finGeo = new THREE.CylinderGeometry(0.04, 0.52, 0.9, 12);
-    const finMat = new THREE.MeshStandardMaterial({ color: finColor, roughness: 0.4 });
-
-    this.leftFin = new THREE.Mesh(finGeo, finMat);
-    this.leftFin.position.set(-0.8, -0.1, 0.1);
-    this.leftFin.rotation.set(0, 0.3, Math.PI / 2.5);
-    this.leftFin.scale.set(1.8, 0.35, 1.25);
-    this.leftFin.castShadow = true;
-    this.bodyMesh.add(this.leftFin);
-
-    this.rightFin = new THREE.Mesh(finGeo, finMat);
-    this.rightFin.position.set(0.8, -0.1, 0.1);
-    this.rightFin.rotation.set(0, -0.3, -Math.PI / 2.5);
-    this.rightFin.scale.set(1.8, 0.35, 1.25);
-    this.rightFin.castShadow = true;
-    this.bodyMesh.add(this.rightFin);
-
-    // Dorsal Fin: Cylinder top=0.02, bottom=0.3, height=0.6
-    const dorsalGeo = new THREE.CylinderGeometry(0.02, 0.3, 0.6, 12);
-    const dorsalMat = new THREE.MeshStandardMaterial({ color: dorsalColor, roughness: 0.4 });
-    const dorsal = new THREE.Mesh(dorsalGeo, dorsalMat);
-    dorsal.position.set(0, 0.8, -0.2);
-    dorsal.rotation.x = -0.4;
-    dorsal.scale.set(0.2, 1.0, 0.8);
-    dorsal.castShadow = true;
-    this.bodyMesh.add(dorsal);
-
-    // Tail Pivot & Tail (Tail extends backwards from pivot)
-    this.tailPivot = new THREE.Group();
-    this.tailPivot.position.set(0, 0, -0.9);
-    this.bodyMesh.add(this.tailPivot);
-
-    const tailGeo = new THREE.CylinderGeometry(0.02, 0.5, 0.8, 12);
-    const tail = new THREE.Mesh(tailGeo, finMat);
-    tail.rotation.x = Math.PI / 2.0; // Point backwards
-    tail.position.set(0, 0, -0.4);
-    tail.scale.set(0.3, 1.0, 1.0); // Flattened fin
-    this.tailPivot.add(tail);
+    const attach = () => {
+      const fish = buildBlenderFish();
+      bodyRoot.add(fish.root);
+      this.tailPivot = fish.tail;
+      this.leftFin = fish.fins[0];
+      this.rightFin = fish.fins[1];
+      this.dorsalFin = fish.dorsal;
+    };
+    // Ya suele estar en memoria (se pide al cargar el módulo); si no, se engancha al llegar.
+    preloadBlenderFish().then(attach).catch((error: unknown) => console.error("Pez de Blender:", error));
   }
 
   // LEVEL 3: SPACESHIP
@@ -855,6 +779,11 @@ export class PlayerController {
         this.tailPivot.rotation.y = THREE.MathUtils.lerp(this.tailPivot.rotation.y, 0.0, 3 * delta);
       }
 
+      // Aleta dorsal: ondulación leve y retrasada (ENTREGA.md: Z, ±0.08 rad, 2 rad/s)
+      if (this.dorsalFin) {
+        this.dorsalFin.rotation.z = Math.sin(this.animTime * 2.0 - 0.6) * 0.08;
+      }
+
       // Fins rotation: wave faster during input, else sways gently
       if (this.leftFin && this.rightFin) {
         if (isAnyInput || this.speed > 0.3) {
@@ -868,11 +797,11 @@ export class PlayerController {
         }
       }
 
-      // Body stretch & squash relative to speed
+      // Body stretch & squash relative to speed (el modelo ya viene proporcionado: base 1,1,1)
       const stretch = 1.0 + (this.speed / this.maxSpeed) * 0.15;
-      const targetZ = stretch * 1.0;
-      const targetX = (1.0 / Math.sqrt(stretch)) * 0.6;
-      const targetY = (1.0 / Math.sqrt(stretch)) * 0.8;
+      const targetZ = stretch;
+      const targetX = 1.0 / Math.sqrt(stretch);
+      const targetY = 1.0 / Math.sqrt(stretch);
       this.bodyMesh.scale.z = THREE.MathUtils.lerp(this.bodyMesh.scale.z, targetZ, 5 * delta);
       this.bodyMesh.scale.x = THREE.MathUtils.lerp(this.bodyMesh.scale.x, targetX, 5 * delta);
       this.bodyMesh.scale.y = THREE.MathUtils.lerp(this.bodyMesh.scale.y, targetY, 5 * delta);

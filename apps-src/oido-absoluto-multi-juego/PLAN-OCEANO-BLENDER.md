@@ -9,7 +9,7 @@
 | Problema | Dónde | Quién lo arregla |
 |---|---|---|
 | El pez aparece **dentro del domo** de Atlántida: spawn en `(0,-20,0)` y el colisionador del domo llega hasta y≈-5 | `player.ts resetPosition` + `environment.ts buildAtlantisCastle` | Claude (integración) |
-| Pez protagonista hecho de esferas y cilindros; de espaldas (como lo ve siempre el jugador) es una bola roja | `player.ts buildFish` | **Astra** → pieza 1 |
+| ~~Pez de esferas y cilindros~~ ✅ resuelto: modelo de Blender cargado desde JSON | `player.ts buildFish` + `blender-fish.ts` | hecho |
 | Objetivo de nota = «piñata» de conos, mide 2 u y no tiene nada que ver con el mar | `renderer.ts buildNoteTargetMesh` | **Astra** → pieza 2 |
 | Atlántida con cilindros de 8 lados; es el hito central y se ve de primitivas | `environment.ts buildAtlantisCastle` | **Astra** → pieza 3 |
 | Compuerta = disco metálico plano en el suelo; la cinemática de desbloqueo no luce | `gate.ts` nivel 2 | **Astra** → pieza 4 |
@@ -37,7 +37,7 @@ de pasar a la siguiente.
 
 | # | Pieza | Carpeta | Estado | Contrato con el juego (resumen) |
 |---|---|---|---|---|
-| 1 | **Pez protagonista** | `pez/` | 🔁 v1 entregada; ronda 1 de corrección pedida (cola acostada, hueco en pedúnculo, aletas planas) | ≈2.7 u, frente +Z, cámara 5.5 u detrás y 1.8 u arriba; partes `body`, `tail`, `fin` ×2, `dorsal` |
+| 1 | **Pez protagonista** | `pez/` | ✅ integrado (2026-09-15): Astra v1 + ronda 1; Claude corrigió pedúnculo, párpados e iris | ≈2.7 u, frente +Z, cámara 5.5 u detrás y 1.8 u arriba; partes `body`, `tail`, `fin` ×2, `dorsal` |
 | 2 | Perla-almeja (objetivo de nota) | `almeja/` | ⏳ brief tras aprobar 1 | se ve a 80–130 u; gira en Y, rebota ×1.4 al tocarla; `pearl` teñida con el color de la nota; valva superior abre |
 | 3 | Atlántida hundida (hito central) | `atlantida/` | ⏳ | centro `(0,-50,0)`, radio ≈60 u, alto ≈45 u; colisionadores simples en `meta`; ≤ 40 k tri |
 | 4 | Portal atlante (compuerta) | `portal/` | ⏳ | `(110,-50,110)`, radio de disparo 5 u, abre en 0.7 s; cinemática a 15 u; partes marco + hojas del iris + `glow` |
