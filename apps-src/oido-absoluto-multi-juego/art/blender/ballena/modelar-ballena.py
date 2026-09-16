@@ -192,8 +192,14 @@ for i in range(28):
     for j in range(28):
         a=i*28+j;b=i*28+(j+1)%28;f.append((a,b,b+28,a+28))
 f.extend([tuple(reversed(range(28))),tuple(28*28+j for j in range(28))]);g.add(v,f,c)
-FL=[(0,0,0,-20.3,1.15,.33),(.17,1.4,.08,-20.8,1.70,.32),(.38,3.3,.20,-20.9,1.95,.27),
-    (.62,5.25,.30,-20.5,1.6,.20),(.84,6.7,.42,-19.8,.86,.12),(1,7.5,.52,-19.2,.015,.012)]
+# Claude (integrador, 2026-09-15), sobre referencia de Luis: la cola de una jorobada no es
+# una hoja simetrica. Las puntas van BARRIDAS HACIA ATRAS (el centro de cuerda retrocede de
+# -19.6 en la raiz a -23.4 en la punta), el borde de salida se abre en concavidad y el centro
+# queda adelantado: eso es lo que dibuja la escotadura entre los dos lobulos.
+# Estaciones: (t, x, y, z del centro de cuerda, media cuerda, medio grosor).
+FL=[(0,0,0,-19.35,.72,.36),(.15,1.30,.08,-20.15,1.55,.30),(.35,3.10,.20,-21.05,1.90,.24),
+    (.58,5.00,.32,-21.90,1.70,.17),(.80,6.60,.46,-22.85,1.05,.10),(.92,7.25,.54,-23.60,.52,.05),
+    (1,7.60,.60,-24.05,.05,.015)]
 for side in (-1,1):fin(g,FL,side,'tail',rows=32,n=16)
 tail=g.object('Pedúnculo y cola horizontal','tail',(0,0,-12.0))
 
@@ -302,6 +308,9 @@ render('render-cerca.png',close_target+Vector((1,-.40,.70)).normalized()*18,clos
 render('render-perfil.png',(46,2,-2),(0,0,-2),(1600,900))
 tail.rotation_euler.x=.2
 render('render-cola.png',(17,10,-28),(0,0,-14),(1200,900))
+# Claude: vista cenital de la cola, la unica donde se juzga de verdad el recorte de los
+# lobulos, la escotadura central y el barrido de las puntas.
+render('render-cola-arriba.png',(0,26,-19),(0,0,-19),(1200,900))
 tail.rotation_euler.x=0;bpy.context.view_layer.update()
 camera(gamepos,(0,0,0),(1600,900));scene.render.filepath=str(ROOT/'render-juego.png')
 bpy.context.preferences.filepaths.save_version=0;bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'ballena.blend'))

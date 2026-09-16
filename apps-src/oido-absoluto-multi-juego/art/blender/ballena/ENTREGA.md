@@ -26,14 +26,14 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 
 | Dato | Valor |
 |---|---|
-| Largo × alto total × envergadura | 39.753 × 10.061 × 21.300 u |
+| Largo × alto total × envergadura | 40.995 × 10.061 × 21.300 u |
 | Alto del tronco | Aproximadamente 9 u, dorsal incluida en el alto total. |
-| Ancho de cola | 15.000 u |
+| Ancho de cola | 15.200 u |
 | Origen | (0,0,0), centro del tronco a la altura de las articulaciones. |
 | Frente | +Z Three; −Y Blender. |
 | Triángulos | 19434 |
 | Mallas exportadas | 5 |
-| Peso JSON | 860.9 KiB |
+| Peso JSON | 861.1 KiB |
 | meta.blowhole | (0.000, 3.702, 8.200), burbujas. |
 | meta.eye | (3.567, 0.320, 10.100), referencia ojo +X. |
 

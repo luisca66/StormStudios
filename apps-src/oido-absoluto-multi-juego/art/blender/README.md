@@ -71,5 +71,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 - **Rumbo:** la cabeza mira a +Z, así que el giro de la órbita es `-swimAngle`. Se comprobó
   midiendo el morro contra el vector de velocidad (`dot ≈ 0.99`), no a ojo: en pantalla es fácil
   confundir morro y cola a esa distancia.
+- **Cola rehecha por Claude (2026-09-15)** sobre una referencia que mandó Luis: las estaciones
+  de la aleta caudal (`FL` en el script) ya no dibujan una hoja simétrica, sino lóbulos
+  **barridos hacia atrás** (el centro de cuerda retrocede de −19.35 en la raíz a −24.05 en la
+  punta), con puntas afiladas y escotadura central marcada. Se añadió `render-cola-arriba.png`,
+  vista cenital: es la única donde se juzga de verdad el recorte de la cola.
 - Coste del nivel completo con la ballena dentro: 250 draw calls, 270 k triángulos, 60 fps en la PC
   de Luis (plataforma objetivo: laptop/escritorio).
