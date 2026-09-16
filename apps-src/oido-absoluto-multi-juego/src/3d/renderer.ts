@@ -5,6 +5,7 @@ import { LevelEnvironment } from "./environment";
 import { LevelGate } from "./gate";
 import { SearchRadar } from "../ui/radar";
 import { BlenderClam, buildBlenderClam, isClamReady } from "./blender-clam";
+import { BlenderBalloon, buildBlenderBalloon, isBalloonReady } from "./blender-balloon";
 
 export class Game3DRenderer {
   private canvas: HTMLCanvasElement;
@@ -24,6 +25,7 @@ export class Game3DRenderer {
   private noteFloatingOffset = 0;
   private noteHasBeenTriggered = false;
   private activeClam: BlenderClam | null = null; // objetivo de nota del nivel 2
+  private activeBalloon: BlenderBalloon | null = null; // objetivo de nota del nivel 5
   private noteSpawnTime = 0;
 
   private isDisposed = false;
@@ -135,6 +137,7 @@ export class Game3DRenderer {
     }
     this.activeNoteChallenge = null;
     this.activeClam = null;
+    this.activeBalloon = null;
     this.cutsceneActive = false;
     
     // Clear leftover lighting/lights
@@ -150,6 +153,7 @@ export class Game3DRenderer {
       this.activeNoteMesh = null;
     }
     this.activeClam = null;
+    this.activeBalloon = null;
     this.noteSpawnTime = this.clock.getElapsedTime();
     this.noteHasBeenTriggered = false;
 
@@ -377,8 +381,13 @@ export class Game3DRenderer {
       const glow = new THREE.PointLight(wisp, 22.0, 18);
       group.add(core, aura, aura2, tail, glow);
     }
+    else if (level === 5 && isBalloonReady()) {
+      // Globo aerostático (Blender): los gajos de color llevan la nota.
+      this.activeBalloon = buildBlenderBalloon(color);
+      group.add(this.activeBalloon.root);
+    }
     else if (level === 5) {
-      // Hot-air balloon (envelope + basket)
+      // Reserva por si el JSON del globo aún no llegó: globo del prototipo.
       const env = new THREE.Mesh(
         new THREE.SphereGeometry(0.8, 12, 12),
         mat
@@ -454,6 +463,7 @@ export class Game3DRenderer {
         // La almeja gira más despacio: es ancha y la perla debe leerse desde cualquier lado.
         this.activeNoteMesh.rotation.y += delta * (this.activeClam ? 0.35 : 0.8);
         this.activeClam?.update(delta, time - this.noteSpawnTime);
+        this.activeBalloon?.update(time - this.noteSpawnTime);
         this.activeNoteMesh.position.y = this.activeNotePos.y + Math.sin(time * 2.0 + this.noteFloatingOffset) * 0.15;
 
         // Check proximity collision with note

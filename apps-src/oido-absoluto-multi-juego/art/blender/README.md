@@ -148,3 +148,14 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
   `spawnSkyClouds` (90 nubes) y `spawnBigFeatureClouds` (20 gigantes) en `environment.ts`.
 - Sustituye ~540 esferas transparentes: la vista inicial pasó de 367 a 191 draw calls.
 - Material Lambert con emisivo lavanda claro: sin él las panzas se veían grises.
+
+### Globo aerostático (objetivo de nota del nivel 5)
+
+- Modelado por **Claude** con bpy (`globo/modelar-globo.py`). 9 764 triángulos · 4 partes ·
+  4.1 u de alto, origen en el centro del conjunto.
+- `envelope_color` (6 gajos) se tiñe con el color de la nota y lleva un poco de emisión para
+  leerse entre nubes blancas; `envelope_trim` (gajos crema, corona, banda y faldón); `basket`
+  (canasta, borde, cuerdas y quemador); `flame` (titila desde su base).
+- [src/3d/blender-balloon.ts](../src/3d/blender-balloon.ts); lo arma `renderer.ts
+  buildNoteTargetMesh` en el nivel 5, con el globo del prototipo como reserva si el JSON no llegó.
+  Luz puntual del color de la nota bajo la tela y vaivén suave.
