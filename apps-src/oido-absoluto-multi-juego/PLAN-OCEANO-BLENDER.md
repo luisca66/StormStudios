@@ -10,12 +10,12 @@
 |---|---|---|
 | El pez aparece **dentro del domo** de Atlántida: spawn en `(0,-20,0)` y el colisionador del domo llega hasta y≈-5 | `player.ts resetPosition` + `environment.ts buildAtlantisCastle` | Claude (integración) |
 | ~~Pez de esferas y cilindros~~ ✅ resuelto: modelo de Blender cargado desde JSON | `player.ts buildFish` + `blender-fish.ts` | hecho |
-| Objetivo de nota = «piñata» de conos, mide 2 u y no tiene nada que ver con el mar | `renderer.ts buildNoteTargetMesh` | **Astra** → pieza 2 |
-| Atlántida con cilindros de 8 lados; es el hito central y se ve de primitivas | `environment.ts buildAtlantisCastle` | **Astra** → pieza 3 |
-| Compuerta = disco metálico plano en el suelo; la cinemática de desbloqueo no luce | `gate.ts` nivel 2 | **Astra** → pieza 4 |
-| Ballena = esfera estirada con cajas de cola | `environment.ts spawnWhale` | **Astra** → pieza 5 |
-| Corales = esferas aplastadas; rocas = esferas; algas = cilindros rectos | `environment.ts buildOcean` | **Astra** → pieza 6 (kit) |
-| Cangrejos y calamares de primitivas (los calamares se cambian por tortugas) | `spawnCrab`, `spawnSquid` | **Astra** → piezas 7–8 |
+| Objetivo de nota = «piñata» de conos, mide 2 u y no tiene nada que ver con el mar | `renderer.ts buildNoteTargetMesh` | **modelador** → pieza 2 |
+| Atlántida con cilindros de 8 lados; es el hito central y se ve de primitivas | `environment.ts buildAtlantisCastle` | **modelador** → pieza 3 |
+| Compuerta = disco metálico plano en el suelo; la cinemática de desbloqueo no luce | `gate.ts` nivel 2 | **modelador** → pieza 4 |
+| Ballena = esfera estirada con cajas de cola | `environment.ts spawnWhale` | **modelador** → pieza 5 |
+| Corales = esferas aplastadas; rocas = esferas; algas = cilindros rectos | `environment.ts buildOcean` | **modelador** → pieza 6 (kit) |
+| Cangrejos y calamares de primitivas (los calamares se cambian por tortugas) | `spawnCrab`, `spawnSquid` | **modelador** → piezas 7–8 |
 | «Pecera» de vidrio con aristas brillantes como límite del mundo; fondo plano sin textura; luz sin cáusticas | `spawnAquarium`, `buildOcean` | Claude (entorno e iluminación) |
 
 ## 2. Dirección
@@ -30,14 +30,14 @@ entorno/iluminación (resuelve el «por definir» de `PLAN-3D-BLENDER.md` para e
 Paleta del nivel: agua `#1f7a99` → profundo `#0f4a66`; arena `#d9c28f`; luz de sol `#fff3d6`;
 acentos de coral `#ff6f61`, `#ffb347`, `#c86bfa`, `#3fd2c7`; oro atlante `#d9a441`.
 
-## 3. Piezas para Astra (en orden)
+## 3. Piezas para el modelador de Blender (en orden)
 
 Cada una tiene o tendrá `art/blender/<carpeta>/BRIEF.md`. Una a la vez; Luis aprueba renders antes
-de pasar a la siguiente.
+de pasar a la siguiente. Quién modela lo elige Luis en Codex: el pez lo hizo **Sol**; la almeja la hace **Astra**.
 
 | # | Pieza | Carpeta | Estado | Contrato con el juego (resumen) |
 |---|---|---|---|---|
-| 1 | **Pez protagonista** | `pez/` | ✅ integrado (2026-09-15): Astra v1 + ronda 1; Claude corrigió pedúnculo, párpados e iris | ≈2.7 u, frente +Z, cámara 5.5 u detrás y 1.8 u arriba; partes `body`, `tail`, `fin` ×2, `dorsal` |
+| 1 | **Pez protagonista** | `pez/` | ✅ integrado (2026-09-15): modelado por **Sol** (v1 + ronda 1); Claude corrigió pedúnculo, párpados e iris | ≈2.7 u, frente +Z, cámara 5.5 u detrás y 1.8 u arriba; partes `body`, `tail`, `fin` ×2, `dorsal` |
 | 2 | Almeja con perla (objetivo de nota) | `almeja/` | ✅ brief listo (2026-09-15) | se ve a 80–130 u; gira en Y, rebota ×1.4 al tocarla; `pearl` teñida con el color de la nota; valva superior abre |
 | 3 | Atlántida hundida (hito central) | `atlantida/` | ⏳ | centro `(0,-50,0)`, radio ≈60 u, alto ≈45 u; colisionadores simples en `meta`; ≤ 40 k tri |
 | 4 | Portal atlante (compuerta) | `portal/` | ⏳ | `(110,-50,110)`, radio de disparo 5 u, abre en 0.7 s; cinemática a 15 u; partes marco + hojas del iris + `glow` |

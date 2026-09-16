@@ -133,8 +133,8 @@ relajó para los modelos de Blender.
   (codos y rodillas), con mochila de guitarra y pisadas sincronizadas (2026-09-14, Claude). El
   prototipo procedural suelto se borró; el entorno del laberinto sigue procedural.
 - **Walking AP Multi** — `oido-absoluto-multi-juego`: rediseño completo empezando por el nivel 2 «El Océano»
-  (2026-09-15, modelos + entorno + iluminación). Plan: `PLAN-OCEANO-BLENDER.md`. Brief listo para Astra:
-  `art/blender/pez/BRIEF.md` (pez protagonista).
+  (2026-09-15, modelos + entorno + iluminación). Plan: `PLAN-OCEANO-BLENDER.md`. ✅ Pez protagonista integrado (2026-09-15): modelado por **Sol**, corregido e integrado por Claude.
+  Brief listo para Astra: `art/blender/almeja/BRIEF.md` (almeja con perla, objetivo de nota).
 - `intervalos-cantados-juego`.
 
 ---
