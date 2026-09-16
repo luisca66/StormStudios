@@ -41,7 +41,7 @@ de pasar a la siguiente. Quién modela lo elige Luis en Codex: el pez lo hizo **
 | 2 | Almeja con perla (objetivo de nota) | `almeja/` | ✅ integrada (2026-09-15): Astra v1 sin rondas; espera abierta y se cierra al tocarla | se ve a 80–130 u; gira en Y, rebota ×1.4 al tocarla; `pearl` teñida con el color de la nota; valva superior abre |
 | 3 | Atlántida hundida (hito central) | `atlantida/` | ⏳ | centro `(0,-50,0)`, radio ≈60 u, alto ≈45 u; colisionadores simples en `meta`; ≤ 40 k tri |
 | 4 | Portal atlante (compuerta) | `portal/` | ⏳ | `(110,-50,110)`, radio de disparo 5 u, abre en 0.7 s; cinemática a 15 u; partes marco + hojas del iris + `glow` |
-| 5 | Ballena jorobada | `ballena/` | ⏳ | ≈40 u de largo, órbita r=80 u; `tail` con batido vertical, `flipper` ×2 |
+| 5 | Ballena jorobada | `ballena/` | ✅ brief listo (2026-09-15); **adelantada** a la 3 y 4 mientras Astra recarga | 38–42 u, órbita r=80 u, colisión 12.5 u; `body`, `tail`, `flipper` ×2, `jaw`, `meta.blowhole` |
 | 6 | Kit de arrecife instanciado | `arrecife/` | ⏳ | 4 corales, 3 rocas, alga por segmentos (se mece), anémona; ≤ 1.5 k tri por variante |
 | 7 | Cangrejo | `cangrejo/` | ⏳ | ×4 en la arena, ≈7 u; `leg` segment 0–5, `claw` ×2 |
 | 8 | Tortuga marina (sustituye los 8 calamares) | `tortuga/` | ⏳ elegida por Luis | ×3–4 nadando en órbitas amplias (r 35–85 u, y −30…0); ≈3 u; `flipper` ×4 con remada, `head`; obstáculo esférico móvil |
