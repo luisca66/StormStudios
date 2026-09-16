@@ -58,6 +58,13 @@ export interface CockpitLayout {
   answers?: ScreenRect;
 }
 
+/**
+ * Ventanal ampliado: el marco superior sube y las esquinas se abren hacia fuera
+ * (fracción de la media altura / medio ancho visibles). Las consolas no se mueven:
+ * llevan el HUD encima. Devuelve la sensación de cúpula de la primera Batisfera.
+ */
+const WINDOW_OPEN = { top: 0.1, side: 0.045 };
+
 let data: CabinData | undefined;
 let pending: Promise<void> | undefined;
 
@@ -170,8 +177,10 @@ export class Cockpit {
       if (narrow && !module.narrow) continue;
       const [ax, ay] = module.anchor;
       const d = module.depth;
+      const lift = ay > 0 ? WINDOW_OPEN.top : 0;
+      const spread = ay > 0 && ax !== 0 ? WINDOW_OPEN.side : 0;
       const matrix = new THREE.Matrix4().compose(
-        new THREE.Vector3(ax * halfW * d, ay * H * d, -d),
+        new THREE.Vector3(ax * (1 + spread) * halfW * d, ay * (1 + lift) * H * d, -d),
         new THREE.Quaternion(),
         module.stretchX ? new THREE.Vector3(2 * halfW * d + 0.3, k, k) : new THREE.Vector3(k, k, k),
       );

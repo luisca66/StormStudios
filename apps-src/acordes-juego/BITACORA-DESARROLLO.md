@@ -471,3 +471,11 @@ Checklist §13 (resultado final):
 - El bramido y las placas por nota reutilizan `pulse()`/`flashSegment`. `species.ts` ya no tiene primitivas: las 7 especies son de Blender.
 - Debug: botón **Acercar Leviatán** (si no hay uno, fuerza que el siguiente spawn de zona 5 lo sea y luego lo trae a 26 u); inspector `dev/leviatan.html`.
 - Verificado: build, QA, inspector (bramido, captura, huida) y zona 5 real (aparición, activación a 25 m, pregunta de oncenas, huida). Pendiente: FPS y teléfono real. Publicado el 2026-09-14 (`92ee9a4`).
+
+### ✅ Cúpula de cristal sobre la cabina de Blender (2026-09-16, Claude)
+- Pedido de Luis: la cabina le gusta, pero se perdió la sensación de estar dentro de una esfera de cristal.
+- `3d/dome-glass.ts`: el mundo se dibuja en un render target y se mira por un cristal curvo: deformación de barril (`DOME_CURVATURE = 0.24`), aberración cromática leve en la orilla, halo frío de borde y tres reflejos en arco. El FOV del mundo se abre para que el centro conserve su escala; la cabina se dibuja encima sin deformar.
+- `renderer.ts`: el raycast de criaturas pasa por `DomeGlass.worldNdc`, así el clic cae donde se ve la criatura a través del cristal.
+- `cockpit.ts`: `WINDOW_OPEN` sube el marco superior (10 %) y abre las esquinas (4.5 %); las consolas no se mueven porque llevan el HUD.
+- Verificado: build, QA, inmersión en zona 1 a 800×450 y en aspecto casi cuadrado, sin errores de consola. Publicado.
+- Siguiente: marco envolvente con ventanales laterales grandes (encargo a Astra, `art/blender/marco-envolvente/BRIEF.md`).

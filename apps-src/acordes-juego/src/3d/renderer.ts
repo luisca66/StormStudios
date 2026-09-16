@@ -6,6 +6,7 @@ import { INTERACTION, ZONES, depthMeters } from "@/config";
 import { Environment } from "./environment";
 import { PlayerController } from "./player";
 import { Cockpit } from "./cockpit";
+import { DomeGlass } from "./dome-glass";
 import { CreatureManager } from "./creatures/manager";
 import type { Creature } from "./creatures/base";
 
@@ -20,6 +21,7 @@ export class Game3D {
   readonly environment: Environment;
   readonly creatures: CreatureManager;
   readonly cockpit: Cockpit;
+  private dome: DomeGlass;
 
   private raycaster = new THREE.Raycaster();
   private ndc = new THREE.Vector2();
@@ -70,6 +72,8 @@ export class Game3D {
 
     this.cockpit = new Cockpit(this.renderer);
     this.cockpit.resize(window.innerWidth, window.innerHeight);
+    this.dome = new DomeGlass(this.camera, 60);
+    this.dome.resize(window.innerWidth, window.innerHeight, this.renderer.getPixelRatio());
 
     this.creatures = new CreatureManager(this.scene, () => null);
     this.player.onTap = (x, y) => this.handleTap(x, y);
@@ -86,6 +90,7 @@ export class Game3D {
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.cockpit.resize(window.innerWidth, window.innerHeight);
+    this.dome.resize(window.innerWidth, window.innerHeight, this.renderer.getPixelRatio());
   }
 
   /** Coloca al jugador al inicio de una zona y habilita los controles. */
@@ -105,6 +110,8 @@ export class Game3D {
       (clientX / window.innerWidth) * 2 - 1,
       -(clientY / window.innerHeight) * 2 + 1,
     );
+    // El clic cae sobre el cristal curvo: se lleva al punto del mundo que se ve ahí.
+    this.dome.worldNdc(this.ndc);
     this.raycaster.setFromCamera(this.ndc, this.camera);
     this.raycaster.far = Math.hypot(
       INTERACTION.spawnRadiusMax,
@@ -145,8 +152,7 @@ export class Game3D {
     this.onDepth?.(depthMeters(pos.y), pos.y);
     this.onFrame?.(dt, this.elapsed);
 
-    this.renderer.clear();
-    this.renderer.render(this.scene, this.camera);
+    this.dome.render(this.renderer, this.scene, this.elapsed);
     this.cockpit.render(this.renderer);
   }
 }
