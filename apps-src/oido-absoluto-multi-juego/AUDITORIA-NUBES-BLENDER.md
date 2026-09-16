@@ -43,6 +43,12 @@ El unicornio es otra liga: un cuadrúpedo con alas y crin que el jugador ve de c
 nivel. Claude puede hacerlo, pero requerirá más rondas de ajuste con Luis; Astra ha resuelto
 mejor lo orgánico (tortuga, ballena, cangrejo).
 
+## Avance (2026-09-16)
+
+- ✅ Kit de nubes, globo aerostático, portal arcoíris e islas/cometas/pájaros: modelados por Claude
+  y publicados (ver `art/blender/README.md`).
+- ⏳ Unicornio-pegaso: brief para Astra en `art/blender/unicornio/BRIEF.md`.
+
 ## Orden propuesto
 
 1. **Kit de nubes** (Claude): arregla lo que más se ve mal y lo que más cuesta dibujar.

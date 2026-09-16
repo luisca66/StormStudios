@@ -169,3 +169,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 - [src/3d/blender-rainbow-portal.ts](../src/3d/blender-rainbow-portal.ts). `gate.ts` gira las
   cintas en sentidos alternos como antes; al desbloquearse giran 4× más rápido y el velo se
   aclara. Los orbes que orbitan siguen en código.
+
+### Kit del cielo: islas, flor, cometas y pájaros (nivel 5)
+
+- Modelado por **Claude** con bpy (`cielo/modelar-cielo.py`). 11 partes, 10 060 triángulos en total.
+- Isla flotante (`island_rock` con césped y arbustos + `island_cloud`, faldón de metaballs), flor
+  (`flower_stem` + `flower_bloom`, se tiñe y brilla), cometa (`kite_sail_a/b`, `kite_frame`,
+  `kite_bow` que se tiñe) y pájaro redondo (`bird_body` se tiñe, `bird_details`, `bird_wing`
+  derecha que el juego espeja).
+- [src/3d/blender-sky-kit.ts](../src/3d/blender-sky-kit.ts) comparte una geometría por parte;
+  `environment.ts` (`spawnSkyIslands`, `spawnKites`, `spawnSkyBirds`) arma y anima como antes
+  (vaivén de islas, cola de moños, aleteo y cruce de pájaros). Hilos de cometa, arcoíris
+  lejanos y destellos siguen en código.

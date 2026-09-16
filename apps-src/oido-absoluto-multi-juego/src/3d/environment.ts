@@ -5,6 +5,7 @@ import { BlenderTurtle, buildBlenderTurtle, preloadBlenderTurtle } from "./blend
 import { BlenderAtlantis, buildBlenderAtlantis, preloadBlenderAtlantis } from "./blender-atlantis";
 import { BlenderCrab, buildBlenderCrab, preloadBlenderCrab } from "./blender-crab";
 import { buildCloudField, preloadBlenderClouds, CloudField, CloudPart, CloudPlacement } from "./blender-clouds";
+import { preloadBlenderSkyKit, skyMesh } from "./blender-sky-kit";
 
 export interface Obstacle {
   x: number;
@@ -1946,10 +1947,14 @@ export class LevelEnvironment {
       this.group.add(this.cloudField.group);
     }).catch((error: unknown) => console.error("Nubes de Blender:", error));
     this.spawnRainbowArcs();
-    this.spawnSkyIslands();
     this.spawnSparkles(HALF);
-    this.spawnKites();
-    this.spawnSkyBirds();
+    // Islas, cometas y pájaros vienen del kit de Blender (art/blender/cielo/).
+    preloadBlenderSkyKit().then(() => {
+      if (!this.group.parent) return; // el nivel pudo descargarse mientras llegaba el JSON
+      this.spawnSkyIslands();
+      this.spawnKites();
+      this.spawnSkyBirds();
+    }).catch((error: unknown) => console.error("Kit del cielo de Blender:", error));
   }
 
   // Cúmulos pastel del kit de Blender (art/blender/nubes/), instanciados: ver blender-clouds.ts.
@@ -2033,25 +2038,21 @@ export class LevelEnvironment {
       if (Math.hypot(p.x, p.z) < 30) continue;
       const island = new THREE.Group();
       island.position.copy(p);
+      island.rotation.y = Math.random() * Math.PI * 2;
+      island.scale.setScalar(0.75);
+      island.add(skyMesh("island_rock", { roughness: 0.9 }));
+      island.add(skyMesh("island_cloud", { roughness: 1, emissive: new THREE.Color(0.5, 0.49, 0.56), emissiveIntensity: 1 }));
 
-      const cloudMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(0.96, 0.93, 1.0), roughness: 0.9 });
-      const blobs = 3 + ((Math.random() * 3) | 0);
-      for (let b = 0; b < blobs; b++) {
-        const br = 3 + Math.random() * 3.5;
-        const blob = new THREE.Mesh(new THREE.SphereGeometry(br, 12, 8), cloudMat);
-        blob.position.set((Math.random() - 0.5) * 6, 0, (Math.random() - 0.5) * 6);
-        blob.scale.y = 0.55 * 0.5 * 2; // flattened (height = br*0.55)
-        island.add(blob);
-      }
-
-      // Glowing magic flower on top
+      // Flor mágica que brilla sobre el césped.
       const fcol = flowerColors[(Math.random() * 3) | 0];
-      const flower = new THREE.Mesh(
-        new THREE.SphereGeometry(0.5, 8, 6),
-        new THREE.MeshStandardMaterial({ color: fcol, emissive: fcol, emissiveIntensity: 0.9, roughness: 0.4 })
-      );
-      flower.position.y = 2.5;
-      island.add(flower);
+      const stem = skyMesh("flower_stem");
+      stem.position.set(1.2, 0.5, -0.8);
+      stem.scale.setScalar(1.4);
+      island.add(stem);
+      const bloom = skyMesh("flower_bloom", { tint: fcol, emissive: fcol, emissiveIntensity: 0.9, roughness: 0.4, doubleSide: true });
+      bloom.position.set(1.2, 0.5 + 2.2 * 1.4, -0.8);
+      bloom.scale.setScalar(1.4);
+      island.add(bloom);
 
       this.group.add(island);
       this.animatedMeshes.push({
@@ -2088,10 +2089,6 @@ export class LevelEnvironment {
   }
 
   private spawnKites(): void {
-    const panelPalette = [
-      new THREE.Color(1.0, 0.40, 0.60), new THREE.Color(1.0, 0.80, 0.0),
-      new THREE.Color(0.40, 0.87, 1.0), new THREE.Color(1.0, 0.53, 0.20)
-    ];
     const bowPalette = [
       new THREE.Color(1.0, 0.40, 0.60), new THREE.Color(1.0, 0.80, 0.0), new THREE.Color(0.40, 0.87, 1.0),
       new THREE.Color(1.0, 0.53, 0.20), new THREE.Color(0.80, 0.40, 1.0), new THREE.Color(0.40, 0.90, 0.55)
@@ -2100,11 +2097,6 @@ export class LevelEnvironment {
       [-80, 18, -60], [55, 12, -90], [-40, 25, 110], [100, 8, 40], [-120, 20, 20], [30, 30, -140], [-65, 14, -30],
       [90, 22, 80], [-30, 10, 75], [130, 16, -50], [-95, 28, 130], [45, 6, -170], [-150, 18, -80], [70, 32, 150]
     ];
-    const TOP = new THREE.Vector3(0, 1.4, 0), RIGHT = new THREE.Vector3(1, 0.1, 0);
-    const BOTTOM = new THREE.Vector3(0, -1.8, 0), LEFT = new THREE.Vector3(-1, 0.1, 0), CENTER = new THREE.Vector3(0, 0, 0);
-    const panelDefs = [[TOP, RIGHT, CENTER], [RIGHT, BOTTOM, CENTER], [BOTTOM, LEFT, CENTER], [LEFT, TOP, CENTER]];
-    const frameMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(0.98, 0.96, 1.0), roughness: 0.4, metalness: 0.1 });
-
     spots.forEach((s, ki) => {
       const root = new THREE.Group();
       root.position.set(s[0], s[1], s[2]);
@@ -2118,40 +2110,16 @@ export class LevelEnvironment {
       body.rotation.x = -Math.PI / 4;
       root.add(body);
 
-      // 4 triangular panels (double-sided)
-      for (let pi = 0; pi < 4; pi++) {
-        const [v0, v1, v2] = panelDefs[pi];
-        const col = panelPalette[(pi + colorOffset) % 4];
-        const geo = new THREE.BufferGeometry();
-        geo.setAttribute("position", new THREE.Float32BufferAttribute(
-          [v0.x, v0.y, v0.z, v1.x, v1.y, v1.z, v2.x, v2.y, v2.z], 3));
-        geo.computeVertexNormals();
-        const panel = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({
-          color: col, roughness: 0.25, emissive: col, emissiveIntensity: 0.1, side: THREE.DoubleSide
-        }));
-        body.add(panel);
-      }
+      // Vela abombada de Blender (dos combinaciones de paños) + varillas y botón.
+      body.add(skyMesh(ki % 2 === 0 ? "kite_sail_a" : "kite_sail_b", { roughness: 0.35, doubleSide: true }));
+      body.add(skyMesh("kite_frame", { roughness: 0.4 }));
 
-      // Frame: spine + cross + center knob
-      const spine = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 3.2, 6), frameMat);
-      spine.position.set(0, -0.2, 0.02);
-      body.add(spine);
-      const cross = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 2.05, 6), frameMat);
-      cross.rotation.z = Math.PI / 2; cross.position.set(0, 0.1, 0.02);
-      body.add(cross);
-      const knob = new THREE.Mesh(new THREE.SphereGeometry(0.08, 7, 5), frameMat);
-      knob.position.set(0, 0, 0.02);
-      body.add(knob);
-
-      // Tail of 6 bows (simplified to one flattened glowing sphere each)
+      // Tail of 6 bows
       const bows: THREE.Object3D[] = [];
       for (let bi = 0; bi < 6; bi++) {
-        const col = bowPalette[bi % bowPalette.length];
-        const bow = new THREE.Mesh(
-          new THREE.SphereGeometry(0.13, 8, 6),
-          new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: 0.18, roughness: 0.3 })
-        );
-        bow.scale.set(2.2, 1.0, 0.5);
+        const col = bowPalette[(bi + colorOffset) % bowPalette.length];
+        const bow = skyMesh("kite_bow", { tint: col, emissive: col, emissiveIntensity: 0.15, roughness: 0.4, doubleSide: true });
+        bow.scale.setScalar(1.3);
         body.add(bow);
         bows.push(bow);
       }
@@ -2173,68 +2141,33 @@ export class LevelEnvironment {
 
   private spawnSkyBirds(): void {
     const palettes = [
-      { body: 0x54aaff, wing: 0x3387ed, belly: 0xeef7ff, beak: 0xffcc33 },
-      { body: 0xff87ba, wing: 0xed5499, belly: 0xffeef5, beak: 0xff9933 },
-      { body: 0x54cc78, wing: 0x339955, belly: 0xeefff2, beak: 0xffcc22 },
-      { body: 0xffde45, wing: 0xedaa12, belly: 0xfffff0, beak: 0xff8833 },
-      { body: 0xba78ed, wing: 0x9945cc, belly: 0xf5eeff, beak: 0xffaa33 },
-      { body: 0xff8833, wing: 0xde5412, belly: 0xfff2ee, beak: 0xffde22 }
+      { body: 0x54aaff, wing: 0x3387ed },
+      { body: 0xff87ba, wing: 0xed5499 },
+      { body: 0x54cc78, wing: 0x339955 },
+      { body: 0xffde45, wing: 0xedaa12 },
+      { body: 0xba78ed, wing: 0x9945cc },
+      { body: 0xff8833, wing: 0xde5412 }
     ];
     for (let i = 0; i < 7; i++) {
       const pal = palettes[i % palettes.length];
       const bird = new THREE.Group();
       bird.visible = false;
-      const bodyMat = new THREE.MeshStandardMaterial({ color: pal.body, roughness: 0.35 });
-      const wingMat = new THREE.MeshStandardMaterial({ color: pal.wing, roughness: 0.3, side: THREE.DoubleSide });
-      const bellyMat = new THREE.MeshStandardMaterial({ color: pal.belly, roughness: 0.5 });
-      const beakMat = new THREE.MeshStandardMaterial({ color: pal.beak, roughness: 0.3, metalness: 0.1 });
-      const eyeMat = new THREE.MeshStandardMaterial({ color: 0x121233, roughness: 0.1 });
 
+      // Pájaro redondo de Blender: cuerpo teñido, pecho/pico/ojos con su color y alas espejadas.
       const bodyRoot = new THREE.Group();
       bird.add(bodyRoot);
+      bodyRoot.add(skyMesh("bird_body", { tint: pal.body, roughness: 0.4 }));
+      bodyRoot.add(skyMesh("bird_details", { roughness: 0.35 }));
 
-      const torso = new THREE.Mesh(new THREE.SphereGeometry(0.72, 14, 12), bodyMat);
-      torso.scale.set(1.0, 1.05, 0.92);
-      bodyRoot.add(torso);
-      const belly = new THREE.Mesh(new THREE.SphereGeometry(0.46, 10, 8), bellyMat);
-      belly.scale.set(0.88, 0.8, 0.6); belly.position.set(0, -0.08, 0.42);
-      bodyRoot.add(belly);
-
-      const head = new THREE.Group();
-      head.position.set(0, 0.72, 0.30);
-      bodyRoot.add(head);
-      const headM = new THREE.Mesh(new THREE.SphereGeometry(0.52, 14, 12), bodyMat);
-      head.add(headM);
-      // Beak (cones pointing +Z)
-      const upper = new THREE.Mesh(new THREE.CylinderGeometry(0.0, 0.13, 0.30, 5), beakMat);
-      upper.rotation.x = Math.PI / 2; upper.position.set(0, 0.0, 0.62);
-      head.add(upper);
-      for (const sgn of [-1, 1]) {
-        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.09, 7, 5), eyeMat);
-        eye.position.set(sgn * 0.30, 0.10, 0.46);
-        head.add(eye);
-      }
-
-      // Wings (pivots at sides)
       let wingL: THREE.Object3D | null = null, wingR: THREE.Object3D | null = null;
       for (const sgn of [-1, 1]) {
         const pivot = new THREE.Group();
-        pivot.position.set(sgn * 0.60, 0.05, 0);
+        pivot.position.set(sgn * 0.55, 0.1, 0);
         bodyRoot.add(pivot);
-        const wmain = new THREE.Mesh(new THREE.SphereGeometry(1.0, 12, 8), wingMat);
-        wmain.scale.set(sgn * 0.95, 0.065, 0.58); wmain.position.set(sgn * 0.55, 0, 0); wmain.rotation.x = 0.15;
-        pivot.add(wmain);
+        const wing = skyMesh("bird_wing", { tint: pal.wing, roughness: 0.35, doubleSide: true });
+        wing.scale.x = sgn; // el ala del kit es la derecha (+X): se espeja para la izquierda
+        pivot.add(wing);
         if (sgn === -1) wingL = pivot; else wingR = pivot;
-      }
-
-      // Tail fan (3 feathers)
-      const tail = new THREE.Group();
-      tail.position.set(0, -0.15, -0.65);
-      bodyRoot.add(tail);
-      for (const idx of [-1, 0, 1]) {
-        const tf = new THREE.Mesh(new THREE.SphereGeometry(0.22, 7, 5), wingMat);
-        tf.scale.set(0.35, 1.0, 0.18); tf.rotation.x = Math.PI / 2 + 0.35; tf.rotation.y = idx * 0.22; tf.position.x = idx * 0.08;
-        tail.add(tf);
       }
 
       this.group.add(bird);
