@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { BlenderPortal, buildBlenderPortal, preloadBlenderPortal } from "./blender-portal";
 
 export class LevelGate {
   public group: THREE.Group;
@@ -11,7 +12,8 @@ export class LevelGate {
   private rightHinge?: THREE.Group;
   private leftDoor?: THREE.Mesh;
   private rightDoor?: THREE.Mesh;
-  private hatchPlate?: THREE.Mesh;
+  // Level 2 Atlantean portal (Blender, art/blender/portal/)
+  private blenderPortal?: BlenderPortal;
   private wormholeCore?: THREE.Mesh;
   private wormholeRing?: THREE.Mesh;
   private portalCurtain?: THREE.Mesh;
@@ -70,11 +72,9 @@ export class LevelGate {
       }
     } 
     else if (this.level === 2) {
-      // Slide Hatch Plate horizontally
-      if (this.hatchPlate) {
-        this.hatchPlate.position.x = 110 + t * 8.0; // slide away
-      }
-    } 
+      // Gira las seis hojas del iris sobre su bisagra y sube la emisión de glow (§ ENTREGA.md).
+      this.blenderPortal?.setOpenAmount(t);
+    }
     else if (this.level === 3) {
       this.wormholeT += delta;
       for (const r of this.wormholeRings) {
@@ -158,29 +158,20 @@ export class LevelGate {
       this.group.add(this.leftHinge, this.rightHinge);
     } 
     else if (this.level === 2) {
-      // Hatch door at floor (y=-50), x=110, z=110
+      // Compuerta atlante en el fondo de arena (art/blender/portal/, Astra): aro tallado +
+      // seis hojas de iris + núcleo glow. Se apoya en y = 0 del modelo, igual que Atlántida.
       this.position.set(110, -50, 110);
-
-      const metalMat = new THREE.MeshStandardMaterial({ color: 0x37474f, metalness: 0.8, roughness: 0.2 });
-      const goldMat = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.9 });
-
-      // Circular hatch base rim
-      const rim = new THREE.Mesh(new THREE.TorusGeometry(4.5, 0.6, 8, 24), metalMat);
-      rim.rotation.x = Math.PI / 2;
-      rim.position.set(110, -49.6, 110);
-      this.group.add(rim);
-
-      // Hatch sliding plate
-      this.hatchPlate = new THREE.Mesh(new THREE.CylinderGeometry(4.0, 4.0, 0.5, 16), metalMat);
-      this.hatchPlate.position.set(110, -49.8, 110);
-      
-      const handle = new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.15, 8, 16), goldMat);
-      handle.position.y = 0.45;
-      handle.rotation.x = Math.PI / 2;
-      this.hatchPlate.add(handle);
-
-      this.group.add(this.hatchPlate);
-    } 
+      preloadBlenderPortal()
+        .then(() => {
+          if (!this.group.parent) return; // el nivel pudo descargarse mientras llegaba el JSON
+          const portal = buildBlenderPortal();
+          portal.root.position.copy(this.position);
+          this.group.add(portal.root);
+          this.blenderPortal = portal;
+          this.blenderPortal.setOpenAmount(this.animProgress); // por si el desbloqueo ya iba en marcha
+        })
+        .catch((error: unknown) => console.error("Portal atlante de Blender:", error));
+    }
     else if (this.level === 3) {
       // Wormhole in the far corner of the cosmos (Godot: (280,0,280) scaled 4)
       this.position.set(280, 0, 280);

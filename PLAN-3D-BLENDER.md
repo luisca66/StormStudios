@@ -131,9 +131,10 @@ relajó para los modelos de Blender.
 - **Resonancia** — `oido-absoluto-guitarra-juego`: ✅ robot luthier en Blender, articulado
   (codos y rodillas), con mochila de guitarra y pisadas sincronizadas (2026-09-14, Claude). El
   prototipo procedural suelto se borró; el entorno del laberinto sigue procedural.
-- **Walking AP Multi** — `oido-absoluto-multi-juego`: rediseño completo empezando por el nivel 2 «El Océano»
-  (2026-09-15, modelos + entorno + iluminación). Plan: `PLAN-OCEANO-BLENDER.md`. ✅ Integrados (2026-09-15/16): pez (Sol), almeja, ballena, tortuga y Atlántida (Astra) y kit de
-  arrecife (Claude). Faltan el portal y el cangrejo. Estado al día en `PLAN-OCEANO-BLENDER.md`.
+- **Walking AP Multi** — `oido-absoluto-multi-juego`: rediseño completo del nivel 2 «El Océano»
+  (2026-09-15/16, modelos + entorno + iluminación) ✅ **completo**: pez (Sol), almeja, ballena,
+  tortuga, Atlántida, cangrejo y portal atlante (Astra) y kit de arrecife (Claude). Publicado.
+  Detalle en `PLAN-OCEANO-BLENDER.md`.
 - `intervalos-cantados-juego`.
 
 ---
