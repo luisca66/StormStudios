@@ -136,3 +136,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
   despacio a 0.5 rad y cierra de golpe. El paso se acompasa a la velocidad real del cangrejo.
 - `pincer` cuelga de su `claw` (con `attach`, conservando la charnela), como pedía la entrega.
 - Coste del nivel completo: 125 draw calls, 350 k triángulos, 60 fps en la PC de Luis.
+
+### Kit de nubes (nivel 5, Las Nubes)
+
+- Modelado por **Claude** con bpy (`nubes/modelar-nubes.py`), a partir de la auditoría
+  `AUDITORIA-NUBES-BLENDER.md`. 4 variantes en un JSON: `puff_small`, `puff_medium`,
+  `puff_large`, `flat_long`; 9 000 triángulos en total. Metaballs con base aplanada; el pigmento
+  de vértice guarda la luz propia (cima blanca, panza lavanda).
+- [src/3d/blender-clouds.ts](../src/3d/blender-clouds.ts) arma un `InstancedMesh` por variante,
+  teñido por ejemplar (paleta pastel) y con la misma deriva del prototipo. Lo siembran
+  `spawnSkyClouds` (90 nubes) y `spawnBigFeatureClouds` (20 gigantes) en `environment.ts`.
+- Sustituye ~540 esferas transparentes: la vista inicial pasó de 367 a 191 draw calls.
+- Material Lambert con emisivo lavanda claro: sin él las panzas se veían grises.

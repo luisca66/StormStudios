@@ -4,6 +4,7 @@ import { BlenderWhale, buildBlenderWhale, preloadBlenderWhale } from "./blender-
 import { BlenderTurtle, buildBlenderTurtle, preloadBlenderTurtle } from "./blender-turtle";
 import { BlenderAtlantis, buildBlenderAtlantis, preloadBlenderAtlantis } from "./blender-atlantis";
 import { BlenderCrab, buildBlenderCrab, preloadBlenderCrab } from "./blender-crab";
+import { buildCloudField, preloadBlenderClouds, CloudField, CloudPart, CloudPlacement } from "./blender-clouds";
 
 export interface Obstacle {
   x: number;
@@ -27,6 +28,7 @@ export class LevelEnvironment {
   private sunShafts: THREE.Mesh[] = [];
   private waterSurface?: THREE.Mesh;
   private reef?: ReefField;
+  private cloudField?: CloudField;
   private atlantis?: BlenderAtlantis;
   private shootingStarTimer = 3.0; // level 3: time until next shooting star
   
@@ -88,6 +90,7 @@ export class LevelEnvironment {
     this.causticMap2 = undefined;
     this.waterSurface = undefined;
     this.reef = undefined;
+    this.cloudField = undefined;
     this.atlantis = undefined;
     this.altarCrystal = undefined;
     // Reset fog
@@ -334,14 +337,6 @@ export class LevelEnvironment {
         else if (mesh.position.z < -limit) mesh.position.z = limit;
       }
       // ===== Level 5 — Las Nubes =====
-      else if (type === "sky_cloud") {
-        const b = meta.base, off = meta.off, spd = meta.spd;
-        mesh.position.set(
-          b.x + Math.sin(time * spd * 0.12 + off) * 4.0,
-          b.y + Math.sin(time * spd * 0.25 + off * 1.3) * 1.0,
-          b.z + Math.cos(time * spd * 0.09 + off * 0.8) * 4.0
-        );
-      }
       else if (type === "sky_island") {
         mesh.position.y = meta.baseY + Math.sin(time * 0.5 + meta.bobOffset) * 0.8;
       }
@@ -388,6 +383,8 @@ export class LevelEnvironment {
         this.spawnRipple(this.arenaSize / 2);
       }
     }
+
+    if (this.level === 5) this.cloudField?.update(time);
 
     // Level 3: spawn periodic shooting stars (sometimes in bursts)
     if (this.level === 2) {
@@ -1939,8 +1936,15 @@ export class LevelEnvironment {
     this.scene.background = new THREE.Color(0.72, 0.85, 0.96);
     this.scene.fog = new THREE.FogExp2(new THREE.Color(0.84, 0.88, 0.96).getHex(), 0.0018);
 
-    this.spawnSkyClouds(HALF);
-    this.spawnBigFeatureClouds(HALF);
+    const clouds: CloudPlacement[] = [];
+    this.spawnSkyClouds(HALF, clouds);
+    this.spawnBigFeatureClouds(HALF, clouds);
+    preloadBlenderClouds().then(() => {
+      // El nivel pudo descargarse mientras llegaba el JSON.
+      if (!this.group.parent) return;
+      this.cloudField = buildCloudField(clouds);
+      this.group.add(this.cloudField.group);
+    }).catch((error: unknown) => console.error("Nubes de Blender:", error));
     this.spawnRainbowArcs();
     this.spawnSkyIslands();
     this.spawnSparkles(HALF);
@@ -1948,79 +1952,46 @@ export class LevelEnvironment {
     this.spawnSkyBirds();
   }
 
-  private spawnSkyClouds(half: number): void {
+  // Cúmulos pastel del kit de Blender (art/blender/nubes/), instanciados: ver blender-clouds.ts.
+  private spawnSkyClouds(half: number, out: CloudPlacement[]): void {
     const palette = [
       new THREE.Color(1.0, 0.97, 0.99), new THREE.Color(0.96, 0.93, 1.0),
       new THREE.Color(1.0, 0.93, 0.95), new THREE.Color(0.90, 0.96, 1.0),
       new THREE.Color(0.96, 1.0, 0.96)
     ];
+    const kinds: CloudPart[] = ["puff_small", "puff_small", "puff_medium", "puff_medium", "flat_long"];
     for (let i = 0; i < 90; i++) {
       const cx = (Math.random() * 2 - 1) * (half - 20);
       const cy = -8 + Math.random() * 43; // -8 .. 35
       const cz = (Math.random() * 2 - 1) * (half - 20);
       if (Math.hypot(cx, cz) < 25) continue;
-
-      const root = new THREE.Group();
-      root.position.set(cx, cy, cz);
-      const base = palette[(Math.random() * palette.length) | 0];
-
-      const blobs = 3 + ((Math.random() * 4) | 0);
-      for (let b = 0; b < blobs; b++) {
-        const br = 3.5 + Math.random() * 4.5;
-        const f = 0.6 + Math.random() * 0.4; // vertical squash
-        const col = new THREE.Color(
-          base.r + (Math.random() - 0.5) * 0.06,
-          base.g + (Math.random() - 0.5) * 0.06,
-          base.b + (Math.random() - 0.5) * 0.06
-        );
-        const mat = new THREE.MeshStandardMaterial({
-          color: col,
-          roughness: 0.95,
-          transparent: true,
-          opacity: 0.82 + Math.random() * 0.16,
-          depthWrite: false,
-          emissive: col,
-          emissiveIntensity: 0.35 // self-lit so clouds read bright white, not gray
-        });
-        const blob = new THREE.Mesh(new THREE.SphereGeometry(br, 10, 7), mat);
-        blob.position.set((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 3, (Math.random() - 0.5) * 10);
-        blob.scale.set(0.8 + Math.random() * 0.5, (f * 0.5) * (0.55 + Math.random() * 0.3), 0.9 + Math.random() * 0.3);
-        root.add(blob);
-      }
-      this.group.add(root);
-      this.animatedMeshes.push({
-        mesh: root, type: "sky_cloud",
-        meta: { base: root.position.clone(), off: Math.random() * Math.PI * 2, spd: 0.3 + Math.random() * 0.6 }
+      const part = kinds[(Math.random() * kinds.length) | 0];
+      out.push({
+        part,
+        position: new THREE.Vector3(cx, cy, cz),
+        scale: (part === "puff_small" ? 1.3 : 0.9) + Math.random() * 0.7,
+        rotation: Math.random() * Math.PI * 2,
+        tint: palette[(Math.random() * palette.length) | 0],
+        off: Math.random() * Math.PI * 2,
+        spd: 0.3 + Math.random() * 0.6,
       });
     }
   }
 
-  private spawnBigFeatureClouds(half: number): void {
+  // Cúmulos gigantes, altos y lentos: el horizonte del nivel.
+  private spawnBigFeatureClouds(half: number, out: CloudPlacement[]): void {
     for (let i = 0; i < 20; i++) {
       const cx = (Math.random() * 2 - 1) * (half - 15);
-      const cy = 20 + Math.random() * 40;
+      const cy = 28 + Math.random() * 40;
       const cz = (Math.random() * 2 - 1) * (half - 15);
-      const root = new THREE.Group();
-      root.position.set(cx, cy, cz);
-
-      const blobs = 4 + ((Math.random() * 5) | 0);
-      for (let b = 0; b < blobs; b++) {
-        const br = 12 + Math.random() * 16;
-        const f = 0.5 + Math.random() * 0.25;
-        const mat = new THREE.MeshStandardMaterial({
-          color: new THREE.Color(0.98, 0.95, 1.0),
-          roughness: 0.98, transparent: true, opacity: 0.16 + Math.random() * 0.18, depthWrite: false,
-          emissive: new THREE.Color(0.95, 0.93, 1.0), emissiveIntensity: 0.25
-        });
-        const blob = new THREE.Mesh(new THREE.SphereGeometry(br, 10, 7), mat);
-        blob.position.set((Math.random() - 0.5) * 24, (Math.random() - 0.5) * 8, (Math.random() - 0.5) * 24);
-        blob.scale.set(0.7 + Math.random() * 0.7, (f * 0.5) * (0.4 + Math.random() * 0.3), 0.8 + Math.random() * 0.5);
-        root.add(blob);
-      }
-      this.group.add(root);
-      this.animatedMeshes.push({
-        mesh: root, type: "sky_cloud",
-        meta: { base: root.position.clone(), off: Math.random() * Math.PI * 2, spd: 0.08 + Math.random() * 0.17 }
+      out.push({
+        part: Math.random() < 0.7 ? "puff_large" : "flat_long",
+        position: new THREE.Vector3(cx, cy, cz),
+        scale: 1.8 + Math.random() * 1.2,
+        rotation: Math.random() * Math.PI * 2,
+        tint: new THREE.Color(0.98, 0.96, 1.0),
+        off: Math.random() * Math.PI * 2,
+        spd: 0.08 + Math.random() * 0.17,
       });
     }
   }
