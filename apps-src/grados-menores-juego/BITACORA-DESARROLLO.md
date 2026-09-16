@@ -744,8 +744,20 @@ ver con el juego y nunca ha estado versionado.
    completo, que la pausa congele con pregunta viva, layout en ventana angosta.
 2. El **guiño al Expreso Tonal** sobre el planeta natal (§5.6), pendiente desde F4.
 3. Los **fps** en un navegador real: sigue sin medirse.
-4. El `500`/`404` de consola que no logré atribuir (ver F5) — conviene mirarlo ya en
-   producción, donde el entorno es el de verdad.
+4. ~~El `500`/`404` de consola que no logré atribuir (ver F5)~~ **resuelto (falso positivo),
+   ver entrada 2026-09-16 más abajo.**
+
+## 2026-09-16 — Cierre del `500`/`404` de consola (Claude) ✅
+
+**Investigado con Chrome real** (no el pane del harness), `npm run dev` en 127.0.0.1:5176:
+- Consola limpia en dos cargas completas de la página: solo los mensajes `[vite] connecting…`
+  / `[vite] connected.`; cero errores, cero warnings.
+- Red: 32 peticiones por carga (64 en dos cargas), **las 32 en 200** — ni un 404 ni un 500,
+  ni siquiera una petición a `/favicon.ico` (Chrome no la pidió esta vez).
+- El menú carga y funciona completo (constelación, timbre, velocidad, grados, crédito).
+
+**Veredicto: era ruido del entorno del harness anterior, no un bug de la app.** Confirma la
+sospecha de F5. Se retira de la lista de pendientes; no se tocó código.
 
 ## 2026-09-15 — Carlinga de Blender ✅ (Astra modela · Claude integra)
 
