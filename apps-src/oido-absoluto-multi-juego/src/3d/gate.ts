@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { BlenderPortal, buildBlenderPortal, preloadBlenderPortal } from "./blender-portal";
+import { buildBlenderRainbowPortal, preloadBlenderRainbowPortal } from "./blender-rainbow-portal";
 
 export class LevelGate {
   public group: THREE.Group;
@@ -18,8 +19,9 @@ export class LevelGate {
   private wormholeRing?: THREE.Mesh;
   private portalCurtain?: THREE.Mesh;
   private rainbowCurtain?: THREE.Mesh;
-  // Level 5 rainbow portal
+  // Level 5 rainbow portal (Blender, art/blender/portal-arcoiris/)
   private portalRings: THREE.Mesh[] = [];
+  private rainbowVeil?: THREE.MeshBasicMaterial;
   private portalOrbs: THREE.Object3D[] = [];
   // Level 4 swamp portal
   private swampRings: THREE.Mesh[] = [];
@@ -104,9 +106,11 @@ export class LevelGate {
       }
     } 
     else if (this.level === 5) {
-      // Spin the rings (alternating directions)
+      // Spin the rings (alternating directions); unlocked, they whirl and the veil brightens.
+      const boost = 1 + 3 * this.animProgress;
+      if (this.rainbowVeil) this.rainbowVeil.opacity = 0.22 + 0.4 * this.animProgress;
       for (let i = 0; i < this.portalRings.length; i++) {
-        const spin = (0.15 + i * 0.04) * (i % 2 === 0 ? 1 : -1);
+        const spin = (0.15 + i * 0.04) * (i % 2 === 0 ? 1 : -1) * boost;
         this.portalRings[i].rotation.z += spin * delta;
       }
       // Orbit the glowing orbs around the portal
@@ -273,28 +277,16 @@ export class LevelGate {
       portal.position.copy(this.position);
       this.group.add(portal);
 
-      // 7 concentric rainbow rings (vertical = portal facing +Z)
-      const rainbow = [
-        [1.0, 0.22, 0.22], [1.0, 0.60, 0.0], [1.0, 0.93, 0.0], [0.27, 0.87, 0.27],
-        [0.27, 0.55, 1.0], [0.45, 0.18, 0.9], [0.75, 0.35, 1.0]
-      ];
-      for (let i = 0; i < rainbow.length; i++) {
-        const ro = 8.0 + i * 0.9;
-        const ringRadius = ro - 0.275; // tube radius 0.275 (Godot inner=ro-0.55)
-        const ring = new THREE.Mesh(
-          new THREE.TorusGeometry(ringRadius, 0.275, 8, 48),
-          new THREE.MeshBasicMaterial({ color: new THREE.Color(rainbow[i][0], rainbow[i][1], rainbow[i][2]) })
-        );
-        portal.add(ring);
-        this.portalRings.push(ring);
-      }
-
-      // Translucent glowing center
-      const center = new THREE.Mesh(
-        new THREE.CircleGeometry(7.5, 32),
-        new THREE.MeshBasicMaterial({ color: new THREE.Color(0.85, 0.75, 1.0), transparent: true, opacity: 0.22, side: THREE.DoubleSide })
-      );
-      portal.add(center);
+      // Aro de nube con siete cintas de arcoíris y estrellas (Blender). Mira a +Z.
+      preloadBlenderRainbowPortal()
+        .then(() => {
+          if (!this.group.parent) return; // el nivel pudo descargarse mientras llegaba el JSON
+          const model = buildBlenderRainbowPortal();
+          portal.add(model.root);
+          this.portalRings.push(...model.bands);
+          this.rainbowVeil = model.veil;
+        })
+        .catch((error: unknown) => console.error("Portal arcoíris de Blender:", error));
 
       // 12 glowing orbs orbiting the portal
       const orbColors = [

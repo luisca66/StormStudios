@@ -159,3 +159,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 - [src/3d/blender-balloon.ts](../src/3d/blender-balloon.ts); lo arma `renderer.ts
   buildNoteTargetMesh` en el nivel 5, con el globo del prototipo como reserva si el JSON no llegó.
   Luz puntual del color de la nota bajo la tela y vaivén suave.
+
+### Portal arcoíris (salida del nivel 5)
+
+- Modelado por **Claude** con bpy (`portal-arcoiris/modelar-portal-arcoiris.py`). 19 148 triángulos ·
+  10 partes · centro en el origen, mira a +Z; `gate.ts` lo pone en (0, 8, −170).
+- `cloud_ring` (aro de cúmulos con metaballs, más gordo abajo), `band` 0–6 (cintas de rojo a
+  violeta), `veil` (velo translúcido) y `stars` (cinco estrellas doradas).
+- [src/3d/blender-rainbow-portal.ts](../src/3d/blender-rainbow-portal.ts). `gate.ts` gira las
+  cintas en sentidos alternos como antes; al desbloquearse giran 4× más rápido y el velo se
+  aclara. Los orbes que orbitan siguen en código.
