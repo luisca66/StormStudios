@@ -13,7 +13,7 @@
 | ~~Objetivo de nota = «piñata» de conos~~ ✅ resuelto: almeja con perla, con faro de luz del color de la nota | `renderer.ts` + `blender-clam.ts` | hecho |
 | Atlántida con cilindros de 8 lados; es el hito central y se ve de primitivas | `environment.ts buildAtlantisCastle` | **modelador** → pieza 3 |
 | Compuerta = disco metálico plano en el suelo; la cinemática de desbloqueo no luce | `gate.ts` nivel 2 | **modelador** → pieza 4 |
-| Ballena = esfera estirada con cajas de cola | `environment.ts spawnWhale` | **modelador** → pieza 5 |
+| ~~Ballena = esfera estirada~~ ✅ resuelto: jorobada de Blender con cola, pectorales y mandíbula animadas | `environment.ts spawnWhale` + `blender-whale.ts` | hecho |
 | ~~Corales, rocas y algas de primitivas~~ ✅ resuelto: kit de arrecife instanciado | `environment.ts sowReef` + `blender-reef.ts` | hecho |
 | Cangrejos y calamares de primitivas (los calamares se cambian por tortugas) | `spawnCrab`, `spawnSquid` | **modelador** → piezas 7–8 |
 | ~~Pecera de vidrio; fondo plano; luz sin cáusticas~~ ✅ resuelto: hondonada de arena, textura de arena y agua soleada con cáusticas | `buildOcean` | hecho |
@@ -41,7 +41,7 @@ de pasar a la siguiente. Quién modela lo elige Luis en Codex: el pez lo hizo **
 | 2 | Almeja con perla (objetivo de nota) | `almeja/` | ✅ integrada (2026-09-15): Astra v1 sin rondas; espera abierta y se cierra al tocarla | se ve a 80–130 u; gira en Y, rebota ×1.4 al tocarla; `pearl` teñida con el color de la nota; valva superior abre |
 | 3 | Atlántida hundida (hito central) | `atlantida/` | ⏳ | centro `(0,-50,0)`, radio ≈60 u, alto ≈45 u; colisionadores simples en `meta`; ≤ 40 k tri |
 | 4 | Portal atlante (compuerta) | `portal/` | ⏳ | `(110,-50,110)`, radio de disparo 5 u, abre en 0.7 s; cinemática a 15 u; partes marco + hojas del iris + `glow` |
-| 5 | Ballena jorobada | `ballena/` | ✅ brief listo (2026-09-15); **adelantada** a la 3 y 4 mientras Astra recarga | 38–42 u, órbita r=80 u, colisión 12.5 u; `body`, `tail`, `flipper` ×2, `jaw`, `meta.blowhole` |
+| 5 | Ballena jorobada | `ballena/` | ✅ integrada (2026-09-15): Astra v1 + 2 revisiones propias; Claude fundió la garganta y saturó el azul | 38–42 u, órbita r=80 u, colisión 12.5 u; `body`, `tail`, `flipper` ×2, `jaw`, `meta.blowhole` |
 | 6 | Kit de arrecife instanciado | `arrecife/` | ✅ integrado (2026-09-15): modelado por **Claude** con bpy mientras Astra recargaba | 9 variantes, 7 844 tri en total, ~280 ejemplares en 9 draw calls |
 | 7 | Cangrejo | `cangrejo/` | ⏳ | ×4 en la arena, ≈7 u; `leg` segment 0–5, `claw` ×2 |
 | 8 | Tortuga marina (sustituye los 8 calamares) | `tortuga/` | ⏳ elegida por Luis | ×3–4 nadando en órbitas amplias (r 35–85 u, y −30…0); ≈3 u; `flipper` ×4 con remada, `head`; obstáculo esférico móvil |

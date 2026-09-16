@@ -17,6 +17,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 | Pez protagonista | `pez/` | ✅ integrado (2026-09-15). Modelado por **Sol** (v1 + ronda 1); Claude fundió el pedúnculo con el cuerpo, cambió el aro del ojo por párpados de piel y agrandó el iris. |
 | Almeja con perla (objetivo de nota) | `almeja/` | ✅ integrada (2026-09-15). Modelada por **Astra** (v1, aprobada sin rondas). |
 | Kit de arrecife (4 corales, 3 rocas, alga, anémona) | `arrecife/` | ✅ integrado (2026-09-15). Modelado por **Claude** con bpy, sin brief: es utilería instanciada. |
+| Ballena jorobada | `ballena/` | ✅ integrada (2026-09-15). Modelada por **Astra** (v1 + dos revisiones propias); Claude fundió el borde de la garganta y saturó el azul pizarra. |
 
 ### Pez protagonista
 
@@ -55,3 +56,20 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 - Sustituye a los corales-esfera, las rocas-esfera y las algas-cilindro del prototipo, y viste
   la ladera del borde del mapa, que quedó pelada al quitar la pecera de vidrio.
 - El pivote de todas las variantes es su base (y = 0), así que se apoyan solas en la arena.
+
+### Ballena jorobada
+
+- 19 434 triángulos · 5 mallas · JSON 861 kB · 39.75 × 10.06 × 21.30 u.
+- La carga [src/3d/blender-whale.ts](../src/3d/blender-whale.ts) desde `src/3d/assets/ballena.json`;
+  `environment.ts spawnWhale()` la cuelga de un pivote que orbita a 80 u del centro, entre −20 y
+  −10 u de profundidad, con un obstáculo esférico de 12.5 u que la sigue.
+- Animación (valores de `ballena/ENTREGA.md`): `tail` bate en X ±0.2 rad a 4 rad/s, las dos
+  `flipper` en X ±0.1 rad a 1.5 rad/s con 0.4 rad de desfase, y `jaw` abre a 0.25 rad una vez cada
+  12–20 s, con una pausa de 1 s (máquina de 4 fases, no un bucle).
+- Las burbujas del espiráculo salen del punto `meta.blowhole` del propio modelo, no de una
+  coordenada a mano como en el prototipo.
+- **Rumbo:** la cabeza mira a +Z, así que el giro de la órbita es `-swimAngle`. Se comprobó
+  midiendo el morro contra el vector de velocidad (`dot ≈ 0.99`), no a ojo: en pantalla es fácil
+  confundir morro y cola a esa distancia.
+- Coste del nivel completo con la ballena dentro: 250 draw calls, 270 k triángulos, 60 fps en la PC
+  de Luis. Falta teléfono.

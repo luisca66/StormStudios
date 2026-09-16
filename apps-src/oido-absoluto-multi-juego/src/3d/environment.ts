@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { buildReefField, preloadBlenderReef, ReefField, ReefPart, ReefPlacement } from "./blender-reef";
+import { BlenderWhale, buildBlenderWhale, preloadBlenderWhale } from "./blender-whale";
 
 export interface Obstacle {
   x: number;
@@ -208,27 +209,22 @@ export class LevelEnvironment {
         mesh.position.lerp(new THREE.Vector3(tx, ty, tz), 1.5 * delta);
         
         // Lerp rotation.y (tangent direction)
-        const targetAngle = -meta.swimAngle - Math.PI / 2.0;
+        // Modelo con la cabeza a +Z: el rumbo es el opuesto del angulo de orbita
+        // (comprobado midiendo morro contra velocidad, no a ojo).
+        const targetAngle = -meta.swimAngle;
         mesh.rotation.y = THREE.MathUtils.lerp(mesh.rotation.y, targetAngle, 1.5 * delta);
         
         // Pitch bobbing
         mesh.rotation.x = Math.sin(time * 1.5) * 0.05;
         
-        // Animate tail fluke and lateral fins
-        if (meta.tailPivot) {
-          meta.tailPivot.rotation.x = Math.sin(time * 4.0) * 0.2;
-        }
-        if (meta.leftFin && meta.rightFin) {
-          meta.leftFin.rotation.x = Math.PI / 2.0 + Math.sin(time * 1.5) * 0.1;
-          meta.rightFin.rotation.x = Math.PI / 2.0 + Math.sin(time * 1.5) * 0.1;
-        }
+        // Cola, pectorales y mandíbula (valores de la entrega de Astra)
+        meta.whale?.update(delta, time);
 
-        // Blowhole bubbles!
-        if (time - meta.lastBubbleTime > 0.25) {
+        // Burbujas del espiráculo, en el punto que marca el propio modelo
+        if (meta.whale && time - meta.lastBubbleTime > 0.25) {
           meta.lastBubbleTime = time;
-          const blowholeLocal = new THREE.Vector3(0.0, 2.2, 1.5);
-          blowholeLocal.applyMatrix4(mesh.matrixWorld);
-          this.spawnBlowholeBubble(blowholeLocal);
+          mesh.updateMatrixWorld();
+          this.spawnBlowholeBubble(meta.whale.blowhole.clone().applyMatrix4(mesh.matrixWorld));
         }
 
         // Update collider position dynamically
@@ -1641,114 +1637,29 @@ export class LevelEnvironment {
     this.obstacles.push({ x: sGroup.position.x, y: sGroup.position.y, z: sGroup.position.z, radius: scale * 1.5 });
   }
 
+  // Ballena jorobada de Blender (art/blender/ballena/, Astra). Da vueltas lentas alrededor
+  // del arrecife; el pez no la atraviesa.
   private spawnWhale(): void {
-    const whale = new THREE.Group();
-    whale.position.set(60, -10, 60);
-    whale.scale.set(5.0, 5.0, 5.0); // Giant whale!
+    const pivot = new THREE.Group();
+    pivot.position.set(60, -10, 60);
+    this.group.add(pivot);
 
-    // Materials matching Whale.gd
-    const mainMat = new THREE.MeshStandardMaterial({ color: 0x597d8f, roughness: 0.7 });
-    const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
-    const blackMat = new THREE.MeshStandardMaterial({ color: 0x121212, roughness: 0.5 });
-
-    // 1. Body: sphere stretched (2.0 radius, 4.0 height in Godot)
-    const bodyGeo = new THREE.SphereGeometry(2.0, 10, 8);
-    const body = new THREE.Mesh(bodyGeo, mainMat);
-    body.scale.set(1.0, 1.1, 2.5);
-    body.castShadow = true;
-    whale.add(body);
-
-    // 2. Tail Pivot (Group) at Z=-2.5
-    const tailPivot = new THREE.Group();
-    tailPivot.position.set(0, 0, -2.5);
-    whale.add(tailPivot);
-
-    // Tail stem (cylinder)
-    const stemGeo = new THREE.CylinderGeometry(0.6, 1.8, 3.5, 8);
-    const stem = new THREE.Mesh(stemGeo, mainMat);
-    stem.rotation.x = Math.PI / 2.0;
-    stem.position.set(0, -0.2, -1.75); // Centered relative to pivot
-    stem.castShadow = true;
-    tailPivot.add(stem);
-
-    // Fluke center (box)
-    const fcGeo = new THREE.BoxGeometry(1.2, 0.22, 1.4);
-    const flukeCenter = new THREE.Mesh(fcGeo, mainMat);
-    flukeCenter.position.set(0, -0.2, -4.5);
-    flukeCenter.castShadow = true;
-    tailPivot.add(flukeCenter);
-
-    // Fluke lobes (wing boxes left & right)
-    const lobeGeo = new THREE.BoxGeometry(2.4, 0.22, 1.8);
-    for (const side of [-1.0, 1.0]) {
-      const wing = new THREE.Mesh(lobeGeo, mainMat);
-      wing.position.set(side * 1.1, -0.2, -4.5);
-      wing.rotation.y = -side * (Math.PI / 5.5);
-      wing.castShadow = true;
-      tailPivot.add(wing);
-    }
-
-    // 3. Side Fins: Cylinder top=0.0, bottom=1.2, height=3.5, segments=5
-    const finGeo = new THREE.CylinderGeometry(0.0, 1.2, 3.5, 5);
-    
-    const leftFin = new THREE.Mesh(finGeo, mainMat);
-    leftFin.rotation.x = Math.PI / 2.0;
-    leftFin.scale.set(1.0, 0.1, 1.0);
-    leftFin.position.set(-2.2, -0.5, 0);
-    leftFin.rotation.z = -Math.PI / 6.0;
-    leftFin.rotation.y = -Math.PI / 8.0;
-    leftFin.castShadow = true;
-    whale.add(leftFin);
-
-    const rightFin = new THREE.Mesh(finGeo, mainMat);
-    rightFin.rotation.x = Math.PI / 2.0;
-    rightFin.scale.set(1.0, 0.1, 1.0);
-    rightFin.position.set(2.2, -0.5, 0);
-    rightFin.rotation.z = Math.PI / 6.0;
-    rightFin.rotation.y = Math.PI / 8.0;
-    rightFin.castShadow = true;
-    whale.add(rightFin);
-
-    // 4. Eyes: white base + black pupil
-    const eyeGeo = new THREE.SphereGeometry(0.3, 8, 8);
-    const pupilGeo = new THREE.SphereGeometry(0.15, 6, 6);
-
-    for (const side of [-1.0, 1.0]) {
-      const eye = new THREE.Mesh(eyeGeo, whiteMat);
-      eye.position.set(side * 1.6, 0.8, 3.2);
-      eye.scale.set(1.0, 1.0, 1.0);
-      whale.add(eye);
-
-      const pupil = new THREE.Mesh(pupilGeo, blackMat);
-      pupil.position.set(side * 1.8, 0.8, 3.35);
-      whale.add(pupil);
-    }
-
-    // 5. Mouth: box
-    const mouthGeo = new THREE.BoxGeometry(2.2, 0.1, 0.8);
-    const mouth = new THREE.Mesh(mouthGeo, blackMat);
-    mouth.position.set(0, -0.8, 4.0);
-    mouth.rotation.x = Math.PI / 12.0;
-    whale.add(mouth);
-
-    this.group.add(whale);
-
-    // Create dynamic moving obstacle reference
-    const obsRef = { x: whale.position.x, y: whale.position.y, z: whale.position.z, radius: 2.5 * 5.0 }; // 12.5m radius
+    const obsRef = { x: pivot.position.x, y: pivot.position.y, z: pivot.position.z, radius: 12.5 };
     this.obstacles.push(obsRef);
 
-    this.animatedMeshes.push({
-      mesh: whale,
-      type: "whale",
-      meta: {
-        swimAngle: Math.random() * Math.PI * 2,
-        tailPivot: tailPivot,
-        leftFin: leftFin,
-        rightFin: rightFin,
-        lastBubbleTime: 0,
-        obsRef: obsRef
-      }
-    });
+    const meta: { swimAngle: number; obsRef: typeof obsRef; lastBubbleTime: number; whale?: BlenderWhale } = {
+      swimAngle: Math.random() * Math.PI * 2,
+      obsRef,
+      lastBubbleTime: 0,
+    };
+    this.animatedMeshes.push({ mesh: pivot, type: "whale", meta });
+
+    preloadBlenderWhale().then(() => {
+      if (!this.group.parent) return; // el nivel pudo descargarse mientras llegaba el JSON
+      const whale = buildBlenderWhale();
+      pivot.add(whale.root);
+      meta.whale = whale;
+    }).catch((error: unknown) => console.error("Ballena de Blender:", error));
   }
 
   private spawnBlowholeBubble(worldPos: THREE.Vector3): void {
