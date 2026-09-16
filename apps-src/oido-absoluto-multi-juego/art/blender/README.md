@@ -72,4 +72,4 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
   midiendo el morro contra el vector de velocidad (`dot ≈ 0.99`), no a ojo: en pantalla es fácil
   confundir morro y cola a esa distancia.
 - Coste del nivel completo con la ballena dentro: 250 draw calls, 270 k triángulos, 60 fps en la PC
-  de Luis. Falta teléfono.
+  de Luis (plataforma objetivo: laptop/escritorio).

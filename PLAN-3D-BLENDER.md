@@ -73,8 +73,7 @@ tenga que bajar draw calls, y el GLB para visitantes únicos y ligeros.
 | Hito lejano | Faro 1 893 tri · Ballena 1 173 tri |
 | JSON grande | Terminal 5,5 MB (708 kB gzip); no pasar de ahí sin medir la carga |
 
-Las mediciones de FPS hechas hasta ahora son **solo en la PC de Luis**; falta medir en
-teléfono real con varias piezas a la vez.
+Las mediciones de FPS se hacen **en la PC de Luis**, que es la plataforma objetivo.
 
 ### Problemas conocidos
 
@@ -109,7 +108,7 @@ Queda como pendiente heredado de la bitácora (F5): animar las agujas de los man
 | Pulpo Dumbo | ✅ Blender (JSON por partes) · modelado por Astra, integrado por Claude |
 | Sifonóforo | ✅ Blender (4 piezas encadenadas con instancias) · modelado por Astra, integrado por Claude |
 | Leviatán | ✅ Blender (19 piezas encadenadas: head, body 1–8, tail y 9 placas) · modelado por Astra en 3 rondas, integrado por Claude |
-| Cabina sci-fi | ✅ Blender (JSON por módulos anclados a pantalla, 8 draw calls) · publicada (`45e5e95`); falta prueba en teléfono real |
+| Cabina sci-fi | ✅ Blender (JSON por módulos anclados a pantalla, 8 draw calls) · publicada (`45e5e95`) |
 | Entorno (fosa, arrecifes) | ⏳ primitivas; el brief lo deja para otra fase |
 
 ### Aerostato — `acordes-cantar-juego` (acordes cantados, puerto 5174)
@@ -145,16 +144,16 @@ Orden por impacto visual y porque cada paso reutiliza lo anterior. **Confirmado 
 el 2026-09-13.**
 
 1. ✅ **Cabina sci-fi de Batisfera** (commit `7a1df76`, sin deploy). Pendiente: que Luis la vea
-   en el juego y en un teléfono real. La revisión de Astra la encuentra por debajo del
+   en el juego. La revisión de Astra la encuentra por debajo del
    concepto (materiales uniformes, consolas vacías en el render). Si Luis coincide, se hace una
    pasada de pulido en `modelar-cabina.py` **conservando** módulos, anclas, rieles estirables y
    pantallas exportadas.
 2. **Criaturas restantes de Batisfera** con el flujo de la sección 6. **Primero solo el
    Calamar Vela** (`art/blender/calamar-vela/BRIEF.md`) como prueba del flujo; si calidad y
-   rendimiento pasan (medir en teléfono con 6 criaturas), siguen Rape → Dumbo → Sifonóforo →
+   rendimiento pasan (medir en escritorio con 6 criaturas), siguen Rape → Dumbo → Sifonóforo →
    Leviatán. Encaja con el hito H4 de `PLAN-HITOS-BATISFERA-2.md`.
 3. ✅ **Aeronaves del Aerostato** en un solo script con las 4 piezas y la hélice como parte viva
-   (2026-09-14). Pendiente: verlas en vuelo real y en teléfono.
+   (2026-09-14). Pendiente: verlas en vuelo real.
 4. ✅ **Globo/canasta del Aerostato** (2026-09-14, composición enmarcada elegida por Luis).
 5. ✅ **Robot de Resonancia** (2026-09-14): Luis eligió Blender articulado e integrar el sonido de
    pasos.
@@ -169,7 +168,9 @@ el 2026-09-13.**
 (`oido-absoluto-multi-juego`, `intervalos-cantados-juego`): solo modelos, o también
 entornos, iluminación y experiencia visual. Hasta entonces no tienen ruta.
 
-Transversal: medir rendimiento en teléfono real antes de publicar cualquier modelo nuevo.
+Transversal: medir rendimiento **en escritorio** antes de publicar cualquier modelo nuevo. Los juegos
+son para laptop/escritorio; las versiones de teléfono serán apps nativas iOS/Android hechas aparte
+(aclarado por Luis el 2026-09-15), así que no se recorta presupuesto por móvil.
 
 ## 5. Cómo ejecutar una pieza (checklist por sesión)
 

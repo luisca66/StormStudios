@@ -44,7 +44,7 @@ de pasar a la siguiente. Quién modela lo elige Luis en Codex: el pez lo hizo **
 | 5 | Ballena jorobada | `ballena/` | ✅ integrada (2026-09-15): Astra v1 + 2 revisiones propias; Claude fundió la garganta y saturó el azul | 38–42 u, órbita r=80 u, colisión 12.5 u; `body`, `tail`, `flipper` ×2, `jaw`, `meta.blowhole` |
 | 6 | Kit de arrecife instanciado | `arrecife/` | ✅ integrado (2026-09-15): modelado por **Claude** con bpy mientras Astra recargaba | 9 variantes, 7 844 tri en total, ~280 ejemplares en 9 draw calls |
 | 7 | Cangrejo | `cangrejo/` | ⏳ | ×4 en la arena, ≈7 u; `leg` segment 0–5, `claw` ×2 |
-| 8 | Tortuga marina (sustituye los 8 calamares) | `tortuga/` | ⏳ elegida por Luis | ×3–4 nadando en órbitas amplias (r 35–85 u, y −30…0); ≈3 u; `flipper` ×4 con remada, `head`; obstáculo esférico móvil |
+| 8 | Tortuga marina (sustituye los 8 calamares) | `tortuga/` | ✅ brief listo (2026-09-15); **adelantada**: los calamares son lo más visible que queda de primitivas | ×3–4 nadando en órbitas amplias (r 35–85 u, y −30…0); ≈3 u; `flipper` ×4 con remada, `head`; obstáculo esférico móvil |
 
 ## 4. Trabajo de Claude en paralelo (sin tokens de Astra)
 
@@ -54,8 +54,10 @@ de pasar a la siguiente. Quién modela lo elige Luis en Codex: el pez lo hizo **
    (`getFloorHeight`); pez y notas no bajan de ella. La ladera ya está vestida con el kit de arrecife.
 3. ✅ Iluminación (2026-09-15): sol cálido `#fff3d6` casi vertical, hemisférica cielo turquesa /
    rebote de arena, niebla turquesa `#2c86a3`, dos capas de cáusticas que se cruzan sobre la arena,
-   9 rayos de sol y la superficie del agua vista desde abajo. 60 fps en la PC de Luis; falta teléfono.
+   9 rayos de sol y la superficie del agua vista desde abajo. 60 fps en la PC de Luis.
 4. ✅ Arena (2026-09-15): textura procedural con ondas y grano, manchas por vértice y dunas suaves.
    Con la luz nueva ya se lee como arena cálida.
 5. Inspector `dev/` y atajo `?dev=1` para ver cada pieza sin jugar.
-6. Medir FPS en escritorio y teléfono con todo el nivel cargado antes de publicar.
+6. Medir rendimiento **en escritorio** con todo el nivel cargado antes de publicar (el juego es para
+   laptop/escritorio; el móvil se hará aparte como app nativa). Último dato: 250 draw calls,
+   270 k triángulos, 60 fps con pez, almeja, arrecife y ballena.
