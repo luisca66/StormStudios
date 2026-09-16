@@ -63,7 +63,9 @@ export function buildBlenderClam(color: number): BlenderClam {
       roughness: part.roughness,
       emissive: isPearl ? new THREE.Color(color) : 0x000000,
       emissiveIntensity: isPearl ? 1.2 : 0,
-      side: part.part === "mantle" ? THREE.DoubleSide : THREE.FrontSide,
+      // Todo a doble cara menos la perla: las valvas son cáscaras de una sola capa y, vistas
+      // desde dentro de la almeja (el jugador se le mete encima), se transparentaban.
+      side: isPearl ? THREE.FrontSide : THREE.DoubleSide,
     });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.name = part.name;
