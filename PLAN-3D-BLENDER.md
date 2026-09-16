@@ -136,6 +136,8 @@ relajó para los modelos de Blender.
   (2026-09-15/16, modelos + entorno + iluminación) ✅ **completo**: pez (Sol), almeja, ballena,
   tortuga, Atlántida, cangrejo y portal atlante (Astra) y kit de arrecife (Claude). Publicado.
   Detalle en `PLAN-OCEANO-BLENDER.md`.
+  Nivel 5 «Las Nubes»: auditado (2026-09-16), todo primitivas; propuesta en
+  `apps-src/oido-absoluto-multi-juego/AUDITORIA-NUBES-BLENDER.md` (nubes, globo, portal, islas, cometas y pájaros por Claude; unicornio por Astra).
 - `intervalos-cantados-juego`.
 
 ---
