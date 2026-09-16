@@ -458,7 +458,7 @@ export class JourneyRenderer {
       if (!this.questionLive) this.sound.setDuck(1 - 0.45 * grey);
 
       // Lecturas de la cabina. La "presión" sube con el sprint de la zona muerta: es el
-      // respiro entre preguntas hecho instrumento. F6 la atará al estado real del juego.
+      // respiro entre preguntas hecho instrumento.
       this.whistlePull = Math.max(0, this.whistlePull - dt * 1.6);
       const sprintRange = this.cruiseSpeed * (SPRINT_FACTOR - 1);
       this.cab.update(dt, {

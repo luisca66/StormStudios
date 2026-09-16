@@ -95,7 +95,7 @@ Las mediciones de FPS se hacen **en la PC de Luis**, que es la plataforma objeti
 | Estación Terminal | `modelar-terminal.py` | ✅ integrada |
 | Landmarks de biomas (torre de agua, molino, viaducto, túnel, cascada, carreta, faro, estanque) | `modelar-landmarks.py` | ✅ integrada |
 
-Queda como pendiente heredado de la bitácora (F5): animar las agujas de los manómetros.
+Las agujas de los manómetros ya están vivas desde F5 (`cab.ts`, un `InstancedMesh`): velocidad real, presión atada al estado de la pregunta y una aguja que solo tiembla.
 
 ### Batisfera — `acordes-juego` (acordes, puerto 5173/5183)
 
