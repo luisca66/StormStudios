@@ -20,6 +20,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 | Ballena jorobada | `ballena/` | ✅ integrada (2026-09-15). Modelada por **Astra** (v1 + dos revisiones propias); Claude fundió el borde de la garganta y saturó el azul pizarra. |
 | Tortuga marina | `tortuga/` | ✅ integrada (2026-09-15). Modelada por **Astra** (v3, aprobada sin rondas del integrador). |
 | Atlántida hundida | `atlantida/` | ✅ integrada (2026-09-16). Modelada por **Astra** (v1 con una corrección propia, aprobada sin rondas). |
+| Cangrejo | `cangrejo/` | ✅ integrado (2026-09-16). Modelado por **Astra** (v3, aprobado sin cambios del integrador). |
 
 ### Pez protagonista
 
@@ -120,3 +121,18 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
   radio) a **53 u**, a la medida de esta; y la colisión con cilindros ya no permite «salir por
   debajo» de un edificio apoyado en la arena (antes, en el eje del palacio, el pez quedaba atrapado).
 - Coste del nivel completo: 119 draw calls, 324 k triángulos, 60 fps en la PC de Luis.
+
+### Cangrejo
+
+- 9 984 triángulos · 14 mallas · JSON 427 kB · 6.5 u de punta a punta de las patas.
+- Sustituye a los cangrejos de primitivas. Lo arma [src/3d/blender-crab.ts](../src/3d/blender-crab.ts);
+  `environment.ts spawnCrab()` pone **4** en sus rincones de siempre y `updateCrab()` los pasea en
+  círculo siguiendo la altura de la arena.
+- **Camina de lado:** su eje X (el de marcha, según la entrega) se alinea con la dirección de avance
+  (`rotation.y = atan2(−dz, dx)`, girando por el camino corto). Medido: alineación 0.99.
+- Animación: todo el cuerpo bota ±0.1 u al andar; patas en fases alternas a ±0.3 rad en X (menos que
+  el ±0.4 de la entrega, porque en el extremo las puntas se hundían 0.54 u) y ±0.1 en Z; ojos ±0.15
+  rad; brazos que se levantan ±0.15 rad; y cada **pinza chasquea** por su cuenta cada 3–5 s: abre
+  despacio a 0.5 rad y cierra de golpe. El paso se acompasa a la velocidad real del cangrejo.
+- `pincer` cuelga de su `claw` (con `attach`, conservando la charnela), como pedía la entrega.
+- Coste del nivel completo: 125 draw calls, 350 k triángulos, 60 fps en la PC de Luis.

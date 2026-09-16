@@ -15,7 +15,7 @@
 | Compuerta = disco metálico plano en el suelo; la cinemática de desbloqueo no luce | `gate.ts` nivel 2 | **modelador** → pieza 4 |
 | ~~Ballena = esfera estirada~~ ✅ resuelto: jorobada de Blender con cola, pectorales y mandíbula animadas | `environment.ts spawnWhale` + `blender-whale.ts` | hecho |
 | ~~Corales, rocas y algas de primitivas~~ ✅ resuelto: kit de arrecife instanciado | `environment.ts sowReef` + `blender-reef.ts` | hecho |
-| Cangrejos de primitivas (los calamares ✅ ya son tortugas de Blender) | `spawnCrab` | **modelador** → pieza 7 |
+| ~~Cangrejos y calamares de primitivas~~ ✅ resuelto: cangrejos y tortugas de Blender | `spawnCrab`, `spawnTurtle` | hecho |
 | ~~Pecera de vidrio; fondo plano; luz sin cáusticas~~ ✅ resuelto: hondonada de arena, textura de arena y agua soleada con cáusticas | `buildOcean` | hecho |
 
 ## 2. Dirección
@@ -43,7 +43,7 @@ de pasar a la siguiente. Quién modela lo elige Luis en Codex: el pez lo hizo **
 | 4 | Portal atlante (compuerta) | `portal/` | ⏳ | `(110,-50,110)`, radio de disparo 5 u, abre en 0.7 s; cinemática a 15 u; partes marco + hojas del iris + `glow` |
 | 5 | Ballena jorobada | `ballena/` | ✅ integrada (2026-09-15): Astra v1 + 2 revisiones propias; Claude fundió la garganta y saturó el azul | 38–42 u, órbita r=80 u, colisión 12.5 u; `body`, `tail`, `flipper` ×2, `jaw`, `meta.blowhole` |
 | 6 | Kit de arrecife instanciado | `arrecife/` | ✅ integrado (2026-09-15): modelado por **Claude** con bpy mientras Astra recargaba | 9 variantes, 7 844 tri en total, ~280 ejemplares en 9 draw calls |
-| 7 | Cangrejo | `cangrejo/` | ✅ brief listo (2026-09-16) | ×4 en la arena, ≈7 u; `leg` segment 0–5, `claw` ×2 |
+| 7 | Cangrejo | `cangrejo/` | ✅ integrado (2026-09-16): Astra v3, sin cambios; camina de lado y chasquea las pinzas | ×4 en la arena, ≈7 u; `leg` segment 0–5, `claw` ×2 |
 | 8 | Tortuga marina (sustituye los 8 calamares) | `tortuga/` | ✅ integrada (2026-09-15): Astra v3, sin rondas; 4 tortugas en órbitas propias | ×3–4 nadando en órbitas amplias (r 35–85 u, y −30…0); ≈3 u; `flipper` ×4 con remada, `head`; obstáculo esférico móvil |
 
 ## 4. Trabajo de Claude en paralelo (sin tokens de Astra)

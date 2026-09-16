@@ -3,6 +3,7 @@ import { buildReefField, preloadBlenderReef, ReefField, ReefPart, ReefPlacement 
 import { BlenderWhale, buildBlenderWhale, preloadBlenderWhale } from "./blender-whale";
 import { BlenderTurtle, buildBlenderTurtle, preloadBlenderTurtle } from "./blender-turtle";
 import { BlenderAtlantis, buildBlenderAtlantis, preloadBlenderAtlantis } from "./blender-atlantis";
+import { BlenderCrab, buildBlenderCrab, preloadBlenderCrab } from "./blender-crab";
 
 export interface Obstacle {
   x: number;
@@ -1264,67 +1265,28 @@ export class LevelEnvironment {
     for (const s of spots) this.spawnCrab(s[0], s[1]);
   }
 
+  // Cangrejo de Blender (art/blender/cangrejo/, Astra): camina de lado alrededor de su rincón.
   private spawnCrab(x: number, z: number): void {
     const root = new THREE.Group();
-    root.position.set(x, this.getFloorHeight(x, z) + 0.75, z);
-    root.scale.setScalar(2.5);
-
-    const redMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(0.88, 0.07, 0.05), roughness: 0.35, metalness: 0.08, emissive: new THREE.Color(0.45, 0.02, 0.0), emissiveIntensity: 0.18 });
-    const darkRed = new THREE.MeshStandardMaterial({ color: new THREE.Color(0.52, 0.04, 0.03), roughness: 0.35, emissive: new THREE.Color(0.22, 0.01, 0.0), emissiveIntensity: 0.18 });
-    const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 });
-    const blackMat = new THREE.MeshStandardMaterial({ color: 0x000000 });
-
-    // Shell
-    const body = new THREE.Mesh(new THREE.SphereGeometry(1.2, 16, 10), redMat);
-    body.scale.set(1.5, 0.6, 1.0); body.position.y = 1.2; root.add(body);
-
-    // Eyes on stalks
-    for (const ex of [-0.5, 0.5]) {
-      const eg = new THREE.Group();
-      const stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.6, 6), darkRed);
-      stalk.position.y = 0.3; eg.add(stalk);
-      const eyeball = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), whiteMat);
-      eyeball.position.y = 0.6; eg.add(eyeball);
-      const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 6), blackMat);
-      pupil.position.set(0, 0.6, 0.15); eg.add(pupil);
-      eg.position.set(ex, 1.5, 0.8); eg.rotation.z = -ex * 0.4; eg.rotation.x = 0.2;
-      root.add(eg);
-    }
-
-    // 6 legs (3 per side)
-    const legs: any[] = [];
-    for (let i = 0; i < 3; i++) {
-      for (const side of [-1, 1]) {
-        const lg = new THREE.Group();
-        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.05, 1.5, 6), redMat);
-        leg.position.y = -0.75; lg.add(leg);
-        lg.position.set(side * 1.5, 1.2, (i - 1) * 0.7); lg.rotation.z = side * 0.5;
-        root.add(lg);
-        legs.push({ group: lg, side, index: i });
-      }
-    }
-
-    // Claws (arm + pincer)
-    const claws: THREE.Object3D[] = [];
-    for (const side of [1, -1]) {
-      const cg = new THREE.Group();
-      const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.1, 1.0, 8), darkRed);
-      arm.position.z = 0.5; arm.rotation.x = Math.PI / 2; cg.add(arm);
-      const pincer = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.3, 0.8), redMat);
-      pincer.position.z = 1.2; cg.add(pincer);
-      cg.position.set(side * 1.2, 1.2, 1.0); cg.rotation.y = side * -0.5;
-      root.add(cg); claws.push(cg);
-    }
-
+    root.position.set(x, this.getFloorHeight(x, z), z);
     this.group.add(root);
-    this.animatedMeshes.push({
-      mesh: root, type: "crab",
-      meta: {
-        center: root.position.clone(), angle: Math.random() * Math.PI * 2,
-        radius: 12 + Math.random() * 16, speed: 0.22 + Math.random() * 0.28,
-        legs, claws
-      }
-    });
+
+    const meta: {
+      center: THREE.Vector3; angle: number; radius: number; speed: number; crab?: BlenderCrab;
+    } = {
+      center: root.position.clone(),
+      angle: Math.random() * Math.PI * 2,
+      radius: 12 + Math.random() * 16,
+      speed: 0.12 + Math.random() * 0.14,
+    };
+    this.animatedMeshes.push({ mesh: root, type: "crab", meta });
+
+    preloadBlenderCrab().then(() => {
+      if (!this.group.parent) return; // el nivel pudo descargarse mientras llegaba el JSON
+      const crab = buildBlenderCrab();
+      root.add(crab.root);
+      meta.crab = crab;
+    }).catch((error: unknown) => console.error("Cangrejo de Blender:", error));
   }
 
   private updateCrab(mesh: THREE.Object3D, meta: any, delta: number, time: number): void {
@@ -1335,23 +1297,22 @@ export class LevelEnvironment {
     const prevX = mesh.position.x, prevZ = mesh.position.z;
     mesh.position.x = THREE.MathUtils.lerp(mesh.position.x, tx, 2.5 * delta);
     mesh.position.z = THREE.MathUtils.lerp(mesh.position.z, tz, 2.5 * delta);
-    const wt = time * 5.0;
-    mesh.position.y = meta.center.y + Math.abs(Math.sin(wt * 2.0)) * 0.3; // small walk bob
+    // Las patas apoyan en y = 0 del modelo: se sigue la arena por donde pisa.
+    mesh.position.y = this.getFloorHeight(mesh.position.x, mesh.position.z);
 
-    // Crabs walk sideways: face perpendicular to travel
+    // Camina de lado: su eje X (el de marcha) se alinea con la dirección de avance.
     const dx = mesh.position.x - prevX, dz = mesh.position.z - prevZ;
-    if (Math.hypot(dx, dz) > 0.0005) {
-      const face = Math.atan2(dx, dz) + Math.PI / 2;
-      mesh.rotation.y = THREE.MathUtils.lerp(mesh.rotation.y, face, 2.5 * delta);
+    const step = Math.hypot(dx, dz);
+    if (step > 0.0005) {
+      const target = Math.atan2(-dz, dx);
+      // Giro por el camino corto: sin la vuelta completa que daba el lerp de ángulos crudo.
+      let turn = target - mesh.rotation.y;
+      turn = Math.atan2(Math.sin(turn), Math.cos(turn));
+      mesh.rotation.y += turn * Math.min(1, 2.5 * delta);
     }
-
-    for (const ld of meta.legs) {
-      const offset = ld.index * Math.PI / 1.5;
-      ld.group.rotation.x = Math.sin(wt + offset) * 0.4;
-      ld.group.rotation.z = ld.side * 0.5 + Math.cos(wt + offset) * 0.1;
-    }
-    if (meta.claws[0]) meta.claws[0].rotation.z = Math.sin(time * 2.0) * 0.15;
-    if (meta.claws[1]) meta.claws[1].rotation.z = Math.cos(time * 2.0) * -0.15;
+    // Cuánto camina (0..1) según la velocidad real, para acompasar el paso de las patas.
+    const walk = Math.min(1, (step / Math.max(delta, 0.0001)) / 1.5);
+    meta.crab?.update(delta, time, walk);
   }
 
   // Atlántida hundida (art/blender/atlantida/, Astra). Los colisionadores vienen del propio
