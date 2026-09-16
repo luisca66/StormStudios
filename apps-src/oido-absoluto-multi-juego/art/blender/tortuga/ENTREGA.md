@@ -2,7 +2,7 @@
 
 ## Estado
 
-- Versión: v1; revisión propia inicial. Fecha: 2026-09-15.
+- Versión: v3; corrección propia 2 de 2. Fecha: 2026-09-15.
 - Lista para revisión de Luis; integración a cargo del integrador.
 
 ## Archivos
@@ -27,10 +27,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 |---|---|
 | Largo × alto × ancho total | 4.030 × 0.898 × 4.860 u |
 | Caparazón aproximado | 3.0 × 0.86 × 2.4 u, largo × alto × ancho |
-| Origen | Centro del caparazón, línea de articulaciones (0,0,0). |
+| Origen | Centro del caparazón (0,0,0); articulaciones de aletas en Y=0.06. |
 | Frente | +Z Three / −Y Blender. |
-| Triángulos / mallas | 8822 / 6 |
-| JSON | 394.5 KiB |
+| Triángulos / mallas | 8646 / 6 |
+| JSON | 382.0 KiB |
 | meta.mouth | (0, -0.026, 2.2), hocico neutral, espacio Three; transformar con head al animar. |
 
 ## Partes
@@ -39,10 +39,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 |---|---|---|---|---|---|---|---|---|
 | Caparazón, plastrón y cola | body | — | (0,0,0) | Caparazón | — | Fijo | 0 | Escudos en relieve. |
 | Cabeza y cuello | head | — | (0,0,1.10) | Piel | X / Y | ±0.12 / ±0.25 rad | 0.45 / 0.30 rad/s | Mirada lenta. |
-| Delantera 0 | flipper | 0 | (−0.82,0,0.65) | Piel | Z | ±0.5 rad | 1.6 rad/s | Lado −X. |
-| Delantera 1 | flipper | 1 | (0.82,0,0.65) | Piel | Z | ±0.5 rad | 1.6 rad/s | Lado +X. |
-| Trasera 2 | flipper | 2 | (−0.70,0,−0.94) | Piel | Z | ±0.15 rad | 0.8 rad/s | Timón. |
-| Trasera 3 | flipper | 3 | (0.70,0,−0.94) | Piel | Z | ±0.15 rad | 0.8 rad/s | Timón. |
+| Delantera 0 | flipper | 0 | (−0.82,0.06,0.65) | Piel | Z | ±0.5 rad | 1.6 rad/s | Lado −X. |
+| Delantera 1 | flipper | 1 | (0.82,0.06,0.65) | Piel | Z | ±0.5 rad | 1.6 rad/s | Lado +X. |
+| Trasera 2 | flipper | 2 | (−0.70,0.06,−0.94) | Piel | Z | ±0.15 rad | 0.8 rad/s | Timón. |
+| Trasera 3 | flipper | 3 | (0.70,0.06,−0.94) | Piel | Z | ±0.15 rad | 0.8 rad/s | Timón. |
 
 ## Materiales
 
@@ -53,7 +53,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 
 ## Diferencias con el brief
 
-El kit preserva +Z en el JSON: meta.forward declara +Z sin invertir silenciosamente el modelo. Body comparte material satinado en plastrón y cola, por el límite de un material por parte. No se incluyen cáusticas ni niebla horneadas en el modelo.
+El kit preserva +Z en el JSON: meta.forward declara +Z sin invertir silenciosamente el modelo. Body comparte material satinado en plastrón y cola, por el límite de un material por parte. Las articulaciones quedan 0.06 u sobre el origen central para mantener las raíces cubiertas. No se incluyen cáusticas ni niebla horneadas en el modelo.
 
 ## Sugerencias para integrar
 
@@ -61,4 +61,6 @@ La pose solicitada usa +0.5 rad Z en ambas delanteras y +0.25 rad Y en cabeza. P
 
 ## Revisión propia
 
-El generador comprueba presupuesto, dimensiones, seis partes, COLOR_0 del GLB y anillos interiores de articulación en los extremos ±0.5/±0.15 y ±0.25 rad. Esta comprobación cubre la continuidad de las raíces, no es una prueba de intersección de toda la superficie. Los cuatro renders permiten juzgar silueta, escudos, rostro y pose antes de aprobar la integración.
+El generador comprueba presupuesto, dimensiones, seis partes, COLOR_0 del GLB y anillos interiores de articulación en los extremos ±0.5/±0.15 y ±0.25 rad. Esta comprobación cubre la continuidad de las raíces, no es una prueba de intersección de toda la superficie.
+
+Revisados visualmente los cuatro renders finales: silueta reconocible a 25 u; caparazón ovalado con escudos continuos en ámbar y relieve suave; cabeza redondeada con ojos pequeños y párpados; aletas con grosor y moteado. En la pose +0.5/+0.25 no se observan huecos expuestos en las uniones visibles. Se corrigieron los cruces de la base con los escudos y las juntas oscuras. No se ha probado la animación dentro del juego.

@@ -68,15 +68,15 @@ g=Geo();v=[];f=[];c=[]
 # Continuous closed oval shell and plastron; lightly scalloped equatorial lip.
 for i in range(21):
     a=math.pi*i/20
-    for j in range(64):
-        b=TAU*j/64;r=math.sin(a);sc=1-.008*(.5+.5*math.cos(20*b))*r**12
+    for j in range(48):
+        b=TAU*j/48;r=math.sin(a);sc=1-.008*(.5+.5*math.cos(20*b))*r**12
         x=1.2*r*math.cos(b)*sc;z=1.5*r*math.sin(b)*sc
-        y=.07+(.60 if math.cos(a)>=0 else .23)*math.cos(a)
+        y=.07+(.49 if math.cos(a)>=0 else .23)*math.cos(a)
         v.append((x,y,z))
         c.append(mix('c8a24a','e6d9a8',clamp(-math.cos(a)*5)))
 for i in range(20):
-    for j in range(64):
-        a=i*64+j;b=i*64+(j+1)%64;f.append((a,b,b+64,a+64))
+    for j in range(48):
+        a=i*48+j;b=i*48+(j+1)%48;f.append((a,b,b+48,a+48))
 g.add(v,f,c)
 # Voronoi scutes clipped inside an oval: soft raised crowns over amber sutures.
 seeds=[(0,z) for z in (-1.12,-.57,0,.57,1.12)]
@@ -99,11 +99,11 @@ for idx,s in enumerate(seeds):
     for a,b in zip(poly,poly[1:]+poly[:1]):
         for k in range(2):edge.append(Vector(a).lerp(Vector(b),k/2))
     v=[];f=[];c=[];n=len(edge)
-    for ring in (0,.45,.82,.965):
+    for ring in (0,.45,.82,.965,1.0):
         for p in edge:
             x,z=center.lerp(p,ring);y=dome(x,z)+.006+.032*(1-ring**4)
-            v.append((x,y,z));c.append(mix('2f5236','4e7a4a',.35+.45*(1-ring)+.12*math.sin(idx*2.1)))
-    for i in range(3):
+            v.append((x,y,z));c.append(kit.lin('c8a24a') if ring==1.0 else mix('2f5236','4e7a4a',.35+.45*(1-ring)+.12*math.sin(idx*2.1)))
+    for i in range(4):
         for j in range(n):
             a=i*n+j;b=i*n+(j+1)%n;f.append((a,b,b+n,a+n))
     g.add(v,f,c)
@@ -146,7 +146,7 @@ for segment in range(4):
         for j in range(n):
             a=TAU*j/n;xx=side*x;yy=.06+y+th*math.sin(a);zz=z+ch*math.cos(a)
             v.append((xx,yy,zz))
-            spot=clamp((math.sin(x*31+zz*14)*math.sin(zz*29-x*8)-.33)*2)
+            spot=clamp((math.sin(x*15+zz*8)*math.sin(zz*17-x*5)-.25)*2)
             base=Vector(mix('5d7f6a','b5c4a0',spot*.65))
             base=base.lerp(Vector(kit.lin('e6d9a8')),clamp(-math.sin(a))*.70)
             c.append(tuple(base))
@@ -211,7 +211,7 @@ report=f'''# ENTREGA — Tortuga marina · Walking AP Multi
 
 ## Estado
 
-- Versión: v1; revisión propia inicial. Fecha: 2026-09-15.
+- Versión: v3; corrección propia 2 de 2. Fecha: 2026-09-15.
 - Lista para revisión de Luis; integración a cargo del integrador.
 
 ## Archivos
@@ -236,7 +236,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\Luis\\blender-bpy
 |---|---|
 | Largo × alto × ancho total | {dims[2]:.3f} × {dims[1]:.3f} × {dims[0]:.3f} u |
 | Caparazón aproximado | 3.0 × 0.86 × 2.4 u, largo × alto × ancho |
-| Origen | Centro del caparazón, línea de articulaciones (0,0,0). |
+| Origen | Centro del caparazón (0,0,0); articulaciones de aletas en Y=0.06. |
 | Frente | +Z Three / −Y Blender. |
 | Triángulos / mallas | {tris} / {parts} |
 | JSON | {(ROOT/'tortuga.json').stat().st_size/1024:.1f} KiB |
@@ -248,10 +248,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\Luis\\blender-bpy
 |---|---|---|---|---|---|---|---|---|
 | Caparazón, plastrón y cola | body | — | (0,0,0) | Caparazón | — | Fijo | 0 | Escudos en relieve. |
 | Cabeza y cuello | head | — | (0,0,1.10) | Piel | X / Y | ±0.12 / ±0.25 rad | 0.45 / 0.30 rad/s | Mirada lenta. |
-| Delantera 0 | flipper | 0 | (−0.82,0,0.65) | Piel | Z | ±0.5 rad | 1.6 rad/s | Lado −X. |
-| Delantera 1 | flipper | 1 | (0.82,0,0.65) | Piel | Z | ±0.5 rad | 1.6 rad/s | Lado +X. |
-| Trasera 2 | flipper | 2 | (−0.70,0,−0.94) | Piel | Z | ±0.15 rad | 0.8 rad/s | Timón. |
-| Trasera 3 | flipper | 3 | (0.70,0,−0.94) | Piel | Z | ±0.15 rad | 0.8 rad/s | Timón. |
+| Delantera 0 | flipper | 0 | (−0.82,0.06,0.65) | Piel | Z | ±0.5 rad | 1.6 rad/s | Lado −X. |
+| Delantera 1 | flipper | 1 | (0.82,0.06,0.65) | Piel | Z | ±0.5 rad | 1.6 rad/s | Lado +X. |
+| Trasera 2 | flipper | 2 | (−0.70,0.06,−0.94) | Piel | Z | ±0.15 rad | 0.8 rad/s | Timón. |
+| Trasera 3 | flipper | 3 | (0.70,0.06,−0.94) | Piel | Z | ±0.15 rad | 0.8 rad/s | Timón. |
 
 ## Materiales
 
@@ -262,7 +262,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\Luis\\blender-bpy
 
 ## Diferencias con el brief
 
-El kit preserva +Z en el JSON: meta.forward declara +Z sin invertir silenciosamente el modelo. Body comparte material satinado en plastrón y cola, por el límite de un material por parte. No se incluyen cáusticas ni niebla horneadas en el modelo.
+El kit preserva +Z en el JSON: meta.forward declara +Z sin invertir silenciosamente el modelo. Body comparte material satinado en plastrón y cola, por el límite de un material por parte. Las articulaciones quedan 0.06 u sobre el origen central para mantener las raíces cubiertas. No se incluyen cáusticas ni niebla horneadas en el modelo.
 
 ## Sugerencias para integrar
 
@@ -270,7 +270,9 @@ La pose solicitada usa +0.5 rad Z en ambas delanteras y +0.25 rad Y en cabeza. P
 
 ## Revisión propia
 
-El generador comprueba presupuesto, dimensiones, seis partes, COLOR_0 del GLB y anillos interiores de articulación en los extremos ±0.5/±0.15 y ±0.25 rad. Esta comprobación cubre la continuidad de las raíces, no es una prueba de intersección de toda la superficie. Los cuatro renders permiten juzgar silueta, escudos, rostro y pose antes de aprobar la integración.
+El generador comprueba presupuesto, dimensiones, seis partes, COLOR_0 del GLB y anillos interiores de articulación en los extremos ±0.5/±0.15 y ±0.25 rad. Esta comprobación cubre la continuidad de las raíces, no es una prueba de intersección de toda la superficie.
+
+Revisados visualmente los cuatro renders finales: silueta reconocible a 25 u; caparazón ovalado con escudos continuos en ámbar y relieve suave; cabeza redondeada con ojos pequeños y párpados; aletas con grosor y moteado. En la pose +0.5/+0.25 no se observan huecos expuestos en las uniones visibles. Se corrigieron los cruces de la base con los escudos y las juntas oscuras. No se ha probado la animación dentro del juego.
 '''
 (ROOT/'ENTREGA.md').write_text(report,encoding='utf-8')
 print('EXPORT',parts,'partes',tris,'triangulos','DIMENSIONS largo alto ancho',dims[2],dims[1],dims[0],flush=True)

@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { buildReefField, preloadBlenderReef, ReefField, ReefPart, ReefPlacement } from "./blender-reef";
 import { BlenderWhale, buildBlenderWhale, preloadBlenderWhale } from "./blender-whale";
+import { BlenderTurtle, buildBlenderTurtle, preloadBlenderTurtle } from "./blender-turtle";
 
 export interface Obstacle {
   x: number;
@@ -175,18 +176,20 @@ export class LevelEnvironment {
           rightWing.rotation.z = -Math.sin(time * 25.0) * 0.8;
         }
       } 
-      else if (type === "squid") {
+      else if (type === "turtle") {
         meta.angle += delta * meta.speed;
-        mesh.position.x = meta.centerX + Math.cos(meta.angle) * meta.radius;
-        mesh.position.z = meta.centerZ + Math.sin(meta.angle) * meta.radius;
-        mesh.position.y = meta.centerY + Math.sin(time * 1.2 + meta.offset) * 1.8;
+        mesh.position.x = Math.cos(meta.angle) * meta.radius;
+        mesh.position.z = Math.sin(meta.angle) * meta.radius;
+        mesh.position.y = meta.centerY + Math.sin(time * 0.5 + meta.offset) * 3.0;
+        // Cabeza a +Z, igual que la ballena: el rumbo es el opuesto del ángulo de órbita.
         mesh.rotation.y = -meta.angle;
-        // Tentacles waving
-        for (let i = 1; i <= 8; i++) {
-          const tent = mesh.children[i];
-          if (tent) {
-            tent.rotation.z = Math.sin(time * 3 + i) * 0.15;
-          }
+        // Se inclina un poco hacia donde sube o baja.
+        mesh.rotation.x = Math.cos(time * 0.5 + meta.offset) * 0.12;
+        meta.turtle?.update(time, meta.offset);
+        if (meta.obsRef) {
+          meta.obsRef.x = mesh.position.x;
+          meta.obsRef.y = mesh.position.y;
+          meta.obsRef.z = mesh.position.z;
         }
       } 
       else if (type === "bubble") {
@@ -1161,9 +1164,9 @@ export class LevelEnvironment {
 
     this.sowReef();
 
-    // Floating Squids (8 calamares)
-    for (let i = 0; i < 8; i++) {
-      this.spawnSquid(i);
+    // Tortugas marinas (sustituyen a los 8 calamares de primitivas)
+    for (let i = 0; i < 4; i++) {
+      this.spawnTurtle(i);
     }
 
     // Whale
@@ -1576,69 +1579,42 @@ export class LevelEnvironment {
     });
   }
 
-  private spawnSquid(index: number): void {
-    const sGroup = new THREE.Group();
-    const colors = [0xd81b60, 0x8e24aa, 0xf4511e, 0x00acc1];
-    const mat = new THREE.MeshStandardMaterial({ color: colors[index % colors.length], roughness: 0.3 });
-    const whiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-    const blackMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+  // Tortuga marina de Blender (art/blender/tortuga/, Astra). Cuatro tortugas, cada una en
+  // su propia órbita lenta y a su profundidad; son fauna, no obstáculos que estorben.
+  private spawnTurtle(index: number): void {
+    const pivot = new THREE.Group();
+    const scale = 0.9 + Math.random() * 0.5;
+    pivot.scale.setScalar(scale);
+    const radius = 35 + Math.random() * 50;
+    const angle = (index / 4) * Math.PI * 2 + Math.random() * 0.6;
+    const centerY = -30 + Math.random() * 30;
+    pivot.position.set(Math.cos(angle) * radius, centerY, Math.sin(angle) * radius);
+    this.group.add(pivot);
 
-    // Body
-    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.45, 1.2, 10), mat);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.45, 10, 10), mat);
-    head.position.y = 0.6;
-    sGroup.add(body, head);
+    const obsRef = { x: pivot.position.x, y: pivot.position.y, z: pivot.position.z, radius: 2.5 * scale };
+    this.obstacles.push(obsRef);
 
-    // Eyes
-    const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 6), whiteMat);
-    eyeL.position.set(-0.25, 0.3, 0.35);
-    const pupL = new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 6), blackMat);
-    pupL.position.set(-0.28, 0.3, 0.44);
-    
-    const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 6), whiteMat);
-    eyeR.position.set(0.25, 0.3, 0.35);
-    const pupR = new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 6), blackMat);
-    pupR.position.set(0.28, 0.3, 0.44);
-    sGroup.add(eyeL, pupL, eyeR, pupR);
+    const meta: {
+      angle: number; radius: number; centerY: number; speed: number; offset: number;
+      obsRef: typeof obsRef; turtle?: BlenderTurtle;
+    } = {
+      angle,
+      radius,
+      centerY,
+      speed: 0.05 + Math.random() * 0.06, // vuelta completa en 1.5–2 min
+      offset: Math.random() * Math.PI * 2,
+      obsRef,
+    };
+    this.animatedMeshes.push({ mesh: pivot, type: "turtle", meta });
 
-    // 8 Tentacles
-    const tentGeo = new THREE.CylinderGeometry(0.03, 0.1, 1.0, 5);
-    tentGeo.translate(0, -0.5, 0); // pivot at top
-    for (let t = 0; t < 8; t++) {
-      const tent = new THREE.Mesh(tentGeo, mat);
-      const angle = (t / 8) * Math.PI * 2;
-      tent.position.set(Math.cos(angle) * 0.35, -0.6, Math.sin(angle) * 0.35);
-      tent.rotation.z = Math.sin(angle) * 0.15;
-      tent.rotation.x = Math.cos(angle) * 0.15;
-      sGroup.add(tent);
-    }
-
-    const scale = 1.0 + Math.random() * 0.8;
-    sGroup.scale.set(scale, scale, scale);
-    this.group.add(sGroup);
-
-    const radius = 35.0 + Math.random() * 50.0;
-    const speed = 0.15 + Math.random() * 0.2;
-    this.animatedMeshes.push({
-      mesh: sGroup,
-      type: "squid",
-      meta: {
-        centerX: 0,
-        centerY: -30 + Math.random() * 30,
-        centerZ: 0,
-        angle: Math.random() * Math.PI * 2,
-        radius,
-        speed,
-        offset: Math.random() * Math.PI
-      }
-    });
-
-    // Squids act as dynamic moving solid obstacles
-    this.obstacles.push({ x: sGroup.position.x, y: sGroup.position.y, z: sGroup.position.z, radius: scale * 1.5 });
+    preloadBlenderTurtle().then(() => {
+      if (!this.group.parent) return; // el nivel pudo descargarse mientras llegaba el JSON
+      const turtle = buildBlenderTurtle();
+      pivot.add(turtle.root);
+      meta.turtle = turtle;
+    }).catch((error: unknown) => console.error("Tortuga de Blender:", error));
   }
 
-  // Ballena jorobada de Blender (art/blender/ballena/, Astra). Da vueltas lentas alrededor
-  // del arrecife; el pez no la atraviesa.
   private spawnWhale(): void {
     const pivot = new THREE.Group();
     pivot.position.set(60, -10, 60);

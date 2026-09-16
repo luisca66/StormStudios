@@ -18,6 +18,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 | Almeja con perla (objetivo de nota) | `almeja/` | ✅ integrada (2026-09-15). Modelada por **Astra** (v1, aprobada sin rondas). |
 | Kit de arrecife (4 corales, 3 rocas, alga, anémona) | `arrecife/` | ✅ integrado (2026-09-15). Modelado por **Claude** con bpy, sin brief: es utilería instanciada. |
 | Ballena jorobada | `ballena/` | ✅ integrada (2026-09-15). Modelada por **Astra** (v1 + dos revisiones propias); Claude fundió el borde de la garganta y saturó el azul pizarra. |
+| Tortuga marina | `tortuga/` | ✅ integrada (2026-09-15). Modelada por **Astra** (v3, aprobada sin rondas del integrador). |
 
 ### Pez protagonista
 
@@ -78,3 +79,18 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
   vista cenital: es la única donde se juzga de verdad el recorte de la cola.
 - Coste del nivel completo con la ballena dentro: 250 draw calls, 270 k triángulos, 60 fps en la PC
   de Luis (plataforma objetivo: laptop/escritorio).
+
+### Tortuga marina
+
+- 8 646 triángulos · 6 mallas · JSON 382 kB · 4.03 × 0.90 × 4.86 u.
+- Sustituye a los 8 calamares de primitivas. La carga
+  [src/3d/blender-turtle.ts](../src/3d/blender-turtle.ts); `environment.ts spawnTurtle()` pone
+  **cuatro**, cada una en su órbita (radio 35–85 u, profundidad −30…0, vuelta completa en 1.5–2 min),
+  escaladas ×0.9–1.4, con un obstáculo esférico de 2.5 u × escala que las sigue.
+- Animación (de `tortuga/ENTREGA.md`): delanteras en Z ±0.5 rad a 1.6 rad/s, traseras en Z ±0.15 rad
+  a 0.8 rad/s, cabeza ±0.12 rad en X y ±0.25 rad en Y. Cada tortuga lleva su propia fase, así que
+  ninguna rema al mismo compás.
+- **Rumbo:** cabeza a +Z como la ballena, así que `rotation.y = -ángulo de órbita`. Comprobado
+  midiendo morro contra velocidad (`dot ≈ 0.94`).
+- Coste del nivel completo (pez, almeja, arrecife, ballena y 4 tortugas): 122 draw calls,
+  286 k triángulos, 60 fps en la PC de Luis.
