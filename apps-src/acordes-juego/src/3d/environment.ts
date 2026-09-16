@@ -4,6 +4,7 @@
 
 import * as THREE from "three";
 import { DEPTH_KEYFRAMES, WORLD, ZONES, FAMILY_GLOW, depthMeters } from "@/config";
+import { buildBlenderShipwreck, type BlenderShipwreck } from "./blender-shipwreck";
 
 const SNOW_COUNT = 1500;
 const SNOW_BOX = 120; // cubo centrado en el jugador
@@ -80,6 +81,11 @@ export class Environment {
   private columns: { attr: THREE.BufferAttribute; yTop: number; yBottom: number; speed: number }[] = [];
   private beacons: { lampMat: THREE.MeshBasicMaterial; haloMat: THREE.SpriteMaterial; phase: number }[] = [];
   private anemoneMat: THREE.MeshStandardMaterial | null = null;
+  private shipwreck: BlenderShipwreck | null = null;
+  /** Posición del barco hundido en el mundo (inspección con ?debug=1). */
+  get shipwreckPosition(): THREE.Vector3 | null {
+    return this.shipwreck ? this.shipwreck.root.position.clone() : null;
+  }
   private beaconHaloTex: THREE.CanvasTexture | null = null;
 
   // Termoclinas: discos shimmer en cada frontera de zona (PLAN §5.1).
@@ -247,29 +253,26 @@ export class Environment {
     }
   }
 
-  // Silueta de barco hundido a lo lejos, escorado contra la pared (z1).
+  // Barco hundido de Blender sobre su repisa, encajado en la pared (z1).
   private buildShipwreck(rng: () => number): void {
-    const ship = new THREE.Group();
-    const mat = new THREE.MeshStandardMaterial({ color: 0x0a0f14, roughness: 1 });
-    const hull = new THREE.Mesh(new THREE.BoxGeometry(4.5, 3.2, 20), mat);
-    ship.add(hull);
-    const bow = new THREE.Mesh(new THREE.ConeGeometry(2.2, 5, 4), mat);
-    bow.rotation.x = Math.PI / 2;
-    bow.position.set(0, 0, 12.4);
-    ship.add(bow);
-    const cabin = new THREE.Mesh(new THREE.BoxGeometry(2.6, 2.1, 5), mat);
-    cabin.position.set(0, 2.6, -3);
-    ship.add(cabin);
-    const funnel = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.1, 3.2, 8), mat);
-    funnel.position.set(0, 4.2, -0.5);
-    ship.add(funnel);
-    const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 9, 5), mat);
-    mast.position.set(0, 5.5, 5.5);
-    ship.add(mast);
+    const ship = buildBlenderShipwreck();
+    // Dos llamadas al RNG, igual que el prototipo: el resto del decorado no se mueve.
     const a = rng() * Math.PI * 2;
-    ship.position.set(Math.cos(a) * 84, -136, Math.sin(a) * 84); // semienterrado en la pared
-    ship.rotation.set(0.08, rng() * Math.PI * 2, 0.32);
-    this.scene.add(ship);
+    rng();
+    ship.root.position.set(Math.cos(a) * 84, -136, Math.sin(a) * 84);
+    // El +Z local (la repisa se funde con la roca) mira hacia fuera del pozo.
+    ship.root.rotation.y = Math.PI / 2 - a;
+    ship.root.updateMatrixWorld(true);
+    this.scene.add(ship.root);
+    this.shipwreck = ship;
+
+    // Aire atrapado que escapa por escotilla, chimenea y cubierta. RNG propio para no
+    // alterar la siembra del resto del mundo.
+    const ventRng = makeRng(20260916);
+    for (const vent of ship.bubbleVents) {
+      const p = vent.clone().applyMatrix4(ship.root.matrixWorld);
+      this.addRisingColumn(p.x, p.z, p.y, -2, 26, 0xbfe4ff, 0.3, 2.4, 0.5, ventRng);
+    }
   }
 
   // Arcos rocosos (z2): toros parciales deformados, de pie, cerca de la pared.
@@ -661,6 +664,8 @@ export class Environment {
     }
 
     // H3: anémonas-farol — parpadeo lento compartido (una sola malla instanciada).
+    this.shipwreck?.update(elapsed);
+
     if (this.anemoneMat) {
       this.anemoneMat.emissiveIntensity = 0.55 + (Math.sin(elapsed * 0.8) + 1) * 0.35;
     }

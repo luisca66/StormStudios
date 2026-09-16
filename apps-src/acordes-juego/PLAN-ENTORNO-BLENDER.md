@@ -41,5 +41,5 @@ en pantalla.
 
 | Pieza | Estado |
 |---|---|
-| Barco hundido | ⏳ brief listo: `art/blender/barco-hundido/BRIEF.md` (2026-09-16) |
+| Barco hundido | ✅ publicado (2026-09-16): Astra v1–v3, Claude v4 e integración |
 | Resto | pendiente del orden de Luis |

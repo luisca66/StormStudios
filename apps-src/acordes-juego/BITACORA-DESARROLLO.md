@@ -484,3 +484,9 @@ Checklist §13 (resultado final):
 - Tres ventanales con pilares delgados, techo segmentado con focos, pilares con cables y faldón oscuro bajo los alféizares (v4). Consolas idénticas a la cabina anterior.
 - `cockpit.ts` carga `cabina-envolvente.json` y soporta `screenSpace` y `wide`. Se retiró `WINDOW_OPEN`: el marco nuevo ya abre el ventanal.
 - Verificado: build, QA, inmersión a 800×450, 1050×450 y 450×600 sin errores. En < 640 px la tarjeta de profundidad se oculta a propósito (CSS previo). Publicado.
+
+### ✅ Barco hundido de Blender integrado (2026-09-16, Astra v1–v3 · Claude v4 e integración)
+- Pieza 1 del entorno (`PLAN-ENTORNO-BLENDER.md`). Sustituye la silueta de cajas y conos de H3.
+- v4 de Claude a pedido de Luis: casco con forma de vapor, asentado en sedimento, crecimiento marino creíble y óxido en chorreones.
+- `blender-shipwreck.ts` + precarga en `bootstrap.ts`; burbujas desde `bubbleVents`; farol que late. Botón dev **Ver barco hundido**.
+- Verificado: build, QA y vista en juego desde el centro del pozo con el cristal curvo. Publicado.

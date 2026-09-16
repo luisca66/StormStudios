@@ -1,6 +1,7 @@
 // Bootstrap de Batisfera: i18n, menú, settings, audio y mundo 3D (F0–F2).
 
 import "./style.css";
+import * as THREE from "three";
 import { initI18n, t, getLang } from "./i18n";
 import { Game3D } from "@/3d/renderer";
 import { HUD } from "@/ui/hud";
@@ -562,6 +563,14 @@ if (debugEnabled) {
   addBtn("✘ error.mp3", () => player.playIncorrect());
 
   if (import.meta.env.DEV) {
+    addBtn("Ver barco hundido", () => {
+      const ship = game.environment.shipwreckPosition;
+      if (!ship) return;
+      // Desde el centro del pozo, a 42 u del barco, mirándolo de frente.
+      const out = new THREE.Vector3(ship.x, 0, ship.z).normalize();
+      const eye = ship.clone().addScaledVector(out, -42);
+      game.player.setPose(eye.x, ship.y + 7, eye.z, Math.atan2(-out.x, -out.z), -0.12);
+    });
     addBtn("Acercar Cardumen Prisma", () => {
       const school = game.creatures.all.find((c) => c.speciesId === "school" && c.state === "IDLE");
       if (!school) { showToast("Espera a que aparezca un cardumen durante la inmersión."); return; }

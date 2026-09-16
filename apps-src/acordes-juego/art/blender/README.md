@@ -227,3 +227,21 @@ cúpula de cristal: tres ventanales (frontal y dos laterales en ángulo) con pil
   coloca en `(0, 0, −1)` con escala `(mitadAncho, 1, 1)`, sin la escala `k`. `wide: false` marca
   `frameNarrow`, que solo se dibuja con aspecto < 1.1. Fórmula completa en `marco-envolvente/ENTREGA.md`.
 - El mundo se ve detrás a través del cristal curvo de `src/3d/dome-glass.ts`.
+
+---
+
+# Barco hundido — Batisfera (zona 1)
+
+Primera pieza de `PLAN-ENTORNO-BLENDER.md`. Astra entregó v1–v3 desde `barco-hundido/BRIEF.md`; al
+agotarse sus tokens, Claude hizo la v4 en el mismo `modelar-barco.py` (casco con proa afilada y
+bovedilla, casco hundido en sedimento, esponjas de tubo y anémonas en lugar de formas de jarra,
+cajas variadas, chorreones de óxido). Detalle en `barco-hundido/ENTREGA.md`.
+
+- 34 244 triángulos · 5 partes (`ledge`, `hull`, `debris`, `growth`, `lamp`) · JSON 2.3 MB (510 kB con gzip).
+- El juego carga `src/3d/assets/barco-hundido.json` (copia del entregable) con
+  `src/3d/blender-shipwreck.ts`; lo coloca `environment.ts buildShipwreck()` a 84 u del eje, en
+  y = −136, con el +Z local hacia la pared. Conserva las dos llamadas al RNG del prototipo para que
+  el resto del decorado no cambie de sitio.
+- `bubbleVents` → tres columnas de burbujas hasta la superficie (RNG propio). `lamp` late
+  1.2 ± 0.15 con un ciclo de ~16 s y lleva una luz puntual débil.
+- Inspección: `?debug=1` en dev → botón **Ver barco hundido**.
