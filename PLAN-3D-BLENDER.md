@@ -136,8 +136,9 @@ relajó para los modelos de Blender.
   (2026-09-15/16, modelos + entorno + iluminación) ✅ **completo**: pez (Sol), almeja, ballena,
   tortuga, Atlántida, cangrejo y portal atlante (Astra) y kit de arrecife (Claude). Publicado.
   Detalle en `PLAN-OCEANO-BLENDER.md`.
-  Nivel 5 «Las Nubes»: auditado (2026-09-16), todo primitivas; propuesta en
-  `apps-src/oido-absoluto-multi-juego/AUDITORIA-NUBES-BLENDER.md` (nubes, globo, portal, islas, cometas y pájaros por Claude; unicornio por Astra).
+  Nivel 5 «Las Nubes» (auditoría en `apps-src/oido-absoluto-multi-juego/AUDITORIA-NUBES-BLENDER.md`):
+  ✅ nubes instanciadas, globo aerostático, portal arcoíris, islas, cometas y pájaros (Claude, publicados
+  2026-09-16; vista inicial de 367 a 173 draw calls). ⏳ Unicornio-pegaso: brief para Astra en `art/blender/unicornio/BRIEF.md`.
 - `intervalos-cantados-juego`.
 
 ---
