@@ -202,7 +202,7 @@ export class Game3DRenderer {
       targetY = playerPos.y + (Math.random() - 0.5) * 16.0;
     }
 
-    if (this.environment) targetY = Math.max(targetY, this.environment.getFloorHeight(targetX, targetZ) + 4);
+    if (this.environment) targetY = Math.max(targetY, this.environment.getClearanceHeight(targetX, targetZ));
     this.activeNotePos.set(targetX, targetY, targetZ);
     this.noteFloatingOffset = Math.random() * Math.PI * 2;
 
@@ -243,7 +243,7 @@ export class Game3DRenderer {
     else if (state.currentLevel === 4) py = 1.0 + Math.random() * 1.5;
     else if (state.currentLevel === 5) py = (Math.random() - 0.5) * 16;
 
-    if (this.environment) py = Math.max(py, this.environment.getFloorHeight(px, pz) + 4);
+    if (this.environment) py = Math.max(py, this.environment.getClearanceHeight(px, pz));
     this.activeNotePos.set(px, py, pz);
     if (this.activeNoteMesh) {
       this.activeNoteMesh.position.copy(this.activeNotePos);

@@ -183,8 +183,10 @@ coral_brain = g.object("Coral cerebro", "coral_brain")
 
 # 3. Coral copa (tipo Turbinaria): campana abierta hacia arriba
 g = Geo()
-g.sheet(2.1, 1.45, .04, "ff8c5a", "ffd9a8", bend=.10, twist=.7, ripple=.06, segs=14, cols=11, profile="fan")
-g.tube([(0, 0, 0), (0, .35, .02)], [.11, .07], "d8623a", 8)
+# Naranja coral saturado: el melocoton original (#ff8c5a -> #ffd9a8) bajo el agua turquesa se
+# veia beige, del mismo tono que la arena, y el coral desaparecia.
+g.sheet(2.1, 1.45, .04, "e8472a", "ffb347", bend=.10, twist=.7, ripple=.06, segs=14, cols=11, profile="fan")
+g.tube([(0, 0, 0), (0, .35, .02)], [.11, .07], "b8361f", 8)
 coral_cup = g.object("Coral copa", "coral_cup")
 
 # 4. Coral mesa

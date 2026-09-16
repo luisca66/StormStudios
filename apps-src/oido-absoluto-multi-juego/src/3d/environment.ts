@@ -41,6 +41,23 @@ export class LevelEnvironment {
     return LevelEnvironment.oceanFloorHeight(x, z, this.arenaSize);
   }
 
+  /**
+   * Altura mínima libre en (x, z): el suelo o, si ahí hay un edificio (obstáculo cilíndrico),
+   * su techo. Sirve para que un objetivo de nota no aparezca dentro de Atlántida.
+   */
+  public getClearanceHeight(x: number, z: number, margin = 4): number {
+    // Solo el océano es 3D con edificios; en los niveles de tierra la nota va al ras del suelo.
+    if (this.level !== 2) return -Infinity;
+    let top = this.getFloorHeight(x, z);
+    for (const obs of this.obstacles) {
+      if (obs.height === undefined) continue; // esferas móviles (ballena, tortugas): no cuentan
+      if (Math.hypot(x - obs.x, z - obs.z) < obs.radius + margin) {
+        top = Math.max(top, obs.y + obs.height);
+      }
+    }
+    return top + margin;
+  }
+
   private static oceanFloorHeight(x: number, z: number, arenaSize: number): number {
     const half = arenaSize / 2;
     // Rounded-square distance so the rim follows the square arena without sharp corners
@@ -1198,12 +1215,15 @@ export class LevelEnvironment {
       });
     };
 
-    // Llano: se respeta el claro de Atlántida (radio 18 en coordenadas de juego).
+    // Llano: se respeta la huella de Atlántida. Su plataforma mide 64 u de radio; con el claro
+    // anterior de 20 u, un tercio de los corales quedaba enterrado dentro del edificio.
+    const ATLANTIS_CLEARING = 68;
     const scatter = (count: number, pick: () => ReefPart, minScale: number, maxScale: number) => {
-      for (let i = 0; i < count; i++) {
+      for (let placed = 0, tries = 0; placed < count && tries < count * 6; tries++) {
         const x = (Math.random() - 0.5) * (this.arenaSize - 40);
         const z = (Math.random() - 0.5) * (this.arenaSize - 40);
-        if (Math.hypot(x, z) < 20) continue;
+        if (Math.hypot(x, z) < ATLANTIS_CLEARING) continue;
+        placed++;
         put(pick(), x, z, minScale + Math.random() * (maxScale - minScale));
       }
     };
