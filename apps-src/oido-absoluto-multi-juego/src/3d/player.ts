@@ -215,8 +215,9 @@ export class PlayerController {
     this.mesh.add(bodyRoot);
     this.bodyMesh = bodyRoot as unknown as THREE.Mesh;
 
-    // Luis lo quiso más chico (2026-09-16): 70 % del modelo, y la colisión a la par.
-    const FISH_SCALE = 0.7;
+    // Luis lo quiso más chico (2026-09-16), «para que parezca Nemo»: 50 % del modelo, y la
+    // colisión a la par. Frente a las tortugas y la ballena ahora se siente pequeñito.
+    const FISH_SCALE = 0.5;
     this.collisionRadius = 0.9 * FISH_SCALE;
 
     const attach = () => {

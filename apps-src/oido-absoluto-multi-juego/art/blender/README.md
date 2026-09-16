@@ -32,7 +32,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
   `dorsal` ondula en Z ±0.08 rad a 2 rad/s. El contenedor del pez recibe el estiramiento y el
   balanceo de reposo; la geometría ya viene proporcionada, su escala base es 1.
 - El frente del modelo es +Z, igual que el avance del jugador: no lleva giro extra.
-- **2026-09-16, a pedido de Luis:** el pez se ve al **70 %** del modelo (`FISH_SCALE` en `player.ts`,
+- **2026-09-16, a pedido de Luis:** el pez se ve al **50 %** del modelo (primero 70 %; Luis lo pidió aún más chico, «como Nemo») (`FISH_SCALE` en `player.ts`,
   con el radio de colisión escalado igual) y **parpadea**: los ojos pasaron de una parte `eyes` a
   dos partes `eye` (segment 0/1) con pivote en el centro del globo, y el juego las aplasta en Y a
   0.12 durante 0.14 s cada 2.5–6 s, con doble parpadeo ocasional. 7 mallas.
