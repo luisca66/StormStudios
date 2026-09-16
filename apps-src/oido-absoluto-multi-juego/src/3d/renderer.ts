@@ -4,6 +4,7 @@ import { PlayerController } from "./player";
 import { LevelEnvironment } from "./environment";
 import { LevelGate } from "./gate";
 import { SearchRadar } from "../ui/radar";
+import { BlenderClam, buildBlenderClam, isClamReady } from "./blender-clam";
 
 export class Game3DRenderer {
   private canvas: HTMLCanvasElement;
@@ -22,6 +23,8 @@ export class Game3DRenderer {
   private activeNoteChallenge: Note | null = null;
   private noteFloatingOffset = 0;
   private noteHasBeenTriggered = false;
+  private activeClam: BlenderClam | null = null; // objetivo de nota del nivel 2
+  private noteSpawnTime = 0;
 
   private isDisposed = false;
   private loggedFrameError = false;
@@ -75,6 +78,10 @@ export class Game3DRenderer {
       }
     });
 
+    // Atajo de desarrollo (solo en `npm run dev`): permite inspeccionar y teletransportar
+    // el jugador junto al objetivo desde la consola, sin jugar la partida entera.
+    if (import.meta.env.DEV) (window as unknown as Record<string, unknown>).__game = this;
+
     // Start loop
     this.animate();
   }
@@ -127,6 +134,7 @@ export class Game3DRenderer {
       this.activeNoteMesh = null;
     }
     this.activeNoteChallenge = null;
+    this.activeClam = null;
     this.cutsceneActive = false;
     
     // Clear leftover lighting/lights
@@ -141,6 +149,8 @@ export class Game3DRenderer {
       this.scene.remove(this.activeNoteMesh);
       this.activeNoteMesh = null;
     }
+    this.activeClam = null;
+    this.noteSpawnTime = this.clock.getElapsedTime();
     this.noteHasBeenTriggered = false;
 
     const state = this.stateManager.getState();
@@ -239,6 +249,8 @@ export class Game3DRenderer {
       this.activeNoteMesh.position.copy(this.activeNotePos);
     }
     this.noteHasBeenTriggered = false;
+    this.activeClam?.reopen();
+    this.noteSpawnTime = this.clock.getElapsedTime();
 
     // Note relocated after a miss: restart the search timer
     if (this.radar) this.radar.resetSearch();
@@ -265,8 +277,13 @@ export class Game3DRenderer {
       const cube = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.4, 1.4), mat);
       group.add(cube);
     } 
+    else if (level === 2 && isClamReady()) {
+      // Almeja con perla (Blender). Espera abierta: la perla es el faro de la búsqueda.
+      this.activeClam = buildBlenderClam(color);
+      group.add(this.activeClam.root);
+    }
     else if (level === 2) {
-      // Piñata star (Golden center sphere + 5 colorful cones)
+      // Reserva por si el JSON de la almeja aún no llegó: piñata del prototipo.
       const core = new THREE.Mesh(
         new THREE.SphereGeometry(0.5, 16, 16),
         new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.8, roughness: 0.1, emissive: 0xffd700, emissiveIntensity: 0.25 })
@@ -434,7 +451,9 @@ export class Game3DRenderer {
 
       // 5. Float and rotate active Note Object
       if (this.activeNoteMesh) {
-        this.activeNoteMesh.rotation.y += delta * 0.8;
+        // La almeja gira más despacio: es ancha y la perla debe leerse desde cualquier lado.
+        this.activeNoteMesh.rotation.y += delta * (this.activeClam ? 0.35 : 0.8);
+        this.activeClam?.update(delta, time - this.noteSpawnTime);
         this.activeNoteMesh.position.y = this.activeNotePos.y + Math.sin(time * 2.0 + this.noteFloatingOffset) * 0.15;
 
         // Check proximity collision with note
@@ -444,12 +463,17 @@ export class Game3DRenderer {
           this.stateManager.setChallenge(this.activeNoteChallenge!);
           this.stateManager["audio"].playNote(state.selectedInstrument, this.activeNoteChallenge!.note_index, this.activeNoteChallenge!.octave);
           
-          // Animate small bounce scale
-          const m = this.activeNoteMesh;
-          m.scale.set(1.4, 1.4, 1.4);
-          setTimeout(() => {
-            m.scale.set(1.0, 1.0, 1.0);
-          }, 120);
+          if (this.activeClam) {
+            // La concha se cierra de golpe sobre la perla al sonar la nota.
+            this.activeClam.snapShut();
+          } else {
+            // Animate small bounce scale
+            const m = this.activeNoteMesh;
+            m.scale.set(1.4, 1.4, 1.4);
+            setTimeout(() => {
+              m.scale.set(1.0, 1.0, 1.0);
+            }, 120);
+          }
         }
       }
 

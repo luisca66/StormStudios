@@ -15,6 +15,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 | Pieza | Carpeta | Estado |
 |---|---|---|
 | Pez protagonista | `pez/` | ✅ integrado (2026-09-15). Modelado por **Sol** (v1 + ronda 1); Claude fundió el pedúnculo con el cuerpo, cambió el aro del ojo por párpados de piel y agrandó el iris. |
+| Almeja con perla (objetivo de nota) | `almeja/` | ✅ integrada (2026-09-15). Modelada por **Astra** (v1, aprobada sin rondas). |
 
 ### Pez protagonista
 
@@ -27,3 +28,17 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
   `dorsal` ondula en Z ±0.08 rad a 2 rad/s. El contenedor del pez recibe el estiramiento y el
   balanceo de reposo; la geometría ya viene proporcionada, su escala base es 1.
 - El frente del modelo es +Z, igual que el avance del jugador: no lleva giro extra.
+
+### Almeja con perla
+
+- 8 640 triángulos · 6 mallas · JSON 380 kB · 3.42 u de ancho · perla ⌀ 1 u.
+- Sustituye a la «piñata» de conos como objetivo de nota. La carga
+  [src/3d/blender-clam.ts](../src/3d/blender-clam.ts) desde `src/3d/assets/almeja.json` y la usa
+  `renderer.ts` en `buildNoteTargetMesh` (con la piñata como reserva si el JSON aún no llegó).
+- **Cambio respecto al brief, decidido al integrar:** el brief la quería cerrada, abriéndose al
+  acercarse el jugador. Se hizo al revés: **espera abierta con la perla encendida**, porque la perla
+  es el faro que guía una búsqueda de 80–130 u, y **se cierra de golpe al tocarla**, cuando suena la
+  nota. Si el jugador falla y la almeja se teletransporta, vuelve a abrirse (`reopen()`).
+- La perla se tiñe con el color de la nota (pigmento y emisión) y lleva una `PointLight` del mismo
+  color, alcance 90 u, que es lo que se ve de lejos. Al cerrarse, perla y luz se apagan.
+- Valvas y nácar giran en X hasta −0.9 rad sobre la charnela `(0,0,−1.32)`; el manto late ±4 %.
