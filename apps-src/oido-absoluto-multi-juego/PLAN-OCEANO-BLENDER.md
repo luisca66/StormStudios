@@ -16,7 +16,7 @@
 | Ballena = esfera estirada con cajas de cola | `environment.ts spawnWhale` | **modelador** → pieza 5 |
 | Corales = esferas aplastadas; rocas = esferas; algas = cilindros rectos | `environment.ts buildOcean` | **modelador** → pieza 6 (kit) |
 | Cangrejos y calamares de primitivas (los calamares se cambian por tortugas) | `spawnCrab`, `spawnSquid` | **modelador** → piezas 7–8 |
-| «Pecera» de vidrio con aristas brillantes como límite del mundo; fondo plano sin textura; luz sin cáusticas | `spawnAquarium`, `buildOcean` | Claude (entorno e iluminación) |
+| ~~Pecera de vidrio; fondo plano; luz sin cáusticas~~ ✅ resuelto: hondonada de arena, textura de arena y agua soleada con cáusticas | `buildOcean` | hecho |
 
 ## 2. Dirección
 
@@ -53,9 +53,10 @@ de pasar a la siguiente. Quién modela lo elige Luis en Codex: el pez lo hizo **
 2. ✅ Pecera de vidrio eliminada (2026-09-15): el fondo es una hondonada de arena que sube en los bordes
    (`getFloorHeight`); pez y notas no bajan de ella. Pendiente: poblar el borde con el kit de arrecife
    (pieza 6).
-3. Iluminación: cáusticas animadas en la arena, rayos de sol, superficie del agua vista desde abajo,
-   niebla turquesa por profundidad.
+3. ✅ Iluminación (2026-09-15): sol cálido `#fff3d6` casi vertical, hemisférica cielo turquesa /
+   rebote de arena, niebla turquesa `#2c86a3`, dos capas de cáusticas que se cruzan sobre la arena,
+   9 rayos de sol y la superficie del agua vista desde abajo. 60 fps en la PC de Luis; falta teléfono.
 4. ✅ Arena (2026-09-15): textura procedural con ondas y grano, manchas por vértice y dunas suaves.
-   Bajo la luz azul actual tira a verde-gris; el calor final llega con la iluminación (punto 3).
+   Con la luz nueva ya se lee como arena cálida.
 5. Inspector `dev/` y atajo `?dev=1` para ver cada pieza sin jugar.
 6. Medir FPS en escritorio y teléfono con todo el nivel cargado antes de publicar.

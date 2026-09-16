@@ -16,6 +16,11 @@ export class LevelEnvironment {
   // Decorative moving items
   private animatedMeshes: { mesh: THREE.Object3D; type: string; meta: any }[] = [];
   private rippleTimer = 3.0; // level 4: time until next water ripple
+  // Nivel 2: agua soleada (cáusticas en la arena, rayos de sol y superficie vista desde abajo)
+  private causticMap?: THREE.CanvasTexture;
+  private causticMap2?: THREE.CanvasTexture;
+  private sunShafts: THREE.Mesh[] = [];
+  private waterSurface?: THREE.Mesh;
   private shootingStarTimer = 3.0; // level 3: time until next shooting star
   
   constructor(private level: number, private scene: THREE.Scene, private arenaSize: number) {
@@ -52,6 +57,12 @@ export class LevelEnvironment {
     this.scene.remove(this.group);
     this.obstacles = [];
     this.animatedMeshes = [];
+    this.sunShafts = [];
+    this.causticMap?.dispose();
+    this.causticMap2?.dispose();
+    this.causticMap = undefined;
+    this.causticMap2 = undefined;
+    this.waterSurface = undefined;
     this.altarCrystal = undefined;
     // Reset fog
     this.scene.fog = null;
@@ -357,6 +368,24 @@ export class LevelEnvironment {
     }
 
     // Level 3: spawn periodic shooting stars (sometimes in bursts)
+    if (this.level === 2) {
+      // Arrastre lento y cruzado de las dos capas de cáusticas + ondas de la superficie.
+      if (this.causticMap) {
+        this.causticMap.offset.set(time * 0.012, time * 0.008);
+      }
+      if (this.causticMap2) {
+        this.causticMap2.offset.set(-time * 0.009, time * 0.014);
+      }
+      const surfaceMap = (this.waterSurface?.material as THREE.MeshBasicMaterial | undefined)?.map;
+      if (surfaceMap) surfaceMap.offset.set(time * 0.006, -time * 0.004);
+      for (let i = 0; i < this.sunShafts.length; i++) {
+        const shaft = this.sunShafts[i];
+        const mat = shaft.material as THREE.MeshBasicMaterial;
+        mat.opacity = 0.05 + Math.abs(Math.sin(time * 0.25 + i)) * 0.045;
+        shaft.rotation.y = Math.sin(time * 0.06 + i) * 0.25;
+      }
+    }
+
     if (this.level === 3) {
       this.shootingStarTimer -= delta;
       if (this.shootingStarTimer <= 0) {
@@ -453,6 +482,73 @@ export class LevelEnvironment {
     texture.repeat.set(floorSize / 24, floorSize / 24); // one tile ≈ 24 m
     texture.anisotropy = 4;
     return texture;
+  }
+
+  // Red de cáusticas: interferencia de tres ondas, recortada a las crestas.
+  private generateCausticTexture(): THREE.CanvasTexture {
+    const size = 256;
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d")!;
+    const image = ctx.createImageData(size, size);
+    const phase = Math.random() * Math.PI * 2;
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        const u = (x / size) * Math.PI * 2, v = (y / size) * Math.PI * 2;
+        const w = Math.sin(u * 3 + Math.cos(v * 2 + phase) * 1.6)
+                + Math.sin(v * 4 - Math.cos(u * 3 - phase) * 1.4)
+                + Math.sin((u + v) * 2 + phase);
+        const crest = Math.max(0, w / 3) ** 3.2; // solo las crestas brillan
+        const i = (y * size + x) * 4;
+        const level = Math.min(255, crest * 420);
+        image.data[i] = level;
+        image.data[i + 1] = level;
+        image.data[i + 2] = level * 0.92;
+        image.data[i + 3] = 255;
+      }
+    }
+    ctx.putImageData(image, 0, 0);
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    return texture;
+  }
+
+  // Rayos de sol: conos muy abiertos y translúcidos que bajan desde la superficie.
+  private spawnSunShafts(): void {
+    const half = this.arenaSize / 2;
+    const material = new THREE.MeshBasicMaterial({
+      color: 0xdff3ff, transparent: true, opacity: 0.07,
+      blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide,
+    });
+    for (let i = 0; i < 9; i++) {
+      const shaft = new THREE.Mesh(new THREE.ConeGeometry(7 + Math.random() * 9, 72, 10, 1, true), material);
+      shaft.position.set((Math.random() - 0.5) * half * 1.7, -14, (Math.random() - 0.5) * half * 1.7);
+      shaft.rotation.z = (Math.random() - 0.5) * 0.16;
+      shaft.rotation.x = (Math.random() - 0.5) * 0.16;
+      shaft.renderOrder = 2;
+      this.group.add(shaft);
+      this.sunShafts.push(shaft);
+    }
+  }
+
+  // Superficie del agua vista desde abajo: techo brillante con ondas que se mueven.
+  private spawnWaterSurface(): void {
+    const size = this.arenaSize + 160;
+    const texture = this.generateCausticTexture();
+    texture.repeat.set(size / 110, size / 110);
+    const surface = new THREE.Mesh(
+      new THREE.PlaneGeometry(size, size),
+      new THREE.MeshBasicMaterial({
+        color: 0xbfe9f7, map: texture, transparent: true, opacity: 0.5,
+        side: THREE.BackSide, depthWrite: false,
+      })
+    );
+    surface.rotation.x = -Math.PI / 2;
+    surface.position.y = 21;
+    this.group.add(surface);
+    this.waterSurface = surface;
   }
 
   private generateStoneTexture(): THREE.CanvasTexture {
@@ -993,22 +1089,23 @@ export class LevelEnvironment {
 
   // ==================== LEVEL 2: OCEAN ====================
   private buildOcean(): void {
-    // Undersea lighting (Level02_Ocean.tscn): filtered sunlight, blue ambient
-    const hemiLight = new THREE.HemisphereLight(new THREE.Color(0.15, 0.35, 0.55), new THREE.Color(0.05, 0.12, 0.20), 1.1);
+    // Arrecife soleado: cielo turquesa arriba, rebote cálido de la arena abajo.
+    const hemiLight = new THREE.HemisphereLight(0x59c8e0, 0xbfa678, 1.15);
     this.group.add(hemiLight);
 
-    // Main sun from almost straight above
-    const sunLight = new THREE.DirectionalLight(new THREE.Color(0.5, 0.75, 0.9), 1.0);
+    // Sol cálido casi vertical: es lo que devuelve el color a la arena y a las conchas.
+    const sunLight = new THREE.DirectionalLight(0xfff3d6, 1.5);
     sunLight.position.set(20, 90, 10);
     this.group.add(sunLight);
 
-    // Second "god ray" light from another high angle
-    const godRay = new THREE.DirectionalLight(new THREE.Color(0.4, 0.7, 0.9), 0.5);
-    godRay.position.set(-40, 80, 30);
-    this.group.add(godRay);
+    // Relleno frío desde el otro lado para que las sombras no se cierren del todo.
+    const fill = new THREE.DirectionalLight(0x8fd8ef, 0.45);
+    fill.position.set(-40, 60, 30);
+    this.group.add(fill);
 
-    this.scene.fog = new THREE.FogExp2(new THREE.Color(0.06, 0.2, 0.4).getHex(), 0.008); // softer blue fog
-    this.scene.background = new THREE.Color(0.05, 0.18, 0.35);
+    // Niebla turquesa (antes azul marino): el fondo se aclara y el agua se siente soleada.
+    this.scene.fog = new THREE.FogExp2(new THREE.Color(0x2c86a3).getHex(), 0.0065);
+    this.scene.background = new THREE.Color(0x2c86a3);
 
     // Atlantis Castle in the deep center floor (y=-50)
     this.buildAtlantisCastle(0, -50, 0);
@@ -1036,8 +1133,34 @@ export class LevelEnvironment {
       floorColors.set([tint.r, tint.g, tint.b], i * 3);
     }
     floorGeo.setAttribute("color", new THREE.BufferAttribute(floorColors, 3));
-    const floorMat = new THREE.MeshStandardMaterial({ map: this.generateSandTexture(floorSize), vertexColors: true, roughness: 1.0 });
+    // Las cáusticas van como emisión: dos capas de la misma red luminosa que se arrastran
+    // en direcciones distintas, que es lo que da la sensación de agua en movimiento.
+    this.causticMap = this.generateCausticTexture();
+    this.causticMap2 = this.generateCausticTexture();
+    this.causticMap.repeat.set(floorSize / 26, floorSize / 26);   // red fina
+    this.causticMap2.repeat.set(floorSize / 44, floorSize / 44);  // red más abierta encima
+    const floorMat = new THREE.MeshStandardMaterial({
+      map: this.generateSandTexture(floorSize),
+      vertexColors: true,
+      roughness: 1.0,
+      emissive: new THREE.Color(0xfff0cf),
+      emissiveIntensity: 0.38,
+      emissiveMap: this.causticMap,
+    });
     this.group.add(new THREE.Mesh(floorGeo, floorMat));
+
+    // Segunda capa de cáusticas, aditiva y con otra escala y deriva: al cruzarse con la
+    // primera, la luz del suelo nunca repite el mismo dibujo.
+    const causticLayer = new THREE.Mesh(floorGeo, new THREE.MeshBasicMaterial({
+      map: this.causticMap2, color: 0xfff3d6, transparent: true, opacity: 0.18,
+      blending: THREE.AdditiveBlending, depthWrite: false,
+    }));
+    causticLayer.position.y = 0.05; // justo encima de la arena, sin pelear por el z-buffer
+    causticLayer.renderOrder = 1;
+    this.group.add(causticLayer);
+
+    this.spawnSunShafts();
+    this.spawnWaterSurface();
 
     // Seaweed (algas)
     const algaMat = new THREE.MeshStandardMaterial({ color: 0x1b5e3a, roughness: 0.8 });
