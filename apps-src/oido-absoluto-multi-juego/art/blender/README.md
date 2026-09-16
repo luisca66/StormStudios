@@ -16,6 +16,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 |---|---|---|
 | Pez protagonista | `pez/` | ✅ integrado (2026-09-15). Modelado por **Sol** (v1 + ronda 1); Claude fundió el pedúnculo con el cuerpo, cambió el aro del ojo por párpados de piel y agrandó el iris. |
 | Almeja con perla (objetivo de nota) | `almeja/` | ✅ integrada (2026-09-15). Modelada por **Astra** (v1, aprobada sin rondas). |
+| Kit de arrecife (4 corales, 3 rocas, alga, anémona) | `arrecife/` | ✅ integrado (2026-09-15). Modelado por **Claude** con bpy, sin brief: es utilería instanciada. |
 
 ### Pez protagonista
 
@@ -42,3 +43,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 - La perla se tiñe con el color de la nota (pigmento y emisión) y lleva una `PointLight` del mismo
   color, alcance 90 u, que es lo que se ve de lejos. Al cerrarse, perla y luz se apagan.
 - Valvas y nácar giran en X hasta −0.9 rad sobre la charnela `(0,0,−1.32)`; el manto late ±4 %.
+
+### Kit de arrecife
+
+- 9 variantes en un solo JSON: `coral_branch`, `coral_brain`, `coral_cup`, `coral_table`,
+  `rock_a/b/c`, `kelp`, `anemone`. 7 844 triángulos **en total** (256–1 108 por variante).
+- Cada variante se dibuja con un `InstancedMesh`: ~280 ejemplares por partida, 9 draw calls.
+  Lo arma [src/3d/blender-reef.ts](../src/3d/blender-reef.ts); la siembra está en
+  `environment.ts sowReef()` (llano + cinturón del borde, apoyados en `getFloorHeight`).
+- Las algas se mecen recalculando sus matrices por cuadro; el resto es estático.
+- Sustituye a los corales-esfera, las rocas-esfera y las algas-cilindro del prototipo, y viste
+  la ladera del borde del mapa, que quedó pelada al quitar la pecera de vidrio.
+- El pivote de todas las variantes es su base (y = 0), así que se apoyan solas en la arena.

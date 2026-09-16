@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { buildReefField, preloadBlenderReef, ReefField, ReefPart, ReefPlacement } from "./blender-reef";
 
 export interface Obstacle {
   x: number;
@@ -21,6 +22,7 @@ export class LevelEnvironment {
   private causticMap2?: THREE.CanvasTexture;
   private sunShafts: THREE.Mesh[] = [];
   private waterSurface?: THREE.Mesh;
+  private reef?: ReefField;
   private shootingStarTimer = 3.0; // level 3: time until next shooting star
   
   constructor(private level: number, private scene: THREE.Scene, private arenaSize: number) {
@@ -63,6 +65,7 @@ export class LevelEnvironment {
     this.causticMap = undefined;
     this.causticMap2 = undefined;
     this.waterSurface = undefined;
+    this.reef = undefined;
     this.altarCrystal = undefined;
     // Reset fog
     this.scene.fog = null;
@@ -170,9 +173,6 @@ export class LevelEnvironment {
           leftWing.rotation.z = Math.sin(time * 25.0) * 0.8;
           rightWing.rotation.z = -Math.sin(time * 25.0) * 0.8;
         }
-      } 
-      else if (type === "seaweed") {
-        mesh.rotation.z = Math.sin(time * 1.5 + meta.offset) * 0.12;
       } 
       else if (type === "squid") {
         meta.angle += delta * meta.speed;
@@ -369,6 +369,7 @@ export class LevelEnvironment {
 
     // Level 3: spawn periodic shooting stars (sometimes in bursts)
     if (this.level === 2) {
+      this.reef?.update(time);
       // Arrastre lento y cruzado de las dos capas de cáusticas + ondas de la superficie.
       if (this.causticMap) {
         this.causticMap.offset.set(time * 0.012, time * 0.008);
@@ -1162,36 +1163,7 @@ export class LevelEnvironment {
     this.spawnSunShafts();
     this.spawnWaterSurface();
 
-    // Seaweed (algas)
-    const algaMat = new THREE.MeshStandardMaterial({ color: 0x1b5e3a, roughness: 0.8 });
-    for (let i = 0; i < 40; i++) {
-      const ax = (Math.random() - 0.5) * (this.arenaSize - 40);
-      const az = (Math.random() - 0.5) * (this.arenaSize - 40);
-      // Ensure we don't spawn seaweed inside the center castle zone
-      const dist = Math.sqrt(ax*ax + az*az);
-      if (dist > 18.0) {
-        this.spawnSeaweed(ax, this.getFloorHeight(ax, az), az, algaMat);
-      }
-    }
-
-    // Corals
-    const coralColors = [0xe91e63, 0xff5722, 0x9c27b0, 0x00bcd4];
-    for (let i = 0; i < 25; i++) {
-      const cx = (Math.random() - 0.5) * (this.arenaSize - 40);
-      const cz = (Math.random() - 0.5) * (this.arenaSize - 40);
-      if (Math.sqrt(cx*cx + cz*cz) > 18.0) {
-        const coral = new THREE.Mesh(
-          new THREE.SphereGeometry(0.6 + Math.random() * 0.8, 8, 8),
-          new THREE.MeshStandardMaterial({ color: coralColors[i % coralColors.length], roughness: 0.9 })
-        );
-        coral.position.set(cx, this.getFloorHeight(cx, cz) + 0.4, cz);
-        coral.scale.set(1.5, 0.4, 1.2);
-        this.group.add(coral);
-      }
-    }
-
-    // Sea-floor rocks
-    this.spawnOceanRocks();
+    this.sowReef();
 
     // Floating Squids (8 calamares)
     for (let i = 0; i < 8; i++) {
@@ -1210,19 +1182,56 @@ export class LevelEnvironment {
     }
   }
 
-  private spawnOceanRocks(): void {
-    const half = this.arenaSize / 2 - 20;
-    for (let i = 0; i < 30; i++) {
-      const r = 3 + Math.random() * 7;
-      const x = (Math.random() * 2 - 1) * half;
-      const z = (Math.random() * 2 - 1) * half;
-      const shade = 0.1 + Math.random() * 0.1;
-      const rock = new THREE.Mesh(new THREE.SphereGeometry(r, 8, 6),
-        new THREE.MeshStandardMaterial({ color: new THREE.Color(shade, shade + 0.02, shade + 0.05), roughness: 0.95 }));
-      rock.position.set(x, this.getFloorHeight(x, z) + Math.random() * r * 0.5, z);
-      rock.scale.set(0.8 + Math.random() * 0.5, (0.8 + Math.random() * 0.8) * 0.5, 0.8 + Math.random() * 0.5);
-      this.group.add(rock);
+  // Siembra del arrecife: corales y anémonas por el llano, rocas y algas también en la
+  // ladera del borde, que hasta ahora estaba pelada. Un InstancedMesh por variante.
+  private sowReef(): void {
+    const half = this.arenaSize / 2;
+    const placements: ReefPlacement[] = [];
+    const corals: ReefPart[] = ["coral_branch", "coral_brain", "coral_cup", "coral_table"];
+    const rocks: ReefPart[] = ["rock_a", "rock_b", "rock_c"];
+
+    const put = (part: ReefPart, x: number, z: number, scale: number, sink = 0.2) => {
+      placements.push({
+        part, x, z,
+        y: this.getFloorHeight(x, z) - sink,
+        scale,
+        rotation: Math.random() * Math.PI * 2,
+      });
+    };
+
+    // Llano: se respeta el claro de Atlántida (radio 18 en coordenadas de juego).
+    const scatter = (count: number, pick: () => ReefPart, minScale: number, maxScale: number) => {
+      for (let i = 0; i < count; i++) {
+        const x = (Math.random() - 0.5) * (this.arenaSize - 40);
+        const z = (Math.random() - 0.5) * (this.arenaSize - 40);
+        if (Math.hypot(x, z) < 20) continue;
+        put(pick(), x, z, minScale + Math.random() * (maxScale - minScale));
+      }
+    };
+    scatter(46, () => corals[Math.floor(Math.random() * corals.length)], 0.8, 2.1);
+    scatter(34, () => rocks[Math.floor(Math.random() * rocks.length)], 0.7, 2.0);
+    scatter(30, () => "kelp", 0.9, 1.9);
+    scatter(18, () => "anemone", 0.9, 1.8);
+
+    // Cinturón del borde: la ladera se viste de rocas grandes, algas y algún coral.
+    for (let i = 0; i < 150; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = half - 28 + Math.random() * 34;
+      const x = Math.cos(angle) * radius;
+      const z = Math.sin(angle) * radius;
+      const roll = Math.random();
+      const part: ReefPart = roll < 0.5 ? rocks[Math.floor(Math.random() * rocks.length)]
+        : roll < 0.8 ? "kelp"
+        : corals[Math.floor(Math.random() * corals.length)];
+      put(part, x, z, part.startsWith("rock") ? 1.4 + Math.random() * 2.6 : 1.0 + Math.random() * 1.4, 0.6);
     }
+
+    preloadBlenderReef().then(() => {
+      // El nivel pudo descargarse mientras llegaba el JSON.
+      if (!this.group.parent) return;
+      this.reef = buildReefField(placements);
+      this.group.add(this.reef.group);
+    }).catch((error: unknown) => console.error("Arrecife de Blender:", error));
   }
 
   private spawnCrabs(): void {
@@ -1569,30 +1578,6 @@ export class LevelEnvironment {
       radius: 9.0 * 2.0,
       height: 16.0 * 2.0
     });
-  }
-
-  private spawnSeaweed(x: number, y: number, z: number, material: THREE.Material): void {
-    const sGroup = new THREE.Group();
-    sGroup.position.set(x, y, z);
-    
-    // Create 3-5 stalks in a cluster
-    const stalkCount = 3 + Math.floor(Math.random() * 3);
-    for (let s = 0; s < stalkCount; s++) {
-      const height = 4.0 + Math.random() * 5.0;
-      const geo = new THREE.CylinderGeometry(0.04, 0.12, height, 6);
-      geo.translate(0, height / 2, 0); // Pivot at bottom
-      const stalk = new THREE.Mesh(geo, material);
-      stalk.position.set((Math.random() - 0.5) * 0.8, 0, (Math.random() - 0.5) * 0.8);
-      
-      sGroup.add(stalk);
-      this.animatedMeshes.push({
-        mesh: stalk,
-        type: "seaweed",
-        meta: { offset: Math.random() * Math.PI * 2 }
-      });
-    }
-
-    this.group.add(sGroup);
   }
 
   private spawnSquid(index: number): void {

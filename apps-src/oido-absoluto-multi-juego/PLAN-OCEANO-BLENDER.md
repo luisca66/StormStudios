@@ -14,7 +14,7 @@
 | Atlántida con cilindros de 8 lados; es el hito central y se ve de primitivas | `environment.ts buildAtlantisCastle` | **modelador** → pieza 3 |
 | Compuerta = disco metálico plano en el suelo; la cinemática de desbloqueo no luce | `gate.ts` nivel 2 | **modelador** → pieza 4 |
 | Ballena = esfera estirada con cajas de cola | `environment.ts spawnWhale` | **modelador** → pieza 5 |
-| Corales = esferas aplastadas; rocas = esferas; algas = cilindros rectos | `environment.ts buildOcean` | **modelador** → pieza 6 (kit) |
+| ~~Corales, rocas y algas de primitivas~~ ✅ resuelto: kit de arrecife instanciado | `environment.ts sowReef` + `blender-reef.ts` | hecho |
 | Cangrejos y calamares de primitivas (los calamares se cambian por tortugas) | `spawnCrab`, `spawnSquid` | **modelador** → piezas 7–8 |
 | ~~Pecera de vidrio; fondo plano; luz sin cáusticas~~ ✅ resuelto: hondonada de arena, textura de arena y agua soleada con cáusticas | `buildOcean` | hecho |
 
@@ -42,7 +42,7 @@ de pasar a la siguiente. Quién modela lo elige Luis en Codex: el pez lo hizo **
 | 3 | Atlántida hundida (hito central) | `atlantida/` | ⏳ | centro `(0,-50,0)`, radio ≈60 u, alto ≈45 u; colisionadores simples en `meta`; ≤ 40 k tri |
 | 4 | Portal atlante (compuerta) | `portal/` | ⏳ | `(110,-50,110)`, radio de disparo 5 u, abre en 0.7 s; cinemática a 15 u; partes marco + hojas del iris + `glow` |
 | 5 | Ballena jorobada | `ballena/` | ✅ brief listo (2026-09-15); **adelantada** a la 3 y 4 mientras Astra recarga | 38–42 u, órbita r=80 u, colisión 12.5 u; `body`, `tail`, `flipper` ×2, `jaw`, `meta.blowhole` |
-| 6 | Kit de arrecife instanciado | `arrecife/` | ⏳ | 4 corales, 3 rocas, alga por segmentos (se mece), anémona; ≤ 1.5 k tri por variante |
+| 6 | Kit de arrecife instanciado | `arrecife/` | ✅ integrado (2026-09-15): modelado por **Claude** con bpy mientras Astra recargaba | 9 variantes, 7 844 tri en total, ~280 ejemplares en 9 draw calls |
 | 7 | Cangrejo | `cangrejo/` | ⏳ | ×4 en la arena, ≈7 u; `leg` segment 0–5, `claw` ×2 |
 | 8 | Tortuga marina (sustituye los 8 calamares) | `tortuga/` | ⏳ elegida por Luis | ×3–4 nadando en órbitas amplias (r 35–85 u, y −30…0); ≈3 u; `flipper` ×4 con remada, `head`; obstáculo esférico móvil |
 
@@ -51,8 +51,7 @@ de pasar a la siguiente. Quién modela lo elige Luis en Codex: el pez lo hizo **
 1. ✅ Spawn fuera de Atlántida (2026-09-15): `(0,-12,-105)` mirando al palacio; cámara colocada detrás
    desde el primer cuadro. Falta reajustar colisionadores cuando llegue la pieza 3.
 2. ✅ Pecera de vidrio eliminada (2026-09-15): el fondo es una hondonada de arena que sube en los bordes
-   (`getFloorHeight`); pez y notas no bajan de ella. Pendiente: poblar el borde con el kit de arrecife
-   (pieza 6).
+   (`getFloorHeight`); pez y notas no bajan de ella. La ladera ya está vestida con el kit de arrecife.
 3. ✅ Iluminación (2026-09-15): sol cálido `#fff3d6` casi vertical, hemisférica cielo turquesa /
    rebote de arena, niebla turquesa `#2c86a3`, dos capas de cáusticas que se cruzan sobre la arena,
    9 rayos de sol y la superficie del agua vista desde abajo. 60 fps en la PC de Luis; falta teléfono.
