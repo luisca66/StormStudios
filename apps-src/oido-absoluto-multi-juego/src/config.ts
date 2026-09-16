@@ -26,14 +26,14 @@ const PRODUCTION_ASSET_BASE =
 const PRODUCTION_NOTES_BASE = "https://samples.stormstudios.com.mx";
 
 // ASSET_BASE: background music (nivel-X/) and game SFX/loops (samples/).
-// Local default = ./assets. On R2 = .../music/oido-absoluto-multi
+// Default (dev and prod) = the public CDN; override with VITE_ASSET_BASE.
+// En dev también se usa el CDN: este checkout no trae los ~840 MB de `public/assets`, y
+// sin ellos el servidor de Vite responde el index.html a cada .mp3 (se queda mudo).
+// Para trabajar con audio local, copiar los archivos a `public/assets` y poner
+// VITE_ASSET_BASE=./assets en un `.env`.
 const rawBase = (import.meta.env.VITE_ASSET_BASE as string | undefined)?.trim();
 export const ASSET_BASE: string =
-  rawBase && rawBase.length > 0
-    ? strip(rawBase)
-    : import.meta.env.PROD
-      ? PRODUCTION_ASSET_BASE
-      : "./assets";
+  rawBase && rawBase.length > 0 ? strip(rawBase) : PRODUCTION_ASSET_BASE;
 
 // NOTES_BASE: the instrument note samples (Piano/, Cello/, …). These are SHARED
 // across every Storm ear-training app and live at the BUCKET ROOT on R2
@@ -44,6 +44,6 @@ const rawNotes = (import.meta.env.VITE_NOTES_BASE as string | undefined)?.trim()
 export const NOTES_BASE: string =
   rawNotes && rawNotes.length > 0
     ? strip(rawNotes)
-    : import.meta.env.PROD
+    : ASSET_BASE === PRODUCTION_ASSET_BASE
       ? PRODUCTION_NOTES_BASE
       : `${ASSET_BASE}/samples`;
