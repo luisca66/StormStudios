@@ -1,4 +1,5 @@
-// Cabina sci-fi de Batisfera: geometría evaluada en Blender (art/blender/modelar-cabina.py).
+// Cabina sci-fi de Batisfera: geometría evaluada en Blender. Consolas de art/blender/modelar-cabina.py;
+// marco envolvente de tres ventanales de art/blender/marco-envolvente/modelar-marco.py (Astra).
 // Se dibuja en una pasada propia sobre el mundo (cámara fija, luces propias): no se
 // balancea, no la tiñe el agua y ninguna criatura la atraviesa.
 // Los módulos se anclan a los bordes de pantalla y se fusionan por material en cada
@@ -6,7 +7,7 @@
 
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
-import cabinUrl from "./assets/cabina-scifi.json?url";
+import cabinUrl from "./assets/cabina-envolvente.json?url";
 
 interface MeshData {
   material: string;
@@ -23,6 +24,13 @@ interface ModuleData {
   depth: number;
   stretchX: boolean;
   narrow: boolean;
+  /** false = solo en pantalla estrecha. */
+  wide?: boolean;
+  /**
+   * Marco envolvente: los vértices ya traen (u·d, v·H·d, 1 − d) con u, v en −1…1 de pantalla.
+   * Se coloca en (0, 0, −1) con escala (mitadAncho, 1, 1), sin la escala k de las piezas.
+   */
+  screenSpace?: boolean;
   screens: Record<string, number[][]>;
   meshes: MeshData[];
 }
@@ -57,13 +65,6 @@ export interface CockpitLayout {
   stats?: ScreenRect;
   answers?: ScreenRect;
 }
-
-/**
- * Ventanal ampliado: el marco superior sube y las esquinas se abren hacia fuera
- * (fracción de la media altura / medio ancho visibles). Las consolas no se mueven:
- * llevan el HUD encima. Devuelve la sensación de cúpula de la primera Batisfera.
- */
-const WINDOW_OPEN = { top: 0.1, side: 0.045 };
 
 let data: CabinData | undefined;
 let pending: Promise<void> | undefined;
@@ -174,13 +175,14 @@ export class Cockpit {
     const corner = new THREE.Vector3();
 
     for (const module of cabin.modules) {
-      if (narrow && !module.narrow) continue;
+      if (narrow ? !module.narrow : module.wide === false) continue;
       const [ax, ay] = module.anchor;
       const d = module.depth;
-      const lift = ay > 0 ? WINDOW_OPEN.top : 0;
-      const spread = ay > 0 && ax !== 0 ? WINDOW_OPEN.side : 0;
-      const matrix = new THREE.Matrix4().compose(
-        new THREE.Vector3(ax * (1 + spread) * halfW * d, ay * (1 + lift) * H * d, -d),
+      const matrix = module.screenSpace
+        ? new THREE.Matrix4().compose(
+          new THREE.Vector3(0, 0, -1), new THREE.Quaternion(), new THREE.Vector3(halfW, 1, 1))
+        : new THREE.Matrix4().compose(
+        new THREE.Vector3(ax * halfW * d, ay * H * d, -d),
         new THREE.Quaternion(),
         module.stretchX ? new THREE.Vector3(2 * halfW * d + 0.3, k, k) : new THREE.Vector3(k, k, k),
       );

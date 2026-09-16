@@ -479,3 +479,8 @@ Checklist §13 (resultado final):
 - `cockpit.ts`: `WINDOW_OPEN` sube el marco superior (10 %) y abre las esquinas (4.5 %); las consolas no se mueven porque llevan el HUD.
 - Verificado: build, QA, inmersión en zona 1 a 800×450 y en aspecto casi cuadrado, sin errores de consola. Publicado.
 - Siguiente: marco envolvente con ventanales laterales grandes (encargo a Astra, `art/blender/marco-envolvente/BRIEF.md`).
+
+### ✅ Marco envolvente de Blender integrado (2026-09-16, Astra modela · Claude integra)
+- Tres ventanales con pilares delgados, techo segmentado con focos, pilares con cables y faldón oscuro bajo los alféizares (v4). Consolas idénticas a la cabina anterior.
+- `cockpit.ts` carga `cabina-envolvente.json` y soporta `screenSpace` y `wide`. Se retiró `WINDOW_OPEN`: el marco nuevo ya abre el ventanal.
+- Verificado: build, QA, inmersión a 800×450, 1050×450 y 450×600 sin errores. En < 640 px la tarjeta de profundidad se oculta a propósito (CSS previo). Publicado.

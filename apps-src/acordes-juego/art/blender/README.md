@@ -209,3 +209,21 @@ Encargo, entrega y fuente en `leviatan/`.
 - Verificado 2026-09-14: build y QA; en zona 5 apareció, se activó a 25 m, preguntó oncenas y huyó
   al fallar; captura, huida y bramido en el inspector; sin errores propios en consola (los
   `computeBoundingSphere NaN` vienen de `Cockpit.render` y existían antes). Falta FPS y teléfono.
+
+---
+
+# Marco envolvente — Batisfera
+
+Modelado por **Astra** (v3 + ronda extra de detalle v4, autorizada por Luis) a partir de
+`marco-envolvente/BRIEF.md`; integrado por Claude el 2026-09-16. Recupera la sensación de
+cúpula de cristal: tres ventanales (frontal y dos laterales en ángulo) con pilares delgados.
+
+- 41 634 triángulos con consolas y `frameNarrow` · 14 módulos · JSON 1.6 MB (381 kB con gzip).
+- El juego carga `src/3d/assets/cabina-envolvente.json` (copia del entregable; al regenerar, volver a copiarlo).
+- Las consolas `consoleL/R/C` son idénticas a las de `cabina-scifi.json`. **No borrar
+  `cabina-scifi.json`:** `modelar-marco.py` lo usa en cada ejecución para comprobar que consolas y
+  esquinas del HUD no cambiaron (diferencia 0).
+- Módulos nuevos con `screenSpace: true`: los vértices ya traen `(u·d, v·H·d, 1 − d)`; el juego los
+  coloca en `(0, 0, −1)` con escala `(mitadAncho, 1, 1)`, sin la escala `k`. `wide: false` marca
+  `frameNarrow`, que solo se dibuja con aspecto < 1.1. Fórmula completa en `marco-envolvente/ENTREGA.md`.
+- El mundo se ve detrás a través del cristal curvo de `src/3d/dome-glass.ts`.
