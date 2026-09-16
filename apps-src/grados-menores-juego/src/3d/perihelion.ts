@@ -9,6 +9,7 @@
 
 import * as THREE from "three";
 import { newTrackFrame, type TrackFrame, type TrackManager } from "./track";
+import { EXPRESO_THREAD_LIGHT_PERIOD_S } from "@/config";
 
 /** Hasta dónde se adentra el cometa tras el último anillo, ya en órbita. */
 export const ORBIT_DEPTH = 120;
@@ -107,6 +108,8 @@ export class Perihelion {
   private starMap: THREE.CanvasTexture | null = null;
   private planet: THREE.Mesh | null = null;
   private observatoryBeam: THREE.Mesh | null = null;
+  private expresoThreadCurve: THREE.CatmullRomCurve3 | null = null;
+  private expresoThreadLight: THREE.Sprite | null = null;
   private auroras: THREE.Mesh | null = null;
   private rings: THREE.Group[] = [];
   private meteors: Meteor[] = [];
@@ -209,6 +212,52 @@ export class Perihelion {
     beam.position.copy(surface).addScaledVector(this.frame.up, 23);
     group.add(beam);
     this.observatoryBeam = beam;
+
+    // --- El guiño al Expreso Tonal (§5.6): una hebra dorada de vía sobre otro
+    // continente visible del planeta, con una lucecita que la recorre — el tren
+    // que sigue su curso en el mundo del que se partió.
+    const threadNormal = this.frame.up.clone()
+      .addScaledVector(this.frame.right, 0.55)
+      .addScaledVector(this.frame.tan, -0.2)
+      .normalize();
+    const threadTangentA = new THREE.Vector3().crossVectors(threadNormal, this.frame.up).normalize();
+    const threadTangentB = new THREE.Vector3().crossVectors(threadNormal, threadTangentA).normalize();
+    // Los puntos se proyectan de vuelta a la esfera para que la vía se pegue a la
+    // superficie real y no flote en un plano tangente (el tramo es pequeño frente
+    // al radio, pero mejor no fiarlo a la aproximación).
+    const onSurface = (a: number, b: number) =>
+      planet.position.clone()
+        .addScaledVector(threadNormal, 30)
+        .addScaledVector(threadTangentA, a)
+        .addScaledVector(threadTangentB, b)
+        .sub(planet.position)
+        .setLength(30.15)
+        .add(planet.position);
+    const threadCurve = new THREE.CatmullRomCurve3([
+      onSurface(-3.4, -1.1),
+      onSurface(-1.6, 0.7),
+      onSurface(0.2, -0.4),
+      onSurface(1.9, 0.9),
+      onSurface(3.6, 0.0),
+    ]);
+    const threadTube = new THREE.Mesh(
+      new THREE.TubeGeometry(threadCurve, 32, 0.09, 6, false),
+      new THREE.MeshStandardMaterial({
+        color: "#f0c766", roughness: 0.4, metalness: 0.4,
+        emissive: new THREE.Color("#c9922f"), emissiveIntensity: 0.5,
+      }),
+    );
+    group.add(threadTube);
+    this.expresoThreadCurve = threadCurve;
+
+    const threadLight = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: glowTexture("rgba(255,244,214,0.95)", "rgba(255,196,110,0.4)"),
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false,
+    }));
+    threadLight.scale.set(1.1, 1.1, 1);
+    threadLight.position.copy(threadCurve.getPointAt(0));
+    group.add(threadLight);
+    this.expresoThreadLight = threadLight;
 
     // --- Auroras en el limbo nocturno del planeta (cintas shader, patrón Aerostato).
     const auroras = new THREE.Mesh(
@@ -336,6 +385,15 @@ export class Perihelion {
     }
     if (this.planet) this.planet.rotation.y += dt * 0.02;
 
+    // La lucecita recorre la hebra dorada de punta a punta y vuelve, como un tren
+    // que no se sale de su tramo visible (un vaivén senoidal se posa suave en los
+    // extremos en vez de dar un salto).
+    if (this.expresoThreadCurve && this.expresoThreadLight) {
+      const phase = (this.elapsed / EXPRESO_THREAD_LIGHT_PERIOD_S) * Math.PI * 2;
+      const t = 0.5 + 0.5 * Math.sin(phase);
+      this.expresoThreadLight.position.copy(this.expresoThreadCurve.getPointAt(t));
+    }
+
     if (this.auroras) {
       const material = this.auroras.material as THREE.ShaderMaterial;
       material.uniforms.uTime.value = this.elapsed;
@@ -396,6 +454,8 @@ export class Perihelion {
     this.starMap = null;
     this.planet = null;
     this.observatoryBeam = null;
+    this.expresoThreadCurve = null;
+    this.expresoThreadLight = null;
     this.auroras = null;
     this.rings = [];
     this.meteors = [];

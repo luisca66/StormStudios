@@ -135,8 +135,8 @@ export const SIBLING_TRACK_OFFSET = 13;       // separación de la trayectoria p
 export const SIBLING_ROAR_DURATION_S = 1.3;   // rugido SIN altura definida (§2.11)
 
 // Guiños a las otras obras de Storm Studios (1 vez por viaje).
-export const EXPRESO_THREAD_DISTANCE = 210;   // la vía dorada sobre el planeta natal
-export const AEROSTATO_BALLOON_ALTITUDE = 150; // globo dorado al partir (acto 1)
+export const EXPRESO_THREAD_LIGHT_PERIOD_S = 9; // vaivén de la lucecita sobre la vía dorada
+export const AEROSTATO_BALLOON_ALTITUDE = 150;  // globo dorado al partir (acto 1)
 
 // ---------------------------------------------------------------------------
 // Rendimiento (PLAN §5.6)

@@ -742,7 +742,8 @@ ver con el juego y nunca ha estado versionado.
 **Lo que sigue pendiente y no se debe olvidar por estar ya publicado:**
 1. El **checklist §14** completo (F10): timbre Aleatorio en partida real, teclado
    completo, que la pausa congele con pregunta viva, layout en ventana angosta.
-2. El **guiño al Expreso Tonal** sobre el planeta natal (§5.6), pendiente desde F4.
+2. ~~El **guiño al Expreso Tonal** sobre el planeta natal (§5.6), pendiente desde F4.~~
+   **hecho, ver entrada 2026-09-16 más abajo.**
 3. Los **fps** en un navegador real: sigue sin medirse.
 4. ~~El `500`/`404` de consola que no logré atribuir (ver F5)~~ **resuelto (falso positivo),
    ver entrada 2026-09-16 más abajo.**
@@ -758,6 +759,30 @@ ver con el juego y nunca ha estado versionado.
 
 **Veredicto: era ruido del entorno del harness anterior, no un bug de la app.** Confirma la
 sospecha de F5. Se retira de la lista de pendientes; no se tocó código.
+
+## 2026-09-16 — Guiño al Expreso Tonal (Claude) ✅
+
+Última pieza que quedaba de los guiños a Storm Studios (§5.6); el del globo de Aerostato ya
+estaba hecho desde F4.
+
+- **`src/3d/perihelion.ts`**: junto al observatorio, sobre otro punto visible de la esfera del
+  planeta natal, una hebra dorada (`THREE.TubeGeometry` sobre una `CatmullRomCurve3` de 5
+  puntos, proyectados de vuelta a la esfera para que no floten en un plano tangente) con una
+  lucecita (`THREE.Sprite`, textura de brillo ya existente en el archivo) que la recorre de
+  punta a punta y vuelve — vaivén senoidal, no salto, para que se pose suave en los extremos
+  como un tren real deteniéndose. Construida una sola vez en `build()`, animada en `update()`
+  con el `elapsed` que ya llevaba la clase.
+- **`src/config.ts`**: `EXPRESO_THREAD_DISTANCE` (definida en F0, nunca conectada a nada) se
+  sustituye por `EXPRESO_THREAD_LIGHT_PERIOD_S = 9`, el período real del vaivén.
+- **Verificado con Chrome real** (`?dev=1`, `window.CometaJourney()`): construí el Perihelio a
+  mano (`perihelion.build(300, …)`), separé la cámara del rig de la carlinga para verla desde
+  fuera sin que la proa de hielo tapara el encuadre, y confirmé por captura que la hebra y la
+  luz se ven sobre el planeta junto al observatorio. La animación en vivo no se pudo observar
+  por rAF congelado (pestaña en segundo plano del entorno de automatización, no relacionado con
+  el juego); se verificó en su lugar llamando `perihelion.update(dt, …)` a mano con varios `dt`
+  y renderizando cada paso: la luz recorre la hebra de punta a punta con normalidad. Sin errores
+  de consola. `npm run build` limpio.
+- `npm run deploy` actualizó `public/apps/grados-menores-juego/`.
 
 ## 2026-09-15 — Carlinga de Blender ✅ (Astra modela · Claude integra)
 
