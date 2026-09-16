@@ -109,6 +109,7 @@ Las agujas de los manómetros ya están vivas desde F5 (`cab.ts`, un `InstancedM
 | Sifonóforo | ✅ Blender (4 piezas encadenadas con instancias) · modelado por Astra, integrado por Claude |
 | Leviatán | ✅ Blender (19 piezas encadenadas: head, body 1–8, tail y 9 placas) · modelado por Astra en 3 rondas, integrado por Claude |
 | Cabina sci-fi | ✅ Blender (JSON por módulos anclados a pantalla, 8 draw calls) · publicada (`45e5e95`) |
+| Marco envolvente (ventanales laterales) | ⏳ brief para Astra listo (`marco-envolvente/BRIEF.md`, 2026-09-16); ya publicado el cristal curvo en código (`dome-glass.ts`) |
 | Entorno (fosa, arrecifes) | ⏳ primitivas; el brief lo deja para otra fase |
 
 ### Aerostato — `acordes-cantar-juego` (acordes cantados, puerto 5174)
