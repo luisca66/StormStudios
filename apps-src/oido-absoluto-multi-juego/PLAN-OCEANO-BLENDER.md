@@ -38,7 +38,7 @@ de pasar a la siguiente.
 | # | Pieza | Carpeta | Estado | Contrato con el juego (resumen) |
 |---|---|---|---|---|
 | 1 | **Pez protagonista** | `pez/` | ✅ integrado (2026-09-15): Astra v1 + ronda 1; Claude corrigió pedúnculo, párpados e iris | ≈2.7 u, frente +Z, cámara 5.5 u detrás y 1.8 u arriba; partes `body`, `tail`, `fin` ×2, `dorsal` |
-| 2 | Perla-almeja (objetivo de nota) | `almeja/` | ⏳ brief tras aprobar 1 | se ve a 80–130 u; gira en Y, rebota ×1.4 al tocarla; `pearl` teñida con el color de la nota; valva superior abre |
+| 2 | Almeja con perla (objetivo de nota) | `almeja/` | ✅ brief listo (2026-09-15) | se ve a 80–130 u; gira en Y, rebota ×1.4 al tocarla; `pearl` teñida con el color de la nota; valva superior abre |
 | 3 | Atlántida hundida (hito central) | `atlantida/` | ⏳ | centro `(0,-50,0)`, radio ≈60 u, alto ≈45 u; colisionadores simples en `meta`; ≤ 40 k tri |
 | 4 | Portal atlante (compuerta) | `portal/` | ⏳ | `(110,-50,110)`, radio de disparo 5 u, abre en 0.7 s; cinemática a 15 u; partes marco + hojas del iris + `glow` |
 | 5 | Ballena jorobada | `ballena/` | ⏳ | ≈40 u de largo, órbita r=80 u; `tail` con batido vertical, `flipper` ×2 |
