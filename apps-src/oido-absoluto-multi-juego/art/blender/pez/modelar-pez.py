@@ -206,9 +206,12 @@ for side in (-1,1):
     g.tube(path,[.013]*9,"a51c23",7)
 body = g.object("Cuerpo labios y operculos", "body")
 
-# Ambos ojos, iris, pupilas y dos brillos en una sola malla exportada.
-g=Geo()
+# Claude (2026-09-16), a pedido de Luis: el pez parpadea. Cada ojo es su propia parte
+# `eye` (segment 0 = -X, 1 = +X) con el pivote en el CENTRO del globo, para que el juego
+# lo aplaste en Y sobre si mismo sin desplazarlo por la cara.
+eyes=[]
 for side in (-1,1):
+    g=Geo()
     g.uv_sphere((side*.47,.27,.55),(.205,.235,.180),"fff4dc",24,12)
     g.uv_sphere((side*.583,.285,.600),(.104,.132,.064),"42b9c5",20,10)
     g.uv_sphere((side*.628,.290,.626),(.055,.080,.033),"141526",20,10)
@@ -216,7 +219,8 @@ for side in (-1,1):
     # Parpados: casquetes de piel, arriba y abajo, que envuelven el globo y lo funden con la cara.
     g.cap((side*.47,.27,.55),(.228,.258,.203),"d8342f",0.0,1.02,22,6)
     g.cap((side*.47,.27,.55),(.224,.254,.199),"c92c2a",math.pi,math.pi-0.52,22,4)
-eyes=g.object("Ojos expresivos", "eyes", mat=eye_mat)
+    eyes.append(g.object("Ojo " + ("izquierdo" if side < 0 else "derecho"), "eye",
+                         pivot=(side*.47,.27,.55), mat=eye_mat, segment=0 if side < 0 else 1))
 
 # Cola: pedunculo cerrado, suavemente fundido, y abanico VERTICAL en el plano Y-Z.
 g=Geo()
@@ -273,7 +277,7 @@ meta=dict(forward="-Z", mouth=[0.0,-0.20,1.08])
 parts,tris=kit.export_parts(ROOT/"pez.json",meta=meta)
 pts=[ob.matrix_world@v.co for ob in meshes for v in ob.data.vertices]
 dims=[max(v[i] for v in pts)-min(v[i] for v in pts) for i in range(3)]
-assert parts==6 and tris<=14000,(parts,tris)
+assert parts==7 and tris<=14000,(parts,tris)
 assert dims[0]<=2.4 and 2.52<=dims[1]<=3.08,(dims,"largo total")
 
 bpy.ops.object.select_all(action="DESELECT")
@@ -325,7 +329,7 @@ bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/"pez.blend"))
 
 rows=[
 "| Cuerpo labios y operculos | `body` | — | 0.000, 0.000, 0.000 | Piel satinada | escala Z / X-Y | +15 % / −7 % | ligada a velocidad | Balanceo idle ±0.035 rad Y, 1.2 rad/s. |",
-"| Ojos expresivos | `eyes` | — | 0.000, 0.000, 0.000 | Ojos brillantes | — | 0 | — | Estaticos respecto al cuerpo. |",
+"| Ojo izquierdo / derecho | `eye` | 0 / 1 | ∓0.470, 0.270, 0.550 | Ojos brillantes | escala Y | 1 → 0.12 | parpadeo 0.14 s cada 2.5–6 s | Pivote en el centro del globo (Claude). |",
 "| Pedunculo y cola abanico vertical | `tail` | — | 0.000, 0.000, −0.880 | Aletas satinadas | Y | ±0.15 rad | 6 rad/s | Pivote y pedunculo solapados dentro del cuerpo; abanico en Y-Z. |",
 "| Pectoral izquierda | `fin` | 0 | −0.470, −0.040, 0.180 | Aletas satinadas | X | ±0.40 rad | 10 rad/s | Idle ±0.10 rad a 1.5 rad/s. |",
 "| Pectoral derecha | `fin` | 1 | 0.470, −0.040, 0.180 | Aletas satinadas | X | ±0.40 rad | 10 rad/s | Fase opuesta; idle ±0.10 rad. |",

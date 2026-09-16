@@ -433,7 +433,7 @@ export class Game3DRenderer {
       this.player.update(delta, arenaSize);
 
       // 2. Check environment obstacle collisions and displace player
-      const displacement = this.environment.checkCollisions(this.player.mesh.position, 0.9);
+      const displacement = this.environment.checkCollisions(this.player.mesh.position, this.player.collisionRadius);
       this.player.mesh.position.add(displacement);
 
       // Keep the swimmer above the sand basin (level 2 rim is the world boundary)

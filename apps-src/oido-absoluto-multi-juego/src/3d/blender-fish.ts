@@ -2,7 +2,8 @@ import * as THREE from "three";
 import dataUrl from "./assets/pez.json?url";
 
 // Pez protagonista de El Océano, modelado en Blender (art/blender/pez/, kit.export_parts).
-// Boca hacia +Z, origen en el centro del cuerpo. Partes: body, eyes, tail, fin ×2, dorsal.
+// Boca hacia +Z, origen en el centro del cuerpo. Partes: body, eye ×2, tail, fin ×2, dorsal.
+// Cada ojo tiene su pivote en el centro del globo: el juego lo aplasta en Y para parpadear.
 
 export interface FishPartData {
   name: string;
@@ -23,6 +24,7 @@ export interface BlenderFish {
   tail: THREE.Object3D;
   fins: THREE.Object3D[]; // [segment 0 (−X), segment 1 (+X)]
   dorsal: THREE.Object3D;
+  eyes: THREE.Object3D[]; // [segment 0 (−X), segment 1 (+X)]
 }
 
 let parts: FishPartData[] | undefined;
@@ -47,6 +49,7 @@ export function buildBlenderFish(): BlenderFish {
   let tail!: THREE.Object3D;
   let dorsal!: THREE.Object3D;
   const fins: THREE.Object3D[] = [];
+  const eyes: THREE.Object3D[] = [];
 
   for (const part of parts) {
     const geometry = new THREE.BufferGeometry();
@@ -74,7 +77,8 @@ export function buildBlenderFish(): BlenderFish {
     if (part.part === "tail") tail = mesh;
     else if (part.part === "dorsal") dorsal = mesh;
     else if (part.part === "fin") fins[part.segment ?? fins.length] = mesh;
+    else if (part.part === "eye") eyes[part.segment ?? eyes.length] = mesh;
   }
 
-  return { root, tail, fins, dorsal };
+  return { root, tail, fins, dorsal, eyes };
 }

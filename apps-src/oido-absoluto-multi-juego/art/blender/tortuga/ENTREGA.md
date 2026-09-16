@@ -25,7 +25,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 
 | Dato | Valor |
 |---|---|
-| Largo × alto × ancho total | 4.030 × 0.898 × 4.860 u |
+| Largo × alto × ancho total | 4.030 × 1.338 × 4.860 u |
 | Caparazón aproximado | 3.0 × 0.86 × 2.4 u, largo × alto × ancho |
 | Origen | Centro del caparazón (0,0,0); articulaciones de aletas en Y=0.06. |
 | Frente | +Z Three / −Y Blender. |

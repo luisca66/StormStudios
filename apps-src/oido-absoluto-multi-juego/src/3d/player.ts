@@ -33,6 +33,11 @@ export class PlayerController {
   private rightFin?: THREE.Object3D;
   private tailPivot?: THREE.Object3D;
   private dorsalFin?: THREE.Object3D;
+  private fishEyes: THREE.Object3D[] = [];
+  private fishBlinkTimer = 2.5;
+  private fishBlinkPhase = -1; // −1 = ojos abiertos; 0..1 = progreso del parpadeo
+  /** Radio de colisión del personaje (el pez es más chico que el resto). */
+  public collisionRadius = 0.9;
 
   private wingLeft?: THREE.Object3D;
   private wingRight?: THREE.Object3D;
@@ -210,9 +215,15 @@ export class PlayerController {
     this.mesh.add(bodyRoot);
     this.bodyMesh = bodyRoot as unknown as THREE.Mesh;
 
+    // Luis lo quiso más chico (2026-09-16): 70 % del modelo, y la colisión a la par.
+    const FISH_SCALE = 0.7;
+    this.collisionRadius = 0.9 * FISH_SCALE;
+
     const attach = () => {
       const fish = buildBlenderFish();
+      fish.root.scale.setScalar(FISH_SCALE);
       bodyRoot.add(fish.root);
+      this.fishEyes = fish.eyes;
       this.tailPivot = fish.tail;
       this.leftFin = fish.fins[0];
       this.rightFin = fish.fins[1];
@@ -777,6 +788,22 @@ export class PlayerController {
         this.tailPivot.rotation.y = Math.sin(this.animTime * 6.0) * tailAmp;
       } else if (this.tailPivot) {
         this.tailPivot.rotation.y = THREE.MathUtils.lerp(this.tailPivot.rotation.y, 0.0, 3 * delta);
+      }
+
+      // Parpadeo: los dos ojos a la vez, 0.14 s, cada 2.5–6 s (y a veces un doble parpadeo).
+      if (this.fishEyes.length) {
+        if (this.fishBlinkPhase < 0) {
+          this.fishBlinkTimer -= delta;
+          if (this.fishBlinkTimer <= 0) this.fishBlinkPhase = 0;
+        } else {
+          this.fishBlinkPhase += delta / 0.14;
+          if (this.fishBlinkPhase >= 1) {
+            this.fishBlinkPhase = -1;
+            this.fishBlinkTimer = Math.random() < 0.2 ? 0.12 : 2.5 + Math.random() * 3.5;
+          }
+        }
+        const squash = this.fishBlinkPhase < 0 ? 1 : 1 - 0.88 * Math.sin(Math.PI * this.fishBlinkPhase);
+        for (const eye of this.fishEyes) eye.scale.y = squash;
       }
 
       // Aleta dorsal: ondulación leve y retrasada (ENTREGA.md: Z, ±0.08 rad, 2 rad/s)

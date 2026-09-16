@@ -30,8 +30,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 | Origen | Centro del cuerpo, (0, 0, 0). |
 | Frente | +Z en espacio Three. |
 | Triangulos totales | 13200 |
-| Mallas exportadas | 6 |
-| Peso del JSON | 575.6 KiB |
+| Mallas exportadas | 7 |
+| Peso del JSON | 571.8 KiB |
 | Puntos en `meta` | `mouth` = (0.000, −0.200, 1.080) Three; emision de burbujas. |
 
 ## Partes
@@ -39,7 +39,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 | Objeto | `part` | `segment` | Pivote (Three) | Material | Eje (Three) | Amplitud | Velocidad | Notas |
 |---|---|---|---|---|---|---|---|---|
 | Cuerpo labios y operculos | `body` | — | 0.000, 0.000, 0.000 | Piel satinada | escala Z / X-Y | +15 % / −7 % | ligada a velocidad | Balanceo idle ±0.035 rad Y, 1.2 rad/s. |
-| Ojos expresivos | `eyes` | — | 0.000, 0.000, 0.000 | Ojos brillantes | — | 0 | — | Estaticos respecto al cuerpo. |
+| Ojo izquierdo / derecho | `eye` | 0 / 1 | ∓0.470, 0.270, 0.550 | Ojos brillantes | escala Y | 1 → 0.12 | parpadeo 0.14 s cada 2.5–6 s | Pivote en el centro del globo (Claude). |
 | Pedunculo y cola abanico vertical | `tail` | — | 0.000, 0.000, −0.880 | Aletas satinadas | Y | ±0.15 rad | 6 rad/s | Pivote y pedunculo solapados dentro del cuerpo; abanico en Y-Z. |
 | Pectoral izquierda | `fin` | 0 | −0.470, −0.040, 0.180 | Aletas satinadas | X | ±0.40 rad | 10 rad/s | Idle ±0.10 rad a 1.5 rad/s. |
 | Pectoral derecha | `fin` | 1 | 0.470, −0.040, 0.180 | Aletas satinadas | X | ±0.40 rad | 10 rad/s | Fase opuesta; idle ±0.10 rad. |

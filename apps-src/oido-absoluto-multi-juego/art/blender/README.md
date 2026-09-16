@@ -32,6 +32,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
   `dorsal` ondula en Z ±0.08 rad a 2 rad/s. El contenedor del pez recibe el estiramiento y el
   balanceo de reposo; la geometría ya viene proporcionada, su escala base es 1.
 - El frente del modelo es +Z, igual que el avance del jugador: no lleva giro extra.
+- **2026-09-16, a pedido de Luis:** el pez se ve al **70 %** del modelo (`FISH_SCALE` en `player.ts`,
+  con el radio de colisión escalado igual) y **parpadea**: los ojos pasaron de una parte `eyes` a
+  dos partes `eye` (segment 0/1) con pivote en el centro del globo, y el juego las aplasta en Y a
+  0.12 durante 0.14 s cada 2.5–6 s, con doble parpadeo ocasional. 7 mallas.
 
 ### Almeja con perla
 
@@ -91,6 +95,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 - Animación (de `tortuga/ENTREGA.md`): delanteras en Z ±0.5 rad a 1.6 rad/s, traseras en Z ±0.15 rad
   a 0.8 rad/s, cabeza ±0.12 rad en X y ±0.25 rad en Y. Cada tortuga lleva su propia fase, así que
   ninguna rema al mismo compás.
+- **2026-09-16, a pedido de Luis: más gorditas.** En `modelar-tortuga.py`, `SHELL_H = 1.65`
+  levanta la cúpula del caparazón y sus escudos, y `BELLY = 0.31` da más panza al plastrón: el alto
+  pasó de 0.90 a 1.34 u. Pivotes, presupuesto y comprobaciones de articulaciones intactos.
 - **Rumbo:** cabeza a +Z como la ballena, así que `rotation.y = -ángulo de órbita`. Comprobado
   midiendo morro contra velocidad (`dot ≈ 0.94`).
 - Coste del nivel completo (pez, almeja, arrecife, ballena y 4 tortugas): 122 draw calls,

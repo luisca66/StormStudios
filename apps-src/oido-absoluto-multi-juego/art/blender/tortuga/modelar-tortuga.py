@@ -63,7 +63,12 @@ def spline(tab,t):
         if a[0]<=t<=b[0]:
             prev=tab[max(0,i-1)];nxt=tab[min(len(tab)-1,i+2)];h=b[0]-a[0];u=(t-a[0])/h
             return [(2*u**3-3*u*u+1)*a[k]+(u**3-2*u*u+u)*h*(b[k]-prev[k])/(b[0]-prev[0])+(-2*u**3+3*u*u)*b[k]+(u**3-u*u)*h*(nxt[k]-a[k])/(nxt[0]-a[0]) for k in range(1,len(a))]
-def dome(x,z):return .07+.60*math.sqrt(max(0,1-(x/1.2)**2-(z/1.5)**2))
+# Claude (integrador, 2026-09-16), a pedido de Luis: tortugas mas gorditas en vertical.
+# SHELL_H levanta la cupula del caparazon (y los escudos que la siguen) y BELLY da mas
+# panza al plastron. Pivotes de aletas y cuello no cambian: quedan aun mas cubiertos.
+SHELL_H=1.65
+BELLY=.31
+def dome(x,z):return .07+.60*SHELL_H*math.sqrt(max(0,1-(x/1.2)**2-(z/1.5)**2))
 g=Geo();v=[];f=[];c=[]
 # Continuous closed oval shell and plastron; lightly scalloped equatorial lip.
 for i in range(21):
@@ -71,7 +76,7 @@ for i in range(21):
     for j in range(48):
         b=TAU*j/48;r=math.sin(a);sc=1-.008*(.5+.5*math.cos(20*b))*r**12
         x=1.2*r*math.cos(b)*sc;z=1.5*r*math.sin(b)*sc
-        y=.07+(.49 if math.cos(a)>=0 else .23)*math.cos(a)
+        y=.07+(.49*SHELL_H if math.cos(a)>=0 else BELLY)*math.cos(a)
         v.append((x,y,z))
         c.append(mix('c8a24a','e6d9a8',clamp(-math.cos(a)*5)))
 for i in range(20):
@@ -160,7 +165,7 @@ meshes=[body,head,*flippers];bpy.context.view_layer.update()
 def inside(p):
     x,y,z=p;r2=(x/1.2)**2+(z/1.5)**2
     if r2>=1:return False
-    return .07-.23*math.sqrt(1-r2)<y<dome(x,z)
+    return .07-BELLY*math.sqrt(1-r2)<y<dome(x,z)
 for angle in (-.25,0,.25):
     for j in range(24):
         a=TAU*j/24;p=Vector((.13*math.cos(a),.05+.065*math.sin(a),1.02));pivot=Vector((0,0,1.10))
