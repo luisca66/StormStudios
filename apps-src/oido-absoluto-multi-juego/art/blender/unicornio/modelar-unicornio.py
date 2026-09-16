@@ -303,12 +303,12 @@ objects.append(wing(-1, 0))
 objects.append(wing(1, 1))
 
 # ---------------------------------------------------------------------------
-# Crin: seis mechones gruesos que caen hacia +X y dejan ver el lomo; cola en cascada.
+# Crin: seis mechones gruesos que caen alternando a los dos lados del cuello; cola en cascada.
 # ---------------------------------------------------------------------------
 RAINBOW = ["#ff6699", "#ffcc55", "#88ddff", "#aa66ff", "#66eebb", "#ff9ec7"]
 mane_roots = [Vector((0.0, 3.98, 1.3)).lerp(Vector((0.0, 2.72, 0.42)), k / 5) for k in range(6)]
 for k, root in enumerate(mane_roots):
-    s = 1 if k % 2 == 0 else 0.55          # alternan: se superponen como un peinado
+    s = (1 if k % 2 == 0 else -1) * (1.0 if k < 4 else 0.8)   # alternan a ambos lados del cuello
     length = 0.95 - 0.06 * k
     pts = [tuple(root), tuple(root + Vector((0.28 * s, 0.05, -0.12))), tuple(root + Vector((0.55 * s, -0.4 * length, -0.2))),
            tuple(root + Vector((0.62 * s, -0.95 * length, -0.12))), tuple(root + Vector((0.45 * s, -1.15 * length, 0.02)))]

@@ -188,7 +188,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
   (escrito para Astra; Luis pidió que lo intentara Claude). 26 582 triángulos · 20 partes.
 - Cuerpo con metaballs (grupa, torso, pecho, cuello, cabeza y hocico fundidos) + orejas y fosas;
   `leg` 0–3 con casco lila (pivote en cadera/hombro), `wing` 0–1 con brazo, primarias,
-  secundarias y cobertoras hacia atrás y diedro de 0.32 rad, `mane` 0–5 y `tail` 0–4 (mechones
+  secundarias y cobertoras hacia atrás y diedro de 0.32 rad, `mane` 0–5 (alternan a los dos lados del cuello) y `tail` 0–4 (mechones
   arcoíris con pivote en la raíz), `horn` espiral dorada emisiva y `eyes` violeta con brillo.
 - [src/3d/blender-unicorn.ts](../src/3d/blender-unicorn.ts); `player.ts buildUnicorn()` lo usa si
   el JSON ya llegó (si no, el de primitivas). Se baja 0.75 u dentro del modelo para conservar
