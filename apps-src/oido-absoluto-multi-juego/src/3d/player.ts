@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { AudioEngine } from "@/audio/engine";
 import { ASSET_BASE } from "@/config";
 import { buildBlenderFish, preloadBlenderFish } from "./blender-fish";
+import { buildBlenderUnicorn, isUnicornReady } from "./blender-unicorn";
 
 export class PlayerController {
   public mesh: THREE.Group;
@@ -436,6 +437,12 @@ export class PlayerController {
     this.unicornModel = model;
     this.mesh.add(model);
 
+    if (isUnicornReady()) {
+      this.buildBlenderUnicornModel(model);
+      return;
+    }
+    // Reserva por si el JSON del unicornio aún no llegó: modelo de primitivas del port de Godot.
+
     // ----- Materials -----
     const bodyMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(0.98, 0.94, 1.0), roughness: 0.3, metalness: 0.05 });
     const bodyAccent = new THREE.MeshStandardMaterial({ color: new THREE.Color(0.94, 0.88, 1.0), roughness: 0.4 });
@@ -554,6 +561,30 @@ export class PlayerController {
     this.buildUnicornWings(model);
 
     // ----- Magic glow light -----
+    this.uniMagicLight = new THREE.PointLight(new THREE.Color(1.0, 0.55, 1.0), 8.0, 12);
+    this.uniMagicLight.position.set(0, 2.0, 0); model.add(this.uniMagicLight);
+  }
+
+  // Unicornio de Blender (art/blender/unicornio/). Mismas piezas animables que el de primitivas.
+  private buildBlenderUnicornModel(model: THREE.Group): void {
+    const uni = buildBlenderUnicorn();
+    // El modelo trae los cascos en y = 0; el de primitivas los tenía en −0.75 (cámara y
+    // colisiones están calibradas para eso), así que se baja dentro de `model`, que la
+    // animación mueve para el vaivén.
+    uni.root.position.y = -0.75;
+    model.add(uni.root);
+
+    this.uniLegs.push(...uni.legs);
+    this.uniManeLobes.push(...uni.mane);
+    this.uniTailLobes.push(...uni.tail);
+    this.uniWingL = uni.wingL;
+    this.uniWingR = uni.wingR;
+
+    this.uniHornGlow = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6),
+      new THREE.MeshBasicMaterial({ color: new THREE.Color(1.0, 1.0, 0.67), transparent: true, opacity: 0.85 }));
+    this.uniHornGlow.position.copy(uni.hornTip);
+    uni.root.add(this.uniHornGlow);
+
     this.uniMagicLight = new THREE.PointLight(new THREE.Color(1.0, 0.55, 1.0), 8.0, 12);
     this.uniMagicLight.position.set(0, 2.0, 0); model.add(this.uniMagicLight);
   }

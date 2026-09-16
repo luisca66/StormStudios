@@ -138,7 +138,7 @@ relajó para los modelos de Blender.
   Detalle en `PLAN-OCEANO-BLENDER.md`.
   Nivel 5 «Las Nubes» (auditoría en `apps-src/oido-absoluto-multi-juego/AUDITORIA-NUBES-BLENDER.md`):
   ✅ nubes instanciadas, globo aerostático, portal arcoíris, islas, cometas y pájaros (Claude, publicados
-  2026-09-16; vista inicial de 367 a 173 draw calls). ⏳ Unicornio-pegaso: brief para Astra en `art/blender/unicornio/BRIEF.md`.
+  2026-09-16; vista inicial de 367 a 173 draw calls). ✅ Unicornio-pegaso (Claude, con el brief escrito para Astra). Nivel completo.
 - `intervalos-cantados-juego`.
 
 ---

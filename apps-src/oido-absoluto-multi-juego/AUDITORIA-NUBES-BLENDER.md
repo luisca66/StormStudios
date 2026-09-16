@@ -47,7 +47,7 @@ mejor lo orgánico (tortuga, ballena, cangrejo).
 
 - ✅ Kit de nubes, globo aerostático, portal arcoíris e islas/cometas/pájaros: modelados por Claude
   y publicados (ver `art/blender/README.md`).
-- ⏳ Unicornio-pegaso: brief para Astra en `art/blender/unicornio/BRIEF.md`.
+- ✅ Unicornio-pegaso: sin Astra disponible, lo modeló Claude siguiendo `art/blender/unicornio/BRIEF.md` y está publicado. El nivel 5 queda completo.
 
 ## Orden propuesto
 

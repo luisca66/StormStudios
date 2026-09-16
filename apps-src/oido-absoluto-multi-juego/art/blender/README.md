@@ -181,3 +181,16 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
   `environment.ts` (`spawnSkyIslands`, `spawnKites`, `spawnSkyBirds`) arma y anima como antes
   (vaivén de islas, cola de moños, aleteo y cruce de pájaros). Hilos de cometa, arcoíris
   lejanos y destellos siguen en código.
+
+### Unicornio-pegaso (jugador del nivel 5)
+
+- Modelado por **Claude** con bpy (`unicornio/modelar-unicornio.py`) a partir de `unicornio/BRIEF.md`
+  (escrito para Astra; Luis pidió que lo intentara Claude). 26 582 triángulos · 20 partes.
+- Cuerpo con metaballs (grupa, torso, pecho, cuello, cabeza y hocico fundidos) + orejas y fosas;
+  `leg` 0–3 con casco lila (pivote en cadera/hombro), `wing` 0–1 con brazo, primarias,
+  secundarias y cobertoras hacia atrás y diedro de 0.32 rad, `mane` 0–5 y `tail` 0–4 (mechones
+  arcoíris con pivote en la raíz), `horn` espiral dorada emisiva y `eyes` violeta con brillo.
+- [src/3d/blender-unicorn.ts](../src/3d/blender-unicorn.ts); `player.ts buildUnicorn()` lo usa si
+  el JSON ya llegó (si no, el de primitivas). Se baja 0.75 u dentro del modelo para conservar
+  cámara y colisiones, y reutiliza la animación de siempre (patas, alas, crin, cola, destello
+  del cuerno y luz mágica). Pelaje y plumas con emisivo perla 0.3: desde atrás se veía gris.
