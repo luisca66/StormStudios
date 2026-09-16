@@ -303,18 +303,18 @@ objects.append(wing(-1, 0))
 objects.append(wing(1, 1))
 
 # ---------------------------------------------------------------------------
-# Crin: seis mechones gruesos que caen alternando a los dos lados del cuello; cola en cascada.
+# Crin: seis mechones finos lavanda perla pegados al cuello; solo la cola es arcoíris.
 # ---------------------------------------------------------------------------
 RAINBOW = ["#ff6699", "#ffcc55", "#88ddff", "#aa66ff", "#66eebb", "#ff9ec7"]
 mane_roots = [Vector((0.0, 3.98, 1.3)).lerp(Vector((0.0, 2.72, 0.42)), k / 5) for k in range(6)]
+MANE_TOP, MANE_TIP = V("#efe6ff"), V("#d9c8f5")   # un solo tono lavanda perla, discreto
 for k, root in enumerate(mane_roots):
-    s = (1 if k % 2 == 0 else -1) * (1.0 if k < 4 else 0.8)   # alternan a ambos lados del cuello
-    length = 0.95 - 0.06 * k
-    pts = [tuple(root), tuple(root + Vector((0.28 * s, 0.05, -0.12))), tuple(root + Vector((0.55 * s, -0.4 * length, -0.2))),
-           tuple(root + Vector((0.62 * s, -0.95 * length, -0.12))), tuple(root + Vector((0.45 * s, -1.15 * length, 0.02)))]
-    lock = tube(f"Mechón {k}", pts, 0.27, 0.05, HAIR, 10, 5)
-    c0, c1 = V(RAINBOW[k]), V(RAINBOW[(k + 1) % 6])
-    paint(lock, lambda p, n, c0=c0, c1=c1, root=root: tuple(c0.lerp(c1, max(0.0, min(1.0, (root.y - p[1]) / 1.1)) * 0.5)))
+    s = 0.45 if k % 2 == 0 else -0.45          # alternan a ambos lados, pegados al cuello
+    length = 0.55 - 0.03 * k
+    pts = [tuple(root), tuple(root + Vector((0.12 * s, 0.04, -0.1))), tuple(root + Vector((0.3 * s, -0.35 * length, -0.16))),
+           tuple(root + Vector((0.36 * s, -0.95 * length, -0.1)))]
+    lock = tube(f"Mechón {k}", pts, 0.15, 0.03, HAIR, 8, 5)
+    paint(lock, lambda p, n, root=root: tuple(MANE_TOP.lerp(MANE_TIP, max(0.0, min(1.0, (root.y - p[1]) / 0.55)))))
     set_pivot(lock, tuple(root), "mane", k)
     objects.append(lock)
 # Copete sobre la frente (fijo, parte del cuerpo visual; va con el mechón 0).
