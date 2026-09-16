@@ -11,7 +11,7 @@
 | El pez aparece **dentro del domo** de Atlántida: spawn en `(0,-20,0)` y el colisionador del domo llega hasta y≈-5 | `player.ts resetPosition` + `environment.ts buildAtlantisCastle` | Claude (integración) |
 | ~~Pez de esferas y cilindros~~ ✅ resuelto: modelo de Blender cargado desde JSON | `player.ts buildFish` + `blender-fish.ts` | hecho |
 | ~~Objetivo de nota = «piñata» de conos~~ ✅ resuelto: almeja con perla, con faro de luz del color de la nota | `renderer.ts` + `blender-clam.ts` | hecho |
-| Atlántida con cilindros de 8 lados; es el hito central y se ve de primitivas | `environment.ts buildAtlantisCastle` | **modelador** → pieza 3 |
+| ~~Atlántida con cilindros de 8 lados~~ ✅ resuelto: ciudad de Blender con cúpula, torres y cristal | `environment.ts buildAtlantis` + `blender-atlantis.ts` | hecho |
 | Compuerta = disco metálico plano en el suelo; la cinemática de desbloqueo no luce | `gate.ts` nivel 2 | **modelador** → pieza 4 |
 | ~~Ballena = esfera estirada~~ ✅ resuelto: jorobada de Blender con cola, pectorales y mandíbula animadas | `environment.ts spawnWhale` + `blender-whale.ts` | hecho |
 | ~~Corales, rocas y algas de primitivas~~ ✅ resuelto: kit de arrecife instanciado | `environment.ts sowReef` + `blender-reef.ts` | hecho |
@@ -39,7 +39,7 @@ de pasar a la siguiente. Quién modela lo elige Luis en Codex: el pez lo hizo **
 |---|---|---|---|---|
 | 1 | **Pez protagonista** | `pez/` | ✅ integrado (2026-09-15): modelado por **Sol** (v1 + ronda 1); Claude corrigió pedúnculo, párpados e iris | ≈2.7 u, frente +Z, cámara 5.5 u detrás y 1.8 u arriba; partes `body`, `tail`, `fin` ×2, `dorsal` |
 | 2 | Almeja con perla (objetivo de nota) | `almeja/` | ✅ integrada (2026-09-15): Astra v1 sin rondas; espera abierta y se cierra al tocarla | se ve a 80–130 u; gira en Y, rebota ×1.4 al tocarla; `pearl` teñida con el color de la nota; valva superior abre |
-| 3 | Atlántida hundida (hito central) | `atlantida/` | ✅ brief listo (2026-09-15) | centro `(0,-50,0)`, radio ≈60 u, alto ≈45 u; colisionadores simples en `meta`; ≤ 40 k tri |
+| 3 | Atlántida hundida (hito central) | `atlantida/` | ✅ integrada (2026-09-16): Astra v1, sin rondas; colisión leída del modelo | centro `(0,-50,0)`, radio ≈60 u, alto ≈45 u; colisionadores simples en `meta`; ≤ 40 k tri |
 | 4 | Portal atlante (compuerta) | `portal/` | ⏳ | `(110,-50,110)`, radio de disparo 5 u, abre en 0.7 s; cinemática a 15 u; partes marco + hojas del iris + `glow` |
 | 5 | Ballena jorobada | `ballena/` | ✅ integrada (2026-09-15): Astra v1 + 2 revisiones propias; Claude fundió la garganta y saturó el azul | 38–42 u, órbita r=80 u, colisión 12.5 u; `body`, `tail`, `flipper` ×2, `jaw`, `meta.blowhole` |
 | 6 | Kit de arrecife instanciado | `arrecife/` | ✅ integrado (2026-09-15): modelado por **Claude** con bpy mientras Astra recargaba | 9 variantes, 7 844 tri en total, ~280 ejemplares en 9 draw calls |
@@ -49,7 +49,7 @@ de pasar a la siguiente. Quién modela lo elige Luis en Codex: el pez lo hizo **
 ## 4. Trabajo de Claude en paralelo (sin tokens de Astra)
 
 1. ✅ Spawn fuera de Atlántida (2026-09-15): `(0,-12,-105)` mirando al palacio; cámara colocada detrás
-   desde el primer cuadro. Falta reajustar colisionadores cuando llegue la pieza 3.
+   desde el primer cuadro. Los colisionadores de la ciudad ya vienen del modelo (pieza 3).
 2. ✅ Pecera de vidrio eliminada (2026-09-15): el fondo es una hondonada de arena que sube en los bordes
    (`getFloorHeight`); pez y notas no bajan de ella. La ladera ya está vestida con el kit de arrecife.
 3. ✅ Iluminación (2026-09-15): sol cálido `#fff3d6` casi vertical, hemisférica cielo turquesa /

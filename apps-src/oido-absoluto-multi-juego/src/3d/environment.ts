@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { buildReefField, preloadBlenderReef, ReefField, ReefPart, ReefPlacement } from "./blender-reef";
 import { BlenderWhale, buildBlenderWhale, preloadBlenderWhale } from "./blender-whale";
 import { BlenderTurtle, buildBlenderTurtle, preloadBlenderTurtle } from "./blender-turtle";
+import { BlenderAtlantis, buildBlenderAtlantis, preloadBlenderAtlantis } from "./blender-atlantis";
 
 export interface Obstacle {
   x: number;
@@ -25,6 +26,7 @@ export class LevelEnvironment {
   private sunShafts: THREE.Mesh[] = [];
   private waterSurface?: THREE.Mesh;
   private reef?: ReefField;
+  private atlantis?: BlenderAtlantis;
   private shootingStarTimer = 3.0; // level 3: time until next shooting star
   
   constructor(private level: number, private scene: THREE.Scene, private arenaSize: number) {
@@ -85,6 +87,7 @@ export class LevelEnvironment {
     this.causticMap2 = undefined;
     this.waterSurface = undefined;
     this.reef = undefined;
+    this.atlantis = undefined;
     this.altarCrystal = undefined;
     // Reset fog
     this.scene.fog = null;
@@ -128,7 +131,9 @@ export class LevelEnvironment {
           const distToTop = (obs.y + obs.height + playerRadius) - playerPos.y;
           const distToBottom = playerPos.y - (obs.y - playerRadius);
           
-          const pushUp = distToTop < distToBottom;
+          // Un edificio apoyado en la arena no tiene «por debajo»: jamás se sale hundiéndose.
+          const grounded = obs.y <= this.getFloorHeight(obs.x, obs.z) + 5;
+          const pushUp = grounded || distToTop < distToBottom;
           const overlapV = pushUp ? distToTop : distToBottom;
           
           // Choose the direction of the shortest exit vector (smallest overlap)
@@ -386,6 +391,7 @@ export class LevelEnvironment {
     // Level 3: spawn periodic shooting stars (sometimes in bursts)
     if (this.level === 2) {
       this.reef?.update(time);
+      this.atlantis?.update(time);
       // Arrastre lento y cruzado de las dos capas de cáusticas + ondas de la superficie.
       if (this.causticMap) {
         this.causticMap.offset.set(time * 0.012, time * 0.008);
@@ -1124,8 +1130,8 @@ export class LevelEnvironment {
     this.scene.fog = new THREE.FogExp2(new THREE.Color(0x2c86a3).getHex(), 0.0065);
     this.scene.background = new THREE.Color(0x2c86a3);
 
-    // Atlantis Castle in the deep center floor (y=-50)
-    this.buildAtlantisCastle(0, -50, 0);
+    // Atlántida de Blender, posada en la arena en el centro del mapa
+    this.buildAtlantis(0, -50, 0);
 
     // Sand basin: flat around Atlantis, rising into a rim at the arena edge (the
     // world boundary). Extends past the arena so the rim fades into the fog.
@@ -1215,9 +1221,9 @@ export class LevelEnvironment {
       });
     };
 
-    // Llano: se respeta la huella de Atlántida. Su plataforma mide 64 u de radio; con el claro
-    // anterior de 20 u, un tercio de los corales quedaba enterrado dentro del edificio.
-    const ATLANTIS_CLEARING = 68;
+    // Llano: se respeta la huella de Atlántida. La plataforma de Astra mide 47.4 u de radio; se
+    // deja un margen para que los corales no nazcan pegados a la escalinata.
+    const ATLANTIS_CLEARING = 53;
     const scatter = (count: number, pick: () => ReefPart, minScale: number, maxScale: number) => {
       for (let placed = 0, tries = 0; placed < count && tries < count * 6; tries++) {
         const x = (Math.random() - 0.5) * (this.arenaSize - 40);
@@ -1348,259 +1354,23 @@ export class LevelEnvironment {
     if (meta.claws[1]) meta.claws[1].rotation.z = Math.cos(time * 2.0) * -0.15;
   }
 
-  private buildAtlantisCastle(x: number, y: number, z: number): void {
-    const castle = new THREE.Group();
-    castle.position.set(x, y, z);
-    castle.scale.set(2.0, 2.0, 2.0); // Scaled exactly like in Godot!
+  // Atlántida hundida (art/blender/atlantida/, Astra). Los colisionadores vienen del propio
+  // modelo (meta.colliders), así que si Astra cambia la planta no hay que tocar este código.
+  private buildAtlantis(x: number, y: number, z: number): void {
+    preloadBlenderAtlantis().then(() => {
+      if (!this.group.parent) return; // el nivel pudo descargarse mientras llegaba el JSON
+      const atlantis = buildBlenderAtlantis();
+      atlantis.root.position.set(x, y, z);
+      this.group.add(atlantis.root);
+      this.atlantis = atlantis;
+      this.altarCrystal = atlantis.crystal; // update() ya lo gira: y = t·0.5, x = sin(t·0.3)·0.2
 
-    // 1. Materials setup matching AtlantisCastle.gd
-    const mainStone = new THREE.MeshStandardMaterial({
-      color: 0x1a3d4f,
-      roughness: 0.7,
-      emissive: 0x000f1e,
-      emissiveIntensity: 0.15
-    });
-    
-    const lightStone = new THREE.MeshStandardMaterial({
-      color: 0x295470,
-      roughness: 0.6,
-      emissive: 0x001428,
-      emissiveIntensity: 0.15
-    });
-    
-    const darkStone = new THREE.MeshStandardMaterial({
-      color: 0x0d2635,
-      roughness: 0.8,
-      emissive: 0x00070f,
-      emissiveIntensity: 0.1
-    });
-    
-    const goldMat = new THREE.MeshStandardMaterial({
-      color: 0x876621,
-      roughness: 0.2,
-      metalness: 0.6,
-      emissive: 0x332100,
-      emissiveIntensity: 0.2
-    });
-    
-    const crystalBlue = new THREE.MeshStandardMaterial({
-      color: 0x00ccff,
-      roughness: 0.05,
-      metalness: 0.3,
-      transparent: true,
-      opacity: 0.65,
-      emissive: 0x0080b3,
-      emissiveIntensity: 0.5
-    });
-    
-    const crystalTeal = new THREE.MeshStandardMaterial({
-      color: 0x00ffcc,
-      roughness: 0.05,
-      metalness: 0.3,
-      transparent: true,
-      opacity: 0.65,
-      emissive: 0x00b380,
-      emissiveIntensity: 0.5
-    });
-
-    const glowBlue = new THREE.MeshBasicMaterial({
-      color: 0x00abff,
-      transparent: true,
-      opacity: 0.9
-    });
-
-    const glowTeal = new THREE.MeshBasicMaterial({
-      color: 0x00ffcc,
-      transparent: true,
-      opacity: 0.9
-    });
-
-    // 2. Build Stepped Platform (Hexagonal look using 8 segments)
-    const ring1 = new THREE.Mesh(new THREE.CylinderGeometry(28, 32, 2.0, 8), darkStone);
-    ring1.position.y = 1.0;
-    const ring2 = new THREE.Mesh(new THREE.CylinderGeometry(22, 26, 2.5, 8), mainStone);
-    ring2.position.y = 3.25;
-    const ring3 = new THREE.Mesh(new THREE.CylinderGeometry(16, 19, 2.0, 8), lightStone);
-    ring3.position.y = 5.5;
-    castle.add(ring1, ring2, ring3);
-
-    // Decorative Gold Trims on Platform edges
-    const trim1 = new THREE.Mesh(new THREE.CylinderGeometry(28.5, 28.5, 0.3, 24), goldMat);
-    trim1.position.y = 2.0;
-    const trim2 = new THREE.Mesh(new THREE.CylinderGeometry(23.0, 23.0, 0.3, 24), goldMat);
-    trim2.position.y = 4.5;
-    const trim3 = new THREE.Mesh(new THREE.CylinderGeometry(17.5, 17.5, 0.3, 24), goldMat);
-    trim3.position.y = 6.5;
-    castle.add(trim1, trim2, trim3);
-
-    // 3. Build Palace Dome
-    const palaceBase = new THREE.Mesh(new THREE.CylinderGeometry(8.0, 9.0, 6.0, 16), lightStone);
-    palaceBase.position.y = 9.5;
-    
-    // Main Dome
-    const dome = new THREE.Mesh(new THREE.SphereGeometry(8.0, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), lightStone);
-    dome.position.y = 12.5;
-    
-    // Crystal Dome on Top
-    const domeCrystal = new THREE.Mesh(new THREE.SphereGeometry(3.0, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2), crystalBlue);
-    domeCrystal.position.y = 16.5;
-    
-    // Spire
-    const spire = new THREE.Mesh(new THREE.CylinderGeometry(0.0, 0.5, 5.0, 8), goldMat);
-    spire.position.y = 19.0;
-    
-    // Top Glowing Orb
-    const orb = new THREE.Mesh(new THREE.SphereGeometry(0.8, 12, 12), glowTeal);
-    orb.position.y = 21.5;
-    castle.add(palaceBase, dome, domeCrystal, spire, orb);
-
-    // Torus Windows (8 around the dome base)
-    const torusWin = new THREE.TorusGeometry(0.725, 0.075, 8, 16);
-    for (let i = 0; i < 8; i++) {
-      const angle = (Math.PI * 2 / 8.0) * i;
-      const wx = Math.cos(angle) * 7.5;
-      const wz = Math.sin(angle) * 7.5;
-      const win = new THREE.Mesh(torusWin, glowBlue);
-      win.position.set(wx, 14.5, wz);
-      win.rotation.y = -angle;
-      win.rotation.x = 0.3;
-      castle.add(win);
-    }
-
-    // 4. Build Gate Pillars
-    for (const side of [-1.0, 1.0]) {
-      const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.1, 8.0, 12), lightStone);
-      pillar.position.set(side * 3.0, 10.5, 9.0);
-      
-      const cap = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 0.9, 0.6, 12), goldMat);
-      cap.position.set(side * 3.0, 14.8, 9.0);
-      
-      const cry = new THREE.Mesh(new THREE.SphereGeometry(0.4, 12, 12), glowTeal);
-      cry.position.set(side * 3.0, 15.3, 9.0);
-      
-      castle.add(pillar, cap, cry);
-
-      // Add cylinder obstacle for gate pillar (scaled by 2.0 in world coordinates)
-      this.obstacles.push({
-        x: x + side * 3.0 * 2.0,
-        y: y + 6.5 * 2.0, // starts at platform top
-        z: z + 9.0 * 2.0,
-        radius: 1.15 * 2.0, // covers shaft + capital
-        height: 9.2 * 2.0   // total height including crystal
-      });
-    }
-
-    // Gate Arch
-    const arch = new THREE.Mesh(new THREE.TorusGeometry(3.0, 0.2, 12, 24), goldMat);
-    arch.position.set(0, 14.5, 9.0);
-    arch.rotation.y = Math.PI / 2;
-    arch.scale.set(1.0, 1.0, 0.5);
-    castle.add(arch);
-
-    // 5. Build 4 Corner Towers
-    const towerPositions = [
-      new THREE.Vector3(18, 0, 0),
-      new THREE.Vector3(-18, 0, 0),
-      new THREE.Vector3(0, 0, 18),
-      new THREE.Vector3(0, 0, -18)
-    ];
-
-    for (const pos of towerPositions) {
-      const tower = new THREE.Mesh(new THREE.CylinderGeometry(2.0, 2.5, 12.0, 12), mainStone);
-      tower.position.copy(pos).add(new THREE.Vector3(0, 10.5, 0));
-      
-      const roof = new THREE.Mesh(new THREE.CylinderGeometry(0.0, 3.0, 4.0, 12), darkStone);
-      roof.position.copy(pos).add(new THREE.Vector3(0, 18.5, 0));
-      
-      const ring = new THREE.Mesh(new THREE.CylinderGeometry(3.0, 3.0, 0.4, 16), goldMat);
-      ring.position.copy(pos).add(new THREE.Vector3(0, 16.5, 0));
-      
-      const cry = new THREE.Mesh(new THREE.SphereGeometry(0.6, 12, 12), crystalTeal);
-      cry.position.copy(pos).add(new THREE.Vector3(0, 21.1, 0));
-      
-      const win = new THREE.Mesh(new THREE.SphereGeometry(0.5, 12, 12), glowBlue);
-      const toCenter = pos.clone().negate().normalize();
-      win.position.copy(pos).add(toCenter.multiplyScalar(2.2)).add(new THREE.Vector3(0, 12.0, 0));
-
-      castle.add(tower, roof, ring, cry, win);
-
-      // Add solid cylinder obstacle per tower (covers shaft + cone roof + crystal tip)
-      this.obstacles.push({
-        x: x + pos.x * 2.0,
-        y: y + 4.5 * 2.0,
-        z: z + pos.z * 2.0,
-        radius: 3.0 * 2.0,  // wide radius to cover roof edge
-        height: 17.2 * 2.0  // tall height to cover tip of the tower
-      });
-    }
-
-    // 6. Build Courtyard Columns (8 columns in a ring)
-    for (let c = 0; c < 8; c++) {
-      const angle = (Math.PI * 2 / 8.0) * c;
-      const cx = Math.cos(angle) * 10.0;
-      const cz = Math.sin(angle) * 10.0;
-
-      const colBase = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 0.4, 10), darkStone);
-      colBase.position.set(cx, 4.7, cz);
-      
-      const colShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.6, 7.0, 10), lightStone);
-      colShaft.position.set(cx, 8.4, cz);
-      
-      const colCap = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.5, 0.5, 10), goldMat);
-      colCap.position.set(cx, 12.15, cz);
-
-      castle.add(colBase, colShaft, colCap);
-
-      // Add cylinder obstacle mapping per column (scaled by 2.0 in world coordinates)
-      this.obstacles.push({
-        x: x + cx * 2.0,
-        y: y + 4.5 * 2.0, // top of stepped platform
-        z: z + cz * 2.0,
-        radius: 0.65 * 2.0, // column shaft bottom radius scaled
-        height: 7.9 * 2.0   // total column height scaled
-      });
-    }
-
-    // 7. Build Altar & Altar Crystal
-    const altarBase = new THREE.Mesh(new THREE.CylinderGeometry(2.5, 3.0, 1.0, 12), darkStone);
-    altarBase.position.y = 5.0;
-    
-    const altarTop = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 2.0, 0.5, 12), goldMat);
-    altarTop.position.y = 5.75;
-    
-    // Rotating Crystal (Sphere with 4 segments = octahedron)
-    this.altarCrystal = new THREE.Mesh(new THREE.SphereGeometry(1.2, 4, 2), crystalTeal);
-    this.altarCrystal.position.y = 7.25;
-    
-    const fountain = new THREE.Mesh(new THREE.TorusGeometry(1.7, 0.1, 8, 16), crystalBlue);
-    fountain.position.y = 6.0;
-    fountain.rotation.x = Math.PI / 2;
-
-    castle.add(altarBase, altarTop, this.altarCrystal, fountain);
-
-    this.group.add(castle);
-
-    // 8. Add central stepped platform cylinder collider
-    this.obstacles.push({
-      x,
-      y,
-      z,
-      radius: 32.0 * 2.0, // 64m
-      height: 6.5 * 2.0   // 13m
-    });
-
-    // Dome palace cylinder collider
-    this.obstacles.push({
-      x,
-      y: y + 6.5 * 2.0,
-      z,
-      radius: 9.0 * 2.0,
-      height: 16.0 * 2.0
-    });
+      for (const c of atlantis.colliders) {
+        this.obstacles.push({ x: x + c.x, y: y + c.base, z: z + c.z, radius: c.radius, height: c.height });
+      }
+    }).catch((error: unknown) => console.error("Atlántida de Blender:", error));
   }
 
-  // Tortuga marina de Blender (art/blender/tortuga/, Astra). Cuatro tortugas, cada una en
-  // su propia órbita lenta y a su profundidad; son fauna, no obstáculos que estorben.
   private spawnTurtle(index: number): void {
     const pivot = new THREE.Group();
     const scale = 0.9 + Math.random() * 0.5;

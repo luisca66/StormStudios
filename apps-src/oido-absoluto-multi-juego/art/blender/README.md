@@ -19,6 +19,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 | Kit de arrecife (4 corales, 3 rocas, alga, anémona) | `arrecife/` | ✅ integrado (2026-09-15). Modelado por **Claude** con bpy, sin brief: es utilería instanciada. |
 | Ballena jorobada | `ballena/` | ✅ integrada (2026-09-15). Modelada por **Astra** (v1 + dos revisiones propias); Claude fundió el borde de la garganta y saturó el azul pizarra. |
 | Tortuga marina | `tortuga/` | ✅ integrada (2026-09-15). Modelada por **Astra** (v3, aprobada sin rondas del integrador). |
+| Atlántida hundida | `atlantida/` | ✅ integrada (2026-09-16). Modelada por **Astra** (v1 con una corrección propia, aprobada sin rondas). |
 
 ### Pez protagonista
 
@@ -94,3 +95,21 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
   midiendo morro contra velocidad (`dot ≈ 0.94`).
 - Coste del nivel completo (pez, almeja, arrecife, ballena y 4 tortugas): 122 draw calls,
   286 k triángulos, 60 fps en la PC de Luis.
+
+### Atlántida hundida
+
+- 39 532 triángulos · 11 mallas · JSON 3.2 MB (**452 kB con gzip**) · 94 u de diámetro × 41 u de alto.
+- La carga [src/3d/blender-atlantis.ts](../src/3d/blender-atlantis.ts); `environment.ts buildAtlantis()`
+  la posa en `(0, −50, 0)`. Partes del brief (`base`, `palace`, `tower` ×4, `colonnade`, `crystal`,
+  `glow`) más dos que añadió Astra para no perder acabados: `gold` (oro satinado) y `glass` (vidrio
+  translúcido de cúpula y remates). Las translúcidas se dibujan a doble cara, sin escribir
+  profundidad y después de la piedra.
+- **Colisión desde el modelo:** los 8 cilindros de `colliders` (plataforma, palacio con arco, 4 torres
+  y 2 galerías) se leen del JSON y se convierten a obstáculos del juego. Si Astra cambia la planta,
+  no hay que tocar código.
+- `crystal` gira (`y = t·0.5`, cabeceo `sin(t·0.3)·0.2`) con el mismo `altarCrystal` que ya animaba
+  el prototipo; `glow` late `1.3 ± 0.3` a 0.5 rad/s.
+- Ajustes del integrador al entrar: el claro del arrecife pasó de 68 u (la ciudad vieja medía 64 de
+  radio) a **53 u**, a la medida de esta; y la colisión con cilindros ya no permite «salir por
+  debajo» de un edificio apoyado en la arena (antes, en el eje del palacio, el pez quedaba atrapado).
+- Coste del nivel completo: 119 draw calls, 324 k triángulos, 60 fps en la PC de Luis.
