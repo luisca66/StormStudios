@@ -42,5 +42,6 @@ en pantalla.
 | Pieza | Estado |
 |---|---|
 | Barco hundido | ✅ publicado (2026-09-16): Astra v1–v3, Claude v4 e integración |
-| Arcos de roca | ✅ publicado (2026-09-17): Astra v1–v3, integración de Claude. 2 variantes, 4 arcos en la pared de la zona 2 |
+| Arcos de roca | ✅ publicado (2026-09-17): Astra v1–v3, Claude v4 e integración. 2 variantes, 4 arcos en la pared de la zona 2 |
+| Jardín de corales | ⏳ brief listo (2026-09-17, `art/blender/jardin-corales/BRIEF.md`): kit de 4 piezas instanciadas, brillo ámbar; esperando a Astra |
 | Resto | en el orden de la tabla |

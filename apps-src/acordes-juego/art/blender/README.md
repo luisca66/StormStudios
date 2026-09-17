@@ -251,9 +251,11 @@ cajas variadas, chorreones de óxido). Detalle en `barco-hundido/ENTREGA.md`.
 # Arcos de roca — Batisfera (zona 2)
 
 Segunda pieza de `PLAN-ENTORNO-BLENDER.md`. Astra entregó v3 (dos rondas propias) desde
-`arcos-roca/BRIEF.md`; Claude integró. Detalle en `arcos-roca/ENTREGA.md`.
+`arcos-roca/BRIEF.md`; Claude hizo la v4 en el mismo `modelar-arcos.py` tras verlos en el juego
+(estratos con más contraste, organismos en el intradós y la cara frontal, espolón y derrumbe
+legibles, pies 6.5 u dentro de la pared). Detalle en `arcos-roca/ENTREGA.md`.
 
-- 27 062 triángulos · 2 variantes × 3 partes (`rock`, `growth`, `glow`) · JSON 1.9 MB (374 kB con gzip).
+- 30 152 triángulos · 2 variantes × 3 partes (`rock`, `growth`, `glow`) · JSON 1.9 MB (374 kB con gzip).
 - El juego carga `src/3d/assets/arcos-roca.json` con `src/3d/blender-arches.ts`; `environment.ts
   buildArches()` coloca A, B, A espejado y B espejado a 96 u del eje, con el +Z local hacia la pared.
   Consume las 1 852 llamadas al RNG del prototipo para que el resto del decorado no cambie de sitio.

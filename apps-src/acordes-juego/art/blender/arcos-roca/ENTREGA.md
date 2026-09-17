@@ -1,8 +1,8 @@
 # ENTREGA — Arcos de roca · Batisfera
 
 ## Estado
-- Versión v3, segunda y última ronda de corrección visual. Fecha: 2026-09-17.
-- Lista para revisión de Luis e integración por el otro modelo.
+- Versión v4. v1–v3 de Astra; v4 de Claude (integrador), pedida por Luis tras ver los arcos
+  dentro del juego. Fecha: 2026-09-17. Integrada y publicada por Claude.
 
 ## Archivos
 | Archivo | Contenido |
@@ -22,11 +22,12 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 ```
 
 ## Datos técnicos
-- Triángulos: **27062**. A: **13461**; B: **13601**. Tres mallas por variante.
-- Dimensiones X × Y × Z de todo el activo local: A **[49.127, 26.133, 27.088] u**; B **[40.139, 31.818, 26.222] u**.
+- Triángulos: **30152**. A: **14981**; B: **15171**. Tres mallas por variante.
+- Dimensiones X × Y × Z de todo el activo local: A **[50.306, 24.709, 30.911] u**; B **[42.297, 30.735, 30.7] u**.
 - Origen: cara de pared, media luz, pie inferior y=0. Y arriba; frente −Z.
-- JSON: 1912.0 KiB.
-- Trasera de pies y cubierta: z=sqrt(96²−x²)−96+3; penetración axial 3 u.
+- JSON: 1968.3 KiB.
+- Trasera de pies y cubierta: z=sqrt(96²−x²)−96+6.5; penetración axial 6.5 u (v4: la pared
+  del juego tiene relieve de hasta +5 u y podían abrirse rendijas).
 - Luz nominal A 34 u / B 26 u; altura de roca A ≈24 / B ≈30.5; alcance A 23.6 / B 23 u.
 - Paso central conservador: caja de 12 × 14 × 12 u en cada variante; sin suelo exportado.
 - Pies retraídos hacia la curva: la salida lateral discurre por delante de las raíces de roca.
@@ -35,10 +36,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 | Objeto | part | variant | Triángulos | Pivote Three | Movimiento |
 |---|---|---|---|---|---|
 | A_rock | rock | A | 4048 | (0,0,0) | Fija; 0 rad; 0 rad/s |
-| A_growth | growth | A | 7768 | (0,0,0) | Fija; 0 rad; 0 rad/s |
+| A_growth | growth | A | 9288 | (0,0,0) | Fija; 0 rad; 0 rad/s |
 | A_glow | glow | A | 1645 | (0,0,0) | Fija; 0 rad; 0 rad/s |
-| B_rock | rock | B | 4188 | (0,0,0) | Fija; 0 rad; 0 rad/s |
-| B_growth | growth | B | 7768 | (0,0,0) | Fija; 0 rad; 0 rad/s |
+| B_rock | rock | B | 4238 | (0,0,0) | Fija; 0 rad; 0 rad/s |
+| B_growth | growth | B | 9288 | (0,0,0) | Fija; 0 rad; 0 rad/s |
 | B_glow | glow | B | 1645 | (0,0,0) | Fija; 0 rad; 0 rad/s |
 Sin segment. Todas fijas. Glow respira por emisión: 1.3 + 0.25·sin(2π·0.055·t + fase),
 amplitud 19.23 %, 0.055 ciclos/s; fase A=0, B=1.7 rad. No animar geometría.
@@ -57,8 +58,17 @@ Claves raíz: variants={"A": {"span": 34, "height": 24, "reach": 23.6, "passage"
 wallCenter=[0,0,-96], forward="-Z". passage está en Three local y sirve como centro de cruce.
 clearance es la caja conservadora libre X,Y,Z alrededor del passage.
 
+## Cambios v4 (Claude)
+- Estratos con el doble de relieve y pigmento de rango más ancho (#0d151d…#46586a); las caras que
+  miran al centro del pozo se aclaran un 30 %: en el juego la roca era una mancha negra.
+- Organismos donde el jugador los ve: esponjas de copa en el intradós y en la cara frontal, y
+  corales látigo colgando del intradós. Se redujo el crecimiento del lomo, que no se ve desde abajo.
+- Espolón de B rehecho como colmillo largo y afilado; derrumbe con bloques mayores y por delante.
+- Pies metidos 6.5 u en la pared (antes 3 u).
+
 ## Diferencias con el brief
-- Crecimiento concentrado en el lomo; pies sin colonias específicas. Espolón y derrumbe poco legibles en penumbra.
+- Presupuesto: hasta 16 500 triángulos por variante en lugar de 14 000 (decisión del integrador
+  para escritorio, como en el barco hundido).
 - Cámara conjunta a 70 u del objetivo desde el lado del centro del pozo; las dos paredes locales
   se presentan trasladadas junto con las variantes. No representa una colocación conjunta real en el cilindro.
 - Niebla volumétrica de revisión 0.002; la niebla exponencial final corresponde al integrador.
@@ -76,7 +86,6 @@ Revisados los cinco renders finales: A ancho y bajo y B alto se distinguen; glow
 con interrupciones naturales; la vista de paso muestra salida lateral tras retraer los pies.
 Presupuesto, seis partes, pivotes cero, variant, pigmento y emisión exclusiva de glow comprobados.
 Pared y lomo penetran 3 u; el volumen central libre se indica en meta y en la guía de planta.
-El criterio de detalle cercano queda parcialmente resuelto: la penumbra oculta el espolón y parte
-del derrumbe, y persisten facetas en los bordes rocosos. El crecimiento se concentra en el lomo,
-sin colonias específicas en los pies. No se declara aceptación artística completa de esos puntos.
-Se agotaron las dos rondas de corrección permitidas; no se ha realizado integración ni QA del juego.
+La v4 atiende los tres puntos que Astra dejó abiertos (roca ilegible en penumbra, espolón y
+derrumbe poco visibles, crecimiento solo en el lomo). Persisten facetas en los bordes rocosos,
+a propósito: la silueta manda y el detalle fino se pierde a 40 u.

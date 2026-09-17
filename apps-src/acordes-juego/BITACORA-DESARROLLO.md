@@ -497,3 +497,5 @@ Checklist §13 (resultado final):
 - `blender-arches.ts` + precarga en `bootstrap.ts`; las copias comparten geometría y material. `buildArches()` consume las mismas 1 852 llamadas al RNG del prototipo para no mover el resto del decorado.
 - Botón dev **Ver arcos de roca** (recorre los 4; libera el límite de profundidad solo en inspección).
 - Verificado: build, QA y vista en juego de los 4 arcos, sin errores de consola. Publicado.
+- v4 de Claude el mismo día, a pedido de Luis tras verlos: la roca era una mancha negra y los organismos quedaban donde no se ven. Estratos al doble de relieve y pigmento más ancho, esponjas y látigos en el intradós y la cara frontal, espolón de B como colmillo oscuro, derrumbe mayor y pies 6.5 u dentro de la pared. 15 k triángulos por variante (presupuesto de escritorio, como el barco).
+- Siguiente: jardín de corales de la zona 3 (encargo a Astra, `art/blender/jardin-corales/BRIEF.md`).

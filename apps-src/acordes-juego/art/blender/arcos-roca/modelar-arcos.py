@@ -1,4 +1,9 @@
-"""Arcos estratificados de Batisfera. Generador bpy, coordenadas de autoría Three."""
+"""Arcos estratificados de Batisfera. Generador bpy, coordenadas de autoría Three.
+
+v1-v3: Astra. v4: Claude (integrador), pedida por Luis tras verlos en el juego —
+estratos con más contraste, organismos en el intradós y la cara frontal (lo que ve el
+jugador desde el pozo), espolón y derrumbe legibles, y pies más metidos en la pared.
+"""
 import bpy, math, random, sys, json
 from pathlib import Path
 from mathutils import Vector
@@ -27,8 +32,11 @@ def wallz(x):return math.sqrt(96**2-x*x)-96
 def pigment(p):
     x,y,z=p
     band=.5+.5*math.sin(y*1.55+.12*math.sin(x*.34)+.035*z)
-    c=mix(lin('#0d151d'),lin('#293946'),.22+.66*band)
-    return c
+    # v4: rango más ancho (los estratos se perdían en la penumbra) y las caras que miran
+    # al centro del pozo un punto más claras, para que la silueta no sea una mancha negra.
+    facing=min(1,max(0,(-z-6)/26))
+    c=mix(lin('#0d151d'),lin('#46586a'),.10+.80*band**1.25)
+    return mix(c,lin('#5a6c7e'),.30*facing)
 DATA={};OBJS=[];META={}
 def add(part,v,f,color=None):
     vs,fs,cs=DATA[part];off=len(vs);vs.extend(v);fs.extend(tuple(off+i for i in face) for face in f)
@@ -43,6 +51,14 @@ def tube(pts,r,color,sides=6):
     for i in range(len(pts)-1):
         for j in range(sides):f.append((i*sides+j,i*sides+(j+1)%sides,(i+1)*sides+(j+1)%sides,(i+1)*sides+j))
     f.extend([tuple(reversed(range(sides))),tuple((len(pts)-1)*sides+j for j in range(sides))]);add('growth',v,f,color)
+CUP=[(.25,0),(.28,.35),(.65,.85),(.78,1),(.67,1.02),(.55,.82),(.12,.23)]
+def aim(verts,direction):
+    """Gira una pieza modelada hacia +Y para que apunte a `direction`."""
+    q=Vector((0,1,0)).rotation_difference(Vector(direction).normalized())
+    return [tuple(q@Vector(p)) for p in verts]
+def cup(p,direction,size,sides=12):
+    vv,ff=kit.g_lathe([(r*size,y*size) for r,y in CUP],sides)
+    add('growth',[tuple(Vector(p)+Vector(q)) for q in aim(vv,direction)],ff,'#8e8a7c')
 def arch(t,u,d,variant):
     a=math.pi*t;s=math.sin(a);c=math.cos(a)
     half,h,top=(17,18.5,24) if variant=='A' else (13,25,30.5)
@@ -50,10 +66,10 @@ def arch(t,u,d,variant):
     x=(half+u*foot)*c+.7*s*s*math.sin(2*a)
     y=(h+u*(top-h))*s**(.70 if variant=='A' else .92)
     # Ruptures de lits horizontaux, atténuées sur l'intrados poli.
-    rough=u*(.65*math.sin(y*1.55)+.25*math.sin(t*61+d*13))
+    rough=u*(1.05*math.sin(y*1.55)+.38*math.sin(t*61+d*13)+.22*math.sin(y*4.1+t*7))
     x+=rough*c;y+=u*.24*math.sin(t*49+d*6)*s
-    front=wallz(x)-2-(21.6 if variant=='A' else 21.0)*s**1.4+u*(.55*math.sin(y*1.55)+.22*math.sin(t*39))
-    z=front*(1-d)+(wallz(x)+3)*d
+    front=wallz(x)-2-(21.6 if variant=='A' else 21.0)*s**1.4+u*(.85*math.sin(y*1.55)+.30*math.sin(t*39))
+    z=front*(1-d)+(wallz(x)+6.5)*d
     return (x,y,z)
 for variant in ['A','B']:
     DATA={p:([],[],[]) for p in MATS}
@@ -74,11 +90,19 @@ for variant in ['A','B']:
             for k in range(D):f.append((vi(i,j,k),vi(i,j+1,k),vi(i,j+1,k+1),vi(i,j,k+1)))
     add('rock',v,f)
     if variant=='B':
-        # Fracture pendante trapue, raccord noyé dans le lomo.
-        v=[(2,25,-23),(6,25.5,-22),(6.8,25,-18),(1.5,25,-18),(3.1,20.8,-21.5),(4.5,20.4,-20.5)]
-        add('rock',v,[(0,1,2,3),(0,4,5,1),(1,5,2),(2,5,4,3),(3,4,0)])
-        for i in range(11):
-            x=rng.uniform(12,18);z=wallz(x)-rng.uniform(1,3);w=rng.uniform(1.5,3.7);h=rng.uniform(1.0,3.2)
+        # v4: espolón roto largo y afilado, que se lee a contraluz colgando del lomo.
+        base=Vector((4.2,25.8,-20.4));tip=Vector((2.0,16.2,-24.2));axis=tip-base
+        rings=[[tuple(base+axis*f+Vector((math.cos(a)*r,-.25*math.cos(a),math.sin(a)*r*.72)))
+                for a in (j*math.tau/6 for j in range(6))] for f,r in [(0,2.5),(.36,1.7),(.72,.9)]]
+        vv=[p for ring in rings for p in ring]+[tuple(tip)];ff=[tuple(reversed(range(6)))]
+        for k in range(2):
+            for j in range(6):ff.append((k*6+j,k*6+(j+1)%6,(k+1)*6+(j+1)%6,(k+1)*6+j))
+        for j in range(6):ff.append((12+j,12+(j+1)%6,18))
+        # Pigmento propio, más oscuro que el lomo: con el de la pared parecía una cuchilla de hielo.
+        add('rock',vv,ff,'#1b2631')
+        # v4: derrumbe al pie con bloques más grandes y por delante de la pared.
+        for i in range(13):
+            x=rng.uniform(10,19);z=wallz(x)-rng.uniform(3,9);w=rng.uniform(2.6,5.4);h=rng.uniform(1.8,4.4)
             vv,ff=kit.g_box(w,h,w*.8)
             vv=[(x+a+rng.uniform(-.3,.3),max(0,b+h/2),z+c+rng.uniform(-.3,.3)) for a,b,c in vv]
             add('rock',vv,ff)
@@ -97,16 +121,15 @@ for variant in ['A','B']:
         for j in range(7):ff.append((0,j+1,(j+1)%7+1))
         add('glow',vv,ff,'#b48cff')
     # Esponjas huecas de copa, corales látigo y crinoideos en el borde de corriente.
-    for i in range(14):
+    for i in range(8):
         t=rng.uniform(.13,.88);d=rng.uniform(.04,.38);p=Vector(arch(t,1,d,variant));size=rng.uniform(.4,.8)
-        profile=[(.25,0),(.28,.35),(.65,.85),(.78,1),(.67,1.02),(.55,.82),(.12,.23)]
-        vv,ff=kit.g_lathe([(r*size,y*size) for r,y in profile],16)
+        vv,ff=kit.g_lathe([(r*size,y*size) for r,y in CUP],14)
         vv=[tuple(p+Vector((x*(1+.12*math.sin(math.atan2(z,x)*3)),y,z))) for x,y,z in vv]
         add('growth',vv,ff,'#8e8a7c')
-    for i in range(10):
+    for i in range(6):
         p=Vector(arch(rng.uniform(.16,.86),1,rng.uniform(.04,.24),variant));h=rng.uniform(1.1,2.0)
         tube([tuple(p+Vector((.35*math.sin(j*.3),h*j/10,.12*j/10))) for j in range(11)],.055,'#6a2f2c')
-    for i in range(5):
+    for i in range(3):
         p=Vector(arch(rng.uniform(.2,.8),1,.12,variant));top=p+Vector((.12,.8,0))
         tube([tuple(p),tuple(p+Vector((.1,.4,0))),tuple(top)],.04,'#b9ad90')
         for k in range(7):
@@ -116,6 +139,18 @@ for variant in ['A','B']:
             for j in [2,4]:
                 q=Vector(pts[j]);side=Vector((-math.sin(a),.2,math.cos(a)))
                 for sign in [-1,1]:tube([tuple(q),tuple(q+dr*.12+side*.18*sign)],.018,'#b9ad90',4)
+    # v4: lo que el jugador ve al cruzar y desde el pozo — intradós y cara frontal.
+    for i in range(16):
+        t=rng.uniform(.12,.88)
+        p=arch(t,.02,rng.uniform(.05,.45),variant)
+        cup(p,(-math.cos(math.pi*t),-math.sin(math.pi*t),0),rng.uniform(.45,.85))
+    for i in range(10):
+        p=arch(rng.uniform(.08,.92),rng.uniform(.15,.9),.015,variant)
+        cup(p,(0,0,-1),rng.uniform(.4,.8))
+    for i in range(9):
+        t=rng.uniform(.1,.9);p=Vector(arch(t,.03,rng.uniform(.05,.3),variant));h=rng.uniform(1.3,2.4)
+        tube([tuple(p+Vector((.25*math.sin(j*.4),-h*j/10,-.18*j/10))) for j in range(11)],.06,'#6a2f2c')
+
     for part,(vv,ff,cc) in DATA.items():
         ob=kit.make(variant+'_'+part,vv,ff,MATS[part],part=part,smooth_angle=.65 if part=='rock' else 1.3,tint=0)
         ob['variant']=variant;ca=ob.data.color_attributes.new(name='Pigment',type='FLOAT_COLOR',domain='POINT')
@@ -131,7 +166,7 @@ payload=json.loads((ROOT/'arcos-roca.json').read_text(encoding='utf-8'))
 for entry,ob in zip(payload['meshes'],OBJS):entry['variant']=ob['variant']
 (ROOT/'arcos-roca.json').write_text(json.dumps(payload,separators=(',',':')),encoding='utf-8')
 COUNTS={a:sum(len(m['index'])//3 for m in payload['meshes'] if m['variant']==a) for a in META}
-assert all(n<=14000 for n in COUNTS.values()),COUNTS
+assert all(n<=16500 for n in COUNTS.values()),COUNTS  # v4: presupuesto de escritorio
 assert parts==6
 bpy.ops.object.select_all(action='DESELECT')
 for ob in OBJS:ob.select_set(True)
@@ -199,8 +234,8 @@ rows='\n'.join(f"| {m['name']} | {m['part']} | {m['variant']} | {len(m['index'])
 report=f'''# ENTREGA — Arcos de roca · Batisfera
 
 ## Estado
-- Versión v3, segunda y última ronda de corrección visual. Fecha: 2026-09-17.
-- Lista para revisión de Luis e integración por el otro modelo.
+- Versión v4. v1–v3 de Astra; v4 de Claude (integrador), pedida por Luis tras ver los arcos
+  dentro del juego. Fecha: 2026-09-17. Integrada y publicada por Claude.
 
 ## Archivos
 | Archivo | Contenido |
@@ -224,7 +259,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\Luis\\blender-bpy
 - Dimensiones X × Y × Z de todo el activo local: A **{DIMS['A']} u**; B **{DIMS['B']} u**.
 - Origen: cara de pared, media luz, pie inferior y=0. Y arriba; frente −Z.
 - JSON: {(ROOT/'arcos-roca.json').stat().st_size/1024:.1f} KiB.
-- Trasera de pies y cubierta: z=sqrt(96²−x²)−96+3; penetración axial 3 u.
+- Trasera de pies y cubierta: z=sqrt(96²−x²)−96+6.5; penetración axial 6.5 u (v4: la pared
+  del juego tiene relieve de hasta +5 u y podían abrirse rendijas).
 - Luz nominal A 34 u / B 26 u; altura de roca A ≈24 / B ≈30.5; alcance A 23.6 / B 23 u.
 - Paso central conservador: caja de 12 × 14 × 12 u en cada variante; sin suelo exportado.
 - Pies retraídos hacia la curva: la salida lateral discurre por delante de las raíces de roca.
@@ -250,8 +286,17 @@ Claves raíz: variants={json.dumps(META,ensure_ascii=False)}, wallRadius=96,
 wallCenter=[0,0,-96], forward="-Z". passage está en Three local y sirve como centro de cruce.
 clearance es la caja conservadora libre X,Y,Z alrededor del passage.
 
+## Cambios v4 (Claude)
+- Estratos con el doble de relieve y pigmento de rango más ancho (#0d151d…#46586a); las caras que
+  miran al centro del pozo se aclaran un 30 %: en el juego la roca era una mancha negra.
+- Organismos donde el jugador los ve: esponjas de copa en el intradós y en la cara frontal, y
+  corales látigo colgando del intradós. Se redujo el crecimiento del lomo, que no se ve desde abajo.
+- Espolón de B rehecho como colmillo largo y afilado; derrumbe con bloques mayores y por delante.
+- Pies metidos 6.5 u en la pared (antes 3 u).
+
 ## Diferencias con el brief
-- Crecimiento concentrado en el lomo; pies sin colonias específicas. Espolón y derrumbe poco legibles en penumbra.
+- Presupuesto: hasta 16 500 triángulos por variante en lugar de 14 000 (decisión del integrador
+  para escritorio, como en el barco hundido).
 - Cámara conjunta a 70 u del objetivo desde el lado del centro del pozo; las dos paredes locales
   se presentan trasladadas junto con las variantes. No representa una colocación conjunta real en el cilindro.
 - Niebla volumétrica de revisión 0.002; la niebla exponencial final corresponde al integrador.
@@ -269,10 +314,9 @@ Revisados los cinco renders finales: A ancho y bajo y B alto se distinguen; glow
 con interrupciones naturales; la vista de paso muestra salida lateral tras retraer los pies.
 Presupuesto, seis partes, pivotes cero, variant, pigmento y emisión exclusiva de glow comprobados.
 Pared y lomo penetran 3 u; el volumen central libre se indica en meta y en la guía de planta.
-El criterio de detalle cercano queda parcialmente resuelto: la penumbra oculta el espolón y parte
-del derrumbe, y persisten facetas en los bordes rocosos. El crecimiento se concentra en el lomo,
-sin colonias específicas en los pies. No se declara aceptación artística completa de esos puntos.
-Se agotaron las dos rondas de corrección permitidas; no se ha realizado integración ni QA del juego.
+La v4 atiende los tres puntos que Astra dejó abiertos (roca ilegible en penumbra, espolón y
+derrumbe poco visibles, crecimiento solo en el lomo). Persisten facetas en los bordes rocosos,
+a propósito: la silueta manda y el detalle fino se pierde a 40 u.
 '''
 (ROOT/'ENTREGA.md').write_text(report,encoding='utf-8')
 print('FINAL',COUNTS,DIMS,flush=True)
