@@ -817,7 +817,7 @@ export class PlayerController {
       // Tail waving: aletes only when moving forward
       if (this.speed > 0.3 && this.tailPivot) {
         const tailAmp = Math.min(this.speed / this.maxSpeed, 0.6) * 0.25; // max amplitude = 0.3
-        this.tailPivot.rotation.y = Math.sin(this.animTime * 6.0) * tailAmp;
+        this.tailPivot.rotation.y = Math.sin(this.animTime * 12.0) * tailAmp; // doble de rápido, pedido de Luis
       } else if (this.tailPivot) {
         this.tailPivot.rotation.y = THREE.MathUtils.lerp(this.tailPivot.rotation.y, 0.0, 3 * delta);
       }
@@ -847,12 +847,12 @@ export class PlayerController {
       if (this.leftFin && this.rightFin) {
         if (isAnyInput || this.speed > 0.3) {
           const finAmp = 0.4;
-          this.leftFin.rotation.x = Math.sin(this.animTime * 10.0) * finAmp;
-          this.rightFin.rotation.x = Math.sin(this.animTime * 10.0) * finAmp;
+          this.leftFin.rotation.x = Math.sin(this.animTime * 20.0) * finAmp;
+          this.rightFin.rotation.x = Math.sin(this.animTime * 20.0) * finAmp;
         } else {
           // Soft idle fin movement
-          this.leftFin.rotation.x = Math.sin(this.animTime * 1.5) * 0.1;
-          this.rightFin.rotation.x = Math.sin(this.animTime * 1.5) * 0.1;
+          this.leftFin.rotation.x = Math.sin(this.animTime * 3.0) * 0.1;
+          this.rightFin.rotation.x = Math.sin(this.animTime * 3.0) * 0.1;
         }
       }
 

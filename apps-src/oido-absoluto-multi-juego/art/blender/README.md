@@ -29,7 +29,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
   `src/3d/assets/pez.json` (copia del entregable; se pide al cargar el módulo, así que ya está
   en memoria cuando el jugador entra al nivel) y lo arma [player.ts](../src/3d/player.ts) `buildFish`.
 - Partes y animación (de `pez/ENTREGA.md`, escrita por Sol): `body` estira ×1.15 en Z con la velocidad, `eyes`
-  estáticos, `tail` guiña en Y ±0.15 rad a 6 rad/s, `fin` 0 y 1 giran en X ±0.4 rad a 10 rad/s,
+  estáticos, `tail` guiña en Y ±0.15 rad a 12 rad/s, `fin` 0 y 1 giran en X ±0.4 rad a 20 rad/s (doble desde 2026-09-16, a pedido de Luis),
   `dorsal` ondula en Z ±0.08 rad a 2 rad/s. El contenedor del pez recibe el estiramiento y el
   balanceo de reposo; la geometría ya viene proporcionada, su escala base es 1.
 - El frente del modelo es +Z, igual que el avance del jugador: no lleva giro extra.
