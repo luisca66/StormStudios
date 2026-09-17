@@ -11,6 +11,7 @@ import { preloadBlenderArches } from "./3d/blender-arches";
 import { preloadBlenderCorals } from "./3d/blender-corals";
 import { preloadBlenderOutcrops } from "./3d/blender-outcrops";
 import { preloadBlenderBeacon } from "./3d/blender-beacon";
+import { preloadBlenderWhaleFall } from "./3d/blender-whalefall";
 
 const start = document.querySelector<HTMLButtonElement>("#start-btn")!;
 const label = start.textContent;
@@ -19,7 +20,7 @@ start.textContent = "Cargando criaturas…";
 
 async function boot(): Promise<void> {
   try {
-    await Promise.all([preloadBlenderJellyfish(), preloadBlenderSchool(), preloadBlenderSquid(), preloadBlenderAngler(), preloadBlenderDumbo(), preloadBlenderSiphonophore(), preloadBlenderLeviathan(), preloadCockpit(), preloadBlenderShipwreck(), preloadBlenderArches(), preloadBlenderCorals(), preloadBlenderOutcrops(), preloadBlenderBeacon()]);
+    await Promise.all([preloadBlenderJellyfish(), preloadBlenderSchool(), preloadBlenderSquid(), preloadBlenderAngler(), preloadBlenderDumbo(), preloadBlenderSiphonophore(), preloadBlenderLeviathan(), preloadCockpit(), preloadBlenderShipwreck(), preloadBlenderArches(), preloadBlenderCorals(), preloadBlenderOutcrops(), preloadBlenderBeacon(), preloadBlenderWhaleFall()]);
     start.textContent = label;
     await import("./main");
     start.disabled = false;

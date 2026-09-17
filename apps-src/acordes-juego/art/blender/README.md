@@ -297,3 +297,24 @@ repetida). Hechas el 2026-09-17.
   (`FAMILY_GLOW`). El parpadeo pasó de opacidad a emisión. El juego conserva su halo y su letrero de
   profundidad, que cae justo encima de la antena (y = 3.1).
 - Inspección: `?debug=1` en dev → botón **Ver baliza** (recorre las 14).
+
+---
+
+# Osamenta de ballena — Batisfera (zona 4)
+
+Cuarta pieza de `PLAN-ENTORNO-BLENDER.md`. Astra entregó v3 (dos rondas propias) desde
+`osamenta-ballena/BRIEF.md`; Claude integró. Detalle en `osamenta-ballena/ENTREGA.md`.
+
+- 28 594 triángulos · 5 partes del hito (`ledge`, `skull`, `spine`, `ribs`, `colony`) y 3 anémonas
+  (`lantern-a/b/c`) · JSON 1.5 MB.
+- El hueso **no** emite: brillan solo la colonia y las anémonas, en rosa `#ff7fd0`, con emisión por
+  vértice. El parche del shader se compartió con el jardín de corales en `src/3d/vertex-emission.ts`.
+- `environment.ts buildWhaleFall()` la coloca a 84 u del eje, en y = −540, con el +Z local hacia la
+  pared (como el barco). Conserva las 2 llamadas al RNG del prototipo; las anémonas sueltas gastan
+  las 45 de `buildAnemones()`, que desapareció.
+- 10 anémonas ancladas al hueso (`meta.lanternAnchors`) + 15 sueltas por la zona, apoyadas en el
+  relieve de la pared cuando caen cerca.
+- **Tres luces rosas débiles** dentro del modelo: la zona 4 no tiene luz de escena y el hueso era una
+  mancha negra. Hacen de «lo que alumbra la colonia»; los renders de Astra usaban el faro de la
+  Batisfera, que el juego no tiene.
+- Inspección: `?debug=1` en dev → botón **Ver osamenta de ballena**.

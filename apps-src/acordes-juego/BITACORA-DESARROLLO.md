@@ -513,3 +513,11 @@ Checklist §13 (resultado final):
 - Baliza: farol fondeado (lastre, aletas, mástil, jaula, antena) en lugar del cilindro con esfera. Geometría y cuerpo compartidos entre las 14; la lámpara toma el color de su zona y el parpadeo pasó de opacidad a emisión. Se conservan el halo y el letrero de profundidad.
 - Botón dev **Ver baliza**. Verificado: build, QA y vista en juego, sin errores de consola. Publicado.
 - Pendiente de Astra: piezas 4 (osamenta de ballena) y 5 (chimeneas hidrotermales), briefs entregados.
+
+### ✅ Osamenta de ballena de Blender integrada (2026-09-17, Astra modela · Claude integra)
+- Pieza 4 del entorno. Sustituye la caja, el cilindro, los 9 toros y el cono que flotaban a media agua, y también las 15 esferas naranjas que hacían de anémonas.
+- Esqueleto de 30 u sobre una repisa encajada en la pared (y = −540), con cráneo, mandíbula caída, vértebras sueltas y costillas partidas. 10 anémonas-farol ancladas al hueso y 15 sueltas por la zona.
+- El hueso no emite: brillan la colonia (bacterias, almejas, gusanos) y las anémonas, en rosa, con emisión por vértice. El parche del shader que se escribió para los corales se extrajo a `vertex-emission.ts` y ahora lo comparten.
+- Tres luces rosas débiles dentro del modelo: en la zona 4 no hay luz de escena y el hueso no se veía. Astra lo renderizó con el faro de la Batisfera, que el juego no tiene.
+- Verificado: build, QA y vista en juego, sin errores de consola en pestaña limpia. Publicado.
+- Falta la pieza 5 (chimeneas hidrotermales), encargada a Astra.

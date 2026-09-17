@@ -9,6 +9,7 @@ import { buildBlenderArches, type ArchVariant, type BlenderArches } from "./blen
 import { buildBlenderCoralGarden, type BlenderCoralGarden, type CoralPart, type CoralPlacement } from "./blender-corals";
 import { buildBlenderOutcrops, type OutcropPart, type OutcropPlacement } from "./blender-outcrops";
 import { buildBlenderBeacon } from "./blender-beacon";
+import { buildBlenderWhaleFall, type BlenderWhaleFall, type LanternPlacement, type LanternVariant } from "./blender-whalefall";
 
 // Radio de la cara de la pared donde se apoyan los arcos (ficha del brief).
 const WORLD_WALL_RADIUS = 96;
@@ -84,10 +85,8 @@ export class Environment {
   }
 
   // ---------- H3: estado animado del decorado ----------
-  private rockMat = new THREE.MeshStandardMaterial({ color: 0x101820, roughness: 1, metalness: 0 });
   private columns: { attr: THREE.BufferAttribute; yTop: number; yBottom: number; speed: number }[] = [];
   private beacons: { lampMat: THREE.MeshStandardMaterial; haloMat: THREE.SpriteMaterial; phase: number }[] = [];
-  private anemoneMat: THREE.MeshStandardMaterial | null = null;
   private shipwreck: BlenderShipwreck | null = null;
   /** Posición del barco hundido en el mundo (inspección con ?debug=1). */
   get shipwreckPosition(): THREE.Vector3 | null {
@@ -95,6 +94,9 @@ export class Environment {
   }
   private arches: BlenderArches | null = null;
   private corals: BlenderCoralGarden | null = null;
+  private whaleFall: BlenderWhaleFall | null = null;
+  /** Posición de la osamenta en el mundo (inspección con ?debug=1). */
+  whaleFallPosition: THREE.Vector3 | null = null;
   /** Centro de cada manchón de corales, en el mundo (inspección con ?debug=1). */
   readonly coralPatches: THREE.Vector3[] = [];
   /** Posición de cada baliza en el mundo (inspección con ?debug=1). */
@@ -251,8 +253,7 @@ export class Environment {
     this.buildShipwreck(rng); // z1
     this.buildArches(rng); // z2
     this.buildCoralGarden(rng); // z3
-    this.buildWhaleFall(rng); // z4
-    this.buildAnemones(rng); // z4
+    this.buildWhaleFall(rng); // z4 (incluye las anémonas-farol)
     this.buildVentColumns(rng); // z5
   }
 
@@ -397,57 +398,42 @@ export class Environment {
     this.scene.add(garden.group);
   }
 
-  // Osamenta de ballena (z4): losa de apoyo + espina + costillas instanciadas + cráneo.
-  // Hueso pálido con emisivo tenue para que se lea sin encender el foco.
+  // Osamenta de ballena de Blender (z4): hito sobre una repisa encajada en la pared, como el
+  // barco. El hueso no brilla; brillan la colonia que se lo come y las anémonas-farol.
   private buildWhaleFall(rng: () => number): void {
-    const group = new THREE.Group();
-    const bone = new THREE.MeshStandardMaterial({
-      color: 0x9aa8b0, roughness: 0.9, emissive: 0x36434c, emissiveIntensity: 0.4,
-    });
-    const slab = new THREE.Mesh(new THREE.BoxGeometry(28, 2.2, 11), this.rockMat);
-    group.add(slab);
-    const spine = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.16, 24, 6), bone);
-    spine.rotation.z = Math.PI / 2;
-    spine.position.y = 4.6;
-    group.add(spine);
-    const arc = Math.PI * 0.85;
-    const ribs = new THREE.InstancedMesh(new THREE.TorusGeometry(3.4, 0.2, 6, 14, arc), bone, 9);
-    const dummy = new THREE.Object3D();
-    for (let i = 0; i < 9; i++) {
-      const s = 1 - i * 0.055;
-      dummy.position.set(-10 + i * 2.4, 4.6 - 3.4 * s, 0);
-      dummy.rotation.set(0, Math.PI / 2, Math.PI / 2 - arc / 2); // plano ⟂ espina, arco arriba
-      dummy.scale.setScalar(s);
-      dummy.updateMatrix();
-      ribs.setMatrixAt(i, dummy.matrix);
-    }
-    group.add(ribs);
-    const skull = new THREE.Mesh(new THREE.ConeGeometry(1.9, 5.5, 6), bone);
-    skull.rotation.z = Math.PI / 2; // punta hacia −x (extremo de la espina)
-    skull.position.set(-14, 3, 0);
-    group.add(skull);
+    // El prototipo gastaba dos llamadas al RNG (ángulo y giro); se conservan.
     const a = rng() * Math.PI * 2;
-    group.position.set(Math.cos(a) * 62, -586, Math.sin(a) * 62);
-    group.rotation.y = rng() * Math.PI * 2;
-    this.scene.add(group);
+    rng();
+    const whale = buildBlenderWhaleFall(this.looseLanterns(rng));
+    this.whaleFall = whale;
+    whale.root.position.set(Math.cos(a) * 84, -540, Math.sin(a) * 84);
+    // El +Z local (la repisa se funde con la roca) mira hacia fuera del pozo.
+    whale.root.rotation.y = Math.PI / 2 - a;
+    whale.root.updateMatrixWorld(true);
+    this.scene.add(whale.root, whale.loose);
+    this.whaleFallPosition = whale.root.position.clone();
   }
 
-  // Anémonas-farol (z4): 15 esferas emisivas instanciadas; parpadeo lento compartido
-  // (una sola malla, se anima emissiveIntensity del material en update).
-  private buildAnemones(rng: () => number): void {
-    this.anemoneMat = new THREE.MeshStandardMaterial({
-      color: 0x1a1008, emissive: 0xffa050, emissiveIntensity: 0.9,
-    });
-    const mesh = new THREE.InstancedMesh(new THREE.SphereGeometry(0.35, 8, 6), this.anemoneMat, 15);
-    const dummy = new THREE.Object3D();
+  // Anémonas-farol sueltas por la zona abisal (antes, 15 esferas naranjas). Se consumen las mismas
+  // 45 llamadas al RNG que el prototipo para no mover el resto del decorado.
+  private looseLanterns(rng: () => number): LanternPlacement[] {
+    const VARIANTS: LanternVariant[] = ["lantern-a", "lantern-b", "lantern-c"];
+    const placements: LanternPlacement[] = [];
     for (let i = 0; i < 15; i++) {
       const a = rng() * Math.PI * 2;
       const r = 42 + rng() * 44;
-      dummy.position.set(Math.cos(a) * r, -458 - rng() * 138, Math.sin(a) * r);
-      dummy.updateMatrix();
-      mesh.setMatrixAt(i, dummy.matrix);
+      const y = -458 - rng() * 138;
+      // Se apoyan en la pared cuando caen cerca de ella; el prototipo las dejaba flotando.
+      const radius = Math.min(r, this.wallFaceRadius(a, y) - 1);
+      placements.push({
+        variant: VARIANTS[i % VARIANTS.length],
+        position: new THREE.Vector3(Math.cos(a) * radius, y, Math.sin(a) * radius),
+        rotationY: Math.PI / 2 - a,
+        scale: 1.1 + (i % 5) * 0.32,
+        phase: i * 0.71,
+      });
     }
-    this.scene.add(mesh);
+    return placements;
   }
 
   // Venteos (z5): columnas de partículas cálidas sobre 2 de las chimeneas del fondo.
@@ -722,10 +708,8 @@ export class Environment {
     this.shipwreck?.update(elapsed);
     this.arches?.update(elapsed);
     this.corals?.update(elapsed);
+    this.whaleFall?.update(elapsed);
 
-    if (this.anemoneMat) {
-      this.anemoneMat.emissiveIntensity = 0.55 + (Math.sin(elapsed * 0.8) + 1) * 0.35;
-    }
 
   }
 }

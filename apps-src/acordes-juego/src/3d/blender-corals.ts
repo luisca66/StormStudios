@@ -8,6 +8,7 @@
 
 import * as THREE from "three";
 import dataUrl from "./assets/jardin-corales.json?url";
+import { applyVertexEmission } from "./vertex-emission";
 
 export type CoralPart = "fan" | "tube" | "whip" | "crust";
 
@@ -87,28 +88,9 @@ export function buildBlenderCoralGarden(placements: CoralPlacement[]): BlenderCo
       metalness: part.metalness,
       roughness: part.roughness,
     });
-    material.onBeforeCompile = (shader) => {
-      shader.uniforms.uTime = time;
-      shader.uniforms.uEmission = { value: part.emission };
-      shader.vertexShader = `attribute vec3 aEmission;
-attribute float aPhase;
-uniform float uTime;
-varying vec3 vCoralEmission;
-${shader.vertexShader}`.replace(
-        "#include <begin_vertex>",
-        `#include <begin_vertex>
-  vCoralEmission = aEmission * (1.0 + ${PULSE_AMOUNT.toFixed(2)} * sin(uTime * ${(Math.PI * 2 * PULSE_HZ).toFixed(4)} + aPhase));`,
-      );
-      shader.fragmentShader = `uniform float uEmission;
-varying vec3 vCoralEmission;
-${shader.fragmentShader}`.replace(
-        "#include <emissivemap_fragment>",
-        `#include <emissivemap_fragment>
-  totalEmissiveRadiance += vCoralEmission * uEmission;`,
-      );
-    };
-    // Sin esto, Three reutiliza el programa del material estándar sin el parche.
-    material.customProgramCacheKey = () => "coral-vertex-glow";
+    applyVertexEmission(material, {
+      emission: part.emission, time, hz: PULSE_HZ, amount: PULSE_AMOUNT, cacheKey: "coral-vertex-glow",
+    });
 
     const mesh = new THREE.InstancedMesh(geometry, material, mine.length);
     mesh.name = `Coral ${part.part}`;

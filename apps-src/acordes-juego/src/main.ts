@@ -587,6 +587,16 @@ if (debugEnabled) {
       const eye = target.clone().addScaledVector(out, -40);
       game.player.setPose(eye.x, target.y + 4, eye.z, Math.atan2(-out.x, -out.z), -0.08);
     });
+    addBtn("Ver osamenta de ballena", () => {
+      const target = game.environment.whaleFallPosition;
+      if (!target) return;
+      debugFreeDepth = true;
+      game.player.depthLimit = null;
+      // Desde el centro del pozo, a 34 u de la osamenta.
+      const out = new THREE.Vector3(target.x, 0, target.z).normalize();
+      const eye = target.clone().addScaledVector(out, -34);
+      game.player.setPose(eye.x, target.y + 6, eye.z, Math.atan2(-out.x, -out.z), -0.1);
+    });
     let beaconView = 0;
     addBtn("Ver baliza", () => {
       const beacons = game.environment.beaconPositions;
