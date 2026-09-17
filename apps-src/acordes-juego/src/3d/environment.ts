@@ -5,6 +5,10 @@
 import * as THREE from "three";
 import { DEPTH_KEYFRAMES, WORLD, ZONES, FAMILY_GLOW, depthMeters } from "@/config";
 import { buildBlenderShipwreck, type BlenderShipwreck } from "./blender-shipwreck";
+import { buildBlenderArches, type ArchVariant, type BlenderArches } from "./blender-arches";
+
+// Radio de la cara de la pared donde se apoyan los arcos (ficha del brief).
+const WORLD_WALL_RADIUS = 96;
 
 const SNOW_COUNT = 1500;
 const SNOW_BOX = 120; // cubo centrado en el jugador
@@ -86,6 +90,9 @@ export class Environment {
   get shipwreckPosition(): THREE.Vector3 | null {
     return this.shipwreck ? this.shipwreck.root.position.clone() : null;
   }
+  private arches: BlenderArches | null = null;
+  /** Centros del ojo de cada arco en el mundo (inspección con ?debug=1). */
+  readonly archPassages: THREE.Vector3[] = [];
   private beaconHaloTex: THREE.CanvasTexture | null = null;
 
   // Termoclinas: discos shimmer en cada frontera de zona (PLAN §5.1).
@@ -275,28 +282,31 @@ export class Environment {
     }
   }
 
-  // Arcos rocosos (z2): toros parciales deformados, de pie, cerca de la pared.
+  // Arcos de roca de Blender (z2): puentes naturales que nacen de la pared y vuelven a ella.
   private buildArches(rng: () => number): void {
-    for (let i = 0; i < 4; i++) {
-      const arc = Math.PI * (0.65 + rng() * 0.25);
-      const geo = new THREE.TorusGeometry(8 + rng() * 6, 1.4 + rng() * 0.8, 7, 18, arc);
-      const pos = geo.attributes.position;
-      for (let v = 0; v < pos.count; v++) {
-        pos.setXYZ(
-          v,
-          pos.getX(v) + (rng() - 0.5) * 0.5,
-          pos.getY(v) + (rng() - 0.5) * 0.5,
-          pos.getZ(v) + (rng() - 0.5) * 0.5,
-        );
-      }
-      geo.computeVertexNormals();
-      const archMesh = new THREE.Mesh(geo, this.rockMat);
-      const a = rng() * Math.PI * 2;
-      const r = 55 + rng() * 25;
-      archMesh.position.set(Math.cos(a) * r, -175 - rng() * 100, Math.sin(a) * r);
-      archMesh.rotation.z = Math.PI / 2 - arc / 2; // arco centrado arriba, patas abajo
-      archMesh.rotation.y = rng() * Math.PI * 2;
-      this.scene.add(archMesh);
+    // El prototipo (4 toros deformados) consumía 463 números por arco; se consumen igual
+    // para que corales, osamenta, chimeneas y balizas no cambien de lugar.
+    for (let i = 0; i < 4 * 463; i++) rng();
+
+    const arches = buildBlenderArches();
+    this.arches = arches;
+    // Cuatro arcos repartidos alrededor del pozo, a distintas alturas de la zona 2;
+    // las copias espejadas en X evitan que se lean como el mismo arco.
+    const layout: { variant: ArchVariant; angle: number; y: number; mirror: boolean }[] = [
+      { variant: "A", angle: 0.35, y: -188, mirror: false },
+      { variant: "B", angle: 2.05, y: -262, mirror: false },
+      { variant: "A", angle: 3.6, y: -236, mirror: true },
+      { variant: "B", angle: 5.05, y: -205, mirror: true },
+    ];
+    for (const spot of layout) {
+      const arch = arches.create(spot.variant);
+      arch.position.set(Math.cos(spot.angle) * WORLD_WALL_RADIUS, spot.y, Math.sin(spot.angle) * WORLD_WALL_RADIUS);
+      // El +Z local (pared) mira hacia fuera del pozo, igual que el barco.
+      arch.rotation.y = Math.PI / 2 - spot.angle;
+      if (spot.mirror) arch.scale.x = -1;
+      arch.updateMatrixWorld(true);
+      this.scene.add(arch);
+      this.archPassages.push(arches.passage(spot.variant).applyMatrix4(arch.matrixWorld));
     }
   }
 
@@ -665,6 +675,7 @@ export class Environment {
 
     // H3: anémonas-farol — parpadeo lento compartido (una sola malla instanciada).
     this.shipwreck?.update(elapsed);
+    this.arches?.update(elapsed);
 
     if (this.anemoneMat) {
       this.anemoneMat.emissiveIntensity = 0.55 + (Math.sin(elapsed * 0.8) + 1) * 0.35;

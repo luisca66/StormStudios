@@ -196,6 +196,9 @@ function returnToMenu(): void {
   renderMenu(); // refresca zonas desbloqueadas
 }
 
+// Inspección (?debug=1, solo dev): permite bajar a zonas cerradas sin reponer el límite.
+let debugFreeDepth = false;
+
 game.onDepth = (meters, y) => {
   hud.setDepth(meters, t(zoneAtY(y).nameKey));
   if (!dive || dive.ended) return;
@@ -205,7 +208,7 @@ game.onDepth = (meters, y) => {
   if (zone !== dive.zoneIndex) {
     dive.enterZone(zone);
     hud.setQuota(dive.capturesInZone, dive.quota);
-    game.player.depthLimit = dive.allowedBottomY();
+    game.player.depthLimit = debugFreeDepth ? null : dive.allowedBottomY();
     cancelListening();
     showZoneTransition(zone);
   }
@@ -570,6 +573,19 @@ if (debugEnabled) {
       const out = new THREE.Vector3(ship.x, 0, ship.z).normalize();
       const eye = ship.clone().addScaledVector(out, -42);
       game.player.setPose(eye.x, ship.y + 7, eye.z, Math.atan2(-out.x, -out.z), -0.12);
+    });
+    let archView = 0;
+    addBtn("Ver arcos de roca", () => {
+      const passages = game.environment.archPassages;
+      if (!passages.length) return;
+      const target = passages[archView++ % passages.length];
+      // Los arcos están en la zona 2: la inspección salta la termoclina cerrada.
+      debugFreeDepth = true;
+      game.player.depthLimit = null;
+      // Desde el centro del pozo, a 40 u del ojo del arco, mirándolo de frente.
+      const out = new THREE.Vector3(target.x, 0, target.z).normalize();
+      const eye = target.clone().addScaledVector(out, -40);
+      game.player.setPose(eye.x, target.y + 4, eye.z, Math.atan2(-out.x, -out.z), -0.08);
     });
     addBtn("Acercar Cardumen Prisma", () => {
       const school = game.creatures.all.find((c) => c.speciesId === "school" && c.state === "IDLE");

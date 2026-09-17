@@ -42,5 +42,5 @@ en pantalla.
 | Pieza | Estado |
 |---|---|
 | Barco hundido | ✅ publicado (2026-09-16): Astra v1–v3, Claude v4 e integración |
-| Arcos de roca | ⏳ brief listo (2026-09-17, `art/blender/arcos-roca/BRIEF.md`): 2 variantes pegadas a la pared, el juego coloca 4; esperando a Astra |
+| Arcos de roca | ✅ publicado (2026-09-17): Astra v1–v3, integración de Claude. 2 variantes, 4 arcos en la pared de la zona 2 |
 | Resto | en el orden de la tabla |

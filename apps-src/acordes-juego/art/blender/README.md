@@ -245,3 +245,17 @@ cajas variadas, chorreones de óxido). Detalle en `barco-hundido/ENTREGA.md`.
 - `bubbleVents` → tres columnas de burbujas hasta la superficie (RNG propio). `lamp` late
   1.2 ± 0.15 con un ciclo de ~16 s y lleva una luz puntual débil.
 - Inspección: `?debug=1` en dev → botón **Ver barco hundido**.
+
+---
+
+# Arcos de roca — Batisfera (zona 2)
+
+Segunda pieza de `PLAN-ENTORNO-BLENDER.md`. Astra entregó v3 (dos rondas propias) desde
+`arcos-roca/BRIEF.md`; Claude integró. Detalle en `arcos-roca/ENTREGA.md`.
+
+- 27 062 triángulos · 2 variantes × 3 partes (`rock`, `growth`, `glow`) · JSON 1.9 MB (374 kB con gzip).
+- El juego carga `src/3d/assets/arcos-roca.json` con `src/3d/blender-arches.ts`; `environment.ts
+  buildArches()` coloca A, B, A espejado y B espejado a 96 u del eje, con el +Z local hacia la pared.
+  Consume las 1 852 llamadas al RNG del prototipo para que el resto del decorado no cambie de sitio.
+- `glow` (doble cara) respira 1.3 ± 0.25 a 0.055 Hz, fase A = 0 y B = 1.7 rad.
+- Inspección: `?debug=1` en dev → botón **Ver arcos de roca**.

@@ -490,3 +490,10 @@ Checklist §13 (resultado final):
 - v4 de Claude a pedido de Luis: casco con forma de vapor, asentado en sedimento, crecimiento marino creíble y óxido en chorreones.
 - `blender-shipwreck.ts` + precarga en `bootstrap.ts`; burbujas desde `bubbleVents`; farol que late. Botón dev **Ver barco hundido**.
 - Verificado: build, QA y vista en juego desde el centro del pozo con el cristal curvo. Publicado.
+
+### ✅ Arcos de roca de Blender integrados (2026-09-17, Astra modela · Claude integra)
+- Pieza 2 del entorno (`PLAN-ENTORNO-BLENDER.md`). Sustituye los 4 toros deformados que flotaban a media agua en la zona 2.
+- Dos variantes (A «Puente», B «Ojo») que nacen de la pared; el juego coloca 4 arcos (dos espejados en X) a radio 96, entre y = −188 y −262. Colonias bioluminiscentes violeta que respiran (1.3 ± 0.25).
+- `blender-arches.ts` + precarga en `bootstrap.ts`; las copias comparten geometría y material. `buildArches()` consume las mismas 1 852 llamadas al RNG del prototipo para no mover el resto del decorado.
+- Botón dev **Ver arcos de roca** (recorre los 4; libera el límite de profundidad solo en inspección).
+- Verificado: build, QA y vista en juego de los 4 arcos, sin errores de consola. Publicado.
