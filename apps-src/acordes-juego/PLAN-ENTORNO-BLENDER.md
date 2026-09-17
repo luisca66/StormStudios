@@ -42,4 +42,5 @@ en pantalla.
 | Pieza | Estado |
 |---|---|
 | Barco hundido | ✅ publicado (2026-09-16): Astra v1–v3, Claude v4 e integración |
-| Resto | pendiente del orden de Luis |
+| Arcos de roca | ⏳ brief listo (2026-09-17, `art/blender/arcos-roca/BRIEF.md`): 2 variantes pegadas a la pared, el juego coloca 4; esperando a Astra |
+| Resto | en el orden de la tabla |
