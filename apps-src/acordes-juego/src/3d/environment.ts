@@ -6,6 +6,7 @@ import * as THREE from "three";
 import { DEPTH_KEYFRAMES, WORLD, ZONES, FAMILY_GLOW, depthMeters } from "@/config";
 import { buildBlenderShipwreck, type BlenderShipwreck } from "./blender-shipwreck";
 import { buildBlenderArches, type ArchVariant, type BlenderArches } from "./blender-arches";
+import { buildBlenderCoralGarden, type BlenderCoralGarden, type CoralPart, type CoralPlacement } from "./blender-corals";
 
 // Radio de la cara de la pared donde se apoyan los arcos (ficha del brief).
 const WORLD_WALL_RADIUS = 96;
@@ -91,6 +92,9 @@ export class Environment {
     return this.shipwreck ? this.shipwreck.root.position.clone() : null;
   }
   private arches: BlenderArches | null = null;
+  private corals: BlenderCoralGarden | null = null;
+  /** Centro de cada manchón de corales, en el mundo (inspección con ?debug=1). */
+  readonly coralPatches: THREE.Vector3[] = [];
   /** Centros del ojo de cada arco en el mundo (inspección con ?debug=1). */
   readonly archPassages: THREE.Vector3[] = [];
   private beaconHaloTex: THREE.CanvasTexture | null = null;
@@ -310,45 +314,60 @@ export class Environment {
     }
   }
 
-  // Jardín de corales bioluminiscentes (z3): ramas instanciadas saliendo de la pared
-  // hacia el centro, con puntas ámbar tenues (visibles sin luz).
+  // Radio de la cara de la roca en un punto de la pared: misma fórmula que buildTrenchWall,
+  // para apoyar piezas chicas sobre el relieve en vez de dejarlas flotando.
+  private wallFaceRadius(a: number, y: number): number {
+    const bump =
+      Math.sin(a * 6 + y * 0.045) * 2.2 +
+      Math.cos(a * 13 - y * 0.02) * 1.4 +
+      Math.sin(y * 0.11 + a * 2) * 1.6;
+    return WORLD.radius + 6 + Math.max(-2.5, bump);
+  }
+
+  // Jardín de corales de Blender (z3): kit de 4 piezas instanciadas sobre la pared.
+  // En esta zona ya no llega luz del sol: lo único que se ve es lo que brilla solo.
   private buildCoralGarden(rng: () => number): void {
     const COUNT = 45;
-    const branches = new THREE.InstancedMesh(
-      new THREE.ConeGeometry(0.35, 4.5, 5),
-      new THREE.MeshStandardMaterial({ color: 0x152430, roughness: 0.9 }),
-      COUNT,
-    );
-    const tips = new THREE.InstancedMesh(
-      new THREE.SphereGeometry(0.22, 6, 5),
-      new THREE.MeshBasicMaterial({ color: 0xcc8f3f }),
-      COUNT,
-    );
-    const dummy = new THREE.Object3D();
-    const up = new THREE.Vector3(0, 1, 0);
-    const dir = new THREE.Vector3();
+    // Mezcla fija por índice: el azar se gasta en sitio, inclinación y tamaño, no en el tipo.
+    const ORDER: CoralPart[] = ["fan", "tube", "whip", "crust", "tube", "crust"];
     const patches = Array.from({ length: 6 }, () => ({ a: rng() * Math.PI * 2, y: -320 - rng() * 110 }));
+    const placements: CoralPlacement[] = [];
+    // Cada coral sorteado trae dos vecinos, con RNG propio para no alterar la siembra del mundo.
+    const extraRng = makeRng(20260917);
+    const place = (part: CoralPart, a: number, y: number, tilt: number, scale: number, phase: number): void => {
+      const r = this.wallFaceRadius(a, y) - 0.4; // 0.4 u dentro de la roca: sin costura
+      placements.push({
+        part,
+        position: new THREE.Vector3(Math.cos(a) * r, y, Math.sin(a) * r),
+        rotationY: Math.PI / 2 - a,
+        tilt,
+        scale,
+        phase,
+      });
+    };
     for (let i = 0; i < COUNT; i++) {
-      const p = patches[i % patches.length];
-      const a = p.a + (rng() - 0.5) * 0.12;
-      const base = new THREE.Vector3(
-        Math.cos(a) * (WORLD.radius + 4),
-        p.y + (rng() - 0.5) * 9,
-        Math.sin(a) * (WORLD.radius + 4),
-      );
-      dir.set(-Math.cos(a), (rng() - 0.5) * 0.9, -Math.sin(a)).normalize();
-      const s = 0.8 + rng() * 0.5;
-      dummy.quaternion.setFromUnitVectors(up, dir);
-      dummy.position.copy(base).addScaledVector(dir, 2.25 * s);
-      dummy.scale.setScalar(s);
-      dummy.updateMatrix();
-      branches.setMatrixAt(i, dummy.matrix);
-      dummy.position.copy(base).addScaledVector(dir, 4.4 * s);
-      dummy.quaternion.identity();
-      dummy.updateMatrix();
-      tips.setMatrixAt(i, dummy.matrix);
+      const patch = patches[i % patches.length];
+      // Las mismas cuatro llamadas al RNG por coral que el prototipo, para no mover el resto.
+      const a = patch.a + (rng() - 0.5) * 0.11;
+      const y = patch.y + (rng() - 0.5) * 12;
+      const tilt = -(0.05 + rng() * 0.38); // se asoman hacia el centro del pozo
+      const scale = 0.7 + rng() * 0.7;
+      place(ORDER[i % ORDER.length], a, y, tilt, scale, (i % 6) * 1.04 + (i % 4) * 0.37);
+      for (let k = 0; k < 2; k++) {
+        place(
+          ORDER[(i + k + 1) % ORDER.length],
+          a + (extraRng() - 0.5) * 0.045,
+          y + (extraRng() - 0.5) * 7,
+          -(0.05 + extraRng() * 0.4),
+          0.55 + extraRng() * 0.6,
+          extraRng() * Math.PI * 2,
+        );
+      }
     }
-    this.scene.add(branches, tips);
+    for (let i = 0; i < patches.length; i++) this.coralPatches.push(placements[i * 3].position.clone());
+    const garden = buildBlenderCoralGarden(placements);
+    this.corals = garden;
+    this.scene.add(garden.group);
   }
 
   // Osamenta de ballena (z4): losa de apoyo + espina + costillas instanciadas + cráneo.
@@ -676,6 +695,7 @@ export class Environment {
     // H3: anémonas-farol — parpadeo lento compartido (una sola malla instanciada).
     this.shipwreck?.update(elapsed);
     this.arches?.update(elapsed);
+    this.corals?.update(elapsed);
 
     if (this.anemoneMat) {
       this.anemoneMat.emissiveIntensity = 0.55 + (Math.sin(elapsed * 0.8) + 1) * 0.35;

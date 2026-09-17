@@ -261,3 +261,21 @@ legibles, pies 6.5 u dentro de la pared). Detalle en `arcos-roca/ENTREGA.md`.
   Consume las 1 852 llamadas al RNG del prototipo para que el resto del decorado no cambie de sitio.
 - `glow` (doble cara) respira 1.3 ± 0.25 a 0.055 Hz, fase A = 0 y B = 1.7 rad.
 - Inspección: `?debug=1` en dev → botón **Ver arcos de roca**.
+
+---
+
+# Jardín de corales — Batisfera (zona 3)
+
+Tercera pieza de `PLAN-ENTORNO-BLENDER.md`. Kit instanciado, no un hito: Astra entregó v3 (dos
+rondas propias) desde `jardin-corales/BRIEF.md`; Claude integró. Detalle en `jardin-corales/ENTREGA.md`.
+
+- 8 394 triángulos · 4 piezas (`fan`, `tube`, `whip`, `crust`) · JSON 371 kB.
+- **Emisión por vértice** (`vertexEmission`): solo se encienden puntas, bocas y nervaduras. Three no
+  la soporta de fábrica, así que `src/3d/blender-corals.ts` parcha el shader del MeshStandardMaterial
+  (`aEmission` + `aPhase` por instancia) y ahí mismo late 1 ± 0.16 a 0.07 Hz, con fase por coral.
+- `environment.ts buildCoralGarden()` coloca 6 manchones: 45 corales sorteados (las mismas 4 llamadas
+  al RNG del prototipo) y 2 vecinos por coral con RNG propio → 135 piezas, 4 llamadas de dibujo.
+  `wallFaceRadius()` repite la fórmula del relieve de la pared para apoyarlos en la roca.
+- Corrección de Claude al script: `active_color` se reasigna por nombre antes de exportar; Blender
+  invalida la referencia al añadir atributos y el JSON salía sin pigmento (cuerpos blancos).
+- Inspección: `?debug=1` en dev → botón **Ver jardín de corales**.

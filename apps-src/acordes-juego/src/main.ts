@@ -587,6 +587,18 @@ if (debugEnabled) {
       const eye = target.clone().addScaledVector(out, -40);
       game.player.setPose(eye.x, target.y + 4, eye.z, Math.atan2(-out.x, -out.z), -0.08);
     });
+    let coralView = 0;
+    addBtn("Ver jardín de corales", () => {
+      const patches = game.environment.coralPatches;
+      if (!patches.length) return;
+      const target = patches[coralView++ % patches.length];
+      debugFreeDepth = true;
+      game.player.depthLimit = null;
+      // Desde el centro del pozo, a 22 u del manchón: los corales son piezas chicas.
+      const out = new THREE.Vector3(target.x, 0, target.z).normalize();
+      const eye = target.clone().addScaledVector(out, -22);
+      game.player.setPose(eye.x, target.y + 3, eye.z, Math.atan2(-out.x, -out.z), -0.05);
+    });
     addBtn("Acercar Cardumen Prisma", () => {
       const school = game.creatures.all.find((c) => c.speciesId === "school" && c.state === "IDLE");
       if (!school) { showToast("Espera a que aparezca un cardumen durante la inmersión."); return; }

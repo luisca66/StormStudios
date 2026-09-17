@@ -499,3 +499,10 @@ Checklist §13 (resultado final):
 - Verificado: build, QA y vista en juego de los 4 arcos, sin errores de consola. Publicado.
 - v4 de Claude el mismo día, a pedido de Luis tras verlos: la roca era una mancha negra y los organismos quedaban donde no se ven. Estratos al doble de relieve y pigmento más ancho, esponjas y látigos en el intradós y la cara frontal, espolón de B como colmillo oscuro, derrumbe mayor y pies 6.5 u dentro de la pared. 15 k triángulos por variante (presupuesto de escritorio, como el barco).
 - Siguiente: jardín de corales de la zona 3 (encargo a Astra, `art/blender/jardin-corales/BRIEF.md`).
+
+### ✅ Jardín de corales de Blender integrado (2026-09-17, Astra modela · Claude integra)
+- Pieza 3 del entorno, la primera que es **kit instanciado**: 4 piezas (abanico, tubos, látigo y costra) repetidas 135 veces en 6 manchones de la zona 3, con 4 llamadas de dibujo.
+- La emisión va por vértice: `blender-corals.ts` parcha el shader del material estándar (`aEmission`) y late con fase por instancia (`aPhase`), así el manchón no respira a la vez.
+- Los corales se apoyan en el relieve real de la pared (`wallFaceRadius()` repite la fórmula de `buildTrenchWall`); antes flotaban hasta 7 u por delante de la roca.
+- Corregido en el script de Astra: Blender invalida la referencia al atributo de color al añadir otros, y el JSON salía sin pigmento — los cuerpos habrían llegado blancos al juego.
+- Verificado: build, QA y vista en juego de los manchones, sin errores de consola. Publicado.
