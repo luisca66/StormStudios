@@ -7,6 +7,8 @@ import { DEPTH_KEYFRAMES, WORLD, ZONES, FAMILY_GLOW, depthMeters } from "@/confi
 import { buildBlenderShipwreck, type BlenderShipwreck } from "./blender-shipwreck";
 import { buildBlenderArches, type ArchVariant, type BlenderArches } from "./blender-arches";
 import { buildBlenderCoralGarden, type BlenderCoralGarden, type CoralPart, type CoralPlacement } from "./blender-corals";
+import { buildBlenderOutcrops, type OutcropPart, type OutcropPlacement } from "./blender-outcrops";
+import { buildBlenderBeacon } from "./blender-beacon";
 
 // Radio de la cara de la pared donde se apoyan los arcos (ficha del brief).
 const WORLD_WALL_RADIUS = 96;
@@ -84,7 +86,7 @@ export class Environment {
   // ---------- H3: estado animado del decorado ----------
   private rockMat = new THREE.MeshStandardMaterial({ color: 0x101820, roughness: 1, metalness: 0 });
   private columns: { attr: THREE.BufferAttribute; yTop: number; yBottom: number; speed: number }[] = [];
-  private beacons: { lampMat: THREE.MeshBasicMaterial; haloMat: THREE.SpriteMaterial; phase: number }[] = [];
+  private beacons: { lampMat: THREE.MeshStandardMaterial; haloMat: THREE.SpriteMaterial; phase: number }[] = [];
   private anemoneMat: THREE.MeshStandardMaterial | null = null;
   private shipwreck: BlenderShipwreck | null = null;
   /** Posición del barco hundido en el mundo (inspección con ?debug=1). */
@@ -95,6 +97,8 @@ export class Environment {
   private corals: BlenderCoralGarden | null = null;
   /** Centro de cada manchón de corales, en el mundo (inspección con ?debug=1). */
   readonly coralPatches: THREE.Vector3[] = [];
+  /** Posición de cada baliza en el mundo (inspección con ?debug=1). */
+  readonly beaconPositions: THREE.Vector3[] = [];
   /** Centros del ojo de cada arco en el mundo (inspección con ?debug=1). */
   readonly archPassages: THREE.Vector3[] = [];
   private beaconHaloTex: THREE.CanvasTexture | null = null;
@@ -154,6 +158,29 @@ export class Environment {
     this.scene.add(wall);
     this.scene.add(this.buildWallVeins(rng));
     this.buildPinnacles(rng);
+    this.buildOutcrops();
+  }
+
+  // Salientes de roca instanciados (pieza 6): repisas, espolones y bloques por toda la pared,
+  // para que deje de leerse como un cilindro liso. RNG propio: no toca la siembra del decorado.
+  private buildOutcrops(): void {
+    const rng = makeRng(20260917);
+    const PARTS: OutcropPart[] = ["shelf", "spur", "boulder", "boulder", "shelf"];
+    const placements: OutcropPlacement[] = [];
+    for (let i = 0; i < 110; i++) {
+      const a = rng() * Math.PI * 2;
+      // Repartidos por todo el pozo, con más piezas abajo, donde la pared se ve más cerca.
+      const y = -18 - Math.pow(rng(), 0.8) * 710;
+      const r = this.wallFaceRadius(a, y) - 1.2; // metidos en la roca: sin costura visible
+      placements.push({
+        part: PARTS[i % PARTS.length],
+        position: new THREE.Vector3(Math.cos(a) * r, y, Math.sin(a) * r),
+        rotationY: Math.PI / 2 - a,
+        tilt: (rng() - 0.5) * 0.5,
+        scale: 0.7 + rng() * 1.5,
+      });
+    }
+    this.scene.add(buildBlenderOutcrops(placements));
   }
 
   // Vetas emisivas en la pared: textura procedural (una vez); alpha crece con la
@@ -439,30 +466,28 @@ export class Environment {
       spots.push({ y: mid + (rng() - 0.5) * 50, zone: z.index });
       spots.push({ y: mid + (rng() - 0.5) * 50, zone: z.index });
     }
-    const postMat = new THREE.MeshStandardMaterial({ color: 0x1a222c, roughness: 0.8, metalness: 0.4 });
-    const postGeo = new THREE.CylinderGeometry(0.12, 0.16, 2.4, 6);
     for (const spot of spots) {
       const glow = FAMILY_GLOW[ZONES[spot.zone - 1].families[0]];
       const a = rng() * Math.PI * 2;
       const r = 30 + rng() * 30;
       const beacon = new THREE.Group();
       beacon.position.set(Math.cos(a) * r, spot.y, Math.sin(a) * r);
-      beacon.add(new THREE.Mesh(postGeo, postMat));
-      const lampMat = new THREE.MeshBasicMaterial({ color: glow, transparent: true });
-      const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.42, 10, 8), lampMat);
-      lamp.position.y = 1.55;
-      beacon.add(lamp);
+      // Baliza de Blender: farol fondeado con lastre, aletas, jaula y antena.
+      const built = buildBlenderBeacon(glow);
+      beacon.add(built.group);
+      const lampMat = built.lampMaterial;
       const haloMat = new THREE.SpriteMaterial({
         map: this.getBeaconHalo(), color: glow, transparent: true, opacity: 0.4,
         blending: THREE.AdditiveBlending, depthWrite: false,
       });
       const halo = new THREE.Sprite(haloMat);
       halo.scale.set(4, 4, 1);
-      halo.position.y = 1.55;
+      halo.position.copy(built.lampCenter);
       beacon.add(halo);
       beacon.add(this.buildDepthLabel(depthMeters(spot.y)));
       this.scene.add(beacon);
       this.beacons.push({ lampMat, haloMat, phase: rng() * Math.PI * 2 });
+      this.beaconPositions.push(beacon.position.clone());
     }
   }
 
@@ -688,7 +713,8 @@ export class Environment {
     // H3: balizas — parpadeo sin(elapsed*3 + fase) en lámpara y halo.
     for (const b of this.beacons) {
       const k = Math.max(0.18, 0.62 + 0.38 * Math.sin(elapsed * 3 + b.phase));
-      b.lampMat.opacity = k;
+      // La lámpara de Blender es emisiva: el parpadeo va en la emisión, no en la opacidad.
+      b.lampMat.emissiveIntensity = 2.2 * k;
       b.haloMat.opacity = 0.42 * k;
     }
 

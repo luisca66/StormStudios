@@ -506,3 +506,10 @@ Checklist §13 (resultado final):
 - Los corales se apoyan en el relieve real de la pared (`wallFaceRadius()` repite la fórmula de `buildTrenchWall`); antes flotaban hasta 7 u por delante de la roca.
 - Corregido en el script de Astra: Blender invalida la referencia al atributo de color al añadir otros, y el JSON salía sin pigmento — los cuerpos habrían llegado blancos al juego.
 - Verificado: build, QA y vista en juego de los manchones, sin errores de consola. Publicado.
+
+### ✅ Salientes de roca y baliza de Blender (2026-09-17, Claude con bpy)
+- Piezas 6 y 7 del entorno, las que el plan dejaba para Claude sin brief.
+- Salientes: repisa, espolón y bloque repetidos 110 veces por la pared del pozo, apoyados en su relieve real; la pared ya no se lee como un cilindro liso. 678 triángulos, 3 llamadas de dibujo.
+- Baliza: farol fondeado (lastre, aletas, mástil, jaula, antena) en lugar del cilindro con esfera. Geometría y cuerpo compartidos entre las 14; la lámpara toma el color de su zona y el parpadeo pasó de opacidad a emisión. Se conservan el halo y el letrero de profundidad.
+- Botón dev **Ver baliza**. Verificado: build, QA y vista en juego, sin errores de consola. Publicado.
+- Pendiente de Astra: piezas 4 (osamenta de ballena) y 5 (chimeneas hidrotermales), briefs entregados.

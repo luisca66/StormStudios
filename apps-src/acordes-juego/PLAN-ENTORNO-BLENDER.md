@@ -46,4 +46,5 @@ en pantalla.
 | Jardín de corales | ✅ publicado (2026-09-17): Astra v1–v3, integración de Claude. Kit de 4 piezas, 135 corales en 6 manchones de la zona 3 |
 | Osamenta de ballena | ⏳ brief listo (2026-09-17, `art/blender/osamenta-ballena/BRIEF.md`): hito sobre repisa + kit de 3 anémonas-farol rosas; esperando a Astra |
 | Chimeneas hidrotermales | ⏳ brief listo (2026-09-17, `art/blender/chimeneas-hidrotermales/BRIEF.md`): kit de 4 piezas del fondo de la fosa, calor naranja; esperando a Astra |
-| Resto | en el orden de la tabla |
+| Kit de salientes de roca | ✅ publicado (2026-09-17): Claude con bpy. 3 piezas, 110 salientes por toda la pared |
+| Baliza de expedición | ✅ publicada (2026-09-17): Claude con bpy. Farol fondeado; el juego conserva halo y letrero |

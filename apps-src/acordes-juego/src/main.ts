@@ -587,6 +587,18 @@ if (debugEnabled) {
       const eye = target.clone().addScaledVector(out, -40);
       game.player.setPose(eye.x, target.y + 4, eye.z, Math.atan2(-out.x, -out.z), -0.08);
     });
+    let beaconView = 0;
+    addBtn("Ver baliza", () => {
+      const beacons = game.environment.beaconPositions;
+      if (!beacons.length) return;
+      const target = beacons[beaconView++ % beacons.length];
+      debugFreeDepth = true;
+      game.player.depthLimit = null;
+      // A 7 u de la baliza, a la altura de su lámpara.
+      const out = new THREE.Vector3(target.x, 0, target.z).normalize();
+      const eye = target.clone().addScaledVector(out, -7);
+      game.player.setPose(eye.x, target.y + 1.8, eye.z, Math.atan2(-out.x, -out.z), -0.05);
+    });
     let coralView = 0;
     addBtn("Ver jardín de corales", () => {
       const patches = game.environment.coralPatches;

@@ -279,3 +279,21 @@ rondas propias) desde `jardin-corales/BRIEF.md`; Claude integró. Detalle en `ja
 - Corrección de Claude al script: `active_color` se reasigna por nombre antes de exportar; Blender
   invalida la referencia al añadir atributos y el JSON salía sin pigmento (cuerpos blancos).
 - Inspección: `?debug=1` en dev → botón **Ver jardín de corales**.
+
+---
+
+# Salientes de roca y baliza — Batisfera (piezas 6 y 7)
+
+Las dos piezas que el plan dejaba para Claude con bpy, sin brief (utilería instanciada y pieza chica
+repetida). Hechas el 2026-09-17.
+
+- **Salientes** (`salientes-roca/`): 678 triángulos · 3 piezas (`shelf`, `spur`, `boulder`).
+  `environment.ts buildOutcrops()` planta 110 por toda la pared con RNG propio, apoyados en el
+  relieve real (`wallFaceRadius()`), 3 llamadas de dibujo. Antes la pared era un cilindro liso.
+  La v1 salió plana como una hojuela; se rehízo la construcción por anillos apilados.
+- **Baliza** (`baliza/`): 472 triángulos · 2 partes (`body`, `lamp`). Farol fondeado con lastre,
+  tres aletas, mástil, jaula y antena, en lugar del cilindro con esfera del prototipo. El cuerpo y la
+  geometría se comparten entre las 14 balizas; solo la lámpara cambia de color por zona
+  (`FAMILY_GLOW`). El parpadeo pasó de opacidad a emisión. El juego conserva su halo y su letrero de
+  profundidad, que cae justo encima de la antena (y = 3.1).
+- Inspección: `?debug=1` en dev → botón **Ver baliza** (recorre las 14).

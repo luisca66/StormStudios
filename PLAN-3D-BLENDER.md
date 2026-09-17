@@ -110,7 +110,7 @@ Las agujas de los manómetros ya están vivas desde F5 (`cab.ts`, un `InstancedM
 | Leviatán | ✅ Blender (19 piezas encadenadas: head, body 1–8, tail y 9 placas) · modelado por Astra en 3 rondas, integrado por Claude |
 | Cabina sci-fi | ✅ Blender (JSON por módulos anclados a pantalla, 8 draw calls) · publicada (`45e5e95`) |
 | Marco envolvente (tres ventanales) | ✅ Blender (14 módulos, `screenSpace`) · modelado por Astra (v3 + ronda extra de detalle v4), integrado por Claude junto con el cristal curvo `dome-glass.ts` · publicado (2026-09-16) |
-| Entorno (fosa, decorado por zona) | ⏳ plan en `apps-src/acordes-juego/PLAN-ENTORNO-BLENDER.md` (7 piezas); pieza 1, barco hundido, ✅ publicada (2026-09-16; Astra v1–v3, Claude v4); pieza 2, arcos de roca, ✅ publicada (2026-09-17; Astra v1–v3, Claude v4 e integración); pieza 3, jardín de corales, ✅ publicada (2026-09-17; Astra v1–v3, integración de Claude) |
+| Entorno (fosa, decorado por zona) | ⏳ plan en `apps-src/acordes-juego/PLAN-ENTORNO-BLENDER.md` (7 piezas); pieza 1, barco hundido, ✅ publicada (2026-09-16; Astra v1–v3, Claude v4); pieza 2, arcos de roca, ✅ publicada (2026-09-17; Astra v1–v3, Claude v4 e integración); pieza 3, jardín de corales, ✅ publicada (2026-09-17; Astra v1–v3, integración de Claude); piezas 6 y 7, salientes de roca y baliza, ✅ publicadas (2026-09-17; Claude con bpy); piezas 4 y 5 (osamenta y chimeneas), briefs listos para Astra |
 
 ### Aerostato — `acordes-cantar-juego` (acordes cantados, puerto 5174)
 
