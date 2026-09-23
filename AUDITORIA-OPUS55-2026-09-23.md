@@ -642,7 +642,7 @@ Por diseño se conservan bundles viejos en `public/apps/*/assets` (9 archivos hu
 Varios apuntan a `r2.dev`. Define una política de retirada (por ejemplo, 90 días sin referencia) y
 anótala en el README.
 
-### P3-14 · Árbol de trabajo con ruido de finales de línea
+### ✅ P3-14 — HECHO (finales de línea normalizados; los archivos sin versionar siguen esperando decisión de Luis) · Árbol de trabajo con ruido de finales de línea
 34 archivos aparecen modificados solo por CRLF frente a LF (`.gitattributes` exige LF). Tras
 confirmarlo con `git diff --ignore-cr-at-eol --stat` (vacío), ejecuta `git add --renormalize .` en
 un commit aparte, o `git checkout -- <archivos>`. No hay cambios de contenido que perder. También
