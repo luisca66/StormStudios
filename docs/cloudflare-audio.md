@@ -45,3 +45,7 @@ Si falla el dominio nuevo, revertir variables/orígenes al valor previo y volver
 ## 2026-09-23 — Cantar Acordes (sin fuente en apps-src)
 
 El bundle publicado `public/apps/acordes-cantar/assets/index-BQDY00jd.js` descargaba `acierto.mp3` y `error.mp3` desde `pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev`. Se publicó una copia con el host `https://samples.stormstudios.com.mx` como `index-WKvMXqCT.js` (CORS verificado) y `index.html` apunta a ella. El archivo anterior se conserva para clientes en caché.
+
+## 2026-09-23 — Synth-Kong (intervalos-reconocimiento-juego, sin fuente)
+
+El bundle `index-B5-Kv6J0.js` pedía los samples a `/api/audio` (función serverless). La copia publicada `index-Q-9IhQ4l.js` los pide directo a `https://samples.stormstudios.com.mx` con la misma ruta `{timbre}/{nota}.mp3`. El proxy `/api/audio` se conserva para clientes en caché.

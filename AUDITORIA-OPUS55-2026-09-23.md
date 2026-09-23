@@ -432,7 +432,7 @@ timeout de render tras hacer scroll. No es concluyente, pero va en la misma dire
 
 ---
 
-### P2-12 · Apps publicadas sin código fuente y herramientas con Babel en el navegador
+### P2-12 · (✅ Synth-Kong ya no usa `/api/audio`; recuperar fuentes y migrar Cosmic Ear a Vite sigue abierto) · Apps publicadas sin código fuente y herramientas con Babel en el navegador
 **Sin fuente en `apps-src/`** (no se pueden regenerar ni auditar, y `apps:check` no las cubre):
 `public/apps/acordes-cantar` (con un parche manual `spelling-answer.js` encima del bundle),
 `cosmic-ear`, `grados-mayores`, `intervalos-reconocimiento` e `intervalos-reconocimiento-juego`.
