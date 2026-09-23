@@ -481,7 +481,7 @@ timeout de render tras hacer scroll. No es concluyente, pero va en la misma dire
 
 ---
 
-### P2-15 · Navegación: las guías no aparecen en el menú principal
+### ✅ P2-15 — HECHO (se añadió «Guías»; el menú completo aparece desde 1280 px porque ya se desbordaba en tabletas; debajo, menú hamburguesa) · Navegación: las guías no aparecen en el menú principal
 `components/layout/Navigation.tsx:7-16` tiene 8 enlaces, pero no **Guías** (`/resources`), que son
 las 8 páginas SEO del sitio. Solo se llega desde el footer, la home y enlaces cruzados. **Fix:**
 añade `{ key: "resources", href: "/resources" }` (la clave `nav.resources` ya existe). Si el espacio
@@ -491,7 +491,7 @@ sobre el orden. En el footer (`Footer.tsx:32-34`), el encabezado de la columna d
 
 ---
 
-### P2-16 · Contacto en inglés no localizado
+### ✅ P2-16 — HECHO · Contacto en inglés no localizado
 `app/[locale]/contacto/page.tsx`:
 - Líneas 51-52: "Ciudad de México / México" también en EN → "Mexico City, Mexico".
 - Línea 59: `tel:5551031758` **sin prefijo internacional**, cuando el footer ya usa `tel:+525551031758`.

@@ -10,6 +10,7 @@ const navLinks = [
   { key: "classes", href: "/clases-taller" as const },
   { key: "course", href: "/curso-armonia" as const },
   { key: "apps", href: "/apps" as const },
+  { key: "resources", href: "/resources" as const },
   { key: "book", href: "/el-libro" as const },
   { key: "blog", href: "/blog" as const },
   { key: "contact", href: "/contacto" as const },
@@ -27,7 +28,7 @@ export default function Navigation({ mobile = false, onNavigate }: NavigationPro
   return (
     <nav
       aria-label={t("ariaLabel")}
-      className={cn(mobile ? "flex flex-col gap-1" : "hidden md:flex items-center gap-1")}
+      className={cn(mobile ? "flex flex-col gap-1" : "hidden xl:flex items-center gap-1")}
     >
       {navLinks.map(({ key, href }) => {
         const isActive = pathname.startsWith(href);
@@ -38,7 +39,7 @@ export default function Navigation({ mobile = false, onNavigate }: NavigationPro
             aria-current={isActive ? "page" : undefined}
             onClick={onNavigate}
             className={cn(
-              "ss-nav-link px-3 py-2 text-sm font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2",
+              "ss-nav-link whitespace-nowrap px-2.5 py-2 text-sm font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2",
               isActive
                 ? "ss-nav-link-active text-blue-600 bg-blue-50"
                 : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"

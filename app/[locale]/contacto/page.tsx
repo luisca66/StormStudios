@@ -48,20 +48,20 @@ export default async function ContactoPage({ params }: Props) {
             style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
             <span style={{ fontSize: "1.4rem" }}>📍</span>
             <div>
-              <p className="ss-mono text-sm font-medium" style={{ color: "#f0eeff" }}>Ciudad de México</p>
-              <p className="ss-mono text-xs mt-1" style={{ color: "var(--ss-muted)" }}>México</p>
+              <p className="ss-mono text-sm font-medium" style={{ color: "#f0eeff" }}>{es ? "Ciudad de México" : "Mexico City"}</p>
+              <p className="ss-mono text-xs mt-1" style={{ color: "var(--ss-muted)" }}>{es ? "México" : "Mexico"}</p>
             </div>
           </div>
           <div className="ss-glass rounded-xl p-5 flex items-start gap-4"
             style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
             <span style={{ fontSize: "1.4rem" }}>📞</span>
             <div>
-              <a href="tel:5551031758" className="ss-mono text-sm font-medium transition-colors"
+              <a href="tel:+525551031758" className="ss-mono text-sm font-medium transition-colors"
                 style={{ color: "#60a5fa" }}>
-                55 5103 1758
+                +52 55 5103 1758
               </a>
               <p className="ss-mono text-xs mt-1" style={{ color: "var(--ss-muted)" }}>
-                {es ? "Lunes–Viernes, 9am–7pm" : "Mon–Fri, 9am–7pm"}
+                {es ? "Lunes–Viernes, 9:00–19:00 (hora de Ciudad de México)" : "Mon–Fri, 9am–7pm (Mexico City time, UTC−6)"}
               </p>
             </div>
           </div>

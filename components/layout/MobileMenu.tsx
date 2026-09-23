@@ -36,7 +36,7 @@ export default function MobileMenu() {
         ref={menuButtonRef}
         type="button"
         onClick={() => setIsOpen((open) => !open)}
-        className="ss-menu-trigger md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
+        className="ss-menu-trigger xl:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
         aria-controls={mobileMenuId}
         aria-expanded={isOpen}
         aria-label={isOpen ? t("closeMenu") : t("openMenu")}
@@ -69,7 +69,7 @@ export default function MobileMenu() {
       {isOpen && (
         <div
           id={mobileMenuId}
-          className="ss-mobile-menu md:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-200 shadow-lg z-50 px-4 py-4"
+          className="ss-mobile-menu xl:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-200 shadow-lg z-50 px-4 py-4"
         >
           <Navigation mobile onNavigate={closeMenu} />
           <div className="ss-header-language mt-4 pt-4 border-t border-gray-100">

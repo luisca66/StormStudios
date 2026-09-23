@@ -232,7 +232,7 @@ export default function ContactForm({ locale }: Props) {
       )}
 
       <p className="text-sm text-gray-600">
-        {locale === "es" ? "Luis Cárdenas usará tus datos para atender tu consulta. Consulta el " : "Luis Cárdenas will use your details to respond to your enquiry. Read the "}
+        {locale === "es" ? "Luis Cárdenas usará tus datos para atender tu consulta. Consulta el " : "Luis Cárdenas will use your details to respond to your inquiry. Read the "}
         <Link href="/privacidad" className="underline text-blue-700">
           {locale === "es" ? "aviso de privacidad" : "privacy notice"}
         </Link>.

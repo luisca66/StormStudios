@@ -22,7 +22,7 @@ export default function Header() {
 
           {/* Acciones derecha: idioma + menú móvil */}
           <div className="flex items-center gap-2">
-            <div className="ss-header-language hidden md:block">
+            <div className="ss-header-language hidden xl:block">
               <LanguageSwitcher />
             </div>
             <MobileMenu />

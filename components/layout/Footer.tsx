@@ -30,9 +30,9 @@ export default function Footer() {
           {/* Columna 2: Navegación */}
           <div>
             <h3 className="text-white font-semibold mb-3">
-              {nav("home")}
+              {t("explore")}
             </h3>
-            <nav className="flex flex-col gap-2 text-sm">
+            <nav aria-label={t("explore")} className="flex flex-col gap-2 text-sm">
               <Link href="/quien-soy" className="hover:text-white transition-colors">{nav("about")}</Link>
               <Link href="/mi-metodo" className="hover:text-white transition-colors">{nav("method")}</Link>
               <Link href="/clases-taller" className="hover:text-white transition-colors">{nav("classes")}</Link>
@@ -48,7 +48,7 @@ export default function Footer() {
             <h3 className="text-white font-semibold mb-3">
               {t("legal")}
             </h3>
-            <nav className="flex flex-col gap-2 text-sm">
+            <nav aria-label={t("legal")} className="flex flex-col gap-2 text-sm">
               <Link href="/blog" className="hover:text-white transition-colors">{nav("blog")}</Link>
               <Link href="/contacto" className="hover:text-white transition-colors">{nav("contact")}</Link>
               <Link href="/privacidad" className="hover:text-white transition-colors">{t("privacy")}</Link>
