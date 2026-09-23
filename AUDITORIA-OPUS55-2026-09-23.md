@@ -235,7 +235,7 @@ Debe devolver 0 resultados fuera de slugs e identificadores.
 
 ---
 
-### P1-07 · Formulario de contacto: el anti-bot depende del reloj del visitante
+### ✅ P1-07 — HECHO · Formulario de contacto: el anti-bot depende del reloj del visitante
 **Problema:** `components/ContactForm.tsx:60-61` guarda `startedAt = Date.now()` **del cliente**, y
 `app/api/contact/route.ts:249` rechaza si `Date.now()` **del servidor** `- startedAt < 3000`.
 - Si el reloj del visitante va adelantado más que el tiempo que tardó en escribir (≈1 minuto), el

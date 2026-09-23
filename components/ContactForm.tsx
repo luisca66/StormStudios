@@ -50,16 +50,16 @@ export default function ContactForm({ locale }: Props) {
   const l = LABELS[locale as "es" | "en"] || LABELS.es;
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [errorCode, setErrorCode] = useState<ContactErrorCode | null>(null);
-  const startedAtRef = useRef<HTMLInputElement | null>(null);
+  const startedAtRef = useRef(0);
+  const attemptIdRef = useRef("");
   const requestControllerRef = useRef<AbortController | null>(null);
   const requestTimeoutRef = useRef<number | null>(null);
   const isMountedRef = useRef(true);
 
   useEffect(() => {
     isMountedRef.current = true;
-    if (startedAtRef.current) {
-      startedAtRef.current.value = String(Date.now());
-    }
+    startedAtRef.current = performance.now();
+    attemptIdRef.current = crypto.randomUUID();
 
     return () => {
       isMountedRef.current = false;
@@ -80,7 +80,8 @@ export default function ContactForm({ locale }: Props) {
       email: (form.elements.namedItem("email") as HTMLInputElement).value,
       message: (form.elements.namedItem("message") as HTMLTextAreaElement).value,
       website: (form.elements.namedItem("website") as HTMLInputElement).value,
-      startedAt: Number((form.elements.namedItem("startedAt") as HTMLInputElement).value),
+      elapsedMs: Math.round(performance.now() - startedAtRef.current),
+      attemptId: attemptIdRef.current,
     };
     requestControllerRef.current?.abort();
     const controller = new AbortController();
@@ -110,6 +111,7 @@ export default function ContactForm({ locale }: Props) {
         if (!isMountedRef.current || requestControllerRef.current !== controller) return;
         setStatus("success");
         form.reset();
+        attemptIdRef.current = crypto.randomUUID();
       } else {
         if (!isMountedRef.current || requestControllerRef.current !== controller) return;
         if (
@@ -167,8 +169,6 @@ export default function ContactForm({ locale }: Props) {
         <label htmlFor="website">Website</label>
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
-
-      <input ref={startedAtRef} type="hidden" id="startedAt" name="startedAt" defaultValue="" readOnly />
 
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">

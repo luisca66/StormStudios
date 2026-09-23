@@ -6,6 +6,7 @@ import { z } from "zod";
 export const runtime = "nodejs";
 
 const MIN_SUBMIT_TIME_MS = 3000;
+const MAX_SUBMIT_TIME_MS = 24 * 60 * 60 * 1000;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
 const MAX_REQUEST_BODY_BYTES = 8 * 1024;
@@ -32,16 +33,12 @@ const ContactSchema = z.object({
     .refine((value) => !/[\r\n]/.test(value)),
   email: z.email(),
   message: z.string().trim().min(10).max(2000),
-  website: z.string().max(0).optional().default(""),
-  startedAt: z.preprocess(
-    (value) => {
-      if (typeof value === "string" || typeof value === "number") {
-        return Number(value);
-      }
-      return value;
-    },
-    z.number().finite().positive()
-  ),
+  website: z.string().max(200).optional().default(""),
+  // Tiempo en el formulario medido con el reloj monótono del navegador: no
+  // depende de que el reloj del visitante coincida con el del servidor.
+  elapsedMs: z.number().int().min(0).max(MAX_SUBMIT_TIME_MS),
+  // Identificador del intento, estable entre reintentos del mismo envío.
+  attemptId: z.string().regex(/^[A-Za-z0-9-]{8,64}$/),
 }).strict();
 
 // Escapa caracteres HTML para evitar inyección en el cuerpo del correo.
@@ -241,12 +238,17 @@ export async function POST(request: NextRequest) {
       return errorResponse("invalid_request", 400);
     }
 
-    const { name, email, message, startedAt } = parsed.data;
+    const { name, email, message, website, elapsedMs, attemptId } = parsed.data;
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
     const safeMessage = escapeHtml(message);
 
-    if (Date.now() - startedAt < MIN_SUBMIT_TIME_MS) {
+    if (website) {
+      // Honeypot lleno: responder como éxito para no enseñar nada al bot.
+      return NextResponse.json({ success: true }, { headers: { "Cache-Control": "no-store" } });
+    }
+
+    if (elapsedMs < MIN_SUBMIT_TIME_MS) {
       return errorResponse("invalid_request", 400);
     }
 
@@ -277,7 +279,7 @@ export async function POST(request: NextRequest) {
       // Stable for retries of the same form attempt, including across instances.
       // Hash the payload so the provider key contains no readable personal data.
       idempotencyKey: `contact-${createHash("sha256")
-        .update(JSON.stringify({ name, email, message, startedAt }))
+        .update(JSON.stringify({ name, email, message, attemptId }))
         .digest("hex")}`,
     });
 
