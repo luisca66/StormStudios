@@ -6,6 +6,7 @@ import ProgressTracker from "./ProgressTracker";
 import ExerciseUpload from "./ExerciseUpload";
 import { getCourseConfig } from "@/lib/course";
 import { Link } from "@/i18n/navigation";
+import LiteYouTube from "@/components/media/LiteYouTube";
 
 type Props = {
   lesson: LessonConfig;
@@ -106,13 +107,10 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
 
                     return (
                   <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, borderRadius: "12px", overflow: "hidden", border: "1px solid rgba(139,92,246,0.2)" }}>
-                    <iframe
+                    <LiteYouTube
                       src={embedSrc.replace("www.youtube.com/embed", "www.youtube-nocookie.com/embed")}
-                      title={video.title?.[locale as "es" | "en"] ?? "Video"}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allowFullScreen
-                      style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+                      title={video.title?.[locale as "es" | "en"] ?? lesson.title[locale as "es" | "en"]}
+                      playLabel={es ? "Reproducir video" : "Play video"}
                     />
                   </div>
                     );

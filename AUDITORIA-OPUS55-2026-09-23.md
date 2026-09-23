@@ -328,7 +328,7 @@ texto pedagógico.
 
 ---
 
-### P2-05 · Videos de YouTube incrustados directamente (peso en las lecciones)
+### ✅ P2-05 — HECHO · Videos de YouTube incrustados directamente (peso en las lecciones)
 `components/course/LessonLayout.tsx:100-108` inserta el `<iframe>` de youtube-nocookie al cargar la
 página. Cada iframe descarga el reproductor completo (cientos de KB de JS de terceros) aunque nadie
 pulse *play*, y eso penaliza LCP, TBT e INP en móvil.
