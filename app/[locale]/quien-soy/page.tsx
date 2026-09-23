@@ -4,6 +4,7 @@ import Image from "next/image";
 import { getPageContent } from "@/lib/mdx";
 import DarkMDXRenderer from "@/components/DarkMDXRenderer";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
+import { JsonLd } from "@/components/JsonLd";
 import { type Locale } from "@/i18n/routing";
 import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
@@ -43,6 +44,19 @@ export default async function QuienSoyPage({ params }: Props) {
 
   return (
     <DarkPageLayout>
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "ProfilePage",
+        url: `https://www.stormstudios.com.mx${locale === "es" ? "/es/quien-soy" : "/en/about-me"}`,
+        inLanguage: locale === "es" ? "es" : "en",
+        mainEntity: {
+          "@type": "Person",
+          "@id": "https://www.stormstudios.com.mx/#luis-cardenas",
+          name: "Luis Cárdenas",
+          jobTitle: locale === "es" ? "Compositor y maestro de música" : "Composer and music teacher",
+          sameAs: ["https://www.youtube.com/@StormStudiosLearning"],
+        },
+      }} />
       {page.frontmatter.image && (
         <div className="mb-10 flex justify-center ss-reveal">
           <Image src={page.frontmatter.image} alt="Luis Cárdenas"

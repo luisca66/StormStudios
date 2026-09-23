@@ -1,8 +1,9 @@
 import { JsonLd } from "@/components/JsonLd";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 export async function HomeStructuredData() {
   const t = await getTranslations("home.structuredData");
+  const es = (await getLocale()) === "es";
 
   return (
     <JsonLd
@@ -13,8 +14,9 @@ export async function HomeStructuredData() {
             "@type": "Person",
             "@id": "https://www.stormstudios.com.mx/#luis-cardenas",
             name: "Luis Cárdenas",
-            url: "https://www.stormstudios.com.mx/es/quien-soy",
-            jobTitle: "Compositor y maestro de música",
+            url: es ? "https://www.stormstudios.com.mx/es/quien-soy" : "https://www.stormstudios.com.mx/en/about-me",
+            jobTitle: es ? "Compositor y maestro de música" : "Composer and music teacher",
+            sameAs: ["https://www.youtube.com/@StormStudiosLearning"],
             worksFor: { "@id": "https://www.stormstudios.com.mx/#organization" },
           },
           {
@@ -28,7 +30,6 @@ export async function HomeStructuredData() {
               "https://www.youtube.com/@StormStudiosLearning",
               "https://www.instagram.com/stormstudioslearning",
             ],
-            areaServed: "MX",
             contactPoint: {
               "@type": "ContactPoint",
               contactType: "customer support",

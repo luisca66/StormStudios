@@ -7,7 +7,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { routing } from "@/i18n/routing";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { BASE_URL, SITE_NAME, TWITTER_HANDLE } from "@/lib/seo/page-alternates";
+import { BASE_URL, SITE_NAME } from "@/lib/seo/page-alternates";
 import "../globals.css";
 
 const inter = Inter({
@@ -45,9 +45,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     authors: [{ name: "Luis Cárdenas", url: BASE_URL }],
     creator: "Storm Studios Learning",
     publisher: "Storm Studios Learning",
-    twitter: {
-      creator: TWITTER_HANDLE,
-    },
     robots: {
       index: true,
       follow: true,

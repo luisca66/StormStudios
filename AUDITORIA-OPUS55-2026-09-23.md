@@ -296,7 +296,7 @@ traduce en el cliente con un mapa ES/EN, como ya hace `ContactForm`. Mantén el 
 
 ---
 
-### P2-03 · Datos estructurados incompletos o incoherentes
+### ✅ P2-03 — HECHO (lecciones sin JSON-LD propio aún; twitter:creator eliminado hasta que Luis confirme un handle real) · Datos estructurados incompletos o incoherentes
 | Página | Hoy | Recomendación |
 |---|---|---|
 | `/el-libro` | Nada | `Book` con `author` (Person `#luis-cardenas`), `inLanguage`, `bookFormat` (EBook/Paperback), `isbn` si existe, `offers` o `url` a Amazon (Kindle en amazon.com, impreso en amazon.com.mx; los enlaces ya están en el MDX) |

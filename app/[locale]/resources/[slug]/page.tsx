@@ -89,7 +89,10 @@ export default async function ResourcePage({ params }: Props) {
       </header>
 
       <div className="ss-divider mb-10" />
-      <p className="text-sm mb-6" style={{ color: "var(--ss-muted)" }}>{es ? "Storm Studios Learning · Actualizado el 7 de septiembre de 2026" : "Storm Studios Learning · Updated September 7, 2026"}</p>
+      <p className="text-sm mb-6" style={{ color: "var(--ss-muted)" }}>Storm Studios Learning · {es ? "Actualizado el" : "Updated"}{" "}
+        <time dateTime={resource.updatedAt}>
+          {new Intl.DateTimeFormat(es ? "es-MX" : "en-US", { dateStyle: "long", timeZone: "UTC" }).format(new Date(resource.updatedAt))}
+        </time></p>
       <PracticeExample resourceKey={resource.key} locale={locale} />
 
       <div className="flex flex-col gap-10">
@@ -173,10 +176,13 @@ export default async function ResourcePage({ params }: Props) {
           headline: resource.title[locale as Locale],
           description: resource.metaDescription[locale as Locale],
           inLanguage: locale === "es" ? "es-MX" : "en-US",
+          datePublished: resource.updatedAt,
+          dateModified: resource.updatedAt,
+          image: "https://www.stormstudios.com.mx/images/og-default.jpg",
           author: {
-            "@type": "Organization",
-            "@id": "https://www.stormstudios.com.mx/#organization",
-            name: "Storm Studios Learning",
+            "@type": "Person",
+            "@id": "https://www.stormstudios.com.mx/#luis-cardenas",
+            name: "Luis Cárdenas",
           },
           publisher: {
             "@type": "Organization",

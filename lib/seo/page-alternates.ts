@@ -4,7 +4,6 @@ import { routing, type Locale, type Pathnames } from "@/i18n/routing";
 export const BASE_URL = "https://www.stormstudios.com.mx";
 export const SITE_NAME = "Storm Studios Learning";
 export const DEFAULT_SOCIAL_IMAGE = "/images/og-default.jpg";
-export const TWITTER_HANDLE = "@StormStudiosLearning";
 
 export type LocalizedUrlMap = Record<Locale, string>;
 
@@ -177,7 +176,6 @@ export function createPageMetadata({
       title: plainTitle,
       description,
       images: [imageUrl],
-      creator: TWITTER_HANDLE,
     },
   };
 }

@@ -17,6 +17,8 @@ type ResourceLink = {
 export type ResourceEntry = {
   key: string;
   slugs: Record<Locale, string>;
+  /** Fecha editorial de la última revisión real (YYYY-MM-DD). */
+  updatedAt: string;
   title: BilingualText;
   metaTitle: BilingualText;
   metaDescription: BilingualText;
@@ -35,6 +37,7 @@ export const RESOURCES: ResourceEntry[] = [
   {
     key: "traditional-harmony-course",
     slugs: RESOURCE_SLUGS["traditional-harmony-course"],
+    updatedAt: "2026-09-07",
     title: {
       en: "Traditional Harmony Course",
       es: "Curso de Armonía Tradicional",
@@ -161,6 +164,7 @@ export const RESOURCES: ResourceEntry[] = [
   {
     key: "ear-training-exercises",
     slugs: RESOURCE_SLUGS["ear-training-exercises"],
+    updatedAt: "2026-09-07",
     title: {
       en: "Ear Training Exercises",
       es: "Ejercicios de Entrenamiento Auditivo",
@@ -283,6 +287,7 @@ export const RESOURCES: ResourceEntry[] = [
   {
     key: "interval-recognition",
     slugs: RESOURCE_SLUGS["interval-recognition"],
+    updatedAt: "2026-09-07",
     title: {
       en: "Interval Recognition",
       es: "Reconocimiento de Intervalos",
@@ -405,6 +410,7 @@ export const RESOURCES: ResourceEntry[] = [
   {
     key: "music-theory-basics",
     slugs: RESOURCE_SLUGS["music-theory-basics"],
+    updatedAt: "2026-09-07",
     title: {
       en: "Music Theory Basics",
       es: "Fundamentos de Teoría Musical",

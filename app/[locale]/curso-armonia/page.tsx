@@ -6,7 +6,7 @@ import { type Locale } from "@/i18n/routing";
 import { JsonLd } from "@/components/JsonLd";
 import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
-import { getLessonUrlSlug, getLessonsByModule } from "@/lib/course";
+import { getAllLessons, getLessonUrlSlug, getLessonsByModule } from "@/lib/course";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -45,6 +45,7 @@ export default async function CursoArmoniaPage({ params }: Props) {
   const es = locale === "es";
   const currentLocale = locale as Locale;
   const mainLessons = getLessonsByModule("triadas-satb");
+  const publishedUnits = getAllLessons().filter((lesson) => lesson.status !== "construction").length;
 
   return (
     <div className="ss-root" style={{ minHeight: "100vh" }}>
@@ -235,8 +236,8 @@ export default async function CursoArmoniaPage({ params }: Props) {
         "@type": "Course",
         "name": es ? "Curso de Armonía Tradicional" : "Traditional Harmony Course",
         "description": es
-          ? "Curso gratuito de armonía tradicional en desarrollo. Incluye introducción, propedéutico y lecciones 1–3, con validación automática de ejercicios MIDI en las lecciones 1–3."
-          : "Free traditional harmony course in development. Includes an introduction, preparatory units and lessons 1–3, with automatic MIDI exercise checks in lessons 1–3.",
+          ? `Curso gratuito de armonía tradicional en desarrollo, con ${publishedUnits} unidades publicadas y revisión automática de ejercicios MIDI.`
+          : `Free traditional harmony course in development, with ${publishedUnits} published units and automatic MIDI exercise feedback.`,
         "url": `https://www.stormstudios.com.mx${es ? "/es/curso-armonia" : "/en/harmony-course"}`,
         "provider": {
           "@type": "Organization",
@@ -245,6 +246,8 @@ export default async function CursoArmoniaPage({ params }: Props) {
         },
         "courseMode": "online",
         "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "category": "Free" },
+        "hasCourseInstance": { "@type": "CourseInstance", "courseMode": "online", "courseWorkload": "PT1H" },
         "inLanguage": es ? "es-MX" : "en-US",
         "educationalLevel": "Beginner to Intermediate",
         "teaches": es

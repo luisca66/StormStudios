@@ -4,6 +4,7 @@ import Image from "next/image";
 import { getPageContent } from "@/lib/mdx";
 import DarkMDXRenderer from "@/components/DarkMDXRenderer";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
+import { JsonLd } from "@/components/JsonLd";
 import { type Locale } from "@/i18n/routing";
 import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
@@ -43,6 +44,18 @@ export default async function ElLibroPage({ params }: Props) {
 
   return (
     <DarkPageLayout maxWidth="1000px">
+      <JsonLd data={{
+        "@context": "https://schema.org",
+        "@type": "Book",
+        name: locale === "es" ? "Los Seres Musicales: Una Historia de Transformación" : "The Musical Beings",
+        author: { "@type": "Person", "@id": "https://www.stormstudios.com.mx/#luis-cardenas", name: "Luis Cárdenas" },
+        inLanguage: locale === "es" ? "es" : "en",
+        image: "https://www.stormstudios.com.mx/images/portada-libro.jpg",
+        url: `https://www.stormstudios.com.mx${locale === "es" ? "/es/el-libro" : "/en/the-book"}`,
+        sameAs: locale === "es"
+          ? ["https://www.amazon.com/dp/B0DK4B9892", "https://www.amazon.com.mx/dp/B0DK4B9892"]
+          : ["https://www.amazon.com/dp/B0DK63ZD8K", "https://www.amazon.com/dp/B0DK65FZDD"],
+      }} />
       <div className="grid md:grid-cols-[260px_1fr] gap-12 items-start">
         {/* Portada */}
         <div className="flex justify-center ss-reveal">

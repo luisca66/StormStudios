@@ -33,9 +33,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         "datePublished": post.frontmatter.date,
         "dateModified": post.lastModified?.toISOString(),
         "author": {
-          "@type": "Organization",
-          "@id": "https://www.stormstudios.com.mx/#organization",
-          "name": post.frontmatter.author ?? "Storm Studios Learning"
+          "@type": "Person",
+          "@id": "https://www.stormstudios.com.mx/#luis-cardenas",
+          "name": "Luis Cárdenas"
         },
         "publisher": {
           "@type": "Organization",
