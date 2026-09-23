@@ -9,6 +9,36 @@ Auditorías previas: `AUDITORIA-FABLE5-2026-07-03.md` (resuelta) y `docs/remedia
 
 ---
 
+## ✅ Estado de ejecución (2026-09-23, Opus 5.5, autorizado por Luis)
+
+Todo publicado en `main` (commits `a243a54`…`3218b59`), con `npm run check` verde en cada paso
+(204 pruebas + 4 nuevas de music-reading, build de 141 páginas) y CI de GitHub en verde. Solo
+`0669d7b` falló el lint por un momento; lo corrigió `242999f`.
+
+**Hecho:** P1-01…P1-07 · P2-01, P2-02, P2-03, P2-05, P2-06, P2-07, P2-10 (código), P2-11 (parcial),
+P2-13, P2-14, P2-15, P2-16 · parcial en P2-04 (P03 EN), P2-08 (`/apps`, `/tools`), P2-09 (enlace del
+blog) y P2-12 (Synth-Kong) · P3-01, P3-02, P3-03, P3-05, P3-06 (parcial), P3-07 (parcial), P3-10
+(parcial), P3-13, P3-14 · Anexo B.
+
+**Pendiente, necesita a Luis o la consola:**
+- Firebase: publicar `firestore.rules`, activar App Check y la limpieza de anónimos (P2-10).
+- Vercel: cambiar la redirección del dominio raíz a www a 308 (P2-09).
+- Contenido: P04 y Lección 1 (P2-04), blog (P2-17), afirmaciones científicas (P3-11), H1 del libro
+  y "Quién soy" (P2-02), handle real de X/Twitter (P2-03), lección huérfana `01-propedeutico`
+  (P2-14), Instagram (P3-12), hreflang regional (P3-09), archivos sin versionar (P3-14).
+- Dato del hero: se cambió a "sonata nº 2, op. 61". Confírmalo o elige otra obra.
+
+**Pendiente técnico, más grande:** 404 dinámico con HTML vacío (P2-08, `dynamicParams` no lo
+resuelve), fuentes de 5 apps y Cosmic Ear en Vite (P2-12), GLB/meshopt para los modelos 3D (P3-04),
+Tailwind Play y Phosphor por autoalojar (P3-10), E2E y actions por SHA (P3-07), HSTS
+`includeSubDomains` (P3-08), fallback ES en URLs EN y alternates de blog (P3-06), ruido SVG y
+`backdrop-filter` (P2-11), PageSpeed con clave de API (P3-16).
+
+**Cambio de comportamiento a revisar:** el menú completo del header ahora aparece desde 1280 px
+(antes 768 px, cuando ya se desbordaba en tabletas). Por debajo se usa el menú hamburguesa.
+
+---
+
 ## 0. Instrucciones para el modelo que implemente esto
 
 1. **Lee primero** `README.md`, `AGENTS.md` y `docs/remediacion-2026-09.md`. Next.js 16 tiene
