@@ -32,7 +32,7 @@ export default async function SequencerPage({ params }: Props) {
       borderColor="rgba(71,85,105,0.6)"
       dividerColor="#334155"
       backColor="rgba(148,163,184,0.7)"
-      taglineColor="rgba(148,163,184,0.4)"
+      taglineColor="rgba(148,163,184,0.75)"
       backHref={`/${locale}/curso-armonia`}
       backLabel={es ? "Curso de Armonía" : "Harmony Course"}
       title="Storm Sequencer v3.0"

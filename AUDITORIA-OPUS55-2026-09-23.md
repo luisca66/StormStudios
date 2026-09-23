@@ -542,7 +542,7 @@ Los assets de los juegos son geometría JSON de Blender. Por ejemplo
 tarda y consume memoria. Evalúa exportar a GLB con meshopt o Draco (`gltfpack`), o a buffers
 binarios, en el pipeline de `plantillas-blender`. Mide antes y después con el panel Performance.
 
-### P3-05 · Accesibilidad
+### ✅ P3-05 — HECHO salvo el foco inicial del iframe, que se conservó a propósito (los juegos 3D se controlan con teclado) · Accesibilidad
 - `components/apps/AppCard.tsx:35`: la imagen tiene `alt={name}` dentro de un enlace que ya contiene
   el nombre en el `<h3>`, así que el lector lo anuncia dos veces. Usa `alt=""`.
 - `GameShell.tsx`: la *tagline* con `rgba(255,255,255,0.35)` (y `0.4` en Sequencer, Memoria e
@@ -563,7 +563,7 @@ binarios, en el pipeline de `plantillas-blender`. Mide antes y después con el p
 - `mi-metodo/page.tsx:57`: el `alt` "Diagrama del Camino de la Señal" está fijo en español también
   para EN.
 
-### P3-06 · Detalles de código
+### P3-06 · (✅ privacidad→notFound, corte del OG, audio perezoso, `priority` en ficha; pendientes: fallback ES en URLs EN, alternates de blog sin traducción, `.env.example`, `RESEND_EMAIL_DOMAIN`) · Detalles de código
 - `app/[locale]/privacidad/page.tsx:29`: `return null` si falta el MDX. Usa `notFound()`.
 - `lib/mdx.ts:35-40,78-83`: si falta la versión EN, se sirve el **contenido español bajo la URL
   inglesa**, con hreflang en-US. Si el fallback es intencional, añade `noindex` en ese caso.

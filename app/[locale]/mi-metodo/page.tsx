@@ -54,7 +54,7 @@ export default async function MiMetodoPage({ params }: Props) {
       )}
       <div className="ss-divider mb-10" />
       <div className="mb-10 flex justify-center">
-        <Image src="/images/metodologia.png" alt="Diagrama del Camino de la Señal"
+        <Image src="/images/metodologia.png" alt={locale === "es" ? "Diagrama del Camino de la Señal" : "Signal Path diagram"}
           width={700} height={400} priority
           className="rounded-xl w-full h-auto"
           style={{ border: "1px solid rgba(255,255,255,0.08)" }} />

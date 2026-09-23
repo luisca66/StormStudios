@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { getPageContent } from "@/lib/mdx";
 import DarkMDXRenderer from "@/components/DarkMDXRenderer";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
@@ -26,7 +27,7 @@ export default async function PrivacidadPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const page = await getPageContent(locale, "privacy-notice");
-  if (!page) return null;
+  if (!page) notFound();
   return <DarkPageLayout>
     <h1 className="ss-serif text-3xl mb-8">{page.frontmatter.title}</h1>
     <DarkMDXRenderer content={page.content} />

@@ -16,22 +16,22 @@ export function MusicPlayer() {
     return () => clearTimeout(t);
   }, []);
 
-  // Crea el elemento audio solo en el cliente
+  // El audio se crea en el primer clic: así la portada no descarga el mp3.
   useEffect(() => {
-    const audio = new Audio("/audio/background-theme.mp3");
-    audio.loop = true;
-    audio.volume = 0.25;
-    audio.preload = "metadata";
-    audioRef.current = audio;
     return () => {
-      audio.pause();
-      audio.src = "";
+      audioRef.current?.pause();
+      if (audioRef.current) audioRef.current.src = "";
     };
   }, []);
 
   const toggle = () => {
+    if (!audioRef.current) {
+      const created = new Audio("/audio/background-theme.mp3");
+      created.loop = true;
+      created.volume = 0.25;
+      audioRef.current = created;
+    }
     const audio = audioRef.current;
-    if (!audio) return;
     if (playing) {
       audio.pause();
       setPlaying(false);
@@ -42,7 +42,9 @@ export function MusicPlayer() {
 
   return (
     <button
+      type="button"
       onClick={toggle}
+      aria-pressed={playing}
       title={playing ? (es ? "Pausar música" : "Pause music") : (es ? "Reproducir música de ambiente" : "Play ambient music")}
       aria-label={playing ? (es ? "Pausar música de fondo" : "Pause background music") : (es ? "Reproducir música de fondo" : "Play background music")}
       style={{

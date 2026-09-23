@@ -76,6 +76,7 @@ export default async function AppDetailPage({ params }: Props) {
                 alt={name}
                 width={160}
                 height={160}
+                priority
                 className="object-cover w-full h-full"
               />
             ) : (

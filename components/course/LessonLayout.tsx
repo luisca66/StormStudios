@@ -37,7 +37,7 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
 
       {/* Breadcrumb */}
       <div className="relative z-10 px-4 pt-20 pb-0">
-        <div className="max-w-7xl mx-auto flex items-center gap-2 ss-mono text-xs"
+        <nav aria-label={es ? "Ruta de navegación" : "Breadcrumb"} className="max-w-7xl mx-auto flex items-center gap-2 ss-mono text-xs"
           style={{ color: "var(--ss-muted)" }}>
           <Link href="/" className="transition-colors hover:text-violet-400">{es ? "Inicio" : "Home"}</Link>
           <span>›</span>
@@ -48,7 +48,7 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
           <span style={{ color: "var(--ss-muted)" }} className="truncate max-w-xs">
             {lesson.title[locale as "es" | "en"]}
           </span>
-        </div>
+        </nav>
       </div>
 
       {/* Layout principal */}
@@ -94,9 +94,9 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
                 <div key={video.youtubeId} className="mb-8">
                   {/* Título del video */}
                   {video.title && (
-                    <h3 className="ss-mono font-semibold mb-3" style={{ color: "#c4b5fd", fontSize: "1rem" }}>
+                    <h2 className="ss-mono font-semibold mb-3" style={{ color: "#c4b5fd", fontSize: "1rem" }}>
                       🎬 {video.title[locale as "es" | "en"]}
-                    </h3>
+                    </h2>
                   )}
                   {/* Embed 16:9 */}
                   {(() => {
@@ -129,10 +129,10 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
           {/* Herramientas de la lección */}
           {lessonTools && lessonTools.length > 0 && (
             <div className="mb-10">
-              <h3 className="ss-mono font-semibold mb-4 uppercase tracking-widest text-xs"
+              <h2 className="ss-mono font-semibold mb-4 uppercase tracking-widest text-xs"
                 style={{ color: "var(--ss-green-text)" }}>
                 🛠 {es ? "Herramientas de esta lección" : "Lesson Tools"}
-              </h3>
+              </h2>
               <div className="flex flex-col gap-4">
                 {lessonTools.map((tool: LessonTool) => {
                   const toolHref = locale === "en" ? (tool.urlEn ?? tool.url) : tool.url;

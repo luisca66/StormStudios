@@ -63,7 +63,7 @@ export default function LanguageSwitcher() {
     >
       <span className="text-xs font-bold text-gray-500">{t("current")}</span>
       <span className="text-gray-400">|</span>
-      <span className="text-gray-700">{t("switch")}</span>
+      <span className="text-gray-700" lang={locale === "es" ? "en" : "es"}>{t("switch")}</span>
     </button>
   );
 }

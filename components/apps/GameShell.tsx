@@ -66,7 +66,7 @@ export default function GameShell({
   borderColor = "rgba(255,255,255,0.12)",
   dividerColor = "rgba(255,255,255,0.2)",
   backColor = "rgba(255,255,255,0.6)",
-  taglineColor = "rgba(255,255,255,0.35)",
+  taglineColor = "rgba(255,255,255,0.6)",
   backAsksGame = false,
   children,
 }: GameShellProps) {
@@ -86,6 +86,8 @@ export default function GameShell({
     toggleFullscreen();
     focusGame();
   };
+
+  // Se mantiene el foco inicial en el iframe: los juegos se controlan con teclado.
   useEffect(() => {
     const id = requestAnimationFrame(() => {
       containerRef.current?.querySelector("iframe")?.focus();
@@ -161,19 +163,20 @@ export default function GameShell({
             ← {backLabel}
           </a>
           <span style={{ color: dividerColor, fontSize: "0.75rem" }}>|</span>
-          <span
+          <h1
             style={{
               color: titleColor,
               fontFamily: "monospace",
               fontSize: "0.78rem",
               fontWeight: 600,
+              margin: 0,
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
             }}
           >
             {title}
-          </span>
+          </h1>
           {badge && (
             <span
               style={{
@@ -200,7 +203,7 @@ export default function GameShell({
               className={taglineHiddenOnMobile ? "hidden sm:inline" : undefined}
               style={{
                 color: taglineColor,
-                fontSize: "0.68rem",
+                fontSize: "0.75rem",
                 fontFamily: "monospace",
                 whiteSpace: "nowrap",
               }}

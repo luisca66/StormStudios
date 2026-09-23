@@ -32,7 +32,7 @@ export default function AppCard({ app, locale }: Props) {
         <div className="w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden flex items-center justify-center"
           style={{ background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.2)" }}>
           {app.icon ? (
-            <Image src={app.icon} alt={name} width={64} height={64} className="object-cover w-full h-full" />
+            <Image src={app.icon} alt="" width={64} height={64} className="object-cover w-full h-full" />
           ) : (
             <span className="text-2xl">🎵</span>
           )}
