@@ -27,9 +27,27 @@ let lastRateLimitCleanupAt = 0;
 export const runtime = 'nodejs';
 export const maxDuration = 10;
 
-function invalidRequest(message: string, status = 400) {
+// Códigos estables para el cliente (que traduce); `error` conserva un texto en
+// español para integraciones que ya lo leían.
+const ERROR_MESSAGES = {
+  invalid_request: 'Solicitud inválida',
+  too_large: 'Archivo demasiado grande (máx 2 MB)',
+  unreadable_file: 'No se pudo leer el archivo MIDI',
+  missing_params: 'Faltan parámetros: midi y lessonId',
+  wrong_extension: 'El archivo debe ser .mid o .midi',
+  unknown_lesson: 'Lección desconocida',
+  satb_unavailable: 'La retroalimentación SATB todavía no está disponible.',
+  invalid_midi: 'Archivo MIDI inválido o corrupto',
+  validator_unavailable: 'El validador de esta lección no está disponible',
+  rate_limited: 'Demasiadas revisiones. Intenta de nuevo más tarde.',
+  internal: 'Error interno del servidor',
+} as const;
+
+type MaestroErrorCode = keyof typeof ERROR_MESSAGES;
+
+function invalidRequest(code: MaestroErrorCode, status = 400) {
   return NextResponse.json(
-    { error: message },
+    { code, error: ERROR_MESSAGES[code] },
     { status, headers: NO_STORE_HEADERS }
   );
 }
@@ -113,7 +131,7 @@ function getRateLimitResult(ip: string): RateLimitResult {
 
 function rateLimitedResponse(retryAfterSeconds: number) {
   return NextResponse.json(
-    { error: 'Demasiadas revisiones. Intenta de nuevo más tarde.' },
+    { code: 'rate_limited', error: ERROR_MESSAGES.rate_limited },
     {
       status: 429,
       headers: {
@@ -196,25 +214,25 @@ export async function POST(request: NextRequest) {
     if (contentLength) {
       const bodyBytes = Number(contentLength);
       if (!Number.isSafeInteger(bodyBytes) || bodyBytes < 0) {
-        return invalidRequest('Content-Length inválido');
+        return invalidRequest('invalid_request');
       }
       if (bodyBytes > MAX_MULTIPART_BODY_BYTES) {
-        return invalidRequest('Solicitud demasiado grande', 413);
+        return invalidRequest('too_large', 413);
       }
     }
 
     const contentType = request.headers.get('content-type');
     const mediaType = contentType?.split(';', 1)[0]?.trim().toLowerCase();
     if (!contentType || mediaType !== 'multipart/form-data') {
-      return invalidRequest('La solicitud debe usar multipart/form-data');
+      return invalidRequest('invalid_request');
     }
 
     const body = await readBoundedBody(request);
     if (body.kind === 'too_large') {
-      return invalidRequest('Solicitud demasiado grande', 413);
+      return invalidRequest('too_large', 413);
     }
     if (body.kind !== 'ok') {
-      return invalidRequest('No se pudo leer el archivo MIDI');
+      return invalidRequest('unreadable_file');
     }
 
     let formData: FormData;
@@ -225,7 +243,7 @@ export async function POST(request: NextRequest) {
         body: body.bytes,
       }).formData();
     } catch {
-      return invalidRequest('No se pudo leer el archivo MIDI');
+      return invalidRequest('unreadable_file');
     }
 
     const midiEntry = formData.get('midi');
@@ -239,26 +257,21 @@ export async function POST(request: NextRequest) {
     const locale = localeEntry === 'en' ? 'en' : 'es';
 
     if (!file || !lessonId) {
-      return invalidRequest('Faltan parámetros: midi y lessonId');
+      return invalidRequest('missing_params');
     }
     if (!file.name.match(/\.(mid|midi)$/i)) {
-      return invalidRequest('El archivo debe ser .mid o .midi');
+      return invalidRequest('wrong_extension');
     }
     if (file.size > MAX_MIDI_FILE_BYTES) {
-      return invalidRequest('Archivo demasiado grande (máx 2 MB)', 413);
+      return invalidRequest('too_large', 413);
     }
 
     const lessonConfig = getLessonConfig(lessonId);
     if (!lessonConfig) {
-      return invalidRequest('Lección desconocida', 404);
+      return invalidRequest('unknown_lesson', 404);
     }
     if (lessonConfig.validator === 'satb') {
-      return invalidRequest(
-        locale === 'en'
-          ? 'SATB feedback is not available yet.'
-          : 'La retroalimentación SATB todavía no está disponible.',
-        501
-      );
+      return invalidRequest('satb_unavailable', 501);
     }
 
     const buffer = await file.arrayBuffer();
@@ -267,7 +280,7 @@ export async function POST(request: NextRequest) {
       voiceData = parseMidiBuffer(buffer);
     } catch {
       console.warn('[Maestro Virtual] MIDI inválido');
-      return invalidRequest('Archivo MIDI inválido o corrupto');
+      return invalidRequest('invalid_midi');
     }
 
     // ── Enrutar al validador correcto (explícito, según lesson-configs) ─────
@@ -277,7 +290,7 @@ export async function POST(request: NextRequest) {
       case 'modes':        rawErrors = validateLesson2Modes(voiceData);  break;
       case 'minor-scales': rawErrors = validateMinorScales(voiceData); break;
       default:
-        return invalidRequest('El validador de esta lección no está disponible', 501);
+        return invalidRequest('validator_unavailable', 501);
     }
 
     // ── Traducir al formato MaestroFeedback ────────────────────────────────
@@ -344,7 +357,7 @@ export async function POST(request: NextRequest) {
   } catch {
     console.error('[Maestro Virtual] Unexpected exercise review failure');
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
+      { code: 'internal', error: ERROR_MESSAGES.internal },
       { status: 500, headers: NO_STORE_HEADERS }
     );
   }

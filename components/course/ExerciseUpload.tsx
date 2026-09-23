@@ -15,6 +15,20 @@ type UploadState =
   | { status: "error"; message: string };
 
 const MAX_MIDI_FILE_BYTES = 2 * 1024 * 1024;
+
+const ERROR_TEXT: Record<string, { es: string; en: string }> = {
+  invalid_request: { es: "La solicitud no es válida. Intenta de nuevo.", en: "The request is not valid. Please try again." },
+  too_large: { es: "El archivo supera el límite de 2 MB", en: "The file exceeds the 2 MB limit" },
+  unreadable_file: { es: "No se pudo leer el archivo MIDI", en: "The MIDI file could not be read" },
+  missing_params: { es: "Falta el archivo MIDI o la lección", en: "The MIDI file or lesson is missing" },
+  wrong_extension: { es: "Solo se aceptan archivos MIDI (.mid o .midi)", en: "Only MIDI files are accepted (.mid or .midi)" },
+  unknown_lesson: { es: "Esta lección no tiene revisión automática", en: "This lesson has no automatic review" },
+  satb_unavailable: { es: "La retroalimentación SATB todavía no está disponible.", en: "SATB feedback is not available yet." },
+  invalid_midi: { es: "Archivo MIDI inválido o corrupto", en: "Invalid or corrupted MIDI file" },
+  validator_unavailable: { es: "El validador de esta lección no está disponible", en: "The validator for this lesson is not available" },
+  rate_limited: { es: "Demasiadas revisiones. Intenta de nuevo más tarde.", en: "Too many reviews. Please try again later." },
+  internal: { es: "Error interno del servidor. Intenta de nuevo.", en: "Internal server error. Please try again." },
+};
 const UPLOAD_TIMEOUT_MS = 20_000;
 
 export default function ExerciseUpload({ lessonId, locale }: Props) {
@@ -79,8 +93,9 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
 
       const payload = await response.json().catch(() => null);
       if (!response.ok) {
+        const known = typeof payload?.code === "string" ? ERROR_TEXT[payload.code] : undefined;
         throw new Error(
-          payload?.error
+          (known && (es ? known.es : known.en))
           || (es ? "No se pudo analizar el archivo" : "The file could not be analyzed")
         );
       }
@@ -149,7 +164,7 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
             <p className="text-gray-500">
               ↑{" "}
               <span className="text-purple-700">
-                Do · Sol · Re · La · Mi · Si · Fa# · Do#
+                {es ? "Do · Sol · Re · La · Mi · Si · Fa# · Do#" : "C · G · D · A · E · B · F# · C#"}
               </span>
               <span className="text-gray-600 ml-2">
                 {es ? "(quintas ascendentes)" : "(ascending fifths)"}
@@ -158,7 +173,7 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
             <p className="text-gray-500">
               ↓{" "}
               <span className="text-blue-700">
-                Fa · Sib · Mib · Lab · Reb · Solb · Dob
+                {es ? "Fa · Sib · Mib · Lab · Reb · Solb · Dob" : "F · B♭ · E♭ · A♭ · D♭ · G♭ · C♭"}
               </span>
               <span className="text-gray-600 ml-2">
                 {es ? "(quintas descendentes)" : "(descending fifths)"}

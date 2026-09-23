@@ -263,7 +263,7 @@ spam, considera Cloudflare Turnstile. **[Decisión de Luis]**
 
 ## 3. 🟡 Prioridad MEDIA
 
-### P2-01 · Maestro Virtual: los errores de la API solo están en español
+### ✅ P2-01 — HECHO · Maestro Virtual: los errores de la API solo están en español
 `app/api/maestro-virtual/check/route.ts` lee `locale` del formulario, pero casi todos los mensajes
 de error están fijos en español (líneas 199, 202, 209, 214, 217, 228, 242, 245, 248, 253, 270, 280 y
 116). `components/course/ExerciseUpload.tsx:82-85` los muestra tal cual. Un estudiante en

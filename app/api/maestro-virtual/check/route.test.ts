@@ -21,7 +21,7 @@ describe('POST /api/maestro-virtual/check', () => {
 
     expect(response.status).toBe(404);
     expect(response.headers.get('cache-control')).toBe('no-store');
-    await expect(response.json()).resolves.toEqual({ error: 'Lección desconocida' });
+    await expect(response.json()).resolves.toEqual({ code: 'unknown_lesson', error: 'Lección desconocida' });
   });
 
   it('bounds unknown lesson identifiers without reflecting them', async () => {
@@ -29,6 +29,7 @@ describe('POST /api/maestro-virtual/check', () => {
 
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({
+      code: 'missing_params',
       error: 'Faltan parámetros: midi y lessonId',
     });
   });
@@ -39,6 +40,7 @@ describe('POST /api/maestro-virtual/check', () => {
     expect(response.status).toBe(501);
     expect(response.headers.get('cache-control')).toBe('no-store');
     await expect(response.json()).resolves.toEqual({
+      code: 'satb_unavailable',
       error: 'La retroalimentación SATB todavía no está disponible.',
     });
   });
