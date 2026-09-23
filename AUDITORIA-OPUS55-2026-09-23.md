@@ -133,7 +133,7 @@ gzip.
 
 ---
 
-### P1-03 · Scripts de CDN sin versión fija ni SRI en herramientas heredadas (cadena de suministro)
+### ✅ P1-03 — HECHO (fix rápido; Tailwind Play fijado a 3.4.17 sin SRI porque no envía CORS) · Scripts de CDN sin versión fija ni SRI en herramientas heredadas (cadena de suministro)
 **Problema:** los HTML autónomos de `public/` cargan librerías de CDNs públicos **sin `integrity`**.
 Un caso usa además una **versión sin fijar**:
 - `public/apps/{tetris,burbujas,laberinto,ranita}-gemini.html` (juegos distractores de App Memoria)
