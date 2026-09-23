@@ -39,6 +39,8 @@ const eslintConfig = defineConfig([
       // Sprites de pixel-art (varios animados / servidos desde CDN R2): next/image
       // no aporta y rompería el render del juego.
       "@next/next/no-img-element": "off",
+      // El cambio de idioma del juego recarga la página a propósito para reiniciar su estado.
+      "@next/next/no-location-assign-relative-destination": "off",
     },
   },
 ]);

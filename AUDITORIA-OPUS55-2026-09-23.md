@@ -700,7 +700,7 @@ Tras cada bloque: `npm run check` (y `npm run apps:check` si aplica), revisión 
   el SEO, los componentes de layout, home, curso, apps, formulario y Firebase, las reglas, el CI,
   los scripts y el contenido MDX.
 
-## Anexo B · Dependencias con actualización disponible (sin vulnerabilidades)
+## ✅ Anexo B — HECHO (`npm update`, Next 16.3.6; 0 vulnerabilidades) · Dependencias con actualización disponible (sin vulnerabilidades)
 Dentro de semver: next 16.3.3→16.3.6, @next/mdx y eslint-config-next →16.3.6, next-intl
 4.13.1→4.14.6, firebase 12.15→12.19, resend 6.16→6.28, zod 4.4→4.6, tailwindcss y
 @tailwindcss/postcss 4.3.2→4.3.3, zustand, tailwind-merge y @types/react. `npm update` y después
