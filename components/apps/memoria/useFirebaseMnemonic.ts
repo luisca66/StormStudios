@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth, signInAnonymously, onAuthStateChanged, User } from "firebase/auth";
+import { getAuth, signInAnonymously, onAuthStateChanged, User, Auth } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc, Firestore } from "firebase/firestore";
 import { FIREBASE_CONFIG, COLLECTION_BY_LANG, GameData, GAME_DATA_ES, GAME_DATA_EN, PRACTICE_DATA_ES, PRACTICE_DATA_EN } from "@/data/apps/memoria-data";
 
 type AppState = {
   db: Firestore | null;
+  auth: Auth | null;
   userId: string | null;
   words: GameData | null;
   practiceWords: GameData | null;
@@ -15,6 +16,7 @@ type AppState = {
 export function useFirebaseMnemonic(locale: string) {
   const [state, setState] = useState<AppState>({
     db: null,
+    auth: null,
     userId: null,
     words: null,
     practiceWords: null,
@@ -33,19 +35,16 @@ export function useFirebaseMnemonic(locale: string) {
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        const user = await new Promise<User>((resolve, reject) => {
+        // Solo se reutiliza una sesión anónima existente: la cuenta y el
+        // documento se crean la primera vez que el usuario guarda palabras.
+        const user = await new Promise<User | null>((resolve, reject) => {
           const unsubscribe = onAuthStateChanged(auth, (user) => {
             unsubscribe();
-            if (user) resolve(user);
-            else signInAnonymously(auth).then((cred) => resolve(cred.user)).catch(reject);
+            resolve(user);
           }, reject);
         });
 
         if (!isMounted) return;
-
-        const collection = COLLECTION_BY_LANG[isEN ? "en" : "es"];
-        const docRef = doc(db, collection, user.uid);
-        const snapshot = await getDoc(docRef);
 
         const defaultsGame = isEN ? GAME_DATA_EN : GAME_DATA_ES;
         const defaultsPractice = isEN ? PRACTICE_DATA_EN : PRACTICE_DATA_ES;
@@ -54,7 +53,10 @@ export function useFirebaseMnemonic(locale: string) {
         const userWords: GameData = JSON.parse(JSON.stringify(defaultsGame));
         const userPracticeWords: GameData = JSON.parse(JSON.stringify(defaultsPractice));
 
-        if (snapshot.exists()) {
+        const collection = COLLECTION_BY_LANG[isEN ? "en" : "es"];
+        const snapshot = user ? await getDoc(doc(db, collection, user.uid)) : null;
+
+        if (snapshot?.exists()) {
           const savedData = snapshot.data();
           Object.keys(userWords).forEach((range) => {
             if (savedData[range]) {
@@ -66,15 +68,13 @@ export function useFirebaseMnemonic(locale: string) {
               userPracticeWords[range] = { ...userPracticeWords[range], ...savedData[range] };
             }
           });
-        } else {
-          // Initialize DB with defaults
-          await setDoc(docRef, defaultsGame);
         }
 
         if (isMounted) {
           setState({
             db,
-            userId: user.uid,
+            auth,
+            userId: user?.uid ?? null,
             words: userWords,
             practiceWords: userPracticeWords,
             loading: false,
@@ -101,10 +101,11 @@ export function useFirebaseMnemonic(locale: string) {
   }, [locale, isEN]);
 
   const saveRangeWords = async (range: string, newSet: Record<string, string>) => {
-    const { db, userId } = state;
-    if (!db || !userId) return;
+    const { db, auth } = state;
+    if (!db || !auth) return;
 
     try {
+      const userId = state.userId ?? (await signInAnonymously(auth)).user.uid;
       const collection = COLLECTION_BY_LANG[isEN ? "en" : "es"];
       await setDoc(doc(db, collection, userId), { [range]: newSet }, { merge: true });
 
@@ -117,6 +118,7 @@ export function useFirebaseMnemonic(locale: string) {
 
         return {
           ...prev,
+          userId,
           words: newWords,
           practiceWords: newPracticeWords,
         };

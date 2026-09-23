@@ -395,7 +395,7 @@ youtube-nocookie). El botón debe llevar `aria-label` con el título del video.
 
 ---
 
-### P2-10 · Firestore (App Memoria): escrituras innecesarias y reglas sin validación
+### ✅ P2-10 — HECHO en código (falta [Consola]: publicar `firestore.rules` en Firebase, App Check y limpieza de anónimos) · Firestore (App Memoria): escrituras innecesarias y reglas sin validación
 1. `components/apps/memoria/useFirebaseMnemonic.ts:69-72`: si el documento no existe, se hace
    `setDoc(docRef, defaultsGame)`. **Cada visitante** de `/memoria` crea un usuario anónimo **y** un
    documento con las palabras por defecto, aunque nunca personalice nada. Eso acumula documentos y

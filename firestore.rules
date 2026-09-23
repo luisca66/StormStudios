@@ -6,12 +6,27 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == uid;
     }
 
+    // Rangos de palabras que la App Memoria puede guardar. Cada rango es un
+    // mapa pequeño (número → palabra); solo se aceptan esos rangos.
+    function validRangeKeys(codeKey) {
+      return request.resource.data.keys().hasOnly([
+        codeKey, '0-9', '00-09', '10-19', '20-29', '30-39', '40-49',
+        '50-59', '60-69', '70-79', '80-89', '90-99'
+      ]);
+    }
+
+    function validRanges() {
+      return request.resource.data.keys().size() <= 12;
+    }
+
     match /mnemonic_words/{uid} {
-      allow read, create, update, delete: if ownsDocument(uid);
+      allow read, delete: if ownsDocument(uid);
+      allow create, update: if ownsDocument(uid) && validRangeKeys('Código') && validRanges();
     }
 
     match /mnemonic_words_en/{uid} {
-      allow read, create, update, delete: if ownsDocument(uid);
+      allow read, delete: if ownsDocument(uid);
+      allow create, update: if ownsDocument(uid) && validRangeKeys('Code') && validRanges();
     }
 
     match /{document=**} {
