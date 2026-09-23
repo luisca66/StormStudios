@@ -28,15 +28,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-const INTRO_LESSON = { slug: "00-introduccion", lessonNumber: null, title: { es: "Introducción al Curso", en: "Course Introduction" } };
-
-const PROPEDEUTICO_LESSONS = [
-  { slug: "p01-notas",        title: { es: "P01 – Escritura de las Notas Musicales",  en: "P01 – Writing Musical Notes" } },
-  { slug: "p02-ritmica",      title: { es: "P02 – Escritura de la Rítmica Musical",   en: "P02 – Writing Musical Rhythm" } },
-  { slug: "p03-intervalos",   title: { es: "P03 – Intervalos",                        en: "P03 – Intervals" } },
-  { slug: "p04-secuenciador", title: { es: "P04 – Uso del Secuenciador",              en: "P04 – Using the Sequencer" } },
-];
-
 // Las lecciones principales se leen del curso (excluye ocultas automáticamente).
 
 export default async function CursoArmoniaPage({ params }: Props) {
@@ -44,6 +35,8 @@ export default async function CursoArmoniaPage({ params }: Props) {
   setRequestLocale(locale);
   const es = locale === "es";
   const currentLocale = locale as Locale;
+  const [introLesson] = getLessonsByModule("introduccion");
+  const preparatoryLessons = getLessonsByModule("propedeutico");
   const mainLessons = getLessonsByModule("triadas-satb");
   const publishedUnits = getAllLessons().filter((lesson) => lesson.status !== "construction").length;
 
@@ -104,8 +97,8 @@ export default async function CursoArmoniaPage({ params }: Props) {
         <div className="flex flex-col gap-3">
 
           {/* Introducción */}
-          <Link
-            href={{ pathname: "/curso-armonia/[slug]", params: { slug: getLessonUrlSlug(INTRO_LESSON.slug, currentLocale) } }}
+          {introLesson && <Link
+            href={{ pathname: "/curso-armonia/[slug]", params: { slug: getLessonUrlSlug(introLesson, currentLocale) } }}
             className="ss-glass ss-card flex items-center gap-4 p-4 rounded-xl group"
             style={{ border: "1px solid rgba(255,255,255,0.07)" }}
           >
@@ -114,10 +107,10 @@ export default async function CursoArmoniaPage({ params }: Props) {
               ·
             </div>
             <span className="ss-mono text-sm" style={{ color: "var(--ss-muted)" }}>
-              {INTRO_LESSON.title[locale as "es" | "en"]}
+              {introLesson.title[locale as "es" | "en"]}
             </span>
             <span className="ml-auto ss-mono text-sm" style={{ color: "var(--ss-violet-text)" }}>→</span>
-          </Link>
+          </Link>}
 
           {/* Módulo Propedéutico — acordeón */}
           <details className="ss-glass rounded-xl group" style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
@@ -130,14 +123,14 @@ export default async function CursoArmoniaPage({ params }: Props) {
                 {es ? "Módulo Propedéutico" : "Preparatory Module"}
               </span>
               <span className="ss-mono text-xs" style={{ color: "var(--ss-violet-text)" }}>
-                4 {es ? "lecciones" : "lessons"} ▾
+                {preparatoryLessons.length} {es ? "lecciones" : "lessons"} ▾
               </span>
             </summary>
             <div className="flex flex-col gap-1 px-4 pb-3 pt-1">
-              {PROPEDEUTICO_LESSONS.map((lesson) => (
+              {preparatoryLessons.map((lesson) => (
                 <Link
                   key={lesson.slug}
-                  href={{ pathname: "/curso-armonia/[slug]", params: { slug: getLessonUrlSlug(lesson.slug, currentLocale) } }}
+                  href={{ pathname: "/curso-armonia/[slug]", params: { slug: getLessonUrlSlug(lesson, currentLocale) } }}
                   className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors"
                   style={{ color: "var(--ss-muted)" }}
                 >

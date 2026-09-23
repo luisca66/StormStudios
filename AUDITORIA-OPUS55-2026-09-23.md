@@ -465,7 +465,7 @@ timeout de render tras hacer scroll. No es concluyente, pero va en la misma dire
 
 ---
 
-### P2-14 · Datos duplicados o fijos que se desincronizan
+### ✅ P2-14 — HECHO (salvo la lección huérfana 01-propedeutico, que espera decisión de Luis) · Datos duplicados o fijos que se desincronizan
 - `app/[locale]/curso-armonia/page.tsx:31-38`: `INTRO_LESSON` y `PROPEDEUTICO_LESSONS` repiten
   títulos que ya existen en `data/course/lessons/*`. Además hay un "4 lecciones" fijo (línea 132).
   Deriva ambos de `getLessonsByModule("introduccion" | "propedeutico")`.

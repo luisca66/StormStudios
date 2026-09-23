@@ -15,7 +15,7 @@ export const COURSE_CONFIG: CourseConfig = {
     es: "Domina la Armonía en el nuevo mundo de la IA: El Legado Shostakovich-Hernández Medrano, ahora accesible en línea gratis.",
     en: "Master Harmony in the new world of AI: The Shostakovich-Hernández Medrano Legacy, now accessible online for free.",
   },
-  totalLessons: 60, // meta final; actualmente 7 publicadas
+  totalLessons: 60, // meta final del curso; las publicadas se cuentan con getAllLessons()
   instructorName: "Luis Cárdenas",
   modules: [
     {
