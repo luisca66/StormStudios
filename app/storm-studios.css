@@ -102,9 +102,10 @@
 /* ── Wave bars ── */
 .ss-bar {
   width: 6px;
+  min-width: 2px;
   border-radius: 3px;
   transform-origin: bottom;
-  flex-shrink: 0;
+  flex: 0 1 6px;
   background: linear-gradient(to top, #8b5cf6, #3b82f6 60%, #06b6d4);
   animation: ss-pulse var(--ss-dur, 1s) ease-in-out var(--ss-delay, 0s) infinite alternate;
 }

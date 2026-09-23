@@ -122,13 +122,13 @@ export default async function AppsPage({ params }: Props) {
             </p>
             <div className="flex flex-wrap gap-3">
               <Link href="/curso-armonia" className="ss-mono text-sm px-5 py-3 rounded-xl" style={{ background: "rgba(139,92,246,0.15)", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.3)" }}>
-                {es ? "Ver curso de armonia" : "See the harmony course"}
+                {es ? "Ver curso de armonía" : "See the harmony course"}
               </Link>
               <Link href="/resources" className="ss-mono text-sm px-5 py-3 rounded-xl" style={{ background: "rgba(59,130,246,0.15)", color: "#93c5fd", border: "1px solid rgba(59,130,246,0.3)" }}>
-                {es ? "Explorar guias de estudio" : "Explore study guides"}
+                {es ? "Explorar guías de estudio" : "Explore study guides"}
               </Link>
               <Link href="/mi-metodo" className="ss-mono text-sm px-5 py-3 rounded-xl" style={{ background: "rgba(16,185,129,0.15)", color: "#86efac", border: "1px solid rgba(16,185,129,0.3)" }}>
-                {es ? "Leer sobre el metodo" : "Read about the method"}
+                {es ? "Leer sobre el método" : "Read about the method"}
               </Link>
             </div>
           </div>

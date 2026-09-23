@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: appDescription,
     keywords:
       locale === "es"
-        ? [appName, "app musical", "entrenamiento auditivo", "educacion musical"]
+        ? [appName, "app musical", "entrenamiento auditivo", "educación musical"]
         : [appName, "music education app", "ear training app", "music practice tool"],
     image: `/og/apps/${locale}/${slug}`,
   });

@@ -100,7 +100,7 @@ export function BlogLayout({ frontmatter, locale, children }: BlogLayoutProps) {
               : "Apply these concepts in the Harmony Course with automatic MIDI exercise feedback."}
           </p>
           <Link
-            href={`/${locale}/curso-armonia`}
+            href="/curso-armonia"
             className="inline-block px-6 py-3 rounded-xl ss-mono text-sm font-medium transition-all duration-300"
             style={{ background: "linear-gradient(135deg,#8b5cf6,#3b82f6)", color: "#fff" }}
           >

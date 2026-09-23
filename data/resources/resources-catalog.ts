@@ -78,7 +78,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "The free harmony lessons begin with preparatory material and move toward four-part writing, voice leading, harmonic function and analytical listening. The goal is to develop musicians who can write, hear and evaluate harmony with control.",
-            es: "Las lecciones gratis de armonía comienzan con material propedeutico y avanzan hacia la escritura a cuatro voces, la conduccion de voces, la función armonica y la escucha analitica. La meta es formar músicos que puedan escribir, escuchar y evaluar armonía con control.",
+            es: "Las lecciones gratis de armonía comienzan con material propedéutico y avanzan hacia la escritura a cuatro voces, la conducción de voces, la función armónica y la escucha analítica. La meta es formar músicos que puedan escribir, escuchar y evaluar armonía con control.",
           },
         ],
         bullets: [
@@ -88,7 +88,7 @@ export const RESOURCES: ResourceEntry[] = [
           },
           {
             en: "SATB voice leading and harmonic grammar",
-            es: "Conduccion de voces SATB y gramatica armonica",
+            es: "Conducción de voces SATB y gramática armónica",
           },
           {
             en: "Ear training that supports written harmony",
@@ -117,7 +117,7 @@ export const RESOURCES: ResourceEntry[] = [
       },
       description: {
         en: "Go from the overview to the actual lessons, exercises and sequencer workflow.",
-        es: "Pasa de la vision general a las lecciones, ejercicios y flujo de trabajo con secuenciador.",
+        es: "Pasa de la visión general a las lecciones, ejercicios y flujo de trabajo con secuenciador.",
       },
       label: {
         en: "Open the course",
@@ -151,7 +151,7 @@ export const RESOURCES: ResourceEntry[] = [
         href: "/blog",
         label: {
           en: "Explore harmony articles",
-          es: "Explorar articulos de armonía",
+          es: "Explorar artículos de armonía",
         },
         description: {
           en: "Read analysis and pedagogical essays that support the course.",
@@ -217,7 +217,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "Ear training, music theory and harmony lessons work best together. When students analyze a progression, sing intervals and write voices in parallel, they build inner hearing instead of disconnected skills.",
-            es: "El entrenamiento auditivo, la teoría musical y las lecciones de armonía funcionan mejor juntos. Cuando los estudiantes analizan una progresion, cantan intervalos y escriben voces en paralelo, construyen oído interno en lugar de habilidades desconectadas.",
+            es: "El entrenamiento auditivo, la teoría musical y las lecciones de armonía funcionan mejor juntos. Cuando los estudiantes analizan una progresión, cantan intervalos y escriben voces en paralelo, construyen oído interno en lugar de habilidades desconectadas.",
           },
         ],
       },
@@ -280,7 +280,7 @@ export const RESOURCES: ResourceEntry[] = [
         },
         description: {
           en: "Browse more topic pages for music theory and interval work.",
-          es: "Consulta más paginas tematicas sobre teoría musical e intervalos.",
+          es: "Consulta más páginas temáticas sobre teoría musical e intervalos.",
         },
       },
     ],
@@ -316,7 +316,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "Learning intervals is not just memorizing a list of names. It improves melodic hearing, harmonic awareness and the ability to anticipate how voices move inside tonal music.",
-            es: "Aprender intervalos no es solo memorizar una lista de nombres. Mejora la escucha melodica, la conciencia armonica y la capacidad de anticipar como se mueven las voces dentro de la música tonal.",
+            es: "Aprender intervalos no es solo memorizar una lista de nombres. Mejora la escucha melódica, la conciencia armónica y la capacidad de anticipar cómo se mueven las voces dentro de la música tonal.",
           },
         ],
       },
@@ -328,7 +328,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "Work both melodically and harmonically. Hear the interval, sing it back, then place it inside scales, chords and real lines. That is how interval recognition becomes useful in music theory and harmony lessons.",
-            es: "Trabaja de forma melodica y armonica. Escucha el intervalo, cantalo de regreso y luego colocalo dentro de escalas, acordes y lineas reales. Asi es como el reconocimiento de intervalos se vuelve útil en teoría musical y en las lecciones de armonía.",
+            es: "Trabaja de forma melódica y armónica. Escucha el intervalo, cántalo de regreso y luego colócalo dentro de escalas, acordes y líneas reales. Así es como el reconocimiento de intervalos se vuelve útil en teoría musical y en las lecciones de armonía.",
           },
         ],
         bullets: [
@@ -354,7 +354,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "Interval work supports the broader method by strengthening the ear before and during harmonic writing. It prepares students for more advanced listening tasks such as chord recognition, voice separation and harmonic analysis.",
-            es: "El trabajo de intervalos apoya el método más amplio al fortalecer el oído antes y durante la escritura armonica. Prepara a los estudiantes para tareas auditivas más avanzadas como reconocimiento de acordes, separacion de voces y análisis armónico.",
+            es: "El trabajo de intervalos apoya el método más amplio al fortalecer el oído antes y durante la escritura armónica. Prepara a los estudiantes para tareas auditivas más avanzadas como reconocimiento de acordes, separación de voces y análisis armónico.",
           },
         ],
       },
@@ -401,7 +401,7 @@ export const RESOURCES: ResourceEntry[] = [
         href: "/blog",
         label: {
           en: "Read interval-related articles",
-          es: "Leer articulos relacionados",
+          es: "Leer artículos relacionados",
         },
         description: {
           en: "Go deeper with analysis and explanatory writing.",
@@ -441,13 +441,13 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "A strong beginner foundation includes notation, clefs, intervals, scales, tonal function and the beginnings of voice leading. Those topics support every later step in harmony lessons and ear training.",
-            es: "Una base solida para principiantes incluye notacion, claves, intervalos, escalas, función tonal y los inicios de la conduccion de voces. Esos temas sostienen cada paso posterior en las lecciones de armonía y en el entrenamiento auditivo.",
+            es: "Una base sólida para principiantes incluye notación, claves, intervalos, escalas, función tonal y los inicios de la conducción de voces. Esos temas sostienen cada paso posterior en las lecciones de armonía y en el entrenamiento auditivo.",
           },
         ],
         bullets: [
           {
             en: "Reading notation and understanding register",
-            es: "Leer notacion y entender el registro",
+            es: "Leer notación y entender el registro",
           },
           {
             en: "Hearing intervals, scales and tonal gravity",
@@ -479,7 +479,7 @@ export const RESOURCES: ResourceEntry[] = [
         paragraphs: [
           {
             en: "Once the basics are stable, students can move into traditional harmony, voice leading, interval work and analytical listening. That progression is exactly how the course is structured.",
-            es: "Una vez que los fundamentos estan estables, los estudiantes pueden pasar a armonía tradicional, conduccion de voces, trabajo de intervalos y escucha analitica. Esa progresion es exactamente como esta estructurado el curso.",
+            es: "Una vez que los fundamentos están estables, los estudiantes pueden pasar a armonía tradicional, conducción de voces, trabajo de intervalos y escucha analítica. Esa progresión es exactamente cómo esta estructurado el curso.",
           },
         ],
       },

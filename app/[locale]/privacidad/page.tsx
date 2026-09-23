@@ -13,10 +13,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return createPageMetadata({
     locale: locale as Locale,
     urls: getLocalizedRouteUrls("/privacidad"),
-    title: locale === "es" ? "Politica de Privacidad" : "Privacy Policy",
+    title: locale === "es" ? "Política de Privacidad" : "Privacy Policy",
     description:
       locale === "es"
-        ? "Politica de privacidad de Storm Studios Learning y tratamiento basico de datos de contacto."
+        ? "Política de privacidad de Storm Studios Learning y tratamiento básico de datos de contacto."
         : "Storm Studios Learning privacy policy and basic information about contact data handling.",
     noIndex: true,
   });

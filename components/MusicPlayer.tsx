@@ -91,7 +91,7 @@ export function MusicPlayer() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
             <polygon points="5,3 19,12 5,21"/>
           </svg>
-          <span>{es ? "▸ Reproducir demo" : "▸ Play demo"}</span>
+          <span>{es ? "Reproducir demo" : "Play demo"}</span>
         </>
       )}
 

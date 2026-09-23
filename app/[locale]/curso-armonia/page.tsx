@@ -209,18 +209,18 @@ export default async function CursoArmoniaPage({ params }: Props) {
             </h2>
             <p className="ss-mono text-sm mb-6" style={{ color: "var(--ss-muted)", lineHeight: 1.7 }}>
               {es
-                ? "Complementa el curso con guias sobre armonia tradicional, teoria musical, intervalos y entrenamiento auditivo."
+                ? "Complementa el curso con guías sobre armonía tradicional, teoría musical, intervalos y entrenamiento auditivo."
                 : "Complement the course with guides on traditional harmony, music theory, intervals and ear training."}
             </p>
             <div className="flex flex-wrap gap-3">
               <Link href="/resources" className="ss-mono text-sm px-5 py-3 rounded-xl" style={{ background: "rgba(59,130,246,0.15)", color: "#93c5fd", border: "1px solid rgba(59,130,246,0.3)" }}>
-                {es ? "Ver guias de estudio" : "View study guides"}
+                {es ? "Ver guías de estudio" : "View study guides"}
               </Link>
               <Link href="/apps" className="ss-mono text-sm px-5 py-3 rounded-xl" style={{ background: "rgba(139,92,246,0.15)", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.3)" }}>
                 {es ? "Practicar con apps" : "Practice with apps"}
               </Link>
               <Link href="/blog" className="ss-mono text-sm px-5 py-3 rounded-xl" style={{ background: "rgba(16,185,129,0.15)", color: "#86efac", border: "1px solid rgba(16,185,129,0.3)" }}>
-                {es ? "Leer articulos" : "Read articles"}
+                {es ? "Leer artículos" : "Read articles"}
               </Link>
             </div>
           </div>

@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: locale === "es" ? "App Memoria – Nemotecnia" : "Memory App – Mnemonics",
     description:
       locale === "es"
-        ? "Herramienta interactiva de memoria y nemotecnia para practica musical y cognitiva."
+        ? "Herramienta interactiva de memoria y nemotecnia para práctica musical y cognitiva."
         : "Interactive memory and mnemonic tool for musical and cognitive practice.",
     noIndex: true,
   });

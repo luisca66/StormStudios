@@ -1,4 +1,4 @@
-"use client";
+
 
 // components/WaveVisualizer.tsx
 // Client Island — solo este componente necesita "use client"
@@ -50,8 +50,10 @@ const BARS = [
 export function WaveVisualizer() {
   return (
     <div
+      aria-hidden="true"
       style={{
         display: "flex",
+        overflow: "hidden",
         alignItems: "flex-end",
         justifyContent: "center",
         gap: "4px",
