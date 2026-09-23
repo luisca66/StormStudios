@@ -340,7 +340,7 @@ youtube-nocookie). El botón debe llevar `aria-label` con el título del video.
 
 ---
 
-### P2-06 · Móvil: altura de las apps y controles flotantes que se solapan
+### ✅ P2-06 — HECHO (puntos 1 y 2; el botón de música sigue igual) · Móvil: altura de las apps y controles flotantes que se solapan
 1. `components/apps/GameShell.tsx:132` usa `height: calc(100vh - 64px)`. En iOS y Android, `100vh`
    incluye la barra del navegador y la parte inferior del iframe (controles del juego) queda oculta.
    Usa `100dvh`, con `100vh` como respaldo. `FullscreenShell.tsx:54` también usa `100vh`, pero
@@ -353,7 +353,7 @@ youtube-nocookie). El botón debe llevar `aria-label` con el título del video.
 
 ---
 
-### P2-07 · Numeración confusa de lecciones ("Lección 1.1")
+### ✅ P2-07 — HECHO · Numeración confusa de lecciones ("Lección 1.1")
 `LessonLayout.tsx:57,61` muestra `lesson.lessonNumber ?? lesson.order`. Para el propedéutico
 (`order: 1.1…1.4`) aparece **"LECCIÓN 1.1"** encima de "P01 – Escritura…", y la introducción muestra
 "Lección 0". La lección real "Lección 1" es otra. **Fix:** añade a `LessonConfig` un campo

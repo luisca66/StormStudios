@@ -129,7 +129,7 @@ export default function GameShell({
       style={{
         display: "flex",
         flexDirection: "column",
-        height: isFullscreen ? "100vh" : "calc(100vh - 64px)",
+        height: isFullscreen ? "100dvh" : "calc(100dvh - 64px)",
         overflow: "hidden",
         background,
       }}

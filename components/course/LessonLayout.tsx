@@ -20,6 +20,14 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
   const course = getCourseConfig();
   const lessonVideos = lesson.videosByLocale?.[locale as "es" | "en"] ?? lesson.videos;
   const lessonTools = lesson.toolsByLocale?.[locale as "es" | "en"] ?? lesson.tools;
+  // Solo las lecciones del curso principal tienen número; el resto usa su etiqueta (P01, Intro…).
+  const unitCode = lesson.title.es.match(/^(P\d+)/)?.[1];
+  const badge = lesson.lessonNumber ?? unitCode ?? (lesson.module === "introduccion" ? "·" : lesson.order);
+  const kicker = lesson.lessonNumber
+    ? `${es ? "Lección" : "Lesson"} ${lesson.lessonNumber}`
+    : unitCode
+      ? (es ? `Propedéutico · ${unitCode}` : `Preparatory · ${unitCode}`)
+      : (es ? "Introducción" : "Introduction");
 
   return (
     <div className="ss-root" style={{ minHeight: "100vh" }}>
@@ -48,17 +56,17 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
         <LessonSidebar currentSlug={lesson.slug} locale={locale} />
 
         {/* Contenido */}
-        <article className="flex-1 min-w-0" style={{ maxWidth: "780px" }}>
+        <article className="flex-1 min-w-0 pb-20 md:pb-0" style={{ maxWidth: "780px" }}>
           {/* Header */}
           <header className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full flex items-center justify-center ss-mono text-sm font-bold flex-shrink-0"
                 style={{ background: "rgba(139,92,246,0.2)", color: "#c4b5fd", border: "1px solid rgba(139,92,246,0.3)" }}>
-                {lesson.lessonNumber ?? lesson.order}
+                {badge}
               </div>
               <p className="ss-mono text-xs uppercase tracking-widest"
                 style={{ color: "var(--ss-violet-text)" }}>
-                {es ? "Lección" : "Lesson"} {lesson.lessonNumber ?? lesson.order}
+                {kicker}
               </p>
               {lesson.estimatedMinutes && (
                 <span className="ss-mono text-xs ml-auto" style={{ color: "var(--ss-muted)" }}>
