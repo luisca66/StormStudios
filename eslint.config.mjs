@@ -13,6 +13,7 @@ const eslintConfig = defineConfig([
     "build/**",
     // Apps construidas/vendored: bundles y fuentes copiadas, no las linteamos.
     "public/apps/**",
+    "public/vendor/**",
     // Sub-proyecto Vite de Desglose: tiene su propio toolchain/tsconfig.
     "apps-src/**",
     "next-env.d.ts",
