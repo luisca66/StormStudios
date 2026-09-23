@@ -21,8 +21,8 @@ blog) y P2-12 (Synth-Kong) · P3-01, P3-02, P3-03, P3-05, P3-06 (parcial), P3-07
 (parcial), P3-13, P3-14 · Anexo B.
 
 **Pendiente, necesita a Luis o la consola:**
-- Firebase: publicar `firestore.rules`, activar App Check y la limpieza de anónimos (P2-10).
-- Vercel: cambiar la redirección del dominio raíz a www a 308 (P2-09).
+- ✅ Firebase: `firestore.rules` publicadas en consola (23 sep, con Luis). App Check y la limpieza de anónimos se posponen: App Check necesita una clave de reCAPTCHA y cambios en código, y la limpieza requiere Identity Platform.
+- ✅ Vercel: `stormstudios.com.mx` → www ahora responde 308 (verificado en vivo).
 - Contenido: P04 y Lección 1 (P2-04), blog (P2-17), afirmaciones científicas (P3-11), H1 del libro
   y "Quién soy" (P2-02), handle real de X/Twitter (P2-03), lección huérfana `01-propedeutico`
   (P2-14), Instagram (P3-12), hreflang regional (P3-09), archivos sin versionar (P3-14).
