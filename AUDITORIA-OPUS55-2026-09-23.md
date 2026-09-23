@@ -513,13 +513,13 @@ que además aportaría contenido indexable a las fichas de apps.
 
 ## 4. 🟢 Prioridad BAJA / pulido
 
-### P3-01 · Icono y manifiesto
+### ✅ P3-01 — HECHO (icono 363 KB → 53 KB, manifest y theme-color) · Icono y manifiesto
 - `app/icon.png` pesa **363 KB** (512×512) y los navegadores pueden descargarlo como favicon.
   Recomprímelo (menos de 40 KB con `oxipng` o `pngquant`).
 - No hay `manifest.webmanifest` ni `theme-color`. Añade `app/manifest.ts` (nombre, iconos 192/512,
   `theme_color: "#050508"`) y `viewport.themeColor`.
 
-### P3-02 · Archivos públicos sin uso
+### ✅ P3-02 — HECHO (movidos a `archive/public-unused/`) · Archivos públicos sin uso
 Ninguna referencia en `app/`, `components/`, `data/`, `lib/`, `content/`, `messages/`, `apps-src/`
 ni `public/*.html|js`:
 - `public/{file,globe,next,vercel,window}.svg` (restos de create-next-app)
@@ -528,7 +528,7 @@ ni `public/*.html|js`:
 Muévelos a `archive/` o bórralos tras confirmarlo. `medrano.webp` podría **sustituir** a
 `medrano.jpg` en `curso-armonia/page.tsx:83`, aunque `next/image` ya optimiza.
 
-### P3-03 · Caché de estáticos sin hash
+### ✅ P3-03 — HECHO · Caché de estáticos sin hash
 `/images/*`, `/og/*.jpg` y `/audio/background-theme.mp3` se sirven con
 `Cache-Control: public, max-age=0, must-revalidate`, así que el navegador revalida en cada visita.
 Añade en `headers()` una regla para `/images/:path*`, `/og/:path*` y `/audio/:path*` con

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { DM_Mono, DM_Serif_Display, Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
@@ -52,6 +52,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
   };
 }
+
+export const viewport: Viewport = {
+  themeColor: "#050508",
+};
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

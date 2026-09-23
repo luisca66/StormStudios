@@ -91,6 +91,11 @@ const nextConfig: NextConfig = {
         source: "/apps/:app/assets/:asset*",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
+      // Estáticos sin hash en el nombre: un día de caché y revalidación en segundo plano.
+      {
+        source: "/:dir(images|og|audio)/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
+      },
       {
         source: "/apps/:path*",
         headers: [...baseSecurityHeaders, { key: "Content-Security-Policy", value: gameCsp }, { key: "X-Robots-Tag", value: "noindex, follow" }],
