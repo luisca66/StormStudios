@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     urls: getLocalizedRouteUrls("/apps"),
     title:
       locale === "es"
-        ? "Apps de Entrenamiento Auditivo y Educación Musical"
-        : "Ear Training Apps and Music Education Tools",
+        ? "Apps de entrenamiento auditivo"
+        : "Ear Training Apps",
     description:
       locale === "es"
         ? "Explora apps gratis de entrenamiento auditivo, memoria musical, teoría y secuenciación dentro de Storm Studios Learning."

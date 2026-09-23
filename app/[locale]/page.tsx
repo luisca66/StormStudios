@@ -20,14 +20,16 @@ export async function generateMetadata(
     locale: locale as Locale,
     urls: getLocalizedRouteUrls("/"),
     xDefault: "/es",
-    title:
-      locale === "es"
-        ? "Curso de Armonía Tradicional, Entrenamiento Auditivo y Teoría Musical"
-        : "Traditional Harmony Course, Ear Training and Music Theory",
+    title: {
+      absolute:
+        locale === "es"
+          ? "Storm Studios Learning · Curso de armonía y oído"
+          : "Storm Studios Learning · Harmony and ear training",
+    },
     description:
       locale === "es"
-        ? "Storm Studios Learning ofrece curso de armonía tradicional, entrenamiento auditivo, teoría musical, lecciones gratis y apps educativas con el linaje Shostakovich-Medrano-Cárdenas."
-        : "Storm Studios Learning offers a traditional harmony course, ear training, music theory, free harmony lessons and music education apps rooted in the Shostakovich-Medrano-Cardenas lineage.",
+        ? "Curso gratis de armonía tradicional, entrenamiento auditivo y apps musicales, en el linaje Shostakovich-Medrano-Cárdenas."
+        : "Free traditional harmony course, ear training and music apps rooted in the Shostakovich-Medrano-Cárdenas lineage.",
     keywords:
       locale === "es"
         ? [

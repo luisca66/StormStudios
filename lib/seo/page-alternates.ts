@@ -11,7 +11,8 @@ export type LocalizedUrlMap = Record<Locale, string>;
 type MetadataConfig = {
   locale: Locale;
   urls: LocalizedUrlMap;
-  title: string;
+  /** `{ absolute }` omite el sufijo " | Storm Studios Learning" del layout. */
+  title: string | { absolute: string };
   description: string;
   keywords?: string[];
   image?: string;
@@ -119,6 +120,7 @@ export function createPageMetadata({
   tags,
 }: MetadataConfig): Metadata {
   const alternates = buildAlternates(urls, locale, xDefault);
+  const plainTitle = typeof title === "string" ? title : title.absolute;
   const canonicalUrl = getAbsoluteUrl(urls[locale]);
   const imageUrl = getAbsoluteUrl(image);
   const robots = noIndex
@@ -153,7 +155,7 @@ export function createPageMetadata({
       type,
       url: canonicalUrl,
       siteName: SITE_NAME,
-      title,
+      title: plainTitle,
       description,
       locale: getOpenGraphLocale(locale),
       alternateLocale: locale === "es" ? "en_US" : "es_MX",
@@ -162,7 +164,7 @@ export function createPageMetadata({
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: imageAlt ?? title,
+          alt: imageAlt ?? plainTitle,
         },
       ],
       ...(publishedTime ? { publishedTime } : {}),
@@ -172,7 +174,7 @@ export function createPageMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: plainTitle,
       description,
       images: [imageUrl],
       creator: TWITTER_HANDLE,

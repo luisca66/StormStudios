@@ -277,7 +277,7 @@ traduce en el cliente con un mapa ES/EN, como ya hace `ContactForm`. Mantén el 
 
 ---
 
-### P2-02 · Títulos SEO: sin marca en la home y demasiado largos en 33 de 82 páginas
+### ✅ P2-02 — HECHO (salvo H1 del libro y quién soy, pendientes de Luis) · Títulos SEO: sin marca en la home y demasiado largos en 33 de 82 páginas
 - **La home no incluye la marca.** El `title.template` del layout no se aplica al propio segmento, así
   que `/es` sale como "Curso de Armonía Tradicional, Entrenamiento Auditivo y Teoría Musical" (69
   caracteres). Usa `title: { absolute: "Storm Studios Learning · Curso de armonía y entrenamiento auditivo" }`

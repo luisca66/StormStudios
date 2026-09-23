@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title:
       locale === "es"
         ? "Método Integral para Armonía, Oído y Músicos"
-        : "An Integral Method for Harmony, Ear Training and Musicianship",
+        : "An Integral Method for Harmony and Ear Training",
     description:
       locale === "es"
         ? "Descubre el método de Storm Studios Learning: armonía tradicional, entrenamiento auditivo, cuerpo, memoria y enfoque musical integrados."

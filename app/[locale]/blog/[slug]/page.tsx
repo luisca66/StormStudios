@@ -75,7 +75,7 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
   return createPageMetadata({
     locale: locale as Locale,
     urls: getBlogPostUrls(locale as Locale, slug),
-    title: post.frontmatter.title,
+    title: typeof post.frontmatter.seoTitle === "string" ? post.frontmatter.seoTitle : post.frontmatter.title,
     description: post.frontmatter.description ?? post.frontmatter.title,
     keywords: post.frontmatter.tags,
     type: "article",

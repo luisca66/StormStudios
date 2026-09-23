@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     urls: getLocalizedRouteUrls("/clases-taller"),
     title:
       locale === "es"
-        ? "Entrenamiento Auditivo, Composición y Clases de Instrumento"
+        ? "Clases de entrenamiento auditivo y composición"
         : "Ear Training, Composition and Instrument Lessons",
     description:
       locale === "es"

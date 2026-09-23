@@ -40,8 +40,8 @@ export const RESOURCES: ResourceEntry[] = [
       es: "Curso de Armonía Tradicional",
     },
     metaTitle: {
-      en: "Traditional Harmony Course | Shostakovich, Medrano and Cardenas",
-      es: "Curso de Armonía Tradicional | Shostakovich, Medrano y Cárdenas",
+      en: "Traditional Harmony Course Guide",
+      es: "Guía del curso de armonía tradicional",
     },
     metaDescription: {
       en: "Study a traditional harmony course rooted in the Shostakovich-Medrano-Cardenas lineage, with free lessons, ear training and MIDI feedback.",
@@ -166,8 +166,8 @@ export const RESOURCES: ResourceEntry[] = [
       es: "Ejercicios de Entrenamiento Auditivo",
     },
     metaTitle: {
-      en: "Ear Training Exercises | Listening, Singing and Harmonic Awareness",
-      es: "Ejercicios de Entrenamiento Auditivo | Escucha, Canto y Conciencia Armónica",
+      en: "Ear Training Exercises",
+      es: "Ejercicios de entrenamiento auditivo",
     },
     metaDescription: {
       en: "Discover ear training exercises that connect interval recognition, harmonic hearing, memory and practical musicianship through Storm Studios Learning.",
@@ -288,8 +288,8 @@ export const RESOURCES: ResourceEntry[] = [
       es: "Reconocimiento de Intervalos",
     },
     metaTitle: {
-      en: "Interval Recognition | Learn to Hear and Sing Musical Intervals",
-      es: "Reconocimiento de Intervalos | Aprende a Escuchar y Cantar Intervalos Musicales",
+      en: "Interval Recognition Guide",
+      es: "Guía de reconocimiento de intervalos",
     },
     metaDescription: {
       en: "Build interval recognition through listening, singing and context-based practice, with interval tools and ear training resources from Storm Studios Learning.",
@@ -410,8 +410,8 @@ export const RESOURCES: ResourceEntry[] = [
       es: "Fundamentos de Teoría Musical",
     },
     metaTitle: {
-      en: "Music Theory Basics | A Practical Path into Harmony and Ear Training",
-      es: "Fundamentos de Teoría Musical | Una Ruta Práctica hacia Armonía y Entrenamiento Auditivo",
+      en: "Music Theory Basics",
+      es: "Fundamentos de teoría musical",
     },
     metaDescription: {
       en: "Review practical music theory basics such as notation, intervals, scales, function and voice leading inside the Storm Studios Learning approach.",
