@@ -23,7 +23,7 @@ npm audit --audit-level=high
 npm run apps:audit
 ```
 
-`check` ejecuta lint, pruebas unitarias y build de Next. `apps:check` compila las 13 apps Vite y compara cada archivo generado con la copia servida desde `public/apps`. Si modificas fuentes de apps, ejecuta primero `npm run apps:build` y revisa el diff de fuentes y bundles. Este comando sincroniza archivos locales; no despliega a internet. Conserva assets antiguos para no romper clientes que aún cargan una versión anterior.
+`check` ejecuta lint, pruebas unitarias y build de Next. `apps:check` compila las 13 apps Vite y compara cada archivo generado con la copia servida desde `public/apps`. Si modificas fuentes de apps, ejecuta primero `npm run apps:build` y revisa el diff de fuentes y bundles. Este comando sincroniza archivos locales; no despliega a internet. Conserva assets antiguos para no romper clientes que aún cargan una versión anterior. Un bundle que ya no referencia ningún `index.html` puede retirarse 90 días después de su reemplazo; anota la fecha en el commit que lo reemplaza. Cinco apps publicadas no tienen fuente en `apps-src/` (`acordes-cantar`, `cosmic-ear`, `grados-mayores`, `intervalos-reconocimiento`, `intervalos-reconocimiento-juego`): sus cambios se hacen publicando una copia del bundle con nombre nuevo, como documenta `docs/cloudflare-audio.md`.
 
 El proyecto de Vercel está conectado con el repositorio GitHub. Publicar en su rama de producción puede activar un despliegue. Primero revisar cambios y pruebas, y acordar la publicación. El workflow `.github/workflows/quality.yml` ejecuta controles en push y pull request; debe comprobarse su primer resultado en GitHub.
 

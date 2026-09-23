@@ -636,7 +636,7 @@ como objetivo pedagógico, no como efecto demostrado, o cita fuentes primarias.
 verificar sin sesión). **[Luis]** confirma el handle de Instagram. Considera enlazar ambos también
 en el footer.
 
-### P3-13 · Bundles antiguos
+### ✅ P3-13 — HECHO (política de 90 días en el README) · Bundles antiguos
 Por diseño se conservan bundles viejos en `public/apps/*/assets` (9 archivos huérfanos, entre ellos
 `acordes/assets/index-{BbNg9fCN,qo19SFVQ}.js` e `intervalos-cantados-juego/assets/index-IB792rFt.js`).
 Varios apuntan a `r2.dev`. Define una política de retirada (por ejemplo, 90 días sin referencia) y
