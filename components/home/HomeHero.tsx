@@ -53,13 +53,13 @@ export async function HomeHero() {
         {t("badge")}
       </div>
 
+      {/* Sin .ss-reveal: es el elemento LCP y debe pintarse de inmediato. */}
       <h1
-        className="ss-serif ss-reveal"
+        className="ss-serif"
         style={{
           fontSize: "clamp(2.15rem,6vw,5.5rem)",
           lineHeight: 1,
           marginBottom: "1.5rem",
-          animationDelay: "0.12s",
         }}
       >
         {t("titlePrefix")} <span className="ss-text-gradient">{t("titleEmphasis")}</span>

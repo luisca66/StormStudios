@@ -51,6 +51,15 @@
 .ss-orb-b { width: 550px; height: 550px; background: var(--ss-blue);   top: 35%;   right: -200px; animation-delay: -6s; }
 .ss-orb-c { width: 400px; height: 400px; background: var(--ss-cyan);   bottom: 0;  left: 25%;     animation-delay: -10s; }
 
+/* En teléfonos, orbes estáticos y con menos desenfoque: el blur animado a
+   pantalla completa es caro de pintar en GPUs modestas. */
+@media (max-width: 767px) {
+  .ss-orb {
+    animation: none;
+    filter: blur(70px);
+  }
+}
+
 @keyframes ss-drift {
   from { transform: translate(0, 0) scale(1); }
   to   { transform: translate(40px, 50px) scale(1.08); }
@@ -83,9 +92,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ss-root *,
-  .ss-root *::before,
-  .ss-root *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
