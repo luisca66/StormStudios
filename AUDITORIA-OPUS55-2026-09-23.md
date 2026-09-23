@@ -451,7 +451,7 @@ timeout de render tras hacer scroll. No es concluyente, pero va en la misma dire
 
 ---
 
-### P2-13 · i18n: mensajes sin usar y todos enviados al cliente
+### ✅ P2-13 — HECHO (claves muertas eliminadas y solo `nav`+`language` al cliente; la migración de ternarios a messages queda como deuda) · i18n: mensajes sin usar y todos enviados al cliente
 - `messages/{es,en}/common.json` tiene los namespaces `common`, `course`, `blog` y `contact`
   completos (≈43 claves), más `footer.madeWith` y `home.structuredData.website.inLanguage`, y
   **nada los usa**. `ContactForm.tsx` duplica `contact.*` en un objeto `LABELS` local.

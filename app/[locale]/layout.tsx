@@ -69,6 +69,8 @@ export default async function LocaleLayout({ children, params }: Props) {
   setRequestLocale(locale);
 
   const messages = await getMessages();
+  // Los componentes cliente solo usan estos namespaces; el resto se queda en el servidor.
+  const clientMessages = { nav: messages.nav, language: messages.language };
 
   return (
     <html lang={locale} className={`${inter.variable} ${dmSerif.variable} ${dmMono.variable}`}>
@@ -79,7 +81,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         >
           {locale === "es" ? "Saltar al contenido" : "Skip to content"}
         </a>
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider messages={clientMessages}>
           <Header />
           <main id="contenido" className="flex-1">{children}</main>
           <Footer />
