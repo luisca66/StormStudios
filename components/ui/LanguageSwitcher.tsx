@@ -6,8 +6,7 @@ import { useTransition } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { getBlogPostSlug } from "@/data/seo/blog-post-translations";
-import { getResourceBySlug } from "@/data/resources/resources-catalog";
-import { getLessonByLocalizedSlug, getLessonUrlSlug } from "@/lib/course";
+import { translateLessonSlug, translateResourceSlug } from "@/data/seo/localized-slugs";
 
 type DynamicPathname =
   | "/apps/[slug]"
@@ -40,12 +39,11 @@ export default function LanguageSwitcher() {
         }
 
         if (pathname === "/resources/[slug]") {
-          nextSlug = getResourceBySlug(currentLocale, currentSlug)?.slugs[nextLocale] ?? currentSlug;
+          nextSlug = translateResourceSlug(currentLocale, currentSlug, nextLocale) ?? currentSlug;
         }
 
         if (pathname === "/curso-armonia/[slug]") {
-          const lesson = getLessonByLocalizedSlug(currentLocale, currentSlug);
-          nextSlug = lesson ? getLessonUrlSlug(lesson, nextLocale) : currentSlug;
+          nextSlug = translateLessonSlug(currentLocale, currentSlug, nextLocale) ?? currentSlug;
         }
 
         router.replace({ pathname, params: { slug: nextSlug } }, { locale: nextLocale });

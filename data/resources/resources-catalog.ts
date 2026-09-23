@@ -1,5 +1,6 @@
 import type { Locale } from "@/i18n/routing";
 import type { BilingualText } from "@/types/course";
+import { RESOURCE_SLUGS } from "@/data/seo/localized-slugs";
 
 type ResourceSection = {
   title: BilingualText;
@@ -33,10 +34,7 @@ export type ResourceEntry = {
 export const RESOURCES: ResourceEntry[] = [
   {
     key: "traditional-harmony-course",
-    slugs: {
-      en: "traditional-harmony-course",
-      es: "curso-de-armonia-tradicional",
-    },
+    slugs: RESOURCE_SLUGS["traditional-harmony-course"],
     title: {
       en: "Traditional Harmony Course",
       es: "Curso de Armonía Tradicional",
@@ -162,10 +160,7 @@ export const RESOURCES: ResourceEntry[] = [
   },
   {
     key: "ear-training-exercises",
-    slugs: {
-      en: "ear-training-exercises",
-      es: "ejercicios-de-entrenamiento-auditivo",
-    },
+    slugs: RESOURCE_SLUGS["ear-training-exercises"],
     title: {
       en: "Ear Training Exercises",
       es: "Ejercicios de Entrenamiento Auditivo",
@@ -287,10 +282,7 @@ export const RESOURCES: ResourceEntry[] = [
   },
   {
     key: "interval-recognition",
-    slugs: {
-      en: "interval-recognition",
-      es: "reconocimiento-de-intervalos",
-    },
+    slugs: RESOURCE_SLUGS["interval-recognition"],
     title: {
       en: "Interval Recognition",
       es: "Reconocimiento de Intervalos",
@@ -412,10 +404,7 @@ export const RESOURCES: ResourceEntry[] = [
   },
   {
     key: "music-theory-basics",
-    slugs: {
-      en: "music-theory-basics",
-      es: "fundamentos-de-teoria-musical",
-    },
+    slugs: RESOURCE_SLUGS["music-theory-basics"],
     title: {
       en: "Music Theory Basics",
       es: "Fundamentos de Teoría Musical",

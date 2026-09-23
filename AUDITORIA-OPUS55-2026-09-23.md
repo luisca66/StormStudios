@@ -103,7 +103,7 @@ Las fuentes se ven iguales y `npm run build` pasa.
 
 ---
 
-### P1-02 · El selector de idioma mete el catálogo completo de guías en ~130 páginas
+### ✅ P1-02 — HECHO · El selector de idioma mete el catálogo completo de guías en ~130 páginas
 **Problema:** `components/ui/LanguageSwitcher.tsx:8-10` es un componente cliente que forma parte
 del `Header` (presente en todas las páginas). Importa `getResourceBySlug` de
 `data/resources/resources-catalog.ts` (553 líneas con el **texto completo** de las cuatro guías en
