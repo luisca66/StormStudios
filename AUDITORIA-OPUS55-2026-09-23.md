@@ -313,7 +313,7 @@ Valida cada cambio con el *Rich Results Test* de Google.
 
 ---
 
-### P2-04 · Contenido mínimo o provisional en lecciones indexadas
+### P2-04 · (✅ P03 traducida al inglés; P04 y Lección 1 esperan texto de Luis) · Contenido mínimo o provisional en lecciones indexadas
 Estas páginas están en el sitemap y se indexan:
 - `content/course/{es,en}/p04-secuenciador.mdx` → "*(Contenido próximamente)*" en ambos idiomas.
 - `content/course/en/p03-intervalos.mdx` → "*(Content coming soon)*", mientras la versión ES tiene
