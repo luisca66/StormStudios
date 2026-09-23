@@ -66,7 +66,7 @@ visible, detalles de SEO/datos estructurados y pulido móvil.
 
 ## 2. 🔴 Prioridad ALTA
 
-### P1-01 · Google Fonts cargado con `@import` (bloquea el render; proveedor no declarado)
+### ✅ P1-01 — HECHO · Google Fonts cargado con `@import` (bloquea el render; proveedor no declarado)
 **Problema:** `app/globals.css:1` hace
 `@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display…&family=DM+Mono…')`.
 Esto crea una cadena CSS → CSS de terceros → woff2 que bloquea el render en **todas** las páginas.

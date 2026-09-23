@@ -21,7 +21,7 @@
 .ss-root {
   background: var(--ss-bg);
   color: var(--ss-text);
-  font-family: 'DM Mono', monospace;
+  font-family: var(--font-dm-mono), monospace;
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
@@ -121,8 +121,8 @@
 }
 
 /* ── Serif & Mono font helpers ── */
-.ss-serif { font-family: 'DM Serif Display', Georgia, serif; }
-.ss-mono  { font-family: 'DM Mono', 'Courier New', monospace; }
+.ss-serif { font-family: var(--font-dm-serif), Georgia, serif; }
+.ss-mono  { font-family: var(--font-dm-mono), 'Courier New', monospace; }
 
 /* ── Divider glow ── */
 .ss-divider {
@@ -232,19 +232,19 @@ body:has(.ss-root) .ss-site-header :focus-visible {
 /* ── Blog prose styles ── */
 .blog-prose {
   color: rgba(240, 238, 255, 0.8);
-  font-family: 'DM Mono', monospace;
+  font-family: var(--font-dm-mono), monospace;
   font-size: 1rem;
   line-height: 1.85;
 }
 .blog-prose h2 {
-  font-family: 'DM Serif Display', Georgia, serif;
+  font-family: var(--font-dm-serif), Georgia, serif;
   font-size: 1.6rem;
   color: #f0eeff;
   margin: 2.5rem 0 1rem;
   line-height: 1.2;
 }
 .blog-prose h3 {
-  font-family: 'DM Serif Display', Georgia, serif;
+  font-family: var(--font-dm-serif), Georgia, serif;
   font-size: 1.25rem;
   color: rgba(240,238,255,0.9);
   margin: 2rem 0 0.75rem;
@@ -274,7 +274,7 @@ body:has(.ss-root) .ss-site-header :focus-visible {
   font-style: italic;
 }
 .blog-prose code {
-  font-family: 'DM Mono', monospace;
+  font-family: var(--font-dm-mono), monospace;
   font-size: 0.875em;
   background: rgba(139,92,246,0.12);
   border: 1px solid rgba(139,92,246,0.2);
