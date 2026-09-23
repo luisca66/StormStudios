@@ -613,7 +613,7 @@ hispanohablante o anglohablante. Considera `es` y `en` (más `x-default`) en `ge
 sitemap y en `og:locale` (este último sí admite región). El sitemap tampoco incluye `x-default`,
 aunque las páginas sí; unifícalo. **[Decisión de Luis]**
 
-### P3-10 · Herramientas heredadas: migración completa (sigue a P1-03)
+### ✅ P3-10 — HECHO en parte (VexFlow, Tone, MIDI, Three, React y Babel autoalojados en `public/vendor` con SRI; CSP de juegos sin cdnjs y con `worker-src blob:` para Tone; quedan Tailwind Play y Phosphor) · Herramientas heredadas: migración completa (sigue a P1-03)
 Autoaloja VexFlow, Tone.js, @tonejs/midi y los iconos Phosphor en `public/vendor/`, y precompila el
 CSS de Tailwind de `secuenciador.html`, `sequencer.html` y los 4 juegos `*-gemini.html` con la CLI
 de Tailwind. Después retira `cdn.tailwindcss.com` y `unpkg.com` de `gameCsp`.

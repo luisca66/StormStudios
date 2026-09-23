@@ -10,3 +10,5 @@
 *.json text eol=lf
 *.yml text eol=lf
 *.yaml text eol=lf
+# Librerías de terceros autoalojadas: se sirven byte a byte (tienen hash SRI).
+public/vendor/** -text

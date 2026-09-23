@@ -15,10 +15,10 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 // cada ruta reciba UNA sola cabecera CSP (dos romperían los juegos por intersección).
 
 // Orígenes externos que SOLO necesitan los juegos legacy embebidos.
+// VexFlow, Tone.js, Three, React y Babel se sirven desde /vendor; quedan
+// Tailwind Play y los iconos Phosphor de los juegos distractores de Memoria.
 const GAME_SCRIPT_CDNS = [
-  "https://cdn.jsdelivr.net",
   "https://cdn.tailwindcss.com",
-  "https://cdnjs.cloudflare.com",
   "https://unpkg.com",
 ].join(" ");
 
@@ -53,8 +53,11 @@ const appCsp = [
 const gameCsp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${GAME_SCRIPT_CDNS}`,
-  `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com ${GAME_SCRIPT_CDNS}`,
-  "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net data:",
+  // Phosphor Icons inyecta sus hojas de estilo y fuentes desde jsDelivr.
+  `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net ${GAME_SCRIPT_CDNS}`,
+  "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://unpkg.com data:",
+  // Tone.js programa su reloj en un worker creado desde un blob.
+  "worker-src 'self' blob:",
   "img-src 'self' data: blob: https:",
   "media-src 'self' data: blob: https:",
   "connect-src 'self' https: wss:",
@@ -89,6 +92,11 @@ const nextConfig: NextConfig = {
       // (La regla CSP de /apps/:path* también matchea; las cabeceras se combinan.)
       {
         source: "/apps/:app/assets/:asset*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      // Librerías autoalojadas con versión en el nombre (public/vendor).
+      {
+        source: "/vendor/:file*",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
       // Estáticos sin hash en el nombre: un día de caché y revalidación en segundo plano.
