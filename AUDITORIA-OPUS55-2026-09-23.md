@@ -164,7 +164,7 @@ de CDN lleva su hash `integrity`.
 
 ---
 
-### P1-04 · Bundle en producción que depende de una URL `r2.dev` (no apta para producción)
+### ✅ P1-04 — HECHO · Bundle en producción que depende de una URL `r2.dev` (no apta para producción)
 **Problema:** la práctica **Cantar Acordes** (`/es/apps/acordes-cantar/jugar` →
 `public/apps/acordes-cantar/assets/index-BQDY00jd.js`, el bundle vigente según su `index.html`)
 descarga `acierto.mp3` y `error.mp3` desde `https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev`.

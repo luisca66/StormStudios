@@ -41,3 +41,7 @@ Correspondencia confirmada para los primeros tres buckets. El cuarto dominio sig
 Terra configuró un año de caché en Cloudflare y navegador para los tres dominios. Por ello, al sustituir un audio se debe publicar con un nombre o ruta nuevos y actualizar su referencia: purgar Cloudflare no elimina copias ya guardadas en los navegadores. Si se quieren reemplazar archivos conservando el nombre, revisar primero esa política. Esta actualización del código no modifica la regla configurada por Terra. Los errores 404/5xx del proxy llevan `no-store`; sus éxitos se revalidan tras una hora.
 
 Si falla el dominio nuevo, revertir variables/orígenes al valor previo y volver a desplegar la versión conocida. Conservar los buckets, objetos y URLs anteriores durante todo el cambio. Esta guía no supone compras ni migraciones de planes.
+
+## 2026-09-23 — Cantar Acordes (sin fuente en apps-src)
+
+El bundle publicado `public/apps/acordes-cantar/assets/index-BQDY00jd.js` descargaba `acierto.mp3` y `error.mp3` desde `pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev`. Se publicó una copia con el host `https://samples.stormstudios.com.mx` como `index-WKvMXqCT.js` (CORS verificado) y `index.html` apunta a ella. El archivo anterior se conserva para clientes en caché.
