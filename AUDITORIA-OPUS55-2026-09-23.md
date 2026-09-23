@@ -581,7 +581,7 @@ binarios, en el pipeline de `plantillas-blender`. Mide antes y después con el p
 - `RESEND_EMAIL_DOMAIN` está configurada en Vercel, pero el código usa
   `noreply@stormstudios.com.mx` fijo (`api/contact/route.ts:263`). Úsala o elimínala.
 
-### ✅ P3-07 — HECHO en parte (Node 24 en tipos/engines/.nvmrc, vitest .mts con glob, CI con concurrency y timeout; pendientes: tests de music-reading, E2E y actions por SHA) · Tooling y pruebas
+### ✅ P3-07 — HECHO en parte (Node 24 en tipos/engines/.nvmrc, vitest .mts con glob, CI con concurrency y timeout; tests de music-reading añadidos; pendientes: E2E y actions por SHA) · Tooling y pruebas
 - `package.json`: `@types/node` es `^20`, pero el proyecto exige **Node 24** (README y CI). Súbelo a
   `^24` y añade `"engines": { "node": ">=24 <25" }` y un `.nvmrc`.
 - `vitest.config.ts` genera un aviso de Vite ("ESM syntax in a file loaded as CommonJS").
