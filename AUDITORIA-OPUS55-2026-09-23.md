@@ -362,7 +362,7 @@ youtube-nocookie). El botón debe llevar `aria-label` con el título del video.
 
 ---
 
-### P2-08 · 404 en rutas dinámicas: HTML vacío en el servidor, título genérico, `/apps` sin prefijo
+### P2-08 · (✅ parte 2 HECHA: `/apps` y `/tools` redirigen con 308. Parte 1 abierta: se probó `dynamicParams = false` y **no** llena el HTML del 404; hay que investigar `global-not-found.js` de Next 16) · 404 en rutas dinámicas: HTML vacío en el servidor, título genérico, `/apps` sin prefijo
 1. `/es/apps/no-existe`, `/es/blog/no-existe` y otras llamadas a `notFound()` dentro de `[slug]`
    devuelven un **404 correcto**, pero el HTML del servidor tiene el `<body>` vacío (el contenido solo
    llega en el payload RSC y se pinta con JS). El `<title>` es "Storm Studios Learning". Sin JS, la

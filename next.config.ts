@@ -133,6 +133,9 @@ const nextConfig: NextConfig = {
       // ── Página de inicio sin locale → locale por defecto ─────────────────
       { source: "/inicio", destination: "/es", permanent: true },
       { source: "/home", destination: "/en", permanent: true },
+      // ── Carpetas de archivos estáticos sin página propia ───────────────
+      { source: "/apps", destination: "/es/apps", permanent: true },
+      { source: "/tools", destination: "/es/apps", permanent: true },
     ];
   },
 
