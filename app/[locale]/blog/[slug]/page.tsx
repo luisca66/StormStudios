@@ -52,6 +52,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   );
 }
 
+// Slugs fuera de generateStaticParams caen en el 404 raíz prerenderizado. Con
+// dynamicParams activo, notFound() en runtime devolvía un HTML vacío (auditoría P2-08).
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const locales = ["es", "en"];
   const params: { locale: string; slug: string }[] = [];

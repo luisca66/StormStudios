@@ -20,13 +20,21 @@ import type { Locale } from "@/i18n/routing";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
+// Slugs fuera de generateStaticParams caen en el 404 raíz prerenderizado. Con
+// dynamicParams activo, notFound() en runtime devolvía un HTML vacío (auditoría P2-08).
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const locales = ["es", "en"];
+  // Incluye el slug interno antiguo cuando difiere del localizado: la página lo
+  // redirige con 308 y, sin dynamicParams, debe existir aquí para no dar 404.
   return locales.flatMap((locale) =>
-    getAllLessons().map((lesson) => ({
-      locale,
-      slug: getLessonUrlSlug(lesson, locale as Locale),
-    }))
+    getAllLessons().flatMap((lesson) => {
+      const slug = getLessonUrlSlug(lesson, locale as Locale);
+      return [slug, lesson.slug]
+        .filter((value, index, all) => all.indexOf(value) === index)
+        .map((value) => ({ locale, slug: value }));
+    })
   );
 }
 

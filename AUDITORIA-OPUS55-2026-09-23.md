@@ -16,7 +16,7 @@ Todo publicado en `main` (commits `a243a54`…`3218b59`), con `npm run check` ve
 `0669d7b` falló el lint por un momento; lo corrigió `242999f`.
 
 **Hecho:** P1-01…P1-07 · P2-01, P2-02, P2-03, P2-05, P2-06, P2-07, P2-10 (código), P2-11 (parcial),
-P2-13, P2-14, P2-15, P2-16 · parcial en P2-04 (P03 EN), P2-08 (`/apps`, `/tools`), P2-09 (enlace del
+P2-08, P2-13, P2-14, P2-15, P2-16 · parcial en P2-04 (P03 EN), P2-09 (enlace del
 blog) y P2-12 (Synth-Kong) · P3-01, P3-02, P3-03, P3-05, P3-06 (parcial), P3-07 (parcial), P3-10
 (parcial), P3-13, P3-14 · Anexo B.
 
@@ -25,11 +25,11 @@ blog) y P2-12 (Synth-Kong) · P3-01, P3-02, P3-03, P3-05, P3-06 (parcial), P3-07
 - ✅ Vercel: `stormstudios.com.mx` → www ahora responde 308 (verificado en vivo).
 - Contenido: P04 y Lección 1 (P2-04), blog (P2-17), afirmaciones científicas (P3-11), H1 del libro
   y "Quién soy" (P2-02), handle real de X/Twitter (P2-03), lección huérfana `01-propedeutico`
-  (P2-14), Instagram (P3-12), hreflang regional (P3-09), archivos sin versionar (P3-14).
+  (P2-14), Instagram (P3-12), hreflang regional (P3-09). Los archivos sin versionar (P3-14) se
+  subieron el 24 sep (`a410a44`).
 - Dato del hero: se cambió a "sonata nº 2, op. 61". Confírmalo o elige otra obra.
 
-**Pendiente técnico, más grande:** 404 dinámico con HTML vacío (P2-08, `dynamicParams` no lo
-resuelve), fuentes de 5 apps y Cosmic Ear en Vite (P2-12), GLB/meshopt para los modelos 3D (P3-04),
+**Pendiente técnico, más grande:** fuentes de 5 apps y Cosmic Ear en Vite (P2-12), GLB/meshopt para los modelos 3D (P3-04),
 Tailwind Play y Phosphor por autoalojar (P3-10), E2E y actions por SHA (P3-07), HSTS
 `includeSubDomains` (P3-08), fallback ES en URLs EN y alternates de blog (P3-06), ruido SVG y
 `backdrop-filter` (P2-11), PageSpeed con clave de API (P3-16).
@@ -392,7 +392,7 @@ youtube-nocookie). El botón debe llevar `aria-label` con el título del video.
 
 ---
 
-### P2-08 · (✅ parte 2 HECHA: `/apps` y `/tools` redirigen con 308. Parte 1 abierta: se probó `dynamicParams = false` y **no** llena el HTML del 404; hay que investigar `global-not-found.js` de Next 16) · 404 en rutas dinámicas: HTML vacío en el servidor, título genérico, `/apps` sin prefijo
+### ✅ P2-08 — HECHO (24 sep: `dynamicParams = false` en los cuatro `[slug]`; los slugs desconocidos reciben el 404 raíz completo con título "404". `curso-armonia` añade los slugs internos antiguos a `generateStaticParams` para conservar su 308. Verificado con `next start`: 8 URLs 404, redirección legacy y las 82 URLs del sitemap en 200. `/apps` y `/tools` ya redirigían con 308) · 404 en rutas dinámicas: HTML vacío en el servidor, título genérico, `/apps` sin prefijo
 1. `/es/apps/no-existe`, `/es/blog/no-existe` y otras llamadas a `notFound()` dentro de `[slug]`
    devuelven un **404 correcto**, pero el HTML del servidor tiene el `<body>` vacío (el contenido solo
    llega en el payload RSC y se pinta con JS). El `<title>` es "Storm Studios Learning". Sin JS, la
@@ -672,7 +672,7 @@ Por diseño se conservan bundles viejos en `public/apps/*/assets` (9 archivos hu
 Varios apuntan a `r2.dev`. Define una política de retirada (por ejemplo, 90 días sin referencia) y
 anótala en el README.
 
-### ✅ P3-14 — HECHO (finales de línea normalizados; los archivos sin versionar siguen esperando decisión de Luis) · Árbol de trabajo con ruido de finales de línea
+### ✅ P3-14 — HECHO (finales de línea normalizados; archivos sin versionar subidos el 24 sep y `.codex-remote-attachments/` ignorado) · Árbol de trabajo con ruido de finales de línea
 34 archivos aparecen modificados solo por CRLF frente a LF (`.gitattributes` exige LF). Tras
 confirmarlo con `git diff --ignore-cr-at-eol --stat` (vacío), ejecuta `git add --renormalize .` en
 un commit aparte, o `git checkout -- <archivos>`. No hay cambios de contenido que perder. También
