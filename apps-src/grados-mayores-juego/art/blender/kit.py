@@ -341,3 +341,185 @@ def export_parts(path, objects=None, meta=None):
                    **(meta or {}), meshes=out)
     Path(path).write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
     return len(out), tris
+
+
+# ---------------------------------------------------------------------------
+# GLB con oclusión ambiental horneada (PLAN de renovación, fase B; ver apps-src/shared-3d)
+# ---------------------------------------------------------------------------
+
+def _shared_3d():
+    from pathlib import Path
+    # kit.py vive en apps-src/grados-mayores-juego/art/blender; la librería común en apps-src/shared-3d.
+    return Path(__file__).resolve().parents[3] / "shared-3d"
+
+
+def bake_ao(objects, samples=64, distance=1.0, strength=1.0):
+    """Hornea oclusión ambiental (Cycles) en copias de `objects` y la multiplica en su color por vértice.
+
+    No toca los objetos originales ni el .blend: trabaja con copias que tienen los modificadores
+    aplicados (el horneado por vértice necesita la malla final). Cada copia lleva el nombre, las
+    propiedades (`part`, `segment`…), la matriz y el material de su original; los originales se
+    ocultan del render mientras tanto para que solo las copias se hagan sombra entre sí.
+
+    Solo las copias participan: cualquier otro objeto de la escena (p. ej. un piso «solo render» para
+    las fotos de Cycles) se oculta durante el horneado para que no oscurezca lo que en el juego no toca.
+
+    `distance` es el alcance de la oclusión en metros de Blender (misma escala que el modelo) y
+    `strength` mezcla entre sin AO (0) y AO completo (1).
+    Devuelve (copias, restaurar): llamar `restaurar()` borra las copias y devuelve los nombres.
+    """
+    scene = bpy.context.scene
+    dg = bpy.context.evaluated_depsgraph_get()
+    copies, renamed, hidden = [], [], []
+    for ob in objects:
+        mesh = bpy.data.meshes.new_from_object(ob.evaluated_get(dg), preserve_all_data_layers=True, depsgraph=dg)
+        copy = bpy.data.objects.new(ob.name + "·ao", mesh)
+        copy.matrix_world = ob.matrix_world.copy()
+        for key in ob.keys():
+            copy[key] = ob[key]
+        for i, slot in enumerate(ob.material_slots):
+            if i < len(copy.material_slots):
+                copy.material_slots[i].material = slot.material  # también si el original lo liga al objeto
+        (ob.users_collection[0] if ob.users_collection else scene.collection).objects.link(copy)
+        hidden.append((ob, ob.hide_render))
+        ob.hide_render = True
+        copies.append(copy)
+
+    # Color base: el activo de la malla, o blanco si no tiene (el material lo multiplica igual).
+    for copy in copies:
+        me = copy.data
+        base = me.color_attributes.active_color
+        if base is None:
+            base = me.color_attributes.new("Col", "FLOAT_COLOR", "CORNER")
+            for c in base.data:
+                c.color = (1, 1, 1, 1)
+        base_name = base.name
+        ao = me.color_attributes.new("AO", "FLOAT_COLOR", "CORNER")
+        me.color_attributes.active_color = ao
+        copy["_ao_base"] = base_name
+
+    for other in scene.objects:
+        if other not in copies and not other.hide_render:
+            hidden.append((other, False))
+            other.hide_render = True
+
+    previous = (scene.render.engine, scene.cycles.samples, scene.cycles.device)
+    world = scene.world or bpy.data.worlds.new("AO")
+    scene.world = world
+    previous_distance = world.light_settings.distance
+    scene.render.engine = "CYCLES"
+    scene.cycles.samples = samples
+    scene.cycles.device = "CPU"
+    world.light_settings.distance = distance
+    bpy.ops.object.select_all(action="DESELECT")
+    for copy in copies:
+        copy.select_set(True)
+    bpy.context.view_layer.objects.active = copies[0]
+    with _quiet():
+        bpy.ops.object.bake(type="AO", target="VERTEX_COLORS")
+    scene.render.engine, scene.cycles.samples, scene.cycles.device = previous
+    world.light_settings.distance = previous_distance
+
+    for copy in copies:
+        me = copy.data
+        base = me.color_attributes[copy["_ao_base"]]
+        ao = me.color_attributes["AO"]
+        corner = base.domain == "CORNER"
+        for li, loop in enumerate(me.loops):
+            occlusion = 1.0 - strength + strength * ao.data[li].color[0]
+            target = base.data[li] if corner else base.data[loop.vertex_index]
+            if not corner and li != _first_loop(me, loop.vertex_index):
+                continue  # color por punto: se aplica una vez por vértice (con la AO de su primera esquina)
+            r, g, b, a = target.color
+            target.color = (r * occlusion, g * occlusion, b * occlusion, a)
+        me.color_attributes.remove(ao)
+        me.color_attributes.active_color = me.color_attributes[copy["_ao_base"]]
+        del copy["_ao_base"]
+
+    # Las copias toman el nombre del original (export_parts escribe `name`).
+    for ob, copy in zip(objects, copies):
+        original = ob.name
+        ob.name = original + "·orig"
+        copy.name = original
+        renamed.append((ob, original))
+
+    def restore():
+        for copy in copies:
+            mesh = copy.data
+            bpy.data.objects.remove(copy, do_unlink=True)
+            bpy.data.meshes.remove(mesh)
+        for ob, original in renamed:
+            ob.name = original
+        for ob, value in hidden:
+            ob.hide_render = value
+
+    return copies, restore
+
+
+class _quiet:
+    """Silencia la salida de Cycles (líneas «Fra:…») mientras dura el bloque."""
+
+    def __enter__(self):
+        import os
+        import sys
+        sys.stdout.flush()
+        self._saved = os.dup(1)
+        self._null = os.open(os.devnull, os.O_WRONLY)
+        os.dup2(self._null, 1)
+
+    def __exit__(self, *exc):
+        import os
+        os.dup2(self._saved, 1)
+        os.close(self._null)
+        os.close(self._saved)
+
+
+def _first_loop(me, vertex_index, _cache={}):
+    key = me.as_pointer()
+    if _cache.get("key") != key:
+        first = {}
+        for li, loop in enumerate(me.loops):
+            first.setdefault(loop.vertex_index, li)
+        _cache.clear()
+        _cache.update(key=key, first=first)
+    return _cache["first"][vertex_index]
+
+
+def export_glb(path, objects=None, meta=None, ao=None, pack="meshopt-q", json_path=None):
+    """Exporta el modelo a GLB con el contrato de apps-src/shared-3d (lo lee `loadModel`).
+
+    Pasa por `export_parts` (mismo contenido que el JSON de siempre) y lo convierte con
+    `shared-3d/scripts/json-to-glb.mjs`, el mismo convertidor que se probó contra todos los modelos
+    publicados. Requiere Node y `npm install` en apps-src/shared-3d.
+
+    ao        None (sin AO) o dict para `bake_ao`, p. ej. {"distance": 0.5, "strength": 0.8}.
+    pack      "meshopt-q" (ligero, por defecto), "meshopt" (exacto) o "none" (sin comprimir).
+    json_path si se da, también deja el JSON (con la AO horneada) para juegos que aún lo cargan.
+    Devuelve (partes, triángulos, bytes del GLB).
+    """
+    import os
+    import shutil
+    import subprocess
+    import tempfile
+    from pathlib import Path
+
+    objects = objects if objects is not None else [o for o in bpy.context.scene.objects if o.type == "MESH" and "part" in o]
+    restore = None
+    if ao is not None:
+        objects, restore = bake_ao(objects, **ao)
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(json_path) if json_path else Path(tmp) / "modelo.json"
+            parts, tris = export_parts(source, objects=objects, meta=meta)
+            node = os.environ.get("NODE") or shutil.which("node")
+            if not node:
+                raise RuntimeError("export_glb necesita Node (https://nodejs.org) en el PATH o en la variable NODE")
+            script = _shared_3d() / "scripts" / "json-to-glb.mjs"
+            result = subprocess.run([node, str(script), str(source), str(path), f"--pack={pack}"],
+                                    cwd=str(_shared_3d()), capture_output=True, text=True)
+            if result.returncode != 0:
+                raise RuntimeError("json-to-glb falló (¿npm install en apps-src/shared-3d?):\n" + result.stderr)
+    finally:
+        if restore:
+            restore()
+    return parts, tris, Path(path).stat().st_size

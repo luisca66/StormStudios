@@ -29,6 +29,8 @@ for (const folder of folders) {
   console.log(`\n${mode}: ${folder}`);
   if (mode === "install") { run(["ci", "--ignore-scripts"], cwd); continue; }
   if (mode === "audit") { run(["audit", "--audit-level=low"], cwd); continue; }
+  // Librería común de los juegos 3D: no se publica, solo se comprueba (tipos y pruebas).
+  if (folder === "shared-3d") { run(["run", "check"], cwd); continue; }
   run(["run", "build"], cwd);
   const destinationName = folder === "oido-absoluto-multi-juego" ? "oido-absoluto-multi" : folder;
   const dist = path.join(cwd, "dist");
