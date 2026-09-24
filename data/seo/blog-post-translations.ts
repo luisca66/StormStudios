@@ -20,6 +20,13 @@ export const BLOG_POST_TRANSLATIONS: BlogPostTranslation[] = [
       es: "2026-05-27-propedeutico-listo-apps-matematicas-memoria",
     },
   },
+  {
+    key: "site-progress-lesson-4-delay",
+    slugs: {
+      en: "2026-09-24-lesson-4-is-late-but-the-site-kept-moving",
+      es: "2026-09-24-lo-que-avanzamos-mientras-llega-la-leccion-4",
+    },
+  },
 ];
 
 export function findBlogTranslationBySlug(locale: Locale, slug: string) {
