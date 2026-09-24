@@ -1,4 +1,4 @@
-// Precompila el CSS de Tailwind para las herramientas HTML heredadas, que antes
+// Precompila el CSS de Tailwind para las herramientas HTML heredadas y Cosmic Ear, que antes
 // usaban el Play CDN (cdn.tailwindcss.com) y compilaban las clases en el navegador.
 // Usa Tailwind 3.4.17, la misma versión que cargaba el CDN; el sitio usa Tailwind 4
 // y no comparte configuración con estas páginas.
@@ -23,8 +23,9 @@ const TARGETS = [
     ],
   },
   {
-    output: "public/apps/cosmic-ear/css/tailwind.css",
-    content: ["public/apps/cosmic-ear/index.html", "public/apps/cosmic-ear/js/app.jsx"],
+    // Cosmic Ear ya es una app Vite: su CSS se importa desde src/main.jsx.
+    output: "apps-src/cosmic-ear/src/tailwind.css",
+    content: ["apps-src/cosmic-ear/index.html", "apps-src/cosmic-ear/src/main.jsx"],
   },
 ];
 

@@ -29,9 +29,8 @@ P3-13, P3-14 · Anexo B.
   subieron el 24 sep (`a410a44`).
 - Dato del hero: se cambió a "sonata nº 2, op. 61". Confírmalo o elige otra obra.
 
-**Pendiente técnico, más grande:** fuente de Acordes para cantar y Cosmic Ear en Vite (P2-12), GLB/meshopt para los modelos 3D (P3-04, pospuesto: la web no apunta a teléfonos),
-`RESEND_EMAIL_DOMAIN` (P3-06), ruido SVG y
-`backdrop-filter` (P2-11), PageSpeed con clave de API (P3-16).
+**Pendiente técnico, más grande:** fuente de Acordes para cantar (P2-12, no existe), GLB/meshopt para los modelos 3D (P3-04, pospuesto: la web no apunta a teléfonos),
+`RESEND_EMAIL_DOMAIN` (P3-06), PageSpeed con clave de API (P3-16).
 
 **Cambio de comportamiento a revisar:** el menú completo del header ahora aparece desde 1280 px
 (antes 768 px, cuando ya se desbordaba en tabletas). Por debajo se usa el menú hamburguesa.
@@ -440,7 +439,7 @@ youtube-nocookie). El botón debe llevar `aria-label` con el título del video.
 
 ---
 
-### ✅ P2-11 — HECHO en parte (H1 del hero sin animación, orbes estáticos en móvil, sin transición global, reduced-motion global; ruido SVG y backdrop-filter sin cambios) · Coste de render de los efectos visuales (móvil de gama baja)
+### ✅ P2-11 — HECHO (H1 del hero sin animación, orbes estáticos en móvil, sin transición global, reduced-motion global. 24 sep: `.ss-glass` sin `backdrop-filter`, con capturas idénticas píxel a píxel en /es, /es/apps, /es/curso-armonia y /es/quien-soy; el header conserva su blur. El ruido SVG se queda: es una capa fija que se rasteriza una vez, y un PNG equivalente pesaría cientos de KB) · Coste de render de los efectos visuales (móvil de gama baja)
 - `.ss-reveal` (`app/storm-studios.css:76-80`) arranca con `opacity: 0` y anima 0,9 s. Está aplicado
   **al H1 del hero**, que es el elemento LCP: el LCP se mide cuando termina la animación.
   **Fix:** no apliques `.ss-reveal` al H1 del hero (ni a los H1 de las páginas interiores), o haz que
@@ -461,7 +460,7 @@ timeout de render tras hacer scroll. No es concluyente, pero va en la misma dire
 
 ---
 
-### P2-12 · (✅ Synth-Kong ya no usa `/api/audio` y su fuente se recuperó el 2026-09-24; siguen abiertos acordes-cantar, cosmic-ear, grados-mayores e intervalos-reconocimiento) · Apps publicadas sin código fuente y herramientas con Babel en el navegador
+### ✅ P2-12 — HECHO salvo `acordes-cantar`, cuya fuente no existe (✅ Synth-Kong recuperado; ✅ Cosmic Ear migrado a Vite el 2026-09-24; `grados-mayores` e `intervalos-reconocimiento` documentados como JS escrito a mano) · Apps publicadas sin código fuente y herramientas con Babel en el navegador
 **Sin fuente en `apps-src/`** (no se pueden regenerar ni auditar, y `apps:check` no las cubre):
 `public/apps/acordes-cantar` (con un parche manual `spelling-answer.js` encima del bundle),
 `cosmic-ear`, `grados-mayores` e `intervalos-reconocimiento`.
@@ -471,6 +470,14 @@ timeout de render tras hacer scroll. No es concluyente, pero va en la misma dire
 URL del audio, ya aplicada en la fuente). Queda cubierta por `apps:check`. **`acordes-cantar` no se encontró:**
 una búsqueda en `C:\Users\Luis` y `D:\` solo halló copias de los archivos ya publicados (`capture-processor.js`
 y `spelling-answer.js` en `D:\Website backup`); no se reconstruyó.
+**Actualización 2026-09-24 (Cosmic Ear):** migrado a `apps-src/cosmic-ear` (Vite 8, React 18.3.1 y Three 0.128
+desde npm, el mismo JSX con imports). Ya no carga Babel en el navegador: el JS baja de ≈950 KB a 185 KB gzip.
+El CSS de Tailwind se genera con `npm run legacy:css` en `src/tailwind.css` y es idéntico al anterior;
+`pitch-processor.js` sigue en la misma URL. Verificado con Playwright: menú, micrófono simulado y escena 3D.
+Los archivos viejos (`js/app.jsx`, `css/`) y `public/vendor/{react,react-dom,three,babel}` quedan para clientes con
+el `index.html` anterior en caché; pueden retirarse a partir del 2026-12-23.
+**`grados-mayores` e `intervalos-reconocimiento`** no son bundles: son JS legible escrito a mano, documentado así en el README.
+
 - **Cosmic Ear** (`public/apps/cosmic-ear/index.html`) carga React 18 UMD, Three r128, Tailwind Play
   y **`@babel/standalone`, que transpila JSX en el navegador** (631 KB brotli solo Babel; ≈950 KB en
   total) desde unpkg y cdnjs. **Fix:** migrarlo a Vite + TypeScript como las otras 13 apps.
