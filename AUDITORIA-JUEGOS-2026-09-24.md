@@ -178,6 +178,11 @@ está decidido: es propuesta para que Luis elija.**
 
 ## 7. Plan propuesto: una mejor manera de hacer la renovación
 
+> **Estado (2026-09-24, tarde):** plan aprobado por Luis. Fases A, B y C hechas y probadas (en la nube y,
+> la parte de Blender, en la PC de Luis): `apps-src/shared-3d`, `kit.export_glb` y el inspector. Cómo se
+> usa: `MANUAL-RENOVACION-3D.md`. Cambio respecto al texto de abajo: `kit.py` **no** se mueve a
+> `plantillas-blender/` (unos 30 scripts lo importan de su ruta actual). Sigue la fase D, piloto de La Pradera.
+>
 > Agregado el 2026-09-24 a pedido de Luis. **Propuesta, no decidida.** El flujo actual funciona y los
 > resultados se ven bien; lo que sigue busca que cada modelo nuevo cueste menos y se vea mejor en el juego.
 
