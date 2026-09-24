@@ -31,13 +31,13 @@ export function getBlogPostSlug(locale: Locale, slug: string, targetLocale: Loca
   return translation?.slugs[targetLocale];
 }
 
-export function getBlogPostUrls(locale: Locale, slug: string) {
+/** Un post sin traducción registrada solo enlaza su propio idioma. */
+export function getBlogPostUrls(locale: Locale, slug: string): Partial<Record<Locale, string>> {
   const translation = findBlogTranslationBySlug(locale, slug);
-  const esSlug = translation?.slugs.es ?? slug;
-  const enSlug = translation?.slugs.en ?? slug;
+  if (!translation) return { [locale]: `/${locale}/blog/${slug}` };
 
   return {
-    es: `/es/blog/${esSlug}`,
-    en: `/en/blog/${enSlug}`,
+    es: `/es/blog/${translation.slugs.es}`,
+    en: `/en/blog/${translation.slugs.en}`,
   };
 }

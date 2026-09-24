@@ -18,6 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!page) return {};
   return createPageMetadata({
     locale: locale as Locale,
+    noIndex: page.isFallback,
     urls: getLocalizedRouteUrls("/clases-taller"),
     title:
       locale === "es"

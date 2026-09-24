@@ -9,7 +9,8 @@ export type LocalizedUrlMap = Record<Locale, string>;
 
 type MetadataConfig = {
   locale: Locale;
-  urls: LocalizedUrlMap;
+  /** Las URLs de idiomas sin traducción se omiten del hreflang. */
+  urls: Partial<LocalizedUrlMap>;
   /** `{ absolute }` omite el sufijo " | Storm Studios Learning" del layout. */
   title: string | { absolute: string };
   description: string;
@@ -88,18 +89,21 @@ export function getLocalizedRouteUrlsByLocaleParams(
 }
 
 export function buildAlternates(
-  urls: LocalizedUrlMap,
+  urls: Partial<LocalizedUrlMap>,
   locale: Locale,
-  xDefault = urls.es
+  xDefault = urls.es ?? urls[locale]
 ): NonNullable<Metadata["alternates"]> {
-  return {
-    canonical: getAbsoluteUrl(urls[locale]),
-    languages: {
-      "es-MX": getAbsoluteUrl(urls.es),
-      "en-US": getAbsoluteUrl(urls.en),
-      "x-default": getAbsoluteUrl(xDefault),
-    },
-  };
+  const canonical = urls[locale];
+  if (!canonical) throw new Error(`Missing ${locale} URL for alternates`);
+
+  const languages: Record<string, string> = {};
+  for (const lang of routing.locales) {
+    const url = urls[lang];
+    if (url) languages[getLanguageCode(lang)] = getAbsoluteUrl(url);
+  }
+  if (xDefault) languages["x-default"] = getAbsoluteUrl(xDefault);
+
+  return { canonical: getAbsoluteUrl(canonical), languages };
 }
 
 export function createPageMetadata({
@@ -120,7 +124,7 @@ export function createPageMetadata({
 }: MetadataConfig): Metadata {
   const alternates = buildAlternates(urls, locale, xDefault);
   const plainTitle = typeof title === "string" ? title : title.absolute;
-  const canonicalUrl = getAbsoluteUrl(urls[locale]);
+  const canonicalUrl = alternates.canonical as string;
   const imageUrl = getAbsoluteUrl(image);
   const robots = noIndex
     ? {

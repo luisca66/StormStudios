@@ -43,6 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const currentLocale = locale as Locale;
   const lesson = getLessonByLocalizedSlug(currentLocale, slug);
   if (!lesson) return {};
+  const content = await getLessonContent(locale, lesson.slug);
 
   return createPageMetadata({
     locale: currentLocale,
@@ -50,7 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "/curso-armonia/[slug]",
       getLessonRouteParams(lesson)
     ),
-    noIndex: lesson.status === "construction",
+    noIndex: lesson.status === "construction" || Boolean(content?.isFallback),
     title: lesson.title[currentLocale],
     description: lesson.description[currentLocale],
     keywords: lesson.tags,

@@ -17,7 +17,7 @@ Todo publicado en `main` (commits `a243a54`…`3218b59`), con `npm run check` ve
 
 **Hecho:** P1-01…P1-07 · P2-01, P2-02, P2-03, P2-05, P2-06, P2-07, P2-10 (código), P2-11 (parcial),
 P2-08, P2-13, P2-14, P2-15, P2-16 · parcial en P2-04 (P03 EN), P2-09 (enlace del
-blog) y P2-12 (Synth-Kong) · P3-01, P3-02, P3-03, P3-05, P3-06 (parcial), P3-07 (parcial), P3-10,
+blog) y P2-12 (Synth-Kong) · P3-01, P3-02, P3-03, P3-05, P3-06 (salvo `RESEND_EMAIL_DOMAIN`), P3-07 (parcial), P3-10,
 P3-13, P3-14 · Anexo B.
 
 **Pendiente, necesita a Luis o la consola:**
@@ -31,7 +31,7 @@ P3-13, P3-14 · Anexo B.
 
 **Pendiente técnico, más grande:** fuentes de 5 apps y Cosmic Ear en Vite (P2-12), GLB/meshopt para los modelos 3D (P3-04),
 E2E (P3-07), HSTS
-`includeSubDomains` (P3-08), fallback ES en URLs EN y alternates de blog (P3-06), ruido SVG y
+`includeSubDomains` (P3-08), `RESEND_EMAIL_DOMAIN` (P3-06), ruido SVG y
 `backdrop-filter` (P2-11), PageSpeed con clave de API (P3-16).
 
 **Cambio de comportamiento a revisar:** el menú completo del header ahora aparece desde 1280 px
@@ -593,7 +593,7 @@ binarios, en el pipeline de `plantillas-blender`. Mide antes y después con el p
 - `mi-metodo/page.tsx:57`: el `alt` "Diagrama del Camino de la Señal" está fijo en español también
   para EN.
 
-### P3-06 · (✅ privacidad→notFound, corte del OG, audio perezoso, `priority` en ficha; pendientes: fallback ES en URLs EN, alternates de blog sin traducción, `.env.example`, `RESEND_EMAIL_DOMAIN`) · Detalles de código
+### ✅ P3-06 — HECHO salvo `RESEND_EMAIL_DOMAIN` (privacidad→notFound, corte del OG, audio perezoso, `priority` en ficha; 24 sep: el contenido ES servido bajo URL EN se marca `noindex`, el blog solo emite hreflang hacia traducciones registradas, `.env.example` ya versionados. Queda decidir si el remitente del contacto usa `RESEND_EMAIL_DOMAIN` o se borra esa variable en Vercel) · Detalles de código
 - `app/[locale]/privacidad/page.tsx:29`: `return null` si falta el MDX. Usa `notFound()`.
 - `lib/mdx.ts:35-40,78-83`: si falta la versión EN, se sirve el **contenido español bajo la URL
   inglesa**, con hreflang en-US. Si el fallback es intencional, añade `noindex` en ese caso.

@@ -21,6 +21,8 @@ export type MDXContent = {
   slug: string;
   sourcePath: string;
   lastModified?: Date;
+  /** true si se sirvió la versión en español porque falta la del idioma pedido. */
+  isFallback?: boolean;
 };
 
 /**
@@ -36,7 +38,7 @@ export async function getPageContent(
     // Fallback a español si no existe en el idioma solicitado
     const fallbackPath = path.join(CONTENT_DIR, "pages", "es", `${slug}.mdx`);
     if (!fs.existsSync(fallbackPath)) return null;
-    return readMDXFile(fallbackPath, slug);
+    return markFallback(readMDXFile(fallbackPath, slug), locale);
   }
 
   return readMDXFile(filePath, slug);
@@ -79,7 +81,7 @@ export async function getLessonContent(
     // Fallback a español
     const fallbackPath = path.join(CONTENT_DIR, "course", "es", `${slug}.mdx`);
     if (!fs.existsSync(fallbackPath)) return null;
-    return readMDXFile(fallbackPath, slug);
+    return markFallback(readMDXFile(fallbackPath, slug), locale);
   }
 
   return readMDXFile(filePath, slug);
@@ -95,6 +97,12 @@ export async function getBlogPost(
   const filePath = path.join(CONTENT_DIR, "blog", locale, `${slug}.mdx`);
   if (!fs.existsSync(filePath)) return null;
   return readMDXFile(filePath, slug);
+}
+
+// Contenido español servido bajo una URL de otro idioma: las páginas lo marcan
+// noindex para no publicar texto en español con hreflang en-US.
+function markFallback(content: MDXContent | null, locale: string): MDXContent | null {
+  return content && locale !== "es" ? { ...content, isFallback: true } : content;
 }
 
 function readMDXFile(filePath: string, slug: string): MDXContent | null {
