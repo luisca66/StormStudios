@@ -33,7 +33,7 @@ const appCsp = [
   "font-src 'self' data:",
   "img-src 'self' data: blob: https:",
   "media-src 'self' data: blob: https:",
-  "connect-src 'self' https://*.googleapis.com https://*.gstatic.com https://*.firebaseio.com https://*.firebasestorage.app https://samples.stormstudios.com.mx https://musica.stormstudios.com.mx https://sfx.stormstudios.com.mx https://*.r2.dev wss://*.firebaseio.com",
+  "connect-src 'self' https://*.googleapis.com https://*.gstatic.com https://*.firebaseio.com https://*.firebasestorage.app https://samples.stormstudios.com.mx https://musica.stormstudios.com.mx https://sfx.stormstudios.com.mx wss://*.firebaseio.com",
   "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
   "frame-ancestors 'self'",
   "base-uri 'self'",
