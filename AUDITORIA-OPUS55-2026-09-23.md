@@ -462,10 +462,16 @@ timeout de render tras hacer scroll. No es concluyente, pero va en la misma dire
 
 ---
 
-### P2-12 · (✅ Synth-Kong ya no usa `/api/audio`; recuperar fuentes y migrar Cosmic Ear a Vite sigue abierto) · Apps publicadas sin código fuente y herramientas con Babel en el navegador
+### P2-12 · (✅ Synth-Kong ya no usa `/api/audio` y su fuente se recuperó el 2026-09-24; siguen abiertos acordes-cantar, cosmic-ear, grados-mayores e intervalos-reconocimiento) · Apps publicadas sin código fuente y herramientas con Babel en el navegador
 **Sin fuente en `apps-src/`** (no se pueden regenerar ni auditar, y `apps:check` no las cubre):
 `public/apps/acordes-cantar` (con un parche manual `spelling-answer.js` encima del bundle),
-`cosmic-ear`, `grados-mayores`, `intervalos-reconocimiento` e `intervalos-reconocimiento-juego`.
+`cosmic-ear`, `grados-mayores` e `intervalos-reconocimiento`.
+**Actualización 2026-09-24:** la fuente de `intervalos-reconocimiento-juego` (Synth-Kong) se recuperó de
+`D:\Antigravity\intervalos-reconocer\juego-intervalos` y vive ahora en `apps-src/intervalos-reconocimiento-juego`
+(su build reproducía byte a byte el bundle `index-B5-Kv6J0.js`; la única diferencia con el publicado era la
+URL del audio, ya aplicada en la fuente). Queda cubierta por `apps:check`. **`acordes-cantar` no se encontró:**
+una búsqueda en `C:\Users\Luis` y `D:\` solo halló copias de los archivos ya publicados (`capture-processor.js`
+y `spelling-answer.js` en `D:\Website backup`); no se reconstruyó.
 - **Cosmic Ear** (`public/apps/cosmic-ear/index.html`) carga React 18 UMD, Three r128, Tailwind Play
   y **`@babel/standalone`, que transpila JSX en el navegador** (631 KB brotli solo Babel; ≈950 KB en
   total) desde unpkg y cdnjs. **Fix:** migrarlo a Vite + TypeScript como las otras 13 apps.
