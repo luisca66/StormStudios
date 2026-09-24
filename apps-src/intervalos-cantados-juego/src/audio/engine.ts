@@ -202,7 +202,8 @@ export class AudioEngine {
 
     let pending = this.noteLoads.get(url);
     if (!pending) {
-      pending = fetch(url)
+      // no-cache: un <audio> sin crossOrigin puede dejar en caché la respuesta sin CORS; revalidar la evita.
+      pending = fetch(url, { cache: "no-cache" })
         .then(res => {
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           return res.arrayBuffer();

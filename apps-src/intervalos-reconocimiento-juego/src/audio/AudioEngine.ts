@@ -5,7 +5,7 @@ export class AudioEngine {
   private masterGain: GainNode | null = null;
   private currentVolume: number = 0.72;
 
-  // Same-origin proxy: Web Audio uses fetch(), and the R2 bucket does not expose CORS.
+  // Web Audio usa fetch(): el dominio de samples permite CORS para el sitio y localhost:3000.
   private readonly R2_BASE_URL = 'https://samples.stormstudios.com.mx';
 
   constructor() {}
@@ -50,7 +50,8 @@ export class AudioEngine {
 
     try {
       const url = `${this.R2_BASE_URL}/${encodeURIComponent(timbre)}/${encodeURIComponent(note)}.mp3`;
-      const response = await fetch(url);
+      // no-cache: un <audio> sin crossOrigin puede dejar en caché la respuesta sin CORS; revalidar la evita.
+      const response = await fetch(url, { cache: 'no-cache' });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       
       const arrayBuffer = await response.arrayBuffer();

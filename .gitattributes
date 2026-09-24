@@ -12,3 +12,5 @@
 *.yaml text eol=lf
 # Librerías de terceros autoalojadas: se sirven byte a byte (tienen hash SRI).
 public/vendor/** -text
+apps-src/**/*.svg text eol=lf
+public/apps/**/*.svg text eol=lf

@@ -38,7 +38,8 @@ export class AudioEngine {
     const cached = this.cache.get(url);
     if (cached) return cached;
     try {
-      const res = await fetch(url);
+      // no-cache: un <audio> sin crossOrigin puede dejar en caché la respuesta sin CORS; revalidar la evita.
+      const res = await fetch(url, { cache: "no-cache" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const arrayBuffer = await res.arrayBuffer();
       const buffer = await this.context().decodeAudioData(arrayBuffer);

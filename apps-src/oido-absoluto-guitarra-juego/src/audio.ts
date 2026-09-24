@@ -118,7 +118,8 @@ export class GuitarAudio {
     void context.resume();
     if (this.stepBuffer || this.stepLoading) return;
     this.stepLoading = true;
-    fetch(assetUrl("pasos-robot.mp3"))
+    // no-cache: un <audio> sin crossOrigin puede dejar en caché la respuesta sin CORS; revalidar la evita.
+    fetch(assetUrl("pasos-robot.mp3"), { cache: "no-cache" })
       .then((response) => response.arrayBuffer())
       .then((bytes) => context.decodeAudioData(bytes))
       .then((buffer) => { this.stepBuffer = buffer; })

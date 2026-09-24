@@ -49,3 +49,9 @@ El bundle publicado `public/apps/acordes-cantar/assets/index-BQDY00jd.js` descar
 ## 2026-09-23 — Synth-Kong (intervalos-reconocimiento-juego, sin fuente)
 
 El bundle `index-B5-Kv6J0.js` pedía los samples a `/api/audio` (función serverless). La copia publicada `index-Q-9IhQ4l.js` los pide directo a `https://samples.stormstudios.com.mx` con la misma ruta `{timbre}/{nota}.mp3`. El proxy `/api/audio` se conserva para clientes en caché.
+
+## 2026-09-24 — Caché sin CORS al mezclar `<audio>` y `fetch()`
+
+R2 solo agrega `Access-Control-Allow-Origin` y `Vary: Origin` cuando la petición trae `Origin`. Un `<audio>`/`new Audio()` sin `crossOrigin` no la manda, así que el navegador guarda un año una respuesta sin CORS; si después una app pide el mismo archivo con `fetch()` (Web Audio), reutiliza esa copia y el navegador la bloquea por CORS. Pasa en `samples.` y `musica.` (por ejemplo: tocar notas en Acordes y luego abrir Synth-Kong).
+
+Arreglo: todo `fetch()` de audio usa `{ cache: "no-cache" }`, que revalida con el servidor (normalmente un 304 sin cuerpo) y obtiene la respuesta con CORS. Así también se reparan cachés ya contaminadas. Aplicado en desglose, intervalos-cantados-juego, intervalos-reconocimiento-juego, oido-absoluto-guitarra-juego, lectura rítmica y, como copia del bundle sin fuente, en acordes-cantar (`index-WKvMXqCT.js` → `index-wGJq9m3l.js`, el anterior se conserva). Cualquier cargador nuevo con `fetch()` a estos dominios debe usar la misma opción.
