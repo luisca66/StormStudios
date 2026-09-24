@@ -173,3 +173,64 @@ está decidido: es propuesta para que Luis elija.**
 - ¿Arrancamos Walking AP Multi por La Pradera, o prefieres otro nivel primero?
 - ¿Glub se queda como está en diseño (solo pasa a Blender) o se rediseña el personaje?
 - ¿Cosmic Ear entra en la ruta de renovación o se queda como está?
+
+---
+
+## 7. Plan propuesto: una mejor manera de hacer la renovación
+
+> Agregado el 2026-09-24 a pedido de Luis. **Propuesta, no decidida.** El flujo actual funciona y los
+> resultados se ven bien; lo que sigue busca que cada modelo nuevo cueste menos y se vea mejor en el juego.
+
+### 7.1 Diagnóstico del flujo actual
+
+| Punto | Hoy | Costo |
+|---|---|---|
+| Formato | JSON propio (`kit.export_parts`) por modelo | 38 cargadores `blender-*.ts` casi iguales; 10 MB de JSON solo en Walking AP Multi |
+| Código común | `kit.py` vive en `grados-mayores-juego`; `vertex-emission.ts` solo en Batisfera | Cada juego reescribe carga, emisión, `dispose` e inspector |
+| Aprobación | Renders de Cycles | La luz de Cycles no es la del juego (problema conocido en `PLAN-3D-BLENDER.md`): rondas extra con Astra |
+| Piezas genéricas | Todo se modela a medida | Tokens de Astra en rocas y vegetación |
+| Personajes | Partes rígidas animadas por código | Bien para robot y cangrejo; limitado para Glub o el cocodrilo |
+| Materiales | Color plano por vértice | Formas sin volumen ni contacto |
+| Orden | Pieza por pieza | Cada brief fija su propia referencia; más rondas |
+
+### 7.2 Los siete cambios
+
+1. **GLB en lugar de JSON.** Blender exporta glTF de fábrica: partes con pivote → nodos con nombre,
+   colores por vértice, `meta` → `extras`, emisión por vértice como atributo propio (`_EMISSION`).
+   Comprimir con `gltfpack` (meshopt). Un solo `GLTFLoader` sustituye los 38 cargadores y resuelve
+   P3-04 sin trabajo aparte.
+2. **Librería común `apps-src/shared-3d`.** Cargador GLB, emisión por vértice, `dispose`, presupuestos
+   e inspector `dev/` genérico. `kit.py` pasa a `plantillas-blender/` como fuente única.
+3. **Aprobar con capturas del juego.** Al exportar, un visor con la luz y la niebla del nivel real
+   genera capturas automáticas en Chromium (Playwright). Luis aprueba lo que de verdad se ve. En el
+   mismo paso se leen draw calls y triángulos (`renderer.info`) y se marca lo que pase del presupuesto.
+   Los FPS se siguen midiendo en la PC de Luis.
+4. **Assets CC0 para lo genérico.** Rocas, pasto, árboles, juncos y nenúfares desde Kenney, Quaternius
+   o Poly Haven, ajustados en Blender a la paleta del nivel. Astra solo modela protagonistas.
+   Registrar origen y licencia de cada asset en el README del juego.
+5. **Esqueleto y animaciones de Blender para personajes orgánicos** (Glub, cocodrilo): malla con
+   esqueleto y clips (caminar, saltar, festejar) reproducidos con `AnimationMixer`. Las partes rígidas
+   se quedan para robots, naves y crustáceos.
+6. **Oclusión ambiental horneada** en los colores por vértice desde Blender. Sin costo en tiempo de juego.
+7. **Por nivel, no por pieza:** dirección visual + imagen de concepto → bloqueo con figuras simples
+   en el juego (escala y composición) → paquete de modelos con una sola referencia.
+
+### 7.3 Fases
+
+| Fase | Qué | Quién | Dónde | Criterio de salida |
+|---|---|---|---|---|
+| A | `shared-3d`: cargador GLB, emisión, `dispose`, inspector genérico | Claude | Aquí | Un modelo existente (p. ej. el cangrejo) carga igual desde GLB que desde JSON |
+| B | Exportación GLB + `gltfpack` + AO horneado en `kit.py` | Claude escribe, Luis corre | PC de Luis (bpy) | El cangrejo exportado pesa menos y se ve igual o mejor en el inspector |
+| C | Capturas automáticas con luz del nivel + medición de presupuesto | Claude | Aquí | Un comando genera capturas y tabla de draw calls/triángulos por modelo |
+| D | **Piloto: La Pradera** con el flujo completo (dirección visual, bloqueo, CC0 + Glub de Astra con esqueleto) | Claude + Astra, OK de Luis | Ambos | Nivel publicado; comparar tiempo y rondas contra El Océano |
+| E | Pantano y Cosmos con el flujo ya probado; luego Cosmic Ear y Resonancia | Claude + Astra | Ambos | — |
+
+- **No se migran los modelos publicados.** Cada uno pasa a GLB solo cuando haya que tocarlo por otra razón.
+- Si el piloto no mejora contra El Océano (rondas, peso, calidad vista en el juego), se vuelve al flujo
+  JSON sin pérdida: los modelos existentes no se tocaron.
+- Todo lo de Blender se prueba en la PC de Luis; esta sesión en la nube no tiene bpy.
+
+### 7.4 Lo que cambia en los documentos si se aprueba
+
+- `PLAN-3D-BLENDER.md` §2 (formato GLB como opción por defecto) y §6 (el brief pide GLB y capturas del juego).
+- `plantillas-blender/BRIEF.md` e `INSTRUCCIONES-ASTRA.md`: entregar GLB y, en personajes, esqueleto y clips.
