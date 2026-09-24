@@ -17,7 +17,7 @@ Todo publicado en `main` (commits `a243a54`…`3218b59`), con `npm run check` ve
 
 **Hecho:** P1-01…P1-07 · P2-01, P2-02, P2-03, P2-05, P2-06, P2-07, P2-10 (código), P2-11 (parcial),
 P2-08, P2-13, P2-14, P2-15, P2-16 · parcial en P2-04 (P03 EN), P2-09 (enlace del
-blog) y P2-12 (Synth-Kong) · P3-01, P3-02, P3-03, P3-05, P3-06 (salvo `RESEND_EMAIL_DOMAIN`), P3-07 (parcial), P3-10,
+blog) y P2-12 (Synth-Kong) · P3-01, P3-02, P3-03, P3-05, P3-06 (salvo `RESEND_EMAIL_DOMAIN`), P3-07, P3-10,
 P3-13, P3-14 · Anexo B.
 
 **Pendiente, necesita a Luis o la consola:**
@@ -30,7 +30,7 @@ P3-13, P3-14 · Anexo B.
 - Dato del hero: se cambió a "sonata nº 2, op. 61". Confírmalo o elige otra obra.
 
 **Pendiente técnico, más grande:** fuentes de 5 apps y Cosmic Ear en Vite (P2-12), GLB/meshopt para los modelos 3D (P3-04),
-E2E (P3-07), HSTS
+HSTS
 `includeSubDomains` (P3-08), `RESEND_EMAIL_DOMAIN` (P3-06), ruido SVG y
 `backdrop-filter` (P2-11), PageSpeed con clave de API (P3-16).
 
@@ -611,7 +611,7 @@ binarios, en el pipeline de `plantillas-blender`. Mide antes y después con el p
 - `RESEND_EMAIL_DOMAIN` está configurada en Vercel, pero el código usa
   `noreply@stormstudios.com.mx` fijo (`api/contact/route.ts:263`). Úsala o elimínala.
 
-### ✅ P3-07 — HECHO en parte (Node 24 en tipos/engines/.nvmrc, vitest .mts con glob, CI con concurrency y timeout; tests de music-reading añadidos; actions fijadas por SHA el 24 sep; pendiente: E2E) · Tooling y pruebas
+### ✅ P3-07 — HECHO (Node 24 en tipos/engines/.nvmrc, vitest .mts con glob, CI con concurrency y timeout; tests de music-reading añadidos; actions fijadas por SHA y smoke tests E2E con Playwright en CI el 24 sep: home ES/EN, cambio de idioma en una lección, 404, formulario con la API interceptada, MIDI de ejemplo de la Lección 3 y una app en iframe) · Tooling y pruebas
 - `package.json`: `@types/node` es `^20`, pero el proyecto exige **Node 24** (README y CI). Súbelo a
   `^24` y añade `"engines": { "node": ">=24 <25" }` y un `.nvmrc`.
 - `vitest.config.ts` genera un aviso de Vite ("ESM syntax in a file loaded as CommonJS").

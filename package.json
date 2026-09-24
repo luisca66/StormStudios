@@ -9,6 +9,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "apps:install": "node scripts/apps-maintenance.mjs install",
     "apps:build": "node scripts/apps-maintenance.mjs build",
     "apps:check": "node scripts/apps-maintenance.mjs check",
@@ -37,6 +38,7 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^24",
     "@types/react": "^19",
