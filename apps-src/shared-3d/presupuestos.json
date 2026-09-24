@@ -1,11 +1,11 @@
 {
-  "_nota": "PROPUESTA inicial de Claude (2026-09-24), por confirmar con Luis. Parte de PLAN-3D-BLENDER.md §2 ('Presupuestos orientativos'). Los juegos son para laptop/escritorio. Pasar el límite es aviso, no error (salvo --strict). 'modelos' asigna cada modelo a un tipo; los que no están se reportan sin límite.",
+  "_nota": "Decididos por Claude a pedido de Luis (2026-09-24): el máximo de lo ya aprobado y publicado, que corre a 60 fps en la PC de Luis. Parte de PLAN-3D-BLENDER.md §2 ('Presupuestos orientativos'). Los juegos son para laptop/escritorio. Pasar el límite es aviso, no error (salvo --strict). 'modelos' asigna cada modelo a un tipo; los que no están se reportan sin límite.",
   "tipos": {
-    "protagonista": { "descripcion": "criatura o personaje en primer plano", "triangulos": 25000, "drawCalls": 20 },
+    "protagonista": { "descripcion": "criatura o personaje en primer plano (tope: leviatán 29 774, unicornio 25 598 y 20 draw calls)", "triangulos": 30000, "drawCalls": 20 },
     "instanciado": { "descripcion": "kit de piezas que se repiten (cardumen, arrecife, nubes): triángulos por pieza, draw calls = piezas del kit", "triangulos": 8000, "drawCalls": 12, "porPieza": true },
     "cabina": { "descripcion": "cabina en primera persona", "triangulos": 60000, "drawCalls": 20 },
     "hito": { "descripcion": "hito o edificio del escenario", "triangulos": 40000, "drawCalls": 20 },
-    "objetivo": { "descripcion": "objetivo de nota o compuerta", "triangulos": 15000, "drawCalls": 12 }
+    "objetivo": { "descripcion": "objetivo de nota o compuerta (tope: portal arcoíris 19 148)", "triangulos": 20000, "drawCalls": 12 }
   },
   "modelos": {
     "oido-absoluto-multi-juego/pez": "protagonista",

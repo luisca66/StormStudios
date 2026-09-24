@@ -64,9 +64,9 @@ navegador no tiene que interpretar megas de texto.
   - GLB sin comprimir y GLB exacto: **99/99 sin un solo píxel distinto** respecto al JSON.
   - GLB ligero: 25/99 idénticas; en el resto, píxeles sueltos en bordes finos. Peor caso: medusa luna de
     lado, 50 de 172 800 píxeles (0.03 %); promedio 0.003 %. No se distingue a simple vista.
-- **Presupuestos** (`npm run capture`): 30 de 33 modelos dentro de la propuesta de `presupuestos.json`.
-  Pasan: leviatán (29 774 tri), portal arcoíris (19 148) y unicornio (25 598), todos ya aprobados y
-  publicados. Los límites son una propuesta por confirmar con Luis.
+- **Presupuestos** (`npm run capture`): los 33 modelos dentro de `presupuestos.json`. Los límites son el
+  máximo de lo ya aprobado y publicado (protagonista 30 000 tri y 20 draw calls; objetivo 20 000): un
+  modelo nuevo que los pase se marca para revisarlo antes de integrarlo.
 - **`kit.export_glb` en bpy 4.5.3** (el mismo de la PC de Luis): reproduce el JSON publicado del cangrejo
   byte a byte, exporta los tres modos y hornea AO en 2 s sin tocar la escena.
 
