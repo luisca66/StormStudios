@@ -13,6 +13,10 @@ type Props = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
+// Slugs fuera de generateStaticParams caen en el 404 raíz prerenderizado. Con
+// dynamicParams activo, notFound() en runtime devolvía un HTML vacío (auditoría P2-08).
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   return ["es", "en"].flatMap((locale) =>
     APPS.map((app) => ({ locale, slug: app.slug }))
