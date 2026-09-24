@@ -1,8 +1,8 @@
 {
-  "_nota": "Presupuestos por tipo de pieza (PLAN-3D-BLENDER.md §2, 'Presupuestos orientativos'). Los juegos son para laptop/escritorio. 'modelos' asigna cada modelo a un tipo; los que no están se reportan sin límite.",
+  "_nota": "PROPUESTA inicial de Claude (2026-09-24), por confirmar con Luis. Parte de PLAN-3D-BLENDER.md §2 ('Presupuestos orientativos'). Los juegos son para laptop/escritorio. Pasar el límite es aviso, no error (salvo --strict). 'modelos' asigna cada modelo a un tipo; los que no están se reportan sin límite.",
   "tipos": {
     "protagonista": { "descripcion": "criatura o personaje en primer plano", "triangulos": 25000, "drawCalls": 20 },
-    "instanciado": { "descripcion": "pieza que se repite (cardumen, kit de arrecife); límite por pieza", "triangulos": 8000, "drawCalls": 10 },
+    "instanciado": { "descripcion": "kit de piezas que se repiten (cardumen, arrecife, nubes): triángulos por pieza, draw calls = piezas del kit", "triangulos": 8000, "drawCalls": 12, "porPieza": true },
     "cabina": { "descripcion": "cabina en primera persona", "triangulos": 60000, "drawCalls": 20 },
     "hito": { "descripcion": "hito o edificio del escenario", "triangulos": 40000, "drawCalls": 20 },
     "objetivo": { "descripcion": "objetivo de nota o compuerta", "triangulos": 15000, "drawCalls": 12 }

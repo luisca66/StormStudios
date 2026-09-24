@@ -63,7 +63,9 @@ for (const target of targets) {
   const type = budgets.modelos[target.id];
   const limit = type ? budgets.tipos[type] : undefined;
   const over = limit ? [
-    stats.triangles > limit.triangulos && `triángulos ${stats.triangles} > ${limit.triangulos}`,
+    limit.porPieza
+      ? stats.maxPartTriangles > limit.triangulos && `pieza de ${stats.maxPartTriangles} triángulos > ${limit.triangulos}`
+      : stats.triangles > limit.triangulos && `triángulos ${stats.triangles} > ${limit.triangulos}`,
     stats.drawCalls > limit.drawCalls && `draw calls ${stats.drawCalls} > ${limit.drawCalls}`,
   ].filter(Boolean) : [];
   const image = `${target.id.replace("/", "__")}__${preset}.png`;
