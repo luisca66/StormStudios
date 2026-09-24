@@ -17,8 +17,8 @@ Todo publicado en `main` (commits `a243a54`…`3218b59`), con `npm run check` ve
 
 **Hecho:** P1-01…P1-07 · P2-01, P2-02, P2-03, P2-05, P2-06, P2-07, P2-10 (código), P2-11 (parcial),
 P2-08, P2-13, P2-14, P2-15, P2-16 · parcial en P2-04 (P03 EN), P2-09 (enlace del
-blog) y P2-12 (Synth-Kong) · P3-01, P3-02, P3-03, P3-05, P3-06 (parcial), P3-07 (parcial), P3-10
-(parcial), P3-13, P3-14 · Anexo B.
+blog) y P2-12 (Synth-Kong) · P3-01, P3-02, P3-03, P3-05, P3-06 (parcial), P3-07 (parcial), P3-10,
+P3-13, P3-14 · Anexo B.
 
 **Pendiente, necesita a Luis o la consola:**
 - ✅ Firebase: `firestore.rules` publicadas en consola (23 sep, con Luis). App Check y la limpieza de anónimos se posponen: App Check necesita una clave de reCAPTCHA y cambios en código, y la limpieza requiere Identity Platform.
@@ -30,7 +30,7 @@ blog) y P2-12 (Synth-Kong) · P3-01, P3-02, P3-03, P3-05, P3-06 (parcial), P3-07
 - Dato del hero: se cambió a "sonata nº 2, op. 61". Confírmalo o elige otra obra.
 
 **Pendiente técnico, más grande:** fuentes de 5 apps y Cosmic Ear en Vite (P2-12), GLB/meshopt para los modelos 3D (P3-04),
-Tailwind Play y Phosphor por autoalojar (P3-10), E2E y actions por SHA (P3-07), HSTS
+E2E (P3-07), HSTS
 `includeSubDomains` (P3-08), fallback ES en URLs EN y alternates de blog (P3-06), ruido SVG y
 `backdrop-filter` (P2-11), PageSpeed con clave de API (P3-16).
 
@@ -611,7 +611,7 @@ binarios, en el pipeline de `plantillas-blender`. Mide antes y después con el p
 - `RESEND_EMAIL_DOMAIN` está configurada en Vercel, pero el código usa
   `noreply@stormstudios.com.mx` fijo (`api/contact/route.ts:263`). Úsala o elimínala.
 
-### ✅ P3-07 — HECHO en parte (Node 24 en tipos/engines/.nvmrc, vitest .mts con glob, CI con concurrency y timeout; tests de music-reading añadidos; pendientes: E2E y actions por SHA) · Tooling y pruebas
+### ✅ P3-07 — HECHO en parte (Node 24 en tipos/engines/.nvmrc, vitest .mts con glob, CI con concurrency y timeout; tests de music-reading añadidos; actions fijadas por SHA el 24 sep; pendiente: E2E) · Tooling y pruebas
 - `package.json`: `@types/node` es `^20`, pero el proyecto exige **Node 24** (README y CI). Súbelo a
   `^24` y añade `"engines": { "node": ">=24 <25" }` y un `.nvmrc`.
 - `vitest.config.ts` genera un aviso de Vite ("ESM syntax in a file loaded as CommonJS").
@@ -643,7 +643,7 @@ hispanohablante o anglohablante. Considera `es` y `en` (más `x-default`) en `ge
 sitemap y en `og:locale` (este último sí admite región). El sitemap tampoco incluye `x-default`,
 aunque las páginas sí; unifícalo. **[Decisión de Luis]**
 
-### ✅ P3-10 — HECHO en parte (VexFlow, Tone, MIDI, Three, React y Babel autoalojados en `public/vendor` con SRI; CSP de juegos sin cdnjs y con `worker-src blob:` para Tone; quedan Tailwind Play y Phosphor) · Herramientas heredadas: migración completa (sigue a P1-03)
+### ✅ P3-10 — HECHO (VexFlow, Tone, MIDI, Three, React y Babel autoalojados en `public/vendor` con SRI; CSP de juegos sin cdnjs y con `worker-src blob:` para Tone. 24 sep: Phosphor bold/fill en `public/vendor/phosphor-2.1.2`, CSS de Tailwind 3.4.17 precompilado con `npm run legacy:css` para el secuenciador, los 4 juegos y Cosmic Ear; `cdn.tailwindcss.com`, `unpkg.com` y `cdn.jsdelivr.net` fuera de `gameCsp`) · Herramientas heredadas: migración completa (sigue a P1-03)
 Autoaloja VexFlow, Tone.js, @tonejs/midi y los iconos Phosphor en `public/vendor/`, y precompila el
 CSS de Tailwind de `secuenciador.html`, `sequencer.html` y los 4 juegos `*-gemini.html` con la CLI
 de Tailwind. Después retira `cdn.tailwindcss.com` y `unpkg.com` de `gameCsp`.

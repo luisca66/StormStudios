@@ -9,18 +9,11 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 //   1. La app Next.js (estricta): sin CDNs externos de script; 'unsafe-eval' se
 //      habilita solo en desarrollo porque React lo usa para sus herramientas de
 //      depuración. connect-src queda acotado a Firebase.
-//   2. Los juegos HTML autónomos en /apps y /tools (permisiva): cargan librerías
-//      de CDNs (Tailwind Play, jsDelivr, cdnjs, unpkg) y necesitan 'unsafe-eval'.
+//   2. Los juegos HTML autónomos en /apps y /tools (permisiva): sus librerías y
+//      el CSS de Tailwind se sirven desde el propio sitio, pero necesitan
+//      'unsafe-inline' y 'unsafe-eval' (Babel en el navegador, scripts inline).
 // El catch-all estricto excluye /apps y /tools con un negative-lookahead para que
 // cada ruta reciba UNA sola cabecera CSP (dos romperían los juegos por intersección).
-
-// Orígenes externos que SOLO necesitan los juegos legacy embebidos.
-// VexFlow, Tone.js, Three, React y Babel se sirven desde /vendor; quedan
-// Tailwind Play y los iconos Phosphor de los juegos distractores de Memoria.
-const GAME_SCRIPT_CDNS = [
-  "https://cdn.tailwindcss.com",
-  "https://unpkg.com",
-].join(" ");
 
 // CSP estricta para la app Next.js. 'unsafe-inline' en script es inevitable
 // porque Next inyecta scripts de hidratación inline sin nonce en render estático;
@@ -52,10 +45,9 @@ const appCsp = [
 // CSP permisiva SOLO para los juegos HTML autónomos (/apps/*, /tools/*).
 const gameCsp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${GAME_SCRIPT_CDNS}`,
-  // Phosphor Icons inyecta sus hojas de estilo y fuentes desde jsDelivr.
-  `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net ${GAME_SCRIPT_CDNS}`,
-  "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://unpkg.com data:",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com data:",
   // Tone.js programa su reloj en un worker creado desde un blob.
   "worker-src 'self' blob:",
   "img-src 'self' data: blob: https:",

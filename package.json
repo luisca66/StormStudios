@@ -13,6 +13,7 @@
     "apps:build": "node scripts/apps-maintenance.mjs build",
     "apps:check": "node scripts/apps-maintenance.mjs check",
     "apps:audit": "node scripts/apps-maintenance.mjs audit",
+    "legacy:css": "node scripts/build-legacy-css.mjs",
     "check": "npm run lint && npm test && npm run build"
   },
   "dependencies": {
