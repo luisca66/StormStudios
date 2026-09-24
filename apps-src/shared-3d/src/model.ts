@@ -60,7 +60,7 @@ export interface ModelData {
   triangles: number;
 }
 
-/** Nombre del atributo de emisión por vértice (el GLB lo guarda como `_EMISSION`). */
+/** Atributo de emisión por vértice ya cargado (en el GLB viaja como COLOR_1). */
 export const EMISSION_ATTRIBUTE = "_emission";
 
 const DEFAULT_MATERIAL: MaterialSpec = {

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inspector 3D</title>
+    <style>
+      :root { color-scheme: dark; --bg: #11151c; --panel: #1a2029; --line: #2c3542; --text: #e6e9ee; --muted: #8b95a5; --accent: #5fb3ff; }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 13px/1.4 system-ui, sans-serif; }
+      body { display: grid; grid-template-columns: 300px 1fr; }
+      body.capture { display: block; }
+      body.capture aside { display: none; }
+      aside { background: var(--panel); border-right: 1px solid var(--line); overflow-y: auto; padding: 12px; }
+      h1 { font-size: 15px; margin: 0 0 10px; }
+      h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 16px 0 6px; }
+      select, button { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; font: inherit; }
+      .row { display: flex; gap: 6px; }
+      .row button { flex: 1; }
+      button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+      label { display: flex; gap: 6px; align-items: center; padding: 2px 0; cursor: pointer; }
+      table { width: 100%; border-collapse: collapse; }
+      td { padding: 2px 0; }
+      td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+      .parts label { font-size: 12px; }
+      .parts small { color: var(--muted); margin-left: auto; }
+      .error { color: #ff8a80; }
+      main { position: relative; min-height: 100vh; }
+      canvas { display: block; width: 100%; height: 100%; position: absolute; inset: 0; }
+      body.capture main { width: 100vw; height: 100vh; }
+    </style>
+  </head>
+  <body>
+    <aside>
+      <h1>Inspector 3D</h1>
+      <select id="model" aria-label="Modelo"></select>
+      <h2>Formato</h2>
+      <div class="row" id="formats"></div>
+      <h2>Luz</h2>
+      <select id="preset" aria-label="Luz"></select>
+      <h2>Vista</h2>
+      <div class="row" id="views"></div>
+      <h2>Mostrar</h2>
+      <label><input type="checkbox" id="wireframe" /> Alambre</label>
+      <label><input type="checkbox" id="pivots" /> Pivotes</label>
+      <label><input type="checkbox" id="spin" checked /> Girar</label>
+      <h2>Datos</h2>
+      <table id="stats"></table>
+      <h2>Partes</h2>
+      <div class="parts" id="parts"></div>
+    </aside>
+    <main id="stage"></main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

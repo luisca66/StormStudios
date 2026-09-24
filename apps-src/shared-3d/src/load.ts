@@ -2,7 +2,6 @@
 // Acepta el JSON de `kit.export_parts` y el GLB; se distingue por la firma del archivo, no por la
 // extensión (Vite puede renombrar los assets).
 
-import { parseModelGlb } from "./glb";
 import { parseModelJson, type ModelData, type ModelJson } from "./model";
 
 const cache = new Map<string, Promise<ModelData>>();
@@ -25,7 +24,8 @@ export function loadModel(url: string): Promise<ModelData> {
 }
 
 export function parseModel(buffer: ArrayBuffer): Promise<ModelData> {
-  if (isGlb(buffer)) return parseModelGlb(buffer);
+  // GLTFLoader y el decodificador meshopt (~100 KB) se cargan solo si llega un GLB.
+  if (isGlb(buffer)) return import("./glb").then(({ parseModelGlb }) => parseModelGlb(buffer));
   const json = JSON.parse(new TextDecoder().decode(buffer)) as ModelJson;
   return Promise.resolve(parseModelJson(json));
 }

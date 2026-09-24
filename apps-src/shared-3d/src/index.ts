@@ -1,5 +1,5 @@
 export * from "./model";
-export * from "./glb";
+// `./glb` no se reexporta: `loadModel`/`parseModel` lo cargan bajo demanda (GLTFLoader pesa ~100 KB).
 export * from "./load";
 export * from "./build";
 export * from "./vertex-emission";
