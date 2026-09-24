@@ -66,11 +66,12 @@
 }
 
 /* ── Glassmorphism ── */
+/* Sin backdrop-filter: detrás de las tarjetas solo están los orbes, ya desenfocados,
+   así que el blur no se nota y obligaba a recalcular cada tarjeta al hacer scroll.
+   El header sí lo conserva porque pasa sobre contenido. */
 .ss-glass {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
 }
 
 /* ── Gradient text ── */

@@ -30,8 +30,7 @@ P3-13, P3-14 · Anexo B.
 - Dato del hero: se cambió a "sonata nº 2, op. 61". Confírmalo o elige otra obra.
 
 **Pendiente técnico, más grande:** fuente de Acordes para cantar (P2-12, no existe), GLB/meshopt para los modelos 3D (P3-04, pospuesto: la web no apunta a teléfonos),
-`RESEND_EMAIL_DOMAIN` (P3-06), ruido SVG y
-`backdrop-filter` (P2-11), PageSpeed con clave de API (P3-16).
+`RESEND_EMAIL_DOMAIN` (P3-06), PageSpeed con clave de API (P3-16).
 
 **Cambio de comportamiento a revisar:** el menú completo del header ahora aparece desde 1280 px
 (antes 768 px, cuando ya se desbordaba en tabletas). Por debajo se usa el menú hamburguesa.
@@ -440,7 +439,7 @@ youtube-nocookie). El botón debe llevar `aria-label` con el título del video.
 
 ---
 
-### ✅ P2-11 — HECHO en parte (H1 del hero sin animación, orbes estáticos en móvil, sin transición global, reduced-motion global; ruido SVG y backdrop-filter sin cambios) · Coste de render de los efectos visuales (móvil de gama baja)
+### ✅ P2-11 — HECHO (H1 del hero sin animación, orbes estáticos en móvil, sin transición global, reduced-motion global. 24 sep: `.ss-glass` sin `backdrop-filter`, con capturas idénticas píxel a píxel en /es, /es/apps, /es/curso-armonia y /es/quien-soy; el header conserva su blur. El ruido SVG se queda: es una capa fija que se rasteriza una vez, y un PNG equivalente pesaría cientos de KB) · Coste de render de los efectos visuales (móvil de gama baja)
 - `.ss-reveal` (`app/storm-studios.css:76-80`) arranca con `opacity: 0` y anima 0,9 s. Está aplicado
   **al H1 del hero**, que es el elemento LCP: el LCP se mide cuando termina la animación.
   **Fix:** no apliques `.ss-reveal` al H1 del hero (ni a los H1 de las páginas interiores), o haz que
