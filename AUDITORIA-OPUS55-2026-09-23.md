@@ -29,7 +29,7 @@ P3-13, P3-14 · Anexo B.
   subieron el 24 sep (`a410a44`).
 - Dato del hero: se cambió a "sonata nº 2, op. 61". Confírmalo o elige otra obra.
 
-**Pendiente técnico, más grande:** fuentes de 5 apps y Cosmic Ear en Vite (P2-12), GLB/meshopt para los modelos 3D (P3-04),
+**Pendiente técnico, más grande:** fuentes de 5 apps y Cosmic Ear en Vite (P2-12), GLB/meshopt para los modelos 3D (P3-04, pospuesto: la web no apunta a teléfonos),
 HSTS
 `includeSubDomains` (P3-08), `RESEND_EMAIL_DOMAIN` (P3-06), ruido SVG y
 `backdrop-filter` (P2-11), PageSpeed con clave de API (P3-16).
@@ -565,7 +565,11 @@ Añade en `headers()` una regla para `/images/:path*`, `/og/:path*` y `/audio/:p
 `public, max-age=86400, stale-while-revalidate=604800`. Asume hasta un día de caché vieja si se
 reemplaza un archivo con el mismo nombre. **No la apliques a `/apps` ni a `/tools`.**
 
-### P3-04 · Peso de los modelos 3D
+### P3-04 · Peso de los modelos 3D · **Pospuesto (24 sep, decisión de Luis)**
+> La plataforma web se orienta a laptop, tablet y desktop; los teléfonos tendrán apps nativas
+> Android e iOS. Con ese alcance el parseo de JSON pesa poco. Si se retoma, hacerlo en
+> `kit.export_parts` de `plantillas-blender` al cerrar la ronda de modelos, no pieza por pieza.
+
 Los assets de los juegos son geometría JSON de Blender. Por ejemplo
 `grados-mayores-juego/assets/terminal-*.json` pesa 5,4 MB (688 KB con brotli), `atlantida` 3,2 MB y
 `cabina-vapor` 2,8 MB. Con brotli viajan bien, pero **el parseo de JSON de varios MB en móviles**
