@@ -33,7 +33,8 @@ export async function loadBuffer(url: string): Promise<AudioBuffer | null> {
   if (_cache.has(url)) return _cache.get(url)!;
 
   try {
-    const response = await fetch(url);
+    // no-cache: un <audio> sin crossOrigin puede dejar en caché la respuesta sin CORS; revalidar la evita.
+    const response = await fetch(url, { cache: "no-cache" });
     if (!response.ok) throw new Error(`HTTP ${response.status} para ${url}`);
     const arrayBuffer = await response.arrayBuffer();
     const ctx = getAudioContext();
