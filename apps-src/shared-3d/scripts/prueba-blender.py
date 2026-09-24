@@ -30,6 +30,7 @@ order = [m["name"] for m in published["meshes"]]
 objects = sorted([o for o in bpy.context.scene.objects if o.type == "MESH" and "part" in o], key=lambda o: order.index(o.name))
 names_before = [o.name for o in objects]
 count_before = len(bpy.data.objects)
+render_before = {o.name: o.hide_render for o in bpy.data.objects}
 
 ok = True
 def check(label, condition, detail=""):
@@ -52,7 +53,8 @@ parts, tris, size = kit.export_glb(OUT / "cangrejo-ao.glb", objects=objects, met
                                    ao={"distance": 0.6, "strength": 0.85, "samples": 64},
                                    json_path=OUT / "cangrejo-ao.json")
 check("export_glb con AO horneada", size > 0 and tris == published["triangles"], f"{size / 1024:.0f} KB, {time.time() - start:.1f} s")
-check("la escena queda intacta", [o.name for o in objects] == names_before and len(bpy.data.objects) == count_before)
+check("la escena queda intacta", [o.name for o in objects] == names_before and len(bpy.data.objects) == count_before
+      and {o.name: o.hide_render for o in bpy.data.objects} == render_before)
 
 print("\nTODO BIEN" if ok else "\nHAY FALLAS: mándale a Claude la salida completa")
 print(f"Archivos en {OUT}. Para verlos: npm run dev en apps-src/shared-3d y arrastra el .glb a la ventana.")

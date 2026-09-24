@@ -361,6 +361,9 @@ def bake_ao(objects, samples=64, distance=1.0, strength=1.0):
     propiedades (`part`, `segment`…), la matriz y el material de su original; los originales se
     ocultan del render mientras tanto para que solo las copias se hagan sombra entre sí.
 
+    Solo las copias participan: cualquier otro objeto de la escena (p. ej. un piso «solo render» para
+    las fotos de Cycles) se oculta durante el horneado para que no oscurezca lo que en el juego no toca.
+
     `distance` es el alcance de la oclusión en metros de Blender (misma escala que el modelo) y
     `strength` mezcla entre sin AO (0) y AO completo (1).
     Devuelve (copias, restaurar): llamar `restaurar()` borra las copias y devuelve los nombres.
@@ -395,6 +398,11 @@ def bake_ao(objects, samples=64, distance=1.0, strength=1.0):
         me.color_attributes.active_color = ao
         copy["_ao_base"] = base_name
 
+    for other in scene.objects:
+        if other not in copies and not other.hide_render:
+            hidden.append((other, False))
+            other.hide_render = True
+
     previous = (scene.render.engine, scene.cycles.samples, scene.cycles.device)
     world = scene.world or bpy.data.worlds.new("AO")
     scene.world = world
@@ -407,7 +415,8 @@ def bake_ao(objects, samples=64, distance=1.0, strength=1.0):
     for copy in copies:
         copy.select_set(True)
     bpy.context.view_layer.objects.active = copies[0]
-    bpy.ops.object.bake(type="AO", target="VERTEX_COLORS")
+    with _quiet():
+        bpy.ops.object.bake(type="AO", target="VERTEX_COLORS")
     scene.render.engine, scene.cycles.samples, scene.cycles.device = previous
     world.light_settings.distance = previous_distance
 
@@ -445,6 +454,24 @@ def bake_ao(objects, samples=64, distance=1.0, strength=1.0):
             ob.hide_render = value
 
     return copies, restore
+
+
+class _quiet:
+    """Silencia la salida de Cycles (líneas «Fra:…») mientras dura el bloque."""
+
+    def __enter__(self):
+        import os
+        import sys
+        sys.stdout.flush()
+        self._saved = os.dup(1)
+        self._null = os.open(os.devnull, os.O_WRONLY)
+        os.dup2(self._null, 1)
+
+    def __exit__(self, *exc):
+        import os
+        os.dup2(self._saved, 1)
+        os.close(self._null)
+        os.close(self._saved)
 
 
 def _first_loop(me, vertex_index, _cache={}):
