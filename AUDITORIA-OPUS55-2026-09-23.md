@@ -23,9 +23,9 @@ P3-13, P3-14 · Anexo B.
 **Pendiente, necesita a Luis o la consola:**
 - ✅ Firebase: `firestore.rules` publicadas en consola (23 sep, con Luis). App Check y la limpieza de anónimos se posponen: App Check necesita una clave de reCAPTCHA y cambios en código, y la limpieza requiere Identity Platform.
 - ✅ Vercel: `stormstudios.com.mx` → www ahora responde 308 (verificado en vivo).
-- Contenido: P04 y Lección 1 (P2-04), blog (P2-17), afirmaciones científicas (P3-11), H1 del libro
-  y "Quién soy" (P2-02), handle real de X/Twitter (P2-03), lección huérfana `01-propedeutico`
-  (P2-14), Instagram (P3-12), hreflang regional (P3-09). Los archivos sin versionar (P3-14) se
+- Contenido: P04 y Lección 1 (P2-04; el guion de la Lección 1 está en un .odt de Luis), afirmaciones
+  científicas (P3-11), H1 del libro y "Quién soy" (P2-02), hreflang regional (P3-09). Sin enlaces a X
+  ni Instagram por decisión de Luis. Los archivos sin versionar (P3-14) se
   subieron el 24 sep (`a410a44`).
 - Dato del hero: se cambió a "sonata nº 2, op. 61". Confírmalo o elige otra obra.
 
@@ -507,7 +507,7 @@ el `index.html` anterior en caché; pueden retirarse a partir del 2026-12-23.
 
 ---
 
-### ✅ P2-14 — HECHO (salvo la lección huérfana 01-propedeutico, que espera decisión de Luis) · Datos duplicados o fijos que se desincronizan
+### ✅ P2-14 — HECHO (24 sep: la lección huérfana `01-propedeutico` se borró por decisión de Luis; el propedéutico son P01–P04) · Datos duplicados o fijos que se desincronizan
 - `app/[locale]/curso-armonia/page.tsx:31-38`: `INTRO_LESSON` y `PROPEDEUTICO_LESSONS` repiten
   títulos que ya existen en `data/course/lessons/*`. Además hay un "4 lecciones" fijo (línea 132).
   Deriva ambos de `getLessonsByModule("introduccion" | "propedeutico")`.
@@ -544,7 +544,7 @@ sobre el orden. En el footer (`Footer.tsx:32-34`), el encabezado de la columna d
 
 ---
 
-### P2-17 · Blog sin actividad desde el 27 de mayo de 2026 **[Decisión de Luis]**
+### ✅ P2-17 — HECHO (24 sep: post ES/EN sobre los avances del sitio y el retraso de la Lección 4, pedido por Luis) · Blog sin actividad desde el 27 de mayo de 2026
 Hay 2 posts, el último de hace casi 4 meses. La sección "Proyecto vivo · en expansión" de la home y
 el CTA "Seguir el proyecto →" (que lleva al blog) prometen novedades. Desde entonces hubo avances
 publicables: Batisfera, Aerostato, Expreso Tonal, El Cometa, Walking AP Multi, la migración de audio
@@ -685,7 +685,7 @@ propuesta"):
 La literatura sobre *brain training* muestra poca transferencia a capacidades generales. Formúlalo
 como objetivo pedagógico, no como efecto demostrado, o cita fuentes primarias.
 
-### P3-12 · Enlaces de Instagram y YouTube
+### ✅ P3-12 — HECHO (24 sep: por decisión de Luis no se enlaza Instagram ni X; `sameAs` solo declara YouTube) · Enlaces de Instagram y YouTube
 `HomeStructuredData.tsx:27-30` declara `sameAs` a YouTube (existe) e Instagram (no se pudo
 verificar sin sesión). **[Luis]** confirma el handle de Instagram. Considera enlazar ambos también
 en el footer.

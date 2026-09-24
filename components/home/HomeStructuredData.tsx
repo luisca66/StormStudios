@@ -26,10 +26,7 @@ export async function HomeStructuredData() {
             founder: { "@id": "https://www.stormstudios.com.mx/#luis-cardenas" },
             url: "https://www.stormstudios.com.mx",
             logo: "https://www.stormstudios.com.mx/images/logo-storm.png",
-            sameAs: [
-              "https://www.youtube.com/@StormStudiosLearning",
-              "https://www.instagram.com/stormstudioslearning",
-            ],
+            sameAs: ["https://www.youtube.com/@StormStudiosLearning"],
             contactPoint: {
               "@type": "ContactPoint",
               contactType: "customer support",

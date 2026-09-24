@@ -17,7 +17,7 @@ export const lesson: LessonConfig = {
   },
   estimatedMinutes: 45,
 
-  prerequisites: ["01-propedeutico"],
+  prerequisites: ["p04-secuenciador"],
 
   videos: [
     {
