@@ -23,7 +23,7 @@ P3-13, P3-14 · Anexo B.
 **Pendiente, necesita a Luis o la consola:**
 - ✅ Firebase: `firestore.rules` publicadas en consola (23 sep, con Luis). App Check y la limpieza de anónimos se posponen: App Check necesita una clave de reCAPTCHA y cambios en código, y la limpieza requiere Identity Platform.
 - ✅ Vercel: `stormstudios.com.mx` → www ahora responde 308 (verificado en vivo).
-- Contenido: P04 y Lección 1 (P2-04; el guion de la Lección 1 está en un .odt de Luis), afirmaciones
+- Contenido: P04 (P2-04), afirmaciones
   científicas (P3-11), H1 del libro y "Quién soy" (P2-02), hreflang regional (P3-09). Sin enlaces a X
   ni Instagram por decisión de Luis. Los archivos sin versionar (P3-14) se
   subieron el 24 sep (`a410a44`).
@@ -341,7 +341,7 @@ Valida cada cambio con el *Rich Results Test* de Google.
 
 ---
 
-### P2-04 · (✅ P03 traducida al inglés; P04 y Lección 1 esperan texto de Luis) · Contenido mínimo o provisional en lecciones indexadas
+### P2-04 · (✅ P03 traducida al inglés; ✅ Lección 1 con resumen ES/EN a partir del guion de Luis, 24 sep; P04 espera texto) · Contenido mínimo o provisional en lecciones indexadas
 Estas páginas están en el sitemap y se indexan:
 - `content/course/{es,en}/p04-secuenciador.mdx` → "*(Contenido próximamente)*" en ambos idiomas.
 - `content/course/en/p03-intervalos.mdx` → "*(Content coming soon)*", mientras la versión ES tiene
