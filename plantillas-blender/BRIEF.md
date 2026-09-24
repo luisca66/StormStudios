@@ -20,7 +20,9 @@
 | Origen del modelo | <centro de masa / base / pivote de montaje> |
 | Tamaño total | <largo × alto × ancho en u, ±10 %> |
 | Cámara del juego | perspectiva, FOV vertical <60>°, near <0.1> |
-| Presupuesto | ≤ <n> triángulos · ≤ <n> mallas exportadas (≈ draw calls por ejemplar) |
+| Presupuesto | ≤ <n> triángulos · ≤ <n> mallas exportadas (≈ draw calls por ejemplar) · tipo `<protagonista/objetivo/hito/instanciado/cabina>` de `apps-src/shared-3d/presupuestos.json` |
+| Luz del nivel | preset `<multi-1-pradera…>` del inspector (`apps-src/shared-3d/inspector/presets.ts`) |
+| Oclusión ambiental | `ao=<{"distance": …, "strength": …} o None>` en `kit.export_glb` |
 | Transparencias | <permitidas en…/evitar> |
 | Fondo del juego | <color o descripción del agua/cielo/luz> |
 
@@ -49,6 +51,10 @@ familia del acorde; el resto conserva su pigmento">.
 
 ## 5. Renders de revisión
 
+**Luis aprueba con las capturas del inspector** (luz del nivel, distancia del juego) que genera el
+integrador desde `<modelo>-juego.glb`. Los renders de Cycles son la revisión propia de Astra y la
+referencia de estilo.
+
 Cycles, 32–48 muestras, denoise, fondo <color>. Nombres fijos:
 
 1. `render-juego.png` — <distancia típica del juego (p. ej. 25 u), FOV 60, 1600×900>: ¿se lee la silueta?
@@ -64,6 +70,7 @@ Cycles, 32–48 muestras, denoise, fondo <color>. Nombres fijos:
 - [ ] La silueta se lee en `render-juego.png`.
 - [ ] En `render-cerca.png` no hay caras planas visibles en curvas ni formas de primitiva suelta.
 - [ ] El `.glb` muestra el pigmento (colores de vértice conectados al material).
+- [ ] `<modelo>-juego.glb` y `<modelo>.json` salen de `kit.export_glb` sin errores.
 - [ ] `ENTREGA.md` trae eje, amplitud y velocidad de animación para cada parte móvil.
 - [ ] <criterios artísticos objetivos del modelo>
 - [ ] El script corre con `bpy-run.ps1` desde la instalación de Luis y regenera todo.

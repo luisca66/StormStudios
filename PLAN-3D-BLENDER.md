@@ -47,8 +47,12 @@ todo lo demás. Nunca se edita a mano el `.blend` ni el JSON.
 2. **GLB directo con `GLTFLoader`** (Aerostato). Más simple; la jerarquía de nodos con
    nombre permite animar partes (`Aleta_Cola`, `Faro_Linterna_Giratoria`).
 
-**Para modelos nuevos se recomienda el JSON** en cualquier pieza que se instancie o que
-tenga que bajar draw calls, y el GLB para visitantes únicos y ligeros.
+**Desde el 2026-09-24, para modelos nuevos: `kit.export_glb` + `apps-src/shared-3d`.** Mismo
+contenido que el JSON de `kit.export_parts` (partes, pivotes, `segment`, `meta`), en GLB comprimido
+(la mitad de peso con brotli) y cargado con un solo `loadModel` en lugar de un cargador por modelo.
+Probado contra los 33 modelos publicados: misma imagen píxel a píxel. Cómo usarlo, paso a paso:
+**`MANUAL-RENOVACION-3D.md`**. Los modelos ya publicados siguen con su JSON y no se migran salvo que
+haya que tocarlos.
 
 ### Convenciones
 
@@ -169,9 +173,11 @@ el 2026-09-13.**
    autorizada por Luis. Claude rehízo las grietas de la proa e integró en `cab.ts` (instrumentos
    vivos, emisión por vértice y farol de cabina). Publicado.
 
-**Por definir con Luis:** qué significa "renovar" en los juegos sin Blender todavía
-(`oido-absoluto-multi-juego`, `intervalos-cantados-juego`): solo modelos, o también
-entornos, iluminación y experiencia visual. Hasta entonces no tienen ruta.
+**Qué significa "renovar"** quedó definido con El Océano (2026-09-15): modelos, entorno e
+iluminación juntos, por nivel. Siguen sin ruta los niveles 1 «La Pradera», 3 «El Cosmos» y
+4 «El Pantano» de `oido-absoluto-multi-juego`; el orden propuesto (Pradera → Pantano → Cosmos) está en
+`AUDITORIA-JUEGOS-2026-09-24.md`, y La Pradera será el piloto del flujo de `MANUAL-RENOVACION-3D.md`.
+`intervalos-cantados-juego` es 2D: su renovación es de diseño (tesitura por nivel), no de modelos.
 
 Transversal: medir rendimiento **en escritorio** antes de publicar cualquier modelo nuevo. Los juegos
 son para laptop/escritorio; las versiones de teléfono serán apps nativas iOS/Android hechas aparte
@@ -194,16 +200,19 @@ Astra gasta tokens solo en modelar. Claude o Gemini preparan el encargo, integra
 | Paso | Quién | Entrega |
 |---|---|---|
 | 1. Brief con ficha técnica | integrador (Claude/Gemini) | `art/blender/<modelo>/BRIEF.md` desde `plantillas-blender/BRIEF.md`: escala, ejes, cámara, presupuesto, partes con `part`/`segment` y pivotes, renders pedidos. Astra no abre el código. |
-| 2. Modelado | **Astra** | en esa carpeta: `modelar-<modelo>.py`, `.blend`, `.glb`, `<modelo>.json` (`kit.export_parts`), renders y `ENTREGA.md` |
-| 3. Aprobación | **Luis** | aprueba los renders o pide cambios (máx. 2 rondas de Astra) |
-| 4. Integración | integrador | mueve el JSON a `src/`, carga, animación, destello, inspector, build, QA, escritorio/móvil, commit |
+| 2. Modelado | **Astra** | en esa carpeta: `modelar-<modelo>.py`, `.blend`, `.glb`, `<modelo>.json` y `<modelo>-juego.glb` (`kit.export_glb`), renders y `ENTREGA.md` |
+| 3. Aprobación | **Luis** | aprueba las **capturas del inspector con la luz del nivel** (`npm run capture` en `apps-src/shared-3d`) o pide cambios (máx. 2 rondas de Astra) |
+| 4. Integración | integrador | carga con `shared-3d` (`loadModel`/`buildModel`), animación, destello, atajo de desarrollo, build, QA en escritorio, commit |
 
 - Instrucción permanente para Astra: `plantillas-blender/INSTRUCCIONES-ASTRA.md` (incluye su revisión propia antes de entregar). Prompts listos para pegar (modelo nuevo y ronda de corrección): `plantillas-blender/PROMPTS-ASTRA.md`.
 - Astra trabaja en el **checkout principal**, nunca en un worktree aislado; no toca nada fuera
   de la carpeta del modelo, ni hace commit.
 - El script debe correr con `bpy-run.ps1` desde la instalación de Luis: si a Astra se le acaban
   los tokens, Claude continúa el mismo `modelar-<modelo>.py`.
-- `kit.export_parts(ruta, meta)` (en `grados-mayores-juego/art/blender/kit.py`) exporta cada
+- `kit.py` se queda en `grados-mayores-juego/art/blender/`: unos 30 scripts lo importan de esa ruta.
+- `kit.export_glb(ruta, meta=…, ao=…, json_path=…)` pasa por `export_parts` y el convertidor de
+  `shared-3d`; con `ao` hornea oclusión ambiental en copias temporales (la escena no se toca).
+- `kit.export_parts(ruta, meta)` exporta cada
   objeto con `part` por separado: pivote, geometría relativa, índices, color de vértice y
   material. Mismo formato que la Medusa Luna, más `segment`, `metalness` y `roughness`.
 - Modelos atados a la pantalla (cabinas) no se separan limpio: su brief debe fijar los módulos

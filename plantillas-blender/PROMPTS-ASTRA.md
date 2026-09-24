@@ -18,7 +18,7 @@ Lee primero:
 
 Si necesitas más contexto, búscalo tú misma en el proyecto, empezando por la entrega integrada más reciente: apps-src\<juego>\art\blender\<carpeta-referencia>\. Consulta solo lo que te haga falta.
 
-Todo va en apps-src\<juego>\art\blender\<carpeta-modelo>\: modelar-<modelo>.py, <modelo>.blend, <modelo>.glb, <modelo>.json (kit.export_parts), los renders que pide el brief y ENTREGA.md.
+Todo va en apps-src\<juego>\art\blender\<carpeta-modelo>\: modelar-<modelo>.py, <modelo>.blend, <modelo>.glb, <modelo>.json y <modelo>-juego.glb (los dos con kit.export_glb), los renders que pide el brief y ENTREGA.md.
 
 No modifiques nada fuera de esa carpeta ni ejecutes build, QA, deploy, commit o push. Al terminar, detente y resume: triángulos, partes, dimensiones y diferencias con el brief.
 ```

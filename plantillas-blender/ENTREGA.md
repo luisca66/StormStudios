@@ -15,7 +15,8 @@
 | `modelar-<modelo>.py` | fuente reproducible (regenera todo lo de abajo) |
 | `<modelo>.blend` | escena editable |
 | `<modelo>.glb` | modelo portable (con animación de muestra si aplica) |
-| `<modelo>.json` | geometría para el juego (`kit.export_parts`) |
+| `<modelo>.json` | geometría para el juego (`kit.export_glb` / `export_parts`) |
+| `<modelo>-juego.glb` | la misma geometría en GLB para el juego (`kit.export_glb`), con AO si el brief la pide |
 | `render-juego.png`, `render-cerca.png`, `render-perfil.png`, `render-detalle.png` | revisión |
 
 Regenerar (desde la carpeta del modelo):
@@ -33,7 +34,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bp
 | Frente | <−Z / +Z en espacio Three> |
 | Triángulos totales | <…> |
 | Mallas exportadas | <…> |
-| Peso del JSON | <… kB> |
+| Peso del JSON / del GLB de juego | <… kB / … kB> |
+| Oclusión ambiental | <distance, strength; "sin AO"> |
 | Puntos en `meta` | <nombre = (x, y, z) Three, para qué sirve; "ninguno"> |
 
 ## Partes
