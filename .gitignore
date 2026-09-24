@@ -44,3 +44,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .codex-remote-attachments/
+
+# playwright
+/test-results/
+/playwright-report/
