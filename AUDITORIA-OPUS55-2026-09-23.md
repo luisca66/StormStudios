@@ -29,9 +29,8 @@ P3-13, P3-14 · Anexo B.
   subieron el 24 sep (`a410a44`).
 - Dato del hero: se cambió a "sonata nº 2, op. 61". Confírmalo o elige otra obra.
 
-**Pendiente técnico, más grande:** fuentes de 5 apps y Cosmic Ear en Vite (P2-12), GLB/meshopt para los modelos 3D (P3-04, pospuesto: la web no apunta a teléfonos),
-HSTS
-`includeSubDomains` (P3-08), `RESEND_EMAIL_DOMAIN` (P3-06), ruido SVG y
+**Pendiente técnico, más grande:** fuente de Acordes para cantar y Cosmic Ear en Vite (P2-12), GLB/meshopt para los modelos 3D (P3-04, pospuesto: la web no apunta a teléfonos),
+`RESEND_EMAIL_DOMAIN` (P3-06), ruido SVG y
 `backdrop-filter` (P2-11), PageSpeed con clave de API (P3-16).
 
 **Cambio de comportamiento a revisar:** el menú completo del header ahora aparece desde 1280 px
@@ -638,7 +637,15 @@ binarios, en el pipeline de `plantillas-blender`. Mide antes y después con el p
 - CI (`.github/workflows/quality.yml`): fija las actions por SHA, añade
   `concurrency: { group: ${{ github.ref }}, cancel-in-progress: true }` y `timeout-minutes`.
 
-### P3-08 · Cabeceras de seguridad (endurecimiento opcional)
+### ✅ P3-08 — CERRADO (24 sep) · Cabeceras de seguridad (endurecimiento opcional)
+> `connect-src` de `appCsp` ya no permite `https://*.r2.dev`: las páginas Next solo hacen `fetch()` a
+> `samples.`, `musica.` y `sfx.`; las voces de Elefantito (bucket `pub-…r2.dev`) se cargan con `<audio>`,
+> que se rige por `media-src https:`. `includeSubDomains` no se añade: el DNS (Cloudflare, revisado con
+> Luis) solo tiene subdominios web con HTTPS, pero la directiva solo protege subdominios del host que
+> la envía. Enviada desde `www` no cubre `samples.`/`musica.`/`sfx.`, y el apex responde con la
+> redirección 308 de Vercel, donde las cabeceras de `next.config.ts` no aplican. Esos subdominios solo
+> se piden desde código con URLs `https://`, así que la ganancia sería nula.
+
 - HSTS: `max-age=63072000` sin `includeSubDomains`. Añádelo cuando confirmes que todos los
   subdominios (`samples.`, `musica.`, `sfx.`) sirven HTTPS; es el caso. `preload` solo si Luis lo
   quiere.
