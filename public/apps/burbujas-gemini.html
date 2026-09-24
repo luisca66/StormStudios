@@ -477,7 +477,7 @@
       floatingTexts = [];
       fallingBubbles = [];
 
-      document.getElementById('game-over').classList.add('hidden');
+      document.getElementById('game-overlay').classList.add('hidden');
       document.getElementById('overlay-stats').classList.add('hidden');
       document.getElementById('score').innerText = String(score).padStart(5, '0');
       
@@ -737,7 +737,7 @@
       
       document.getElementById('overlay-stat-score').innerText = score;
       document.getElementById('overlay-stats').classList.remove('hidden');
-      document.getElementById('game-over').classList.remove('hidden');
+      document.getElementById('game-overlay').classList.remove('hidden');
     }
 
     function updateBombUI() {
