@@ -20,7 +20,12 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
   Cosmic Ear ya tiene `npm run deploy` (build + `scripts/copy-dist.mjs` a `public/apps/cosmic-ear`, como los demás).
   **Siguiente:**
   1. ✅ Escape cierra el afinador y la nave se queda quieta mientras está abierto (commit `5d8ecff`,
-     publicado el 2026-09-26). Pendiente: fase 1b paso 2 (sacar escena y audio de `App`).
+     publicado el 2026-09-26).
+  2. ✅ Fase 1b paso 2: escena en `scene/cosmic-scene.js`, audio en `audio/`; `App` de 966 a 550 líneas.
+     «Nueva misión» (fin del tiempo) ahora apaga motor y música como «Salir». Falta `npm run deploy` con OK de Luis.
+  - **Con esto el plan de Cosmic Ear queda completo.**
+  - Ojo al probar en el panel del navegador de Claude: si está oculto, `requestAnimationFrame` se pausa y el
+    juego parece congelado; una captura de pantalla lo despierta.
   - Para probar sin cantar: `.claude/launch.json` tiene `cosmic-ear-alt` (puerto 5186) por si otro chat
     ocupa el 5180; micrófono simulado inyectando un `getUserMedia` silencioso antes de «Activar micrófono».
 
