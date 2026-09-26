@@ -16,9 +16,10 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 - **Cosmic Ear — rediseño completo** (decidido por Luis). Plan: `apps-src/cosmic-ear/PLAN-COSMIC-EAR.md`.
   Todas las piezas integradas: Three 0.160 + módulos, luz nueva, nave (Claude), planetas (Astra), lunas y
   asteroides (Gemini), estación de salida (Claude).
+  ✅ **Publicado el 2026-09-26** tras la misión real de Luis cantando en Chrome («funciona perfecto»).
+  Cosmic Ear ya tiene `npm run deploy` (build + `scripts/copy-dist.mjs` a `public/apps/cosmic-ear`, como los demás).
   **Siguiente:**
-  1. Luis juega una misión real cantando (sin publicar). Con su OK: `npm run deploy` en `apps-src/cosmic-ear`.
-  2. Pendientes menores vistos al probar: Escape no cierra el afinador (el atajo lee un estado viejo, ya
+  1. Pendientes menores vistos al probar: Escape no cierra el afinador (el atajo lee un estado viejo, ya
      pasaba antes); fase 1b paso 2 (sacar escena y audio de `App`).
   - Para probar sin cantar: `.claude/launch.json` tiene `cosmic-ear-alt` (puerto 5186) por si otro chat
     ocupa el 5180; micrófono simulado inyectando un `getUserMedia` silencioso antes de «Activar micrófono».
