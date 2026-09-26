@@ -8,7 +8,8 @@ Gemini todo lo que sea simple y se pueda describir con precisión. Complementa a
 > (~35 pesos en una tarde). Nuevo reparto: **lo simple lo hace Claude directamente** (de todos modos
 > escribía y probaba la receta completa antes de dársela a Gemini, así que el brief costaba casi lo mismo
 > que el modelo); **lo complejo, Astra** (suscripción de Luis). Gemini solo por **Antigravity** (sin costo
-> por token), en modo semiautomático: Luis pega una línea y Claude vigila la carpeta. El lanzador se niega
+> por token), en modo semiautomático: Luis pega el prompt fijo de `PROMPTS-GEMINI.md` §C, Gemini trabaja
+> la cola `COLA-GEMINI.md` y Claude vigila las entregas con `scripts/agentes/vigilar-cola.ps1`. El lanzador se niega
 > a usar la API salvo con `-PagarApiGemini` y permiso explícito de Luis.
 
 ---
