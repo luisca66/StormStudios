@@ -19,8 +19,8 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
   ✅ **Publicado el 2026-09-26** tras la misión real de Luis cantando en Chrome («funciona perfecto»).
   Cosmic Ear ya tiene `npm run deploy` (build + `scripts/copy-dist.mjs` a `public/apps/cosmic-ear`, como los demás).
   **Siguiente:**
-  1. ✅ Escape cierra el afinador y la nave se queda quieta mientras está abierto (commit `5d8ecff`; falta
-     `npm run deploy` con OK de Luis). Pendiente: fase 1b paso 2 (sacar escena y audio de `App`).
+  1. ✅ Escape cierra el afinador y la nave se queda quieta mientras está abierto (commit `5d8ecff`,
+     publicado el 2026-09-26). Pendiente: fase 1b paso 2 (sacar escena y audio de `App`).
   - Para probar sin cantar: `.claude/launch.json` tiene `cosmic-ear-alt` (puerto 5186) por si otro chat
     ocupa el 5180; micrófono simulado inyectando un `getUserMedia` silencioso antes de «Activar micrófono».
 
