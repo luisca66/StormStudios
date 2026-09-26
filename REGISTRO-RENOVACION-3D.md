@@ -22,7 +22,7 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
   1. ✅ Escape cierra el afinador y la nave se queda quieta mientras está abierto (commit `5d8ecff`,
      publicado el 2026-09-26).
   2. ✅ Fase 1b paso 2: escena en `scene/cosmic-scene.js`, audio en `audio/`; `App` de 966 a 550 líneas.
-     «Nueva misión» (fin del tiempo) ahora apaga motor y música como «Salir». Falta `npm run deploy` con OK de Luis.
+     «Nueva misión» (fin del tiempo) ahora apaga motor y música como «Salir». Publicado el 2026-09-26.
   - **Con esto el plan de Cosmic Ear queda completo.**
   - Ojo al probar en el panel del navegador de Claude: si está oculto, `requestAnimationFrame` se pausa y el
     juego parece congelado; una captura de pantalla lo despierta.
