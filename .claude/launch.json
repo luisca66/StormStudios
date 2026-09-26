@@ -104,6 +104,18 @@
       ],
       "port": 5183,
       "url": "http://127.0.0.1:5183"
+    },
+    {
+      "name": "cosmic-ear",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "apps-src/cosmic-ear"
+      ],
+      "port": 5180,
+      "url": "http://127.0.0.1:5180"
     }
   ]
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import * as THREE from "three";
+THREE.ColorManagement.enabled = false; // colores hex como en r128 (ver WebGLRenderer más abajo)
 import "./styles.css";
 import "./tailwind.css";
 
@@ -1273,6 +1274,10 @@ function App() {
         const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 2000);
         camera.position.set(0, 3, 10); cameraRef.current = camera;
         const renderer = new THREE.WebGLRenderer({ antialias: true });
+        // Three 0.160 (antes r128): luces y color como en r128 hasta el rediseño (PLAN-COSMIC-EAR.md),
+        // que ilumina la escena de nuevo y quita estas dos líneas.
+        renderer.useLegacyLights = true;
+        renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         mountRef.current.appendChild(renderer.domElement); rendererRef.current = renderer;
