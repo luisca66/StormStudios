@@ -480,6 +480,9 @@ function App() {
     }, [holdProgress, tunerActive, tunerPhase, currentNoteIndex, activePlanet]);
 
     useEffect(() => { hoveredPlanetRef.current = hoveredPlanet; }, [hoveredPlanet]);
+    // La escena se crea una vez por misión: sus manejadores leen el afinador por referencia, no por estado.
+    const tunerActiveRef = useRef(false);
+    useEffect(() => { tunerActiveRef.current = tunerActive; }, [tunerActive]);
 
     const exitGame = () => {
         if (tunerListeningTimeoutRef.current) {
@@ -544,11 +547,11 @@ function App() {
         startThrusterSound();
         playRandomAmbientMusic();
 
-        const onKeyDown = e => { keysPressed.current[e.code] = true; if (e.code === 'Escape' && tunerActive) closeTuner(); };
+        const onKeyDown = e => { keysPressed.current[e.code] = true; if (e.code === 'Escape' && tunerActiveRef.current) closeTuner(); };
         const onKeyUp = e => { keysPressed.current[e.code] = false; };
         const onMouseMove = e => { mouseRef.current.x = (e.clientX / window.innerWidth) * 2 - 1; mouseRef.current.y = -(e.clientY / window.innerHeight) * 2 + 1; };
         const onClick = () => {
-            if (gameState !== 'playing' || tunerActive) return;
+            if (gameState !== 'playing' || tunerActiveRef.current) return;
             raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
             const hits = raycasterRef.current.intersectObjects(planetMeshesRef.current.flatMap(p => p.children.filter(c => c.userData.isPlanetCore)), false);
             if (hits.length > 0) {
@@ -580,7 +583,7 @@ function App() {
             if (shootingStarSystem) shootingStarSystem.updateShootingStars();
 
             // Ship controls (disabled during tuner but ship still visible)
-            if (shipRef.current && gameState === 'playing' && !tunerActive) {
+            if (shipRef.current && gameState === 'playing' && !tunerActiveRef.current) {
                 const ship = shipRef.current, keys = keysPressed.current;
 
                 // Rotations using quaternions for local axis rotations
@@ -650,7 +653,7 @@ function App() {
                 cameraRef.current.lookAt(ship.position);
             }
 
-            if (gameState === 'playing' && !tunerActive) {
+            if (gameState === 'playing' && !tunerActiveRef.current) {
                 raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
                 const hits = raycasterRef.current.intersectObjects(planetMeshesRef.current.flatMap(p => p.children.filter(c => c.userData.isPlanetCore)), false);
                 const hovered = hits.length > 0 ? hits[0].object.parent : null;
