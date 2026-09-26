@@ -7,6 +7,8 @@ import { BlenderCrab, buildBlenderCrab, preloadBlenderCrab } from "./blender-cra
 import { buildCloudField, preloadBlenderClouds, CloudField, CloudPart, CloudPlacement } from "./blender-clouds";
 import { preloadBlenderSkyKit, skyMesh } from "./blender-sky-kit";
 import { BlenderCastle, buildBlenderCastle, isCastleReady } from "./blender-castle";
+import { buildKitField, KitPlacement } from "./blender-kit-field";
+import { ROCK_PARTS, rocksKit } from "./blender-pradera-kits";
 
 export interface Obstacle {
   x: number;
@@ -704,7 +706,8 @@ export class LevelEnvironment {
       }
     }
 
-    // Spawn 40 rocks
+    // Spawn 40 rocks: the Blender kit (Gemini) as 3 instanced draw calls, or the old dodecahedra
+    const rocks: KitPlacement[] = [];
     for (let i = 0; i < 40; i++) {
       const rx = (Math.random() - 0.5) * (this.arenaSize - 30);
       const rz = (Math.random() - 0.5) * (this.arenaSize - 30);
@@ -712,9 +715,17 @@ export class LevelEnvironment {
       const distToCastle = Math.sqrt(rx*rx + (rz + 40)*(rz + 40));
       
       if (distToCenter > 15 && distToCastle > 25) {
-        this.spawnRock(rx, rz);
+        if (rocksKit.ready()) {
+          // The kit rocks are ~1.4 m wide at scale 1; ×1.4 keeps the old footprint.
+          const scale = (0.5 + Math.random() * 1.5) * 1.4;
+          rocks.push({ part: ROCK_PARTS[i % ROCK_PARTS.length], x: rx, z: rz, scale, rotY: Math.random() * Math.PI * 2 });
+          this.obstacles.push({ x: rx, y: 0, z: rz, radius: scale * 0.7 });
+        } else {
+          this.spawnRock(rx, rz);
+        }
       }
     }
+    if (rocks.length) this.group.add(buildKitField(rocksKit.model(), rocks));
 
     // Spawn 15 animated butterflies
     for (let i = 0; i < 15; i++) {

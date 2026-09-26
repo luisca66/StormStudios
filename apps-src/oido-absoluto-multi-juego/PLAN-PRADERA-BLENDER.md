@@ -137,8 +137,8 @@ Estados: `⏳ en cola` → `📝 brief listo` → `🔨 en curso` → `📦 entr
 | Dirección visual (§2) | — | Luis | ✅ aprobada; luz y paleta ya en el juego | — |
 | Glub | `glub/` | Claude | 🎮 v1 integrado con `shared-3d` (GLB 110 kB, parpadeo); falta OK de Luis. Ojo: la cámara va detrás y casi no se ve la cara | v1 |
 | Castillo | `castillo/` | Astra | 🎮 integrado (aprobado por Luis): 38 140 tri, 10 mallas, GLB 343 kB; banderines ondean. Pendiente: AO algo fuerte en muros a la sombra | v1-ronda1b |
-| Rocas | `rocas-pradera/` | Gemini | 📦 entregada sola por Gemini 3.8 Flash (3 520 tri, sin diferencias con el brief); falta OK de Luis e integrar | v1 |
-| Setos | `setos/` | Gemini | ⏳ | — |
+| Rocas | `rocas-pradera/` | Gemini | 🎮 integradas (aprobadas por Luis): 40 rocas en 3 draw calls (antes 40) | v1 |
+| Setos | `setos/` | Gemini | 🔨 lanzado (receta probada: 3 partes, ~6 700 tri) | — |
 | Muralla | `muralla/` | Gemini | ⏳ | — |
 | Portón | `porton/` | Gemini | ⏳ | — |
 | Cubo de nota | `cubo-nota/` | Gemini | ⏳ | — |
