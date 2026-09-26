@@ -1,0 +1,17 @@
+# Política de Gemini CLI para el modo automático (scripts/agentes/lanzar-agente.ps1).
+# Gemini solo puede ejecutar el lanzador de Blender sin preguntar. Cualquier otro comando de terminal
+# pide confirmación, y como nadie está mirando, en modo sin interfaz eso equivale a negarlo.
+# Las ediciones de archivos las aprueba --approval-mode auto_edit; sus reglas de carpeta están en
+# plantillas-blender/INSTRUCCIONES-GEMINI.md.
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = 'powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bpy-run.ps1'
+decision = "allow"
+priority = 900
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "git"
+decision = "deny"
+priority = 950

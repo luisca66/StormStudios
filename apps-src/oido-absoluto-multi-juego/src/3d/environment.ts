@@ -6,6 +6,7 @@ import { BlenderAtlantis, buildBlenderAtlantis, preloadBlenderAtlantis } from ".
 import { BlenderCrab, buildBlenderCrab, preloadBlenderCrab } from "./blender-crab";
 import { buildCloudField, preloadBlenderClouds, CloudField, CloudPart, CloudPlacement } from "./blender-clouds";
 import { preloadBlenderSkyKit, skyMesh } from "./blender-sky-kit";
+import { BlenderCastle, buildBlenderCastle, isCastleReady } from "./blender-castle";
 
 export interface Obstacle {
   x: number;
@@ -31,6 +32,7 @@ export class LevelEnvironment {
   private reef?: ReefField;
   private cloudField?: CloudField;
   private atlantis?: BlenderAtlantis;
+  private castle?: BlenderCastle;
   private shootingStarTimer = 3.0; // level 3: time until next shooting star
   
   constructor(private level: number, private scene: THREE.Scene, private arenaSize: number) {
@@ -93,6 +95,7 @@ export class LevelEnvironment {
     this.reef = undefined;
     this.cloudField = undefined;
     this.atlantis = undefined;
+    this.castle = undefined;
     this.altarCrystal = undefined;
     // Reset fog
     this.scene.fog = null;
@@ -186,6 +189,7 @@ export class LevelEnvironment {
 
   // Update animated details
   public update(delta: number, time: number): void {
+    this.castle?.update(time);
     for (const item of this.animatedMeshes) {
       const { mesh, type, meta } = item;
       
@@ -635,13 +639,15 @@ export class LevelEnvironment {
 
     // 2. Main sun directional light
     const dirLight = new THREE.DirectionalLight(0xfff1d0, 1.5);
-    dirLight.position.set(50, 80, -30);
+    // Sol del sur-oeste: la fachada del castillo (que mira a +Z, hacia donde nace Glub) queda
+    // iluminada en lugar de a contraluz.
+    dirLight.position.set(-40, 80, 50);
     dirLight.castShadow = true;
     this.group.add(dirLight);
 
     // 3. Opposite fill light
     const fillLight = new THREE.DirectionalLight(0xdbe6f5, 0.5);
-    fillLight.position.set(-50, 80, 30);
+    fillLight.position.set(50, 80, -30);
     this.group.add(fillLight);
 
     // 4. Lateral side light
@@ -945,6 +951,20 @@ export class LevelEnvironment {
     const gateWidth = 6.0;
     const gateHeight = 5.0;
     const keepSize = new THREE.Vector3(10, 15, 10);
+
+    // Castillo de Blender (art/blender/castillo/, Astra). Misma planta que el procedural de abajo,
+    // así que conserva sus colisionadores (paso 5); el procedural queda de reserva.
+    if (isCastleReady()) {
+      this.castle = buildBlenderCastle();
+      this.castle.root.position.set(x, y, z);
+      this.group.add(this.castle.root);
+      for (const corner of [[castleHalf, castleHalf], [-castleHalf, castleHalf], [castleHalf, -castleHalf], [-castleHalf, -castleHalf]]) {
+        this.obstacles.push({ x: x + corner[0], y: 0, z: z + corner[1], radius: towerRadius * 1.1 });
+      }
+      this.pushCastleWallColliders(x, z, castleHalf, wd, gateWidth, keepSize);
+      return;
+    }
+
     const roofMat = new THREE.MeshStandardMaterial({ color: 0x5d4037, roughness: 0.85 });
 
     // 1. Towers at the 4 corners
@@ -1073,7 +1093,10 @@ export class LevelEnvironment {
     this.group.add(castle);
 
     // 5. Add wall colliders to push player back (represented as sphere obstacles along walls)
-    // Back wall colliders
+    this.pushCastleWallColliders(x, z, castleHalf, wd, gateWidth, keepSize);
+  }
+
+  private pushCastleWallColliders(x: number, z: number, castleHalf: number, wd: number, gateWidth: number, keepSize: THREE.Vector3): void {
     for (let bx = -castleHalf; bx <= castleHalf; bx += 4) {
       this.obstacles.push({ x: x + bx, y: 0, z: z - castleHalf, radius: wd * 1.1 });
       this.obstacles.push({ x: x - castleHalf, y: 0, z: z + bx, radius: wd * 1.1 });
@@ -1082,7 +1105,7 @@ export class LevelEnvironment {
         this.obstacles.push({ x: x + bx, y: 0, z: z + castleHalf, radius: wd * 1.1 });
       }
     }
-    
+
     // Central Keep collider
     this.obstacles.push({ x, y: 0, z, radius: Math.max(keepSize.x, keepSize.z) * 0.85 });
   }

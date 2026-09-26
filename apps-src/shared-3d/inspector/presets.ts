@@ -44,8 +44,8 @@ export const PRESETS: LightingPreset[] = [
     studio: false,
     hemisphere: { sky: 0xb8e4fa, ground: 0x4f7a3a, intensity: 1.2 },
     directional: [
-      { color: 0xfff1d0, intensity: 1.5, position: [50, 80, -30] },
-      { color: 0xdbe6f5, intensity: 0.5, position: [-50, 80, 30] },
+      { color: 0xfff1d0, intensity: 1.5, position: [-40, 80, 50] },
+      { color: 0xdbe6f5, intensity: 0.5, position: [50, 80, -30] },
       { color: 0xd9ecf5, intensity: 0.35, position: [50, 40, 50] },
     ],
     ground: 0x5d8a4a,

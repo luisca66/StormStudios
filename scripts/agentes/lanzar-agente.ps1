@@ -70,8 +70,11 @@ if ($Agente -eq "astra") {
   if (-not $env:GEMINI_API_KEY) { throw "Falta la variable de usuario GEMINI_API_KEY." }
   $gemini = Join-Path $env:APPDATA "npm\gemini.cmd"
   # El prompt va por stdin (un .cmd rompe los argumentos con saltos de línea).
-  # yolo: acepta sus propias herramientas sin preguntar (nadie está mirando).
-  $prompt | & $gemini -m $GeminiModel -p "Sigue las instrucciones de arriba." --approval-mode yolo -o text *>> $log
+  # auto_edit: aprueba solo ediciones de archivos; la política permite únicamente el lanzador de
+  # Blender como comando de terminal (lo demás se niega: nadie está mirando para aprobarlo).
+  $policy = Join-Path $PSScriptRoot "gemini-politica.toml"
+  $prompt | & $gemini -m $GeminiModel -p "Sigue las instrucciones de arriba." `
+      --approval-mode auto_edit --policy $policy -o text *>> $log
   # Gemini CLI a veces sale con un "Assertion failed" de libuv al cerrar (código 9) aunque terminó
   # bien: cuenta la entrega, no el código de salida.
   $entrega = Join-Path $dir "ENTREGA.md"
