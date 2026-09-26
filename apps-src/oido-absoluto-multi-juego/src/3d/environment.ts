@@ -8,7 +8,7 @@ import { buildCloudField, preloadBlenderClouds, CloudField, CloudPart, CloudPlac
 import { preloadBlenderSkyKit, skyMesh } from "./blender-sky-kit";
 import { BlenderCastle, buildBlenderCastle, isCastleReady } from "./blender-castle";
 import { buildKitField, KitPlacement } from "./blender-kit-field";
-import { ROCK_PARTS, rocksKit } from "./blender-pradera-kits";
+import { hedgesKit, ROCK_PARTS, rocksKit } from "./blender-pradera-kits";
 
 export interface Obstacle {
   x: number;
@@ -1135,16 +1135,41 @@ export class LevelEnvironment {
       { px: 2, pz: 4, w: 8, h: 2, d: 2 }
     ];
 
+    const useKit = hedgesKit.ready();
+    const pieces: KitPlacement[] = [];
     for (const w of wallConfigs) {
-      const hedge = new THREE.Mesh(new THREE.BoxGeometry(w.w, w.h, w.d), leafMat);
-      hedge.position.set(w.px, w.h / 2, w.pz);
-      maze.add(hedge);
+      if (useKit) {
+        // Blender kit (Gemini): fill the wall with 4 m modules and a 2 m one for the remainder.
+        const alongX = w.w >= w.d;
+        const length = Math.max(w.w, w.d);
+        const rotY = alongX ? 0 : Math.PI / 2;
+        let cursor = -length / 2;
+        while (length / 2 - cursor > 0.5) {
+          const long = length / 2 - cursor >= 4;
+          const size = long ? 4 : 2;
+          const c = cursor + size / 2;
+          pieces.push({ part: long ? "hedge_long" : "hedge_short", x: w.px + (alongX ? c : 0), z: w.pz + (alongX ? 0 : c), scale: 1, rotY });
+          cursor += size;
+        }
+      } else {
+        const hedge = new THREE.Mesh(new THREE.BoxGeometry(w.w, w.h, w.d), leafMat);
+        hedge.position.set(w.px, w.h / 2, w.pz);
+        maze.add(hedge);
+      }
       
       // Map wall as round obstacles for simplification
       const rad = Math.max(w.w, w.d) / 2;
       this.obstacles.push({ x: x + w.px, y: 0, z: z + w.pz, radius: rad });
     }
 
+    if (useKit) {
+      // Topiaries at the four outer corners of the maze
+      for (const [tx, tz] of [[-8, -8], [8, -8], [-8, 8], [8, 8]]) {
+        pieces.push({ part: "topiary", x: tx, z: tz, scale: 1, rotY: Math.random() * Math.PI * 2 });
+        this.obstacles.push({ x: x + tx, y: 0, z: z + tz, radius: 0.6 });
+      }
+      maze.add(buildKitField(hedgesKit.model(), pieces));
+    }
     this.group.add(maze);
   }
 

@@ -1,0 +1,14 @@
+Hola Astra. Te encargo las chimeneas hidrotermales y los pináculos del fondo de la fosa de Batisfera, en Blender con bpy. Es la última pieza que le falta a ese juego.
+
+La idea: el fondo del mundo. Pináculos enormes que empequeñecen a la Batisfera y chimeneas negras con la única fuente de calor de todo el juego, un naranja que se lee como fuego bajo el agua. Sitio vivo y peligroso, no infierno.
+
+MODO AUTOMÁTICO: Claude te lanzó desde la línea de comandos y nadie está mirando. No hagas preguntas: decide tú y anota en ENTREGA.md lo que decidas distinto del brief.
+
+IMPORTANTE, tu sandbox no puede cargar Blender (bpy da "DLL load failed: Access is denied"). No lo intentes: escribe modelar-chimeneas.py completo, deja ENTREGA.md como v1 con "Lista para: ejecución de Claude" y detente. Claude lo ejecuta en la PC de Luis y te reanuda con los renders adjuntos para tu revisión propia.
+
+Proyecto (checkout principal, tu directorio actual): C:\Users\Luis\Documents\Claude Cowork\nuevo_website\storm-studios\StormStudios
+Tu carpeta, la única donde escribes: apps-src\acordes-juego\art\blender\chimeneas-hidrotermales\
+
+Lee plantillas-blender\INSTRUCCIONES-ASTRA.md y el BRIEF.md de tu carpeta. Este juego carga JSON: exporta con kit.export_parts como dice el brief (el brillo por vértice va como en ..\jardin-corales\, tu pieza hermana; mírala si te sirve). Respeta el aviso del §7 sobre el atributo de color.
+
+Hay otros dos agentes trabajando a la vez en el proyecto: no escribas fuera de tu carpeta, no toques BRIEF.md ni PROMPT.txt y no uses git ni npm. Al terminar, resume: triángulos por pieza, dimensiones y en qué te apartaste del brief.

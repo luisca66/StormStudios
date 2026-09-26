@@ -138,8 +138,8 @@ Estados: `⏳ en cola` → `📝 brief listo` → `🔨 en curso` → `📦 entr
 | Glub | `glub/` | Claude | 🎮 v1 integrado con `shared-3d` (GLB 110 kB, parpadeo); falta OK de Luis. Ojo: la cámara va detrás y casi no se ve la cara | v1 |
 | Castillo | `castillo/` | Astra | 🎮 integrado (aprobado por Luis): 38 140 tri, 10 mallas, GLB 343 kB; banderines ondean. Pendiente: AO algo fuerte en muros a la sombra | v1-ronda1b |
 | Rocas | `rocas-pradera/` | Gemini | 🎮 integradas (aprobadas por Luis): 40 rocas en 3 draw calls (antes 40) | v1 |
-| Setos | `setos/` | Gemini | 🔨 lanzado (receta probada: 3 partes, ~6 700 tri) | — |
-| Muralla | `muralla/` | Gemini | ⏳ | — |
+| Setos | `setos/` | Gemini | 🎮 integrados: laberinto con tramos de 4 y 2 m + 4 topiarios (Gemini corrigió solo el pivote de la receta) | v1 |
+| Muralla | `muralla/` | Gemini | 🔨 lanzada (receta probada: 2 partes, 1 030 tri) | — |
 | Portón | `porton/` | Gemini | ⏳ | — |
 | Cubo de nota | `cubo-nota/` | Gemini | ⏳ | — |
 | Árboles | `arboles/` | Gemini | ⏳ | — |
