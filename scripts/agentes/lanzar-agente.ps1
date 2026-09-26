@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Lanza a Astra (Codex) o a Gemini (Antigravity) sin intervención de Luis.
+  Lanza a Astra (Codex) o a Gemini (Gemini CLI) sin intervención de Luis.
 
 .DESCRIPTION
   Modo automático de plantillas-blender/REPARTO-AGENTES.md §5. Claude lo ejecuta en segundo plano y
@@ -9,7 +9,7 @@
 
   Modelos fijos (decididos por Luis el 2026-09-26):
     Astra  = gpt-6-astra con razonamiento "low" (Astra Light).
-    Gemini = "flash" de Antigravity (Gemini 3.8 Flash; el nivel de razonamiento lo fija Antigravity).
+    Gemini = Gemini 3.8 Flash por Gemini CLI con la clave de AI Studio de Luis (GEMINI_API_KEY).
 
   Astra trabaja aislada (opción b): escribe el script pero no puede cargar Blender. Claude lo ejecuta
   y la reanuda con -Reanudar, adjuntando los renders de su carpeta para que se revise.
@@ -23,7 +23,8 @@ param(
   [Parameter(Mandatory)] [ValidateSet("astra", "gemini")] [string] $Agente,
   [Parameter(Mandatory)] [string] $Carpeta,
   [switch] $Reanudar,        # solo Astra: sigue su última sesión de este modelo
-  [string] $Mensaje          # archivo con el mensaje de la ronda (por defecto PROMPT.txt de la carpeta)
+  [string] $Mensaje,         # archivo con el mensaje de la ronda (por defecto PROMPT.txt de la carpeta)
+  [string] $GeminiModel = "gemini-3.8-flash"   # se confirma contra la lista de modelos de la clave
 )
 
 $ErrorActionPreference = "Stop"
@@ -60,18 +61,23 @@ if ($Agente -eq "astra") {
   }
   $code = $LASTEXITCODE
 } else {
-  # Gemini CLI con cuenta personal ya no tiene soporte ("migrate to Antigravity"). agentapi abre una
-  # conversación del agente de Antigravity con el modelo elegido y vuelve enseguida, así que aquí se
-  # espera a que ENTREGA.md diga "Lista para: revisión" (máximo 3 horas).
-  $agentapi = Join-Path $env:USERPROFILE ".gemini\antigravity\bin\agentapi.bat"
-  $orden = "Lee y sigue al pie de la letra las instrucciones del archivo $promptFile"
-  & $agentapi new-conversation --model=flash --title="$modelo" "$orden" *>> $log
-  $limite = (Get-Date).AddHours(3)
+  # Gemini CLI con la clave de Google AI Studio de Luis (la cuenta personal sin clave ya no tiene
+  # soporte). La clave vive en la variable de usuario GEMINI_API_KEY, que Luis configuró; se pasa al
+  # proceso sin escribirla en ningún registro.
+  if (-not $env:GEMINI_API_KEY) {
+    $env:GEMINI_API_KEY = [Environment]::GetEnvironmentVariable("GEMINI_API_KEY", "User")
+  }
+  if (-not $env:GEMINI_API_KEY) { throw "Falta la variable de usuario GEMINI_API_KEY." }
+  $gemini = Join-Path $env:APPDATA "npm\gemini.cmd"
+  # El prompt va por stdin (un .cmd rompe los argumentos con saltos de línea).
+  # yolo: acepta sus propias herramientas sin preguntar (nadie está mirando).
+  $prompt | & $gemini -m $GeminiModel -p "Sigue las instrucciones de arriba." --approval-mode yolo -o text *>> $log
+  # Gemini CLI a veces sale con un "Assertion failed" de libuv al cerrar (código 9) aunque terminó
+  # bien: cuenta la entrega, no el código de salida.
   $entrega = Join-Path $dir "ENTREGA.md"
-  $lista = { (Test-Path $entrega) -and (Select-String -Path $entrega -Pattern "Lista para: revisi" -Quiet) }
-  while (-not (& $lista) -and (Get-Date) -lt $limite) { Start-Sleep -Seconds 30 }
-  $code = if (& $lista) { 0 } else { 2 }   # 2 = se acabó el tiempo sin entrega
-  "Gemini trabaja en Antigravity; su resumen está en ENTREGA.md." | Set-Content $last -Encoding UTF8
+  $lista = (Test-Path $entrega) -and (Select-String -Path $entrega -Pattern "Lista para: revisi" -Quiet)
+  $code = if ($lista) { 0 } else { $LASTEXITCODE }
+  Get-Content $log -Tail 40 | Set-Content $last -Encoding UTF8
 }
 
 "[$(Get-Date -Format s)] $Agente terminó $modelo · salida $code" | Tee-Object -FilePath $log -Append
