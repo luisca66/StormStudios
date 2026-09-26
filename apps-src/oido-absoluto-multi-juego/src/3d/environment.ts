@@ -440,8 +440,8 @@ export class LevelEnvironment {
     canvas.height = 512;
     const ctx = canvas.getContext("2d")!;
     
-    // Base green
-    ctx.fillStyle = "#2e5c1e";
+    // Base green (palette: 8fcf5f light → 4f9a3e dark, 2f6b3a shadow)
+    ctx.fillStyle = "#4f9a3e";
     ctx.fillRect(0, 0, 512, 512);
 
     // Draw grass blades
@@ -451,10 +451,12 @@ export class LevelEnvironment {
       const h = 3 + Math.random() * 7;
       const angle = (Math.random() - 0.5) * 0.4;
       
-      const g = 65 + Math.floor(Math.random() * 65);
-      const r = 25 + Math.floor(Math.random() * 25);
-      const b = 15 + Math.floor(Math.random() * 15);
-      
+      // Blend between shadow 2f6b3a and light 8fcf5f
+      const t = Math.random();
+      const r = Math.round(0x2f + (0x8f - 0x2f) * t);
+      const g = Math.round(0x6b + (0xcf - 0x6b) * t);
+      const b = Math.round(0x3a + (0x5f - 0x3a) * t);
+
       ctx.strokeStyle = `rgb(${r}, ${g}, ${b})`;
       ctx.lineWidth = 1.0 + Math.random() * 1.0;
       
@@ -468,6 +470,8 @@ export class LevelEnvironment {
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(50, 50);
+    // Canvas colors are sRGB: without this the palette greens render washed out.
+    texture.colorSpace = THREE.SRGBColorSpace;
     return texture;
   }
 
@@ -623,13 +627,14 @@ export class LevelEnvironment {
 
   // ==================== LEVEL 1: PRAIRIE ====================
   private buildPrairie(): void {
-    // Lighting: match Godot's triple light setup
+    // Lighting: Godot's triple light setup, recolored to the approved palette
+    // (PLAN-PRADERA-BLENDER.md §2: storybook meadow, mid-morning spring sun).
     // 1. Hemisphere ambient
-    const hemiLight = new THREE.HemisphereLight(0xb1e1ff, 0x3b5e3b, 1.2);
+    const hemiLight = new THREE.HemisphereLight(0xb8e4fa, 0x4f7a3a, 1.2);
     this.group.add(hemiLight);
 
     // 2. Main sun directional light
-    const dirLight = new THREE.DirectionalLight(0xfffaed, 1.5);
+    const dirLight = new THREE.DirectionalLight(0xfff1d0, 1.5);
     dirLight.position.set(50, 80, -30);
     dirLight.castShadow = true;
     this.group.add(dirLight);
@@ -644,9 +649,9 @@ export class LevelEnvironment {
     sideLight.position.set(50, 40, 50);
     this.group.add(sideLight);
 
-    // Fog: soft pastel sky blue
-    this.scene.fog = new THREE.FogExp2(0xa0cce8, 0.007);
-    this.scene.background = new THREE.Color(0xa0cce8);
+    // Fog: clean spring sky blue
+    this.scene.fog = new THREE.FogExp2(0xa8d8f0, 0.007);
+    this.scene.background = new THREE.Color(0xa8d8f0);
 
     // Ground: procedural grass look
     const grassTex = this.generateGrassTexture();

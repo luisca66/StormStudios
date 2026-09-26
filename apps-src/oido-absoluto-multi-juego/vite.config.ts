@@ -16,6 +16,9 @@ export default defineConfig(({ command }) => ({
     alias: {
       "@": srcDir,
     },
+    // One copy of Three.js when models load through apps-src/shared-3d
+    // (MANUAL-RENOVACION-3D.md, paso 6); without it the bundle doubles.
+    dedupe: ["three"],
   },
   plugins: [
     {

@@ -31,7 +31,7 @@ instanciados, el nivel debería quedar **por debajo de 150** aunque tenga mucho 
 
 ---
 
-## 2. Dirección visual — **Propuesta**
+## 2. Dirección visual — ✅ aprobada por Luis el 2026-09-26
 
 **«Pradera de cuento ilustrado a media mañana de primavera.»** Caricatura amable, igual que El Océano,
 Glub, el cocodrilo y el unicornio: formas redondas y blandas, colores limpios, nada de realismo.
@@ -55,10 +55,9 @@ Paleta:
 | Flores | `ffd84d`, `ff8fb1`, `ffffff`, `b28dff` |
 | Glub | rosa `ff4081` (identidad; no cambia), pies y manos `c60055` |
 
-**Glub mejorado, misma esencia** (propuesta): la misma bola rosa con pies grandes y manos flotantes (sin
+**Glub mejorado, misma esencia** (ojos aprobados por Luis el 2026-09-26): la misma bola rosa con pies grandes y manos flotantes (sin
 brazos ni piernas), pero con volumen de verdad: brillo suave, degradado del rosa, dedos de pie mejor
-formados y **ojos grandes que parpadean**, como el pez. Hoy no tiene cara. Si Luis prefiere que siga sin
-cara, se quita del brief.
+formados y **ojos grandes que parpadean**, como el pez. Hoy no tiene cara.
 
 **Partes rígidas, sin esqueleto.** El manual preveía esqueleto para Glub, pero sus manos y pies ya flotan
 separados del cuerpo: son partes rígidas perfectas y `player.ts` ya las anima. El esqueleto se queda para
@@ -94,8 +93,8 @@ Si una pieza de Gemini no convence tras sus 2 rondas, Claude la termina desde el
 
 **Ola 0 — Claude, en cuanto Luis apruebe §2**
 - Luz y paleta en el juego y en `presets.ts`; `dedupe` de Three y conexión de `shared-3d` en este juego.
-- Bloqueo del nivel con cajas del tamaño final (castillo, laberinto, portón) para fijar las medidas de
-  los briefs.
+- Bloqueo: el nivel procedural actual ya tiene las medidas finales (§5) y sirve de bloqueo; no hace
+  falta otro.
 - Briefs de la Ola 1 y prompts listos para pegar.
 
 **Ola 1 — los tres en paralelo**
@@ -130,15 +129,15 @@ mismo paso.
 
 ## 6. Tablero (solo Claude lo edita)
 
-Estados: `⏳ en cola` → `🔨 en curso` → `📦 entregada` → `👀 capturas con Luis` → `✅ aprobada` →
+Estados: `⏳ en cola` → `📝 brief listo` → `🔨 en curso` → `📦 entregada` → `👀 capturas con Luis` → `✅ aprobada` →
 `🎮 integrada` → `🚀 publicada`.
 
 | Pieza | Carpeta | Dueño | Estado | Ronda |
 |---|---|---|---|---|
-| Dirección visual (§2) | — | Luis | 👀 esperando OK | — |
-| Glub | `glub/` | Claude | ⏳ | — |
-| Castillo | `castillo/` | Astra | ⏳ | — |
-| Rocas | `rocas-pradera/` | Gemini | ⏳ | — |
+| Dirección visual (§2) | — | Luis | ✅ aprobada; luz y paleta ya en el juego | — |
+| Glub | `glub/` | Claude | ⏳ siguiente de Claude | — |
+| Castillo | `castillo/` | Astra | 📝 brief listo, falta pegar el prompt | — |
+| Rocas | `rocas-pradera/` | Gemini | 📝 brief listo (receta probada con bpy), falta pegar el prompt | — |
 | Setos | `setos/` | Gemini | ⏳ | — |
 | Muralla | `muralla/` | Gemini | ⏳ | — |
 | Portón | `porton/` | Gemini | ⏳ | — |
