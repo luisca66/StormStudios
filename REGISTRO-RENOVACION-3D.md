@@ -15,9 +15,9 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 
 - **Walking AP Multi, nivel 3 «El Cosmos»** (elegido por Claude con la delegación de Luis; solo se renuevan
   juegos 3D). Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-COSMOS-BLENDER.md`.
-  ✅ **Completo e integrado, sin publicar** (2026-09-26). **Siguiente:**
-  1. Luis juega El Cosmos (menú → El Cosmos). Con su OK: `npm run deploy` en `apps-src/oido-absoluto-multi-juego`.
-  2. Después: nivel 4 «El Pantano» (estrena el esqueleto con el cocodrilo; `MANUAL-RENOVACION-3D.md` §4).
+  ✅ **Publicado el 2026-09-26** tras jugarlo Luis («lo veo increíble»); estrellas fugaces visibles a su pedido.
+  **Siguiente:**
+  1. Nivel 4 «El Pantano» (estrena el esqueleto con el cocodrilo; `MANUAL-RENOVACION-3D.md` §4).
   - Para probar: `.claude/launch.json` tiene `oido-multi-alt` (puerto 5187); en dev, `window.__apm` da el
     renderer (mover `player.mesh`, leer `renderer.info`).
   - Si el panel del navegador de Claude está oculto, `requestAnimationFrame` se pausa y el juego parece
@@ -27,7 +27,7 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 
 ### 2026-09-26
 
-- ✅ **El Cosmos (nivel 3 de Walking AP Multi) completo, sin publicar**: luz azul medianoche con acentos
+- ✅ **El Cosmos (nivel 3 de Walking AP Multi) completo y publicado**: luz azul medianoche con acentos
   turquesa y coral (también en `shared-3d/inspector/presets.ts`), nebulosas de sprites suaves y 3 galaxias
   espirales (código); cohete de juguete retro con alas que se inclinan y llama que crece (Claude, 4 296 tri);
   portal-agujero de gusano con aros que giran y remolino de estrellas (Astra, 17 756 tri, una sola entrega);

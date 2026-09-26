@@ -147,7 +147,7 @@ relajó para los modelos de Blender.
   automático de tres agentes: Glub (Claude), castillo (Astra), rocas, setos, muralla, portón, cubo de nota,
   árboles y flores (Gemini). Vista inicial de ~630 a 33 draw calls. Detalle y pendientes en
   `apps-src/oido-absoluto-multi-juego/PLAN-PRADERA-BLENDER.md` §7.
-  Nivel 3 «El Cosmos»: ✅ **completo, sin publicar** (2026-09-26): cohete (Claude), portal (Astra),
+  Nivel 3 «El Cosmos»: ✅ **completo y publicado** (2026-09-26): cohete (Claude), portal (Astra),
   asteroides, planetas y cristal de nota (Gemini). Detalle en `PLAN-COSMOS-BLENDER.md`.
   Nivel 4 «El Pantano»: sigue procedural.
 - **Cosmic Ear** — `cosmic-ear` (desglose auditivo): ✅ **rediseño completo publicado** (2026-09-26):

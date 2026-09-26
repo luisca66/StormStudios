@@ -90,11 +90,12 @@ Estados: `⏳ en cola` → `📝 brief listo` → `🔨 en curso` → `📦 entr
 | Planetas | `planetas-cosmos/` | Gemini | 🎮 3 planetas, 2 con anillo que gira | v1 |
 | Cristal de nota | `cristal-nota/` | Gemini | 🎮 estrella de cristal teñida con la nota, aro que gira | v1 |
 
-## 7. Resultado (2026-09-26) — nivel completo, sin publicar
+## 7. Resultado (2026-09-26) — nivel completo y publicado
 
 Todo en una tarde con el reparto automático: Gemini hizo 3 kits a la primera (recetas probadas antes por
 Claude), Astra el portal en una sola entrega, Claude el cohete, la luz y la integración. Probado en el
 navegador: vuelo, llama, alas, cristal, portal y planetas, sin errores; La Pradera sigue igual.
 Vista junto al portal: **15 draw calls, ~39 000 triángulos** (`renderer.info`).
 
-Pendientes: que Luis juegue el nivel; publicar con su OK.
+Luis lo jugó («lo veo increíble») y pidió ver las estrellas fugaces: ahora cruzan cerca del jugador con
+estela y cabeza brillante. Publicado el mismo día.
