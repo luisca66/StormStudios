@@ -49,7 +49,7 @@ if ($Agente -eq "astra") {
 $code = $LASTEXITCODE
 
 $entrega = Join-Path $dir "ENTREGA.md"
-$listaFn = { (Test-Path $entrega) -and (Select-String -Path $entrega -Pattern "Lista para" -Quiet) }
+$listaFn = { (Test-Path $entrega) -and (Select-String -Path $entrega -Pattern "Lista para: revisi" -Quiet) }
 if ($Agente -eq "gemini") {
   $horas = 3
   $limite = (Get-Date).AddHours($horas)
