@@ -3,6 +3,7 @@ import { BlenderPortal, buildBlenderPortal, preloadBlenderPortal } from "./blend
 import { buildBlenderRainbowPortal, preloadBlenderRainbowPortal } from "./blender-rainbow-portal";
 import { buildModel } from "../../../shared-3d/src";
 import { gateKit } from "./blender-pradera-kits";
+import { buildCosmosPortal, cosmosPortalKit, type CosmosPortal } from "./blender-cosmos";
 
 export class LevelGate {
   public group: THREE.Group;
@@ -33,6 +34,7 @@ export class LevelGate {
   private wormholeRings: { mesh: THREE.Mesh; spin: number }[] = [];
   private wormholeDisc?: THREE.Mesh;
   private wormholeGlow?: THREE.PointLight;
+  private cosmosPortal?: CosmosPortal;
   private wormholeT = 0;
 
   constructor(private level: number, private scene: THREE.Scene, private arenaSize: number) {
@@ -81,6 +83,10 @@ export class LevelGate {
     }
     else if (this.level === 3) {
       this.wormholeT += delta;
+      if (this.cosmosPortal) {
+        this.cosmosPortal.setOpen(t);
+        this.cosmosPortal.update(delta, this.wormholeT);
+      }
       for (const r of this.wormholeRings) {
         r.mesh.rotation.z += r.spin * delta;
       }
@@ -203,6 +209,22 @@ export class LevelGate {
       const portal = new THREE.Group();
       portal.position.copy(this.position);
       this.group.add(portal);
+
+      // Portal de Blender (art/blender/portal-cosmos/, Astra): de pie, mirando al centro del nivel.
+      if (cosmosPortalKit.ready()) {
+        this.cosmosPortal = buildCosmosPortal();
+        portal.add(this.cosmosPortal.root);
+        portal.lookAt(0, 0, 0);
+        const beacon = new THREE.Mesh(
+          new THREE.CylinderGeometry(10, 2, 260, 12, 1, true),
+          new THREE.MeshBasicMaterial({ color: 0xb8a4ff, transparent: true, opacity: 0.06, side: THREE.DoubleSide, depthWrite: false })
+        );
+        beacon.position.copy(this.position).add(new THREE.Vector3(0, 130, 0));
+        this.group.add(beacon);
+        this.wormholeGlow = new THREE.PointLight(0xb8a4ff, 12, 160);
+        portal.add(this.wormholeGlow);
+        return;
+      }
 
       // 5 concentric glowing rings (purple → cyan), lying flat with slight tilt
       const radii = [4.0, 3.3, 2.6, 1.9, 1.2];

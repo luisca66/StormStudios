@@ -4,6 +4,7 @@ import { ASSET_BASE } from "@/config";
 import { buildBlenderFish, preloadBlenderFish } from "./blender-fish";
 import { buildBlenderGlub, isGlubReady } from "./blender-glub";
 import { buildBlenderUnicorn, isUnicornReady } from "./blender-unicorn";
+import { buildRocket, rocketKit } from "./blender-cosmos";
 
 export class PlayerController {
   public mesh: THREE.Group;
@@ -43,6 +44,8 @@ export class PlayerController {
 
   private wingLeft?: THREE.Object3D;
   private wingRight?: THREE.Object3D;
+  /** Ángulo de reposo de las alas en Z: las de primitivas son cilindros tumbados, las del cohete van a 0. */
+  private wingBase = Math.PI / 2.2;
   private thrusterGlow?: THREE.Mesh;
   private engineLight?: THREE.PointLight;
 
@@ -259,6 +262,25 @@ export class PlayerController {
     this.pitchSpeed = 0.234;
     this.yawSpeed = 0.234;
     this.rollSpeed = 0.35;
+
+    // Cohete de Blender (art/blender/cohete/, Claude): alas con pivote en la raíz y llama en la tobera.
+    if (rocketKit.ready()) {
+      const rocket = buildRocket();
+      const bodyRoot = new THREE.Group();
+      bodyRoot.add(rocket.root);
+      this.mesh.add(bodyRoot);
+      this.bodyMesh = bodyRoot as unknown as THREE.Mesh;
+      [this.wingLeft, this.wingRight] = rocket.wings;
+      this.wingBase = 0;
+      this.thrusterGlow = rocket.flame;
+      this.thrusterGlow.scale.set(1, 1, 0); // apagada hasta acelerar
+      this.engineLight = new THREE.PointLight(0xffb35c, 0, 8.0);
+      this.engineLight.position.set(0, 0, -2.0);
+      bodyRoot.add(this.engineLight);
+      return;
+    }
+    // Reserva por si el GLB aún no llegó: la nave de primitivas original.
+    this.wingBase = Math.PI / 2.2;
 
     // Colors matching SpacePlayer.gd
     const hullColor = 0x262638;    // Color(0.15, 0.15, 0.22)
@@ -921,11 +943,11 @@ export class PlayerController {
 
       if (this.wingLeft && this.wingRight) {
         // Left wing angle
-        const targetWingL = Math.PI / 2.2 + yawInput * 0.3;
+        const targetWingL = this.wingBase + yawInput * 0.3;
         this.wingLeft.rotation.z = THREE.MathUtils.lerp(this.wingLeft.rotation.z, targetWingL, 4.0 * delta);
         
         // Right wing angle
-        const targetWingR = -Math.PI / 2.2 + yawInput * 0.3;
+        const targetWingR = -this.wingBase + yawInput * 0.3;
         this.wingRight.rotation.z = THREE.MathUtils.lerp(this.wingRight.rotation.z, targetWingR, 4.0 * delta);
       }
 

@@ -9,6 +9,7 @@ import { preloadBlenderSkyKit, skyMesh } from "./blender-sky-kit";
 import { BlenderCastle, buildBlenderCastle, isCastleReady } from "./blender-castle";
 import { buildKitField, KitPlacement } from "./blender-kit-field";
 import { FLOWER_PARTS, flowersKit, hedgesKit, ROCK_PARTS, rocksKit, TREE_PARTS, treesKit, wallKit } from "./blender-pradera-kits";
+import { type Animated, type AsteroidPlacement, type PlanetPlacement, buildAsteroidField, buildCosmosPlanets, buildGalaxy, buildNebula, cosmosAsteroidsKit, cosmosPlanetsKit } from "./blender-cosmos";
 
 export interface Obstacle {
   x: number;
@@ -35,6 +36,7 @@ export class LevelEnvironment {
   private cloudField?: CloudField;
   private atlantis?: BlenderAtlantis;
   private castle?: BlenderCastle;
+  private cosmosAnims: Animated[] = [];
   private shootingStarTimer = 3.0; // level 3: time until next shooting star
   
   constructor(private level: number, private scene: THREE.Scene, private arenaSize: number) {
@@ -98,6 +100,7 @@ export class LevelEnvironment {
     this.cloudField = undefined;
     this.atlantis = undefined;
     this.castle = undefined;
+    this.cosmosAnims = [];
     this.altarCrystal = undefined;
     // Reset fog
     this.scene.fog = null;
@@ -192,6 +195,7 @@ export class LevelEnvironment {
   // Update animated details
   public update(delta: number, time: number): void {
     this.castle?.update(time);
+    for (const a of this.cosmosAnims) a.update(delta, time);
     for (const item of this.animatedMeshes) {
       const { mesh, type, meta } = item;
       
@@ -1638,20 +1642,22 @@ export class LevelEnvironment {
   private buildCosmos(): void {
     const half = this.arenaSize / 2;
 
-    // Black space, dim violet ambient + faint star-light
+    // Noche azul profunda y luminosa (PLAN-COSMOS-BLENDER.md §2): nada negro, todo se lee.
     this.scene.fog = null;
-    this.scene.background = new THREE.Color(0x000000);
-    const ambient = new THREE.HemisphereLight(new THREE.Color(0.20, 0.12, 0.40), new THREE.Color(0.02, 0.02, 0.08), 0.45);
-    this.group.add(ambient);
-    const sun = new THREE.DirectionalLight(new THREE.Color(0.7, 0.6, 1.0), 0.5);
+    this.scene.background = new THREE.Color(0x0b1438);
+    this.group.add(new THREE.HemisphereLight(0x9cc4ff, 0x2a1f5c, 1.3));
+    const sun = new THREE.DirectionalLight(0xeaf4ff, 1.8);
     sun.position.set(100, 100, -100);
     this.group.add(sun);
+    const rim = new THREE.DirectionalLight(0xff9e7a, 0.6);
+    rim.position.set(-120, -40, 120);
+    this.group.add(rim);
 
     // Starfield as a single Points cloud (1 draw call instead of 500 meshes)
-    const starCount = 600;
+    const starCount = 900;
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
-    const palette = [[1, 1, 1], [0.8, 0.9, 1], [1, 0.95, 0.7], [1, 0.8, 0.5], [0.7, 0.8, 1]];
+    const palette = [[1, 1, 1], [0.8, 0.95, 1], [1, 0.95, 0.6], [1, 0.75, 0.9], [0.6, 1, 0.95]];
     for (let i = 0; i < starCount; i++) {
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(Math.random() * 2 - 1);
@@ -1682,68 +1688,62 @@ export class LevelEnvironment {
     }));
     this.group.add(stars);
 
-    // Nebula clusters (3-5 huge translucent emissive blobs each)
+    // Nebulosas: manchas grandes y suaves en la paleta del nivel (turquesa, lavanda, rosa aurora, azul, coral)
     const nebulae = [
-      { p: [80, 30, 60], c: [0.6, 0.1, 0.8], s: 45 },
-      { p: [-90, -20, 80], c: [0.1, 0.3, 0.8], s: 55 },
-      { p: [40, 60, -100], c: [0.8, 0.2, 0.4], s: 40 },
-      { p: [-70, 40, -60], c: [0.2, 0.6, 0.9], s: 50 },
-      { p: [110, -40, -80], c: [0.5, 0.1, 0.7], s: 60 }
+      { p: [80, 30, 60], c: 0x3fe0d0, s: 55 },
+      { p: [-90, -20, 80], c: 0xb8a4ff, s: 65 },
+      { p: [40, 60, -100], c: 0xff8fd8, s: 50 },
+      { p: [-70, 40, -60], c: 0x5a8cff, s: 60 },
+      { p: [110, -40, -80], c: 0xff9e7a, s: 55 }
     ];
-    for (const n of nebulae) {
-      const g = new THREE.Group(); g.position.set(n.p[0], n.p[1], n.p[2]);
-      const col = new THREE.Color(n.c[0], n.c[1], n.c[2]);
-      const count = 3 + ((Math.random() * 3) | 0);
-      for (let j = 0; j < count; j++) {
-        const s = n.s * (0.5 + Math.random() * 0.5);
-        const cloud = new THREE.Mesh(new THREE.SphereGeometry(s, 8, 6),
-          new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.04 + Math.random() * 0.05, side: THREE.DoubleSide, depthWrite: false }));
-        cloud.position.set((Math.random() - 0.5) * n.s * 0.6, (Math.random() - 0.5) * n.s * 0.4, (Math.random() - 0.5) * n.s * 0.6);
-        g.add(cloud);
-      }
-      this.group.add(g);
-    }
+    for (const n of nebulae) this.group.add(buildNebula(new THREE.Vector3(n.p[0], n.p[1], n.p[2]), n.c, n.s));
 
-    // Planets (Mars-ish, Neptune-ish, Jupiter-ish), two with rings
-    const planets = [
-      { p: [250, -40, 180], r: 20, c: [0.7, 0.4, 0.2], ring: [0.6, 0.5, 0.3] },
-      { p: [-260, 60, -200], r: 14, c: [0.3, 0.5, 0.8], ring: null },
-      { p: [180, 90, -270], r: 18, c: [0.85, 0.7, 0.4], ring: [0.7, 0.6, 0.3] }
+    // Galaxias espirales lejanas (código)
+    this.group.add(buildGalaxy(new THREE.Vector3(-230, 120, 260), 70, 0xfff3c4, 0x8f7ae6, new THREE.Euler(0.9, 0, 0.3)));
+    this.group.add(buildGalaxy(new THREE.Vector3(260, -110, -180), 55, 0xffffff, 0x3fe0d0, new THREE.Euler(-0.5, 0.4, 1.1)));
+    this.group.add(buildGalaxy(new THREE.Vector3(-60, 200, -300), 45, 0xffe0f0, 0xff7a6b, new THREE.Euler(1.3, 0.2, -0.4)));
+
+    // Planetas de fondo (Blender, Gemini): tres caramelos, dos con anillo
+    const planets: PlanetPlacement[] = [
+      { part: "planet_a", position: new THREE.Vector3(250, -40, 180), radius: 20 },
+      { part: "planet_b", position: new THREE.Vector3(-260, 60, -200), radius: 14 },
+      { part: "planet_c", position: new THREE.Vector3(180, 90, -270), radius: 18 }
     ];
-    for (const pl of planets) {
-      const col = new THREE.Color(pl.c[0], pl.c[1], pl.c[2]);
-      const planet = new THREE.Mesh(new THREE.SphereGeometry(pl.r, 20, 14),
-        new THREE.MeshStandardMaterial({ color: col, roughness: 0.85, emissive: col.clone().multiplyScalar(0.4), emissiveIntensity: 0.12 }));
-      planet.position.set(pl.p[0], pl.p[1], pl.p[2]);
-      this.group.add(planet);
-      if (pl.ring) {
-        const rc = new THREE.Color(pl.ring[0], pl.ring[1], pl.ring[2]);
-        const ring = new THREE.Mesh(new THREE.TorusGeometry(pl.r * 1.65, pl.r * 0.35, 2, 40),
-          new THREE.MeshBasicMaterial({ color: rc, transparent: true, opacity: 0.5, side: THREE.DoubleSide }));
-        ring.position.set(pl.p[0], pl.p[1], pl.p[2]);
-        ring.rotation.x = Math.PI / 2 - 0.4; // tilted Saturn ring
-        this.group.add(ring);
+    if (cosmosPlanetsKit.ready()) {
+      const field = buildCosmosPlanets(planets);
+      this.group.add(field.root);
+      this.cosmosAnims.push(field);
+    } else {
+      for (const pl of planets) {
+        const planet = new THREE.Mesh(new THREE.SphereGeometry(pl.radius, 20, 14), new THREE.MeshStandardMaterial({ color: 0xff9e7a, roughness: 0.8 }));
+        planet.position.copy(pl.position);
+        this.group.add(planet);
       }
     }
 
-    // Tumbling asteroids
-    const rockTints = [0x252528, 0x282422, 0x222826, 0x2a2620];
+    // Asteroides que dan tumbos; son obstáculos (radio 2–8.5 m)
+    const rocks: AsteroidPlacement[] = [];
     for (let i = 0; i < 40; i++) {
       const ax = (Math.random() - 0.5) * (this.arenaSize - 60);
       const ay = (Math.random() - 0.5) * 350;
       const az = (Math.random() - 0.5) * (this.arenaSize - 60);
       if (Math.hypot(ax, ay, az) < 35) continue; // keep spawn clear
       const radius = 2.0 + Math.random() * 6.5;
-      const asteroid = new THREE.Mesh(new THREE.DodecahedronGeometry(radius, 1),
-        new THREE.MeshStandardMaterial({ color: rockTints[(Math.random() * rockTints.length) | 0], roughness: 0.95, metalness: 0.1 }));
-      asteroid.position.set(ax, ay, az);
-      asteroid.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
-      this.group.add(asteroid);
+      rocks.push({ position: new THREE.Vector3(ax, ay, az), radius });
       this.obstacles.push({ x: ax, y: ay, z: az, radius });
-      this.animatedMeshes.push({
-        mesh: asteroid, type: "asteroid",
-        meta: { rotX: (Math.random() - 0.5) * 0.4, rotY: (Math.random() - 0.5) * 0.6 }
-      });
+    }
+    if (cosmosAsteroidsKit.ready()) {
+      const field = buildAsteroidField(rocks);
+      this.group.add(field.root);
+      this.cosmosAnims.push(field);
+    } else {
+      for (const r of rocks) {
+        const asteroid = new THREE.Mesh(new THREE.DodecahedronGeometry(r.radius, 1),
+          new THREE.MeshStandardMaterial({ color: 0x3a4a78, roughness: 0.95 }));
+        asteroid.position.copy(r.position);
+        this.group.add(asteroid);
+        this.animatedMeshes.push({ mesh: asteroid, type: "asteroid", meta: { rotX: (Math.random() - 0.5) * 0.4, rotY: (Math.random() - 0.5) * 0.6 } });
+      }
     }
   }
 

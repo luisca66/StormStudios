@@ -8,6 +8,7 @@ import { BlenderClam, buildBlenderClam, isClamReady } from "./blender-clam";
 import { BlenderBalloon, buildBlenderBalloon, isBalloonReady } from "./blender-balloon";
 import { buildModel } from "../../../shared-3d/src";
 import { noteCubeKit } from "./blender-pradera-kits";
+import { buildNoteCrystal, noteCrystalKit } from "./blender-cosmos";
 
 export class Game3DRenderer {
   private canvas: HTMLCanvasElement;
@@ -338,6 +339,11 @@ export class Game3DRenderer {
         group.add(cone);
       }
     } 
+    else if (level === 3 && noteCrystalKit.ready()) {
+      // Cristal-estrella de Blender (art/blender/cristal-nota/, Gemini), teñido con la nota.
+      group.add(buildNoteCrystal(color));
+      group.add(new THREE.PointLight(color, 9, 40));
+    }
     else if (level === 3) {
       // Space crystal: glowing core + 6 spikes + orbital ring + own light (Godot _build_space_crystal)
       const base = new THREE.Color(color);

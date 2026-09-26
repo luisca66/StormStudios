@@ -69,11 +69,14 @@ export const PRESETS: LightingPreset[] = [
     id: "multi-3-cosmos",
     label: "AP Multi · 3 El Cosmos",
     source: `${MULTI} buildCosmos`,
-    background: 0x000000,
+    background: 0x0b1438,
     toneMapping: THREE.NoToneMapping,
     studio: false,
-    hemisphere: { sky: rgb(0.2, 0.12, 0.4), ground: rgb(0.02, 0.02, 0.08), intensity: 0.45 },
-    directional: [{ color: rgb(0.7, 0.6, 1.0), intensity: 0.5, position: [100, 100, -100] }],
+    hemisphere: { sky: 0x9cc4ff, ground: 0x2a1f5c, intensity: 1.3 },
+    directional: [
+      { color: 0xeaf4ff, intensity: 1.8, position: [100, 100, -100] },
+      { color: 0xff9e7a, intensity: 0.6, position: [-120, -40, 120] },
+    ],
   },
   {
     id: "multi-4-pantano",

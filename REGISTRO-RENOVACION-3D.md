@@ -13,25 +13,29 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 
 ## En curso
 
-- **Cosmic Ear — rediseño completo** (decidido por Luis). Plan: `apps-src/cosmic-ear/PLAN-COSMIC-EAR.md`.
-  Todas las piezas integradas: Three 0.160 + módulos, luz nueva, nave (Claude), planetas (Astra), lunas y
-  asteroides (Gemini), estación de salida (Claude).
-  ✅ **Publicado el 2026-09-26** tras la misión real de Luis cantando en Chrome («funciona perfecto»).
-  Cosmic Ear ya tiene `npm run deploy` (build + `scripts/copy-dist.mjs` a `public/apps/cosmic-ear`, como los demás).
-  **Siguiente:**
-  1. ✅ Escape cierra el afinador y la nave se queda quieta mientras está abierto (commit `5d8ecff`,
-     publicado el 2026-09-26).
-  2. ✅ Fase 1b paso 2: escena en `scene/cosmic-scene.js`, audio en `audio/`; `App` de 966 a 550 líneas.
-     «Nueva misión» (fin del tiempo) ahora apaga motor y música como «Salir». Publicado el 2026-09-26.
-  - **Con esto el plan de Cosmic Ear queda completo.**
-  - Ojo al probar en el panel del navegador de Claude: si está oculto, `requestAnimationFrame` se pausa y el
-    juego parece congelado; una captura de pantalla lo despierta.
-  - Para probar sin cantar: `.claude/launch.json` tiene `cosmic-ear-alt` (puerto 5186) por si otro chat
-    ocupa el 5180; micrófono simulado inyectando un `getUserMedia` silencioso antes de «Activar micrófono».
+- **Walking AP Multi, nivel 3 «El Cosmos»** (elegido por Claude con la delegación de Luis; solo se renuevan
+  juegos 3D). Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-COSMOS-BLENDER.md`.
+  ✅ **Completo e integrado, sin publicar** (2026-09-26). **Siguiente:**
+  1. Luis juega El Cosmos (menú → El Cosmos). Con su OK: `npm run deploy` en `apps-src/oido-absoluto-multi-juego`.
+  2. Después: nivel 4 «El Pantano» (estrena el esqueleto con el cocodrilo; `MANUAL-RENOVACION-3D.md` §4).
+  - Para probar: `.claude/launch.json` tiene `oido-multi-alt` (puerto 5187); en dev, `window.__apm` da el
+    renderer (mover `player.mesh`, leer `renderer.info`).
+  - Si el panel del navegador de Claude está oculto, `requestAnimationFrame` se pausa y el juego parece
+    congelado; una captura de pantalla lo despierta.
 
 ## Terminado
 
 ### 2026-09-26
+
+- ✅ **El Cosmos (nivel 3 de Walking AP Multi) completo, sin publicar**: luz azul medianoche con acentos
+  turquesa y coral (también en `shared-3d/inspector/presets.ts`), nebulosas de sprites suaves y 3 galaxias
+  espirales (código); cohete de juguete retro con alas que se inclinan y llama que crece (Claude, 4 296 tri);
+  portal-agujero de gusano con aros que giran y remolino de estrellas (Astra, 17 756 tri, una sola entrega);
+  asteroides instanciados que dan tumbos, planetas-caramelo con anillos y cristal-estrella teñido por nota
+  (Gemini vía agy, los tres a la primera con recetas probadas por Claude). Junto al portal: 15 draw calls.
+- ✅ **Cosmic Ear completo y publicado**: estación de salida (Claude), asteroides (Gemini), Escape en el
+  afinador y escena y audio fuera de `App`. «Nueva misión» ya apaga motor y música. Plan: `apps-src/cosmic-ear/PLAN-COSMIC-EAR.md`.
+- 📌 **Alcance decidido por Luis**: solo se renuevan los juegos 3D; los 2D y el código heredado se quedan.
 
 - ✅ **Cosmic Ear: estación de salida y asteroides** integrados. Estación (Claude, 6 508 tri, 48 KB): plataforma-trompo violeta bajo la nave, con faroles magenta y luces turquesa que laten, flechas de salida y anillo dorado que gira (`src/scene/station.js`). Asteroides (Gemini vía agy, receta probada antes por Claude; 1 280 tri, 36 KB, sin diferencias): cinturones que giran en uno de cada tres planetas más 90 rocas sueltas, instanciados (`src/scene/asteroids.js`). Misión probada con micrófono simulado: acorde, «¡Canta!» y escucha sin errores; 61 FPS; `npm run build` bien. Sin publicar (falta OK de Luis).
 

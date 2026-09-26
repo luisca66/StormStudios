@@ -143,14 +143,21 @@ relajó para los modelos de Blender.
   Nivel 5 «Las Nubes» (auditoría en `apps-src/oido-absoluto-multi-juego/AUDITORIA-NUBES-BLENDER.md`):
   ✅ nubes instanciadas, globo aerostático, portal arcoíris, islas, cometas y pájaros (Claude, publicados
   2026-09-16; vista inicial de 367 a 173 draw calls). ✅ Unicornio-pegaso (Claude, con el brief escrito para Astra). Nivel completo.
-  Nivel 1 «La Pradera»: ✅ **completo, sin publicar** (2026-09-26), piloto del flujo nuevo y del reparto
+  Nivel 1 «La Pradera»: ✅ **completo y publicado** (2026-09-26), piloto del flujo nuevo y del reparto
   automático de tres agentes: Glub (Claude), castillo (Astra), rocas, setos, muralla, portón, cubo de nota,
   árboles y flores (Gemini). Vista inicial de ~630 a 33 draw calls. Detalle y pendientes en
   `apps-src/oido-absoluto-multi-juego/PLAN-PRADERA-BLENDER.md` §7.
-  Niveles 3 «El Cosmos» y 4 «El Pantano»: siguen procedurales.
-- **Cosmic Ear** — `cosmic-ear` (desglose auditivo): Three r128 + React en un solo archivo. **Rediseño
-  completo** después de La Pradera (decidido por Luis el 2026-09-26).
-- `intervalos-cantados-juego` y Synth-Kong: 2D, no llevan Blender.
+  Nivel 3 «El Cosmos»: ✅ **completo, sin publicar** (2026-09-26): cohete (Claude), portal (Astra),
+  asteroides, planetas y cristal de nota (Gemini). Detalle en `PLAN-COSMOS-BLENDER.md`.
+  Nivel 4 «El Pantano»: sigue procedural.
+- **Cosmic Ear** — `cosmic-ear` (desglose auditivo): ✅ **rediseño completo publicado** (2026-09-26):
+  Three 0.160 y módulos, nave y estación (Claude), planetas-instrumento (Astra), lunas y asteroides
+  (Gemini). Detalle en `apps-src/cosmic-ear/PLAN-COSMIC-EAR.md`.
+
+**Alcance (decidido por Luis el 2026-09-26): solo se renuevan los juegos 3D.** Los 2D se quedan como
+están aunque sean código heredado: las prácticas «jugar» (portadas de Android), `intervalos-cantados-juego`,
+`intervalos-reconocimiento-juego`, Synth-Kong, los arcade de App Memoria (`*-gemini.html`,
+`space-invaders.html`), `intervalos.html` y la batería.
 
 ---
 
@@ -189,10 +196,13 @@ iluminación juntos, por nivel. `intervalos-cantados-juego` es 2D: su renovació
 8. ✅ **Walking AP Multi, nivel 1 «La Pradera»** (completo 2026-09-26, sin publicar): piloto de `MANUAL-RENOVACION-3D.md` y del reparto
    Claude/Astra/Gemini. Glub se queda en esencia con un modelo mejorado. Plan:
    `apps-src/oido-absoluto-multi-juego/PLAN-PRADERA-BLENDER.md`.
-9. **Cosmic Ear: rediseño completo** (Three 0.160, módulos y modelos nuevos). Su plan se escribe al
-   cerrar La Pradera.
-10. Después, por decidir: El Pantano y El Cosmos de Walking AP Multi, cometa exterior de El Cometa,
-    laberinto de Resonancia y chimeneas de Batisfera (esta última puede ir antes, con Astra libre).
+9. ✅ **Cosmic Ear: rediseño completo** (publicado 2026-09-26).
+10. **Walking AP Multi, nivel 3 «El Cosmos»** (elegido por Claude con la delegación de Luis, 2026-09-26):
+    así Walking AP Multi queda a un nivel de estar renovado entero. Plan:
+    `apps-src/oido-absoluto-multi-juego/PLAN-COSMOS-BLENDER.md`.
+11. Walking AP Multi, nivel 4 «El Pantano» (estrena el esqueleto con el cocodrilo).
+12. Por decidir al llegar: cometa exterior de El Cometa y laberinto de Resonancia. (Las chimeneas de
+    Batisfera ya están hechas.)
 
 Transversal: medir rendimiento **en escritorio** antes de publicar cualquier modelo nuevo. Los juegos
 son para laptop/escritorio; las versiones de teléfono serán apps nativas iOS/Android hechas aparte

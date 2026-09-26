@@ -118,6 +118,21 @@
       "url": "http://127.0.0.1:5180"
     },
     {
+      "name": "oido-multi-alt",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "apps-src/oido-absoluto-multi-juego",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "5187",
+        "--strictPort"
+      ],
+      "port": 5187,
+      "url": "http://127.0.0.1:5187"
+    },
+    {
       "name": "cosmic-ear-alt",
       "runtimeExecutable": "npx",
       "runtimeArgs": [
