@@ -664,7 +664,7 @@ function App() {
                         if (c.userData.dissolving) {
                             c.userData.dissolveProgress += 0.04;
                             const p = c.userData.dissolveProgress;
-                            c.scale.setScalar(1 + p * 3);
+                            c.scale.setScalar((c.userData.baseScale ?? 1) * (1 + p * 3));
                             c.material.opacity = Math.max(0, 1 - p);
                             c.material.emissiveIntensity = 2 + p * 8;
                             if (p >= 1) c.visible = false;

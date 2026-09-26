@@ -19,6 +19,8 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 
 ### 2026-09-26
 
+- ✅ **Cosmic Ear: planetas y lunas nuevos** integrados: 5 planetas-instrumento de Astra (piano, cello, corno, coro, fagot; el instrumento del planeta decide su forma, con «Aleatorio» se reparte por id) con anillo que gira, y lunas de Gemini teñidas con el color de su nota. Sin publicar (falta OK de Luis).
+
 - ✅ **Gemini automático y sin costo por token FUNCIONA**: `agy` hizo el kit de lunas de Cosmic Ear de punta a punta (2 640 tri, sin diferencias). Claves: reglas regex en Windows (`command(regex:...modelar\.cmd .*)` y `unsandboxed(...)`), envoltorio `C:\Users\Luis\blender-bpy\modelar.cmd`, telemetría desactivada. Luis no tiene que abrir nada.
 - ✅ **Cosmic Ear, fase 2 (luz)**: fuera los modos «legacy»; luz cálida (hemisférica dorado/violeta, sol cálido, contraluz magenta), nebulosa índigo-violeta con dorado y magenta, estrellas cálidas.
 
