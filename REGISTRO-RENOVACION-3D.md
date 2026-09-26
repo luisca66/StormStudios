@@ -14,6 +14,15 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 ## En curso
 
 - **Cosmic Ear — rediseño completo** (decidido por Luis). Plan: `apps-src/cosmic-ear/PLAN-COSMIC-EAR.md`.
+  Ya integrados: Three 0.160 + módulos, luz nueva, nave (Claude), planetas (Astra), lunas (Gemini).
+  **Siguiente (pedido por Luis el 2026-09-26):**
+  1. **Asteroides decorativos** (kit instanciado, 3 variantes) → Gemini por la cola: brief con receta probada
+     en `apps-src/cosmic-ear/art/blender/asteroides/` (partir de la receta de `oido-absoluto-multi-juego/art/blender/rocas-pradera/`,
+     colores violeta-gris del espacio) y agregarlo a `plantillas-blender/COLA-GEMINI.md`.
+  2. **Estación de salida** (donde arranca la nave) → Gemini si es simple o Astra si se quiere hermosa.
+  3. Integrar ambos en `apps-src/cosmic-ear/src/scene/` (asteroides instanciados alrededor de los planetas).
+  4. Probar una misión con micrófono simulado (inyectar `navigator.mediaDevices.getUserMedia` silencioso desde la consola).
+  5. `npm run deploy` en `apps-src/cosmic-ear` **solo con OK de Luis** (quiere jugar una misión real cantando antes).
 
 ## Terminado
 
