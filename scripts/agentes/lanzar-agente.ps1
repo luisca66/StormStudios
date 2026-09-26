@@ -23,11 +23,8 @@ param(
   [Parameter(Mandatory)] [ValidateSet("astra", "gemini")] [string] $Agente,
   [Parameter(Mandatory)] [string] $Carpeta,
   [switch] $Reanudar,        # solo Astra: sigue su última sesión de este modelo
-  [string] $Mensaje,         # archivo con el mensaje de la ronda (por defecto PROMPT.txt de la carpeta)
-  [string] $GeminiModel = "gemini-3.8-flash",  # se confirma contra la lista de modelos de la clave
-  # La clave de AI resultó de pago (2026-09-26: ~35 pesos en una tarde). Gemini por API solo con
-  # permiso explícito de Luis en esa sesión; sin este interruptor el lanzador se niega.
-  [switch] $PagarApiGemini
+  [string] $Mensaje          # archivo con el mensaje (por defecto PROMPT.txt de la carpeta).
+                             # Para la cola de Gemini: -Carpeta plantillas-blender -Mensaje plantillas-blender\PROMPT-COLA-GEMINI.txt
 )
 
 $ErrorActionPreference = "Stop"
@@ -64,28 +61,15 @@ if ($Agente -eq "astra") {
   }
   $code = $LASTEXITCODE
 } else {
-  if (-not $PagarApiGemini) {
-    throw "Gemini por API cuesta dinero (clave de AI Studio de pago). Usa Astra (suscripción), que Claude lo modele, o -PagarApiGemini solo con permiso de Luis."
-  }
-  # Gemini CLI con la clave de Google AI Studio de Luis (la cuenta personal sin clave ya no tiene
-  # soporte). La clave vive en la variable de usuario GEMINI_API_KEY, que Luis configuró; se pasa al
-  # proceso sin escribirla en ningún registro.
-  if (-not $env:GEMINI_API_KEY) {
-    $env:GEMINI_API_KEY = [Environment]::GetEnvironmentVariable("GEMINI_API_KEY", "User")
-  }
-  if (-not $env:GEMINI_API_KEY) { throw "Falta la variable de usuario GEMINI_API_KEY." }
-  $gemini = Join-Path $env:APPDATA "npm\gemini.cmd"
-  # El prompt va por stdin (un .cmd rompe los argumentos con saltos de línea).
-  # auto_edit: aprueba solo ediciones de archivos; la política permite únicamente el lanzador de
-  # Blender como comando de terminal (lo demás se niega: nadie está mirando para aprobarlo).
-  $policy = Join-Path $PSScriptRoot "gemini-politica.toml"
-  $prompt | & $gemini -m $GeminiModel -p "Sigue las instrucciones de arriba." `
-      --approval-mode auto_edit --policy $policy -o text *>> $log
-  # Gemini CLI a veces sale con un "Assertion failed" de libuv al cerrar (código 9) aunque terminó
-  # bien: cuenta la entrega, no el código de salida.
-  $entrega = Join-Path $dir "ENTREGA.md"
-  $lista = (Test-Path $entrega) -and (Select-String -Path $entrega -Pattern "Lista para: revisi" -Quiet)
-  $code = if ($lista) { 0 } else { $LASTEXITCODE }
+  # Gemini = Antigravity CLI (agy), con la cuenta de Google de Luis (plan Google AI Pro): usa la
+  # cuota del plan, NO cobra por token. Nunca con clave de API (2026-09-26 la clave de AI Studio
+  # resultó de pago): se quita del entorno por si sigue definida en Windows.
+  # Permisos en ~/.gemini/antigravity-cli/settings.json: el proyecto es de confianza y el único
+  # comando de terminal permitido es el lanzador de Blender; lo demás se niega en modo headless.
+  Remove-Item Env:GEMINI_API_KEY -ErrorAction SilentlyContinue
+  $agy = Join-Path $env:LOCALAPPDATA "agy\bin\agy.exe"
+  & $agy -p $prompt --print-timeout 60m *>> $log
+  $code = $LASTEXITCODE
   Get-Content $log -Tail 40 | Set-Content $last -Encoding UTF8
 }
 
