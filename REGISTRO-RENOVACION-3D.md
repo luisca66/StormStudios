@@ -13,6 +13,24 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 
 ## En curso
 
+- **Walking AP Multi, nivel 4 «El Pantano»** (pedido de Luis el 2026-09-26). Plan y tablero:
+  `apps-src/oido-absoluto-multi-juego/PLAN-PANTANO-BLENDER.md`. Pedidos de Luis: **conservar el estilo del
+  cocodrilo, mejorado**; **conservar lo oscuro, turbio y la humedad** (no iluminar); **arreglar los límites**,
+  que «se ven muy falsos» (borde de selva cerrada con manglares instanciados).
+  Hecho: plan escrito; **cocodrilo modelado por Claude** (`art/blender/cocodrilo/`, 14 partes, 5 056 tri,
+  mismos pivotes que `buildCrocodile`; falta integrarlo); **Astra entregó el script del portal**
+  (`art/blender/portal-pantano/`, «Lista para: ejecución de Claude»; falta ejecutarlo, revisar renders e integrar).
+  **Siguiente, en orden:**
+  1. Ejecutar `modelar-portal-pantano.py` con `bpy-run.ps1` y revisar sus renders (reanudar a Astra solo si hace falta).
+  2. Terminar de probar las recetas de Gemini en `art/blender/_recetas-pantano/` (borradores de Claude; `armar.ps1`
+     junta `plantilla-probada.py` + `modelo-<kit>.txt`; ajustar su ruta de plantilla). Manglares: la versión
+     con tronco curvo y raíces en arco está escrita pero **sin probar**. Faltan rocas y tronco caído, plantas de
+     agua y hongos luminosos (diseño en el plan §3). Probar cada una, escribir su `BRIEF-GEMINI.md`, encolar
+     en `COLA-GEMINI.md` y lanzar a Gemini.
+  3. Integrar: cocodrilo en `player.ts` (partes rígidas, cola encadenada), portal en `gate.ts`, kits en
+     `buildSwamp` (manglares también en el borde), luciérnagas y agua en código; niebla y penumbra se conservan.
+  4. Probar jugando (`oido-multi-alt`, puerto 5187) y publicar con OK de Luis.
+
 - **Walking AP Multi, nivel 3 «El Cosmos»** (elegido por Claude con la delegación de Luis; solo se renuevan
   juegos 3D). Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-COSMOS-BLENDER.md`.
   ✅ **Publicado el 2026-09-26** tras jugarlo Luis («lo veo increíble»); estrellas fugaces visibles a su pedido.

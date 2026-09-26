@@ -1,0 +1,95 @@
+# --- funciones extra del brief (§4.0)
+def stick(a, b, r_a, r_b, mat, color_fn, sides=7):
+    """Tronco o raíz: cono de a (radio r_a) a b (radio r_b), pintado con color_fn."""
+    a, b = Vector(a), Vector(b)
+    d = b - a
+    bpy.ops.mesh.primitive_cone_add(vertices=sides, radius1=r_a, radius2=r_b, depth=d.length, location=(0, 0, 0))
+    ob = bpy.context.object
+    ob.rotation_mode = "QUATERNION"
+    ob.rotation_quaternion = Vector((0, 0, 1)).rotation_difference(d.normalized())
+    ob.location = (a + b) / 2
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=False)
+    ob.data.materials.append(mat)
+    paint(ob, color_fn)
+    for f in ob.data.polygons:
+        f.use_smooth = True
+    return ob
+
+
+def bark(co, n):
+    return mix("4a3b28", "6b5a3e", min(1.0, co.z / 6.0))
+
+
+def leaves(co, n):
+    """Copa: más oscura abajo, más clara arriba."""
+    return mix("24461f", "5f8f40", 0.5 + 0.5 * n.z)
+
+
+def canopy(center, radius, flat, mat):
+    """Copa blanda: icosfera aplastada con bultos."""
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2, radius=1, location=(0, 0, 0))
+    ob = bpy.context.object
+    ob.scale = (radius, radius, radius * flat)
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    tex = bpy.data.textures.new(f"Copa {ob.name}", "CLOUDS")
+    tex.noise_scale = radius * 0.6
+    mod = ob.modifiers.new("Bultos", "DISPLACE")
+    mod.texture = tex
+    mod.strength = radius * 0.25
+    apply_modifiers(ob)
+    for v in ob.data.vertices:
+        v.co += Vector(center)
+    ob.data.update()
+    ob.data.materials.append(mat)
+    paint(ob, leaves)
+    for f in ob.data.polygons:
+        f.use_smooth = True
+    return ob
+
+
+def moss_strands(center, radius, count, length, mat):
+    """Musgo que cuelga del borde de la copa (el toque húmedo)."""
+    out = []
+    for k in range(count):
+        a = k / count * math.tau + rng.uniform(-0.3, 0.3)
+        top = Vector(center) + Vector((math.cos(a) * radius * 0.8, math.sin(a) * radius * 0.8, -radius * 0.15))
+        ln = length * rng.uniform(0.6, 1.2)
+        out.append(stick(top, top + Vector((0, 0, -ln)), 0.08, 0.01, mat, lambda co, n: mix("5c6b45", "8a9a6a", 0.5), sides=4))
+    return out
+
+
+def mangrove(height, trunk_r, roots, crowns, lean=(0.0, 0.0), bark_mat=None, leaf_mat=None, moss=0):
+    top = Vector((lean[0], lean[1], height))
+    bend = Vector((-lean[1] * 0.5 + 0.35, lean[0] * 0.5, height * 0.5))   # el tronco se curva a media altura
+    base = Vector((0, 0, 1.6))
+    parts = [stick((0, 0, -0.1), base, trunk_r * 0.9, trunk_r, bark_mat, bark),
+             stick(base, bend, trunk_r, trunk_r * 0.8, bark_mat, bark),
+             stick(bend, top, trunk_r * 0.8, trunk_r * 0.5, bark_mat, bark)]
+    for k in range(roots):                   # raíces aéreas en arco: salen alto y se abren hasta el barro
+        a = k / roots * math.tau + 0.4
+        out = Vector((math.cos(a), math.sin(a), 0))
+        start = base + out * trunk_r * 0.6 + Vector((0, 0, 0.6))
+        knee = out * (0.9 + trunk_r * 2.2) + Vector((0, 0, 1.1))
+        foot = out * (1.6 + trunk_r * 3.2) + Vector((0, 0, -0.1))
+        parts.append(stick(start, knee, trunk_r * 0.42, trunk_r * 0.34, bark_mat, bark, sides=5))
+        parts.append(stick(knee, foot, trunk_r * 0.34, trunk_r * 0.26, bark_mat, bark, sides=5))
+    for (dx, dy, dz, r, flat) in crowns:
+        parts.append(canopy(top + Vector((dx, dy, dz)), r, flat, leaf_mat))
+        if moss:
+            parts += moss_strands(top + Vector((dx, dy, dz)), r, moss, r * 1.3, bark_mat)
+    return parts
+
+
+# ------------------------------------------------------------------ MODELO
+wood = material("Corteza", roughness=0.9)
+green = material("Hojas", roughness=0.85)
+
+a = join(mangrove(5.0, 0.3, 4, [(0, 0, 0.6, 2.2, 0.6), (0.9, 0.4, 0.2, 1.5, 0.6)], bark_mat=wood, leaf_mat=green, moss=4),
+         "Manglar A", "mangrove_a")
+b = join(mangrove(8.5, 0.28, 5, [(0, 0, 0.5, 2.0, 0.7), (-0.7, 0.3, -1.2, 1.4, 0.6)], lean=(0.6, 0.2), bark_mat=wood,
+                  leaf_mat=green, moss=5), "Manglar B", "mangrove_b")
+c = join(mangrove(6.0, 0.42, 6, [(0, 0, 0.4, 2.8, 0.5), (1.6, 0.6, -0.2, 1.8, 0.5), (-1.4, -0.8, -0.1, 1.7, 0.5)],
+                  lean=(-0.8, 0.0), bark_mat=wood, leaf_mat=green, moss=6), "Manglar C", "mangrove_c")
+w = join(mangrove(10.0, 0.6, 7, [(0, 0, 0.6, 4.2, 0.55), (2.6, 1.0, -0.8, 3.0, 0.55), (-2.4, -1.2, -0.5, 3.2, 0.55),
+                                 (0.4, -2.4, -1.4, 2.6, 0.6)], bark_mat=wood, leaf_mat=green, moss=8),
+         "Manglar de borde", "mangrove_wall")
