@@ -21,8 +21,8 @@ propio `PitchTrackerV2`). Opciones: instrumento, número de lunas (1–6 = notas
 
 | Fase | Qué | Quién | Estado |
 |---|---|---|---|
-| 1a | Three r128 → 0.160 | Claude | ✅ 2026-09-26 (carga sin errores; falta probar una misión con micrófono en la PC de Luis) |
-| 1b | Partir `main.jsx` en módulos: `audio/` (samples, música), `pitch/` (afinador), `scene/` (nave, planetas, cielo), `ui/` (menús y HUD React), `game/` (estado y puntaje). Sin cambiar comportamiento | Claude | ⏳ siguiente |
+| 1a | Three r128 → 0.160 | Claude | ✅ 2026-09-26; misión probada con micrófono simulado: nave, planetas y HUD sin errores |
+| 1b | Partir `main.jsx` en módulos. **Paso 1 ✅** (2026-09-26): `i18n.js`, `config.js`, `ui/icons.jsx`, `pitch/pitch-tracker.js`, `scene/sky.js`, `scene/spaceship.js`, `scene/effects.js`, `scene/planets.js`; `main.jsx` queda con `App` (966 líneas). **Paso 2 ⏳**: sacar de `App` la escena (clase `CosmicScene`) y el audio (`audio/`) | Claude | 🔨 |
 | 1c | Conectar `shared-3d` (`dedupe: ["three"]` en `vite.config.js`) y quitar los dos modos «legacy» al reiluminar | Claude | ⏳ |
 | 2 | Dirección visual (§3), luz y cielo nuevos | Claude | ⏳ propuesta abajo |
 | 3 | Modelos (§4) en modo automático | Claude, Astra, Gemini | ⏳ |

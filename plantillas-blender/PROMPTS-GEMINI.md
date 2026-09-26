@@ -49,7 +49,8 @@ Proyecto: C:\Users\Luis\Documents\Claude Cowork\nuevo_website\storm-studios\Stor
 2. Lee plantillas-blender\COLA-GEMINI.md: la lista de encargos en orden.
 3. Toma el primer encargo PENDIENTE: el primero cuya carpeta no tenga un ENTREGA.md que diga "Lista para: revisión".
 4. Lee el BRIEF-GEMINI.md de esa carpeta y hazlo completo. El único comando que ejecutas es este, EXACTAMENTE así, sin "cd" antes ni nada después, con la ruta completa de tu script:
-   powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bpy-run.ps1 <ruta completa>\modelar-<modelo>.py
+   C:\Users\Luis\blender-bpy\modelar.cmd "<ruta completa>\modelar-<modelo>.py"
+   (es el envoltorio de Blender; cualquier otro comando, incluido powershell, está bloqueado)
 5. Revisa el render con la lista de INSTRUCCIONES-GEMINI.md §6, escribe ENTREGA.md (plantilla en plantillas-blender\ENTREGA.md) con "Lista para: revisión" y pasa al siguiente pendiente.
 6. Cuando no quede ninguno, detente y resume en 5 líneas por encargo: partes, triángulos, KB y diferencias con el brief.
 
