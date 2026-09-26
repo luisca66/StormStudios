@@ -136,7 +136,7 @@ export function buildCosmosPortal(): CosmosPortal {
 }
 
 let radialCache: THREE.Texture | undefined;
-function radialTexture(): THREE.Texture {
+export function radialTexture(): THREE.Texture {
   if (radialCache) return radialCache;
   const c = document.createElement("canvas");
   c.width = c.height = 64;

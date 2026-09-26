@@ -9,7 +9,7 @@ import { preloadBlenderSkyKit, skyMesh } from "./blender-sky-kit";
 import { BlenderCastle, buildBlenderCastle, isCastleReady } from "./blender-castle";
 import { buildKitField, KitPlacement } from "./blender-kit-field";
 import { FLOWER_PARTS, flowersKit, hedgesKit, ROCK_PARTS, rocksKit, TREE_PARTS, treesKit, wallKit } from "./blender-pradera-kits";
-import { type Animated, type AsteroidPlacement, type PlanetPlacement, buildAsteroidField, buildCosmosPlanets, buildGalaxy, buildNebula, cosmosAsteroidsKit, cosmosPlanetsKit } from "./blender-cosmos";
+import { type Animated, type AsteroidPlacement, type PlanetPlacement, buildAsteroidField, buildCosmosPlanets, buildGalaxy, buildNebula, cosmosAsteroidsKit, cosmosPlanetsKit, radialTexture } from "./blender-cosmos";
 
 export interface Obstacle {
   x: number;
@@ -38,6 +38,8 @@ export class LevelEnvironment {
   private castle?: BlenderCastle;
   private cosmosAnims: Animated[] = [];
   private shootingStarTimer = 3.0; // level 3: time until next shooting star
+  /** Dónde está el jugador: las estrellas fugaces nacen a la vista de él. */
+  public readonly focus = new THREE.Vector3();
   
   constructor(private level: number, private scene: THREE.Scene, private arenaSize: number) {
     this.group = new THREE.Group();
@@ -326,7 +328,9 @@ export class LevelEnvironment {
         meta.age += delta;
         mesh.position.addScaledVector(meta.dir, meta.speed * delta);
         const m = (mesh as THREE.Mesh).material as THREE.MeshBasicMaterial;
-        if (m) m.opacity = Math.max(0, 1 - meta.age / meta.lifetime);
+        const fade = Math.max(0, 1 - meta.age / meta.lifetime);
+        if (m) m.opacity = fade;
+        if (meta.head) (meta.head as THREE.Sprite).material.opacity = fade;
         if (meta.age >= meta.lifetime) meta.dead = true;
       }
       else if (type === "crab") {
@@ -421,7 +425,7 @@ export class LevelEnvironment {
     if (this.level === 3) {
       this.shootingStarTimer -= delta;
       if (this.shootingStarTimer <= 0) {
-        this.shootingStarTimer = 4.0 + Math.random() * 6.0;
+        this.shootingStarTimer = 2.5 + Math.random() * 4.0;
         const burst = Math.random() < 0.7 ? 1 : (Math.random() < 0.6 ? 2 : 3);
         for (let b = 0; b < burst; b++) this.spawnShootingStar(this.arenaSize / 2);
       }
@@ -438,6 +442,12 @@ export class LevelEnvironment {
       const item = this.animatedMeshes[i];
       if (item.meta && item.meta.dead) {
         this.group.remove(item.mesh);
+        if (item.type === "shooting_star") {
+          const star = item.mesh as THREE.Mesh;
+          star.geometry.dispose();
+          (star.material as THREE.Material).dispose();
+          (item.meta.head as THREE.Sprite | undefined)?.material.dispose();
+        }
         this.animatedMeshes.splice(i, 1);
       }
     }
@@ -1749,20 +1759,29 @@ export class LevelEnvironment {
 
   private spawnShootingStar(half: number): void {
     const dir = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 0.5 - 0.4, Math.random() * 2 - 1).normalize();
-    const speed = 180 + Math.random() * 100;
-    const origin = new THREE.Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1)
-      .normalize().multiplyScalar(Math.min(half - 30, 150 + Math.random() * 130));
-    const trailLen = 18 + Math.random() * 17;
-    const pal = [[1, 1, 1], [0.8, 0.9, 1], [1, 0.98, 0.7], [0.7, 0.9, 1]];
-    const c = pal[(Math.random() * pal.length) | 0];
-    const star = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, trailLen, 5),
-      new THREE.MeshBasicMaterial({ color: new THREE.Color(c[0], c[1], c[2]), transparent: true, opacity: 1, depthWrite: false }));
+    const speed = 120 + Math.random() * 80;
+    // Nace a 70–150 m del jugador, arriba de él, y cruza su cielo.
+    const origin = new THREE.Vector3(Math.random() * 2 - 1, 0.3 + Math.random() * 0.7, Math.random() * 2 - 1)
+      .normalize().multiplyScalar(70 + Math.random() * 80).add(this.focus);
+    origin.clampScalar(-half, half);
+    const trailLen = 25 + Math.random() * 20;
+    const colors = [0xffffff, 0xffe66d, 0x7ff0e4, 0xff8fd8];
+    const color = colors[(Math.random() * colors.length) | 0];
+    // Estela que se afila hacia atrás, aditiva; +Y es el frente (la cabeza).
+    const star = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.0, trailLen, 8),
+      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 1, depthWrite: false, blending: THREE.AdditiveBlending }));
+    const head = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: radialTexture(), color, transparent: true, opacity: 1, depthWrite: false, blending: THREE.AdditiveBlending,
+    }));
+    head.scale.setScalar(5);
+    head.position.y = trailLen / 2;
+    star.add(head);
     star.position.copy(origin);
     star.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir); // align trail with travel
     this.group.add(star);
     this.animatedMeshes.push({
       mesh: star, type: "shooting_star",
-      meta: { dir, speed, age: 0, lifetime: 1.5 + Math.random() * 1.3, dead: false }
+      meta: { dir, speed, age: 0, lifetime: 1.5 + Math.random() * 1.3, dead: false, head }
     });
   }
 

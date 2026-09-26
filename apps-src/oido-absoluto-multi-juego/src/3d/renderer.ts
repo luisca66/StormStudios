@@ -476,6 +476,7 @@ export class Game3DRenderer {
       }
 
       // 4. Update decorative moving meshes
+      this.environment.focus.copy(this.player.mesh.position);
       this.environment.update(delta, time);
 
       // 5. Float and rotate active Note Object
