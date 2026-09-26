@@ -45,6 +45,6 @@ en pantalla.
 | Arcos de roca | ✅ publicado (2026-09-17): Astra v1–v3, Claude v4 e integración. 2 variantes, 4 arcos en la pared de la zona 2 |
 | Jardín de corales | ✅ publicado (2026-09-17): Astra v1–v3, integración de Claude. Kit de 4 piezas, 135 corales en 6 manchones de la zona 3 |
 | Osamenta de ballena | ✅ publicada (2026-09-17): Astra v1–v3, integración de Claude. Hito sobre repisa + 25 anémonas-farol rosas |
-| Chimeneas hidrotermales | ⏳ brief listo (2026-09-17, `art/blender/chimeneas-hidrotermales/BRIEF.md`): kit de 4 piezas del fondo de la fosa, calor naranja; esperando a Astra |
+| Chimeneas hidrotermales | ✅ integradas (2026-09-26): kit de Astra (spire, stack, cluster, flange; 10 100 tri) ejecutado por Claude; 12 pináculos y 6 chimeneas instanciados con calor por vértice (`blender-vents.ts`), luces sobre las bocas de `meta.plumes`; botón «Ver chimeneas» en `?debug=1`. Sin publicar |
 | Kit de salientes de roca | ✅ publicado (2026-09-17): Claude con bpy. 3 piezas, 110 salientes por toda la pared |
 | Baliza de expedición | ✅ publicada (2026-09-17): Claude con bpy. Farol fondeado; el juego conserva halo y letrero |

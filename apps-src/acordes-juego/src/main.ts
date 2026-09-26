@@ -25,7 +25,7 @@ import { DiveState, type DiveEndReason } from "@/game/state";
 import { distanceToInteractionRange, shouldCancelListening } from "@/game/listening";
 import { loadBitacora, recordAttempt, saveUnlockedZone } from "@/game/persistence";
 import { SPECIES } from "@/3d/creatures/species";
-import { AMBIENT_BUBBLES_URL, AMBIENT_THRUSTERS_URL, FAMILY_GLOW } from "@/config";
+import { AMBIENT_BUBBLES_URL, AMBIENT_THRUSTERS_URL, FAMILY_GLOW, WORLD } from "@/config";
 import { SamplePlayer, resolveInstrument } from "@/audio/samples";
 import type { Creature } from "@/3d/creatures/base";
 import type { Instrument } from "@/config";
@@ -608,6 +608,15 @@ if (debugEnabled) {
       const out = new THREE.Vector3(target.x, 0, target.z).normalize();
       const eye = target.clone().addScaledVector(out, -7);
       game.player.setPose(eye.x, target.y + 1.8, eye.z, Math.atan2(-out.x, -out.z), -0.05);
+    });
+    addBtn("Ver chimeneas", () => {
+      // Fondo de la fosa (zona 5): la chimenea alta de (14, 8) con los pináculos detrás.
+      debugFreeDepth = true;
+      game.player.depthLimit = null;
+      const target = new THREE.Vector3(14, WORLD.bottomY + 9, 8);
+      const eye = new THREE.Vector3(-8, WORLD.bottomY + 12, -10);
+      const look = target.clone().sub(eye).setY(0).normalize();
+      game.player.setPose(eye.x, eye.y, eye.z, Math.atan2(-look.x, -look.z), -0.08);
     });
     let coralView = 0;
     addBtn("Ver jardín de corales", () => {

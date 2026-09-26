@@ -8,6 +8,7 @@ import { buildBlenderShipwreck, type BlenderShipwreck } from "./blender-shipwrec
 import { buildBlenderArches, type ArchVariant, type BlenderArches } from "./blender-arches";
 import { buildBlenderCoralGarden, type BlenderCoralGarden, type CoralPart, type CoralPlacement } from "./blender-corals";
 import { buildBlenderOutcrops, type OutcropPart, type OutcropPlacement } from "./blender-outcrops";
+import { buildBlenderVentField, type BlenderVentField, type VentPart, type VentPlacement } from "./blender-vents";
 import { buildBlenderBeacon } from "./blender-beacon";
 import { buildBlenderWhaleFall, type BlenderWhaleFall, type LanternPlacement, type LanternVariant } from "./blender-whalefall";
 
@@ -94,6 +95,8 @@ export class Environment {
   }
   private arches: BlenderArches | null = null;
   private corals: BlenderCoralGarden | null = null;
+  /** Pináculos (pared) y chimeneas (fondo) de la zona 5: dos campos del mismo kit de Blender. */
+  private ventFields: BlenderVentField[] = [];
   private whaleFall: BlenderWhaleFall | null = null;
   /** Posición de la osamenta en el mundo (inspección con ?debug=1). */
   whaleFallPosition: THREE.Vector3 | null = null;
@@ -227,24 +230,26 @@ export class Environment {
   }
 
   // Zona 5: anillo de pináculos altos cerca de la pared (estrechan visualmente).
+  // Pináculos de Blender (pieza `spire`, Astra): 47.5 u a escala 1; la base se hunde 1.5 u.
+  // Consume el rng igual que los conos de antes, para no mover el resto del decorado.
   private buildPinnacles(rng: () => number): void {
-    const mesh = new THREE.InstancedMesh(
-      new THREE.ConeGeometry(1, 1, 6),
-      new THREE.MeshStandardMaterial({ color: 0x0b1118, roughness: 1 }),
-      12,
-    );
-    const dummy = new THREE.Object3D();
+    const placements: VentPlacement[] = [];
     for (let i = 0; i < 12; i++) {
       const a = rng() * Math.PI * 2;
       const r = 58 + rng() * 24;
       const h = 40 + rng() * 45;
-      dummy.position.set(Math.cos(a) * r, WORLD.bottomY + h / 2, Math.sin(a) * r);
-      dummy.scale.set(3 + rng() * 3, h, 3 + rng() * 3);
-      dummy.rotation.y = rng() * Math.PI;
-      dummy.updateMatrix();
-      mesh.setMatrixAt(i, dummy.matrix);
+      rng(); rng(); // antes: ancho y fondo del cono
+      placements.push({
+        part: "spire",
+        position: new THREE.Vector3(Math.cos(a) * r, WORLD.bottomY - 1.5, Math.sin(a) * r),
+        rotationY: rng() * Math.PI * 2,
+        scale: h / 47.5,
+        phase: i * 0.9,
+      });
     }
-    this.scene.add(mesh);
+    const spires = buildBlenderVentField(placements);
+    this.ventFields.push(spires);
+    this.scene.add(spires.group);
   }
 
   // ---------- H3b. Decoración por zona (estática, construida una vez) ----------
@@ -600,28 +605,29 @@ export class Environment {
     floor.position.y = WORLD.bottomY;
     group.add(floor);
 
-    // Chimeneas hidrotermales con brasa naranja.
-    const chimneyPositions = [
-      [14, 8], [-22, 15], [30, -18], [-12, -26], [4, 34], [-35, -6],
-    ] as const;
-    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x141a20, roughness: 0.95 });
-    const emberMat = new THREE.MeshStandardMaterial({
-      color: 0x2a1005,
-      emissive: 0xff6a2a,
-      emissiveIntensity: 1.6,
-    });
-    for (const [x, z] of chimneyPositions) {
-      const height = 10 + Math.random() * 8;
-      const body = new THREE.Mesh(new THREE.ConeGeometry(2.4, height, 7), bodyMat);
-      body.position.set(x, WORLD.bottomY + height / 2, z);
-      group.add(body);
-
-      const ember = new THREE.Mesh(new THREE.SphereGeometry(0.9, 8, 6), emberMat);
-      ember.position.set(x, WORLD.bottomY + height + 0.4, z);
-      group.add(ember);
-
+    // Chimeneas hidrotermales de Blender (Astra). Las dos altas activas (`stack`) llevan las columnas
+    // de venteo de buildVentColumns; el resto, grupos de bocas bajas y chimeneas muertas con repisas.
+    const chimneys: [number, number, VentPart][] = [
+      [14, 8, "stack"], [-22, 15, "stack"], [30, -18, "cluster"],
+      [-12, -26, "flange"], [4, 34, "cluster"], [-35, -6, "flange"],
+    ];
+    const vents = buildBlenderVentField(chimneys.map(([x, z, part], i) => ({
+      part,
+      position: new THREE.Vector3(x, WORLD.bottomY - 1.5, z),
+      rotationY: (i * 2.4) % (Math.PI * 2),
+      scale: part === "stack" ? 1 : 0.9 + (i % 3) * 0.2,
+      phase: i * 1.3,
+    })));
+    this.ventFields.push(vents);
+    group.add(vents.group);
+    // Una luz cálida sobre cada chimenea que humea (no una por boca: los grupos tienen hasta 4).
+    const lit = new Set<string>();
+    for (const mouth of vents.mouths) {
+      const key = `${Math.round(mouth.x / 6)}:${Math.round(mouth.z / 6)}`;
+      if (lit.has(key)) continue;
+      lit.add(key);
       const light = new THREE.PointLight(0xff7a30, 1.4, 30, 1.6);
-      light.position.copy(ember.position).y += 1.5;
+      light.position.copy(mouth).y += 1.5;
       group.add(light);
     }
     return group;
@@ -708,6 +714,7 @@ export class Environment {
     this.shipwreck?.update(elapsed);
     this.arches?.update(elapsed);
     this.corals?.update(elapsed);
+    for (const field of this.ventFields) field.update(elapsed);
     this.whaleFall?.update(elapsed);
 
 
