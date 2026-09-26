@@ -25,8 +25,8 @@ propio `PitchTrackerV2`). Opciones: instrumento, número de lunas (1–6 = notas
 | 1b | Partir `main.jsx` en módulos. **Paso 1 ✅** (2026-09-26): `i18n.js`, `config.js`, `ui/icons.jsx`, `pitch/pitch-tracker.js`, `scene/sky.js`, `scene/spaceship.js`, `scene/effects.js`, `scene/planets.js`; `main.jsx` queda con `App` (966 líneas). **Paso 2 ⏳**: sacar de `App` la escena (clase `CosmicScene`) y el audio (`audio/`) | Claude | 🔨 |
 | 1c | Conectar `shared-3d` y quitar los modos «legacy» | Claude | ✅ 2026-09-26 |
 | 2 | Dirección visual (§3), luz y cielo nuevos | Claude | ✅ 2026-09-26 (luz cálida, nebulosa violeta, estrellas cálidas) |
-| 3 | Modelos (§4) en modo automático. ✅ Nave (Claude, 3 372 tri), ✅ 5 planetas-instrumento con anillo que gira (Astra, 21 672 tri), ✅ lunas teñidas por nota (Gemini vía agy, 2 640 tri). Pendiente opcional: asteroides y estación | Claude, Astra, Gemini | 🔨 |
-| 4 | Integración, prueba con micrófono, FPS, publicar | Claude + Luis | ⏳ |
+| 3 | Modelos (§4) en modo automático. ✅ Nave (Claude, 3 372 tri), ✅ 5 planetas-instrumento con anillo que gira (Astra, 21 672 tri), ✅ lunas teñidas por nota (Gemini vía agy, 2 640 tri), ✅ asteroides instanciados (Gemini vía agy, 1 280 tri), ✅ estación de salida bajo la nave (Claude, 6 508 tri) | Claude, Astra, Gemini | ✅ 2026-09-26 |
+| 4 | Integración, prueba con micrófono, FPS, publicar | Claude + Luis | 🔨 integrado y probado con micrófono simulado (61 FPS); falta que Luis juegue cantando y dé OK para publicar |
 
 ## 3. Dirección visual — **Propuesta** (Claude decide si Luis no la cambia)
 

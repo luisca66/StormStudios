@@ -8,3 +8,4 @@
 | # | Carpeta | Qué |
 |---|---|---|
 | 1 | `apps-src/cosmic-ear/art/blender/lunas/` | Kit de 3 lunas de Cosmic Ear |
+| 2 | `apps-src/cosmic-ear/art/blender/asteroides/` | Kit de 3 asteroides decorativos de Cosmic Ear |

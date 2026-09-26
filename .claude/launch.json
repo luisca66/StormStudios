@@ -116,6 +116,21 @@
       ],
       "port": 5180,
       "url": "http://127.0.0.1:5180"
+    },
+    {
+      "name": "cosmic-ear-alt",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "apps-src/cosmic-ear",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "5186",
+        "--strictPort"
+      ],
+      "port": 5186,
+      "url": "http://127.0.0.1:5186"
     }
   ]
 }

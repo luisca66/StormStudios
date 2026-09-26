@@ -10,6 +10,8 @@ import { createParticleSystem, createShootingStarSystem } from "./scene/effects.
 import { createPlanetMesh, generatePlanet } from "./scene/planets.js";
 import { createNebula, createStarfield } from "./scene/sky.js";
 import { createSpaceship } from "./scene/spaceship.js";
+import { createStation } from "./scene/station.js";
+import { createAsteroids } from "./scene/asteroids.js";
 import { IconLogOut, IconMic, IconMusic, IconPlay } from "./ui/icons.jsx";
 
 function App() {
@@ -535,6 +537,8 @@ function App() {
             scene.add(mesh);
             planetMeshesRef.current.push(mesh);
         }
+        const station = createStation(); if (station) scene.add(station);
+        const asteroids = createAsteroids(planetMeshesRef.current); if (asteroids) scene.add(asteroids);
 
         startEngineSound();
         startThrusterSound();
@@ -563,8 +567,11 @@ function App() {
         const clock = new THREE.Clock();
         const animate = () => {
             animationRef.current = requestAnimationFrame(animate);
-            const time = clock.getElapsedTime();
+            const dt = clock.getDelta();
+            const time = clock.elapsedTime;
             if (nebulaRef.current) nebulaRef.current.material.uniforms.uTime.value = time;
+            if (station) station.userData.update(time);
+            if (asteroids) asteroids.userData.update(dt);
 
             // Update particles
             if (particleSystemRef.current) particleSystemRef.current.updateParticles();
