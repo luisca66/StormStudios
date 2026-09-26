@@ -142,5 +142,5 @@ Estados: `⏳ en cola` → `📝 brief listo` → `🔨 en curso` → `📦 entr
 | Muralla | `muralla/` | Gemini | 🎮 integrada: ~150 tramos y 6 torretas en 2 draw calls; dos torretas cierran el hueco junto al portón | v1 |
 | Portón | `porton/` | Gemini | 🎮 integrado: hojas en las mismas bisagras de `gate.ts` | v1 |
 | Cubo de nota | `cubo-nota/` | Gemini | 🎮 integrado: la gema toma el color emisivo de la nota | v1 |
-| Árboles | `arboles/` | Gemini | 🔨 lanzados (receta probada: 4 partes, ~3 600 tri) | — |
-| Flores | `flores/` | Gemini | ⏳ | — |
+| Árboles | `arboles/` | Gemini | 🎮 integrados: 90 árboles en 4 draw calls (antes hasta 360) | v1 |
+| Flores | `flores/` | Gemini | 🔨 lanzadas (receta probada: 5 partes, ~3 600 tri) | — |

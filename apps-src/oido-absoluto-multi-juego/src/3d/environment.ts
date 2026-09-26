@@ -8,7 +8,7 @@ import { buildCloudField, preloadBlenderClouds, CloudField, CloudPart, CloudPlac
 import { preloadBlenderSkyKit, skyMesh } from "./blender-sky-kit";
 import { BlenderCastle, buildBlenderCastle, isCastleReady } from "./blender-castle";
 import { buildKitField, KitPlacement } from "./blender-kit-field";
-import { hedgesKit, ROCK_PARTS, rocksKit, wallKit } from "./blender-pradera-kits";
+import { hedgesKit, ROCK_PARTS, rocksKit, TREE_PARTS, treesKit, wallKit } from "./blender-pradera-kits";
 
 export interface Obstacle {
   x: number;
@@ -692,7 +692,8 @@ export class LevelEnvironment {
     // Hedge Maze
     this.buildHedgeMaze(60, 50);
 
-    // Spawn 90 solid trees
+    // Spawn 90 solid trees: the Blender kit (Gemini) as 4 instanced draw calls, or the old spheres
+    const trees: KitPlacement[] = [];
     for (let i = 0; i < 90; i++) {
       const tx = (Math.random() - 0.5) * (this.arenaSize - 40);
       const tz = (Math.random() - 0.5) * (this.arenaSize - 40);
@@ -702,9 +703,18 @@ export class LevelEnvironment {
       const distToCastle = Math.sqrt(tx*tx + (tz + 40)*(tz + 40));
       
       if (distToCenter > 15 && distToCastle > 25) {
-        this.spawnTree(tx, tz);
+        if (treesKit.ready()) {
+          const part = TREE_PARTS[i % TREE_PARTS.length];
+          const scale = 0.75 + Math.random() * 1.05;
+          trees.push({ part, x: tx, z: tz, scale, rotY: Math.random() * Math.PI * 2 });
+          // Trunk-only collision so Glub walks under the big canopies; bushes block their whole body.
+          this.obstacles.push({ x: tx, y: 0, z: tz, radius: (part === "bush" ? 1.0 : 0.4) * scale });
+        } else {
+          this.spawnTree(tx, tz);
+        }
       }
     }
+    if (trees.length) this.group.add(buildKitField(treesKit.model(), trees));
 
     // Spawn 40 rocks: the Blender kit (Gemini) as 3 instanced draw calls, or the old dodecahedra
     const rocks: KitPlacement[] = [];
