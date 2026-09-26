@@ -258,7 +258,7 @@ const createPrimitiveSpaceship = () => {
     g.add(stripe2);
 
     // === ILUMINACIÓN DEL MOTOR ===
-    const engineLight = new THREE.PointLight(0xff6600, 3, 15);
+    const engineLight = new THREE.PointLight(0xff6600, 3, 15, 1);
     engineLight.position.z = 2.5;
     g.add(engineLight);
 
@@ -292,7 +292,7 @@ export const createSpaceship = () => {
         new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.8 }));
     engineGlow.position.z = 2.72;
     g.add(engineGlow);
-    const engineLight = new THREE.PointLight(0xff6600, 3, 15);
+    const engineLight = new THREE.PointLight(0xff6600, 3, 15, 1);
     engineLight.position.z = 3.1;
     g.add(engineLight);
 
