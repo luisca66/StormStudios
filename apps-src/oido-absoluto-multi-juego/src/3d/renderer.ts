@@ -65,6 +65,10 @@ export class Game3DRenderer {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+    // Solo en desarrollo: acceso desde la consola para revisar niveles (mover al jugador, leer
+    // renderer.info con draw calls y triángulos). No llega al build publicado.
+    if (import.meta.env.DEV) (window as unknown as { __apm: unknown }).__apm = this;
+
     // Handle Window Resize
     window.addEventListener("resize", this.onWindowResize);
 

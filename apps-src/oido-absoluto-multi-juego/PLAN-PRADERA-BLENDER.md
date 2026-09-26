@@ -143,4 +143,27 @@ Estados: `⏳ en cola` → `📝 brief listo` → `🔨 en curso` → `📦 entr
 | Portón | `porton/` | Gemini | 🎮 integrado: hojas en las mismas bisagras de `gate.ts` | v1 |
 | Cubo de nota | `cubo-nota/` | Gemini | 🎮 integrado: la gema toma el color emisivo de la nota | v1 |
 | Árboles | `arboles/` | Gemini | 🎮 integrados: 90 árboles en 4 draw calls (antes hasta 360) | v1 |
-| Flores | `flores/` | Gemini | 🔨 lanzadas (receta probada: 5 partes, ~3 600 tri) | — |
+| Flores | `flores/` | Gemini | 🎮 integradas: 22 manchones de flores y ~380 matas de pasto, sin sombra | v1 |
+
+---
+
+## 7. Resultado (2026-09-26) — nivel completo, sin publicar
+
+Todas las piezas integradas en un día, con el reparto automático (Gemini 6 kits, Astra el castillo,
+Claude Glub e integración). Nubes: el kit de Las Nubes reusado en blanco. Mariposas: alas con forma y
+paleta del nivel, aleteando desde el cuerpo (código).
+
+| Medida | Antes | Ahora |
+|---|---:|---:|
+| Draw calls, vista inicial | ~630 (conteo del código) | **33** (medido con `renderer.info`) |
+| Triángulos por cuadro (incluye sombras) | — | ~465 000–505 000 |
+
+Rondas: castillo 1 ronda de Astra (100 k → 38 k triángulos) más su revisión propia; los 6 kits de Gemini
+salieron a la primera (recetas probadas antes por Claude). El Océano tuvo varias rondas por pieza.
+
+Atajo de desarrollo: en `npm run dev`, `window.__apm` da acceso al renderer (mover a `player.mesh`,
+leer `renderer.info`). No llega al build.
+
+Pendientes: medir FPS en la PC de Luis; ver a Glub de frente (la cámara va detrás; propuesta: mostrar la
+cara al empezar el nivel o en reposo); AO algo fuerte en los muros del castillo a la sombra; publicar
+(`npm run deploy`) con OK de Luis.

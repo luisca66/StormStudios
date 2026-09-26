@@ -4,6 +4,7 @@ import wallUrl from "./assets/muralla.glb?url";
 import gateUrl from "./assets/porton.glb?url";
 import noteCubeUrl from "./assets/cubo-nota.glb?url";
 import treesUrl from "./assets/arboles.glb?url";
+import flowersUrl from "./assets/flores.glb?url";
 import { loadKit } from "./blender-kit-field";
 
 // Kits de La Pradera (art/blender/<kit>/). Rocas: Gemini, kit.export_glb; partes rock_a, rock_b, rock_c.
@@ -25,3 +26,7 @@ export const noteCubeKit = loadKit(noteCubeUrl, "Cubo de nota");
 // Árboles: Gemini; tree_round, tree_tall, tree_wide y bush, pivote en la base del tronco.
 export const treesKit = loadKit(treesUrl, "Árboles");
 export const TREE_PARTS = ["tree_round", "tree_round", "tree_tall", "tree_wide", "bush"];
+
+// Flores y pasto: Gemini; cuatro matitas de flores por color y una mata de pasto.
+export const flowersKit = loadKit(flowersUrl, "Flores");
+export const FLOWER_PARTS = ["flower_yellow", "flower_pink", "flower_white", "flower_purple"];

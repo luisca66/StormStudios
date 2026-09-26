@@ -8,7 +8,7 @@ import { buildCloudField, preloadBlenderClouds, CloudField, CloudPart, CloudPlac
 import { preloadBlenderSkyKit, skyMesh } from "./blender-sky-kit";
 import { BlenderCastle, buildBlenderCastle, isCastleReady } from "./blender-castle";
 import { buildKitField, KitPlacement } from "./blender-kit-field";
-import { hedgesKit, ROCK_PARTS, rocksKit, TREE_PARTS, treesKit, wallKit } from "./blender-pradera-kits";
+import { FLOWER_PARTS, flowersKit, hedgesKit, ROCK_PARTS, rocksKit, TREE_PARTS, treesKit, wallKit } from "./blender-pradera-kits";
 
 export interface Obstacle {
   x: number;
@@ -391,7 +391,7 @@ export class LevelEnvironment {
       }
     }
 
-    if (this.level === 5) this.cloudField?.update(time);
+    if (this.level === 5 || this.level === 1) this.cloudField?.update(time);
 
     // Level 3: spawn periodic shooting stars (sometimes in bursts)
     if (this.level === 2) {
@@ -737,15 +737,63 @@ export class LevelEnvironment {
     }
     if (rocks.length) this.group.add(buildKitField(rocksKit.model(), rocks));
 
+    // Flowers in same-colour patches and grass tufts all over the meadow (Blender kit by Gemini).
+    // Decoration only: no colliders, Glub walks through them.
+    if (flowersKit.ready()) {
+      const meadow: KitPlacement[] = [];
+      const span = this.arenaSize - 30;
+      const clear = (x: number, z: number) =>
+        Math.hypot(x, z) > 6 && Math.hypot(x, z + 40) > 24 && Math.hypot(x - 60, z - 50) > 9;
+      for (let p = 0; p < 22; p++) {
+        const cx = (Math.random() - 0.5) * span;
+        const cz = (Math.random() - 0.5) * span;
+        const part = FLOWER_PARTS[p % FLOWER_PARTS.length];
+        for (let k = 0; k < 7; k++) {
+          const x = cx + (Math.random() - 0.5) * 7;
+          const z = cz + (Math.random() - 0.5) * 7;
+          if (clear(x, z)) meadow.push({ part, x, z, scale: 1.8 + Math.random() * 0.8, rotY: Math.random() * Math.PI * 2 });
+        }
+      }
+      for (let i = 0; i < 380; i++) {
+        const x = (Math.random() - 0.5) * span;
+        const z = (Math.random() - 0.5) * span;
+        if (clear(x, z)) meadow.push({ part: "grass_tuft", x, z, scale: 1.2 + Math.random() * 1.0, rotY: Math.random() * Math.PI * 2 });
+      }
+      const flowers = buildKitField(flowersKit.model(), meadow);
+      flowers.traverse((o) => { o.castShadow = false; }); // tiny: their shadow costs more than it shows
+      this.group.add(flowers);
+    }
+
     // Spawn 15 animated butterflies
     for (let i = 0; i < 15; i++) {
       this.spawnButterfly();
     }
 
-    // Spawn 12 cotton clouds in the sky (as defined in CloudSpawner.gd)
-    for (let i = 0; i < 12; i++) {
-      this.spawnCloud();
+    // Cotton clouds: the Blender cloud kit of level 5 (4 instanced draw calls instead of 60),
+    // white and high above the meadow. Falls back to the old sphere clouds if it fails to load.
+    const limit = this.arenaSize * 0.8;
+    const kinds: CloudPart[] = ["puff_medium", "puff_large", "puff_large", "flat_long"];
+    const clouds: CloudPlacement[] = [];
+    for (let i = 0; i < 16; i++) {
+      const part = kinds[i % kinds.length];
+      clouds.push({
+        part,
+        position: new THREE.Vector3((Math.random() - 0.5) * limit * 2, 28 + Math.random() * 20, (Math.random() - 0.5) * limit * 2),
+        scale: 1.6 + Math.random() * 1.2,
+        rotation: Math.random() * Math.PI * 2,
+        tint: new THREE.Color(1, 1, 1),
+        off: Math.random() * Math.PI * 2,
+        spd: 0.3 + Math.random() * 0.5,
+      });
     }
+    preloadBlenderClouds().then(() => {
+      if (!this.group.parent) return;
+      this.cloudField = buildCloudField(clouds);
+      this.group.add(this.cloudField.group);
+    }).catch((error: unknown) => {
+      console.error("Nubes de Blender:", error);
+      for (let i = 0; i < 12; i++) this.spawnCloud();
+    });
   }
 
   private buildOuterWalls(height: number, stoneMat: THREE.Material): void {
@@ -896,18 +944,45 @@ export class LevelEnvironment {
     this.obstacles.push({ x, y: 0, z, radius: scale * 1.1 });
   }
 
+  // Ala de mariposa (dos lóbulos) acostada en XZ, con la bisagra sobre el cuerpo (x = 0):
+  // así el aleteo en Z la abre y cierra desde el tórax. Una sola geometría por lado.
+  private static butterflyWings?: { left: THREE.BufferGeometry; right: THREE.BufferGeometry };
+  private static butterflyMats = new Map<number, THREE.MeshLambertMaterial>();
+
+  private static getButterflyWings(): { left: THREE.BufferGeometry; right: THREE.BufferGeometry } {
+    if (!LevelEnvironment.butterflyWings) {
+      const shape = new THREE.Shape();
+      shape.moveTo(0, 0.02);
+      shape.bezierCurveTo(0.12, 0.28, 0.36, 0.26, 0.3, 0.08);   // lóbulo delantero
+      shape.bezierCurveTo(0.28, 0.0, 0.3, -0.04, 0.24, -0.1);
+      shape.bezierCurveTo(0.22, -0.24, 0.06, -0.22, 0, -0.04);  // lóbulo trasero
+      shape.lineTo(0, 0.02);
+      const right = new THREE.ShapeGeometry(shape, 8);
+      right.rotateX(-Math.PI / 2);
+      const left = right.clone();
+      left.scale(-1, 1, 1);
+      LevelEnvironment.butterflyWings = { left, right };
+    }
+    return LevelEnvironment.butterflyWings;
+  }
+
   private spawnButterfly(): void {
     const bGroup = new THREE.Group();
-    const wingMat = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff, side: THREE.DoubleSide });
-    const bodyMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    // Colores de la paleta de La Pradera (PLAN-PRADERA-BLENDER.md §2)
+    const palette = [0xffd84d, 0xff8fb1, 0xffffff, 0xb28dff, 0x7fc8ff, 0xffa24d];
+    const color = palette[Math.floor(Math.random() * palette.length)];
+    let wingMat = LevelEnvironment.butterflyMats.get(color);
+    if (!wingMat) {
+      wingMat = new THREE.MeshLambertMaterial({ color, side: THREE.DoubleSide });
+      LevelEnvironment.butterflyMats.set(color, wingMat);
+    }
+    const bodyMat = new THREE.MeshBasicMaterial({ color: 0x2a1f24 });
 
-    const wingGeo = new THREE.PlaneGeometry(0.2, 0.25);
-    const wingL = new THREE.Mesh(wingGeo, wingMat);
-    wingL.position.x = -0.1;
-    const wingR = new THREE.Mesh(wingGeo, wingMat);
-    wingR.position.x = 0.1;
+    const wings = LevelEnvironment.getButterflyWings();
+    const wingL = new THREE.Mesh(wings.left, wingMat);
+    const wingR = new THREE.Mesh(wings.right, wingMat);
 
-    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.2, 4), bodyMat);
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.015, 0.22, 5), bodyMat);
     body.rotation.x = Math.PI / 2;
 
     bGroup.add(wingL, wingR, body);
