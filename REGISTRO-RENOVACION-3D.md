@@ -19,6 +19,7 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 
 ### 2026-09-26
 
+- ⚠️ **Gemini por API resultó de pago** (~35 pesos). El lanzador ya no la usa sin `-PagarApiGemini`. Nuevo reparto: lo simple, Claude directo; lo complejo, Astra; Gemini solo por Antigravity (semiautomático). Ver `plantillas-blender/REPARTO-AGENTES.md`.
 - ✅ **Cosmic Ear, fase 1a**: Three r128 → 0.160.1 (modos de luz y color «legacy» para verse igual hasta
   reiluminar). Carga sin errores; falta probar una misión con micrófono. Plan con fases, dirección
   visual y reparto: `apps-src/cosmic-ear/PLAN-COSMIC-EAR.md`. **Siguiente: fase 1b**, partir `main.jsx` en módulos.

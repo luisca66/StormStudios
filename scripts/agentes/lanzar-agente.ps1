@@ -24,7 +24,10 @@ param(
   [Parameter(Mandatory)] [string] $Carpeta,
   [switch] $Reanudar,        # solo Astra: sigue su última sesión de este modelo
   [string] $Mensaje,         # archivo con el mensaje de la ronda (por defecto PROMPT.txt de la carpeta)
-  [string] $GeminiModel = "gemini-3.8-flash"   # se confirma contra la lista de modelos de la clave
+  [string] $GeminiModel = "gemini-3.8-flash",  # se confirma contra la lista de modelos de la clave
+  # La clave de AI resultó de pago (2026-09-26: ~35 pesos en una tarde). Gemini por API solo con
+  # permiso explícito de Luis en esa sesión; sin este interruptor el lanzador se niega.
+  [switch] $PagarApiGemini
 )
 
 $ErrorActionPreference = "Stop"
@@ -61,6 +64,9 @@ if ($Agente -eq "astra") {
   }
   $code = $LASTEXITCODE
 } else {
+  if (-not $PagarApiGemini) {
+    throw "Gemini por API cuesta dinero (clave de AI Studio de pago). Usa Astra (suscripción), que Claude lo modele, o -PagarApiGemini solo con permiso de Luis."
+  }
   # Gemini CLI con la clave de Google AI Studio de Luis (la cuenta personal sin clave ya no tiene
   # soporte). La clave vive en la variable de usuario GEMINI_API_KEY, que Luis configuró; se pasa al
   # proceso sin escribirla en ningún registro.

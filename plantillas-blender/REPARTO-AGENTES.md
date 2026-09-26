@@ -4,6 +4,13 @@ Acordado con Luis el 2026-09-26. Objetivo: **gastar menos tokens de Claude y de 
 Gemini todo lo que sea simple y se pueda describir con precisión. Complementa a
 `MANUAL-RENOVACION-3D.md` (el flujo técnico) y a `PLAN-3D-BLENDER.md` §6.
 
+> **Cambio 2026-09-26 (tarde): Gemini por API cuesta dinero.** La clave de AI Studio de Luis es de pago
+> (~35 pesos en una tarde). Nuevo reparto: **lo simple lo hace Claude directamente** (de todos modos
+> escribía y probaba la receta completa antes de dársela a Gemini, así que el brief costaba casi lo mismo
+> que el modelo); **lo complejo, Astra** (suscripción de Luis). Gemini solo por **Antigravity** (sin costo
+> por token), en modo semiautomático: Luis pega una línea y Claude vigila la carpeta. El lanzador se niega
+> a usar la API salvo con `-PagarApiGemini` y permiso explícito de Luis.
+
 ---
 
 ## 1. Quién hace qué
