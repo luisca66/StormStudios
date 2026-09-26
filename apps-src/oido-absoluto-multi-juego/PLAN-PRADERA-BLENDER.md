@@ -135,7 +135,7 @@ Estados: `⏳ en cola` → `📝 brief listo` → `🔨 en curso` → `📦 entr
 | Pieza | Carpeta | Dueño | Estado | Ronda |
 |---|---|---|---|---|
 | Dirección visual (§2) | — | Luis | ✅ aprobada; luz y paleta ya en el juego | — |
-| Glub | `glub/` | Claude | 📦 v1 modelado (19 088 tri, 7 partes); falta integrar y capturas | v1 |
+| Glub | `glub/` | Claude | 🎮 v1 integrado con `shared-3d` (GLB 110 kB, parpadeo); falta OK de Luis. Ojo: la cámara va detrás y casi no se ve la cara | v1 |
 | Castillo | `castillo/` | Astra | 🔨 v1: script de Astra ejecutado por Claude (su sandbox no carga bpy); 100 284 tri, pasa 2.5× el presupuesto → ronda 1 | v1 |
 | Rocas | `rocas-pradera/` | Gemini | 🔨 lanzado en Antigravity; sin archivos aún | — |
 | Setos | `setos/` | Gemini | ⏳ | — |

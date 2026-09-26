@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { AudioEngine } from "@/audio/engine";
 import { ASSET_BASE } from "@/config";
 import { buildBlenderFish, preloadBlenderFish } from "./blender-fish";
+import { buildBlenderGlub, isGlubReady } from "./blender-glub";
 import { buildBlenderUnicorn, isUnicornReady } from "./blender-unicorn";
 
 export class PlayerController {
@@ -129,6 +130,18 @@ export class PlayerController {
     // Set half speed and acceleration
     this.maxSpeed = 4.0;
     this.acceleration = 6.0;
+
+    // Modelo de Blender (art/blender/glub/): mismos pivotes que las primitivas de abajo.
+    if (isGlubReady()) {
+      const glub = buildBlenderGlub();
+      this.mesh.add(glub.root);
+      this.bodyMesh = glub.body;
+      [this.leftFoot, this.rightFoot] = glub.feet;
+      [this.leftHand, this.rightHand] = glub.hands;
+      this.fishEyes = glub.eyes;
+      return;
+    }
+    // Reserva por si el GLB aún no llegó: el Glub original de primitivas.
 
     // Body: sphere of radius 1.0, positioned at Y=1.5
     const bodyGeo = new THREE.SphereGeometry(1.0, 32, 32);
@@ -759,12 +772,30 @@ export class PlayerController {
     }
   }
 
+  // Parpadeo del pez y de Glub: los dos ojos a la vez, 0.14 s, cada 2.5–6 s (y a veces doble).
+  private blinkEyes(delta: number): void {
+    if (!this.fishEyes.length) return;
+    if (this.fishBlinkPhase < 0) {
+      this.fishBlinkTimer -= delta;
+      if (this.fishBlinkTimer <= 0) this.fishBlinkPhase = 0;
+    } else {
+      this.fishBlinkPhase += delta / 0.14;
+      if (this.fishBlinkPhase >= 1) {
+        this.fishBlinkPhase = -1;
+        this.fishBlinkTimer = Math.random() < 0.2 ? 0.12 : 2.5 + Math.random() * 3.5;
+      }
+    }
+    const squash = this.fishBlinkPhase < 0 ? 1 : 1 - 0.88 * Math.sin(Math.PI * this.fishBlinkPhase);
+    for (const eye of this.fishEyes) eye.scale.y = squash;
+  }
+
   // Animation cycles
   private animateCharacter(delta: number): void {
     const t = this.animTime * 8; // speed up tick cycles
 
     // Level 1: Humanoid Glub
     if (this.level === 1 && this.bodyMesh) {
+      this.blinkEyes(delta);
       const isMoving = this.keys["space"] || this.keys["w"] || this.keys["s"];
       
       if (isMoving) {
@@ -822,21 +853,7 @@ export class PlayerController {
         this.tailPivot.rotation.y = THREE.MathUtils.lerp(this.tailPivot.rotation.y, 0.0, 3 * delta);
       }
 
-      // Parpadeo: los dos ojos a la vez, 0.14 s, cada 2.5–6 s (y a veces un doble parpadeo).
-      if (this.fishEyes.length) {
-        if (this.fishBlinkPhase < 0) {
-          this.fishBlinkTimer -= delta;
-          if (this.fishBlinkTimer <= 0) this.fishBlinkPhase = 0;
-        } else {
-          this.fishBlinkPhase += delta / 0.14;
-          if (this.fishBlinkPhase >= 1) {
-            this.fishBlinkPhase = -1;
-            this.fishBlinkTimer = Math.random() < 0.2 ? 0.12 : 2.5 + Math.random() * 3.5;
-          }
-        }
-        const squash = this.fishBlinkPhase < 0 ? 1 : 1 - 0.88 * Math.sin(Math.PI * this.fishBlinkPhase);
-        for (const eye of this.fishEyes) eye.scale.y = squash;
-      }
+      this.blinkEyes(delta);
 
       // Aleta dorsal: ondulación leve y retrasada (ENTREGA.md: Z, ±0.08 rad, 2 rad/s)
       if (this.dorsalFin) {
