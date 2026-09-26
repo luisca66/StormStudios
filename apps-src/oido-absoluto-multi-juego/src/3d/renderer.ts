@@ -6,6 +6,8 @@ import { LevelGate } from "./gate";
 import { SearchRadar } from "../ui/radar";
 import { BlenderClam, buildBlenderClam, isClamReady } from "./blender-clam";
 import { BlenderBalloon, buildBlenderBalloon, isBalloonReady } from "./blender-balloon";
+import { buildModel } from "../../../shared-3d/src";
+import { noteCubeKit } from "./blender-pradera-kits";
 
 export class Game3DRenderer {
   private canvas: HTMLCanvasElement;
@@ -276,7 +278,15 @@ export class Game3DRenderer {
       emissiveIntensity: 0.5
     });
 
-    if (level === 1) {
+    if (level === 1 && noteCubeKit.ready()) {
+      // Cubo de Blender (art/blender/cubo-nota/, Gemini): la gema toma el color emisivo de la nota.
+      const built = buildModel(noteCubeKit.model(), { castShadow: true });
+      const [glow] = built.byPart("glow");
+      glow.material = mat;
+      built.root.position.y = -glow.position.y; // centro del cubo en el origen del grupo
+      group.add(built.root);
+    }
+    else if (level === 1) {
       // Color Cube
       const cube = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.4, 1.4), mat);
       group.add(cube);

@@ -139,8 +139,8 @@ Estados: `⏳ en cola` → `📝 brief listo` → `🔨 en curso` → `📦 entr
 | Castillo | `castillo/` | Astra | 🎮 integrado (aprobado por Luis): 38 140 tri, 10 mallas, GLB 343 kB; banderines ondean. Pendiente: AO algo fuerte en muros a la sombra | v1-ronda1b |
 | Rocas | `rocas-pradera/` | Gemini | 🎮 integradas (aprobadas por Luis): 40 rocas en 3 draw calls (antes 40) | v1 |
 | Setos | `setos/` | Gemini | 🎮 integrados: laberinto con tramos de 4 y 2 m + 4 topiarios (Gemini corrigió solo el pivote de la receta) | v1 |
-| Muralla | `muralla/` | Gemini | 🔨 lanzada (receta probada: 2 partes, 1 030 tri) | — |
-| Portón | `porton/` | Gemini | ⏳ | — |
-| Cubo de nota | `cubo-nota/` | Gemini | ⏳ | — |
-| Árboles | `arboles/` | Gemini | ⏳ | — |
+| Muralla | `muralla/` | Gemini | 🎮 integrada: ~150 tramos y 6 torretas en 2 draw calls; dos torretas cierran el hueco junto al portón | v1 |
+| Portón | `porton/` | Gemini | 🎮 integrado: hojas en las mismas bisagras de `gate.ts` | v1 |
+| Cubo de nota | `cubo-nota/` | Gemini | 🎮 integrado: la gema toma el color emisivo de la nota | v1 |
+| Árboles | `arboles/` | Gemini | 🔨 lanzados (receta probada: 4 partes, ~3 600 tri) | — |
 | Flores | `flores/` | Gemini | ⏳ | — |

@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import { BlenderPortal, buildBlenderPortal, preloadBlenderPortal } from "./blender-portal";
 import { buildBlenderRainbowPortal, preloadBlenderRainbowPortal } from "./blender-rainbow-portal";
+import { buildModel } from "../../../shared-3d/src";
+import { gateKit } from "./blender-pradera-kits";
 
 export class LevelGate {
   public group: THREE.Group;
@@ -131,6 +133,25 @@ export class LevelGate {
       // North wall gate at z = -arenaSize/2 (z = -150), y = 0
       this.position.set(0, 0, -this.arenaSize / 2);
       const zPos = -this.arenaSize / 2;
+
+      // Portón de Blender (art/blender/porton/, Gemini): las hojas cuelgan de las mismas bisagras.
+      if (gateKit.ready()) {
+        const built = buildModel(gateKit.model(), { castShadow: true, receiveShadow: true });
+        const [frame] = built.byPart("frame");
+        frame.position.z += zPos;
+        this.group.add(frame);
+        const [left, right] = built.byPart("door");
+        this.leftHinge = new THREE.Group();
+        this.leftHinge.position.set(left.position.x, left.position.y, zPos);
+        left.position.set(0, 0, 0);
+        this.leftHinge.add(left);
+        this.rightHinge = new THREE.Group();
+        this.rightHinge.position.set(right.position.x, right.position.y, zPos);
+        right.position.set(0, 0, 0);
+        this.rightHinge.add(right);
+        this.group.add(this.leftHinge, this.rightHinge);
+        return;
+      }
       
       const frameMat = new THREE.MeshStandardMaterial({ color: 0x5d4037, roughness: 0.8 });
       const doorMat = new THREE.MeshStandardMaterial({ color: 0x8d6e63, roughness: 0.9 });
