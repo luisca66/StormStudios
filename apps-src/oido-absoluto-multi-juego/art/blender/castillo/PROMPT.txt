@@ -1,0 +1,14 @@
+Hola Astra. Te encargo el castillo de La Pradera para Walking AP Multi, en Blender con bpy.
+
+La idea: es lo primero que ve un niño al entrar al juego, y tiene que darle ganas de ir corriendo a explorarlo. Castillo de cuento ilustrado a media mañana de primavera: piedra cálida, techos cónicos de colores, banderines, y detalles que premien acercarse. Caricatura amable, nada de fortaleza sombría.
+
+MODO AUTOMÁTICO: Claude te lanzó desde la línea de comandos y nadie está mirando esta sesión. No hagas preguntas: decide tú y anota en ENTREGA.md lo que hayas decidido distinto del brief. Cuando ENTREGA.md diga "Lista para: revisión", Claude recibe el aviso, revisa y le enseña a Luis capturas con la luz del juego.
+
+Proyecto (checkout principal, tu directorio actual): C:\Users\Luis\Documents\Claude Cowork\nuevo_website\storm-studios\StormStudios
+Tu carpeta, la única donde escribes: apps-src\oido-absoluto-multi-juego\art\blender\castillo\
+
+Lee plantillas-blender\INSTRUCCIONES-ASTRA.md y el BRIEF.md de tu carpeta. El brief solo fija lo que el juego necesita (planta, puerta, partes, presupuesto, paleta); lo demás lo decides tú. Si te sirve, mira cómo quedó apps-src\oido-absoluto-multi-juego\art\blender\atlantida\, otro edificio de este juego.
+
+Blender: powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bpy-run.ps1 modelar-castillo.py (desde tu carpeta). kit.export_glb necesita Node, que ya está instalado junto con apps-src\shared-3d\node_modules.
+
+Hay otros dos agentes trabajando a la vez en el proyecto: no escribas fuera de tu carpeta, no toques BRIEF.md ni PROMPT.txt y no uses git ni npm. Al terminar, deja ENTREGA.md con "Lista para: revisión" y resume: triángulos, partes, dimensiones y en qué te apartaste del brief.

@@ -1,0 +1,18 @@
+Hola Gemini. Vas a modelar en Blender (bpy) una pieza simple para un juego de Storm Studios. Claude dirige el proyecto; tú solo modelas y entregas.
+
+MODO AUTOMÁTICO: Claude te lanzó desde la línea de comandos y nadie está mirando esta sesión. No hagas preguntas ni esperes respuesta: si algo no está claro, toma la opción más fiel al brief y anótala en ENTREGA.md. Cuando ENTREGA.md diga "Lista para: revisión", Claude recibe el aviso y revisa tu trabajo.
+
+Proyecto (tu directorio actual): C:\Users\Luis\Documents\Claude Cowork\nuevo_website\storm-studios\StormStudios
+Tu carpeta (la ÚNICA donde puedes escribir): apps-src\oido-absoluto-multi-juego\art\blender\rocas-pradera\
+
+Lee, en este orden y nada más:
+1. plantillas-blender\INSTRUCCIONES-GEMINI.md: reglas, plantilla del script, exportación y revisión.
+2. apps-src\oido-absoluto-multi-juego\art\blender\rocas-pradera\BRIEF-GEMINI.md: el encargo con medidas, receta y colores. La receta ya se probó con este Blender: síguela tal cual.
+3. plantillas-blender\ENTREGA.md: plantilla de tu ENTREGA.md.
+
+Reglas clave (completas en INSTRUCCIONES-GEMINI.md §1):
+- Otros dos agentes trabajan al mismo tiempo en este proyecto. No escribas fuera de tu carpeta, no edites BRIEF-GEMINI.md ni PROMPT.txt y no uses git.
+- El único comando que ejecutas es, desde tu carpeta: powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\Luis\blender-bpy\bpy-run.ps1 modelar-rocas-pradera.py
+- El render tarda alrededor de un minuto; espera a que termine.
+
+Al terminar, revisa con la lista de INSTRUCCIONES-GEMINI.md §6 y la §7 del brief, escribe ENTREGA.md con "Lista para: revisión" y termina con un resumen de 5 líneas: partes, triángulos, KB, diferencias con el brief y dudas.

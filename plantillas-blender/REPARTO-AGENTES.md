@@ -97,3 +97,24 @@ Archivos de cada agente:
 | Astra | `INSTRUCCIONES-ASTRA.md` | `PROMPTS-ASTRA.md` | `BRIEF.md` (modo Astra) |
 | Gemini | `INSTRUCCIONES-GEMINI.md` | `PROMPTS-GEMINI.md` | `BRIEF-GEMINI.md` |
 | Ambos | — | — | `ENTREGA.md` |
+
+---
+
+## 5. Modo automático (desde 2026-09-26): Luis ya no pega prompts
+
+Claude lanza a los agentes desde la línea de comandos con `scripts/agentes/lanzar-agente.ps1`, que lee
+el `PROMPT.txt` de la carpeta del modelo (lo escribe Claude junto con el brief):
+
+| Agente | Cómo se lanza | Cómo sabe Claude que terminó |
+|---|---|---|
+| Astra | `codex exec` de la app de Codex (sandbox `workspace-write` + carpeta de Blender y `%TEMP%`) | el proceso termina; su último mensaje queda en el registro |
+| Gemini | `antigravity-ide chat -m agent` (Gemini CLI con cuenta personal ya no tiene soporte) | el lanzador espera, hasta 3 h, a que `ENTREGA.md` diga «Lista para» |
+
+- Claude corre el lanzador en segundo plano: el sistema lo despierta cuando termina cada agente, sin
+  que nadie revise a mano cada cierto tiempo. Claude revisa la entrega, hace las capturas y avisa a
+  Luis con una notificación cuando hay algo que aprobar.
+- Registros y últimos mensajes: `%LOCALAPPDATA%\StormStudios\agentes\` (fuera del repositorio).
+- Requisitos: la PC encendida, la app de Claude abierta en esta sesión y Antigravity con permiso para
+  ejecutar comandos sin preguntar (si pregunta, Gemini se queda esperando un clic).
+- Los prompts dicen «MODO AUTOMÁTICO»: el agente no pregunta, decide lo más fiel al brief y lo anota en
+  `ENTREGA.md`.
