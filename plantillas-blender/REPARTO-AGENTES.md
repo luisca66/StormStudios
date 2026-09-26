@@ -4,6 +4,10 @@ Acordado con Luis el 2026-09-26. Objetivo: **gastar menos tokens de Claude y de 
 Gemini todo lo que sea simple y se pueda describir con precisión. Complementa a
 `MANUAL-RENOVACION-3D.md` (el flujo técnico) y a `PLAN-3D-BLENDER.md` §6.
 
+> **Actualización 2026-09-26 (noche): Gemini vuelve a ser automático y gratis** con Antigravity CLI (`agy`)
+> y la cuenta de Google de Luis. Claude lo lanza con `lanzar-agente.ps1 -Agente gemini` sobre la cola; Luis
+> no abre nada. Detalle en `REGISTRO-RENOVACION-3D.md`.
+>
 > **Cambio 2026-09-26 (tarde): Gemini por API cuesta dinero.** La clave de AI Studio de Luis es de pago
 > (~35 pesos en una tarde). Nuevo reparto: **lo simple lo hace Claude directamente** (de todos modos
 > escribía y probaba la receta completa antes de dársela a Gemini, así que el brief costaba casi lo mismo

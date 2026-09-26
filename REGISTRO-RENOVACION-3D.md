@@ -19,6 +19,9 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 
 ### 2026-09-26
 
+- ✅ **Gemini automático y sin costo por token FUNCIONA**: `agy` hizo el kit de lunas de Cosmic Ear de punta a punta (2 640 tri, sin diferencias). Claves: reglas regex en Windows (`command(regex:...modelar\.cmd .*)` y `unsandboxed(...)`), envoltorio `C:\Users\Luis\blender-bpy\modelar.cmd`, telemetría desactivada. Luis no tiene que abrir nada.
+- ✅ **Cosmic Ear, fase 2 (luz)**: fuera los modos «legacy»; luz cálida (hemisférica dorado/violeta, sol cálido, contraluz magenta), nebulosa índigo-violeta con dorado y magenta, estrellas cálidas.
+
 - ✅ **Cosmic Ear: nave nueva** (Claude, 3 372 tri) integrada con `shared-3d` (dedupe de Three); la nave de primitivas queda de reserva. Se ve oscura hasta quitar los modos «legacy» de color (fase 2). En curso: planetas (Astra) y lunas (Gemini).
 
 - ✅ **Cosmic Ear, fase 1b paso 1**: `main.jsx` partido en 8 módulos (textos, config, iconos, afinador, cielo, nave, efectos, planetas); `App` queda sola (966 líneas). Misión probada con micrófono simulado: sin errores. Siguiente: paso 2 (escena y audio fuera de `App`).
