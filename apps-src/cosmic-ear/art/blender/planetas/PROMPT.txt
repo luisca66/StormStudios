@@ -1,0 +1,14 @@
+Hola Astra. Te encargo los planetas-instrumento de Cosmic Ear, en Blender con bpy.
+
+La idea: un sistema solar de juguete musical. Cinco mundos, uno por instrumento (piano, cello, corno, coro, fagot), que se reconozcan a simple vista. Cálido, colorido y de cuento.
+
+MODO AUTOMÁTICO: Claude te lanzó desde la línea de comandos y nadie está mirando. No hagas preguntas: decide tú y anota en ENTREGA.md lo que decidas distinto del brief.
+
+IMPORTANTE: tu sandbox no puede cargar Blender (bpy da "DLL load failed: Access is denied"). No lo intentes: escribe modelar-planetas.py completo, deja ENTREGA.md como v1 con "Lista para: ejecución de Claude" y detente. Claude lo ejecuta en la PC de Luis y te reanuda con los renders para tu revisión propia.
+
+Proyecto (tu directorio actual): C:\Users\Luis\Documents\Claude Cowork\nuevo_website\storm-studios\StormStudios
+Tu carpeta, la única donde escribes: apps-src\cosmic-ear\art\blender\planetas\
+
+Lee plantillas-blender\INSTRUCCIONES-ASTRA.md y el BRIEF.md de tu carpeta. El brief solo fija tamaño, partes, presupuesto y paleta; lo demás lo decides tú. kit.py está en apps-src\grados-mayores-juego\art\blender\ (tu script lo importa como el resto: ROOT.parents[3] / "grados-mayores-juego" / "art" / "blender").
+
+Hay otros agentes trabajando a la vez: no escribas fuera de tu carpeta, no toques BRIEF.md ni PROMPT.txt y no uses git ni npm. Al terminar, resume: triángulos por planeta y en qué te apartaste del brief.

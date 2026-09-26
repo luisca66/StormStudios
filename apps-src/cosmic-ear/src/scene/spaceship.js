@@ -1,9 +1,11 @@
-// Nave del jugador (primitivas; se reemplaza en la fase 3).
+// Nave del jugador: modelo de Blender (art/blender/nave/, Claude) con la nave de primitivas de reserva.
 // Extraído de main.jsx en la fase 1b (PLAN-COSMIC-EAR.md); el código no cambió.
 
 import * as THREE from "three";
+import shipUrl from "./assets/nave.glb?url";
+import { buildModel, loadModel } from "../../../shared-3d/src";
 
-export const createSpaceship = () => {
+const createPrimitiveSpaceship = () => {
     const g = new THREE.Group();
 
     // Materiales
@@ -270,5 +272,31 @@ export const createSpaceship = () => {
     // Escalar para el juego
     g.scale.set(0.7, 0.7, 0.7);
 
+    return g;
+};
+
+// ---- Nave de Blender (fase 3 de PLAN-COSMIC-EAR.md) ----
+// Partes: `hull` (todo lo fijo) y `engine` (disco del motor en +Z; el juego anima su opacidad).
+// Se pide al cargar el módulo: para cuando empieza la misión ya está en memoria.
+let shipModel;
+loadModel(shipUrl).then((m) => { shipModel = m; }).catch((e) => console.error("Nave de Blender:", e));
+
+export const createSpaceship = () => {
+    if (!shipModel) return createPrimitiveSpaceship();
+    const built = buildModel(shipModel, { emissive: true, castShadow: false });
+    const g = built.root;
+    const [engine] = built.byPart("engine");
+
+    // Resplandor y luz del motor, como en la nave anterior (main.jsx los anima).
+    const engineGlow = new THREE.Mesh(new THREE.SphereGeometry(0.28, 16, 16),
+        new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.8 }));
+    engineGlow.position.z = 2.72;
+    g.add(engineGlow);
+    const engineLight = new THREE.PointLight(0xff6600, 3, 15);
+    engineLight.position.z = 3.1;
+    g.add(engineLight);
+
+    g.userData = { engine, engineLight, engineGlow };
+    g.scale.set(0.7, 0.7, 0.7);
     return g;
 };

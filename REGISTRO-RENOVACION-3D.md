@@ -19,6 +19,8 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 
 ### 2026-09-26
 
+- ✅ **Cosmic Ear: nave nueva** (Claude, 3 372 tri) integrada con `shared-3d` (dedupe de Three); la nave de primitivas queda de reserva. Se ve oscura hasta quitar los modos «legacy» de color (fase 2). En curso: planetas (Astra) y lunas (Gemini).
+
 - ✅ **Cosmic Ear, fase 1b paso 1**: `main.jsx` partido en 8 módulos (textos, config, iconos, afinador, cielo, nave, efectos, planetas); `App` queda sola (966 líneas). Misión probada con micrófono simulado: sin errores. Siguiente: paso 2 (escena y audio fuera de `App`).
 
 - 🔧 **Gemini ahora va por Antigravity CLI (`agy` 1.2.11)** con la cuenta de Luis (plan Google AI Pro, Gemini 3.8 Flash High): sin costo por token. Lanzador: `-Agente gemini -Carpeta plantillas-blender -Mensaje plantillas-blender\PROMPT-COLA-GEMINI.txt`; trabaja la cola `COLA-GEMINI.md`. Hecho: permisos en `~/.gemini/antigravity-cli/settings.json` (proyecto de confianza; leer proyecto y blender-bpy; escribir solo en `apps-src`; comando de Blender) y hook de telemetría de Google Cloud desactivado (rompía todas las herramientas; respaldo `hooks.json.bak`). **Pendiente:** el comando de Blender aún se niega (la regla no coincidió; probablemente antepuso `cd`); el prompt ya pide la ruta completa sin `cd`. Próxima sesión: relanzar y, si vuelve a negarse, leer el log en `~/.gemini/antigravity-cli/log/`. Gemini ya dejó `apps-src/cosmic-ear/art/blender/lunas/modelar-lunas.py` sin ejecutar.
