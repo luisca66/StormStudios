@@ -3,6 +3,10 @@
 > Lo escribe el **integrador** (Claude o Gemini) ANTES de que Astra modele.
 > Astra lee solo este archivo y las referencias que cita: **no necesita abrir el código del juego**.
 > Carpeta de trabajo: `apps-src/<juego>/art/blender/<modelo>/` (checkout principal, no worktree).
+>
+> **Modo Astra (desde 2026-09-26):** llena completas solo las secciones 2 (ficha técnica) y 3 (partes que
+> el juego mueve). En la 4 da la idea, el ambiente y la paleta en pocas líneas, y deja la forma y el
+> detalle a Astra. Los briefs de Gemini usan otra plantilla, `BRIEF-GEMINI.md`, con receta completa.
 
 ## 1. Qué es y dónde se ve
 

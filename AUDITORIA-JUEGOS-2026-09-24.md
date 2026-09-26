@@ -174,6 +174,11 @@ está decidido: es propuesta para que Luis elija.**
 - ¿Glub se queda como está en diseño (solo pasa a Blender) o se rediseña el personaje?
 - ¿Cosmic Ear entra en la ruta de renovación o se queda como está?
 
+**Respuestas de Luis (2026-09-26):** se arranca por La Pradera; Glub se queda en esencia con un modelo
+mejorado; después de La Pradera sigue Cosmic Ear con rediseño completo. Reparto de trabajo: Claude
+dirige y modela lo hermoso, Astra lo complejo en paralelo, Gemini lo simple
+(`plantillas-blender/REPARTO-AGENTES.md`, `apps-src/oido-absoluto-multi-juego/PLAN-PRADERA-BLENDER.md`).
+
 ---
 
 ## 7. Plan propuesto: una mejor manera de hacer la renovación

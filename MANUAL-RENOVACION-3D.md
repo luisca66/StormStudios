@@ -87,10 +87,13 @@ Una tabla en el plan del nivel (como la de `AUDITORIA-NUBES-BLENDER.md`):
 
 | Pieza | Quién | Criterio |
 |---|---|---|
-| Protagonista orgánico, primer plano (Glub, cocodrilo) | **Astra** | Es donde más se nota la calidad |
-| Kits instanciados, rígidos, arquitectura, objetivos, compuertas | **Claude con bpy** | Formas estilizadas y partes rígidas |
-| Rocas, pasto, árboles, juncos, nenúfares | **CC0** adaptado por Claude | No vale la pena modelarlos desde cero |
+| Lo que tiene que ser hermoso (protagonistas, primer plano) | **Claude con bpy** | Es donde más se nota la calidad |
+| Lo complejo que conviene hacer en paralelo (arquitectura grande, criaturas) | **Astra** | Brief corto y creativo |
+| Lo simple (kits de rocas, setos, muros, portones, objetivos geométricos) | **Gemini** | Brief con receta completa (`BRIEF-GEMINI.md`) |
 | Mariposas, luciérnagas, partículas, ondas | **Código** | Son efectos, no modelos |
+
+Reparto y reglas para que los tres agentes no se pisen: `plantillas-blender/REPARTO-AGENTES.md`
+(2026-09-26). Los assets CC0 quedan como plan B si una pieza simple no sale bien.
 
 A cada pieza se le asigna un tipo de `apps-src/shared-3d/presupuestos.json` (protagonista, objetivo,
 hito, instanciado, cabina) y se agrega ahí con su id `<juego>/<modelo>`.
@@ -180,9 +183,10 @@ export function buildThing() {
 
 ## 4. Personajes con esqueleto ⏳
 
-Para Glub y el cocodrilo: malla con esqueleto (armature) y clips hechos en Blender (caminar, saltar,
+Para el cocodrilo (Glub no lo necesita: sus manos y pies flotan separados del cuerpo y bastan partes
+rígidas; ver `PLAN-PRADERA-BLENDER.md` §2): malla con esqueleto (armature) y clips hechos en Blender (caminar, saltar,
 festejar), reproducidos con `AnimationMixer` de Three.js. Hoy `shared-3d` y `kit.export_glb` manejan
-**partes rígidas**; el esqueleto se agrega en el piloto con Glub:
+**partes rígidas**; el esqueleto se agrega con el cocodrilo (El Pantano):
 
 - Astra entrega el `.blend` con armature y acciones nombradas (`caminar`, `saltar`, `festejar`).
 - Se exporta con el exportador glTF de Blender (con animaciones), no con `export_parts`.

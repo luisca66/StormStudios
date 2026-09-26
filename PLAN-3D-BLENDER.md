@@ -143,7 +143,12 @@ relajó para los modelos de Blender.
   Nivel 5 «Las Nubes» (auditoría en `apps-src/oido-absoluto-multi-juego/AUDITORIA-NUBES-BLENDER.md`):
   ✅ nubes instanciadas, globo aerostático, portal arcoíris, islas, cometas y pájaros (Claude, publicados
   2026-09-16; vista inicial de 367 a 173 draw calls). ✅ Unicornio-pegaso (Claude, con el brief escrito para Astra). Nivel completo.
-- `intervalos-cantados-juego`.
+  Nivel 1 «La Pradera»: 🔨 **en marcha** (2026-09-26), piloto del flujo nuevo y del reparto de tres
+  agentes. Plan, piezas y tablero en `apps-src/oido-absoluto-multi-juego/PLAN-PRADERA-BLENDER.md`.
+  Niveles 3 «El Cosmos» y 4 «El Pantano»: siguen procedurales.
+- **Cosmic Ear** — `cosmic-ear` (desglose auditivo): Three r128 + React en un solo archivo. **Rediseño
+  completo** después de La Pradera (decidido por Luis el 2026-09-26).
+- `intervalos-cantados-juego` y Synth-Kong: 2D, no llevan Blender.
 
 ---
 
@@ -174,10 +179,18 @@ el 2026-09-13.**
    vivos, emisión por vértice y farol de cabina). Publicado.
 
 **Qué significa "renovar"** quedó definido con El Océano (2026-09-15): modelos, entorno e
-iluminación juntos, por nivel. Siguen sin ruta los niveles 1 «La Pradera», 3 «El Cosmos» y
-4 «El Pantano» de `oido-absoluto-multi-juego`; el orden propuesto (Pradera → Pantano → Cosmos) está en
-`AUDITORIA-JUEGOS-2026-09-24.md`, y La Pradera será el piloto del flujo de `MANUAL-RENOVACION-3D.md`.
-`intervalos-cantados-juego` es 2D: su renovación es de diseño (tesitura por nivel), no de modelos.
+iluminación juntos, por nivel. `intervalos-cantados-juego` es 2D: su renovación es de diseño
+(tesitura por nivel), no de modelos.
+
+**Orden desde el 2026-09-26 (decidido por Luis):**
+
+8. 🔨 **Walking AP Multi, nivel 1 «La Pradera»**: piloto de `MANUAL-RENOVACION-3D.md` y del reparto
+   Claude/Astra/Gemini. Glub se queda en esencia con un modelo mejorado. Plan:
+   `apps-src/oido-absoluto-multi-juego/PLAN-PRADERA-BLENDER.md`.
+9. **Cosmic Ear: rediseño completo** (Three 0.160, módulos y modelos nuevos). Su plan se escribe al
+   cerrar La Pradera.
+10. Después, por decidir: El Pantano y El Cosmos de Walking AP Multi, cometa exterior de El Cometa,
+    laberinto de Resonancia y chimeneas de Batisfera (esta última puede ir antes, con Astra libre).
 
 Transversal: medir rendimiento **en escritorio** antes de publicar cualquier modelo nuevo. Los juegos
 son para laptop/escritorio; las versiones de teléfono serán apps nativas iOS/Android hechas aparte
@@ -193,22 +206,28 @@ son para laptop/escritorio; las versiones de teléfono serán apps nativas iOS/A
 6. Actualizar el README del juego, la bitácora (5–10 líneas) y el inventario de este plan.
 7. Detenerse. Publicar solo con OK de Luis.
 
-## 6. Flujo con Astra (Codex): modelado separado de la integración
+## 6. Flujo con tres agentes: Claude dirige, Astra y Gemini modelan
 
-Astra gasta tokens solo en modelar. Claude o Gemini preparan el encargo, integran y prueban.
+Desde el 2026-09-26 (`plantillas-blender/REPARTO-AGENTES.md`): **Claude** dirige, escribe los briefs y
+los prompts, modela lo que tiene que ser hermoso e integra; **Astra** modela en paralelo lo complejo;
+**Gemini** modela lo simple con receta detallada. Luis pega los prompts y aprueba capturas.
 
 | Paso | Quién | Entrega |
 |---|---|---|
-| 1. Brief con ficha técnica | integrador (Claude/Gemini) | `art/blender/<modelo>/BRIEF.md` desde `plantillas-blender/BRIEF.md`: escala, ejes, cámara, presupuesto, partes con `part`/`segment` y pivotes, renders pedidos. Astra no abre el código. |
-| 2. Modelado | **Astra** | en esa carpeta: `modelar-<modelo>.py`, `.blend`, `.glb`, `<modelo>.json` y `<modelo>-juego.glb` (`kit.export_glb`), renders y `ENTREGA.md` |
-| 3. Aprobación | **Luis** | aprueba las **capturas del inspector con la luz del nivel** (`npm run capture` en `apps-src/shared-3d`) o pide cambios (máx. 2 rondas de Astra) |
-| 4. Integración | integrador | carga con `shared-3d` (`loadModel`/`buildModel`), animación, destello, atajo de desarrollo, build, QA en escritorio, commit |
+| 1. Brief | **Claude** | Astra: `art/blender/<modelo>/BRIEF.md` corto y creativo (idea, contrato mínimo, paleta). Gemini: `BRIEF-GEMINI.md` con medidas, receta paso a paso, colores y render. Ninguno abre el código del juego. |
+| 2. Modelado | **Astra**, **Gemini** o **Claude** | en esa carpeta: `modelar-<modelo>.py`, `.blend`, `.glb`, `<modelo>.json` y `<modelo>-juego.glb` (`kit.export_glb`), renders y `ENTREGA.md` |
+| 3. Aprobación | **Luis** | aprueba las **capturas del inspector con la luz del nivel** (`npm run capture` en `apps-src/shared-3d`, las genera Claude) o pide cambios (máx. 2 rondas por agente y pieza) |
+| 4. Integración | **Claude** | carga con `shared-3d` (`loadModel`/`buildModel`), animación, destello, atajo de desarrollo, build, QA en escritorio, commit |
 
-- Instrucción permanente para Astra: `plantillas-blender/INSTRUCCIONES-ASTRA.md` (incluye su revisión propia antes de entregar). Prompts listos para pegar (modelo nuevo y ronda de corrección): `plantillas-blender/PROMPTS-ASTRA.md`.
-- Astra trabaja en el **checkout principal**, nunca en un worktree aislado; no toca nada fuera
-  de la carpeta del modelo, ni hace commit.
-- El script debe correr con `bpy-run.ps1` desde la instalación de Luis: si a Astra se le acaban
-  los tokens, Claude continúa el mismo `modelar-<modelo>.py`.
+- Reglas para no pisarse (resumen de `REPARTO-AGENTES.md`): una carpeta y un dueño por encargo; solo
+  Claude usa git, npm e inspector; un encargo abierto por agente; Claude no cambia de rama en el
+  checkout principal mientras haya encargos abiertos; el tablero de cada plan de nivel lo edita Claude.
+- Astra: `plantillas-blender/INSTRUCCIONES-ASTRA.md` y `PROMPTS-ASTRA.md`. Gemini:
+  `INSTRUCCIONES-GEMINI.md` (plantilla de script probada con bpy 4.5.3), `PROMPTS-GEMINI.md` y
+  `BRIEF-GEMINI.md`.
+- Astra y Gemini trabajan en el **checkout principal**, nunca en un worktree aislado.
+- El script debe correr con `bpy-run.ps1` desde la instalación de Luis: si a un agente se le acaban
+  los tokens o las rondas, Claude continúa el mismo `modelar-<modelo>.py`.
 - `kit.py` se queda en `grados-mayores-juego/art/blender/`: unos 30 scripts lo importan de esa ruta.
 - `kit.export_glb(ruta, meta=…, ao=…, json_path=…)` pasa por `export_parts` y el convertidor de
   `shared-3d`; con `ao` hornea oclusión ambiental en copias temporales (la escena no se toca).
