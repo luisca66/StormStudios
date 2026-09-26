@@ -8,7 +8,7 @@ import { buildCloudField, preloadBlenderClouds, CloudField, CloudPart, CloudPlac
 import { preloadBlenderSkyKit, skyMesh } from "./blender-sky-kit";
 import { BlenderCastle, buildBlenderCastle, isCastleReady } from "./blender-castle";
 import { buildKitField, KitPlacement } from "./blender-kit-field";
-import { hedgesKit, ROCK_PARTS, rocksKit } from "./blender-pradera-kits";
+import { hedgesKit, ROCK_PARTS, rocksKit, wallKit } from "./blender-pradera-kits";
 
 export interface Obstacle {
   x: number;
@@ -742,6 +742,11 @@ export class LevelEnvironment {
     const thickness = 1.5;
     const size = this.arenaSize;
 
+    if (wallKit.ready()) {
+      this.buildKitWalls(size, thickness);
+      return;
+    }
+
     // North (Gate wall: leave a gap at the center for the wood gate)
     const wallNLeft = new THREE.Mesh(new THREE.BoxGeometry(size / 2 - 6, height, thickness), stoneMat);
     wallNLeft.position.set(-size / 4 - 3, height / 2, -size / 2);
@@ -774,6 +779,38 @@ export class LevelEnvironment {
       if (Math.abs(i) > 4) {
         this.obstacles.push({ x: i, y: 0, z: -size / 2, radius: thickness * 1.2 });
       }
+    }
+  }
+
+  // Muralla de Blender (Gemini): tramos de 8 m instanciados, torretas en las esquinas y dos junto al
+  // portón, que cubren el hueco entre los postes (x = ±3.4) y el muro. Mismos colisionadores.
+  private buildKitWalls(size: number, thickness: number): void {
+    const half = size / 2;
+    const pieces: KitPlacement[] = [];
+    const segment = (x: number, z: number, rotY: number) => pieces.push({ part: "wall_segment", x, z, scale: 1, rotY });
+    const tower = (x: number, z: number) => {
+      pieces.push({ part: "wall_tower", x, z, scale: 1, rotY: 0 });
+      this.obstacles.push({ x, y: 0, z, radius: 2.2 });
+    };
+    for (let c = -half + 4; c <= half - 4; c += 8) {
+      segment(c, half, 0);             // south
+      segment(half, c, Math.PI / 2);   // east
+      segment(-half, c, Math.PI / 2);  // west
+    }
+    for (let c = 10; c <= half - 4; c += 8) {
+      segment(c, -half, 0);            // north, leaving the gate gap
+      segment(-c, -half, 0);
+    }
+    for (const [x, z] of [[half, half], [-half, half], [half, -half], [-half, -half], [5.2, -half], [-5.2, -half]]) {
+      tower(x, z);
+    }
+    this.group.add(buildKitField(wallKit.model(), pieces));
+
+    for (let i = -half; i <= half; i += 8) {
+      this.obstacles.push({ x: i, y: 0, z: half, radius: thickness * 1.2 });
+      this.obstacles.push({ x: half, y: 0, z: i, radius: thickness * 1.2 });
+      this.obstacles.push({ x: -half, y: 0, z: i, radius: thickness * 1.2 });
+      if (Math.abs(i) > 4) this.obstacles.push({ x: i, y: 0, z: -half, radius: thickness * 1.2 });
     }
   }
 
