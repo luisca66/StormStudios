@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "title": "Armonía · I–IV–V–I",
+  "tempo": 100,
+  "masterVolume": 0.8,
+  "mode": "single",
+  "measures": [
+    {"id":"demo-m1","time":[4,4],"key":"C"},
+    {"id":"demo-m2","time":[4,4],"key":"C"},
+    {"id":"demo-m3","time":[4,4],"key":"C"},
+    {"id":"demo-m4","time":[4,4],"key":"C"}
+  ],
+  "voices": [
+    {"id":"melody","name":"Melodía","clef":"treble","instrument":"Piano","volume":0.8,"mute":false,"solo":false,"events":[
+      {"id":"demo-n1","start":0,"duration":"h","dotted":false,"triplet":false,"pitches":["C4","E4","G4"],"tie":false},
+      {"id":"demo-n2","start":1920,"duration":"h","dotted":false,"triplet":false,"pitches":["F4","A4","C5"],"tie":false},
+      {"id":"demo-n3","start":3840,"duration":"h","dotted":false,"triplet":false,"pitches":["G4","B4","D5"],"tie":false},
+      {"id":"demo-n4","start":5760,"duration":"h","dotted":false,"triplet":false,"pitches":["C4","E4","G4"],"tie":false}
+    ]},
+    {"id":"soprano","name":"Soprano","clef":"treble","instrument":"Piano","volume":0.8,"mute":false,"solo":false,"events":[]},
+    {"id":"alto","name":"Alto","clef":"treble","instrument":"Piano","volume":0.8,"mute":false,"solo":false,"events":[]},
+    {"id":"tenor","name":"Tenor","clef":"bass","instrument":"Piano","volume":0.8,"mute":false,"solo":false,"events":[]},
+    {"id":"bass","name":"Bajo","clef":"bass","instrument":"Piano","volume":0.8,"mute":false,"solo":false,"events":[]}
+  ],
+  "annotations": [
+    {"id":"demo-a1","measure":1,"beat":1,"text":"I","kind":"roman"},
+    {"id":"demo-a2","measure":1,"beat":3,"text":"IV","kind":"roman"},
+    {"id":"demo-a3","measure":2,"beat":1,"text":"V","kind":"roman"},
+    {"id":"demo-a4","measure":2,"beat":3,"text":"I","kind":"roman"}
+  ],
+  "scenes": [{"id":"demo-scene","title":"Funciones armónicas · I–IV–V–I","caption":"Tónica → subdominante → dominante → tónica","startMeasure":1,"endMeasure":2,"aspect":"16:9","highlightVoice":"all"}]
+}

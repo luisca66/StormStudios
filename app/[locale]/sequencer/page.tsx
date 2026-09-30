@@ -45,6 +45,9 @@ export default async function SequencerPage({ params }: Props) {
       }}
       tagline={es ? "Compón · Experimenta · Exporta MIDI" : "Compose · Experiment · Export MIDI"}
     >
+      <a href={`/${locale}/sequencer/v4`} style={{display:"block",padding:"10px 20px",background:"#4c1d95",color:"#ede9fe",fontWeight:700,textAlign:"center"}}>
+        {es?"Probar Storm Sequencer v4.0 · la versión v3 de tus videos sigue aquí":"Try Storm Sequencer v4.0 · your videos’ v3 remains here"}
+      </a>
       <iframe
         src={es ? "/tools/secuenciador.html" : "/tools/sequencer.html"}
         title="Storm Sequencer v3.0"

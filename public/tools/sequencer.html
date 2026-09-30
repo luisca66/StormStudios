@@ -344,6 +344,8 @@
             </div>
         </div>
 
+        <p id="sample-status" role="status" hidden style="margin: 0 12px 12px; color: #fcd34d; font-size: 13px;">Some samples are unavailable. Those notes will use a synth sound. Retry in a few seconds or change instrument.</p>
+
         <!-- VIEW TOGGLE - Piano Roll / Staff -->
         <div class="flex gap-2 items-center px-3 pb-3 bg-slate-900">
             <div class="flex items-center gap-2 bg-slate-800 px-1.5 py-1.5 rounded-lg border-2 border-slate-600">
@@ -598,6 +600,12 @@
         let audioCtx = null;
         let masterGain = null;
         let sampleCache = {};
+        const pendingSamples = new Map();
+        const failedSamples = new Map();
+        const SAMPLE_TIMEOUT_MS = 10000;
+        let playbackRequest = 0;
+        let previewRequest = 0;
+        let sampleLoadingCount = 0;
         let playbackState = { isPlaying: false, startTime: 0, startTick: 0, animationId: null, activeNodes: [] };
         let playbackStartTick = 0; // user-defined playback start (absolute tick)
 
@@ -630,7 +638,7 @@
                 masterGain.gain.value = 0.8; // Default volume 80%
                 masterGain.connect(audioCtx.destination);
             }
-            preloadAllSamples();
+            // Samples are loaded on demand, only for the selected instrument.
             syncModeUI();
             renderCurrentView();
             updateMetronomeBpmDisplay();
@@ -655,23 +663,27 @@
 
         function handleInstrumentChange() {
             const sel = document.getElementById('instrument-select');
+            stopPlayback();
             projectData.instrument = sel.value;
+            failedSamples.clear();
+            updateSampleStatus();
         }
 
-        function preloadAllSamples() {
-            const octaves = [1, 2, 3, 4, 5, 6];
-            const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-            // Silently preload samples in background
-            INSTRUMENTS.forEach(inst => {
-                octaves.forEach(oct => {
-                    notes.forEach(note => {
-                        const sampleKey = `${note}${oct}`;
-                        if (!sampleCache[`${inst}_${sampleKey}`]) {
-                            loadSample(inst, sampleKey).catch(() => {});
-                        }
-                    });
-                });
-            });
+        function updateSampleStatus() {
+            document.getElementById('loading-indicator').classList.toggle('hidden', sampleLoadingCount === 0);
+            const status = document.getElementById('sample-status');
+            const failed = [...failedSamples.keys()].some(key => key.startsWith(projectData.instrument + '_'));
+            status.hidden = projectData.instrument === 'Sinte' || !failed;
+        }
+
+        // Bound concurrency for large scores; Stop/new Play cancels queued work.
+        async function loadScoreSamples(instrument, notes, request) {
+            const queue = [...notes];
+            await Promise.all(Array.from({ length: Math.min(6, queue.length) }, async () => {
+                while (queue.length && request === playbackRequest) {
+                    await loadSample(instrument, queue.shift());
+                }
+            }));
         }
 
         function getSampleKey(noteKey) {
@@ -711,25 +723,56 @@
             return `${notePart}${octave}`;
         }
 
+        function getSamplePlayback(noteKey) {
+            const midi = midiFromKey(noteKey);
+            // R2 bank verified: C2–B6 for all five instruments (no octave 1).
+            const sampleMidi = Math.max(36, Math.min(95, midi));
+            return {
+                sampleKey: getSampleKey(keyFromMidi(sampleMidi)),
+                playbackRate: Math.pow(2, (midi - sampleMidi) / 12)
+            };
+        }
+
         function getSampleUrl(instrument, sampleKey) {
-            const safeKey = sampleKey.replace('#', '%23');
-            return `${BASE_URL}/${instrument}/${safeKey}.mp3`;
+            return `${BASE_URL}/${encodeURIComponent(instrument)}/${encodeURIComponent(sampleKey)}.mp3`;
         }
 
         async function loadSample(instrument, sampleKey) {
             const cacheKey = `${instrument}_${sampleKey}`;
             if (sampleCache[cacheKey]) return sampleCache[cacheKey];
+            if (pendingSamples.has(cacheKey)) return pendingSamples.get(cacheKey);
+            if (Date.now() - (failedSamples.get(cacheKey) || 0) < SAMPLE_TIMEOUT_MS) return null;
             const url = getSampleUrl(instrument, sampleKey);
+            const task = (async () => {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), SAMPLE_TIMEOUT_MS);
+                sampleLoadingCount++;
+                updateSampleStatus();
+                try {
+                    // Revalidate old non-CORS browser cache entries (R2 migration).
+                    const response = await fetch(url, { cache: 'no-cache', signal: controller.signal });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const arrayBuffer = await response.arrayBuffer();
+                    if (!audioCtx) initAudio();
+                    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+                    sampleCache[cacheKey] = audioBuffer;
+                    failedSamples.delete(cacheKey);
+                    return audioBuffer;
+                } catch (error) {
+                    failedSamples.set(cacheKey, Date.now());
+                    console.warn('[Sequencer] Sample unavailable:', url, error);
+                    return null;
+                } finally {
+                    clearTimeout(timeout);
+                    sampleLoadingCount--;
+                    updateSampleStatus();
+                }
+            })();
+            pendingSamples.set(cacheKey, task);
             try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('Network response was not ok');
-                const arrayBuffer = await response.arrayBuffer();
-                if (!audioCtx) initAudio();
-                const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-                sampleCache[cacheKey] = audioBuffer;
-                return audioBuffer;
-            } catch (error) {
-                return null;
+                return await task;
+            } finally {
+                pendingSamples.delete(cacheKey);
             }
         }
 
@@ -741,23 +784,20 @@
             }
         }
 
-        async function playSampleNote(instrument, noteKey, duration, startTime) {
-            const sampleKey = getSampleKey(noteKey);
-            let buffer = sampleCache[`${instrument}_${sampleKey}`];
-            if (!buffer) {
-                document.getElementById('loading-indicator').classList.remove('hidden');
-                buffer = await loadSample(instrument, sampleKey);
-                document.getElementById('loading-indicator').classList.add('hidden');
-            }
+        function playSampleNote(instrument, noteKey, duration, startTime) {
+            const { sampleKey, playbackRate } = getSamplePlayback(noteKey);
+            // playScore has already loaded the samples. Never start a late async note.
+            const buffer = sampleCache[`${instrument}_${sampleKey}`];
             if (!buffer) {
                 playOscillator(getFrequency(noteKey), duration, startTime);
                 return;
             }
             const source = audioCtx.createBufferSource();
             source.buffer = buffer;
+            source.playbackRate.value = playbackRate;
             const gainNode = audioCtx.createGain();
             gainNode.gain.setValueAtTime(SAMPLE_VOLUME, startTime);
-            gainNode.gain.setValueAtTime(SAMPLE_VOLUME, startTime + duration - 0.05);
+            gainNode.gain.setValueAtTime(SAMPLE_VOLUME, startTime + Math.max(0, duration - 0.05));
             gainNode.gain.linearRampToValueAtTime(0, startTime + duration);
             source.connect(gainNode);
             gainNode.connect(masterGain);
@@ -785,7 +825,10 @@
 
         async function startPreviewSound(noteKey) {
             stopPreviewSound();
-            if (!audioCtx) initAudio();
+            const request = previewRequest;
+            initAudio();
+            if (audioCtx.state === 'suspended') await audioCtx.resume();
+            if (request !== previewRequest) return;
             if (projectData.instrument === 'Sinte') {
                 const freq = getFrequency(noteKey);
                 if (!freq) return;
@@ -800,14 +843,28 @@
                 osc.start();
                 currentPreviewNote = { node: osc, gain: gain };
             } else {
-                const sampleKey = getSampleKey(noteKey);
+                const { sampleKey, playbackRate } = getSamplePlayback(noteKey);
                 let buffer = sampleCache[`${projectData.instrument}_${sampleKey}`];
                 if (!buffer) {
                     buffer = await loadSample(projectData.instrument, sampleKey);
                 }
+                if (request !== previewRequest) return;
+                if (!buffer) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.value = getFrequency(noteKey);
+                    gain.gain.value = 0.3;
+                    osc.connect(gain);
+                    gain.connect(masterGain);
+                    osc.start();
+                    currentPreviewNote = { node: osc, gain: gain };
+                    return;
+                }
                 if (buffer) {
                     const source = audioCtx.createBufferSource();
                     source.buffer = buffer;
+                    source.playbackRate.value = playbackRate;
                     const gain = audioCtx.createGain();
                     gain.gain.setValueAtTime(SAMPLE_VOLUME, audioCtx.currentTime);
                     source.connect(gain);
@@ -819,6 +876,7 @@
         }
 
         function stopPreviewSound() {
+            previewRequest++;
             if (currentPreviewNote) {
                 const { node, gain } = currentPreviewNote;
                 try {
@@ -835,28 +893,22 @@
         async function playScore() {
             initAudio();
             stopPlayback();
+            const request = playbackRequest;
+            const instrument = projectData.instrument;
+            if (audioCtx.state === 'suspended') await audioCtx.resume();
+            if (request !== playbackRequest) return;
             if (projectData.instrument !== 'Sinte') {
                  const tracks = (projectData.mode === 'quartet') ? ['soprano', 'alto', 'tenor', 'bass'] : ['melody'];
                  const uniqueNotes = new Set();
                  tracks.forEach(trackName => {
                     const trackMap = getTrackMap(trackName);
                     for (let note of trackMap.values()) {
-                        if (note.type === 'note') uniqueNotes.add(note.keys[0]);
+                        if (note.type === 'note') uniqueNotes.add(getSamplePlayback(note.keys[0]).sampleKey);
                     }
                  });
-                 const promises = [];
-                 uniqueNotes.forEach(key => {
-                     const sk = getSampleKey(key);
-                     if (!sampleCache[`${projectData.instrument}_${sk}`]) {
-                         promises.push(loadSample(projectData.instrument, sk));
-                     }
-                 });
-                 if (promises.length > 0) {
-                     document.getElementById('loading-indicator').classList.remove('hidden');
-                     await Promise.all(promises);
-                     document.getElementById('loading-indicator').classList.add('hidden');
-                 }
+                 await loadScoreSamples(instrument, uniqueNotes, request);
             }
+            if (request !== playbackRequest) return;
 
             const bpm = parseInt(document.getElementById('tempo-slider').value);
             const secondsPerQuarter = 60 / bpm;
@@ -967,6 +1019,7 @@
         }
 
         function stopPlayback() {
+            playbackRequest++;
             playbackState.isPlaying = false;
             if (playbackState.animationId) cancelAnimationFrame(playbackState.animationId);
             document.getElementById('chord-monitor').innerText = "---";
@@ -1054,6 +1107,7 @@
 
         function restoreState(jsonState) {
             const state = JSON.parse(jsonState);
+            stopPlayback();
             projectData.mode = state.projectData.mode;
             projectData.instrument = state.projectData.instrument || 'Sinte';
             for (const [name, entries] of Object.entries(state.projectData.tracks)) {
@@ -1064,6 +1118,7 @@
             cipherData = state.cipherData || {};
             document.getElementById('mode-select').value = projectData.mode;
             document.getElementById('instrument-select').value = projectData.instrument;
+            updateSampleStatus();
             syncModeUI();
             selectedTick = null; selectedTrackName = null;
             renderCurrentView();
@@ -1111,6 +1166,7 @@
         }
 
         function setMode(mode) {
+            stopPlayback();
             projectData.mode = mode;
             selectedTick = null;
             selectedTrackName = null;
@@ -2077,7 +2133,7 @@
             div.innerHTML = "";
 
             // No need to render staff first - piano roll uses linear positioning
-            sanitizeNotesToPianoRollRange();
+            updatePianoRollRange();
 
             // Calculate dimensions using linear tick positions
             const totalTicks = getTotalTicks();
@@ -2657,19 +2713,27 @@
         }
 
 
-        function sanitizeNotesToPianoRollRange() {
+        function updatePianoRollRange() {
+            let minMidi = 38, maxMidi = 84;
             const tracks = (projectData.mode === 'quartet') ? ['soprano', 'alto', 'tenor', 'bass'] : ['melody'];
             tracks.forEach(trackName => {
-                const trackMap = getTrackMap(trackName);
-                for (const [tick, note] of Array.from(trackMap.entries())) {
+                for (const note of getTrackMap(trackName).values()) {
                     if (!note || note.type !== 'note') continue;
-                    const inRange = (note.keys || []).every(k => {
-                        const midi = midiFromKey(k);
-                        return midi !== null && midi >= PIANO_ROLL_CONFIG.MIN_MIDI && midi <= PIANO_ROLL_CONFIG.MAX_MIDI;
-                    });
-                    if (!inRange) trackMap.delete(tick);
+                    for (const key of note.keys || []) {
+                        const midi = midiFromKey(key);
+                        if (Number.isInteger(midi) && midi >= 0 && midi <= 127) {
+                            minMidi = Math.min(minMidi, midi);
+                            maxMidi = Math.max(maxMidi, midi);
+                        }
+                    }
                 }
             });
+            // Switching views must never delete music outside the default range.
+            PIANO_ROLL_CONFIG.MIN_MIDI = minMidi;
+            PIANO_ROLL_CONFIG.MAX_MIDI = maxMidi;
+            PIANO_ROLL_CONFIG.SEMITONES = maxMidi - minMidi + 1;
+            PIANO_ROLL_CONFIG.MIN_KEY = keyFromMidi(minMidi);
+            PIANO_ROLL_CONFIG.MAX_KEY = keyFromMidi(maxMidi);
         }
 
 function renderPianoRollNotes(svg) {

@@ -129,6 +129,7 @@ export const routing = defineRouting({
     "/intervalos": "/intervalos",
     "/memoria": "/memoria",
     "/sequencer": "/sequencer",
+    "/sequencer/v4": "/sequencer/v4",
   },
 });
 

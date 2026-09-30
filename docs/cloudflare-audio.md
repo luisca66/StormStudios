@@ -1,5 +1,9 @@
 # Migración de audio a dominios de producción
 
+## 2026-09-30 — Secuenciador ES/EN
+
+Se aplicó la revalidación cache: no-cache que faltaba en las dos herramientas. Se eliminó la precarga de 360 rutas y se añadieron carga bajo demanda, promesas compartidas, timeout y avisos visibles. Auditoría GET/Range de las 360 rutas: 300 samples válidos en C2–B6 y 60 respuestas 404 (octava 1 completa). Las notas fuera del banco usan muestras del extremo afinadas mediante playbackRate. Ver secuenciador-revision-y-propuesta.md y sequencer-samples-audit.json para alcance, pruebas y propuesta.
+
 Estado al 9 de septiembre de 2026: Terra conectó y activó tres dominios en Cloudflare. El proyecto usa ahora `samples.stormstudios.com.mx` para samples compartidos, `musica.stormstudios.com.mx` para guitarra y `sfx.stormstudios.com.mx` para percusión. Se conservan los orígenes anteriores para clientes existentes. El cuarto bucket (APK y voces iniciales de Elefantito) sigue pendiente y mantiene su URL original.
 
 Se comprobó un archivo de cada bucket: HTTPS, HTTP 200, contenido idéntico al original, CORS desde `https://www.stormstudios.com.mx` y HTTP 206 con Range. Se actualizaron las fuentes, el origen predeterminado del proxy y la CSP; las 13 apps se regeneraron. `AUDIO_BUCKET_BASE_URL`, si está definida en un entorno, prevalece sobre el origen predeterminado.

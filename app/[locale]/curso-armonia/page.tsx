@@ -196,6 +196,26 @@ export default async function CursoArmoniaPage({ params }: Props) {
           </Link>
         </div>
 
+        <div className="ss-glass rounded-2xl p-8 mt-6 flex flex-col sm:flex-row items-center gap-6"
+          style={{ border: "1px solid rgba(139,92,246,0.3)", background: "rgba(139,92,246,0.06)" }}>
+          <div className="text-4xl flex-shrink-0" aria-hidden="true">🎼</div>
+          <div className="flex-1 text-center sm:text-left">
+            <p className="ss-serif mb-1" style={{ fontSize: "1.2rem", color: "#f0eeff" }}>
+              Storm Sequencer v4.0
+            </p>
+            <p className="ss-mono text-sm" style={{ color: "var(--ss-muted)", lineHeight: 1.6 }}>
+              {es
+                ? "Escribe con mouse, teclado o texto musical. Trabaja en melodía o SATB, prepara tus clases y exporta partituras y audio. La v3 sigue disponible para acompañar los videos anteriores."
+                : "Write with the mouse, keyboard or musical text. Work with melody or SATB, prepare your lessons and export scores and audio. V3 remains available for the earlier videos."}
+            </p>
+          </div>
+          <Link href="/sequencer/v4"
+            className="ss-mono text-sm px-6 py-3 rounded-xl flex-shrink-0 transition-all duration-300"
+            style={{ background: "rgba(139,92,246,0.2)", border: "1px solid rgba(139,92,246,0.5)", color: "#ddd6fe" }}>
+            {es ? "Abrir v4.0 →" : "Open v4.0 →"}
+          </Link>
+        </div>
+
         <section className="mt-12">
           <div className="ss-glass rounded-2xl p-8" style={{ border: "1px solid rgba(59,130,246,0.15)" }}>
             <h2 className="ss-serif mb-3" style={{ fontSize: "1.35rem", color: "#f0eeff" }}>
