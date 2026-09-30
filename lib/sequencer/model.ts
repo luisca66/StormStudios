@@ -693,6 +693,8 @@ const TEXT_VOICES: Record<string, VoiceId> = {
 };
 const TEXT_DURATIONS: Record<string, Duration> = {
   redonda: "w", blanca: "h", negra: "q", corchea: "8", semicorchea: "16", fusa: "32",
+  entera: "w", mitad: "h", cuarto: "q", octavo: "8", dieciseisavo: "16", treintaidosavo: "32",
+  whole: "w", half: "h", quarter: "q", eighth: "8", sixteenth: "16", "thirty-second": "32", thirtysecond: "32",
   w: "w", h: "h", q: "q", "8": "8", "16": "16", "32": "32",
 };
 const DOTTED_WORDS = ["puntillo", "dotted", "."];

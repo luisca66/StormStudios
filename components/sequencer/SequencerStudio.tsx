@@ -18,8 +18,8 @@ import styles from "./sequencer.module.css";
 
 const STORAGE_KEY = "storm-sequencer-studio-v1";
 const DURATIONS: Array<[Duration,string,string,string]> = [
-  ["w","Redonda","Whole","𝅝"], ["h","Blanca","Half","𝅗𝅥"], ["q","Negra","Quarter","♩"],
-  ["8","Corchea","Eighth","♪"], ["16","Semicorchea","Sixteenth","𝅘𝅥𝅯"], ["32","Fusa","Thirty-second","𝅘𝅥𝅰"],
+  ["w","Entera","Whole","𝅝"], ["h","Mitad","Half","𝅗𝅥"], ["q","Cuarto","Quarter","♩"],
+  ["8","Octavo","Eighth","♪"], ["16","Dieciseisavo","Sixteenth","𝅘𝅥𝅯"], ["32","Treintaidosavo","Thirty-second","𝅘𝅥𝅰"],
 ];
 const KEYS = ["C","G","D","A","E","B","F#","C#","F","Bb","Eb","Ab","Db","Gb","Cb"];
 type Draft = { voice: VoiceId; measure: number; beat: number; pitches: string; duration: Duration; dotted: boolean; triplet: boolean; tie: boolean };

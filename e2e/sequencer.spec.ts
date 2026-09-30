@@ -297,7 +297,7 @@ test("Space plays and stops from anywhere except text fields, and the transport 
   await page.waitForFunction(() => Boolean(window.stormSequencer));
   const state=page.getByTestId("audio-state"),play=page.getByRole("button",{name:"Reproducir",exact:true});
   const before=await play.boundingBox();
-  const whole=page.getByRole("button",{name:"Elegir Redonda",exact:true});
+  const whole=page.getByRole("button",{name:"Elegir Entera",exact:true});
   await whole.focus();await page.keyboard.press("Space");
   await expect(state).not.toHaveText("Detenido");
   await expect(whole).toHaveAttribute("aria-pressed","false"); // Space did not click the focused button

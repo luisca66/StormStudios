@@ -421,6 +421,19 @@ describe("importScore", () => {
 });
 
 describe("parseScoreText", () => {
+  it("accepts the duration labels shown in both language versions", () => {
+    for (const labels of [
+      ["entera", "mitad", "cuarto", "octavo", "dieciseisavo", "treintaidosavo"],
+      ["whole", "half", "quarter", "eighth", "sixteenth", "thirty-second"],
+    ]) {
+      const values = ["w", "h", "q", "8", "16", "32"];
+      for (let i = 0; i < labels.length; i++) {
+        const result = parseScoreText(`measure 1\nC4 ${labels[i]}`, createScore());
+        expect(result.issues).toEqual([]);
+        expect(result.score?.voices[0].events[0].duration).toBe(values[i]);
+      }
+    }
+  });
   it("writes the documented examples onto an empty score", () => {
     const base = createScore();
     const before = clone(base);
