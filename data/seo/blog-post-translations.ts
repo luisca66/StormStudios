@@ -27,6 +27,13 @@ export const BLOG_POST_TRANSLATIONS: BlogPostTranslation[] = [
       es: "2026-09-24-lo-que-avanzamos-mientras-llega-la-leccion-4",
     },
   },
+  {
+    key: "storm-sequencer-v4",
+    slugs: {
+      en: "2026-09-30-storm-sequencer-v4",
+      es: "2026-09-30-storm-sequencer-v4",
+    },
+  },
 ];
 
 export function findBlogTranslationBySlug(locale: Locale, slug: string) {
