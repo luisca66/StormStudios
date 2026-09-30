@@ -23,6 +23,9 @@ test("agent writes four measures, edits exactly, undoes, switches views and reco
   const errors: string[] = [];
   page.on("pageerror", e => errors.push(e.message));
   await page.goto("/es/sequencer/v4");
+  // Wait for client hydration: filling the server-rendered textarea before React
+  // attaches onChange can leave the default eight-note example in React state.
+  await page.waitForFunction(() => Boolean(window.stormSequencer));
   await page.getByLabel("Texto musical").fill("voz melody\ncompas 1\nC4 negra; D4 negra; E4 negra; F4 negra\ncompas 2\nG4 blanca; A4 blanca\ncompas 3\n[C4 E4 G4] redonda\ncompas 4\nsilencio negra; C5 blanca puntillo");
   await page.getByRole("button", { name: "Validar texto", exact: true }).click();
   await expect(page.getByTestId("text-validation")).toContainText("0 errores");
@@ -175,7 +178,11 @@ test("mouse writes on the staff, drags pitch, erases with right-click and suppor
   await expect(first).toHaveAttribute("aria-label",/E4/);
   const noteBounds=(await first.boundingBox())!;
   await page.mouse.move(noteBounds.x+noteBounds.width/2,noteBounds.y+noteBounds.height/2);
-  await page.mouse.down();await page.mouse.move(noteBounds.x+noteBounds.width/2,noteBounds.y+noteBounds.height/2-10/620*bounds.width);await page.mouse.up();
+  // Drag works in staff steps of at least 7 screen pixels; two steps up from E4 is G4, labelled while dragging.
+  const step=Math.max(7,5*bounds.height/215),x=noteBounds.x+noteBounds.width/2,y=noteBounds.y+noteBounds.height/2;
+  await page.mouse.down();await page.mouse.move(x,y-step,{steps:3});await page.mouse.move(x,y-2*step,{steps:3});
+  await expect(svg.locator("text",{hasText:"G4"})).toBeVisible();
+  await page.mouse.up();
   await expect(svg.locator('[data-note-id]').first()).toHaveAttribute("aria-label",/G4/);
   await svg.locator('[data-note-id]').first().click({button:"right"});
   await expect(svg.locator('[data-note-id]')).toHaveCount(0);
@@ -208,10 +215,14 @@ test("SATB is grouped and time-aligned; page mode shows one page while continuou
   for(const voice of ["Soprano","Alto","Tenor","Bajo"])await expect(bar.locator('svg')).toContainText(voice);
   const aligned=await bar.locator('[data-note-id][data-event-start="0"]').evaluateAll(notes=>notes.map(n=>n.getBoundingClientRect().x));
   expect(Math.max(...aligned)-Math.min(...aligned)).toBeLessThan(3);
-  await page.getByRole("button",{name:"Vista por páginas",exact:true}).click();await expect(score.locator('[data-measure]')).toHaveCount(2);
-  await page.getByRole("button",{name:"Página siguiente",exact:true}).click();await expect(score.locator('[data-measure="1"]')).toHaveCount(0);await expect(score.locator('[data-measure="3"]')).toBeVisible();
+  // A page holds two SATB systems of three measures; clef and key open every system, the meter only the first.
+  for(let i=0;i<3;i++)await page.getByRole("button",{name:"Añadir compás",exact:true}).click();
+  await page.getByRole("button",{name:"Vista por páginas",exact:true}).click();await expect(score.locator('[data-measure]')).toHaveCount(6);
+  await expect(score.locator('[data-measure="4"] .vf-clef')).toHaveCount(4);await expect(score.locator('[data-measure="4"] .vf-timesignature')).toHaveCount(0);
+  await expect(score.locator('[data-measure="2"] .vf-clef')).toHaveCount(0);
+  await page.getByRole("button",{name:"Página siguiente",exact:true}).click();await expect(score.locator('[data-measure="1"]')).toHaveCount(0);await expect(score.locator('[data-measure="7"]')).toBeVisible();
   await page.getByRole("button",{name:"Página anterior",exact:true}).click();await expect(bar).toBeVisible();
-  await page.getByRole("button",{name:"Vista continua",exact:true}).click();await expect(score.locator('[data-measure]')).toHaveCount(4);
+  await page.getByRole("button",{name:"Vista continua",exact:true}).click();await expect(score.locator('[data-measure]')).toHaveCount(7);
   await page.screenshot({path:".local-work/sequencer-v4-satb.png"});
 });
 
@@ -224,14 +235,15 @@ test("v3 keeps the videos' URL and links to v4 without replacing the legacy edit
 
 test("page view turns automatically during playback and keeps the reached page on stop",async({page})=>{
   await page.goto("/es/sequencer/v4");
-  await page.getByRole("button",{name:"Añadir compás",exact:true}).click();
+  // One voice: 15 measures per page (five systems of three).
+  for(let i=0;i<12;i++)await page.getByRole("button",{name:"Añadir compás",exact:true}).click();
   await page.getByRole("button",{name:"Vista por páginas",exact:true}).click();
   await page.getByLabel("Tempo",{exact:true}).fill("240");
-  await page.getByLabel("Compás",{exact:true}).fill("4");await page.getByLabel("Pulso",{exact:true}).fill("4");
+  await page.getByLabel("Compás",{exact:true}).fill("15");await page.getByLabel("Pulso",{exact:true}).fill("4");
   await page.getByRole("button",{name:"Reproducir",exact:true}).click();
-  await expect(page.getByTestId("score-view").locator('[data-measure="5"]')).toBeVisible();
+  await expect(page.getByTestId("score-view").locator('[data-measure="16"]')).toBeVisible();
   await page.getByRole("button",{name:"Detener",exact:true}).click();
-  await expect(page.getByTestId("score-view").locator('[data-measure="5"]')).toBeVisible();
+  await expect(page.getByTestId("score-view").locator('[data-measure="16"]')).toBeVisible();
   await expect(page.getByTestId("score-view").locator('[data-measure="1"]')).toHaveCount(0);
 });
 
@@ -278,4 +290,106 @@ test("staff and piano roll audition each moved pitch before releasing the mouse"
   await page.mouse.move(box.x+10,box.y-42);
   await expect.poll(()=>page.evaluate(()=>(window as unknown as {played:number[]}).played.length)).toBeGreaterThan(beforeMove);
   await page.mouse.up();
+});
+
+test("Space plays and stops from anywhere except text fields, and the transport does not move",async({page})=>{
+  await page.goto("/es/sequencer/v4");
+  await page.waitForFunction(() => Boolean(window.stormSequencer));
+  const state=page.getByTestId("audio-state"),play=page.getByRole("button",{name:"Reproducir",exact:true});
+  const before=await play.boundingBox();
+  const whole=page.getByRole("button",{name:"Elegir Redonda",exact:true});
+  await whole.focus();await page.keyboard.press("Space");
+  await expect(state).not.toHaveText("Detenido");
+  await expect(whole).toHaveAttribute("aria-pressed","false"); // Space did not click the focused button
+  expect((await play.boundingBox())!.x).toBeCloseTo(before!.x,0);
+  await page.keyboard.press("Space");await expect(state).toHaveText("Detenido");
+  await page.getByLabel("Texto musical").focus();await page.keyboard.press("Space");
+  await expect(state).toHaveText("Detenido");
+});
+
+test("tempo can be typed freely, applies on Enter or blur, clamps to range and Escape cancels",async({page})=>{
+  await page.goto("/es/sequencer/v4");
+  await page.waitForFunction(() => Boolean(window.stormSequencer));
+  const tempo=page.getByLabel("Tempo",{exact:true});
+  const current=()=>page.evaluate(()=>window.stormSequencer!.getScore().tempo);
+  await tempo.fill("");await tempo.pressSequentially("72");await tempo.press("Enter");
+  expect(await current()).toBe(72);
+  await tempo.fill("500");await tempo.blur();expect(await current()).toBe(240);await expect(tempo).toHaveValue("240");
+  await tempo.fill("9");await tempo.press("Escape");expect(await current()).toBe(240);await expect(tempo).toHaveValue("240");
+});
+
+test("go to start and go to end move the cursor (buttons and Home/End keys)",async({page})=>{
+  await page.goto("/es/sequencer/v4");
+  await page.waitForFunction(() => Boolean(window.stormSequencer));
+  await page.evaluate(()=>window.stormSequencer!.loadText("voz melody\ncompas 1\nC4 negra; D4 negra; E4 negra; F4 negra\ncompas 2\nG4 blanca"));
+  const measure=page.getByLabel("Compás",{exact:true}),beat=page.getByLabel("Pulso",{exact:true});
+  await page.getByRole("button",{name:"Ir al final",exact:true}).click();
+  await expect(measure).toHaveValue("2");await expect(beat).toHaveValue("3");
+  await page.getByRole("button",{name:"Ir al inicio",exact:true}).click();
+  await expect(measure).toHaveValue("1");await expect(beat).toHaveValue("1");
+  await page.getByRole("region",{name:"Escritura con teclado",exact:true}).focus();
+  await page.keyboard.press("End");await expect(measure).toHaveValue("2");
+  await page.keyboard.press("Home");await expect(measure).toHaveValue("1");
+});
+
+test("select tool: rubber band picks several notes, Ctrl+D duplicates after them, Ctrl+C/Ctrl+V pastes at the cursor",async({page})=>{
+  await page.goto("/es/sequencer/v4");
+  await page.waitForFunction(() => Boolean(window.stormSequencer));
+  await page.evaluate(()=>window.stormSequencer!.loadText("voz melody\ncompas 1\nC4 negra; D4 negra; E4 negra; F4 negra"));
+  await page.getByRole("button",{name:"↖ Seleccionar",exact:true}).click();
+  const score=page.getByTestId("score-view"),bar=score.locator('[data-measure="1"] svg').first();
+  const box=(await bar.boundingBox())!;
+  // Drag from empty space above the staff across the whole measure.
+  await page.mouse.move(box.x+box.width*0.2,box.y+4);await page.mouse.down();
+  await page.mouse.move(box.x+box.width*0.6,box.y+box.height*0.5,{steps:4});
+  await expect(page.getByTestId("marquee")).toBeVisible();
+  await page.mouse.move(box.x+box.width-2,box.y+box.height-4,{steps:4});await page.mouse.up();
+  await expect(score.locator('[data-note-id][aria-pressed="true"]')).toHaveCount(4);
+  await page.keyboard.press("Control+d");
+  const described=()=>page.evaluate(()=>window.stormSequencer!.describe());
+  await expect.poll(described).toContain("Compás 2 (4/4, C): 4 eventos");
+  await expect(score.locator('[data-measure="2"] [data-note-id][aria-pressed="true"]')).toHaveCount(4);
+  await page.keyboard.press("Control+c");
+  await page.getByLabel("Compás",{exact:true}).fill("4");await page.getByLabel("Pulso",{exact:true}).fill("1");
+  await page.getByRole("button",{name:"Pegar",exact:true}).click();
+  await expect.poll(described).toContain("Compás 4 (4/4, C): 4 eventos");
+  await page.getByRole("button",{name:"Deshacer",exact:true}).click();
+  await expect.poll(described).not.toContain("Compás 4 (4/4, C): 4 eventos");
+});
+
+test("dragging a note reaches every staff step without skipping (up and down)",async({page})=>{
+  await page.goto("/es/sequencer/v4");
+  await page.waitForFunction(() => Boolean(window.stormSequencer));
+  await page.evaluate(()=>window.stormSequencer!.loadText("voz melody\ncompas 1\nB4 redonda"));
+  const svg=page.getByTestId("score-view").locator("svg").first();
+  const bounds=(await svg.boundingBox())!,step=Math.max(7,5*bounds.height/215);
+  const expected:Record<number,string>={1:"C5",2:"D5",3:"E5",4:"F5",5:"G5",[-1]:"A4",[-2]:"G4",[-3]:"F4",[-4]:"E4",[-5]:"D4"};
+  for(const [k,pitch] of Object.entries(expected)){
+    await svg.scrollIntoViewIfNeeded();
+    const note=svg.locator('[data-note-id]').first(),head=(await note.locator(".vf-notehead").first().boundingBox())!;
+    const x=head.x+head.width/2,y=head.y+head.height/2;
+    await page.mouse.move(x,y);await page.mouse.down();
+    for(let i=1;i<=Math.abs(Number(k));i++)await page.mouse.move(x,y-Math.sign(Number(k))*i*step,{steps:2});
+    await page.mouse.up();
+    await expect.poll(()=>page.evaluate(()=>window.stormSequencer!.getScore().voices[0].events[0].pitches[0])).toBe(pitch);
+    await page.keyboard.press("Control+z");
+    await expect.poll(()=>page.evaluate(()=>window.stormSequencer!.getScore().voices[0].events[0].pitches[0])).toBe("B4");
+  }
+});
+
+test("dragging follows the key signature even after an accidental button was used",async({page})=>{
+  await page.goto("/es/sequencer/v4");
+  await page.waitForFunction(() => Boolean(window.stormSequencer));
+  await page.evaluate(()=>window.stormSequencer!.loadText("voz melody\ncompas 1\nF4 redonda"));
+  await page.getByLabel("Armadura",{exact:true}).selectOption("Db");
+  await page.getByRole("button",{name:"Alteración natural",exact:true}).click(); // writing mode: naturals
+  const svg=page.getByTestId("score-view").locator("svg").first();await svg.scrollIntoViewIfNeeded();
+  const bounds=(await svg.boundingBox())!,step=Math.max(7,5*bounds.height/215);
+  const head=(await svg.locator('[data-note-id]').first().locator(".vf-notehead").first().boundingBox())!;
+  const x=head.x+head.width/2,y=head.y+head.height/2;
+  await page.mouse.move(x,y);await page.mouse.down();
+  for(let i=1;i<=3;i++)await page.mouse.move(x,y-i*step,{steps:2});
+  await expect(svg.locator("text",{hasText:"B♭4"})).toBeVisible();
+  await page.mouse.up();
+  await expect.poll(()=>page.evaluate(()=>window.stormSequencer!.getScore().voices[0].events[0].pitches[0])).toBe("Bb4");
 });

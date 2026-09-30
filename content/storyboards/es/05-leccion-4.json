@@ -1,0 +1,1737 @@
+{
+  "version": 1,
+  "lesson": "05-leccion-4",
+  "locale": "es",
+  "title": "Lección 4 — Acordes de quinta",
+  "source": "H:\\Website Clases\\04 Lección 4\\Guión lección 4 Astra para elevenlabs.docx",
+  "format": {
+    "aspect": "16:9",
+    "width": 1920,
+    "theme": "storm"
+  },
+  "projects": {
+    "ejemplos": {
+      "setup": {
+        "mode": "single",
+        "title": "Ejemplos de acordes",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 G4] negra; [D4 F#4 A4] negra; [E4 G4 B4 D5] negra; [F4 G4 A4] negra"
+    },
+    "fundamental": {
+      "setup": {
+        "mode": "single",
+        "title": "Acorde sobre Do",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4] negra; [D4 F4 A4] negra; [E4 G4 B4] negra; [F4 A4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [A4 C5 E5] negra; [B4 D5 F5] negra; [C5 E5 G5] negra"
+    },
+    "tercera": {
+      "setup": {
+        "mode": "single",
+        "title": "Acorde sobre Do",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 E4] negra; [D4 F4 A4] negra; [E4 G4 B4] negra; [F4 A4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [A4 C5 E5] negra; [B4 D5 F5] negra; [C5 E5 G5] negra"
+    },
+    "escala-mayor": {
+      "setup": {
+        "mode": "single",
+        "title": "Do mayor natural",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; E4 negra; F4 negra\ncompas 2\nG4 negra; A4 negra; B4 negra; C5 negra"
+    },
+    "mayor": {
+      "setup": {
+        "mode": "single",
+        "title": "Acordes de Do mayor natural",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 E4 G4] negra; [D4 F4 A4] negra; [E4 G4 B4] negra; [F4 A4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [A4 C5 E5] negra; [B4 D5 F5] negra; [C5 E5 G5] negra",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "ii",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "iii",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "vi",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "vii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "text": "I",
+          "kind": "roman"
+        }
+      ]
+    },
+    "escala-mayor-arm": {
+      "setup": {
+        "mode": "single",
+        "title": "Do mayor armónica",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; E4 negra; F4 negra\ncompas 2\nG4 negra; Ab4 negra; B4 negra; C5 negra"
+    },
+    "mayor-arm": {
+      "setup": {
+        "mode": "single",
+        "title": "Acordes de Do mayor armónica",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 E4 G4] negra; [D4 F4 Ab4] negra; [E4 G4 B4] negra; [F4 Ab4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [Ab4 C5 E5] negra; [B4 D5 F5] negra; [C5 E5 G5] negra",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "ii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "iii",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "text": "iv",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "VI+",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "vii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "text": "I",
+          "kind": "roman"
+        }
+      ]
+    },
+    "escala-menor-nat": {
+      "setup": {
+        "mode": "single",
+        "title": "Do menor natural",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; Eb4 negra; F4 negra\ncompas 2\nG4 negra; Ab4 negra; Bb4 negra; C5 negra"
+    },
+    "menor-nat": {
+      "setup": {
+        "mode": "single",
+        "title": "Acordes de Do menor natural",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 Eb4 G4] negra; [D4 F4 Ab4] negra; [Eb4 G4 Bb4] negra; [F4 Ab4 C5] negra\ncompas 2\n[G4 Bb4 D5] negra; [Ab4 C5 Eb5] negra; [Bb4 D5 F5] negra; [C5 Eb5 G5] negra",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "i",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "ii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "III",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "text": "iv",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "v",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "VI",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "VII",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "text": "i",
+          "kind": "roman"
+        }
+      ]
+    },
+    "escala-menor-arm": {
+      "setup": {
+        "mode": "single",
+        "title": "Do menor armónica",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; Eb4 negra; F4 negra\ncompas 2\nG4 negra; Ab4 negra; B4 negra; C5 negra"
+    },
+    "menor-arm": {
+      "setup": {
+        "mode": "single",
+        "title": "Acordes de Do menor armónica",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 Eb4 G4] negra; [D4 F4 Ab4] negra; [Eb4 G4 B4] negra; [F4 Ab4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [Ab4 C5 Eb5] negra; [B4 D5 F5] negra; [C5 Eb5 G5] negra",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "i",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "ii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "III+",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "text": "iv",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "VI",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "vii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "text": "i",
+          "kind": "roman"
+        }
+      ]
+    },
+    "escala-menor-mel": {
+      "setup": {
+        "mode": "single",
+        "title": "Do menor melódica ascendente",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; Eb4 negra; F4 negra\ncompas 2\nG4 negra; A4 negra; B4 negra; C5 negra"
+    },
+    "menor-mel": {
+      "setup": {
+        "mode": "single",
+        "title": "Acordes de Do menor melódica ascendente",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 Eb4 G4] negra; [D4 F4 A4] negra; [Eb4 G4 B4] negra; [F4 A4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [A4 C5 Eb5] negra; [B4 D5 F5] negra; [C5 Eb5 G5] negra",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "i",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "ii",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "III+",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "vi°",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "vii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "text": "i",
+          "kind": "roman"
+        }
+      ]
+    },
+    "menor-mel-desc": {
+      "setup": {
+        "mode": "single",
+        "title": "Do menor melódica descendente",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C5 Eb5 G5] negra; [Bb4 D5 F5] negra; [Ab4 C5 Eb5] negra; [G4 Bb4 D5] negra\ncompas 2\n[F4 Ab4 C5] negra; [Eb4 G4 Bb4] negra; [D4 F4 Ab4] negra; [C4 Eb4 G4] negra",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "i",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "VII",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "VI",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "text": "v",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "iv",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "III",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "ii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "text": "i",
+          "kind": "roman"
+        }
+      ]
+    },
+    "cuatro-tipos": {
+      "setup": {
+        "mode": "single",
+        "title": "Los cuatro tipos de acordes de quinta",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 4,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 E4 G4] redonda\ncompas 2\n[C4 Eb4 G4] redonda\ncompas 3\n[C4 Eb4 Gb4] redonda\ncompas 4\n[C4 E4 G#4] redonda",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "Mayor",
+          "kind": "text"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "menor",
+          "kind": "text"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "disminuido",
+          "kind": "text"
+        },
+        {
+          "measure": 4,
+          "beat": 1,
+          "text": "aumentado",
+          "kind": "text"
+        }
+      ]
+    }
+  },
+  "stills": [
+    {
+      "duration": 12,
+      "id": "titulo",
+      "kind": "title",
+      "heading": "Acordes de quinta",
+      "caption": "Lección 4 · Curso de Armonía · Storm Studios Learning",
+      "narration": "Hola, bienvenidos de nuevo a Storm Studios Learning. En las lecciones anteriores estudiamos las escalas y los intervalos. Con esas herramientas, hoy comenzamos propiamente el estudio de la armonía, o las armonías."
+    },
+    {
+      "duration": 8,
+      "id": "que-es-acorde",
+      "kind": "title",
+      "heading": "¿Qué es un acorde?",
+      "caption": "Toda simultaneidad de sonidos diferentes, dos o más.",
+      "narration": "Primero tenemos que definir qué es un acorde. Llamamos acorde a toda simultaneidad de sonidos diferentes, dos o más."
+    },
+    {
+      "duration": 5,
+      "id": "ejemplos",
+      "project": "ejemplos",
+      "heading": "Ejemplos de acordes",
+      "caption": "Dos, tres o más sonidos diferentes al mismo tiempo",
+      "narration": "Estos son ejemplos de acordes."
+    },
+    {
+      "duration": 10,
+      "id": "armonia",
+      "kind": "title",
+      "heading": "La armonía",
+      "caption": "Estructura interválica de los acordes y leyes de su enlace",
+      "narration": "La armonía estudia la estructura interválica de los acordes —es decir, cómo se construyen— y las leyes que rigen cómo se enlazan unos acordes con otros."
+    },
+    {
+      "duration": 11,
+      "id": "armonias",
+      "kind": "title",
+      "heading": "Armonías, en plural",
+      "caption": "Época · género · corriente estilística · compositor",
+      "narration": "En el método hablamos de armonías, en plural, porque esos enlaces y sus usos dependen de la época, del género, de la corriente estilística y también del compositor que estamos estudiando."
+    },
+    {
+      "duration": 15,
+      "id": "construccion",
+      "kind": "title",
+      "heading": "Construcción de acordes",
+      "caption": "Fundamental + terceras superpuestas",
+      "narration": "Vamos a comenzar por la construcción de los acordes. Más adelante estudiaremos cómo enlazarlos. Para construir los acordes que vamos a trabajar aquí, partimos de un sonido generador, al que llamamos fundamental, y superponemos intervalos de tercera."
+    },
+    {
+      "duration": 13,
+      "id": "plan",
+      "kind": "title",
+      "heading": "Acordes de quinta",
+      "caption": "Dos terceras sobre cada grado de las escalas básicas en Do",
+      "narration": "Hoy vamos a superponer dos terceras para construir los llamados acordes de quinta. Lo haremos sobre cada grado de las escalas básicas, en este caso sobre las escalas de Do, para comparar cómo cambian sus acordes."
+    },
+    {
+      "duration": 10,
+      "id": "escala-mayor",
+      "project": "escala-mayor",
+      "heading": "Do mayor natural",
+      "caption": "Cada nota puede ser fundamental de un acorde",
+      "narration": "Cada nota de la escala puede servir como fundamental de un acorde. Para construirlo, vamos a superponer dos terceras utilizando las notas de la misma escala."
+    },
+    {
+      "duration": 3,
+      "id": "do-fundamental",
+      "project": "fundamental",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 2
+      },
+      "heading": "Sobre Do",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "color": "amber",
+          "label": "fundamental"
+        }
+      ],
+      "narration": "Empiezo sobre Do."
+    },
+    {
+      "duration": 3,
+      "id": "do-tercera",
+      "project": "tercera",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 2
+      },
+      "heading": "Sobre Do",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "cyan",
+          "label": "3ª"
+        }
+      ],
+      "narration": "Una tercera arriba tenemos Mi,"
+    },
+    {
+      "duration": 5,
+      "id": "do-quinta",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 2
+      },
+      "heading": "Do · Mi · Sol",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "amber",
+          "label": "3ª + 3ª"
+        }
+      ],
+      "narration": "y una tercera arriba de Mi tenemos Sol. Tenemos Do, Mi y Sol."
+    },
+    {
+      "duration": 13,
+      "id": "acorde-de-quinta",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 2
+      },
+      "heading": "Acorde de quinta o tríada",
+      "caption": "Mi es la tercera y Sol es la quinta de Do",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "amber",
+          "label": "3ª y 5ª"
+        }
+      ],
+      "narration": "Con respecto a Do, Mi es la tercera y Sol es la quinta. Por eso llamamos a esta estructura acorde de quinta. También se conoce como tríada, porque contiene tres notas diferentes. Vamos a escucharlo.",
+      "audio": true
+    },
+    {
+      "duration": 9,
+      "id": "sobre-re",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 3
+      },
+      "heading": "Sobre Re",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "Re · Fa · La"
+        }
+      ],
+      "narration": "Ahora voy a hacer lo mismo sobre Re. Una tercera arriba de Re tenemos Fa, y una tercera arriba de Fa tenemos La. Nuestro acorde es Re, Fa y La."
+    },
+    {
+      "duration": 3,
+      "id": "sobre-mi",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 4
+      },
+      "heading": "Sobre Mi",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "amber"
+        }
+      ],
+      "narration": "Sobre Mi tenemos Sol y Si."
+    },
+    {
+      "duration": 3,
+      "id": "sobre-fa",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 1
+      },
+      "heading": "Sobre Fa",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 4,
+          "endBeat": 5,
+          "color": "amber"
+        }
+      ],
+      "narration": "Sobre Fa tenemos La y Do."
+    },
+    {
+      "duration": 3,
+      "id": "sobre-sol",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 2
+      },
+      "heading": "Sobre Sol",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "amber"
+        }
+      ],
+      "narration": "Sobre Sol tenemos Si y Re."
+    },
+    {
+      "duration": 3,
+      "id": "sobre-la",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 3
+      },
+      "heading": "Sobre La",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "amber"
+        }
+      ],
+      "narration": "Sobre La tenemos Do y Mi."
+    },
+    {
+      "duration": 3,
+      "id": "sobre-si",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 4
+      },
+      "heading": "Sobre Si",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "amber"
+        }
+      ],
+      "narration": "Y sobre Si tenemos Re y Fa."
+    },
+    {
+      "duration": 10,
+      "id": "mayor-escuchar",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "Acordes de Do mayor natural",
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "narration": "Voy a reproducirlos para escuchar cómo cambia su sonido de un grado al siguiente.",
+      "audio": true
+    },
+    {
+      "duration": 13,
+      "id": "mayor-tipo-mayor",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "Acorde mayor",
+      "caption": "Tercera mayor y quinta justa",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "amber",
+          "label": "3M + 5J"
+        }
+      ],
+      "narration": "Aunque todos están construidos superponiendo terceras, sus intervalos no son iguales. En Do, Mi y Sol tenemos una tercera mayor y una quinta justa, medidas desde la fundamental. Este es un acorde mayor."
+    },
+    {
+      "duration": 6,
+      "id": "mayor-tipo-menor",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "Acorde menor",
+      "caption": "Tercera menor y quinta justa",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "cyan",
+          "label": "3m + 5J"
+        }
+      ],
+      "narration": "En Re, Fa y La tenemos una tercera menor y una quinta justa. Este es un acorde menor."
+    },
+    {
+      "duration": 7,
+      "id": "mayor-tipo-disminuido",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "Acorde disminuido",
+      "caption": "Tercera menor y quinta disminuida",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "rose",
+          "label": "3m + 5dis"
+        }
+      ],
+      "narration": "Y en Si, Re y Fa tenemos una tercera menor y una quinta disminuida. Este es un acorde disminuido."
+    },
+    {
+      "duration": 11,
+      "id": "grados",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "Cada acorde es un grado",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "amber",
+          "label": "primer grado"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "cyan",
+          "label": "sexto grado"
+        }
+      ],
+      "narration": "Recordemos que cada nota de la escala es un grado, y por lo tanto, cada acorde es el acorde respectivo a su grado. Así podemos decir también: el acorde de primer grado, o el acorde de sexto grado."
+    },
+    {
+      "duration": 14,
+      "id": "mayor-resumen",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "Do mayor natural",
+      "caption": "I mayor · ii menor · iii menor · IV mayor · V mayor · vi menor · vii° disminuido",
+      "narration": "La estructura de nuestros acordes queda de la siguiente manera: primero mayor, segundo menor, tercero menor, cuarto mayor, quinto mayor, sexto menor y séptimo disminuido. Esta es la estructura de los acordes de la escala mayor natural."
+    },
+    {
+      "duration": 17,
+      "id": "escala-mayor-arm",
+      "project": "escala-mayor-arm",
+      "heading": "Do mayor armónica",
+      "caption": "El sexto grado desciende: La bemol",
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "color": "rose",
+          "label": "La♭"
+        }
+      ],
+      "narration": "Ahora vamos a construir los acordes de la escala mayor armónica. Si tienes alguna duda sobre cuáles son las escalas básicas no dudes en repasar la lección anterior. Voy a construir otra vez los acordes, respetando las notas de esta escala. Ahora, cada vez que aparezca La, tendrá que ser La bemol."
+    },
+    {
+      "duration": 5,
+      "id": "arm-1",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 2
+      },
+      "heading": "I · Do Mi Sol",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "green",
+          "label": "sin cambio"
+        }
+      ],
+      "narration": "El primer acorde sigue siendo Do, Mi y Sol. No contiene La, así que no cambia."
+    },
+    {
+      "duration": 7,
+      "id": "arm-2",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 3
+      },
+      "heading": "ii° · Re Fa La♭",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "rose",
+          "label": "disminuido"
+        }
+      ],
+      "narration": "El segundo ahora es Re, Fa y La bemol. Su quinta se volvió disminuida: ahora tenemos un acorde disminuido."
+    },
+    {
+      "duration": 5,
+      "id": "arm-3",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 4
+      },
+      "heading": "iii · Mi Sol Si",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "green",
+          "label": "menor"
+        }
+      ],
+      "narration": "El tercero, Mi, Sol y Si, tampoco cambia. Sigue siendo menor."
+    },
+    {
+      "duration": 5,
+      "id": "arm-4",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 1
+      },
+      "heading": "iv · Fa La♭ Do",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 4,
+          "endBeat": 5,
+          "color": "rose",
+          "label": "ahora menor"
+        }
+      ],
+      "narration": "El cuarto ahora es Fa, La bemol y Do. Antes era mayor y ahora es menor."
+    },
+    {
+      "duration": 4,
+      "id": "arm-5",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 2
+      },
+      "heading": "V · Sol Si Re",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "green",
+          "label": "mayor"
+        }
+      ],
+      "narration": "El quinto sigue siendo Sol, Si y Re: mayor."
+    },
+    {
+      "duration": 13,
+      "id": "arm-6",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 3
+      },
+      "heading": "VI+ · La♭ Do Mi",
+      "caption": "Tercera mayor y quinta aumentada",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "violet",
+          "label": "aumentado"
+        }
+      ],
+      "narration": "Mira lo que sucede en el sexto: La bemol, Do y Mi. Desde La bemol hasta Do tenemos una tercera mayor, y desde La bemol hasta Mi tenemos una quinta aumentada. Aquí aparece el cuarto tipo de acorde: el aumentado."
+    },
+    {
+      "duration": 4,
+      "id": "arm-7",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 4
+      },
+      "heading": "vii° · Si Re Fa",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "green",
+          "label": "disminuido"
+        }
+      ],
+      "narration": "El séptimo sigue siendo Si, Re y Fa: disminuido."
+    },
+    {
+      "duration": 10,
+      "id": "arm-escuchar",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "Acordes de Do mayor armónica",
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "narration": "Vamos a escuchar los acordes de la escala mayor armónica.",
+      "audio": true
+    },
+    {
+      "duration": 6,
+      "id": "arm-cambios",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "Cambió una nota, cambiaron tres acordes",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "rose"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "endBeat": 5,
+          "color": "rose"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "rose"
+        }
+      ],
+      "narration": "Al cambiar una nota de la escala cambiaron tres acordes: los que contienen esa nota."
+    },
+    {
+      "duration": 11,
+      "id": "escala-menor-nat",
+      "project": "escala-menor-nat",
+      "heading": "Do menor natural",
+      "caption": "Do · Re · Mi♭ · Fa · Sol · La♭ · Si♭ · Do",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "color": "violet"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "color": "violet"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "violet"
+        }
+      ],
+      "narration": "Continuemos con la escala de Do menor natural: Do, Re, Mi bemol, Fa, Sol, La bemol, Si bemol y Do. Voy a construir los acordes de la misma manera."
+    },
+    {
+      "duration": 5,
+      "id": "nat-1",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 2
+      },
+      "heading": "i · Do Mi♭ Sol",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "cyan",
+          "label": "menor"
+        }
+      ],
+      "narration": "Sobre Do tenemos Mi bemol y Sol. El primero es menor."
+    },
+    {
+      "duration": 5,
+      "id": "nat-2",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 3
+      },
+      "heading": "ii° · Re Fa La♭",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "rose",
+          "label": "disminuido"
+        }
+      ],
+      "narration": "Sobre Re tenemos Fa y La bemol. El segundo es disminuido."
+    },
+    {
+      "duration": 5,
+      "id": "nat-3",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 4
+      },
+      "heading": "III · Mi♭ Sol Si♭",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "amber",
+          "label": "mayor"
+        }
+      ],
+      "narration": "Sobre Mi bemol tenemos Sol y Si bemol. El tercero es mayor."
+    },
+    {
+      "duration": 5,
+      "id": "nat-4",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 1
+      },
+      "heading": "iv · Fa La♭ Do",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 4,
+          "endBeat": 5,
+          "color": "cyan",
+          "label": "menor"
+        }
+      ],
+      "narration": "Sobre Fa tenemos La bemol y Do. El cuarto es menor."
+    },
+    {
+      "duration": 5,
+      "id": "nat-5",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 2
+      },
+      "heading": "v · Sol Si♭ Re",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "cyan",
+          "label": "menor"
+        }
+      ],
+      "narration": "Sobre Sol tenemos Si bemol y Re. El quinto es menor."
+    },
+    {
+      "duration": 5,
+      "id": "nat-6",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 3
+      },
+      "heading": "VI · La♭ Do Mi♭",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "mayor"
+        }
+      ],
+      "narration": "Sobre La bemol tenemos Do y Mi bemol. El sexto es mayor."
+    },
+    {
+      "duration": 5,
+      "id": "nat-7",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 4
+      },
+      "heading": "VII · Si♭ Re Fa",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "amber",
+          "label": "mayor"
+        }
+      ],
+      "narration": "Y sobre Si bemol tenemos Re y Fa. El séptimo es mayor."
+    },
+    {
+      "duration": 10,
+      "id": "nat-escuchar",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "Acordes de Do menor natural",
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "narration": "Vamos a escucharlos.",
+      "audio": true
+    },
+    {
+      "duration": 15,
+      "id": "escala-menor-arm",
+      "project": "escala-menor-arm",
+      "heading": "Do menor armónica",
+      "caption": "El séptimo grado sube: Si♭ → Si",
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "rose",
+          "label": "Si♮"
+        }
+      ],
+      "narration": "Para construir la escala menor armónica, vamos a elevar el séptimo grado. Si bemol se convierte en Si natural. Ahora tenemos Do, Re, Mi bemol, Fa, Sol, La bemol, Si y Do. Voy a hacer ese cambio también en los acordes que contienen esa nota."
+    },
+    {
+      "duration": 9,
+      "id": "marm-3",
+      "project": "menor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "III+ · Mi♭ Sol Si",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "violet",
+          "label": "aumentado"
+        }
+      ],
+      "narration": "El tercero era Mi bemol, Sol y Si bemol. Ahora es Mi bemol, Sol y Si natural. Su quinta se vuelve aumentada, así que el acorde es aumentado."
+    },
+    {
+      "duration": 8,
+      "id": "marm-5",
+      "project": "menor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "V · Sol Si Re",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "amber",
+          "label": "mayor"
+        }
+      ],
+      "narration": "El quinto era Sol, Si bemol y Re. Ahora es Sol, Si natural y Re. Su tercera se vuelve mayor: tenemos un acorde mayor."
+    },
+    {
+      "duration": 7,
+      "id": "marm-7",
+      "project": "menor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "vii° · Si Re Fa",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "rose",
+          "label": "disminuido"
+        }
+      ],
+      "narration": "Y el séptimo ahora es Si natural, Re y Fa: un acorde disminuido. Los demás acordes conservan las mismas notas."
+    },
+    {
+      "duration": 18,
+      "id": "marm-resumen",
+      "project": "menor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "Do menor armónica",
+      "caption": "i · ii° · III+ · iv · V · VI · vii°",
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "narration": "Entonces tenemos: primero menor, segundo disminuido, tercero aumentado, cuarto menor, quinto mayor, sexto mayor y séptimo disminuido. Escuchemos.",
+      "audio": true
+    },
+    {
+      "duration": 13,
+      "id": "escala-menor-mel",
+      "project": "escala-menor-mel",
+      "heading": "Do menor melódica ascendente",
+      "caption": "También sube el sexto grado: La♭ → La",
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "color": "rose",
+          "label": "La♮"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "rose",
+          "label": "Si♮"
+        }
+      ],
+      "narration": "Por último vamos a elevar también el sexto grado para construir la menor melódica ascendente. La bemol se convierte en La natural. La escala queda Do, Re, Mi bemol, Fa, Sol, La, Si y Do."
+    },
+    {
+      "duration": 8,
+      "id": "mel-2",
+      "project": "menor-mel",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "ii · Re Fa La",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "cyan",
+          "label": "menor"
+        }
+      ],
+      "narration": "Vamos a revisar los acordes que cambian. El segundo ahora es Re, Fa y La. Su quinta vuelve a ser justa y el acorde es menor."
+    },
+    {
+      "duration": 4,
+      "id": "mel-4",
+      "project": "menor-mel",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "IV · Fa La Do",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 4,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "mayor"
+        }
+      ],
+      "narration": "El cuarto es Fa, La y Do. Ahora es mayor."
+    },
+    {
+      "duration": 7,
+      "id": "mel-6",
+      "project": "menor-mel",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "vi° · La Do Mi♭",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "rose",
+          "label": "disminuido"
+        }
+      ],
+      "narration": "Y el sexto es La, Do y Mi bemol. Tenemos tercera menor y quinta disminuida: es un acorde disminuido."
+    },
+    {
+      "duration": 16,
+      "id": "mel-resumen",
+      "project": "menor-mel",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "Do menor melódica ascendente",
+      "caption": "i · ii · III+ · IV · V · vi° · vii°",
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "narration": "El primero sigue siendo menor; el tercero, aumentado; el quinto, mayor; y el séptimo, disminuido. Vamos a escucharlos.",
+      "audio": true
+    },
+    {
+      "duration": 16,
+      "id": "mel-descenso",
+      "project": "menor-mel-desc",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "Al descender: menor natural",
+      "caption": "Recuperamos Si♭ y La♭",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "violet",
+          "label": "Si♭"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "violet",
+          "label": "La♭"
+        }
+      ],
+      "narration": "Cuando la escala menor melódica desciende, recuperamos las notas de la menor natural: Si bemol y La bemol. Voy a escribir el descenso y construir los acordes con esas notas. Por eso, al bajar, recuperamos también los acordes que ya encontramos en Do menor natural.",
+      "audio": true
+    },
+    {
+      "duration": 17,
+      "id": "cuatro-tipos",
+      "project": "cuatro-tipos",
+      "heading": "Los cuatro tipos de acordes de quinta",
+      "showCiphers": true,
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "3M + 5J"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "cyan",
+          "label": "3m + 5J"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "rose",
+          "label": "3m + 5dis"
+        },
+        {
+          "measure": 4,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "violet",
+          "label": "3M + 5aum"
+        }
+      ],
+      "narration": "Ahora podemos ver de dónde salen los cuatro tipos de acordes de quinta. El mayor tiene tercera mayor y quinta justa. El menor tiene tercera menor y quinta justa. El disminuido tiene tercera menor y quinta disminuida. Y el aumentado tiene tercera mayor y quinta aumentada.",
+      "audio": true
+    },
+    {
+      "duration": 16,
+      "id": "regla",
+      "kind": "title",
+      "heading": "Cada grado, una fundamental",
+      "caption": "Superponemos terceras respetando las notas de la escala",
+      "narration": "Para construirlos sobre una escala, tomamos cada grado como fundamental y superponemos terceras respetando las notas de esa escala. Por eso es tan importante escribir correctamente las alteraciones. Si cambiamos una nota, podemos cambiar la estructura y el tipo de acorde."
+    },
+    {
+      "duration": 17,
+      "id": "tarea",
+      "kind": "title",
+      "heading": "Tu tarea",
+      "caption": "Construye los acordes de cada escala básica y súbelos al Maestro Virtual",
+      "narration": "Conserva estos ejemplos sobre Do como referencia. Utiliza tu tarea en la que ya construiste todas las escalas básicas y construye todos los acordes de cada escala. Esa es tu tarea para esta lección 4. Cuando la tengas lista la puedes subir al maestro virtual para su revisión."
+    },
+    {
+      "duration": 6,
+      "id": "despedida",
+      "kind": "title",
+      "heading": "¡Suerte!",
+      "caption": "Te veo en la próxima lección",
+      "narration": "Espero que hayas disfrutado tu primera lección con acordes. Te veo en la próxima. ¡Suerte!"
+    }
+  ]
+}

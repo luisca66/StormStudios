@@ -146,6 +146,17 @@
       ],
       "port": 5186,
       "url": "http://127.0.0.1:5186"
+    },
+    {
+      "name": "sequencer",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "next",
+        "dev",
+        "--port",
+        "3100"
+      ],
+      "port": 3100
     }
   ]
 }

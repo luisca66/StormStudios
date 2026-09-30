@@ -1,0 +1,269 @@
+{
+  "version": 1,
+  "lesson": "02-leccion-1",
+  "locale": "es",
+  "title": "Lección 1 — Escalas Mayores",
+  "format": {
+    "aspect": "16:9",
+    "theme": "storm"
+  },
+  "projects": {
+    "do-mayor": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "C",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; E4 negra; F4 negra\ncompas 2\nG4 negra; A4 negra; B4 negra; C5 negra"
+    },
+    "sol-mayor": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "G",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nG4 negra; A4 negra; B4 negra; C5 negra\ncompas 2\nD5 negra; E5 negra; F#5 negra; G5 negra"
+    },
+    "sol-enarmonia": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "C",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nG4 negra; A4 negra; B4 negra; C5 negra\ncompas 2\nD5 negra; E5 negra; Gb5 negra; G5 negra"
+    },
+    "fa-mayor": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "F",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nF4 negra; G4 negra; A4 negra; Bb4 negra\ncompas 2\nC5 negra; D5 negra; E5 negra; F5 negra"
+    }
+  },
+  "stills": [
+    {
+      "id": "01-titulo",
+      "kind": "title",
+      "heading": "Escalas mayores",
+      "caption": "Lección 1 · Curso de Armonía",
+      "narration": "Bienvenido a la primera lección. Hoy descubriremos cómo se construye cualquier escala mayor y el orden del círculo de quintas.",
+      "duration": 7
+    },
+    {
+      "id": "02-objetivos",
+      "kind": "title",
+      "heading": "¿Qué vamos a aprender?",
+      "caption": "Estructura interválica y círculo de quintas",
+      "narration": "Aprenderás la fórmula universal de tonos y semitonos, por qué usamos sostenidos o bemoles y cómo dominar las quince tonalidades.",
+      "duration": 7
+    },
+    {
+      "id": "03-do-mayor-inicio",
+      "project": "do-mayor",
+      "measures": [1, 2],
+      "reveal": {
+        "measure": 1,
+        "beat": 3
+      },
+      "heading": "Do mayor: el modelo",
+      "caption": "Teclas blancas del piano",
+      "narration": "Comenzamos en Do mayor. Escucha cómo sube nota por nota a través de las teclas blancas.",
+      "duration": 6
+    },
+    {
+      "id": "04-do-mayor-completa",
+      "project": "do-mayor",
+      "measures": [1, 2],
+      "heading": "Escala de Do mayor",
+      "caption": "Do, Re, Mi, Fa, Sol, La, Si, Do",
+      "narration": "Al completar la octava tenemos los ocho sonidos de Do mayor, donde cada grado cumple una función precisa.",
+      "duration": 7
+    },
+    {
+      "id": "05-estructura-primer-semitono",
+      "project": "do-mayor",
+      "measures": [1, 2],
+      "heading": "Primer semitono: Mi a Fa",
+      "caption": "Grados III y IV a distancia de semitono",
+      "narration": "Entre Mi y Fa encontramos el primer semitono natural de la escala, conectando el tercer grado con el cuarto.",
+      "duration": 7,
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "color": "amber"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "color": "amber"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "semitono"
+        }
+      ]
+    },
+    {
+      "id": "06-estructura-segundo-semitono",
+      "project": "do-mayor",
+      "measures": [1, 2],
+      "heading": "Segundo semitono: Si a Do",
+      "caption": "Grados VII y VIII a distancia de semitono",
+      "narration": "El segundo semitono aparece entre el séptimo y el octavo grado: Si y Do. La fórmula queda: tono, tono, semitono, tono, tono, tono, semitono.",
+      "duration": 9,
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "amber"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "color": "amber"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "semitono"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "semitono"
+        }
+      ]
+    },
+    {
+      "id": "07-formula-mayor",
+      "kind": "title",
+      "heading": "Fórmula de la escala mayor",
+      "caption": "Tono · Tono · Semitono · Tono · Tono · Tono · Semitono",
+      "narration": "Esta secuencia de dos tonos y un semitono, un tono de enlace, y tres tonos y un semitono, debe cumplirse en cualquier tonalidad.",
+      "duration": 9
+    },
+    {
+      "id": "08-quintas-sol-mayor",
+      "project": "sol-mayor",
+      "measures": [1, 2],
+      "heading": "Sol mayor: primer sostenido",
+      "caption": "Quinta justa ascendente desde Do",
+      "narration": "Si subimos una quinta justa llegamos a Sol. Para mantener el semitono final entre el séptimo y octavo grado, necesitamos Fa sostenido.",
+      "duration": 9,
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "amber",
+          "label": "Fa#"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "amber",
+          "label": "sensible"
+        }
+      ]
+    },
+    {
+      "id": "09-grafia-correcta",
+      "project": "sol-enarmonia",
+      "measures": [1, 2],
+      "heading": "¿Por qué Fa♯ y no Sol♭?",
+      "caption": "Cada grado debe tener una letra distinta",
+      "narration": "Nunca escribas Sol bemol en Sol mayor: cada grado debe tener su propia letra correlativa, por lo que el séptimo grado es Fa sostenido.",
+      "duration": 8,
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "rose",
+          "label": "Solb"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 5,
+          "color": "rose",
+          "label": "error"
+        }
+      ]
+    },
+    {
+      "id": "10-quintas-fa-mayor",
+      "project": "fa-mayor",
+      "measures": [1, 2],
+      "heading": "Fa mayor: primer bemol",
+      "caption": "Quinta descendente desde Do",
+      "narration": "Bajando una quinta justa desde Do llegamos a Fa. Aquí el semitono entre los grados tres y cuatro nos obliga a utilizar Si bemol.",
+      "duration": 8,
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 4,
+          "color": "amber",
+          "label": "Sib"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "semitono"
+        }
+      ]
+    },
+    {
+      "id": "11-circulo-quintas",
+      "kind": "title",
+      "heading": "El círculo de quintas",
+      "caption": "15 tonalidades mayores en perfecto equilibrio",
+      "narration": "Por quintas ascendentes sumamos sostenidos: Sol, Re, La, Mi, Si, Fa sostenido y Do sostenido. Por quintas descendentes sumamos bemoles.",
+      "duration": 8
+    },
+    {
+      "id": "12-resumen",
+      "kind": "title",
+      "heading": "Resumen de la lección",
+      "caption": "Puntos clave para recordar",
+      "narration": "Recuerda: la escala mayor siempre sigue T-T-S-T-T-T-S, respeta el alfabeto correlativo y se organiza por quintas justas.",
+      "duration": 7
+    },
+    {
+      "id": "13-ejercicio-explicacion",
+      "kind": "title",
+      "heading": "Ejercicio: 15 escalas mayores",
+      "caption": "8 notas ascendentes por escala en el secuenciador",
+      "narration": "Tu tarea consiste en escribir las quince escalas mayores en el secuenciador, de tónica a tónica, y subir el archivo MIDI al Maestro Virtual.",
+      "duration": 8
+    }
+  ]
+}

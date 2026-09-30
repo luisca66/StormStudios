@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createScore, measureStart, newId, scoreTicks, validateScore } from "./model";
-import { changeTimeSignature } from "./operations";
+import { changeTimeSignature, rebarTimeSignature } from "./operations";
 import type { Duration, NoteEvent, Score, VoiceId } from "./types";
 
 const note = (start: number, pitches: string[], duration: Duration = "q", extra: Partial<NoteEvent> = {}): NoteEvent => ({
@@ -169,5 +169,51 @@ describe("changeTimeSignature", () => {
     expect(waltz.measures.map(measure => measure.time.join("/"))).toEqual(["4/4", "3/4", "6/4", "4/4"]);
     for (const id of ["soprano", "alto", "tenor", "bass"] as const) expect(placed(waltz, id), id).toEqual(placed(score, id));
     expect(changeTimeSignature(changeTimeSignature(waltz, 3, [4, 4]), 2, [4, 4])).toEqual(score);
+  });
+});
+
+describe("rebarTimeSignature", () => {
+  const Q = 960;
+  const eightQuarters = () => {
+    const score = createScore("single");
+    voiceOf(score, "melody").events = ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"].map((p, i) => note(i * Q, [p]));
+    score.annotations = [{ id: "a", measure: 2, beat: 1, text: "V", kind: "roman" }];
+    return score;
+  };
+
+  it("keeps every note in time, adds a measure and moves annotations with their tick", () => {
+    const score = eightQuarters();
+    const before = snapshot(score);
+    const { score: next, split } = rebarTimeSignature(score, 1, 4, [3, 4]);
+    expect(snapshot(score)).toBe(before);
+    expect(split).toBe(0);
+    // 16 quarters of room shrink to 3/4 bars: 16/3 -> 6 measures, 8 notes at the same ticks.
+    expect(next.measures.map(m => m.time.join("/"))).toEqual(Array(6).fill("3/4"));
+    expect(voiceOf(next, "melody").events.map(e => e.start)).toEqual([0, 1, 2, 3, 4, 5, 6, 7].map(i => i * Q));
+    expect(next.annotations![0]).toMatchObject({ measure: 2, beat: 2 }); // tick 4Q = measure 2, beat 2 in 3/4
+    expect(next.measures[0].timeChange).toBe(true);
+  });
+
+  it("splits a note crossing a new bar line into tied pieces, keeping its total length", () => {
+    const score = createScore("single");
+    voiceOf(score, "melody").events = [note(0, ["C4"], "h", { dotted: true }), note(3 * Q, ["G4"]), note(5 * Q, ["A4"], "h")];
+    const { score: next, split } = rebarTimeSignature(score, 1, 4, [2, 4]);
+    expect(split).toBe(2);
+    const events = voiceOf(next, "melody").events;
+    const c = events.filter(e => e.pitches[0] === "C4"), a = events.filter(e => e.pitches[0] === "A4");
+    expect(c.map(e => [e.start, e.duration, e.tie])).toEqual([[0, "h", true], [2 * Q, "q", false]]);
+    expect(a.map(e => [e.start, e.duration, e.tie])).toEqual([[5 * Q, "q", true], [6 * Q, "q", false]]);
+    expect(events.find(e => e.pitches[0] === "G4")).toMatchObject({ start: 3 * Q, duration: "q", tie: false });
+  });
+
+  it("shifts later measures by the change in length", () => {
+    const score = createScore("single");
+    score.measures[2].time = [3, 4]; score.measures[2].timeChange = true;
+    voiceOf(score, "melody").events = [note(0, ["C4"], "w"), note(measureStart(score, 3), ["E4"])];
+    const { score: next } = rebarTimeSignature(score, 1, 2, [3, 4]);
+    // 8 quarters -> three 3/4 measures (9 quarters): the E4 moves one quarter later, still on beat 1 of its measure.
+    const e4 = voiceOf(next, "melody").events.find(e => e.pitches[0] === "E4")!;
+    expect(e4.start).toBe(9 * Q);
+    expect(scoreTicks(next)).toBe(9 * Q + 3 * Q + 4 * Q); // three 3/4 bars, then the untouched 3/4 and 4/4
   });
 });

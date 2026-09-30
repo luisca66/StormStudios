@@ -1,0 +1,33 @@
+Hola Gemini. Encargo de CONTENIDO (no Blender, no ejecutes comandos). Solo lees archivos y escribes JSON dentro de apps-src/_storyboards/es/ (carpeta temporal; Claude los mueve después).
+
+CONTEXTO: Luis Cárdenas da un curso de armonía. Cada lección necesita un video. El video se arma con imágenes fijas ("stills") generadas por el secuenciador Storm a partir de un STORYBOARD JSON. Tú escribes esos storyboards.
+
+LEE PRIMERO (completo):
+1. lib/sequencer/storyboard.ts — el contrato exacto del JSON (tipos Storyboard, Still, ProjectSource, Highlight, NoteMark). Respétalo al pie de la letra.
+2. La gramática de texto musical: lib/sequencer/model.ts, comentario encima de la función parseScoreText (busca "Text grammar"). Resumen: líneas con "voz soprano", "compas 1", y notas separadas por ";" como "C4 negra; D4 negra; [C4 E4 G4] blanca; silencio negra; F#4 corchea puntillo". Alteraciones: C#4, Bb3, Ebb4, F##4. Cada compás debe llenarse EXACTO (4/4 = 4 negras); una nota nunca puede cruzar la barra. No se puede escribir más allá de setup.measures.
+3. Las lecciones: content/course/es/02-leccion-1.mdx, 03-leccion-2.mdx, 04-leccion-3.mdx, 06-leccion-5.mdx.
+
+TAREA: escribe un archivo por lección: apps-src/_storyboards/es/02-leccion-1.json, 03-leccion-2.json, 04-leccion-3.json y 06-leccion-5.json (NO hagas 05-leccion-4: la hace Claude).
+
+RECETA POR LECCIÓN
+- "version": 1, "lesson": el lessonId del frontmatter, "locale": "es", "title": el título de la lección, "format": {"aspect":"16:9","theme":"storm"}.
+- Entre 10 y 20 stills. Un still por cada idea que la narración nombra. Orden: (1) tarjeta de título kind "title"; (2) qué vamos a aprender; (3..n) explicación musical con partituras; (penúltimo) resumen; (último) el ejercicio de la lección, explicado (kind "title" o con un ejemplo corto).
+- "narration": 1 a 3 frases en español, tono cálido y claro, segunda persona ("vas a escuchar..."), lo que Luis diría mientras el still está en pantalla. "duration" en segundos ≈ palabras de la narración / 2.5, mínimo 4.
+- "heading" corto (máx. 6 palabras). "caption" opcional, máx. 90 caracteres.
+- Builds progresivos: para mostrar una escala nota a nota usa VARIOS stills con el MISMO project y los MISMOS measures, cambiando solo "reveal" (p. ej. {"measure":1,"beat":3} oculta desde el pulso 3). Así el encuadre no salta.
+- "highlights" para señalar tonos/semitonos, intervalos, grados (label corto: "semitono", "5ª justa", "V"). Colores: "amber" = lo principal, "rose" = error o tensión, "cyan" = comparación, "green" = correcto, "violet" = extra.
+- "marks" para colorear notas concretas (measure + beat exactos donde empieza la nota).
+- Proyectos: usa {"setup": {...}, "text": "..."} con el texto de la gramática. En "text" usa \n entre líneas. Reutiliza un mismo project en varios stills. Pocos compases por still (1 a 4) para que se lea grande. Para cifrados romanos añade "annotations": [{"measure":1,"beat":1,"text":"I","kind":"roman"}].
+- SATB solo si la lección lo pide (setup.mode "satb", voces soprano/alto/tenor/bass, bajo en clave de fa ya es automático).
+- Música CORRECTA: revisa cada escala/acorde/intervalo con cuidado (grafía enarmónica correcta: Sol mayor lleva F#, no Gb). La armadura en setup.key es opcional; si la pones, igual escribe las alteraciones explícitas en el texto.
+- No inventes contenido fuera de la lección; puedes ampliar la explicación con ejemplos musicales del mismo tema.
+
+Ejemplo mínimo de 2 stills:
+{"version":1,"lesson":"02-leccion-1","locale":"es","title":"Lección 1 — Escalas Mayores","format":{"aspect":"16:9","theme":"storm"},
+ "projects":{"do-mayor":{"setup":{"mode":"single","measures":2,"key":"C","time":[4,4],"tempo":80},"text":"voz melody\ncompas 1\nC4 negra; D4 negra; E4 negra; F4 negra\ncompas 2\nG4 negra; A4 negra; B4 negra; C5 negra"}},
+ "stills":[
+  {"id":"01-titulo","kind":"title","heading":"Escalas mayores","caption":"Lección 1 · Curso de Armonía","narration":"Bienvenido a la lección uno.","duration":4},
+  {"id":"02-do-mayor-inicio","project":"do-mayor","measures":[1,2],"reveal":{"measure":1,"beat":3},"heading":"Do mayor","narration":"Empezamos en Do y subimos por las teclas blancas.","duration":5}
+ ]}
+
+Al terminar, escribe apps-src/_storyboards/es/NOTAS-GEMINI.md con: una línea por archivo (cuántos stills), y cualquier duda musical que tengas. JSON válido (sin comentarios, sin comas finales). No toques ningún otro archivo.

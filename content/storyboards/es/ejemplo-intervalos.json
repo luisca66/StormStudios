@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "lesson": "ejemplo-intervalos",
+  "locale": "es",
+  "title": "Semitonos en Do mayor",
+  "format": { "aspect": "16:9", "theme": "storm" },
+  "projects": {
+    "escala": {
+      "setup": { "mode": "single", "title": "Escala de Do mayor", "measures": 2, "key": "C", "time": [4, 4], "tempo": 80 },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; E4 negra; F4 negra\ncompas 2\nG4 negra; A4 negra; B4 negra; C5 negra"
+    },
+    "cadencia": {
+      "setup": { "mode": "satb", "title": "Do mayor · I–V", "measures": 2, "tempo": 72 },
+      "text": "voz soprano\ncompas 1\nE5 redonda; D5 redonda\nvoz alto\ncompas 1\nC5 redonda; B4 redonda\nvoz tenor\ncompas 1\nG3 redonda; G3 redonda\nvoz bass\ncompas 1\nC3 redonda; G2 redonda",
+      "annotations": [{ "measure": 1, "beat": 1, "text": "I", "kind": "roman" }, { "measure": 2, "beat": 1, "text": "V", "kind": "roman" }]
+    }
+  },
+  "stills": [
+    { "id": "titulo", "kind": "title", "heading": "Dos semitonos.\nUna escala.", "caption": "Mi–Fa y Si–Do en la escala de Do mayor", "duration": 5, "narration": "En Do mayor encontramos dos pasos de semitono." },
+    { "id": "escala-do", "project": "escala", "heading": "Empezamos en Do", "caption": "La primera nota establece nuestro punto de partida.", "measures": [1, 2], "reveal": { "measure": 1, "beat": 2 }, "cursor": { "measure": 1, "beat": 1 }, "narration": "Esta es la nota Do." },
+    { "id": "escala-re", "project": "escala", "heading": "Do, Re…", "caption": "Añadimos una nota sin mover la partitura.", "measures": [1, 2], "reveal": { "measure": 1, "beat": 3 }, "cursor": { "measure": 1, "beat": 2 }, "narration": "La siguiente nota es Re." },
+    { "id": "escala-mi", "project": "escala", "heading": "Do, Re, Mi…", "caption": "Un paso más nos lleva a Mi.", "measures": [1, 2], "reveal": { "measure": 1, "beat": 4 }, "cursor": { "measure": 1, "beat": 3 }, "narration": "Ahora añadimos Mi. Cada nota conserva su posición." },
+    { "id": "semitono-mi-fa", "project": "escala", "heading": "Mi–Fa: un semitono", "caption": "Entre estas dos notas no hay una tecla negra.", "measures": [1, 2], "highlights": [{ "measure": 1, "beat": 3, "endBeat": 5, "voice": "melody", "color": "amber", "label": "semitono · Mi–Fa" }], "narration": "Al completar la escala, vemos el primer semitono: Mi a Fa." },
+    { "id": "semitono-si-do", "project": "escala", "heading": "Si–Do: el segundo semitono", "caption": "El mismo paso pequeño nos lleva al Do de la octava.", "measures": [1, 2], "highlights": [{ "measure": 2, "beat": 3, "endBeat": 5, "voice": "melody", "color": "cyan", "label": "semitono · Si–Do" }], "narration": "El segundo semitono aparece entre Si y Do." },
+    { "id": "notas-marcadas", "project": "escala", "heading": "Recuerda los dos pares", "caption": "Mi–Fa en rosa. Si–Do en violeta.", "measures": [1, 2], "marks": [{ "measure": 1, "beat": 3, "color": "rose" }, { "measure": 1, "beat": 4, "color": "rose" }, { "measure": 2, "beat": 3, "color": "violet" }, { "measure": 2, "beat": 4, "color": "violet" }], "narration": "Memoriza los dos pares de notas que forman semitonos." },
+    { "id": "satb-bajo", "project": "cadencia", "heading": "El bajo sostiene I–V", "caption": "Cuatro voces, con el bajo en primer plano.", "measures": [1, 2], "voices": "all", "focusVoice": "bass", "showCiphers": true, "highlights": [{ "measure": 1, "endMeasure": 2, "voice": "bass", "color": "green", "label": "Bajo · Do → Sol" }], "duration": 7, "narration": "En cuatro voces, el bajo conecta la tónica con la dominante: Do a Sol." }
+  ]
+}

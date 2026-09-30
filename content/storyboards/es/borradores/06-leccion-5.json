@@ -1,0 +1,380 @@
+{
+  "version": 1,
+  "lesson": "06-leccion-5",
+  "locale": "es",
+  "title": "Lección 5 — Segunda Inversión y Cadencia ⁶₄",
+  "format": {
+    "aspect": "16:9",
+    "theme": "storm"
+  },
+  "projects": {
+    "cadencia-64": {
+      "setup": {
+        "mode": "satb",
+        "measures": 2,
+        "key": "C",
+        "time": [4, 4],
+        "tempo": 70
+      },
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I⁶₄",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        }
+      ],
+      "text": "voz soprano\ncompas 1\nC5 blanca; B4 blanca\ncompas 2\nC5 redonda\nvoz alto\ncompas 1\nE4 blanca; D4 blanca\ncompas 2\nE4 redonda\nvoz tenor\ncompas 1\nG3 blanca; G3 blanca\ncompas 2\nG3 redonda\nvoz bass\ncompas 1\nG2 blanca; G2 blanca\ncompas 2\nC3 redonda"
+    },
+    "paso-64": {
+      "setup": {
+        "mode": "satb",
+        "measures": 2,
+        "key": "C",
+        "time": [4, 4],
+        "tempo": 70
+      },
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "V⁶₄",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "I⁶",
+          "kind": "roman"
+        }
+      ],
+      "text": "voz soprano\ncompas 1\nE4 blanca; D4 blanca\ncompas 2\nC4 redonda\nvoz alto\ncompas 1\nC4 blanca; B3 blanca\ncompas 2\nC4 redonda\nvoz tenor\ncompas 1\nG3 blanca; G3 blanca\ncompas 2\nG3 redonda\nvoz bass\ncompas 1\nC3 blanca; D3 blanca\ncompas 2\nE3 redonda"
+    },
+    "bordadura-64": {
+      "setup": {
+        "mode": "satb",
+        "measures": 2,
+        "key": "C",
+        "time": [4, 4],
+        "tempo": 70
+      },
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "IV⁶₄",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        }
+      ],
+      "text": "voz soprano\ncompas 1\nC5 blanca; C5 blanca\ncompas 2\nC5 redonda\nvoz alto\ncompas 1\nE4 blanca; F4 blanca\ncompas 2\nE4 redonda\nvoz tenor\ncompas 1\nG3 blanca; A3 blanca\ncompas 2\nG3 redonda\nvoz bass\ncompas 1\nC3 blanca; C3 blanca\ncompas 2\nC3 redonda"
+    },
+    "coral-completo": {
+      "setup": {
+        "mode": "satb",
+        "measures": 4,
+        "key": "C",
+        "time": [4, 4],
+        "tempo": 70
+      },
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "I⁶",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "ii",
+          "kind": "roman"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "I⁶₄",
+          "kind": "roman"
+        },
+        {
+          "measure": 3,
+          "beat": 3,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 4,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        }
+      ],
+      "text": "voz soprano\ncompas 1\nC5 blanca; C5 blanca\ncompas 2\nC5 blanca; A4 blanca\ncompas 3\nC5 blanca; B4 blanca\ncompas 4\nC5 redonda\nvoz alto\ncompas 1\nE4 blanca; F4 blanca\ncompas 2\nC4 blanca; D4 blanca\ncompas 3\nE4 blanca; D4 blanca\ncompas 4\nC4 redonda\nvoz tenor\ncompas 1\nG3 blanca; A3 blanca\ncompas 2\nG3 blanca; F3 blanca\ncompas 3\nG3 blanca; G3 blanca\ncompas 4\nE3 redonda\nvoz bass\ncompas 1\nC3 blanca; F2 blanca\ncompas 2\nE3 blanca; D3 blanca\ncompas 3\nG2 blanca; G2 blanca\ncompas 4\nC3 redonda"
+    }
+  },
+  "stills": [
+    {
+      "id": "01-titulo",
+      "kind": "title",
+      "heading": "Segunda inversión y cadencia ⁶₄",
+      "caption": "Lección 5 · Curso de Armonía",
+      "narration": "Bienvenido a la lección cinco. Hoy estudiaremos la segunda inversión, el acorde más inestable del sistema tonal y la poderosa cadencia cadencial.",
+      "duration": 8
+    },
+    {
+      "id": "02-inestabilidad-quinta",
+      "kind": "title",
+      "heading": "La quinta en el bajo",
+      "caption": "El intervalo de cuarta sobre el bajo",
+      "narration": "Cuando la quinta del acorde pasa al bajo, se forma una cuarta con la fundamental. En la armonía clásica, esa cuarta se percibe como una disonancia que exige resolución.",
+      "duration": 9
+    },
+    {
+      "id": "03-regla-duplicacion",
+      "kind": "title",
+      "heading": "Regla de duplicación",
+      "caption": "Siempre duplicar la quinta (el bajo)",
+      "narration": "Grábate esta regla sin excepciones para el coral clásico: en segunda inversión siempre se duplica la quinta, es decir, la nota del bajo.",
+      "duration": 8
+    },
+    {
+      "id": "04-cadencia-i64",
+      "project": "cadencia-64",
+      "measures": [1, 2],
+      "reveal": {
+        "measure": 1,
+        "beat": 3
+      },
+      "heading": "I⁶₄: Tensión cadencial",
+      "caption": "Bajo de dominante y doble quinta",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "amber",
+          "label": "Sol"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "tenor",
+          "color": "amber",
+          "label": "Sol"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "I⁶₄"
+        }
+      ],
+      "narration": "En la cadencia, el acorde de tónica en segunda inversión se sitúa sobre el bajo de la dominante, duplicando ese mismo Sol en el tenor.",
+      "duration": 8
+    },
+    {
+      "id": "05-resolucion-a-v",
+      "project": "cadencia-64",
+      "measures": [1, 2],
+      "reveal": {
+        "measure": 2,
+        "beat": 1
+      },
+      "heading": "Resolución ⁶₄ a V",
+      "caption": "La sexta y la cuarta resuelven descendiendo",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "voice": "alto",
+          "color": "green",
+          "label": "Re"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "voice": "soprano",
+          "color": "green",
+          "label": "Si"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "green",
+          "label": "6-5 / 4-3"
+        }
+      ],
+      "narration": "Las voces superiores resuelven por grado conjunto descendente: la sexta Mi baja a Re, y la cuarta Do baja a Si, formando el acorde de dominante.",
+      "duration": 9
+    },
+    {
+      "id": "06-cadencia-completa",
+      "project": "cadencia-64",
+      "measures": [1, 2],
+      "heading": "Llegada al reposo",
+      "caption": "Cadencia I⁶₄ → V → I completa",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "I"
+        }
+      ],
+      "narration": "Finalmente la dominante resuelve a la tónica en estado fundamental: la sensible sube a Do y la tensión queda plenamente resuelta.",
+      "duration": 8
+    },
+    {
+      "id": "07-uso-de-paso",
+      "project": "paso-64",
+      "measures": [1, 2],
+      "heading": "Segunda inversión de paso",
+      "caption": "Paso por grado conjunto en tiempo débil",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "voice": "bass",
+          "color": "cyan",
+          "label": "Re"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 5,
+          "color": "cyan",
+          "label": "de paso"
+        }
+      ],
+      "narration": "En el uso de paso, el acorde de sexta y cuarta enlaza dos posiciones del mismo acorde con un bajo que camina por grados conjuntos.",
+      "duration": 8
+    },
+    {
+      "id": "08-uso-bordadura",
+      "project": "bordadura-64",
+      "measures": [1, 2],
+      "heading": "Segunda inversión de bordadura",
+      "caption": "Bajo estático en pedal",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "voice": "bass",
+          "color": "amber",
+          "label": "Do pedal"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "bordadura"
+        }
+      ],
+      "narration": "En la bordadura o pedal, el bajo se mantiene firme mientras las voces intermedias suben por grado conjunto y regresan al acorde original.",
+      "duration": 8
+    },
+    {
+      "id": "09-coral-completo-inicio",
+      "project": "coral-completo",
+      "measures": [1, 2],
+      "heading": "El coral: frases iniciales",
+      "caption": "Estado fundamental y primera inversión",
+      "narration": "Observa cómo combinamos el estado fundamental con la primera inversión para conseguir una línea de bajo melódica y flexible.",
+      "duration": 8
+    },
+    {
+      "id": "10-coral-completo-cadencia",
+      "project": "coral-completo",
+      "measures": [3, 4],
+      "heading": "El desenlace cadencial",
+      "caption": "I⁶₄ → V → I como clímax armónico",
+      "highlights": [
+        {
+          "measure": 3,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "I⁶₄ - V"
+        },
+        {
+          "measure": 4,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "green",
+          "label": "I"
+        }
+      ],
+      "narration": "En los dos compases finales, la cadencia seis cuatro prepara la dominante y desemboca con autoridad en el acorde de tónica.",
+      "duration": 8
+    },
+    {
+      "id": "11-resumen-leccion-5",
+      "kind": "title",
+      "heading": "Resumen de la lección",
+      "caption": "Reglas de oro de la segunda inversión",
+      "narration": "Recuerda: la segunda inversión duplica siempre el bajo y solo se usa en cadencia, de paso o como bordadura pedal.",
+      "duration": 8
+    },
+    {
+      "id": "12-ejercicio-coral",
+      "kind": "title",
+      "heading": "Ejercicio: tu propio coral",
+      "caption": "De 6 a 10 acordes terminando en I⁶₄ → V → I",
+      "narration": "Escribe tu propio coral de seis a diez acordes en cuatro voces SATB. La única condición obligatoria es culminar con la cadencia seis cuatro.",
+      "duration": 8
+    }
+  ]
+}

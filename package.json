@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "stills": "node scripts/sequencer/stills.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

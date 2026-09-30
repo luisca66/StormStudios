@@ -1,0 +1,316 @@
+{
+  "version": 1,
+  "lesson": "04-leccion-3",
+  "locale": "es",
+  "title": "Lección 3 — Escalas Menores",
+  "format": {
+    "aspect": "16:9",
+    "theme": "storm"
+  },
+  "projects": {
+    "la-menor-natural": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "Am",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nA3 negra; B3 negra; C4 negra; D4 negra\ncompas 2\nE4 negra; F4 negra; G4 negra; A4 negra"
+    },
+    "la-menor-armonica": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "Am",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nA3 negra; B3 negra; C4 negra; D4 negra\ncompas 2\nE4 negra; F4 negra; G#4 negra; A4 negra"
+    },
+    "la-menor-melodica-asc": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "Am",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nA3 negra; B3 negra; C4 negra; D4 negra\ncompas 2\nE4 negra; F#4 negra; G#4 negra; A4 negra"
+    },
+    "la-menor-melodica-desc": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "Am",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nA4 negra; G4 negra; F4 negra; E4 negra\ncompas 2\nD4 negra; C4 negra; B3 negra; A3 negra"
+    },
+    "la-grafia-correcta": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "Am",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nA3 negra; B3 negra; C4 negra; D4 negra\ncompas 2\nE4 negra; F4 negra; Ab4 negra; A4 negra"
+    }
+  },
+  "stills": [
+    {
+      "id": "01-titulo",
+      "kind": "title",
+      "heading": "Las escalas menores",
+      "caption": "Lección 3 · Curso de Armonía",
+      "narration": "Bienvenido a la lección tres. Hoy nos sumergiremos en la tonalidad menor, sus relativas y sus tres formas esenciales.",
+      "duration": 7
+    },
+    {
+      "id": "02-relativa-menor",
+      "kind": "title",
+      "heading": "La relativa menor",
+      "caption": "Mismo material, nuevo centro de gravedad",
+      "narration": "Cada escala mayor tiene una relativa menor que comparte su armadura exacta. Nace en su sexto grado y transforma por completo el centro armónico.",
+      "duration": 9
+    },
+    {
+      "id": "03-menor-natural",
+      "project": "la-menor-natural",
+      "measures": [1, 2],
+      "heading": "Menor natural",
+      "caption": "Idéntica a la armadura (modo eólico)",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "color": "amber",
+          "label": "La"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "color": "amber",
+          "label": "La"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "cyan",
+          "label": "sin alteraciones"
+        }
+      ],
+      "narration": "En La menor natural tocamos solo las notas blancas, desde La hasta La. Suena sobria y melancólica, pero carece de sensible hacia la tónica.",
+      "duration": 9
+    },
+    {
+      "id": "04-falta-de-sensible",
+      "project": "la-menor-natural",
+      "measures": [1, 2],
+      "heading": "Falta de sensible",
+      "caption": "De Sol natural a La hay un tono entero",
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "rose",
+          "label": "Sol"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "color": "rose",
+          "label": "La"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 5,
+          "color": "rose",
+          "label": "subtónica"
+        }
+      ],
+      "narration": "Al haber un tono entero entre Sol y La, el séptimo grado no tiene atracción hacia la tónica: actúa como subtónica y no como sensible.",
+      "duration": 9
+    },
+    {
+      "id": "05-menor-armonica",
+      "project": "la-menor-armonica",
+      "measures": [1, 2],
+      "heading": "Menor armónica",
+      "caption": "Elevación del séptimo grado",
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "amber",
+          "label": "Sol#"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "sensible"
+        }
+      ],
+      "narration": "Para crear tensión hacia la tónica elevamos medio tono el séptimo grado: Sol sostenido. Ahora sí tenemos sensible.",
+      "duration": 7
+    },
+    {
+      "id": "06-segunda-aumentada",
+      "project": "la-menor-armonica",
+      "measures": [1, 2],
+      "heading": "Segunda aumentada",
+      "caption": "Distancia de tres semitonos entre Fa y Sol♯",
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "color": "rose",
+          "label": "Fa"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "rose",
+          "label": "Sol#"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 4,
+          "color": "rose",
+          "label": "2ª aum"
+        }
+      ],
+      "narration": "Al subir el Sol se produce un intervalo característico entre Fa y Sol sostenido: una segunda aumentada de tono y medio, con un sonido casi exótico.",
+      "duration": 9
+    },
+    {
+      "id": "07-menor-melodica-ascendente",
+      "project": "la-menor-melodica-asc",
+      "measures": [1, 2],
+      "heading": "Menor melódica (subida)",
+      "caption": "Elevación conjunta del sexto y séptimo grados",
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "color": "green",
+          "label": "Fa#"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "green",
+          "label": "Sol#"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 4,
+          "color": "green",
+          "label": "suavizado"
+        }
+      ],
+      "narration": "Para suavizar ese salto melódico al ascender, también elevamos el sexto grado a Fa sostenido. La línea melódica fluye con naturalidad hacia la tónica.",
+      "duration": 9
+    },
+    {
+      "id": "08-menor-melodica-descendente",
+      "project": "la-menor-melodica-desc",
+      "measures": [1, 2],
+      "heading": "Menor melódica (bajada)",
+      "caption": "Al descender recupera la forma natural",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "color": "cyan",
+          "label": "Sol"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "color": "cyan",
+          "label": "Fa"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "cyan",
+          "label": "natural"
+        }
+      ],
+      "narration": "Al bajar ya no buscamos tensión hacia el agudo, por lo que Sol y Fa vuelven a ser naturales, igual que la escala natural.",
+      "duration": 9
+    },
+    {
+      "id": "09-grafia-enarmonica",
+      "project": "la-grafia-correcta",
+      "measures": [1, 2],
+      "heading": "Grafía enarmónica correcta",
+      "caption": "Sol♯ y nunca La♭",
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "rose",
+          "label": "Lab"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 5,
+          "color": "rose",
+          "label": "error"
+        }
+      ],
+      "narration": "¡Cuidado con la grafía! En La menor el séptimo grado es siempre Sol sostenido y jamás La bemol, pues no podemos repetir la letra de la tónica.",
+      "duration": 9
+    },
+    {
+      "id": "10-orden-relativas",
+      "kind": "title",
+      "heading": "El círculo por relativas",
+      "caption": "15 tonalidades menores ordenadas por quintas",
+      "narration": "Ordenamos las menores siguiendo las armaduras de sus relativas mayores: de La menor hacia los sostenidos y hacia los bemoles.",
+      "duration": 8
+    },
+    {
+      "id": "11-resumen-formas",
+      "kind": "title",
+      "heading": "Las tres formas conviven",
+      "caption": "Natural, armónica y melódica",
+      "narration": "Recuerda: la natural aporta la base modal, la armónica define los acordes con su sensible, y la melódica conduce las líneas vocales sin asperezas.",
+      "duration": 9
+    },
+    {
+      "id": "12-ejercicio-menores",
+      "kind": "title",
+      "heading": "Ejercicio: 15 tonalidades menores",
+      "caption": "31 notas por tonalidad en canal Soprano",
+      "narration": "Tu tarea es escribir por cada una de las quince tonalidades: natural, armónica y melódica subiendo, y melódica bajando.",
+      "duration": 8
+    }
+  ]
+}

@@ -1,0 +1,356 @@
+{
+  "version": 1,
+  "lesson": "03-leccion-2",
+  "locale": "es",
+  "title": "Lección 2 — Modos",
+  "format": {
+    "aspect": "16:9",
+    "theme": "storm"
+  },
+  "projects": {
+    "modo-jonico": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "C",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; E4 negra; F4 negra\ncompas 2\nG4 negra; A4 negra; B4 negra; C5 negra"
+    },
+    "modo-dorico": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "C",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; Eb4 negra; F4 negra\ncompas 2\nG4 negra; A4 negra; Bb4 negra; C5 negra"
+    },
+    "modo-frigio": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "C",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; Db4 negra; Eb4 negra; F4 negra\ncompas 2\nG4 negra; Ab4 negra; Bb4 negra; C5 negra"
+    },
+    "modo-lidio": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "C",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; E4 negra; F#4 negra\ncompas 2\nG4 negra; A4 negra; B4 negra; C5 negra"
+    },
+    "modo-mixolidio": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "C",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; E4 negra; F4 negra\ncompas 2\nG4 negra; A4 negra; Bb4 negra; C5 negra"
+    },
+    "modo-eolico": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "C",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; Eb4 negra; F4 negra\ncompas 2\nG4 negra; Ab4 negra; Bb4 negra; C5 negra"
+    },
+    "modo-locrio": {
+      "setup": {
+        "mode": "single",
+        "measures": 2,
+        "key": "C",
+        "time": [4, 4],
+        "tempo": 80
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; Db4 negra; Eb4 negra; F4 negra\ncompas 2\nGb4 negra; Ab4 negra; Bb4 negra; C5 negra"
+    }
+  },
+  "stills": [
+    {
+      "id": "01-titulo",
+      "kind": "title",
+      "heading": "Los siete modos",
+      "caption": "Lección 2 · Curso de Armonía",
+      "narration": "Bienvenido a la lección dos. Hoy exploraremos los modos y cómo una misma tónica puede evocar colores emocionales completamente distintos.",
+      "duration": 8
+    },
+    {
+      "id": "02-concepto-paralelo",
+      "kind": "title",
+      "heading": "Modos paralelos",
+      "caption": "Misma tónica, diferentes colores",
+      "narration": "Para comprender su carácter único, compararemos todos los modos partiendo siempre de la misma nota: Do.",
+      "duration": 7
+    },
+    {
+      "id": "03-modo-jonico",
+      "project": "modo-jonico",
+      "measures": [1, 2],
+      "heading": "Modo Jónico",
+      "caption": "La escala mayor: brillante y estable",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "color": "green",
+          "label": "3ª M"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "jónico"
+        }
+      ],
+      "narration": "El modo jónico es nuestra escala mayor estándar. Su tercera mayor y su séptima mayor le dan un sonido luminoso, estable y resuelto.",
+      "duration": 8
+    },
+    {
+      "id": "04-modo-dorico",
+      "project": "modo-dorico",
+      "measures": [1, 2],
+      "heading": "Modo Dórico",
+      "caption": "Escala menor con sexta mayor",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "color": "cyan",
+          "label": "Mib"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "color": "amber",
+          "label": "La"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "6ª M"
+        }
+      ],
+      "narration": "El modo dórico es menor, pero tiene una sexta mayor natural. Esta nota le aporta ese carácter tan propio del jazz, melancólico pero no trágico.",
+      "duration": 9
+    },
+    {
+      "id": "05-modo-frigio",
+      "project": "modo-frigio",
+      "measures": [1, 2],
+      "heading": "Modo Frigio",
+      "caption": "Menor con segunda menor",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "color": "rose",
+          "label": "Reb"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 3,
+          "color": "rose",
+          "label": "2ª m"
+        }
+      ],
+      "narration": "El modo frigio introduce un semitono inmediato en el segundo grado: Re bemol. Es un modo oscuro, con un marcado sabor flamenco y español.",
+      "duration": 8
+    },
+    {
+      "id": "06-modo-lidio",
+      "project": "modo-lidio",
+      "measures": [1, 2],
+      "heading": "Modo Lidio",
+      "caption": "Mayor con cuarta aumentada",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 4,
+          "color": "amber",
+          "label": "Fa#"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 4,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "4ª aum"
+        }
+      ],
+      "narration": "El modo lidio es aún más brillante que la escala mayor gracias a su cuarta aumentada, Fa sostenido, evocando magia y fantasía.",
+      "duration": 8
+    },
+    {
+      "id": "07-modo-mixolidio",
+      "project": "modo-mixolidio",
+      "measures": [1, 2],
+      "heading": "Modo Mixolidio",
+      "caption": "Mayor con séptima menor",
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "cyan",
+          "label": "Sib"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "cyan",
+          "label": "7ª m"
+        }
+      ],
+      "narration": "El modo mixolidio mantiene la base mayor pero relaja la séptima con Si bemol, el pilar fundamental del blues, rock y folk.",
+      "duration": 8
+    },
+    {
+      "id": "08-modo-eolico",
+      "project": "modo-eolico",
+      "measures": [1, 2],
+      "heading": "Modo Eólico",
+      "caption": "La escala menor natural",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "color": "cyan",
+          "label": "Mib"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "color": "cyan",
+          "label": "Lab"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "cyan",
+          "label": "Sib"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "cyan",
+          "label": "menor"
+        }
+      ],
+      "narration": "El modo eólico es la referencia del mundo menor: tercera, sexta y séptima menores generan una atmósfera nostálgica y solemne.",
+      "duration": 8
+    },
+    {
+      "id": "09-modo-locrio",
+      "project": "modo-locrio",
+      "measures": [1, 2],
+      "heading": "Modo Locrio",
+      "caption": "Tensión extrema con quinta disminuida",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "color": "rose",
+          "label": "Reb"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "color": "rose",
+          "label": "Solb"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "rose",
+          "label": "5ª dism"
+        }
+      ],
+      "narration": "El modo locrio carece de una quinta justa estable. Su quinta disminuida, Sol bemol, produce una inestabilidad constante.",
+      "duration": 8
+    },
+    {
+      "id": "10-comparacion-brillo",
+      "kind": "title",
+      "heading": "Del brillo a la oscuridad",
+      "caption": "De más sostenidos a más bemoles",
+      "narration": "Observa el orden de brillo de los modos: Lidio, Jónico, Mixolidio, Dórico, Eólico, Frigio y Locrio. Cada paso añade un bemol.",
+      "duration": 8
+    },
+    {
+      "id": "11-notas-caracteristicas",
+      "project": "modo-lidio",
+      "measures": [1, 2],
+      "heading": "Notas características",
+      "caption": "La nota que define la personalidad modal",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 4,
+          "color": "amber",
+          "label": "Fa#"
+        }
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 4,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "#4"
+        }
+      ],
+      "narration": "Para reconocer cualquier modo, busca siempre su nota característica: la alteración que lo distingue de la escala mayor o menor común.",
+      "duration": 8
+    },
+    {
+      "id": "12-resumen-modos",
+      "kind": "title",
+      "heading": "Resumen de los modos",
+      "caption": "Siete perspectivas sobre una misma escala",
+      "narration": "Los siete modos comparten las mismas relaciones de intervalos relativos, pero al tocarlos desde una misma tónica descubrimos siete mundos expresivos.",
+      "duration": 8
+    },
+    {
+      "id": "13-ejercicio-modos",
+      "kind": "title",
+      "heading": "Ejercicio: 7 modos paralelos",
+      "caption": "56 notas ascendentes en el canal Soprano",
+      "narration": "En tu tarea, elige una tónica y escribe los siete modos paralelos ascendentes de tónica a tónica, en orden de Jónico a Locrio.",
+      "duration": 9
+    }
+  ]
+}
