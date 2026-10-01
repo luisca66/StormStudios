@@ -64,7 +64,7 @@ export type Still = {
   marks?: NoteMark[];
   cursor?: Position; // draws the playhead at this position
   showCiphers?: boolean; // roman numerals / annotations (default true)
-  audio?: boolean; // also export a WAV of the visible range (later step)
+  audio?: boolean; // export Piano WAV of the visible range
 };
 
 export type Storyboard = {
@@ -86,5 +86,5 @@ export type StillsManifest = {
   width: number;
   height: number;
   generatedAt: string;
-  stills: Array<{ id: string; file: string; duration: number; heading?: string; caption?: string; narration?: string; audio?: string }>;
+  stills: Array<{ id: string; file: string; duration: number; heading?: string; caption?: string; narration?: string; audio?: string; music?: { from: number; to: number; tempo: number; beats: Array<{ cursor: Position; time: number }> } }>;
 };

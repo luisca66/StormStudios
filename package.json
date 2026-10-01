@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "stills": "node scripts/sequencer/stills.mjs",
+    "video": "node scripts/sequencer/video.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

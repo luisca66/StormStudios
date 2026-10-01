@@ -12,6 +12,29 @@ test.beforeEach(async ({ page }) => {
   await page.waitForFunction(() => !!window.stormStage);
 });
 
+test("stage exports audible Piano WAV through the local proxy, stopping at reveal", async ({ page }) => {
+  const sample = Buffer.alloc(44 + 4410 * 2);
+  sample.write("RIFF"); sample.writeUInt32LE(sample.length - 8, 4); sample.write("WAVEfmt ", 8);
+  sample.writeUInt32LE(16, 16); sample.writeUInt16LE(1, 20); sample.writeUInt16LE(1, 22);
+  sample.writeUInt32LE(44100, 24); sample.writeUInt32LE(88200, 28); sample.writeUInt16LE(2, 32); sample.writeUInt16LE(16, 34);
+  sample.write("data", 36); sample.writeUInt32LE(sample.length - 44, 40);
+  for (let i = 0; i < 4410; i++) sample.writeInt16LE(Math.round(Math.sin(i * 2 * Math.PI * 261.63 / 44100) * 5000), 44 + i * 2);
+  const requested: string[] = [];
+  await page.route("**/api/audio/**", route => { requested.push(route.request().url()); return route.fulfill({ body: sample, contentType: "audio/wav" }); });
+  const result = await page.evaluate(async () => {
+    const prepared = window.stormStage!.prepare({ version: 1, lesson: "audio-test", locale: "es", title: "Test", projects: { main: { setup: { mode: "single", measures: 1, tempo: 72 }, text: "C4 Mitad; G4 Mitad" } }, stills: [{ id: "partial", project: "main", reveal: { measure: 1, beat: 3 }, audio: true }] });
+    return window.stormStage!.wav(prepared.storyboard.stills[0], prepared.scores.main);
+  });
+  const wav = Buffer.from(result.base64, "base64");
+  expect(wav.toString("ascii", 0, 4)).toBe("RIFF");
+  expect(wav.readUInt32LE(24)).toBe(44100);
+  expect((wav.length - 44) / 4 / 44100).toBeCloseTo(2 * 60 / 72 + .2, 4);
+  expect(requested).toHaveLength(1);
+  expect(requested[0]).toContain("/api/audio/Piano/C4.mp3");
+  expect(result.music.beats.map(b => b.cursor.beat)).toEqual([1, 2]);
+  expect(wav.subarray(44).some(value => value !== 0)).toBe(true);
+});
+
 test("reveal preserves engraving, precise highlight/cursor positions and notehead marks", async ({ page }) => {
   const prepared = await page.evaluate(board => window.stormStage!.prepare(board), example);
   const score = prepared.scores.escala;
