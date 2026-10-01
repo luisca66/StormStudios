@@ -7,7 +7,6 @@ export const lesson: LessonConfig = {
   lessonNumber: 4,
   module: "triadas-satb",
   status: "published",
-  statusByLocale: { en: "construction" },
 
   title: {
     es: "Lección 4 — Acordes de 5a",
@@ -25,6 +24,8 @@ export const lesson: LessonConfig = {
     {
       youtubeId: "omBSeuK90e4",
       embedUrl: "https://www.youtube.com/embed/omBSeuK90e4?si=tWB-Kv3ctWQF3Gjg",
+      youtubeIdEn: "2RaP6z9cRlE",
+      embedUrlEn: "https://www.youtube.com/embed/2RaP6z9cRlE?si=yZCikMhV8qElFqpj",
       title: { es: "Acordes de 5a", en: "Triads (Fifth Chords)" },
     },
   ],
