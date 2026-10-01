@@ -7,7 +7,7 @@ describe("mapa-audio: still -> voice clip map", () => {
   it("maps whole paragraphs and splits a paragraph shared by several stills", () => {
     const stills = buildAudioMap(board("Hola a todos.", "Empiezo sobre Do.", "Una tercera arriba tenemos Mi.", "Fin."),
       ["Hola a todos.", "Empiezo sobre Do. Una tercera arriba tenemos Mi.", "Fin."]);
-    expect(stills.map(s => [s.start, s.end])).toEqual([
+    expect(stills.map((s: { start: { clip: number; at: number }; end: { clip: number; at: number } }) => [s.start, s.end])).toEqual([
       [{ clip: 1, at: 0 }, { clip: 1, at: 1 }],
       [{ clip: 2, at: 0 }, { clip: 2, at: 0.359 }],
       [{ clip: 2, at: 0.359 }, { clip: 2, at: 1 }],
