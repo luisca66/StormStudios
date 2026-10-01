@@ -6,7 +6,7 @@ import { type Locale } from "@/i18n/routing";
 import { JsonLd } from "@/components/JsonLd";
 import { setRequestLocale } from "next-intl/server";
 import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
-import { getAllLessons, getLessonUrlSlug, getLessonsByModule } from "@/lib/course";
+import { getAllLessons, getLessonUrlSlug, getLessonsByModule, getLessonStatus } from "@/lib/course";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -38,7 +38,7 @@ export default async function CursoArmoniaPage({ params }: Props) {
   const [introLesson] = getLessonsByModule("introduccion");
   const preparatoryLessons = getLessonsByModule("propedeutico");
   const mainLessons = getLessonsByModule("triadas-satb");
-  const publishedUnits = getAllLessons().filter((lesson) => lesson.status !== "construction").length;
+  const publishedUnits = getAllLessons().filter((lesson) => getLessonStatus(lesson, locale) !== "construction").length;
 
   return (
     <div className="ss-root" style={{ minHeight: "100vh" }}>
@@ -157,9 +157,9 @@ export default async function CursoArmoniaPage({ params }: Props) {
               <span className="ss-mono text-sm" style={{ color: "var(--ss-muted)" }}>
                 {lesson.title[locale as "es" | "en"]}
               </span>
-              {lesson.status === "construction" ? (
+              {getLessonStatus(lesson, locale) === "construction" ? (
                 <span className="ml-auto ss-mono text-xs" style={{ color: "rgba(245,158,11,0.85)" }}>
-                  🚧 {es ? "En construcción" : "Under construction"}
+                  🚧 {es ? "En construcción" : "Coming soon"}
                 </span>
               ) : (
                 <span className="ml-auto ss-mono text-sm" style={{ color: "var(--ss-violet-text)" }}>→</span>

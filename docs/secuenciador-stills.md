@@ -32,6 +32,7 @@ Si Chromium no está instalado: `npx playwright install chromium`. El comando no
 | `--base <url>` | Origen del sitio; por defecto `http://localhost:3100` |
 | `--only id1,id2` | Exporta únicamente esos ids, conservando el orden y número original del storyboard |
 | `--help` | Muestra la sintaxis |
+| `--context <storyboard.json>` | Conserva el índice y total del storyboard original en capturas derivadas con ids `id-original-cursor-N` |
 
 Los PNG se llaman `NN-id.png`; `NN` es el índice de origen, empezando en 01. El manifest se escribe al terminar correctamente. Una ejecución vuelve a escribir los archivos seleccionados y el manifest; no elimina PNG de ejecuciones anteriores. Con `--only`, el manifest incluye solo la selección: usa un `--out` separado si quieres conservar el manifest completo. Los errores salen por stderr y devuelven código distinto de cero; una ejecución fallida puede haber dejado PNG parciales.
 
@@ -106,7 +107,7 @@ La ruta se resuelve **desde la carpeta del storyboard**, no desde el directorio 
 | `marks` | Lista de notas coloreadas, descrita abajo |
 | `cursor` | `{measure, beat?}`: cursor en el espaciado real de VexFlow |
 | `showCiphers` | Booleano; por defecto true; muestra/oculta annotations |
-| `audio` | Reservado para exportación WAV futura; actualmente solo advierte y genera PNG |
+| `audio` | Exporta `NN-id.wav` de Piano, al tempo del proyecto: solo voces visibles, desde el inicio del rango hasta `reveal` (exclusivo) o su final |
 
 Voces: `melody` en single; `soprano`, `alto`, `tenor`, `bass` en satb. Voces omitidas no se dibujan. El rango de compases, reveal, cursor, highlights y marks deben ser coherentes con las voces y compases visibles.
 
@@ -120,7 +121,7 @@ Colores (por defecto amber): `amber` **#f5b942**, `rose` **#f0567a**, `cyan` **#
 
 ### Manifest
 
-`manifest.json` sigue `StillsManifest`: `lesson`, `locale`, `title`, `width`, `height`, `generatedAt` (ISO) y `stills`. Cada entrada contiene `id`, `file` (relativo al manifest), `duration` y, si fueron dados, `heading`, `caption`, `narration`. El campo opcional `audio` queda reservado y no se emite todavía.
+`manifest.json` sigue `StillsManifest`: `lesson`, `locale`, `title`, `width`, `height`, `generatedAt` (ISO) y `stills`. Cada entrada contiene `id`, `file` (relativo al manifest), `duration` y, si fueron dados, `heading`, `caption`, `narration`. Los stills con música incluyen `audio` (ruta WAV relativa) y `music` (tempo, rango en ticks y posiciones/tiempos de cursor). El WAV incluye la cola de 0.2 s del motor. Si una muestra de Piano falla, la captura aborta en vez de entregar sonido sintetizado.
 
 ## API de captura
 

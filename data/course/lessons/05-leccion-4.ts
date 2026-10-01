@@ -6,65 +6,32 @@ export const lesson: LessonConfig = {
   order: 5,
   lessonNumber: 4,
   module: "triadas-satb",
-  status: "construction",
+  status: "published",
+  statusByLocale: { en: "construction" },
 
   title: {
     es: "Lección 4 — Acordes de 5a",
     en: "Lesson 4 — Triads (Fifth Chords)",
   },
   description: {
-    es: "Las tríadas (acordes de 5a): mayor, menor, disminuida y aumentada, en estado fundamental e inversiones.",
-    en: "Triads (fifth chords): major, minor, diminished and augmented, in root position and inversions.",
+    es: "Las tríadas (acordes de 5a): mayor, menor, disminuida y aumentada, sobre cada grado de las escalas básicas.",
+    en: "Triads (fifth chords): major, minor, diminished and augmented, built on each degree of the basic scales.",
   },
   estimatedMinutes: 75,
 
   prerequisites: ["04-leccion-3"],
 
   videos: [
-    // TODO: agregar youtubeId
+    {
+      youtubeId: "Xe4kFYwIuKQ",
+      embedUrl: "https://www.youtube.com/embed/Xe4kFYwIuKQ?si=rAS7hnc6z8K27JNY",
+      title: { es: "Acordes de 5a", en: "Triads (Fifth Chords)" },
+      durationMinutes: 10.63,
+    },
   ],
 
-  activeRules: [
-    "voice-range-satb",
-    "voice-crossing",
-    "voice-overlap",
-    "no-parallel-fifths",
-    "no-parallel-octaves",
-    "no-hidden-fifths",
-    "contrary-motion-preferred",
-    "stepwise-motion-preference",
-    "root-position-doubling",
-    "common-tone-retention",
-    "leading-tone-resolution",
-    "first-inversion-doubling", // NUEVA
-    "cadence-satb",             // NUEVA
-  ],
+  // La revisión automática de este ejercicio se incorporará más adelante.
+  activeRules: [],
 
-  exercise: {
-    type: "four-voice-chorale",
-    voiceCount: 4,
-    voices: ["soprano", "alto", "tenor", "bass"],
-    keySignatures: ["C", "G", "F", "D"],
-    chordTypes: ["major", "minor"],
-    inversions: ["root", "first"],
-    minChords: 4,
-    maxChords: 8,
-    description: {
-      es: "Escribe progresiones que incluyan acordes en primera inversión. Termina con cadencia auténtica perfecta.",
-      en: "Write progressions that include first inversion chords. End with a perfect authentic cadence.",
-    },
-  },
-
-  feedback: {
-    "first-inversion-doubling": {
-      es: "En primera inversión evita duplicar la tercera del acorde; no dupliques la sensible. Compás {measure}.",
-      en: "In first inversion, avoid doubling the third of the chord; do not double the leading tone. Measure {measure}.",
-    },
-    "cadence-satb": {
-      es: "La cadencia auténtica perfecta requiere V→I con fundamental en soprano y bajo. Revisa el final.",
-      en: "The perfect authentic cadence requires V→I with the root in soprano and bass. Check the ending.",
-    },
-  },
-
-  tags: ["primera inversión", "acorde de sexta", "cadencia"],
+  tags: ["tríadas", "acordes de quinta", "escalas", "mayor", "menor", "disminuido", "aumentado"],
 };

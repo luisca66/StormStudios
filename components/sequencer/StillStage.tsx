@@ -8,10 +8,13 @@ import type { Score } from "@/lib/sequencer/types";
 import type { Still, Storyboard } from "@/lib/sequencer/storyboard";
 import { resolveProject, stillDimensions, validateStoryboard } from "@/lib/sequencer/storyboard-resolve";
 import { captureLayout, type CaptureLayout } from "@/lib/sequencer/capture-layout";
+import { SequencerAudio } from "@/lib/sequencer/audio-engine";
+import { stillMusic } from "@/lib/sequencer/still-audio";
 
 export type StageContext = { lesson: string; title: string; index: number; total: number };
 
 type StageApi = {
+  wav(still: Still, score: Score): Promise<{ base64: string; music: Omit<ReturnType<typeof stillMusic>, "score"> }>;
   render(still: Still, score: Score | null, format?: Storyboard["format"], context?: StageContext): Promise<void>;
   prepare(value: unknown): { storyboard: Storyboard; scores: Record<string, Score> };
 };
@@ -29,6 +32,19 @@ export default function StillStage({ locale }: { locale: "es" | "en" }) {
     let serial = 0, busy = false, disposed = false;
     let prepared: Storyboard | undefined;
     const api: StageApi = {
+      async wav(still, score) {
+        let warning = "";
+        const engine = new SequencerAudio(noop, noop, value => { if (value) warning = value; });
+        try {
+          const { score: piano, ...music } = stillMusic(score, still);
+          const blob = await engine.wav(piano, music.from, music.to);
+          if (!blob || warning) throw new Error(`No se pudo exportar Piano (${warning || "WAV vacío"})`);
+          const bytes = new Uint8Array(await blob.arrayBuffer());
+          let binary = "";
+          for (let offset = 0; offset < bytes.length; offset += 8192) binary += String.fromCharCode(...bytes.subarray(offset, offset + 8192));
+          return { base64: btoa(binary), music };
+        } finally { engine.dispose(); }
+      },
       prepare(value) {
         const storyboard = validateStoryboard(value);
         prepared = storyboard;

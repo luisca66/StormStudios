@@ -3,7 +3,7 @@ import { APPS } from "@/data/apps/apps-catalog";
 import { BLOG_POST_TRANSLATIONS } from "@/data/seo/blog-post-translations";
 import { getAllResources, getResourceUrls } from "@/data/resources/resources-catalog";
 import { getBlogPosts, getLessonContent, getPageContent, getBlogPost } from "@/lib/mdx";
-import { getAllLessons, getLessonRouteParams } from "@/lib/course";
+import { getAllLessons, getLessonRouteParams, getLessonStatus } from "@/lib/course";
 import {
   getLocalizedRouteUrls,
   getLocalizedRouteUrlsByLocaleParams,
@@ -106,15 +106,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     );
     const lessonVariants = await Promise.all(LOCALES.map((locale) => getLessonContent(locale, lesson.slug)));
     const lastModified = getMostRecentDate(lessonVariants.map((lesson) => lesson?.lastModified));
+    const publishedLocales = LOCALES.filter((locale) => getLessonStatus(lesson, locale) === "published");
 
-    for (const locale of LOCALES) {
+    for (const locale of publishedLocales) {
       entries.push({
         url: `${BASE_URL}${urls[locale]}`,
         lastModified,
         changeFrequency: "monthly",
         priority: 0.7,
         alternates: {
-          languages: buildLanguageAlternates(urls),
+          languages: Object.fromEntries(publishedLocales.map((language) => [
+            language === "es" ? "es-MX" : "en-US", `${BASE_URL}${urls[language]}`,
+          ])),
         },
       });
     }

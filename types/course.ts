@@ -181,6 +181,7 @@ export type LessonConfig = {
   module?: string;
   /** Estado de publicación. Default: "published". */
   status?: "published" | "construction" | "hidden";
+  statusByLocale?: Partial<Record<"es" | "en", "published" | "construction">>;
 
   // Metadata
   title: BilingualText;

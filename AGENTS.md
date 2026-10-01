@@ -2,6 +2,10 @@
 
 Ayúdame a priorizar y organizar qué hacemos para avanzar en orden
 
+## Videos de lecciones
+
+Para producir el video de una lección (español e inglés), sigue `.claude/skills/video-leccion/SKILL.md`: guion y audio de ElevenLabs → storyboard → stills → mapa de audio → video → revisión → entrega. Al terminar un video, añade lo aprendido en su sección «Lecciones aprendidas».
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know

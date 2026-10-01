@@ -13,10 +13,11 @@ async function main() {
   const options = {};
   while (args.length) {
     const flag = args.shift(), value = args.shift();
-    if (!["--out", "--base", "--only"].includes(flag) || !value || value.startsWith("--")) throw new Error(`Opción inválida: ${flag}`);
+    if (!["--out", "--base", "--only", "--context"].includes(flag) || !value || value.startsWith("--")) throw new Error(`Opción inválida: ${flag}`);
     options[flag] = value;
   }
   const board = JSON.parse(await readFile(input, "utf8"));
+  const contextBoard = options["--context"] ? JSON.parse(await readFile(path.resolve(options["--context"]), "utf8")) : board;
   if (!["es", "en"].includes(board.locale)) throw new Error("locale debe ser es o en");
   for (const [name, source] of Object.entries(board.projects ?? {})) {
     if (source && typeof source === "object" && Object.hasOwn(source, "file")) {
@@ -56,17 +57,26 @@ async function main() {
       if (only && !only.has(still.id)) continue;
       const file = `${String(index + 1).padStart(2, "0")}-${still.id}.png`;
       try {
-        if (still.audio) console.warn(`Still "${still.id}": audio está reservado; esta versión genera solo PNG.`);
+        const originalId = options["--context"] ? still.id.replace(/-cursor-\d+$/, "") : still.id;
+        const contextIndex = contextBoard.stills.findIndex(s => s.id === originalId);
+        if (contextIndex < 0) throw new Error(`No hay contexto para ${originalId}`);
         await page.evaluate(async ({ still, score, format, context }) => {
           await window.stormStage.render(still, score, format, context);
         }, { still, score: still.project ? prepared.scores[still.project] : null, format: storyboard.format,
-          context: { lesson: storyboard.lesson, title: storyboard.title, index: index + 1, total: storyboard.stills.length } });
+          context: { lesson: contextBoard.lesson, title: contextBoard.title, index: contextIndex + 1, total: contextBoard.stills.length } });
         await page.waitForFunction(() => document.documentElement.dataset.stageReady === "1");
         const element = page.getByTestId("still");
         const bounds = await element.boundingBox();
         if (!bounds || bounds.width !== width || bounds.height !== height) throw new Error(`Tamaño inesperado: ${JSON.stringify(bounds)}`);
         await element.screenshot({ path: path.join(out, file), animations: "disabled", scale: "css" });
-        manifest.stills.push({ id: still.id, file, duration: still.duration ?? 5, heading: still.heading, caption: still.caption, narration: still.narration });
+        let audio, music;
+        if (still.audio) {
+          const result = await page.evaluate(({ still, score }) => window.stormStage.wav(still, score), { still, score: prepared.scores[still.project] });
+          audio = file.replace(/\.png$/, ".wav");
+          music = result.music;
+          await writeFile(path.join(out, audio), Buffer.from(result.base64, "base64"));
+        }
+        manifest.stills.push({ id: still.id, file, audio, music, duration: still.duration ?? 5, heading: still.heading, caption: still.caption, narration: still.narration });
         console.log(`${still.id} → ${path.join(out, file)} (${width}×${height})`);
       } catch (error) { throw new Error(`Still "${still.id}": ${error.message}`); }
     }

@@ -1,14 +1,15 @@
 import { WaveVisualizer } from "@/components/WaveVisualizer";
 import { StatItem } from "@/components/home/StatItem";
 import { Link } from "@/i18n/navigation";
-import { getAllLessons } from "@/lib/course";
+import { getAllLessons, getLessonStatus } from "@/lib/course";
 import { APPS } from "@/data/apps/apps-catalog";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 const PUBLISHED_APP_COUNT = APPS.filter(({ isTool }) => !isTool).length;
 
 export async function HomeHero() {
   const t = await getTranslations("home.hero");
+  const locale = await getLocale();
 
   return (
     <section className="ss-home-hero"
@@ -154,7 +155,7 @@ export async function HomeHero() {
         className="ss-reveal"
         style={{ display: "flex", flexWrap: "wrap", gap: "3rem", justifyContent: "center", marginTop: "5rem", animationDelay: "0.6s" }}
       >
-        <StatItem value={String(getAllLessons().filter(lesson => lesson.status !== "construction").length)} label={t("stats.lessons")} />
+        <StatItem value={String(getAllLessons().filter(lesson => getLessonStatus(lesson, locale) === "published").length)} label={t("stats.lessons")} />
         <div className="ss-divider" style={{ width: "1px", alignSelf: "stretch" }} />
         <StatItem value={String(PUBLISHED_APP_COUNT)} label={t("stats.freeApps")} />
         <div className="ss-divider" style={{ width: "1px", alignSelf: "stretch" }} />
