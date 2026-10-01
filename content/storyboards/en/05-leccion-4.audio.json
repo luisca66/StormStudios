@@ -1,0 +1,657 @@
+{
+  "lesson": "05-leccion-4",
+  "source": {
+    "zip": "H:/Website Clases/04 Lección 4/ElevenLabs_Lesson_4.zip",
+    "durations": "content/storyboards/en/05-leccion-4.durations.txt",
+    "script": "H:/Website Clases/04 Lección 4/Lesson 4 elevenlabs.docx",
+    "clipPattern": "{n}_Chapter_1.mp3",
+    "clips": 137
+  },
+  "note": "English narration, same 58 visual steps and music as Spanish. Split clip 17 at the detected pause; partialText preserves the exact subtitles.",
+  "stills": [
+    {
+      "id": "titulo",
+      "start": {
+        "clip": 1,
+        "at": 0
+      },
+      "end": {
+        "clip": 3,
+        "at": 1
+      }
+    },
+    {
+      "id": "que-es-acorde",
+      "start": {
+        "clip": 4,
+        "at": 0
+      },
+      "end": {
+        "clip": 5,
+        "at": 1
+      }
+    },
+    {
+      "id": "ejemplos",
+      "start": {
+        "clip": 6,
+        "at": 0
+      },
+      "end": {
+        "clip": 6,
+        "at": 1
+      }
+    },
+    {
+      "id": "armonia",
+      "start": {
+        "clip": 7,
+        "at": 0
+      },
+      "end": {
+        "clip": 7,
+        "at": 1
+      }
+    },
+    {
+      "id": "armonias",
+      "start": {
+        "clip": 8,
+        "at": 0
+      },
+      "end": {
+        "clip": 8,
+        "at": 1
+      }
+    },
+    {
+      "id": "construccion",
+      "start": {
+        "clip": 9,
+        "at": 0
+      },
+      "end": {
+        "clip": 11,
+        "at": 1
+      }
+    },
+    {
+      "id": "plan",
+      "start": {
+        "clip": 12,
+        "at": 0
+      },
+      "end": {
+        "clip": 13,
+        "at": 1
+      }
+    },
+    {
+      "id": "escala-mayor",
+      "start": {
+        "clip": 14,
+        "at": 0
+      },
+      "end": {
+        "clip": 15,
+        "at": 1
+      }
+    },
+    {
+      "id": "do-fundamental",
+      "start": {
+        "clip": 16,
+        "at": 0
+      },
+      "end": {
+        "clip": 16,
+        "at": 1
+      }
+    },
+    {
+      "id": "do-tercera",
+      "start": {
+        "clip": 17,
+        "at": 0
+      },
+      "end": {
+        "clip": 17,
+        "at": 0.455
+      },
+      "partialText": {
+        "17": "A third above C is E,"
+      }
+    },
+    {
+      "id": "do-quinta",
+      "start": {
+        "clip": 17,
+        "at": 0.455
+      },
+      "end": {
+        "clip": 18,
+        "at": 1
+      },
+      "partialText": {
+        "17": "and a third above E is G."
+      }
+    },
+    {
+      "id": "acorde-de-quinta",
+      "start": {
+        "clip": 19,
+        "at": 0
+      },
+      "end": {
+        "clip": 22,
+        "at": 1
+      }
+    },
+    {
+      "id": "sobre-re",
+      "start": {
+        "clip": 23,
+        "at": 0
+      },
+      "end": {
+        "clip": 25,
+        "at": 1
+      }
+    },
+    {
+      "id": "sobre-mi",
+      "start": {
+        "clip": 26,
+        "at": 0
+      },
+      "end": {
+        "clip": 26,
+        "at": 1
+      }
+    },
+    {
+      "id": "sobre-fa",
+      "start": {
+        "clip": 27,
+        "at": 0
+      },
+      "end": {
+        "clip": 27,
+        "at": 1
+      }
+    },
+    {
+      "id": "sobre-sol",
+      "start": {
+        "clip": 28,
+        "at": 0
+      },
+      "end": {
+        "clip": 28,
+        "at": 1
+      }
+    },
+    {
+      "id": "sobre-la",
+      "start": {
+        "clip": 29,
+        "at": 0
+      },
+      "end": {
+        "clip": 29,
+        "at": 1
+      }
+    },
+    {
+      "id": "sobre-si",
+      "start": {
+        "clip": 30,
+        "at": 0
+      },
+      "end": {
+        "clip": 30,
+        "at": 1
+      }
+    },
+    {
+      "id": "mayor-escuchar",
+      "start": {
+        "clip": 31,
+        "at": 0
+      },
+      "end": {
+        "clip": 31,
+        "at": 1
+      }
+    },
+    {
+      "id": "mayor-tipo-mayor",
+      "start": {
+        "clip": 32,
+        "at": 0
+      },
+      "end": {
+        "clip": 34,
+        "at": 1
+      }
+    },
+    {
+      "id": "mayor-tipo-menor",
+      "start": {
+        "clip": 35,
+        "at": 0
+      },
+      "end": {
+        "clip": 36,
+        "at": 1
+      }
+    },
+    {
+      "id": "mayor-tipo-disminuido",
+      "start": {
+        "clip": 37,
+        "at": 0
+      },
+      "end": {
+        "clip": 38,
+        "at": 1
+      }
+    },
+    {
+      "id": "grados",
+      "start": {
+        "clip": 39,
+        "at": 0
+      },
+      "end": {
+        "clip": 40,
+        "at": 1
+      }
+    },
+    {
+      "id": "mayor-resumen",
+      "start": {
+        "clip": 41,
+        "at": 0
+      },
+      "end": {
+        "clip": 49,
+        "at": 1
+      }
+    },
+    {
+      "id": "escala-mayor-arm",
+      "start": {
+        "clip": 50,
+        "at": 0
+      },
+      "end": {
+        "clip": 53,
+        "at": 1
+      }
+    },
+    {
+      "id": "arm-1",
+      "start": {
+        "clip": 54,
+        "at": 0
+      },
+      "end": {
+        "clip": 55,
+        "at": 1
+      }
+    },
+    {
+      "id": "arm-2",
+      "start": {
+        "clip": 56,
+        "at": 0
+      },
+      "end": {
+        "clip": 57,
+        "at": 1
+      }
+    },
+    {
+      "id": "arm-3",
+      "start": {
+        "clip": 58,
+        "at": 0
+      },
+      "end": {
+        "clip": 59,
+        "at": 1
+      }
+    },
+    {
+      "id": "arm-4",
+      "start": {
+        "clip": 60,
+        "at": 0
+      },
+      "end": {
+        "clip": 61,
+        "at": 1
+      }
+    },
+    {
+      "id": "arm-5",
+      "start": {
+        "clip": 62,
+        "at": 0
+      },
+      "end": {
+        "clip": 62,
+        "at": 1
+      }
+    },
+    {
+      "id": "arm-6",
+      "start": {
+        "clip": 63,
+        "at": 0
+      },
+      "end": {
+        "clip": 65,
+        "at": 1
+      }
+    },
+    {
+      "id": "arm-7",
+      "start": {
+        "clip": 66,
+        "at": 0
+      },
+      "end": {
+        "clip": 66,
+        "at": 1
+      }
+    },
+    {
+      "id": "arm-escuchar",
+      "start": {
+        "clip": 67,
+        "at": 0
+      },
+      "end": {
+        "clip": 67,
+        "at": 1
+      }
+    },
+    {
+      "id": "arm-cambios",
+      "start": {
+        "clip": 68,
+        "at": 0
+      },
+      "end": {
+        "clip": 68,
+        "at": 1
+      }
+    },
+    {
+      "id": "escala-menor-nat",
+      "start": {
+        "clip": 69,
+        "at": 0
+      },
+      "end": {
+        "clip": 71,
+        "at": 1
+      }
+    },
+    {
+      "id": "nat-1",
+      "start": {
+        "clip": 72,
+        "at": 0
+      },
+      "end": {
+        "clip": 73,
+        "at": 1
+      }
+    },
+    {
+      "id": "nat-2",
+      "start": {
+        "clip": 74,
+        "at": 0
+      },
+      "end": {
+        "clip": 75,
+        "at": 1
+      }
+    },
+    {
+      "id": "nat-3",
+      "start": {
+        "clip": 76,
+        "at": 0
+      },
+      "end": {
+        "clip": 77,
+        "at": 1
+      }
+    },
+    {
+      "id": "nat-4",
+      "start": {
+        "clip": 78,
+        "at": 0
+      },
+      "end": {
+        "clip": 79,
+        "at": 1
+      }
+    },
+    {
+      "id": "nat-5",
+      "start": {
+        "clip": 80,
+        "at": 0
+      },
+      "end": {
+        "clip": 81,
+        "at": 1
+      }
+    },
+    {
+      "id": "nat-6",
+      "start": {
+        "clip": 82,
+        "at": 0
+      },
+      "end": {
+        "clip": 83,
+        "at": 1
+      }
+    },
+    {
+      "id": "nat-7",
+      "start": {
+        "clip": 84,
+        "at": 0
+      },
+      "end": {
+        "clip": 85,
+        "at": 1
+      }
+    },
+    {
+      "id": "nat-escuchar",
+      "start": {
+        "clip": 86,
+        "at": 0
+      },
+      "end": {
+        "clip": 86,
+        "at": 1
+      }
+    },
+    {
+      "id": "escala-menor-arm",
+      "start": {
+        "clip": 87,
+        "at": 0
+      },
+      "end": {
+        "clip": 90,
+        "at": 1
+      }
+    },
+    {
+      "id": "marm-3",
+      "start": {
+        "clip": 91,
+        "at": 0
+      },
+      "end": {
+        "clip": 93,
+        "at": 1
+      }
+    },
+    {
+      "id": "marm-5",
+      "start": {
+        "clip": 94,
+        "at": 0
+      },
+      "end": {
+        "clip": 96,
+        "at": 1
+      }
+    },
+    {
+      "id": "marm-7",
+      "start": {
+        "clip": 97,
+        "at": 0
+      },
+      "end": {
+        "clip": 98,
+        "at": 1
+      }
+    },
+    {
+      "id": "marm-resumen",
+      "start": {
+        "clip": 99,
+        "at": 0
+      },
+      "end": {
+        "clip": 107,
+        "at": 1
+      }
+    },
+    {
+      "id": "escala-menor-mel",
+      "start": {
+        "clip": 108,
+        "at": 0
+      },
+      "end": {
+        "clip": 110,
+        "at": 1
+      }
+    },
+    {
+      "id": "mel-2",
+      "start": {
+        "clip": 111,
+        "at": 0
+      },
+      "end": {
+        "clip": 113,
+        "at": 1
+      }
+    },
+    {
+      "id": "mel-4",
+      "start": {
+        "clip": 114,
+        "at": 0
+      },
+      "end": {
+        "clip": 115,
+        "at": 1
+      }
+    },
+    {
+      "id": "mel-6",
+      "start": {
+        "clip": 116,
+        "at": 0
+      },
+      "end": {
+        "clip": 117,
+        "at": 1
+      }
+    },
+    {
+      "id": "mel-resumen",
+      "start": {
+        "clip": 118,
+        "at": 0
+      },
+      "end": {
+        "clip": 119,
+        "at": 1
+      }
+    },
+    {
+      "id": "mel-descenso",
+      "start": {
+        "clip": 120,
+        "at": 0
+      },
+      "end": {
+        "clip": 122,
+        "at": 1
+      }
+    },
+    {
+      "id": "cuatro-tipos",
+      "start": {
+        "clip": 123,
+        "at": 0
+      },
+      "end": {
+        "clip": 127,
+        "at": 1
+      }
+    },
+    {
+      "id": "regla",
+      "start": {
+        "clip": 128,
+        "at": 0
+      },
+      "end": {
+        "clip": 130,
+        "at": 1
+      }
+    },
+    {
+      "id": "tarea",
+      "start": {
+        "clip": 131,
+        "at": 0
+      },
+      "end": {
+        "clip": 134,
+        "at": 1
+      }
+    },
+    {
+      "id": "despedida",
+      "start": {
+        "clip": 135,
+        "at": 0
+      },
+      "end": {
+        "clip": 137,
+        "at": 1
+      }
+    }
+  ]
+}

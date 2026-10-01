@@ -3,7 +3,7 @@ import { readFile, writeFile, mkdir, access } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
-import { concatFile, docxParagraphs, nearestPause, silenceMidpoints, srtTime, validateAudioMap } from "./video-utils.mjs";
+import { concatFile, docxParagraphs, nearestPause, silenceMidpoints, srtTime, validateAudioMap, partialSubtitle } from "./video-utils.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 async function run(command, args, capture = false) {
@@ -133,12 +133,7 @@ async function main() {
       await ffmpeg(["-i", decoded.get(n), "-af", `atrim=start=${from}:end=${to},asetpts=PTS-STARTPTS,loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,asetpts=N/SR/TB,apad,atrim=end_sample=${Math.round(length * 48000)}`, "-ac", "2", "-c:a", "pcm_s16le", file]);
       const actual = await duration(file);
       segment.clips.push({ clip: n, file: clipFile(n), sourceStart: from, sourceEnd: to, start: time, end: time + actual });
-      let text = paragraphs[n - 1];
-      if (n === 16 && (from > 0 || to < durations.get(n))) {
-        const parts = /^(.*?\.)(.*?,)(.*)$/.exec(text);
-        if (!parts) throw new Error("Clip 16: no se pudieron separar las tres frases");
-        text = parts[still.id === "do-fundamental" ? 1 : still.id === "do-tercera" ? 2 : 3].trim();
-      } else if (from > 0 || to < durations.get(n)) throw new Error(`Clip ${n}: falta texto explícito para subtítulos parciales`);
+      const text = partialSubtitle(entry, n, paragraphs[n - 1], from, to, durations.get(n));
       subtitles.push({ start: time, end: time + actual, text });
       audioFiles.push(file); time += actual; voiceSeconds += actual;
     }

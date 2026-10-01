@@ -1,5 +1,18 @@
 import { inflateRawSync } from "node:zlib";
 
+/** Explicit text for a divided voice clip, supplied by the audio map. */
+export function partialSubtitle(entry, clip, paragraph, from, to, duration) {
+  if (from === 0 && to === duration) return paragraph;
+  const explicit = entry.partialText?.[clip];
+  if (typeof explicit === "string" && explicit.trim()) return explicit.trim();
+  // Preserve the original Spanish Lesson 4 map until it is regenerated.
+  if (clip === 16 && ["do-fundamental", "do-tercera", "do-quinta"].includes(entry.id)) {
+    const parts = /^(.*?\.)(.*?,)(.*)$/.exec(paragraph);
+    if (parts) return parts[entry.id === "do-fundamental" ? 1 : entry.id === "do-tercera" ? 2 : 3].trim();
+  }
+  throw new Error(`Clip ${clip}: falta texto explícito para subtítulos parciales`);
+}
+
 /** Read a small standard DOCX ZIP without a platform-dependent unzip command. */
 export function docxParagraphs(zip) {
   let end = zip.length - 22;
