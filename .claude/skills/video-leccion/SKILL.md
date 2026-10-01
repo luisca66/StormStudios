@@ -74,14 +74,12 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 - **Cursor**: tres fotogramas durante la música de un still con `audio`; el cursor debe avanzar pulso a pulso sobre los acordes.
 - **Música**: amplía los stills con alteraciones y armaduras y revísalos como músico (sin alteraciones redundantes; becuadros donde la escala sube grados).
 - **SRT**: una entrada por clip, más las divisiones de clips repartidos.
-- **Entrega remota**: confirma que el enlace de R2 tiene la **última** versión (en la Lección 4 el enlace tenía la versión anterior a la armadura de Do menor).
+- **Entrega remota**: confirma que el archivo privado de Drive tiene la **última** versión y el mismo tamaño que la copia local. Luis publica el video editado en YouTube.
 
 ### 7. Entrega
 
 - Copia MP4, SRT y `timeline.json` a `H:/Website Clases/<NN> Lección <N>/Video 2026/` (sufijo `-en` para inglés).
-- Sube el MP4 a R2 para que Luis lo vea desde el teléfono (enlace no listado; nunca se enlaza desde el sitio):
-  `npx wrangler@4 r2 object put storm-samples/borradores/leccion-<N>/leccion-<N>-<es|en>-v<k>.mp4 --file <mp4> --content-type video/mp4 --cache-control "no-cache" --remote`
-  → `https://samples.stormstudios.com.mx/borradores/leccion-<N>/…`. Comprueba con `curl -r 0-1000` (206 y `video/mp4`).
+- Entrega el MP4 local y una copia privada en el Drive de Luis para revisión desde el teléfono. No subas videos a R2: Luis añade sus logos y entrada/salida en Vegas y los publica en su canal de YouTube. Cuando dé el embed aprobado, incorpóralo al sitio.
 - No se suben al repositorio MP3, WAV, PNG ni MP4 (`.local-work/` y `stills/` están fuera de Git).
 
 ## Lecciones aprendidas (añade una línea después de cada video)
@@ -91,9 +89,11 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 - **L4**: la errata grabada «respectivo al su grado» (clip 38) se respeta en el mapa; si Luis regenera el clip, basta con reemplazar el MP3 y volver a montar.
 - **L4**: la primera versión remota quedó desactualizada tras un cambio de armadura. Después de cada cambio, vuelve a subir el MP4 y verifica el enlace.
 - **L4**: las escalas menores se escriben con armadura de Do menor (decisión de Luis).
+- **L4 EN (2026-10-01)**: el DOCX final y ZIP tienen 137 párrafos/clips; no reutilizar los índices del español. El clip 17 se reparte entre la tercera y quinta, con `partialText` explícito para el SRT. Misma música y 58 pasos visuales; los tiempos siguen la voz inglesa.
+- **Entrega acordada con Luis**: los videos se entregan para su edición en Vegas y publicación en YouTube; no subirlos a R2. Esta decisión reemplaza las instrucciones de R2 anteriores.
 
 ## Mejoras pendientes de las herramientas
 
-- `video.mjs` tiene el texto parcial del clip 16 de la Lección 4 escrito a mano para el SRT. Generalizarlo: que `mapa-audio` guarde el texto de cada parte de un clip repartido y que el SRT lo use.
+- El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).
 - Script `traducir-storyboard` que cree el storyboard inglés desde el español usando los rangos de clips del mapa.
 - Script `revisar-video` que haga automáticamente la revisión del paso 6.

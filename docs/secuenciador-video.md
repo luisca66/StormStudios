@@ -18,4 +18,15 @@ Se escriben `leccion-N-v1.mp4`, `leccion-N-v1.srt` y `timeline.json`. El timelin
 
 Para otra lección, prepara su storyboard, mapa y materiales de voz con ese contrato y ejecuta el mismo comando. Al reemplazar un MP3 se vuelve a decodificar y medir en cada ejecución. No se corrige el texto grabado: el clip 38 conserva «al su grado» hasta que Luis lo sustituya.
 
+### Lección 4 en inglés
+
+`node scripts/sequencer/generar-storyboard-leccion-4-en.mjs "<Lesson 4 elevenlabs.docx>"` genera el storyboard y mapa ingleses. Mantiene los 58 pasos, las notas, armaduras, tempo y rangos del español, traduciendo los textos visibles. El guion inglés actual tiene 137 párrafos y su ZIP contiene 137 clips. La tabla de duraciones de este montaje está en `content/storyboards/en/05-leccion-4.durations.txt`: se midió la voz decodificada a 48 kHz, sin usar las duraciones españolas. Si cambia la voz, hay que volver a medir la tabla; el montaje detecta discrepancias.
+
+```sh
+npm run stills -- content/storyboards/en/05-leccion-4.json
+npm run video -- content/storyboards/en/05-leccion-4.json --audio content/storyboards/en/05-leccion-4.audio.json --clips .local-work/leccion-4-audio-en --out stills/en/05-leccion-4/video
+```
+
+Para cualquier clip repartido, cada entrada del mapa puede incluir `partialText: { "17": "texto exacto de esta parte" }`. El corte de audio se ajusta al silencio detectado y el SRT usa ese texto, sin depender de un idioma o número de clip. El mapa español antiguo conserva su compatibilidad para el clip 16. En inglés el clip compartido es el 17, entre `do-tercera` y `do-quinta`.
+
 Los originales de voz y todos los MP3/WAV/PNG/MP4 generados quedan fuera de Git, en `.local-work/` o `stills/`. La copia a `H:` y la subida a R2 son pasos de entrega explícitos, fuera del comando reutilizable.
