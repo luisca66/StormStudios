@@ -5,8 +5,8 @@ import { writeFileSync } from "node:fs";
 const pos = k => ({ measure: k <= 4 ? 1 : 2, beat: ((k - 1) % 4) + 1 });
 const at = (k, color, label) => { const p = pos(k); return { ...p, endBeat: p.beat + 1, color, label }; };
 const reveal = k => (k >= 8 ? undefined : pos(k + 1));
-const chordText = chords => `voz melody\ncompas 1\n${chords.slice(0, 4).map(c => `[${c}] negra`).join("; ")}\ncompas 2\n${chords.slice(4).map(c => `[${c}] negra`).join("; ")}`;
-const scaleText = notes => `voz melody\ncompas 1\n${notes.slice(0, 4).map(n => `${n} negra`).join("; ")}\ncompas 2\n${notes.slice(4).map(n => `${n} negra`).join("; ")}`;
+const chordText = chords => `voz melody\ncompas 1\n${chords.slice(0, 4).map(c => `[${c}] Cuarto`).join("; ")}\ncompas 2\n${chords.slice(4).map(c => `[${c}] Cuarto`).join("; ")}`;
+const scaleText = notes => `voz melody\ncompas 1\n${notes.slice(0, 4).map(n => `${n} Cuarto`).join("; ")}\ncompas 2\n${notes.slice(4).map(n => `${n} Cuarto`).join("; ")}`;
 const romans = list => list.map((text, i) => ({ ...pos(i + 1), text, kind: "roman" }));
 const setup = (title, measures = 2) => ({ mode: "single", title, key: "C", time: [4, 4], measures, tempo: 72 });
 
@@ -18,7 +18,7 @@ const MENOR_MEL = ["C4 Eb4 G4", "D4 F4 A4", "Eb4 G4 B4", "F4 A4 C5", "G4 B4 D5",
 const MENOR_MEL_DESC = ["C5 Eb5 G5", "Bb4 D5 F5", "Ab4 C5 Eb5", "G4 Bb4 D5", "F4 Ab4 C5", "Eb4 G4 Bb4", "D4 F4 Ab4", "C4 Eb4 G4"];
 
 const projects = {
-  "ejemplos": { setup: setup("Ejemplos de acordes", 1), text: "voz melody\ncompas 1\n[C4 G4] negra; [D4 F#4 A4] negra; [E4 G4 B4 D5] negra; [F4 G4 A4] negra" },
+  "ejemplos": { setup: setup("Ejemplos de acordes", 1), text: "voz melody\ncompas 1\n[C4 G4] Cuarto; [D4 F#4 A4] Cuarto; [E4 G4 B4 D5] Cuarto; [F4 G4 A4] Cuarto" },
   "fundamental": { setup: setup("Acorde sobre Do"), text: chordText(["C4", ...MAYOR.slice(1)]) },
   "tercera": { setup: setup("Acorde sobre Do"), text: chordText(["C4 E4", ...MAYOR.slice(1)]) },
   "escala-mayor": { setup: setup("Do mayor natural"), text: scaleText(["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"]) },
@@ -32,7 +32,7 @@ const projects = {
   "escala-menor-mel": { setup: setup("Do menor melódica ascendente"), text: scaleText(["C4", "D4", "Eb4", "F4", "G4", "A4", "B4", "C5"]) },
   "menor-mel": { setup: setup("Acordes de Do menor melódica ascendente"), text: chordText(MENOR_MEL), annotations: romans(["i", "ii", "III+", "IV", "V", "vi°", "vii°", "i"]) },
   "menor-mel-desc": { setup: setup("Do menor melódica descendente"), text: chordText(MENOR_MEL_DESC), annotations: romans(["i", "VII", "VI", "v", "iv", "III", "ii°", "i"]) },
-  "cuatro-tipos": { setup: setup("Los cuatro tipos de acordes de quinta", 4), text: "voz melody\ncompas 1\n[C4 E4 G4] redonda\ncompas 2\n[C4 Eb4 G4] redonda\ncompas 3\n[C4 Eb4 Gb4] redonda\ncompas 4\n[C4 E4 G#4] redonda",
+  "cuatro-tipos": { setup: setup("Los cuatro tipos de acordes de quinta", 4), text: "voz melody\ncompas 1\n[C4 E4 G4] Entera\ncompas 2\n[C4 Eb4 G4] Entera\ncompas 3\n[C4 Eb4 Gb4] Entera\ncompas 4\n[C4 E4 G#4] Entera",
     annotations: [{ measure: 1, beat: 1, text: "Mayor", kind: "text" }, { measure: 2, beat: 1, text: "menor", kind: "text" }, { measure: 3, beat: 1, text: "disminuido", kind: "text" }, { measure: 4, beat: 1, text: "aumentado", kind: "text" }] },
 };
 

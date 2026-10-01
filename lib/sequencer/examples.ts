@@ -14,9 +14,9 @@ export const SEQUENCER_EXAMPLES: SequencerExample[] = [
     mode: "single",
     text: `voz melody
 compas 1
-C4 negra; D4 negra; E4 negra; F4 negra
+C4 Cuarto; D4 Cuarto; E4 Cuarto; F4 Cuarto
 compas 2
-G4 negra; A4 negra; B4 negra; C5 negra`,
+G4 Cuarto; A4 Cuarto; B4 Cuarto; C5 Cuarto`,
   },
   {
     id: "harmonic-cadence-i-iv-v-i",
@@ -25,9 +25,9 @@ G4 negra; A4 negra; B4 negra; C5 negra`,
     mode: "single",
     text: `voz melody
 compas 1
-[C4 E4 G4] blanca; [F4 A4 C5] blanca
+[C4 E4 G4] Mitad; [F4 A4 C5] Mitad
 compas 2
-[G4 B4 D5] blanca; [C4 E4 G4] blanca`,
+[G4 B4 D5] Mitad; [C4 E4 G4] Mitad`,
   },
   {
     id: "satb-cadencia-autentica",
@@ -36,44 +36,44 @@ compas 2
     mode: "satb",
     text: `voz soprano
 compas 1
-G4 blanca; F4 blanca
+G4 Mitad; F4 Mitad
 compas 2
-F4 blanca; E4 blanca
+F4 Mitad; E4 Mitad
 
 voz alto
 compas 1
-E4 blanca; D4 blanca
+E4 Mitad; D4 Mitad
 compas 2
-D4 blanca; C4 blanca
+D4 Mitad; C4 Mitad
 
 voz tenor
 compas 1
-C4 blanca; B3 blanca
+C4 Mitad; B3 Mitad
 compas 2
-B3 blanca; G3 blanca
+B3 Mitad; G3 Mitad
 
 voz bass
 compas 1
-C3 blanca; G3 blanca
+C3 Mitad; G3 Mitad
 compas 2
-G3 blanca; C3 blanca`,
+G3 Mitad; C3 Mitad`,
   },
   {
     id: "triplets-measure",
-    titleEs: "Tresillos de Corchea y Negras (1 compás)",
+    titleEs: "Tresillos de Octavo y Cuartos (1 compás)",
     titleEn: "Eighth-Note Triplets and Quarter Notes (1 measure)",
     mode: "single",
     text: `voz melody
 compas 1
-C4 corchea tresillo; D4 corchea tresillo; E4 corchea tresillo; F4 corchea tresillo; G4 corchea tresillo; A4 corchea tresillo; B4 negra; C5 negra`,
+C4 Octavo tresillo; D4 Octavo tresillo; E4 Octavo tresillo; F4 Octavo tresillo; G4 Octavo tresillo; A4 Octavo tresillo; B4 Cuarto; C5 Cuarto`,
   },
   {
     id: "dotted-rhythm-syncopation",
-    titleEs: "Ritmo con Negra con Puntillo, Corchea y Blanca",
+    titleEs: "Ritmo con Cuarto con Puntillo, Octavo y Mitad",
     titleEn: "Dotted Quarter, Eighth, and Half Note Rhythm",
     mode: "single",
     text: `voz melody
 compas 1
-C4 negra puntillo; D4 corchea; E4 blanca`,
+C4 Cuarto puntillo; D4 Octavo; E4 Mitad`,
   },
 ];
