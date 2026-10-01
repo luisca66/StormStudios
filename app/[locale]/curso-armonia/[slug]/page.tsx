@@ -4,6 +4,7 @@ import {
   getAllLessons,
   getLessonByLocalizedSlug,
   getLessonNav,
+  getLessonStatus,
   getLessonRouteParams,
   getLessonUrlSlug,
 } from "@/lib/course";
@@ -51,7 +52,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       "/curso-armonia/[slug]",
       getLessonRouteParams(lesson)
     ),
-    noIndex: lesson.status === "construction" || Boolean(content?.isFallback),
+    noIndex: getLessonStatus(lesson, locale) === "construction" || Boolean(content?.isFallback),
     title: lesson.title[currentLocale],
     description: lesson.description[currentLocale],
     keywords: lesson.tags,

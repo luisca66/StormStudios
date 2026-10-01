@@ -48,6 +48,11 @@ export function getAllLessons(): LessonConfig[] {
   return ALL_LESSONS;
 }
 
+/** Publication can differ while a translation is being prepared. */
+export function getLessonStatus(lesson: LessonConfig, locale: string) {
+  return lesson.statusByLocale?.[locale as Locale] ?? lesson.status ?? "published";
+}
+
 /**
  * Busca una lección por slug. Retorna `undefined` si no existe.
  */

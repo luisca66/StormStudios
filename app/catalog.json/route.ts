@@ -1,5 +1,5 @@
 import { APPS } from "@/data/apps/apps-catalog";
-import { getAllLessons, getLessonUrlSlug } from "@/lib/course";
+import { getAllLessons, getLessonUrlSlug, getLessonStatus } from "@/lib/course";
 import { BASE_URL, getLocalizedPathname } from "@/lib/seo/page-alternates";
 import { routing, type Pathnames } from "@/i18n/routing";
 
@@ -27,7 +27,7 @@ export function GET() {
       virtualTeacher: "Rule-based MIDI feedback for lessons 1–3; not generative AI.",
       lessons: getAllLessons().filter((lesson) => lesson.status !== "construction").map((lesson) => ({
         id: lesson.slug, title: lesson.title,
-        urls: Object.fromEntries(routing.locales.map((locale) => [locale,
+        urls: Object.fromEntries(routing.locales.filter((locale) => getLessonStatus(lesson, locale) === "published").map((locale) => [locale,
           BASE_URL + getLocalizedPathname("/curso-armonia/[slug]", locale, { slug: getLessonUrlSlug(lesson, locale) }),
         ])),
       })),
