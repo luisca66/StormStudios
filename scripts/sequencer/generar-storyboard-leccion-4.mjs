@@ -8,7 +8,7 @@ const reveal = k => (k >= 8 ? undefined : pos(k + 1));
 const chordText = chords => `voz melody\ncompas 1\n${chords.slice(0, 4).map(c => `[${c}] negra`).join("; ")}\ncompas 2\n${chords.slice(4).map(c => `[${c}] negra`).join("; ")}`;
 const scaleText = notes => `voz melody\ncompas 1\n${notes.slice(0, 4).map(n => `${n} negra`).join("; ")}\ncompas 2\n${notes.slice(4).map(n => `${n} negra`).join("; ")}`;
 const romans = list => list.map((text, i) => ({ ...pos(i + 1), text, kind: "roman" }));
-const setup = (title, measures = 2) => ({ mode: "single", title, key: "C", time: [4, 4], measures, tempo: 72 });
+const setup = (title, measures = 2, key = "C") => ({ mode: "single", title, key, time: [4, 4], measures, tempo: 72 });
 
 const MAYOR = ["C4 E4 G4", "D4 F4 A4", "E4 G4 B4", "F4 A4 C5", "G4 B4 D5", "A4 C5 E5", "B4 D5 F5", "C5 E5 G5"];
 const MAYOR_ARM = ["C4 E4 G4", "D4 F4 Ab4", "E4 G4 B4", "F4 Ab4 C5", "G4 B4 D5", "Ab4 C5 E5", "B4 D5 F5", "C5 E5 G5"];
@@ -25,13 +25,13 @@ const projects = {
   "mayor": { setup: setup("Acordes de Do mayor natural"), text: chordText(MAYOR), annotations: romans(["I", "ii", "iii", "IV", "V", "vi", "vii°", "I"]) },
   "escala-mayor-arm": { setup: setup("Do mayor armónica"), text: scaleText(["C4", "D4", "E4", "F4", "G4", "Ab4", "B4", "C5"]) },
   "mayor-arm": { setup: setup("Acordes de Do mayor armónica"), text: chordText(MAYOR_ARM), annotations: romans(["I", "ii°", "iii", "iv", "V", "VI+", "vii°", "I"]) },
-  "escala-menor-nat": { setup: setup("Do menor natural"), text: scaleText(["C4", "D4", "Eb4", "F4", "G4", "Ab4", "Bb4", "C5"]) },
-  "menor-nat": { setup: setup("Acordes de Do menor natural"), text: chordText(MENOR_NAT), annotations: romans(["i", "ii°", "III", "iv", "v", "VI", "VII", "i"]) },
-  "escala-menor-arm": { setup: setup("Do menor armónica"), text: scaleText(["C4", "D4", "Eb4", "F4", "G4", "Ab4", "B4", "C5"]) },
-  "menor-arm": { setup: setup("Acordes de Do menor armónica"), text: chordText(MENOR_ARM), annotations: romans(["i", "ii°", "III+", "iv", "V", "VI", "vii°", "i"]) },
-  "escala-menor-mel": { setup: setup("Do menor melódica ascendente"), text: scaleText(["C4", "D4", "Eb4", "F4", "G4", "A4", "B4", "C5"]) },
-  "menor-mel": { setup: setup("Acordes de Do menor melódica ascendente"), text: chordText(MENOR_MEL), annotations: romans(["i", "ii", "III+", "IV", "V", "vi°", "vii°", "i"]) },
-  "menor-mel-desc": { setup: setup("Do menor melódica descendente"), text: chordText(MENOR_MEL_DESC), annotations: romans(["i", "VII", "VI", "v", "iv", "III", "ii°", "i"]) },
+  "escala-menor-nat": { setup: setup("Do menor natural", 2, "Cm"), text: scaleText(["C4", "D4", "Eb4", "F4", "G4", "Ab4", "Bb4", "C5"]) },
+  "menor-nat": { setup: setup("Acordes de Do menor natural", 2, "Cm"), text: chordText(MENOR_NAT), annotations: romans(["i", "ii°", "III", "iv", "v", "VI", "VII", "i"]) },
+  "escala-menor-arm": { setup: setup("Do menor armónica", 2, "Cm"), text: scaleText(["C4", "D4", "Eb4", "F4", "G4", "Ab4", "B4", "C5"]) },
+  "menor-arm": { setup: setup("Acordes de Do menor armónica", 2, "Cm"), text: chordText(MENOR_ARM), annotations: romans(["i", "ii°", "III+", "iv", "V", "VI", "vii°", "i"]) },
+  "escala-menor-mel": { setup: setup("Do menor melódica ascendente", 2, "Cm"), text: scaleText(["C4", "D4", "Eb4", "F4", "G4", "A4", "B4", "C5"]) },
+  "menor-mel": { setup: setup("Acordes de Do menor melódica ascendente", 2, "Cm"), text: chordText(MENOR_MEL), annotations: romans(["i", "ii", "III+", "IV", "V", "vi°", "vii°", "i"]) },
+  "menor-mel-desc": { setup: setup("Do menor melódica descendente", 2, "Cm"), text: chordText(MENOR_MEL_DESC), annotations: romans(["i", "VII", "VI", "v", "iv", "III", "ii°", "i"]) },
   "cuatro-tipos": { setup: setup("Los cuatro tipos de acordes de quinta", 4), text: "voz melody\ncompas 1\n[C4 E4 G4] redonda\ncompas 2\n[C4 Eb4 G4] redonda\ncompas 3\n[C4 Eb4 Gb4] redonda\ncompas 4\n[C4 E4 G#4] redonda",
     annotations: [{ measure: 1, beat: 1, text: "Mayor", kind: "text" }, { measure: 2, beat: 1, text: "menor", kind: "text" }, { measure: 3, beat: 1, text: "disminuido", kind: "text" }, { measure: 4, beat: 1, text: "aumentado", kind: "text" }] },
 };
