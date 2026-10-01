@@ -5,6 +5,7 @@
   "scripts": {
     "stills": "node scripts/sequencer/stills.mjs",
     "video": "node scripts/sequencer/video.mjs",
+    "mapa-audio": "node scripts/sequencer/mapa-audio.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
