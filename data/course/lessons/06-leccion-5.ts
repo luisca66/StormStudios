@@ -6,7 +6,7 @@ export const lesson: LessonConfig = {
   order: 6,
   lessonNumber: 5,
   module: "triadas-satb",
-  status: "hidden",
+  status: "construction",
 
   title: {
     es: "Lección 5 — Segunda Inversión y Cadencia ⁶₄",
