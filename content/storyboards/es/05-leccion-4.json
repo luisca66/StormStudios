@@ -22,7 +22,7 @@
         "measures": 1,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\n[C4 G4] negra; [D4 F#4 A4] negra; [E4 G4 B4 D5] negra; [F4 G4 A4] negra"
+      "text": "voz melody\ncompas 1\n[C4 G4] Cuarto; [D4 F#4 A4] Cuarto; [E4 G4 B4 D5] Cuarto; [F4 G4 A4] Cuarto"
     },
     "fundamental": {
       "setup": {
@@ -36,7 +36,7 @@
         "measures": 2,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\n[C4] negra; [D4 F4 A4] negra; [E4 G4 B4] negra; [F4 A4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [A4 C5 E5] negra; [B4 D5 F5] negra; [C5 E5 G5] negra"
+      "text": "voz melody\ncompas 1\n[C4] Cuarto; [D4 F4 A4] Cuarto; [E4 G4 B4] Cuarto; [F4 A4 C5] Cuarto\ncompas 2\n[G4 B4 D5] Cuarto; [A4 C5 E5] Cuarto; [B4 D5 F5] Cuarto; [C5 E5 G5] Cuarto"
     },
     "tercera": {
       "setup": {
@@ -50,7 +50,7 @@
         "measures": 2,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\n[C4 E4] negra; [D4 F4 A4] negra; [E4 G4 B4] negra; [F4 A4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [A4 C5 E5] negra; [B4 D5 F5] negra; [C5 E5 G5] negra"
+      "text": "voz melody\ncompas 1\n[C4 E4] Cuarto; [D4 F4 A4] Cuarto; [E4 G4 B4] Cuarto; [F4 A4 C5] Cuarto\ncompas 2\n[G4 B4 D5] Cuarto; [A4 C5 E5] Cuarto; [B4 D5 F5] Cuarto; [C5 E5 G5] Cuarto"
     },
     "escala-mayor": {
       "setup": {
@@ -64,7 +64,7 @@
         "measures": 2,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; E4 negra; F4 negra\ncompas 2\nG4 negra; A4 negra; B4 negra; C5 negra"
+      "text": "voz melody\ncompas 1\nC4 Cuarto; D4 Cuarto; E4 Cuarto; F4 Cuarto\ncompas 2\nG4 Cuarto; A4 Cuarto; B4 Cuarto; C5 Cuarto"
     },
     "mayor": {
       "setup": {
@@ -78,7 +78,7 @@
         "measures": 2,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\n[C4 E4 G4] negra; [D4 F4 A4] negra; [E4 G4 B4] negra; [F4 A4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [A4 C5 E5] negra; [B4 D5 F5] negra; [C5 E5 G5] negra",
+      "text": "voz melody\ncompas 1\n[C4 E4 G4] Cuarto; [D4 F4 A4] Cuarto; [E4 G4 B4] Cuarto; [F4 A4 C5] Cuarto\ncompas 2\n[G4 B4 D5] Cuarto; [A4 C5 E5] Cuarto; [B4 D5 F5] Cuarto; [C5 E5 G5] Cuarto",
       "annotations": [
         {
           "measure": 1,
@@ -142,7 +142,7 @@
         "measures": 2,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; E4 negra; F4 negra\ncompas 2\nG4 negra; Ab4 negra; B4 negra; C5 negra"
+      "text": "voz melody\ncompas 1\nC4 Cuarto; D4 Cuarto; E4 Cuarto; F4 Cuarto\ncompas 2\nG4 Cuarto; Ab4 Cuarto; B4 Cuarto; C5 Cuarto"
     },
     "mayor-arm": {
       "setup": {
@@ -156,7 +156,7 @@
         "measures": 2,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\n[C4 E4 G4] negra; [D4 F4 Ab4] negra; [E4 G4 B4] negra; [F4 Ab4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [Ab4 C5 E5] negra; [B4 D5 F5] negra; [C5 E5 G5] negra",
+      "text": "voz melody\ncompas 1\n[C4 E4 G4] Cuarto; [D4 F4 Ab4] Cuarto; [E4 G4 B4] Cuarto; [F4 Ab4 C5] Cuarto\ncompas 2\n[G4 B4 D5] Cuarto; [Ab4 C5 E5] Cuarto; [B4 D5 F5] Cuarto; [C5 E5 G5] Cuarto",
       "annotations": [
         {
           "measure": 1,
@@ -220,7 +220,7 @@
         "measures": 2,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; Eb4 negra; F4 negra\ncompas 2\nG4 negra; Ab4 negra; Bb4 negra; C5 negra"
+      "text": "voz melody\ncompas 1\nC4 Cuarto; D4 Cuarto; Eb4 Cuarto; F4 Cuarto\ncompas 2\nG4 Cuarto; Ab4 Cuarto; Bb4 Cuarto; C5 Cuarto"
     },
     "menor-nat": {
       "setup": {
@@ -234,7 +234,7 @@
         "measures": 2,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\n[C4 Eb4 G4] negra; [D4 F4 Ab4] negra; [Eb4 G4 Bb4] negra; [F4 Ab4 C5] negra\ncompas 2\n[G4 Bb4 D5] negra; [Ab4 C5 Eb5] negra; [Bb4 D5 F5] negra; [C5 Eb5 G5] negra",
+      "text": "voz melody\ncompas 1\n[C4 Eb4 G4] Cuarto; [D4 F4 Ab4] Cuarto; [Eb4 G4 Bb4] Cuarto; [F4 Ab4 C5] Cuarto\ncompas 2\n[G4 Bb4 D5] Cuarto; [Ab4 C5 Eb5] Cuarto; [Bb4 D5 F5] Cuarto; [C5 Eb5 G5] Cuarto",
       "annotations": [
         {
           "measure": 1,
@@ -298,7 +298,7 @@
         "measures": 2,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; Eb4 negra; F4 negra\ncompas 2\nG4 negra; Ab4 negra; B4 negra; C5 negra"
+      "text": "voz melody\ncompas 1\nC4 Cuarto; D4 Cuarto; Eb4 Cuarto; F4 Cuarto\ncompas 2\nG4 Cuarto; Ab4 Cuarto; B4 Cuarto; C5 Cuarto"
     },
     "menor-arm": {
       "setup": {
@@ -312,7 +312,7 @@
         "measures": 2,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\n[C4 Eb4 G4] negra; [D4 F4 Ab4] negra; [Eb4 G4 B4] negra; [F4 Ab4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [Ab4 C5 Eb5] negra; [B4 D5 F5] negra; [C5 Eb5 G5] negra",
+      "text": "voz melody\ncompas 1\n[C4 Eb4 G4] Cuarto; [D4 F4 Ab4] Cuarto; [Eb4 G4 B4] Cuarto; [F4 Ab4 C5] Cuarto\ncompas 2\n[G4 B4 D5] Cuarto; [Ab4 C5 Eb5] Cuarto; [B4 D5 F5] Cuarto; [C5 Eb5 G5] Cuarto",
       "annotations": [
         {
           "measure": 1,
@@ -376,7 +376,7 @@
         "measures": 2,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; Eb4 negra; F4 negra\ncompas 2\nG4 negra; A4 negra; B4 negra; C5 negra"
+      "text": "voz melody\ncompas 1\nC4 Cuarto; D4 Cuarto; Eb4 Cuarto; F4 Cuarto\ncompas 2\nG4 Cuarto; A4 Cuarto; B4 Cuarto; C5 Cuarto"
     },
     "menor-mel": {
       "setup": {
@@ -390,7 +390,7 @@
         "measures": 2,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\n[C4 Eb4 G4] negra; [D4 F4 A4] negra; [Eb4 G4 B4] negra; [F4 A4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [A4 C5 Eb5] negra; [B4 D5 F5] negra; [C5 Eb5 G5] negra",
+      "text": "voz melody\ncompas 1\n[C4 Eb4 G4] Cuarto; [D4 F4 A4] Cuarto; [Eb4 G4 B4] Cuarto; [F4 A4 C5] Cuarto\ncompas 2\n[G4 B4 D5] Cuarto; [A4 C5 Eb5] Cuarto; [B4 D5 F5] Cuarto; [C5 Eb5 G5] Cuarto",
       "annotations": [
         {
           "measure": 1,
@@ -454,7 +454,7 @@
         "measures": 2,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\n[C5 Eb5 G5] negra; [Bb4 D5 F5] negra; [Ab4 C5 Eb5] negra; [G4 Bb4 D5] negra\ncompas 2\n[F4 Ab4 C5] negra; [Eb4 G4 Bb4] negra; [D4 F4 Ab4] negra; [C4 Eb4 G4] negra",
+      "text": "voz melody\ncompas 1\n[C5 Eb5 G5] Cuarto; [Bb4 D5 F5] Cuarto; [Ab4 C5 Eb5] Cuarto; [G4 Bb4 D5] Cuarto\ncompas 2\n[F4 Ab4 C5] Cuarto; [Eb4 G4 Bb4] Cuarto; [D4 F4 Ab4] Cuarto; [C4 Eb4 G4] Cuarto",
       "annotations": [
         {
           "measure": 1,
@@ -518,7 +518,7 @@
         "measures": 4,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\n[C4 E4 G4] redonda\ncompas 2\n[C4 Eb4 G4] redonda\ncompas 3\n[C4 Eb4 Gb4] redonda\ncompas 4\n[C4 E4 G#4] redonda",
+      "text": "voz melody\ncompas 1\n[C4 E4 G4] Entera\ncompas 2\n[C4 Eb4 G4] Entera\ncompas 3\n[C4 Eb4 Gb4] Entera\ncompas 4\n[C4 E4 G#4] Entera",
       "annotations": [
         {
           "measure": 1,
