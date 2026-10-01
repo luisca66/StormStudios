@@ -23,10 +23,9 @@ export const lesson: LessonConfig = {
 
   videos: [
     {
-      youtubeId: "Xe4kFYwIuKQ",
-      embedUrl: "https://www.youtube.com/embed/Xe4kFYwIuKQ?si=rAS7hnc6z8K27JNY",
+      youtubeId: "omBSeuK90e4",
+      embedUrl: "https://www.youtube.com/embed/omBSeuK90e4?si=tWB-Kv3ctWQF3Gjg",
       title: { es: "Acordes de 5a", en: "Triads (Fifth Chords)" },
-      durationMinutes: 10.63,
     },
   ],
 
