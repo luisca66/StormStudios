@@ -96,6 +96,8 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 
 - **Tutorial secuenciador, ronda 2 (2026-10-02)**: capturar PCM de la salida real con AudioWorklet para incluir todas las vistas previas. Vincular muestras y compositor con getOutputTimestamp; detectar anillos e insignias en video y corregir el tramo completo, preservando la continuidad 50–52. Normalizar las notas breves en dos pasadas; mantener ducking suave de 3.5 dB. Servir el módulo temporal desde /vendor/ para evitar el enrutado de idiomas. Conservar Piano en los materiales; usar Synth solo como override local.
 
+- **Tutorial secuenciador EN (2026-10-02)**: la voz inglesa salió ~18 % más corta (352 s contra 432 s); bastó reescalar los «at» de 10 clips con la razón EN/ES. Revisar a tamaño completo un fotograma de cada pantalla: la hoja de contactos no dejó ver que el título nuevo del proyecto salía «Sin título» en inglés (bug del producto, ya corregido).
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).
