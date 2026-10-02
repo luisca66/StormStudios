@@ -21,8 +21,8 @@ const DURATIONS: readonly Duration[] = ["w", "h", "q", "8", "16", "32"];
 const BASE_TICKS: Record<Duration, number> = {
   w: PPQ * 4, h: PPQ * 2, q: PPQ, "8": PPQ / 2, "16": PPQ / 4, "32": PPQ / 8,
 };
-const TIME_DENOMINATORS = [1, 2, 4, 8, 16, 32];
-const MAX_TIME_NUMERATOR = 32;
+export const TIME_DENOMINATORS = [1, 2, 4, 8, 16, 32];
+export const MAX_TIME_NUMERATOR = 32;
 
 const VOICE_DEFAULTS: Record<VoiceId, { name: string; clef: Voice["clef"] }> = {
   melody: { name: "Melodía", clef: "treble" },

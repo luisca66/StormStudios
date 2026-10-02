@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo,useRef, useState } from "react";
 import { activeVoices, clefAt, createScore, durationTicks, importScore, locateTick, measureStart, measureTicks,
-  newId, parsePitchList, parseScoreText, pitchToMidi, scoreTicks, transposePitches, validateScore } from "@/lib/sequencer/model";
+  newId, parsePitchList, parseScoreText, pitchToMidi, scoreTicks, transposePitches, validateScore, MAX_TIME_NUMERATOR, TIME_DENOMINATORS } from "@/lib/sequencer/model";
 import { exportMidi, exportMusicXml } from "@/lib/sequencer/export";
 import { importMusicXml } from "@/lib/sequencer/import-musicxml";
 import { changeTimeSignature, rebarTimeSignature } from "@/lib/sequencer/operations";
@@ -361,6 +361,9 @@ export default function SequencerStudio({ locale }: { locale: string }) {
       catch(error){setError(error instanceof Error?error.message:"Invalid time signature");}
     }
   };
+  const meter=score.measures[draft.measure-1]?.time??[4,4];
+  const METER_PRESETS=["4/4","3/4","2/4","6/8","9/8","12/8","5/4","7/8"];
+  const meterOptions=METER_PRESETS.includes(meter.join("/"))?METER_PRESETS:[meter.join("/"),...METER_PRESETS];
   const changeClef = (clef:"treble"|"bass") => {
     const next=clone(score);next.measures[draft.measure-1].clefs={...next.measures[draft.measure-1].clefs,[draft.voice]:clef};commit(next);
   };
@@ -731,10 +734,16 @@ export default function SequencerStudio({ locale }: { locale: string }) {
             <label className={styles.full}>{t("Clave de esta voz","Clef for this voice")}<select aria-label={t("Clave de esta voz","Clef for this voice")} value={clefAt(score,draft.voice,draft.measure)} onChange={e=>changeClef(e.target.value as "treble"|"bass")}><option value="treble">{t("Clave de Sol","Treble clef")}</option><option value="bass">{t("Clave de Fa","Bass clef")}</option></select></label>
             <label>{t("Armadura","Key")}<select aria-label={t("Armadura","Key")} value={score.measures[draft.measure-1]?.key??"C"} onChange={e=>changeKey(e.target.value)}>
               {KEYS.map(k=><option key={k} value={k}>{k}</option>)}</select></label>
-            <label>{t("Compás rítmico","Time signature")}<select aria-label={t("Compás rítmico","Time signature")} value={score.measures[draft.measure-1]?.time.join("/")??"4/4"} onChange={e=>{
+            <label>{t("Compás rítmico","Time signature")}<select aria-label={t("Compás rítmico","Time signature")} value={meter.join("/")} onChange={e=>{
               changeMeter(e.target.value.split("/").map(Number) as [number,number]);
             }}>
-              {["4/4","3/4","2/4","6/8","9/8","12/8","5/4","7/8"].map(m=><option key={m}>{m}</option>)}</select></label>
+              {meterOptions.map(m=><option key={m}>{m}</option>)}</select></label>
+            {/* Any meter the model accepts: the numerator applies on blur or Enter so typing "12" does not re-bar at "1". */}
+            <label>{t("Numerador","Numerator")}<input type="number" min={1} max={MAX_TIME_NUMERATOR} key={"meter:"+draft.measure+":"+meter.join("/")} defaultValue={meter[0]}
+              onBlur={e=>{const n=Number(e.target.value);if(Number.isInteger(n)&&n>=1&&n<=MAX_TIME_NUMERATOR&&n!==meter[0])changeMeter([n,meter[1]]);else e.target.value=String(meter[0]);}}
+              onKeyDown={e=>{if(e.key==="Enter")e.currentTarget.blur();}}/></label>
+            <label>{t("Denominador","Denominator")}<select aria-label={t("Denominador","Denominator")} value={meter[1]} onChange={e=>changeMeter([meter[0],Number(e.target.value)])}>
+              {TIME_DENOMINATORS.map(d=><option key={d} value={d}>{d}</option>)}</select></label>
           </div>
           <p className={styles.help}>{t("Se aplican desde este compás hasta el siguiente cambio; al modular aparece doble barra.","They apply from this measure until the next change; a double bar marks a modulation.")}</p>
         </section>
