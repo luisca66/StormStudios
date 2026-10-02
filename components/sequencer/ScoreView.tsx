@@ -234,16 +234,17 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
         // Free text moves one line up in measures that also carry harmony symbols, so both stay legible.
         const hasRoman=(score.annotations??[]).some(a=>a.kind==="roman"&&a.measure===measure);
         const annotationAt=(beat:number)=>{const at=start+Math.round((beat-1)*PPQ);return annotationX.get(at)??(160+430*(at-start)/(end-start));};
-        const romanXs=(score.annotations??[]).filter(a=>a.kind==="roman"&&a.measure===measure).map(a=>annotationAt(a.beat)).sort((a,b)=>a-b);
+        const romans=(score.annotations??[]).filter(a=>a.kind==="roman"&&a.measure===measure);
+        const romanXs=romans.map(a=>annotationAt(a.beat)).sort((a,b)=>a-b);
+        // Dense measures (one chord per beat) shrink every harmony symbol of the measure to the size the tightest one needs, so they stay even.
+        const romanSize=romans.reduce((size,a)=>{
+          const x=annotationAt(a.beat), room=(romanXs.find(other=>other>x)??width)-x-10;
+          const natural=context.setFont("Academico",16,"italic").measureText(a.text).width;
+          return natural>room?Math.min(size,Math.max(11,Math.floor(16*room/natural))):size;
+        },16);
         for(const annotation of !capture && showAnnotations?score.annotations??[]:[]) if(annotation.measure===measure) {
           const x=annotationAt(annotation.beat);
-          let size=16;
-          if(annotation.kind==="roman") { // Shrink a symbol that would run into the next one (dense measures such as one chord per beat).
-            const room=(romanXs.find(other=>other>x)??width)-x-10;
-            const natural=context.setFont("Academico",16,"italic").measureText(annotation.text).width;
-            if(natural>room) size=Math.max(11,Math.floor(16*room/natural));
-          }
-          context.setFont("Academico",size,annotation.kind==="roman"?"italic":"normal")
+          context.setFont("Academico",annotation.kind==="roman"?romanSize:16,annotation.kind==="roman"?"italic":"normal")
             .fillText(annotation.text,x,height-(annotation.kind==="text"&&hasRoman?52:22));
         }
         const svg = target.querySelector("svg");
