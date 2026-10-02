@@ -239,7 +239,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
           const x=annotationAt(annotation.beat);
           let size=16;
           if(annotation.kind==="roman") { // Shrink a symbol that would run into the next one (dense measures such as one chord per beat).
-            const room=(romanXs.find(other=>other>x)??width)-x-4;
+            const room=(romanXs.find(other=>other>x)??width)-x-10;
             const natural=context.setFont("Academico",16,"italic").measureText(annotation.text).width;
             if(natural>room) size=Math.max(11,Math.floor(16*room/natural));
           }
