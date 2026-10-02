@@ -5,7 +5,7 @@
  * (ruteo explícito, no por coincidencia de substring en el id).
  */
 
-export type ValidatorKind = 'major-scales' | 'minor-scales' | 'modes' | 'satb';
+export type ValidatorKind = 'major-scales' | 'minor-scales' | 'modes' | 'triads' | 'satb';
 
 export interface ValidatorConfig {
   id: string;
@@ -48,12 +48,12 @@ const VALIDATOR_CONFIGS: Record<string, ValidatorConfig> = {
     ],
   },
 
-  // ── Lecciones SATB (4 voces) ──────────────────────────────────────────────
+  // ── Lección 4: Tríadas en estado fundamental (3 notas simultáneas) ────────
   '05-leccion-4': {
     id: '05-leccion-4',
-    validator: 'satb',
-    voiceCount: 4,
-    activeRules: ['voice-range-satb', 'voice-crossing', 'no-parallel-fifths', 'no-parallel-octaves'],
+    validator: 'triads',
+    voiceCount: 3,
+    activeRules: ['TRIAD_MISSING_SCALE', 'TRIAD_DUPLICATE_SCALE', 'TRIAD_AMBIGUOUS_SCALE', 'TRIAD_UNRECOGNIZED', 'TRIAD_MISSING_CHORD', 'TRIAD_EXTRA_CHORD', 'TRIAD_NOTE_COUNT', 'TRIAD_WRONG_NOTE', 'TRIAD_ENHARMONIC', 'TRIAD_MISSING_SPELLING'],
   },
   '06-leccion-5': {
     id: '06-leccion-5',

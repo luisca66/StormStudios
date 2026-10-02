@@ -34,6 +34,7 @@ const UPLOAD_TIMEOUT_MS = 20_000;
 export default function ExerciseUpload({ lessonId, locale }: Props) {
   const [state, setState] = useState<UploadState>({ status: "idle" });
   const [isDragging, setIsDragging] = useState(false);
+  const isTriads = lessonId === "05-leccion-4";
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadControllerRef = useRef<AbortController | null>(null);
   const uploadTimeoutRef = useRef<number | null>(null);
@@ -155,6 +156,21 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
       </div>
 
       <div className="p-5">
+        {isTriads && (
+          <div className="mb-4 p-3 bg-gray-50 rounded-xl border border-gray-200 text-sm space-y-2">
+            <p className="text-gray-700 font-semibold">{es ? "La tarea completa en un solo MIDI" : "The complete assignment in one MIDI"}</p>
+            <p className="text-gray-600">C · C♯ · D · E♭ · E · F · F♯ · G · A♭ · A · B♭ · B</p>
+            <p className="text-gray-600">{es
+              ? "Incluye en cada tónica: mayor natural, mayor armónica, menor natural, menor armónica y menor melódica ascendente y descendente. El Maestro reconoce las series aunque las presentes en otro orden, señala cuáles faltan y explica los errores."
+              : "For each tonic include: natural major, harmonic major, natural minor, harmonic minor, and ascending and descending melodic minor. The Teacher recognizes the series in any order, names missing ones and explains errors."}</p>
+            <p className="text-gray-600">{es
+              ? "Cada serie mantiene su recorrido por grados: I–VII–I′; en la bajada melódica, I′–VII–I (puedes omitir la tónica inicial de la bajada). Tres notas simultáneas por acorde, en estado fundamental y posición cerrada, sin duplicaciones ni inversiones."
+              : "Keep the degree sequence within each series: I–VII–I′; descending melodic minor: I′–VII–I (the initial descending tonic may be omitted). Three simultaneous notes per chord in close root position, without doubling or inversions."}</p>
+            <p className="text-gray-600">{es
+              ? "Storm Sequencer: modo cuarteto; fundamental en Tenor, tercera en Alto y quinta en Soprano. Deja Bajo vacío y exporta toda la tarea en un archivo."
+              : "Storm Sequencer: quartet mode; root in Tenor, third in Alto and fifth in Soprano. Leave Bass empty and export the entire assignment in one file."}</p>
+          </div>
+        )}
         {/* Referencia visual para lección 1 */}
         {lessonId === "02-leccion-1" && (
           <div className="mb-4 p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs font-mono space-y-1">
@@ -309,6 +325,7 @@ function FeedbackDisplay({
   const unitWord =
     feedback.lessonId === "03-leccion-2" ? (es ? "modo" : "mode")
     : feedback.lessonId === "02-leccion-1" ? (es ? "escala" : "scale")
+    : feedback.lessonId === "05-leccion-4" ? (es ? "acorde" : "chord")
     : (es ? "compás" : "measure");
 
   return (
