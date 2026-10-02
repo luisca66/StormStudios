@@ -361,6 +361,12 @@ export default function SequencerStudio({ locale }: { locale: string }) {
       catch(error){setError(error instanceof Error?error.message:"Invalid time signature");}
     }
   };
+  // Empty score in the same mode, default title; undo can bring the old one back.
+  const newProject = () => {
+    if(!window.confirm(t("¿Empezar un proyecto nuevo? Se borra la partitura actual (puedes deshacerlo).","Start a new project? The current score is cleared (you can undo it).")))return;
+    const next=createScore(score.mode);
+    if(commit(next,t("Proyecto nuevo.","New project."))){setDraft({...emptyDraft,voice:score.mode==="satb"?"soprano":"melody"});setSelected([]);setSceneId(next.scenes[0]?.id??"");}
+  };
   const meter=score.measures[draft.measure-1]?.time??[4,4];
   const METER_PRESETS=["4/4","3/4","2/4","6/8","9/8","12/8","5/4","7/8"];
   const meterOptions=METER_PRESETS.includes(meter.join("/"))?METER_PRESETS:[meter.join("/"),...METER_PRESETS];
@@ -491,6 +497,7 @@ export default function SequencerStudio({ locale }: { locale: string }) {
         {message&&<span className={styles.statusMessage}>{message}</span>}
       </div>
       <div className={styles.fileActions} role="group" aria-label={t("Archivo","File")}>
+        <button onClick={newProject}><Icon name="new"/>{t("Nuevo proyecto","New project")}</button>
         <button onClick={()=>downloadBlob(new Blob([JSON.stringify(score,null,2)],{type:"application/json"}),"storm-project.json")}><Icon name="save"/>{t("Guardar JSON","Save JSON")}</button>
         <button onClick={()=>fileInput.current?.click()}><Icon name="open"/>{t("Abrir proyecto","Open project")}</button>
         <button onClick={()=>{try{const bytes=exportMidi(score);downloadBlob(new Blob([new Uint8Array(bytes)],{type:"audio/midi"}),"storm-score.mid");}catch(e){setError(String(e));}}}>{t("Exportar MIDI","Export MIDI")}</button>
@@ -600,7 +607,6 @@ export default function SequencerStudio({ locale }: { locale: string }) {
             <textarea aria-label={t("Texto musical","Musical text")} spellCheck={false} value={text} onChange={e=>{setText(e.target.value);setPreview(null);}}/>
             <div className={styles.actions}><button onClick={()=>{setPreview(parseScoreText(text,score));setError("");}}>{t("Validar texto","Validate text")}</button>
               <button className={styles.primary} disabled={!preview?.score||preview.issues.length>0} onClick={()=>{if(preview?.score){commit(preview.score,t("Texto aplicado como una sola edición.","Text applied as one edit."));setSelected([]);}}}>{t("Aplicar texto","Apply text")}</button>
-              <button className={styles.ghost} onClick={()=>{const next=createScore(score.mode);next.title=score.title;if(commit(next,t("Proyecto nuevo.","New project."))){setDraft({...emptyDraft,voice:score.mode==="satb"?"soprano":"melody"});setSelected([]);setSceneId(next.scenes[0]?.id??"");}}}>{t("Nuevo proyecto","New project")}</button>
             </div>
             {preview&&<div role={preview.issues.length?"alert":"status"} data-testid="text-validation" className={styles.validation} data-ok={preview.issues.length===0}>
               <p><strong>{preview.count} {t("eventos","events")}, {preview.issues.length} {t("errores","errors")}</strong></p>
@@ -752,7 +758,7 @@ export default function SequencerStudio({ locale }: { locale: string }) {
   </section>;
 }
 
-type IconName="toStart"|"toEnd"|"play"|"pause"|"stop"|"loop"|"metronome"|"volume"|"screen"|"edit"|"save"|"open"|"spark"|"storm";
+type IconName="toStart"|"toEnd"|"play"|"pause"|"stop"|"loop"|"metronome"|"volume"|"screen"|"edit"|"save"|"open"|"new"|"spark"|"storm";
 function Icon({name}:{name:IconName}){
   const paths:Record<IconName,React.ReactNode>={
     play:<path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none"/>,
@@ -766,6 +772,7 @@ function Icon({name}:{name:IconName}){
     screen:<><rect x="3" y="4.5" width="18" height="12" rx="2"/><path d="M8.5 20h7M12 16.5V20"/></>,
     edit:<><path d="M4 20h4L19 9l-4-4L4 16z"/></>,
     save:<><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></>,
+    new:<><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M12 11v6M9 14h6"/></>,
     open:<><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></>,
     spark:<path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/>,
     storm:<><path d="M13 2L5 13.5h6L10 22l9-12.5h-6z" fill="currentColor" stroke="none"/></>,

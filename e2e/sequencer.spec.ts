@@ -119,7 +119,7 @@ test("MusicXML round trip preserves written chords and time changes keep later n
   await page.getByRole("button", { name: "Exportar MusicXML", exact: true }).click();
   const download = await pending;
   await download.saveAs(".local-work/sequencer-roundtrip.musicxml");
-  await page.getByRole("button", { name: "Entrada por texto", exact: true }).click();
+  page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Nuevo proyecto", exact: true }).click();
   await expect(page.getByTestId("score-view").locator("[data-note-id]")).toHaveCount(0);
   await page.locator('input[type="file"]').setInputFiles(".local-work/sequencer-roundtrip.musicxml");
