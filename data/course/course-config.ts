@@ -38,7 +38,7 @@ export const COURSE_CONFIG: CourseConfig = {
         es: "Notación musical, claves, escalas y fundamentos para el curso.",
         en: "Music notation, clefs, scales and fundamentals for the course.",
       },
-      lessons: ["p01-notas", "p02-ritmica", "p03-intervalos", "p04-secuenciador"],
+      lessons: ["p01-notas", "p02-ritmica", "p03-intervalos", "p04-secuenciador", "p04-1-secuenciador-v4"],
     },
     {
       id: "triadas-satb",

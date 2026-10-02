@@ -22,7 +22,7 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
   const lessonVideos = lesson.videosByLocale?.[locale as "es" | "en"] ?? lesson.videos;
   const lessonTools = lesson.toolsByLocale?.[locale as "es" | "en"] ?? lesson.tools;
   // Solo las lecciones del curso principal tienen número; el resto usa su etiqueta (P01, Intro…).
-  const unitCode = lesson.title.es.match(/^(P\d+)/)?.[1];
+  const unitCode = lesson.title.es.match(/^(P\d+(?:\.\d+)?)/)?.[1];
   const badge = lesson.lessonNumber ?? unitCode ?? (lesson.module === "introduccion" ? "·" : lesson.order);
   const kicker = lesson.lessonNumber
     ? `${es ? "Lección" : "Lesson"} ${lesson.lessonNumber}`

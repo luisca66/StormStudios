@@ -31,6 +31,10 @@ export const LESSON_URL_SLUGS: Record<string, Record<Locale, string>> = {
     es: "p04-secuenciador",
     en: "p04-using-the-sequencer",
   },
+  "p04-1-secuenciador-v4": {
+    es: "p04-1-secuenciador-v4",
+    en: "p04-1-using-the-sequencer-v4",
+  },
   "02-leccion-1": {
     es: "02-leccion-1",
     en: "02-lesson-1-major-scales",
