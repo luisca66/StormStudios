@@ -38,7 +38,7 @@ const barsPerPageFor = (mode:Score["mode"]) => SYSTEM_SIZE*(mode==="satb"?2:5);
 export default function SequencerStudio({ locale }: { locale: string }) {
   const es = locale === "es";
   const t = useCallback((spanish:string, english:string) => es ? spanish : english,[es]);
-  const [score,setScore] = useState<Score>(() => createScore());
+  const [score,setScore] = useState<Score>(() => ({...createScore(),title:es?"Sin título":"Untitled"}));
   const [ready,setReady] = useState(false), [saved,setSaved] = useState(false);
   const [selected,setSelected] = useState<string[]>([]);
   const [draft,setDraft] = useState<Draft>(emptyDraft);
@@ -378,7 +378,7 @@ export default function SequencerStudio({ locale }: { locale: string }) {
   // Empty score in the same mode, default title; undo can bring the old one back.
   const newProject = () => {
     if(!window.confirm(t("¿Empezar un proyecto nuevo? Se borra la partitura actual (puedes deshacerlo).","Start a new project? The current score is cleared (you can undo it).")))return;
-    const next=createScore(score.mode);
+    const next=createScore(score.mode);next.title=t("Sin título","Untitled");
     if(commit(next,t("Proyecto nuevo.","New project."))){setDraft({...emptyDraft,voice:score.mode==="satb"?"soprano":"melody"});setSelected([]);setSceneId(next.scenes[0]?.id??"");}
   };
   const meter=score.measures[draft.measure-1]?.time??[4,4];

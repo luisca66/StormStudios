@@ -21,7 +21,7 @@ const ff = args => run('ffmpeg', ['-hide_banner', '-loglevel', 'warning', '-y', 
 const probe = async f => JSON.parse((await run('ffprobe', ['-v', 'error', '-show_format', '-show_streams', '-of', 'json', f])).stdout);
 
 // Recording-only decorations. No application components or musical state are changed.
-function decorations() {
+function decorations(locale='es') {
   if (!document.body || document.getElementById('tutorial-cursor')) return;
   const style = document.createElement('style');
   style.textContent = `nextjs-portal{display:none!important} #tutorial-cursor{position:fixed;left:0;top:0;width:27px;height:34px;z-index:2147483647;pointer-events:none;filter:drop-shadow(0 1px 2px #0009)} .tutorial-badge{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#172038ed;color:white;padding:12px 24px;border:1px solid #a78bfa;border-radius:12px;font:600 24px system-ui;z-index:2147483646;pointer-events:none} .tutorial-highlight{position:fixed;border:3px solid #8b5cf6;border-radius:14px;box-shadow:0 0 24px #8b5cf6aa,0 0 0 9999px #00000059;z-index:2147483644;pointer-events:none;transition:opacity .3s} .tutorial-ring{position:fixed;width:38px;height:38px;margin:-19px;border:3px solid #8b5cf6;border-radius:50%;z-index:2147483646;pointer-events:none;animation:tutorial-ring .45s forwards}@keyframes tutorial-ring{to{transform:scale(1.7);opacity:0}}`;
@@ -35,7 +35,7 @@ function decorations() {
     ring(x,y,right) { const d = document.createElement('div'); d.className = 'tutorial-ring'; Object.assign(d.style,{left:x+'px',top:y+'px',borderColor:right?'#f59e0b':'#8b5cf6'}); document.body.append(d); setTimeout(()=>d.remove(),500); },
     highlight(box,ms) { const d=document.createElement('div'); d.className='tutorial-highlight';Object.assign(d.style,{left:box.x-7+'px',top:box.y-7+'px',width:box.width+14+'px',height:box.height+14+'px'});document.body.append(d);setTimeout(()=>{d.style.opacity='0';setTimeout(()=>d.remove(),300);},ms); },
     armed:false, onset:null,events:[],nextBadge:null,lastGesture:null,
-    cue(gesture,at){clearTimeout(gesture.timer);gesture.timer=setTimeout(()=>{gesture.visualTime=performance.timeOrigin+performance.now();if(gesture.kind==='key')window.tutorial.badge(gesture.badge);else{window.tutorial.ring(gesture.x,gesture.y,gesture.right);if(gesture.ctrl)window.tutorial.badge('Ctrl + clic');}},Math.max(0,at-performance.timeOrigin-performance.now()));},
+    cue(gesture,at){clearTimeout(gesture.timer);gesture.timer=setTimeout(()=>{gesture.visualTime=performance.timeOrigin+performance.now();if(gesture.kind==='key')window.tutorial.badge(gesture.badge);else{window.tutorial.ring(gesture.x,gesture.y,gesture.right);if(gesture.ctrl)window.tutorial.badge(locale==='en'?'Ctrl + click':'Ctrl + clic');}},Math.max(0,at-performance.timeOrigin-performance.now()));},
   };
   // Musical gestures are cued from the output sample clock; silent controls use a 100 ms fallback.
   document.addEventListener('pointerdown',e=>{const gesture={kind:'pointer',time:performance.timeOrigin+performance.now(),x:e.clientX,y:e.clientY,right:e.button===2,ctrl:e.ctrlKey};window.tutorial.lastGesture=gesture;window.tutorial.events.push(gesture);window.tutorial.cue(gesture,gesture.time+100);},true);
@@ -91,7 +91,7 @@ async function main() {
   if(opt['--instrument']&&opt['--instrument']!=='Synth')throw new Error('--instrument solo admite Synth para pruebas locales');
   if(!opt['--clips']||!opt['--out'])throw new Error('Faltan --clips y --out');
   const plan=JSON.parse(await readFile(input,'utf8')), clips=path.resolve(opt['--clips']), out=path.resolve(opt['--out']), work=path.join(out,'work');
-  const ui={...(plan.locale==='en'?{transport:'Transport',keyboard:'Keyboard note entry',start:'Go to start',play:'Play',stop:'Stop'}:{transport:'Transporte',keyboard:'Escritura con teclado',start:'Ir al inicio',play:'Reproducir',stop:'Detener'}),...plan.ui};
+  const ui={...(plan.locale==='en'?{transport:'Transport',keyboard:'Keyboard note entry',start:'Go to start',play:'Play',stop:'Stop',change:'Key, meter or clef change',fromMeasure:'From measure'}:{transport:'Transporte',keyboard:'Escritura con teclado',start:'Ir al inicio',play:'Reproducir',stop:'Detener',change:'Cambio de armadura, compás o clave',fromMeasure:'Desde el compás'}),...plan.ui};
   await mkdir(work,{recursive:true});
   const texts=(await readFile(path.join(clips,'guion-clips.txt'),'utf8')).trim().split(/\r?\n/);
   const table=new Map([...(await readFile(path.join(clips,'Duraciones_Video_Secuenciador.txt'),'utf8')).matchAll(/^\s*\d+\s+(\d+)_Chapter_1\.mp3\s+([\d.]+)/gm)].map(m=>[+m[1],+m[2]]));
@@ -125,8 +125,8 @@ async function main() {
       const audioChunks=[];
       await page.exposeBinding('tutorialPCM',(_source,data)=>{audioChunks.push({time:data.time,pcm:Buffer.from(data.pcm,'base64')});});
       await page.addInitScript(installAudioCapture,{url:'/vendor/'+workletName});
-      await page.addInitScript(decorations);
-      await page.goto(base+plan.startUrl);await page.evaluate(decorations);await page.waitForTimeout(1500);
+      await page.addInitScript(decorations,plan.locale);
+      await page.goto(base+plan.startUrl);await page.evaluate(decorations,plan.locale);await page.waitForTimeout(1500);
       const cdp=await context.newCDPSession(page);
       let cursor={x:950,y:160},record=null,frame=0,writes=[];
       cdp.on('Page.screencastFrame', event=>{
@@ -178,7 +178,7 @@ async function main() {
       }
       async function key(k,badge) {
         await page.getByRole('region',{name:ui.keyboard,exact:true}).focus();
-        await page.evaluate(s=>{window.tutorial.nextBadge=s;},badge??({'Space':'Espacio','PageUp':'Re Pág','PageDown':'Av Pág','ArrowLeft':'←','ArrowRight':'→','ArrowUp':'↑','ArrowDown':'↓'}[k]??k.replace('Control','Ctrl').replaceAll('+',' + ')));
+        await page.evaluate(s=>{window.tutorial.nextBadge=s;},badge??({'Space':plan.locale==='en'?'Space':'Espacio','PageUp':plan.locale==='en'?'Page Up':'Re Pág','PageDown':plan.locale==='en'?'Page Down':'Av Pág','ArrowLeft':'←','ArrowRight':'→','ArrowUp':'↑','ArrowDown':'↓'}[k]??k.replace('Control','Ctrl').replaceAll('+',' + ')));
         await page.keyboard.press(k);
       }
       let activeMusic, continuityEpoch;
@@ -223,9 +223,9 @@ async function main() {
             const y=a.target?await loc(a.target).evaluate((e,block)=>{const b=e.getBoundingClientRect();return scrollY+b.top-(block==='end'?innerHeight-b.height:block==='start'?0:(innerHeight-b.height)/2);},a.block??'center'):a.y;
             await page.evaluate(({y,ms})=>new Promise(r=>{const from=scrollY,start=performance.now(),to=Math.max(0,y==='bottom'?document.documentElement.scrollHeight-innerHeight:Number(y));function step(t){const u=Math.min(1,(t-start)/ms);scrollTo(0,from+(to-from)*(u*u*(3-2*u)));if(u<1)requestAnimationFrame(step);else r();}requestAnimationFrame(step);}),{y,ms:opt['--rehearse']?1:a.ms??2000});
           }
-          else if(a.op==='goto'){await click(a.target);await page.waitForFunction(()=>!!window.stormSequencer);await page.evaluate(decorations);await page.evaluate(instrument=>{const s=window.stormSequencer.getScore();s.tempo=72;s.voices[0].instrument=instrument??'Piano';window.stormSequencer.loadScore(s);},opt['--instrument']??null);await page.waitForTimeout(300);}
+          else if(a.op==='goto'){await click(a.target);await page.waitForFunction(()=>!!window.stormSequencer);await page.evaluate(decorations,plan.locale);await page.evaluate(instrument=>{const s=window.stormSequencer.getScore();s.tempo=72;s.voices[0].instrument=instrument??'Piano';window.stormSequencer.loadScore(s);},opt['--instrument']??null);await page.waitForTimeout(300);}
           else if(a.op==='loadProject'){const project=JSON.parse(await readFile(path.resolve(path.dirname(input),a.file),'utf8'));if(opt['--instrument'])for(const v of project.voices)v.instrument=opt['--instrument'];await page.evaluate(s=>window.stormSequencer.loadScore(s),project);await page.waitForTimeout(250);if(a.fade)await page.evaluate(()=>{const d=document.createElement('div');Object.assign(d.style,{position:'fixed',inset:'0',background:'black',zIndex:2147483645,transition:'opacity .3s'});document.body.append(d);requestAnimationFrame(()=>{d.style.opacity='0';setTimeout(()=>d.remove(),350);});});}
-          else if(a.op==='download'){const pending=page.waitForEvent('download');await click(a.target);const d=await pending;await d.saveAs(path.join(work,d.suggestedFilename()));await page.evaluate(s=>window.tutorial.badge(s+' descargado',1800),d.suggestedFilename());}
+          else if(a.op==='download'){const pending=page.waitForEvent('download');await click(a.target);const d=await pending;await d.saveAs(path.join(work,d.suggestedFilename()));await page.evaluate(({name,locale})=>window.tutorial.badge(name+(locale==='en'?' downloaded':' descargado'),1800),{name:d.suggestedFilename(),locale:plan.locale});}
           else if(a.op==='open'){const pending=page.waitForEvent('filechooser');await click(a.target);const chooser=await pending;await chooser.setFiles(path.join(work,'storm-project.json'));await page.evaluate(()=>window.tutorial.badge('storm-project.json',1800));}
           else if(a.op==='play'){
             await click({role:'button',name:ui.start});
@@ -248,9 +248,9 @@ async function main() {
           if(!opt['--rehearse'])await sleep(start+at*1000-Date.now());
           await action(a);
           const state=await page.evaluate(()=>window.stormSequencer?.getScore()??null);
-          if(n<=4&&a.op!=='goto'){seg.courseFraming=await page.evaluate(()=>{const card=document.querySelector('div.ss-glass:has(a[href="/es/sequencer/v4"])').getBoundingClientRect();return{cardTop:card.top,cardBottom:card.bottom,centerError:(card.top+card.bottom-innerHeight)/2,footerTop:document.querySelector('footer').getBoundingClientRect().top,viewportHeight:innerHeight};});if(seg.courseFraming.footerTop<seg.courseFraming.viewportHeight)throw new Error(`Clip ${n}: el pie de página entró en el encuadre`);}
+          if(n<=4&&a.op!=='goto'){seg.courseFraming=await page.evaluate(locale=>{const card=document.querySelector(`div.ss-glass:has(a[href="/${locale}/sequencer/v4"])`).getBoundingClientRect();return{cardTop:card.top,cardBottom:card.bottom,centerError:(card.top+card.bottom-innerHeight)/2,footerTop:document.querySelector('footer').getBoundingClientRect().top,viewportHeight:innerHeight};},plan.locale);if(seg.courseFraming.footerTop<seg.courseFraming.viewportHeight)throw new Error(`Clip ${n}: el pie de página entró en el encuadre`);}
           if(n===4&&a.op==='highlight'){if(Math.abs(seg.courseFraming.centerError)>2)throw new Error('El recuadro del clip 4 no está centrado');await page.screenshot({path:path.join(work,'clip-4-recuadro.png')});}
-          if(n===30&&a.op==='highlight'){await page.screenshot({path:path.join(work,'clip-30-tarjeta.png')});seg.cardFraming=await page.evaluate(()=>{const score=document.querySelector('[data-testid="score-view"]').getBoundingClientRect(),card=[...document.querySelectorAll('section')].find(s=>s.querySelector('h3')?.textContent==='Cambio de armadura, compás o clave').getBoundingClientRect();return{score:{top:score.top,bottom:score.bottom},card:{top:card.top,bottom:card.bottom},fromMeasure:[...document.querySelectorAll('label')].find(l=>l.textContent.startsWith('Desde el compás')).querySelector('input').value};});}
+          if(n===30&&a.op==='highlight'){await page.screenshot({path:path.join(work,'clip-30-tarjeta.png')});seg.cardFraming=await page.evaluate(ui=>{const score=document.querySelector('[data-testid="score-view"]').getBoundingClientRect(),card=[...document.querySelectorAll('section')].find(s=>s.querySelector('h3')?.textContent===ui.change).getBoundingClientRect();return{score:{top:score.top,bottom:score.bottom},card:{top:card.top,bottom:card.bottom},fromMeasure:[...document.querySelectorAll('label')].find(l=>l.textContent.startsWith(ui.fromMeasure)).querySelector('input').value};},ui);}
           seg.actions.push({...a,completed:(Date.now()-start)/1000,state});
           const alerts=(await page.getByTestId('sequencer-studio').getByRole('alert').allTextContents()).filter(s=>s.trim());
           if(alerts.length)throw new Error(`Clip ${n}, ${a.op}: ${alerts.join(' ')}`);

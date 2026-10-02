@@ -67,3 +67,63 @@ const ids=['melody','soprano','alto','tenor','bass'],names=['Melodía','Soprano'
 const project={version:1,title:'Tutorial · Melodía y acordes',tempo:72,masterVolume:.8,mode:'single',annotations:[],measures:Array.from({length:5},(_,i)=>({id:'measure-'+(i+1),time:[4,4],key:'C'})),voices:ids.map((id,i)=>({id,name:names[i],clef:i>=3?'bass':'treble',instrument:'Piano',volume:.8,mute:false,solo:false,events:i?[]:[['C4','E4','G4'],['C4','F4','A4'],['B3','D4','G4'],['C4','E4','G4']].map((pitches,j)=>({id:'chord-'+(j+1),start:j*3840,duration:'w',dotted:false,triplet:false,tie:false,pitches}))})),scenes:[{id:'scene-1',title:'I – IV – V – I',caption:'',startMeasure:1,endMeasure:5,aspect:'16:9',highlightVoice:'all'}]};
 await writeFile(dir+'/secuenciador-proyecto-1.json',JSON.stringify(project,null,2)+'\n');
 const pkg=JSON.parse(await readFile('package.json','utf8'));pkg.scripts.tutorial='node scripts/sequencer/grabar-tutorial.mjs';await writeFile('package.json',JSON.stringify(pkg,null,2)+'\n');
+
+// Read translations from the UI itself, including the fragments used in composed aria-labels.
+const sources=await Promise.all(['components/sequencer/SequencerStudio.tsx','components/sequencer/PianoRoll.tsx','components/sequencer/ScoreView.tsx','app/[locale]/curso-armonia/page.tsx'].map(f=>readFile(f,'utf8')));
+const translations=new Map();
+for(const source of sources){
+  for(const m of source.matchAll(/\bt\("((?:\\.|[^"\\])*)",\s*"((?:\\.|[^"\\])*)"\)/g))translations.set(JSON.parse('"'+m[1]+'"'),JSON.parse('"'+m[2]+'"'));
+  for(const m of source.matchAll(/\bes\s*\?\s*"([^"\n]*)"\s*:\s*"([^"\n]*)"/g))translations.set(m[1],m[2]);
+}
+for(const m of sources[0].matchAll(/\["(?:w|h|q|8|16|32)","([^"]+)","([^"]+)"/g))translations.set(m[1],m[2]);
+const tr=text=>{
+  if(translations.has(text))return translations.get(text);
+  if(text==='Piano Roll'&&sources[0].includes('>Piano Roll</button>'))return text;
+  for(const prefix of ['Elegir ','Alteración ','Ir al compás ','Cifrado compás ','compás '])if(text.startsWith(prefix)){
+    const rest=text.slice(prefix.length);
+    return translations.get(prefix)+(prefix==='Cifrado compás '?rest.replace(', pulso ',translations.get(', pulso ')):tr(rest));
+  }
+  if(/^(?:\d+|#|b)$/.test(text))return text;
+  throw new Error('Etiqueta sin traducción en el código: '+text);
+};
+const translateTarget=t=>{
+  if(t.name)t.name=tr(t.name);
+  if(t.label)t.label=tr(t.label);
+  if(t.css)t.css=t.css.replaceAll('/es/curso-armonia/','/en/harmony-course/').replaceAll('/es/sequencer/v4','/en/sequencer/v4').replace(/(aria-label(?:\$)?=|:text-is\()"([^"]+)"/g,(_,prefix,text)=>prefix+'"'+tr(text)+'"');
+};
+const enClips=structuredClone(clips);
+for(const entry of enClips)for(const a of [...entry.actions,...entry.prepare??[]]){
+  for(const t of [a.target,a.to,a.highlight])if(t)translateTarget(t);
+  if(a.stop==='Detener')a.stop=tr(a.stop);
+  if(a.file==='secuenciador-proyecto-1.json')a.file='secuenciador-proyecto-1-en.json';
+}
+const durationTable=async locale=>new Map([...(await readFile(`.local-work/video-secuenciador-audio-${locale}/Duraciones_Video_Secuenciador.txt`,'utf8')).matchAll(/^\s*\d+\s+(\d+)_Chapter_1\.mp3\s+([\d.]+)/gm)].map(m=>[+m[1],+m[2]]));
+const [esTimes,enTimes]=await Promise.all([durationTable('es'),durationTable('en')]);
+if(esTimes.size!==52||enTimes.size!==52)throw new Error('Se requieren 52 duraciones por idioma');
+const timing=[];
+const sounds=a=>['audition','ctrlClick'].includes(a.op)||a.target?.staff||a.target?.roll||a.target?.css?.includes('data-roll-note')||a.op==='key'&&/^(?:[a-g]|ArrowUp|ArrowDown)$/.test(a.key)||a.target?.name?.startsWith('Accidental ');
+for(const entry of enClips){
+  const es=esTimes.get(entry.clip),en=enTimes.get(entry.clip),limit=en-.3;
+  const scale=entry.actions.some(a=>!a.afterVoice&&((a.at??0)+(a.ms??0)/1000>=limit))?en/es:1;
+  let previous=-Infinity,lastSound=-Infinity;
+  for(const a of entry.actions){
+    if(a.afterVoice)continue;
+    if(a.at!==undefined){a.at=Number(Math.max(a.at*scale,previous,sounds(a)?lastSound+.5:-Infinity).toFixed(6));previous=a.at;if(sounds(a))lastSound=a.at;}
+    if(a.ms!==undefined)a.ms=Math.round(a.ms*scale);
+    if(a.at!==undefined&&a.at>=en)throw new Error(`Clip ${entry.clip}: acción fuera de la voz inglesa`);
+  }
+  timing.push({clip:entry.clip,es,en,scale});
+}
+const routing=await readFile('i18n/routing.ts','utf8');
+if(!routing.includes('"/harmony-course"'))throw new Error('La ruta inglesa del curso cambió');
+await writeFile(dir+'/secuenciador-en.json',JSON.stringify({version:1,locale:'en',startUrl:'/en/harmony-course',substitutions:[
+  'Time signature changes apply immediately; there is no Apply button.',
+  'Piano Roll: measure 5 is full. Add an empty sixth measure, write an A4 eighth note on beat 1, move it to B4 on beat 2 and extend it to a quarter note.',
+  'Ctrl+X is shown as a badge without executing it, as requested.',
+  'The new project native dialog is accepted automatically; Ctrl+Z restores the project.'
+],clips:enClips},null,2)+'\n');
+const enProject=structuredClone(project);enProject.title='Tutorial · Melody and chords';enProject.voices[0].name='Melody';enProject.voices[4].name='Bass';
+await writeFile(dir+'/secuenciador-proyecto-1-en.json',JSON.stringify(enProject,null,2)+'\n');
+await mkdir('.local-work/encargo-video-secuenciador',{recursive:true});
+await writeFile('.local-work/encargo-video-secuenciador/timing-ronda4.json',JSON.stringify(timing,null,2)+'\n');
+console.log('Clips ingleses reescalados: '+timing.filter(t=>t.scale!==1).map(t=>t.clip).join(', '));
