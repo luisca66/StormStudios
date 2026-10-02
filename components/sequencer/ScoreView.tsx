@@ -9,15 +9,21 @@ import type { Still } from "@/lib/sequencer/storyboard";
 import { STILL_COLORS } from "@/lib/sequencer/storyboard-resolve";
 import { captureX, decorateCapture, type CaptureRow } from "@/lib/sequencer/capture-decoration";
 import type { CaptureLayout } from "@/lib/sequencer/capture-layout";
+import { noteKey } from "@/lib/sequencer/note-selection";
 
 export type MouseEditing={tool:"write"|"select"|"erase";step:number;accidental:"key"|"#"|"b"|""|"##"|"bb";
   onWrite:(voice:VoiceId,start:number,pitch:string,chord?:boolean)=>void;
   onErase:(id:string)=>void;onMove:(id:string,pitch:string,start?:number,ticks?:number)=>void;
-  onPreview:(id:string,pitch:string)=>void;onPreviewEnd:()=>void;
+  /** `from`: only that pitch of the chord is being dragged. */
+  onPreview:(id:string,pitch:string,from?:string)=>void;onPreviewEnd:()=>void;
+  /** Drag of one notehead inside a chord: only that pitch moves. */
+  onMovePitch?:(id:string,from:string,to:string)=>void;
   onPosition:(voice:VoiceId,start:number)=>void;
   /** Select tool on empty space: rubber-band selection across measures. `click` runs if the pointer barely moved. */
   beginMarquee?:(e:PointerEvent,click?:()=>void)=>void};
 const SELECTED = "#7c5cff";
+/** VexFlow receives the keys low to high, so notehead i (DOM and setKeyStyle) is pitch i of this list. */
+const sortedPitches = (event: NoteEvent) => [...event.pitches].sort((a, b) => pitchToMidi(a) - pitchToMidi(b));
 
 const values = [
   ["w", 3840], ["h", 1920], ["q", 960], ["8", 480], ["16", 240], ["32", 120],
@@ -106,7 +112,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
           const notes = events.map(event => {
             const gap = event.id.startsWith("gap:");
             const note = new V.StaveNote({
-              keys: event.pitches.length ? [...event.pitches].sort((a, b) => pitchToMidi(a) - pitchToMidi(b)).map(pitchToVex)
+              keys: event.pitches.length ? sortedPitches(event).map(pitchToVex)
                 : [voice.clef === "bass" ? "d/3" : "b/4"],
               clef: voice.clef, duration: event.duration + (event.pitches.length ? "" : "r"),
               dots: event.dotted ? 1 : 0, autoStem: score.mode!=="satb",
@@ -117,6 +123,9 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
             const color = event.ornament ? "#dc2626" : selected.includes(event.id) ? SELECTED : capture ? "#182030" : "#17273a";
             const dim = focusVoice !== "all" && focusVoice !== voice.id;
             note.setStyle({ fillStyle: gap ? "transparent" : dim ? "#aab2bd" : color, strokeStyle: gap ? "transparent" : dim ? "#aab2bd" : color });
+            // One note of a chord selected: only its notehead turns violet.
+            if (!dim && !event.ornament && event.pitches.length > 1 && !selected.includes(event.id))
+              sortedPitches(event).forEach((pitch, i) => { if (selected.includes(noteKey(event.id, pitch))) note.setKeyStyle(i, { fillStyle: SELECTED, strokeStyle: SELECTED }); });
             const mark = capture?.marks?.find(m => m.measure === measure && positionTick(m.measure, m.beat) === event.start && (!m.voice || m.voice === voice.id));
             if (mark) event.pitches.forEach((_, i) => note.setKeyStyle(i, { fillStyle: STILL_COLORS[mark.color ?? "amber"], strokeStyle: STILL_COLORS[mark.color ?? "amber"] }));
             return note;
@@ -197,7 +206,15 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
               const position = locateTick(score, event.start);
               group.setAttribute("role", "button"); group.setAttribute("tabindex", "0");
               group.setAttribute("data-note-id", event.id);
-              group.setAttribute("aria-pressed", String(selected.includes(event.id)));
+              // "mixed": some notes of the chord are selected (only those noteheads are violet, no glow on the chord).
+              group.setAttribute("aria-pressed", selected.includes(event.id) ? "true" : event.pitches.some(p => selected.includes(noteKey(event.id, p))) ? "mixed" : "false");
+              // Each notehead carries its selection key: a chord's notes are selectable one by one.
+              const pitches = sortedPitches(event);
+              group.querySelectorAll(".vf-notehead").forEach((head, i) => {
+                if (!pitches[i]) return;
+                head.setAttribute("data-note-pitch", pitches[i]);
+                head.setAttribute("data-note-key", pitches.length > 1 ? noteKey(event.id, pitches[i]) : event.id);
+              });
               group.setAttribute("aria-label", voice.name + ", " + (locale === "es" ? "compás " : "measure ") + measure
                 + ", " + (locale === "es" ? "pulso " : "beat ") + position.beat.toFixed(2)
                 + ", " + (event.pitches.join(" ") || (locale === "es" ? "silencio" : "rest")));
@@ -269,13 +286,33 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
             if(dom?.getAttribute("data-event-voice")===voice.id)index=events.findIndex(event=>String(event.start)===dom.getAttribute("data-event-start"));
             const hit=index>=0?events[index]:null;
             if(mouse.tool==="erase"){if(hit?.id&&!hit.id.startsWith("gap:"))mouse.onErase(hit.id);return;}
-            if(mouse.tool==="select"&&hit?.id&&!hit.id.startsWith("gap:")){onSelect(hit.id,e.shiftKey||e.ctrlKey||e.metaKey);return;}
-            if(hit?.id&&!hit.id.startsWith("gap:")&&hit.pitches.length) {
+            const positionAt=()=>{
+              if(hit)return hit.start;
+              const anchors=events.map((event,i)=>({x:notes[i].getAbsoluteX(),tick:event.start})).concat({x:stave.getNoteEndX(),tick:end}).sort((a,b)=>a.x-b.x);
+              const left=[...anchors].reverse().find(a=>a.x<=p.x)??{x:stave.getNoteStartX(),tick:start};
+              const right=anchors.find(a=>a.x>p.x)??anchors.at(-1)!;
+              const raw=left.tick+(right.tick-left.tick)*Math.max(0,Math.min(1,(p.x-left.x)/Math.max(1,right.x-left.x)));
+              return start+Math.min(end-start-PPQ/8,Math.max(0,Math.round((raw-start)/mouse.step)*mouse.step));
+            };
+            const extend=e.shiftKey||e.ctrlKey||e.metaKey;
+            const head=(e.target as Element).closest("[data-note-key]"),onNote=(e.target as Element).closest("[data-note-id]");
+            if(mouse.tool==="select"){
+              // Pressing on a notehead selects that note; anywhere else (even between notes) a drag draws the selection box.
+              const key=head?.getAttribute("data-note-key")??onNote?.getAttribute("data-note-id")??null;
+              const click=()=>{if(key)onSelect(key,extend);else mouse.onPosition(voice.id,positionAt());};
+              if(mouse.beginMarquee)mouse.beginMarquee(e,click);else click();return;
+            }
+            if(hit?.id&&!hit.id.startsWith("gap:")&&hit.pitches.length&&!(e.shiftKey&&!onNote)) {
               if(e.ctrlKey||e.metaKey){mouse.onWrite(voice.id,hit.start,pitchAt(voice,p.y,stave.getYForLine(0)),true);return;}
-              const group=notes[index].getSVGElement(),original=group?.getAttribute("transform");
-              const lowest=[...hit.pitches].sort((a,b)=>pitchToMidi(a)-pitchToMidi(b))[0];
-              const match=/^([A-G])(?:##|bb|#|b)?(-?\d+)$/.exec(lowest)!;
-              const anchor=Number(match[2])*7+"CDEFGAB".indexOf(match[1]),top=voice.clef==="bass"?26:38;
+              const top=voice.clef==="bass"?26:38;
+              const stepOf=(pitch:string)=>{const match=/^([A-G])(?:##|bb|#|b)?(-?\d+)$/.exec(pitch)!;return Number(match[2])*7+"CDEFGAB".indexOf(match[1]);};
+              // The grabbed pitch: the notehead under the pointer, else the chord note closest to it vertically.
+              const grabbed=head?.getAttribute("data-note-pitch")&&hit.pitches.includes(head.getAttribute("data-note-pitch")!)?head.getAttribute("data-note-pitch")!
+                :[...hit.pitches].sort((a,b)=>Math.abs(stave.getYForLine(0)+(top-stepOf(a))*5-p.y)-Math.abs(stave.getYForLine(0)+(top-stepOf(b))*5-p.y))[0];
+              const single=hit.pitches.length>1&&!!mouse.onMovePitch;
+              const chordHead=single?[...(notes[index].getSVGElement()?.querySelectorAll("[data-note-pitch]")??[])].find(h=>h.getAttribute("data-note-pitch")===grabbed):null;
+              const group=chordHead??notes[index].getSVGElement(),original=group?.getAttribute("transform");
+              const lowest=grabbed,anchor=stepOf(grabbed);
               // Drag moves by staff steps (line/space). A step is at least 7 screen pixels however small the
               // score is drawn, the note snaps to each step, and a label names the target pitch.
               const rect=svg.getBoundingClientRect(),pxPerStep=Math.max(7,5*rect.height/height);
@@ -285,7 +322,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
               const label=document.createElementNS("http://www.w3.org/2000/svg","text");
               label.setAttribute("class",styles.dragLabel);label.setAttribute("text-anchor","middle");
               const noteX=notes[index].getAbsoluteX()+6,noteY=stave.getYForLine(0)+(top-anchor)*5;
-              let heardPitch=lowest,steps=0,moved=false;mouse.onPreview(hit.id,heardPitch);
+              let heardPitch=lowest,steps=0,moved=false;mouse.onPreview(hit.id,heardPitch,single?grabbed:undefined);
               const move=(event:PointerEvent)=>{
                 if(!moved&&Math.abs(event.clientY-e.clientY)<3)return;
                 const next=stepsFor(event);if(next===steps&&moved)return;
@@ -295,7 +332,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
                 if(!label.isConnected)svg.appendChild(label);
                 label.setAttribute("x",String(noteX));label.setAttribute("y",String(noteY-steps*5-16));
                 label.textContent=pitch.replace(/##/,"𝄪").replace(/bb(?=-?\d)/,"𝄫").replace(/#/,"♯").replace(/(?<=[A-G])b/,"♭");
-                if(mouse.tool!=="select"&&pitch!==heardPitch){heardPitch=pitch;mouse.onPreview(hit.id,pitch);}
+                if(pitch!==heardPitch){heardPitch=pitch;mouse.onPreview(hit.id,pitch,single?grabbed:undefined);}
               };
               const cleanup=()=>{
                 window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",finish);window.removeEventListener("pointercancel",abort);
@@ -304,19 +341,17 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
               };
               const finish=()=>{
                 cleanup();
-                if(moved&&steps!==0&&mouse.tool!=="select")mouse.onMove(hit.id,pitchFor(steps));
-                else onSelect(hit.id,e.shiftKey);
+                if(moved&&steps!==0){if(single)mouse.onMovePitch!(hit.id,grabbed,pitchFor(steps));else mouse.onMove(hit.id,pitchFor(steps));}
+                else onSelect(single?noteKey(hit.id,grabbed):hit.id,e.shiftKey);
               };
               const abort=()=>cleanup();
               window.addEventListener("pointermove",move);window.addEventListener("pointerup",finish,{once:true});window.addEventListener("pointercancel",abort,{once:true});cleanups.push(abort);return;
             }
-            const anchors=events.map((event,i)=>({x:notes[i].getAbsoluteX(),tick:event.start})).concat({x:stave.getNoteEndX(),tick:end}).sort((a,b)=>a.x-b.x);
-            const left=[...anchors].reverse().find(a=>a.x<=p.x)??{x:stave.getNoteStartX(),tick:start};
-            const right=anchors.find(a=>a.x>p.x)??anchors.at(-1)!;
-            const raw=left.tick+(right.tick-left.tick)*Math.max(0,Math.min(1,(p.x-left.x)/Math.max(1,right.x-left.x)));
-            const tick=hit?hit.start:start+Math.min(end-start-PPQ/8,Math.max(0,Math.round((raw-start)/mouse.step)*mouse.step));
-            if(mouse.tool==="select"){const click=()=>mouse.onPosition(voice.id,tick);if(mouse.beginMarquee)mouse.beginMarquee(e,click);else click();return;}
-            mouse.onWrite(voice.id,tick,pitchAt(voice,p.y,stave.getYForLine(0)));
+            const tick=positionAt();
+            const write=()=>mouse.onWrite(voice.id,tick,pitchAt(voice,p.y,stave.getYForLine(0)));
+            // Shift+drag draws a selection box with the pencil too; a plain Shift+click still writes.
+            if(e.shiftKey&&mouse.beginMarquee){mouse.beginMarquee(e,write);return;}
+            write();
           };
           const erase=(e:MouseEvent)=>{
             e.preventDefault();const p=point(e),dom=(e.target as Element).closest("[data-note-id]");
@@ -340,6 +375,16 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
   }, [score, measure, selected, locale, focusVoice, onSelect,mouse,continuous,startsSystem,renderWidth,showAnnotations,capture,captureLayout]);
   return <><div ref={ref} className={styles.notation} />{error && <p role="alert" className={styles.renderError}>{error}</p>}</>;
 });
+
+/** Screen box of a notehead. The glyph is SVG text whose box spans the font's whole ascent/descent (several
+ *  staff steps), so neighbors in a chord would overlap: keep its width and half a staff step around the center, so a box edge between two adjacent steps takes neither. */
+function headBox(element: Element) {
+  const box = element.getBoundingClientRect(), text = element.matches(".vf-notehead") ? element.querySelector("text") : null;
+  const matrix = text?.getScreenCTM();
+  if (!text || !matrix) return box;
+  const center = matrix.d * Number(text.getAttribute("y")) + matrix.f, half = 2.5 * matrix.d;
+  return { left: box.left, right: box.right, top: center - half, bottom: center + half };
+}
 
 const PAGE_FIRST_WIDTH = 540, PAGE_WIDTH = 420; // SVG units; equal scale keeps staves aligned across a system
 
@@ -366,25 +411,37 @@ export default function ScoreView({ score, selected, locale, onSelect, mouse,tic
       Object.assign(box.style,{left:x1-r.left+host.scrollLeft+"px",top:y1-r.top+host.scrollTop+"px",width:x2-x1+"px",height:y2-y1+"px"});
       return {x1,x2,y1,y2};
     };
-    const hits=(area:{x1:number;x2:number;y1:number;y2:number})=>[...host.querySelectorAll<SVGGElement>("[data-note-id]")].filter(note=>{
-      const parts=note.querySelectorAll(".vf-notehead");
-      return (parts.length?[...parts]:[note]).some(part=>{const b=part.getBoundingClientRect();return b.right>=area.x1&&b.left<=area.x2&&b.bottom>=area.y1&&b.top<=area.y2;});
-    });
+    // Each notehead counts on its own (a box can take part of a chord); rests, which have none, count as a whole.
+    const hits=(area:{x1:number;x2:number;y1:number;y2:number})=>[...host.querySelectorAll<SVGGElement>("[data-note-id]")].flatMap(note=>{
+      const heads=[...note.querySelectorAll<SVGGElement>("[data-note-key]")];
+      return heads.length?heads:[note];
+    }).filter(part=>{const b=headBox(part);return b.right>=area.x1&&b.left<=area.x2&&b.bottom>=area.y1&&b.top<=area.y2;});
     const move=(e:PointerEvent)=>{
       if(!dragged&&Math.hypot(e.clientX-down.clientX,e.clientY-down.clientY)<5)return;
       if(!dragged){dragged=true;host.appendChild(box);}
       const area=place(e),inside=new Set(hits(area));
-      host.querySelectorAll("[data-note-id]").forEach(n=>n.classList.toggle(styles.marqueeHit,inside.has(n as SVGGElement)));
+      host.querySelectorAll("[data-note-id],[data-note-key]").forEach(n=>n.classList.toggle(styles.marqueeHit,inside.has(n as SVGGElement)));
     };
     const up=(e:PointerEvent)=>{
       window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",up);
       host.querySelectorAll("."+styles.marqueeHit).forEach(n=>n.classList.remove(styles.marqueeHit));
       if(!dragged){if(click)click();else if(!additive)onSelectMany([],false);return;}
-      const ids=hits(place(e)).map(n=>n.getAttribute("data-note-id")!).filter(Boolean);
+      const ids=hits(place(e)).map(n=>n.getAttribute("data-note-key")??n.getAttribute("data-note-id")!).filter(Boolean);
       box.remove();onSelectMany([...new Set(ids)],additive);
     };
     window.addEventListener("pointermove",move);window.addEventListener("pointerup",up);
   }},[mouse,onSelectMany]);
+  // With the select tool the box can also start in the margins around the staves (headings, gaps between systems).
+  useEffect(()=>{
+    const host=surface.current;
+    if(!host||editing?.tool!=="select"||!editing.beginMarquee)return;
+    const down=(e:PointerEvent)=>{
+      if(e.button!==0||(e.target as Element).closest("svg[data-mouse-staff],button,input,select,textarea,a"))return;
+      e.preventDefault();editing.beginMarquee!(e);
+    };
+    host.addEventListener("pointerdown",down);
+    return ()=>host.removeEventListener("pointerdown",down);
+  },[editing]);
   const es=locale==="es";
   // Follow the playhead, or the cursor when it jumps (start/end); only scrolls if the measure is off-screen.
   const playingMeasure=tick!==null?locateTick(score,tick).measure:cursorTick!==undefined?locateTick(score,Math.min(cursorTick,Math.max(0,scoreTicks(score)-1))).measure:null;
