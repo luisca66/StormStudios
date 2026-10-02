@@ -6,7 +6,7 @@ Implementación local del 1 de octubre de 2026, autorizada por Luis después de 
 
 El orden entre series es libre. Dentro de cada serie se conserva el recorrido por grados: I–II–III–IV–V–VI–VII–I′; la bajada melódica utiliza menor natural en orden I′–VII–VI–V–IV–III–II–I. La bajada admite omitir su tónica inicial, como continuación de una subida. Una tarea completa contiene de 564 a 576 acordes.
 
-Cada acorde tiene tres notas simultáneas, en estado fundamental y posición cerrada, sin duplicaciones ni inversiones. Registro inicial libre; las fundamentales recorren una octava. Storm Sequencer: modo cuarteto, fundamental en Tenor, tercera en Alto, quinta en Soprano y Bajo vacío. Las grafías SP por nota permiten comprobar enarmonías. No se aplican tesituras ni reglas de enlace SATB.
+Cada acorde tiene tres notas simultáneas, en estado fundamental y posición cerrada, sin duplicaciones ni inversiones. Registro inicial libre; las fundamentales recorren una octava. Storm Sequencer: un solo pentagrama. Escribir la primera nota y mantener Ctrl presionado mientras se hace clic para añadir las otras notas simultáneas. Las grafías SP por nota permiten comprobar enarmonías. No se aplican tesituras ni reglas de enlace SATB.
 
 ## Reconocimiento y retroalimentación
 
@@ -27,7 +27,7 @@ Workspace de desarrollo: `D:\claude_code\maestro-virtual`. Su tester HTML consul
 
 ## Comprobaciones y ejemplos
 
-523 pruebas aprobadas y 3 pendientes preexistentes. TypeScript, ESLint de archivos cambiados y compilación de producción aprobados. Las pruebas cubren orden invertido, faltantes, repetidas, errores de altura y grafía, acordes omitidos, notas omitidas, registro, ambigüedad y bajadas de siete acordes. Las pruebas del endpoint cargan MIDI completo de tres pistas.
+523 pruebas aprobadas y 3 pendientes preexistentes. TypeScript, ESLint de archivos cambiados y compilación de producción aprobados. Las pruebas cubren orden invertido, faltantes, repetidas, errores de altura y grafía, acordes omitidos, notas omitidas, registro, ambigüedad y bajadas de siete acordes. Las pruebas del endpoint cargan MIDI completo de tres pistas; Luis también comprobó tareas correctas e incorrectas en un solo pentagrama. El validador agrupa las notas por tick, independientemente de si están en una o varias pistas.
 
 En `D:\claude_code\maestro-virtual\test-midis`:
 

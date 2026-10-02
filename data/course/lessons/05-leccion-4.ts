@@ -35,16 +35,16 @@ export const lesson: LessonConfig = {
 
   exercise: {
     type: "triads",
-    voiceCount: 3,
-    voices: ["soprano", "alto", "tenor"],
+    voiceCount: 1,
+    voices: ["soprano"],
     keySignatures: ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"],
     chordTypes: ["major", "minor", "diminished", "augmented"],
     inversions: ["root"],
     minChords: 564,
     maxChords: 576,
     description: {
-      es: "Un solo MIDI con las 12 tónicas y las seis variantes. El Maestro reconoce las series en cualquier orden, señala cuáles faltan y explica los errores. Acordes en estado fundamental, sin inversiones. En modo cuarteto, usa Tenor para la fundamental, Alto para la tercera y Soprano para la quinta; deja Bajo vacío.",
-      en: "One MIDI with all 12 tonics and six variants. The Teacher recognizes series in any order, names missing ones and explains errors. Root-position chords only, without inversions. In quartet mode, use Tenor for the root, Alto for the third and Soprano for the fifth; leave Bass empty.",
+      es: "Un solo MIDI con las 12 tónicas y las seis variantes. El Maestro reconoce las series en cualquier orden, señala cuáles faltan y explica los errores. Acordes en estado fundamental, sin inversiones, en un solo pentagrama. Mantén Ctrl presionado mientras haces clic para añadir notas simultáneas.",
+      en: "One MIDI with all 12 tonics and six variants. The Teacher recognizes series in any order, names missing ones and explains errors. Root-position chords only, without inversions, on a single staff. Hold Ctrl while clicking to add simultaneous notes.",
     },
   },
 

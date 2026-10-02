@@ -52,7 +52,7 @@ const VALIDATOR_CONFIGS: Record<string, ValidatorConfig> = {
   '05-leccion-4': {
     id: '05-leccion-4',
     validator: 'triads',
-    voiceCount: 3,
+    voiceCount: 1,
     activeRules: ['TRIAD_MISSING_SCALE', 'TRIAD_DUPLICATE_SCALE', 'TRIAD_AMBIGUOUS_SCALE', 'TRIAD_UNRECOGNIZED', 'TRIAD_MISSING_CHORD', 'TRIAD_EXTRA_CHORD', 'TRIAD_NOTE_COUNT', 'TRIAD_WRONG_NOTE', 'TRIAD_ENHARMONIC', 'TRIAD_MISSING_SPELLING'],
   },
   '06-leccion-5': {
