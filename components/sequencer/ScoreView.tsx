@@ -244,7 +244,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
             if(natural>room) size=Math.max(11,Math.floor(16*room/natural));
           }
           context.setFont("Academico",size,annotation.kind==="roman"?"italic":"normal")
-            .fillText(annotation.text,x,height-(annotation.kind==="text"&&hasRoman?42:22));
+            .fillText(annotation.text,x,height-(annotation.kind==="text"&&hasRoman?52:22));
         }
         const svg = target.querySelector("svg");
         svg?.setAttribute("viewBox", "0 0 " + width + " " + height);
