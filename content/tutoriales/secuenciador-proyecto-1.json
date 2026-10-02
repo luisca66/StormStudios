@@ -1,0 +1,166 @@
+{
+  "version": 1,
+  "title": "Tutorial · Melodía y acordes",
+  "tempo": 72,
+  "masterVolume": 0.8,
+  "mode": "single",
+  "annotations": [],
+  "measures": [
+    {
+      "id": "measure-1",
+      "time": [
+        4,
+        4
+      ],
+      "key": "C"
+    },
+    {
+      "id": "measure-2",
+      "time": [
+        4,
+        4
+      ],
+      "key": "C"
+    },
+    {
+      "id": "measure-3",
+      "time": [
+        4,
+        4
+      ],
+      "key": "C"
+    },
+    {
+      "id": "measure-4",
+      "time": [
+        4,
+        4
+      ],
+      "key": "C"
+    },
+    {
+      "id": "measure-5",
+      "time": [
+        4,
+        4
+      ],
+      "key": "C"
+    }
+  ],
+  "voices": [
+    {
+      "id": "melody",
+      "name": "Melodía",
+      "clef": "treble",
+      "instrument": "Piano",
+      "volume": 0.8,
+      "mute": false,
+      "solo": false,
+      "events": [
+        {
+          "id": "chord-1",
+          "start": 0,
+          "duration": "w",
+          "dotted": false,
+          "triplet": false,
+          "tie": false,
+          "pitches": [
+            "C4",
+            "E4",
+            "G4"
+          ]
+        },
+        {
+          "id": "chord-2",
+          "start": 3840,
+          "duration": "w",
+          "dotted": false,
+          "triplet": false,
+          "tie": false,
+          "pitches": [
+            "C4",
+            "F4",
+            "A4"
+          ]
+        },
+        {
+          "id": "chord-3",
+          "start": 7680,
+          "duration": "w",
+          "dotted": false,
+          "triplet": false,
+          "tie": false,
+          "pitches": [
+            "B3",
+            "D4",
+            "G4"
+          ]
+        },
+        {
+          "id": "chord-4",
+          "start": 11520,
+          "duration": "w",
+          "dotted": false,
+          "triplet": false,
+          "tie": false,
+          "pitches": [
+            "C4",
+            "E4",
+            "G4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "soprano",
+      "name": "Soprano",
+      "clef": "treble",
+      "instrument": "Piano",
+      "volume": 0.8,
+      "mute": false,
+      "solo": false,
+      "events": []
+    },
+    {
+      "id": "alto",
+      "name": "Alto",
+      "clef": "treble",
+      "instrument": "Piano",
+      "volume": 0.8,
+      "mute": false,
+      "solo": false,
+      "events": []
+    },
+    {
+      "id": "tenor",
+      "name": "Tenor",
+      "clef": "bass",
+      "instrument": "Piano",
+      "volume": 0.8,
+      "mute": false,
+      "solo": false,
+      "events": []
+    },
+    {
+      "id": "bass",
+      "name": "Bajo",
+      "clef": "bass",
+      "instrument": "Piano",
+      "volume": 0.8,
+      "mute": false,
+      "solo": false,
+      "events": []
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene-1",
+      "title": "I – IV – V – I",
+      "caption": "",
+      "startMeasure": 1,
+      "endMeasure": 5,
+      "aspect": "16:9",
+      "highlightVoice": "all"
+    }
+  ]
+}

@@ -92,6 +92,10 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 - **L4 EN (2026-10-01)**: el DOCX final y ZIP tienen 137 párrafos/clips; no reutilizar los índices del español. El clip 17 se reparte entre la tercera y quinta, con `partialText` explícito para el SRT. Misma música y 58 pasos visuales; los tiempos siguen la voz inglesa.
 - **Entrega acordada con Luis**: los videos se entregan para su edición en Vegas y publicación en YouTube; no subirlos a R2. Esta decisión reemplaza las instrucciones de R2 anteriores.
 
+- **Tutorial secuenciador (2026-10-02)**: grabar el editor real con CDP y conservar tiempos del compositor; animar el cursor en Chromium para que la comunicación con Playwright no alargue cada paso. Convertir JPEG a rango limitado explícito (`yuv420p`). Medir la latencia del cursor en el video codificado y compensarla al colocar el WAV; en esta captura hicieron falta 60–68 ms en dos escuchas. Los resaltados deben evitar la cabecera fija. Para Piano Roll hace falta un compás libre, porque arrastrar no reemplaza eventos ocupados. En la ronda 2 se conserva Piano en el plan y se usa Synth únicamente como override de prueba.
+
+- **Tutorial secuenciador, ronda 2 (2026-10-02)**: capturar PCM de la salida real con AudioWorklet para incluir todas las vistas previas. Vincular muestras y compositor con getOutputTimestamp; detectar anillos e insignias en video y corregir el tramo completo, preservando la continuidad 50–52. Normalizar las notas breves en dos pasadas; mantener ducking suave de 3.5 dB. Servir el módulo temporal desde /vendor/ para evitar el enrutado de idiomas. Conservar Piano en los materiales; usar Synth solo como override local.
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).

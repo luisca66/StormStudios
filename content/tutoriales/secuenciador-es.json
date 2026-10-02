@@ -1,0 +1,1293 @@
+{
+  "version": 1,
+  "locale": "es",
+  "startUrl": "/es/curso-armonia",
+  "substitutions": [
+    "Cambio de compás: el selector aplica inmediatamente; no existe botón Aplicar.",
+    "Piano Roll: el compás 5 está completo; se añade un sexto vacío, se escribe A4 de octavo en su pulso 1, se mueve a B4 en el pulso 2 y se alarga a cuarto.",
+    "Ctrl+X se presenta como insignia y no se ejecuta, según el encargo.",
+    "El proyecto nuevo muestra un diálogo nativo, aceptado automáticamente; se restaura con Ctrl+Z."
+  ],
+  "clips": [
+    {
+      "clip": 1,
+      "actions": []
+    },
+    {
+      "clip": 2,
+      "actions": [
+        {
+          "op": "scroll",
+          "target": {
+            "css": "div.flex.flex-col.gap-3:has(> a[href^=\"/es/curso-armonia/\"])"
+          },
+          "block": "end",
+          "ms": 6000,
+          "at": 1
+        }
+      ]
+    },
+    {
+      "clip": 3,
+      "actions": [
+        {
+          "op": "scroll",
+          "target": {
+            "css": "div.ss-glass:has(a[href=\"/es/sequencer/v4\"])"
+          },
+          "block": "center",
+          "ms": 5000,
+          "at": 1
+        }
+      ]
+    },
+    {
+      "clip": 4,
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "div.ss-glass:has(a[href=\"/es/sequencer/v4\"])"
+          },
+          "at": 0,
+          "ms": 6000
+        },
+        {
+          "op": "goto",
+          "target": {
+            "role": "link",
+            "name": "Abrir v4.0 →"
+          },
+          "at": 7
+        }
+      ]
+    },
+    {
+      "clip": 5,
+      "actions": [],
+      "prepare": [
+        {
+          "op": "warmAudio"
+        }
+      ]
+    },
+    {
+      "clip": 6,
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "role": "group",
+            "name": "Transporte"
+          },
+          "at": 0,
+          "ms": 11000
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Reproducir"
+          },
+          "at": 1
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Detener"
+          },
+          "at": 2.7
+        },
+        {
+          "op": "move",
+          "target": {
+            "label": "Tempo"
+          },
+          "at": 5
+        },
+        {
+          "op": "move",
+          "target": {
+            "css": "[data-testid=\"lcd-position\"]"
+          },
+          "at": 7
+        },
+        {
+          "op": "move",
+          "target": {
+            "css": "[role=\"group\"][aria-label=\"Transporte\"] label + div"
+          },
+          "at": 9
+        },
+        {
+          "op": "move",
+          "target": {
+            "label": "Cifrado vigente"
+          },
+          "at": 11
+        }
+      ]
+    },
+    {
+      "clip": 7,
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "label:has(input[aria-label=\"Título del proyecto\"])"
+          },
+          "at": 0,
+          "ms": 3500
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "label:has(select[aria-label=\"Modo\"])"
+          },
+          "at": 4,
+          "ms": 3500
+        }
+      ]
+    },
+    {
+      "clip": 8,
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "role": "group",
+            "name": "Archivo"
+          },
+          "at": 0,
+          "ms": 6000
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Nuevo proyecto"
+          },
+          "at": 0
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Guardar JSON"
+          },
+          "at": 1.5
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Abrir proyecto"
+          },
+          "at": 3
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Exportar MIDI"
+          },
+          "at": 4.5
+        }
+      ]
+    },
+    {
+      "clip": 9,
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"score-view\"]"
+          },
+          "at": 0,
+          "ms": 3200
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "role": "group",
+            "name": "Herramientas de escritura"
+          },
+          "at": 4,
+          "ms": 4000
+        }
+      ]
+    },
+    {
+      "clip": 10,
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "label": "Inspector musical"
+          },
+          "at": 0,
+          "ms": 7000
+        }
+      ]
+    },
+    {
+      "clip": 11,
+      "actions": [
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Elegir Entera"
+          },
+          "at": 0
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Elegir Mitad"
+          },
+          "at": 1.25
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Elegir Cuarto"
+          },
+          "at": 2.5
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Elegir Octavo"
+          },
+          "at": 3.75
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Elegir Dieciseisavo"
+          },
+          "at": 5
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Elegir Treintaidosavo"
+          },
+          "at": 6.25
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Elegir Entera"
+          },
+          "at": 8
+        }
+      ]
+    },
+    {
+      "clip": 12,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "✎ Escribir"
+          },
+          "at": 0
+        },
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "C4"
+            }
+          },
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 13,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 2,
+              "pitch": "D4"
+            }
+          },
+          "at": 0
+        },
+        {
+          "op": "drag",
+          "target": {
+            "staff": {
+              "measure": 2,
+              "pitch": "D4"
+            }
+          },
+          "dy": -14,
+          "at": 3
+        }
+      ]
+    },
+    {
+      "clip": 14,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 2,
+              "pitch": "F4"
+            }
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Alteración #"
+          },
+          "at": 2
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Alteración natural"
+          },
+          "at": 5
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Alteración armadura"
+          },
+          "at": 8
+        }
+      ]
+    },
+    {
+      "clip": 15,
+      "actions": [
+        {
+          "op": "audition",
+          "target": {
+            "staff": {
+              "measure": 2,
+              "pitch": "F4"
+            }
+          }
+        },
+        {
+          "op": "rightClick",
+          "target": {
+            "staff": {
+              "measure": 2,
+              "pitch": "F4"
+            }
+          },
+          "at": 1
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "⌫ Borrador"
+          },
+          "at": 2
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "✎ Escribir"
+          },
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 16,
+      "actions": [
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 1
+        },
+        {
+          "op": "audition",
+          "target": {
+            "staff": {
+              "measure": 2,
+              "pitch": "F4"
+            }
+          },
+          "at": 2
+        },
+        {
+          "op": "key",
+          "key": "Control+y",
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 17,
+      "actions": [
+        {
+          "op": "ctrlClick",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "E4"
+            }
+          },
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 18,
+      "actions": [
+        {
+          "op": "ctrlClick",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "G4"
+            }
+          },
+          "at": 1
+        },
+        {
+          "op": "play",
+          "at": 0,
+          "listen": 3.5,
+          "stop": "Detener",
+          "afterVoice": true
+        }
+      ],
+      "extraMusic": 5
+    },
+    {
+      "clip": 19,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "E4"
+            }
+          },
+          "at": 1
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Alteración b"
+          },
+          "at": 4
+        },
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 8
+        }
+      ]
+    },
+    {
+      "clip": 20,
+      "actions": [
+        {
+          "op": "play",
+          "at": 2,
+          "listen": 3,
+          "stop": "Space"
+        }
+      ],
+      "prepare": [
+        {
+          "op": "loadProject",
+          "file": "secuenciador-proyecto-1.json",
+          "fade": true
+        }
+      ]
+    },
+    {
+      "clip": 21,
+      "actions": [
+        {
+          "op": "play",
+          "at": 0,
+          "listen": 6,
+          "stop": "Space",
+          "key": true
+        }
+      ],
+      "extraMusic": 2
+    },
+    {
+      "clip": 22,
+      "actions": [
+        {
+          "op": "type",
+          "target": {
+            "label": "Tempo"
+          },
+          "text": "60",
+          "at": 1
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Metrónomo"
+          },
+          "at": 4
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Repetir reproducción"
+          },
+          "at": 6
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Metrónomo"
+          },
+          "at": 8
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Repetir reproducción"
+          },
+          "at": 10
+        }
+      ]
+    },
+    {
+      "clip": 23,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Ir al final"
+          },
+          "at": 1
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Ir al inicio"
+          },
+          "at": 3
+        }
+      ]
+    },
+    {
+      "clip": 24,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Escribir con teclado"
+          },
+          "at": 0
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Ir al compás 5"
+          },
+          "at": 3
+        }
+      ]
+    },
+    {
+      "clip": 25,
+      "actions": [
+        {
+          "op": "key",
+          "key": "3",
+          "at": 0
+        },
+        {
+          "op": "key",
+          "key": "c",
+          "at": 3
+        },
+        {
+          "op": "key",
+          "key": "d",
+          "at": 6
+        },
+        {
+          "op": "key",
+          "key": "e",
+          "at": 9
+        }
+      ]
+    },
+    {
+      "clip": 26,
+      "actions": [
+        {
+          "op": "audition",
+          "target": {
+            "staff": {
+              "measure": 5,
+              "pitch": "E4"
+            }
+          },
+          "at": 0
+        },
+        {
+          "op": "key",
+          "key": "4",
+          "at": 1
+        },
+        {
+          "op": "key",
+          "key": "3",
+          "at": 2
+        },
+        {
+          "op": "key",
+          "key": "ArrowRight",
+          "at": 3
+        },
+        {
+          "op": "key",
+          "key": "r",
+          "at": 4
+        },
+        {
+          "op": "key",
+          "key": "PageUp",
+          "at": 6
+        },
+        {
+          "op": "key",
+          "key": "PageDown",
+          "at": 8
+        }
+      ]
+    },
+    {
+      "clip": 27,
+      "actions": [
+        {
+          "op": "key",
+          "key": "ArrowLeft",
+          "at": 0
+        },
+        {
+          "op": "key",
+          "key": "ArrowLeft",
+          "at": 1
+        },
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 5,
+              "pitch": "E4"
+            }
+          },
+          "at": 2
+        },
+        {
+          "op": "key",
+          "key": "ArrowUp",
+          "at": 4
+        },
+        {
+          "op": "key",
+          "key": "ArrowUp",
+          "at": 5
+        },
+        {
+          "op": "key",
+          "key": "ArrowDown",
+          "at": 7
+        },
+        {
+          "op": "key",
+          "key": "ArrowDown",
+          "at": 8
+        }
+      ]
+    },
+    {
+      "clip": 28,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "css": "summary:text-is(\"Atajos de teclado\")"
+          },
+          "at": 0
+        },
+        {
+          "op": "wait",
+          "ms": 1800
+        },
+        {
+          "op": "click",
+          "target": {
+            "css": "summary:text-is(\"Atajos de teclado\")"
+          },
+          "at": 3
+        },
+        {
+          "op": "scroll",
+          "y": 0,
+          "ms": 1200,
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 29,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Añadir compás"
+          },
+          "at": 3
+        }
+      ]
+    },
+    {
+      "clip": 30,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Ir al compás 6"
+          },
+          "at": 0
+        },
+        {
+          "op": "setField",
+          "target": {
+            "label": "Desde el compás"
+          },
+          "text": "6",
+          "at": 0.6
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "section:has(> header > h3:text-is(\"Cambio de armadura, compás o clave\"))"
+          },
+          "at": 1,
+          "ms": 4500,
+          "align": "bottom"
+        },
+        {
+          "op": "select",
+          "target": {
+            "label": "Compás rítmico"
+          },
+          "value": "3/4",
+          "at": 5
+        },
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 9
+        },
+        {
+          "op": "scroll",
+          "y": 0,
+          "ms": 600,
+          "at": 10
+        }
+      ]
+    },
+    {
+      "clip": 31,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Vista por páginas"
+          },
+          "at": 1
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Vista continua"
+          },
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 32,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "↖ Seleccionar"
+          },
+          "at": 0
+        },
+        {
+          "op": "drag",
+          "target": {
+            "css": "[data-measure=\"1\"] svg",
+            "fx": 0.3,
+            "fy": 0.2
+          },
+          "to": {
+            "css": "[data-measure=\"2\"] svg",
+            "fx": 0.85,
+            "fy": 0.65
+          },
+          "at": 2
+        }
+      ]
+    },
+    {
+      "clip": 33,
+      "actions": [
+        {
+          "op": "key",
+          "key": "Control+c",
+          "at": 0
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Ir al compás 6"
+          },
+          "at": 1
+        },
+        {
+          "op": "key",
+          "key": "Control+v",
+          "at": 3
+        },
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 5
+        },
+        {
+          "op": "drag",
+          "target": {
+            "css": "[data-measure=\"1\"] svg",
+            "fx": 0.3,
+            "fy": 0.2
+          },
+          "to": {
+            "css": "[data-measure=\"2\"] svg",
+            "fx": 0.85,
+            "fy": 0.65
+          },
+          "at": 6
+        },
+        {
+          "op": "key",
+          "key": "Control+d",
+          "at": 8
+        },
+        {
+          "op": "badge",
+          "text": "Ctrl + X",
+          "at": 10
+        }
+      ]
+    },
+    {
+      "clip": 34,
+      "actions": [
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 0
+        },
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 2
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Ir al inicio"
+          },
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 35,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Añadir compás"
+          },
+          "at": 0
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Piano Roll"
+          },
+          "at": 2
+        }
+      ]
+    },
+    {
+      "clip": 36,
+      "actions": [
+        {
+          "op": "move",
+          "target": {
+            "css": "[data-pitch=\"C4\"]"
+          },
+          "at": 0
+        },
+        {
+          "op": "move",
+          "target": {
+            "css": "[data-testid=\"piano-roll\"] > div > div:first-child"
+          },
+          "at": 4
+        },
+        {
+          "op": "move",
+          "target": {
+            "css": "[data-roll-note]"
+          },
+          "at": 8
+        }
+      ]
+    },
+    {
+      "clip": 37,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "✎ Escribir"
+          },
+          "at": 0
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Elegir Octavo"
+          },
+          "at": 1
+        },
+        {
+          "op": "click",
+          "target": {
+            "roll": {
+              "pitch": "A4",
+              "measure": 6,
+              "beat": 1
+            }
+          },
+          "at": 2
+        }
+      ]
+    },
+    {
+      "clip": 38,
+      "actions": [
+        {
+          "op": "drag",
+          "target": {
+            "css": "[data-pitch=\"A4\"] [data-roll-note][aria-label$=\"compás 6\"]",
+            "fx": 0.15
+          },
+          "dx": 48,
+          "dy": -52,
+          "at": 3
+        }
+      ]
+    },
+    {
+      "clip": 39,
+      "actions": [
+        {
+          "op": "drag",
+          "target": {
+            "css": "[data-pitch=\"B4\"] [data-roll-note][aria-label$=\"compás 6\"]",
+            "fx": 0.98
+          },
+          "dx": 24,
+          "at": 2
+        }
+      ]
+    },
+    {
+      "clip": 40,
+      "actions": [
+        {
+          "op": "rightClick",
+          "target": {
+            "css": "[data-pitch=\"B4\"] [data-roll-note][aria-label$=\"compás 6\"]"
+          }
+        },
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 2
+        },
+        {
+          "op": "audition",
+          "target": {
+            "css": "[data-pitch=\"B4\"] [data-roll-note][aria-label$=\"compás 6\"]"
+          },
+          "at": 3
+        }
+      ]
+    },
+    {
+      "clip": 41,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Pentagrama"
+          },
+          "at": 0
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-measure=\"6\"] [data-note-pitch=\"B4\"]"
+          },
+          "at": 2,
+          "ms": 4200
+        }
+      ]
+    },
+    {
+      "clip": 42,
+      "actions": [
+        {
+          "op": "type",
+          "target": {
+            "label": "Cifrado compás 1, pulso 1"
+          },
+          "text": "I",
+          "at": 0
+        },
+        {
+          "op": "type",
+          "target": {
+            "label": "Cifrado compás 2, pulso 1"
+          },
+          "text": "IV",
+          "at": 2.5
+        },
+        {
+          "op": "type",
+          "target": {
+            "label": "Cifrado compás 3, pulso 1"
+          },
+          "text": "V",
+          "at": 5
+        },
+        {
+          "op": "type",
+          "target": {
+            "label": "Cifrado compás 4, pulso 1"
+          },
+          "text": "I",
+          "at": 7.5
+        }
+      ]
+    },
+    {
+      "clip": 43,
+      "actions": [
+        {
+          "op": "move",
+          "target": {
+            "label": "Cifrado compás 4, pulso 1"
+          },
+          "at": 0
+        }
+      ]
+    },
+    {
+      "clip": 44,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Ocultar cifrados"
+          },
+          "at": 0
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Mostrar cifrados"
+          },
+          "at": 2
+        },
+        {
+          "op": "play",
+          "at": 0,
+          "listen": 16,
+          "stop": "Detener",
+          "afterVoice": true,
+          "highlight": {
+            "label": "Cifrado vigente"
+          }
+        }
+      ],
+      "extraMusic": 18
+    },
+    {
+      "clip": 45,
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "span:text-is(\"Borrador guardado en este navegador\")"
+          },
+          "at": 0,
+          "ms": 6000
+        }
+      ]
+    },
+    {
+      "clip": 46,
+      "actions": [
+        {
+          "op": "download",
+          "target": {
+            "role": "button",
+            "name": "Guardar JSON"
+          },
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 47,
+      "actions": [
+        {
+          "op": "open",
+          "target": {
+            "role": "button",
+            "name": "Abrir proyecto"
+          },
+          "at": 1
+        }
+      ]
+    },
+    {
+      "clip": 48,
+      "actions": [
+        {
+          "op": "download",
+          "target": {
+            "role": "button",
+            "name": "Exportar MIDI"
+          },
+          "at": 1
+        }
+      ]
+    },
+    {
+      "clip": 49,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Nuevo proyecto"
+          },
+          "at": 1
+        }
+      ]
+    },
+    {
+      "clip": 50,
+      "actions": [
+        {
+          "op": "play",
+          "at": 2
+        }
+      ],
+      "prepare": [
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 0
+        }
+      ]
+    },
+    {
+      "clip": 51,
+      "actions": [
+        {
+          "op": "wait",
+          "ms": 500
+        }
+      ]
+    },
+    {
+      "clip": 52,
+      "actions": [
+        {
+          "op": "stop",
+          "at": 0
+        }
+      ]
+    }
+  ]
+}
