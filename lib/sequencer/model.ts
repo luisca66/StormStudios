@@ -13,6 +13,7 @@ export const MAX_MEASURES = 128;
 export const MAX_EVENTS = 4096;
 export const MAX_SCENES = 32;
 export const MAX_CHORD_PITCHES = 12;
+export const MAX_ANNOTATIONS = 1024;
 /** Upper bound for importScore input; a full 4096-event score is far below it. */
 export const MAX_IMPORT_CHARS = 4_000_000;
 
@@ -471,7 +472,7 @@ export function validateScore(value: unknown): Score {
   });
 
   const annotationIds=new Set([...measureIds,...eventIds,...sceneIds]);
-  const annotations=asArray(root.annotations??[],"annotations",0,512).map((item,index)=>{
+  const annotations=asArray(root.annotations??[],"annotations",0,MAX_ANNOTATIONS).map((item,index)=>{
     const path=`annotations[${index}]`, annotation=asRecord(item,path,["id","measure","beat","text","kind"]);
     const measure=asInteger(annotation.measure,`${path}.measure`,1,measures.length);
     const beat=asNumber(annotation.beat,`${path}.beat`,1,1+measureTicks(measures[measure-1])/PPQ);

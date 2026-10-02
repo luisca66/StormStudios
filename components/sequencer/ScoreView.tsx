@@ -231,11 +231,20 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
             }
           }));
         });
+        // Free text moves one line up in measures that also carry harmony symbols, so both stay legible.
+        const hasRoman=(score.annotations??[]).some(a=>a.kind==="roman"&&a.measure===measure);
+        const annotationAt=(beat:number)=>{const at=start+Math.round((beat-1)*PPQ);return annotationX.get(at)??(160+430*(at-start)/(end-start));};
+        const romanXs=(score.annotations??[]).filter(a=>a.kind==="roman"&&a.measure===measure).map(a=>annotationAt(a.beat)).sort((a,b)=>a-b);
         for(const annotation of !capture && showAnnotations?score.annotations??[]:[]) if(annotation.measure===measure) {
-          const at=start+Math.round((annotation.beat-1)*PPQ);
-          const x=annotationX.get(at)??(160+430*(at-start)/(end-start));
-          context.setFont("Academico",16,annotation.kind==="roman"?"italic":"normal")
-            .fillText(annotation.text,x,height-22);
+          const x=annotationAt(annotation.beat);
+          let size=16;
+          if(annotation.kind==="roman") { // Shrink a symbol that would run into the next one (dense measures such as one chord per beat).
+            const room=(romanXs.find(other=>other>x)??width)-x-4;
+            const natural=context.setFont("Academico",16,"italic").measureText(annotation.text).width;
+            if(natural>room) size=Math.max(11,Math.floor(16*room/natural));
+          }
+          context.setFont("Academico",size,annotation.kind==="roman"?"italic":"normal")
+            .fillText(annotation.text,x,height-(annotation.kind==="text"&&hasRoman?42:22));
         }
         const svg = target.querySelector("svg");
         svg?.setAttribute("viewBox", "0 0 " + width + " " + height);
