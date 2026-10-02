@@ -1,4 +1,6 @@
 import { NextRequest } from 'next/server';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { POST } from './route';
 
@@ -16,6 +18,38 @@ function midiRequest(lessonId: string, locale = 'es', ip?: string) {
 }
 
 describe('POST /api/maestro-virtual/check', () => {
+  function triadRequest(wrongNote = false) {
+    const fixture = wrongNote ? 'leccion4-errores.mid' : 'leccion4-completa.mid';
+    const bytes = new Uint8Array(readFileSync(join(process.cwd(), 'lib/maestro-virtual/__fixtures__', fixture)));
+    const form = new FormData();
+    form.append('midi', new Blob([bytes]), 'triads.mid');
+    form.append('lessonId', '05-leccion-4');
+    return new NextRequest('http://localhost/api/maestro-virtual/check', { method: 'POST', body: form });
+  }
+  it('evaluates Lesson 4 through the real MIDI parser and triad validator', async () => {
+    const response = await POST(triadRequest());
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ lessonId: '05-leccion-4', score: 100, passed: true, violations: [] });
+  });
+  it('returns pedagogical errors for a wrong triad note', async () => {
+    const response = await POST(triadRequest(true));
+    expect(response.status).toBe(200);
+    const feedback = await response.json();
+    expect(feedback.passed).toBe(false);
+    expect(feedback.violations.some((v: { ruleId: string }) => v.ruleId === 'TRIAD_WRONG_NOTE')).toBe(true);
+    expect(feedback.violations.some((v: { ruleId: string }) => v.ruleId === 'TRIAD_MISSING_SCALE')).toBe(true);
+  });
+  it('requires no root or variant fields and reports every missing series in a partial MIDI', async () => {
+    const bytes = new Uint8Array([77,84,104,100,0,0,0,6,0,1,0,1,0,128,77,84,114,107,0,0,0,4,0,255,47,0]);
+    const form = new FormData();
+    form.append('midi', new Blob([bytes]), 'empty.mid');
+    form.append('lessonId', '05-leccion-4');
+    const response = await POST(new NextRequest('http://localhost/api/maestro-virtual/check', { method:'POST', body:form }));
+    expect(response.status).toBe(200);
+    const feedback = await response.json();
+    expect(feedback.passed).toBe(false);
+    expect(feedback.violations.filter((v: {ruleId: string}) => v.ruleId === 'TRIAD_MISSING_SCALE')).toHaveLength(72);
+  });
   it('does not treat prototype properties as lesson configurations', async () => {
     const response = await POST(midiRequest('__proto__'));
 
@@ -35,7 +69,7 @@ describe('POST /api/maestro-virtual/check', () => {
   });
 
   it('normalizes unsupported locale values before returning SATB feedback', async () => {
-    const response = await POST(midiRequest('05-leccion-4', 'en\nforged-log-line'));
+    const response = await POST(midiRequest('06-leccion-5', 'en\nforged-log-line'));
 
     expect(response.status).toBe(501);
     expect(response.headers.get('cache-control')).toBe('no-store');

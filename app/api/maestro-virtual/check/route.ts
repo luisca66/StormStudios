@@ -5,6 +5,7 @@ import { parseMidiBuffer } from '@/lib/maestro-virtual/midi-parser';
 import { validateLesson1Scales } from '@/lib/maestro-virtual/scale-validator';
 import { validateMinorScales } from '@/lib/maestro-virtual/minor-scale-validator';
 import { validateLesson2Modes } from '@/lib/maestro-virtual/modes-validator';
+import { validateCompleteLesson4Triads } from '@/lib/maestro-virtual/complete-triads-validator';
 import { getLessonConfig } from '@/data/course/lessons/lesson-configs';
 import type { FeedbackItem } from '@/types/course';
 
@@ -199,6 +200,7 @@ async function readBoundedBody(request: NextRequest): Promise<BoundedBodyResult>
  *   - 'major-scales' → validateLesson1Scales  (escalas mayores)
  *   - 'modes'        → validateLesson2Modes    (modos paralelos)
  *   - 'minor-scales' → validateMinorScales     (escalas menores)
+ *   - 'triads'       → validateCompleteLesson4Triads (ejercicio completo, orden libre)
  *   - 'satb'         → 501 hasta que su motor de reglas esté listo
  *
  * Devuelve MaestroFeedback compatible con ExerciseUpload.tsx.
@@ -289,6 +291,7 @@ export async function POST(request: NextRequest) {
       case 'major-scales': rawErrors = validateLesson1Scales(voiceData); break;
       case 'modes':        rawErrors = validateLesson2Modes(voiceData);  break;
       case 'minor-scales': rawErrors = validateMinorScales(voiceData); break;
+      case 'triads': rawErrors = validateCompleteLesson4Triads(voiceData); break;
       default:
         return invalidRequest('validator_unavailable', 501);
     }

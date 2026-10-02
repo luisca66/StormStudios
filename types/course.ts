@@ -113,6 +113,7 @@ export type ValidationContext = {
 // ─── Ejercicio de la Lección ──────────────────────────────────────────────────
 
 export type ExerciseType =
+  | "triads"
   | "major-scales"
   | "modes"
   | "four-voice-chorale"
