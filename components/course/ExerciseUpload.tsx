@@ -167,8 +167,8 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
               ? "Cada serie mantiene su recorrido por grados: I–VII–I′; en la bajada melódica, I′–VII–I (puedes omitir la tónica inicial de la bajada). Tres notas simultáneas por acorde, en estado fundamental y posición cerrada, sin duplicaciones ni inversiones."
               : "Keep the degree sequence within each series: I–VII–I′; descending melodic minor: I′–VII–I (the initial descending tonic may be omitted). Three simultaneous notes per chord in close root position, without doubling or inversions."}</p>
             <p className="text-gray-600">{es
-              ? "Storm Sequencer: modo cuarteto; fundamental en Tenor, tercera en Alto y quinta en Soprano. Deja Bajo vacío y exporta toda la tarea en un archivo."
-              : "Storm Sequencer: quartet mode; root in Tenor, third in Alto and fifth in Soprano. Leave Bass empty and export the entire assignment in one file."}</p>
+              ? "Storm Sequencer: usa un solo pentagrama. Escribe la primera nota del acorde y mantén Ctrl presionado mientras haces clic para añadir la tercera y la quinta en la misma posición. Exporta toda la tarea en un solo MIDI."
+              : "Storm Sequencer: use a single staff. Write the first chord note, then hold Ctrl while clicking to add the third and fifth at the same position. Export the entire assignment in one MIDI."}</p>
           </div>
         )}
         {/* Referencia visual para lección 1 */}
