@@ -55,6 +55,12 @@
     "vitest": "^4.1.11"
   },
   "overrides": {
+    "@firebase/firestore": {
+      "@grpc/grpc-js": "1.13.6"
+    },
+    "@next/eslint-plugin-next": {
+      "fast-glob": "npm:tinyglobby@0.2.17"
+    },
     "next": {
       "postcss": "8.5.28"
     }

@@ -43,10 +43,32 @@ los logs ni se cambia el enrutamiento para evitar el mensaje.
 
 ## Validación local
 
-- `npm run lint`, `npx tsc --noEmit` y `npm test`: 560 pruebas unitarias pasan.
+- `npm run lint`, `npx tsc --noEmit` y `npm test`: 561 pruebas unitarias pasan.
 - `npm run build`: build de producción correcto.
 - `npx next dev --port 3100` + `npx playwright test e2e/sequencer.spec.ts --workers=2`.
 - Con `CI=true`, `npx playwright test --workers=2`: 49 pasan, una prueba manual
   de muestras R2 omitida por diseño; incluye todos los e2e del secuenciador y el 404.
 - El workflow remoto valida además Ubuntu, Node 24, instalación limpia,
   compilación/auditoría de apps y auditoría de dependencias.
+
+## Bloqueo adicional de auditoría
+
+Tras pasar los e2e de Linux, el workflow detectó vulnerabilidades transitivas
+que la caída anterior había impedido comprobar. Se corrigen sin cambiar el
+umbral `high` ni omitir dependencias de desarrollo:
+
+- Override limitado a Firestore de `@grpc/grpc-js` a `1.13.6`, versión corregida
+  de [GHSA-m9gg-hp2v-232j](https://github.com/advisories/GHSA-m9gg-hp2v-232j)
+  y [GHSA-f596-whhp-79r4](https://github.com/advisories/GHSA-f596-whhp-79r4).
+- `braces` no tiene versión parcheada para
+  [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm).
+  El único consumidor es el glob de directorios raíz del plugin ESLint de Next.
+  Un override limitado a ese plugin reemplaza `fast-glob` por `tinyglobby@0.2.17`,
+  que ofrece la API usada (`globSync`, `onlyDirectories`) sin `braces`.
+  No es una sustitución general de todas las APIs de fast-glob.
+
+La prueba `lib/eslint-next-compat.test.ts` verifica que la regla de enlaces de
+Next descubre páginas con `rootDir` string/array y glob, normaliza rutas de
+Windows y sigue denunciando un enlace HTML a una página interna. Este override
+debe revisarse si el plugin cambia su uso de fast-glob. `npm audit` vuelve a
+informar cero vulnerabilidades.
