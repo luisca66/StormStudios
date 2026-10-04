@@ -15,14 +15,14 @@ export type StageContext = { lesson: string; title: string; index: number; total
 
 type StageApi = {
   wav(still: Still, score: Score): Promise<{ base64: string; music: Omit<ReturnType<typeof stillMusic>, "score"> }>;
-  render(still: Still, score: Score | null, format?: Storyboard["format"], context?: StageContext): Promise<void>;
+  render(still: Still, score: Score | null, format?: Storyboard["format"], context?: StageContext, playback?: { music: boolean }): Promise<void>;
   prepare(value: unknown): { storyboard: Storyboard; scores: Record<string, Score> };
 };
 declare global { interface Window { stormStage?: StageApi } }
 const noop = () => {};
 const selected: string[] = [];
 const frame = () => new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
-type State = { still: Still; score: Score | null; format: Storyboard["format"]; serial: number; context: StageContext; layout?: CaptureLayout };
+type State = { still: Still; score: Score | null; format: Storyboard["format"]; serial: number; context: StageContext; layout?: CaptureLayout; musicPlaying?: boolean };
 
 export default function StillStage({ locale }: { locale: "es" | "en" }) {
   const [state, setState] = useState<State | null>(null);
@@ -50,23 +50,23 @@ export default function StillStage({ locale }: { locale: "es" | "en" }) {
         prepared = storyboard;
         return { storyboard, scores: Object.fromEntries(Object.entries(storyboard.projects).map(([id, source]) => [id, resolveProject(source)])) };
       },
-      async render(still, score, format = {}, context) {
+      async render(still, score, format = {}, context, playback) {
         if (busy) throw new Error("Hay otra captura en curso; espera a render()");
         busy = true;
         document.documentElement.dataset.stageReady = "0";
         try {
-          const board = validateStoryboard({ version: 1, lesson: "stage", locale, title: "Stage", format, projects: score ? { current: { score } } : {}, stills: [{ ...still, project: still.kind === "title" ? undefined : "current" }] });
+          const board = validateStoryboard({ version: 1, lesson: "stage", locale, title: "Stage", format, projects: score ? { current: { score } } : {}, stills: [{ ...still, project: still.kind === "title" || still.kind === "image" ? undefined : "current" }] });
           const checked = board.stills[0];
           const index = prepared?.stills.findIndex(s => s.id === still.id) ?? -1;
           const info = context ?? { lesson: prepared?.lesson ?? "", title: prepared?.title ?? score?.title ?? "", index: index + 1 || 1, total: prepared?.stills.length ?? 1 };
-          const next: State = { still: checked, score, format, serial: ++serial, context: info };
+          const next: State = { still: checked, score, format, serial: ++serial, context: info, musicPlaying: playback?.music ?? false };
           flushSync(() => setState(next));
-          if (score && checked.kind !== "title" && paper.current) {
+          if (score && checked.kind !== "title" && checked.kind !== "image" && paper.current) {
             next.layout = captureLayout(score, checked, paper.current.clientWidth - 128, paper.current.clientHeight - 64);
             flushSync(() => setState({ ...next }));
           }
           await import("vexflow");
-          const expected = checked.kind === "title" ? 0 : (checked.measures?.[1] ?? score!.measures.length) - (checked.measures?.[0] ?? 1) + 1;
+          const expected = checked.kind === "title" || checked.kind === "image" ? 0 : (checked.measures?.[1] ?? score!.measures.length) - (checked.measures?.[0] ?? 1) + 1;
           const deadline = performance.now() + 30000;
           while (expected && root.current?.querySelectorAll('svg[data-capture-ready="1"]').length !== expected) {
             if (disposed) throw new Error("Stage desmontado");
@@ -74,6 +74,11 @@ export default function StillStage({ locale }: { locale: "es" | "en" }) {
             if (error) throw new Error(error.textContent ?? "Error VexFlow");
             if (performance.now() > deadline) throw new Error("VexFlow no terminó en 30 segundos");
             await frame();
+          }
+          if (checked.kind === "image") {
+            const img = root.current?.querySelector<HTMLImageElement>('[data-testid="still-image"]');
+            if (!img) throw new Error("No se montó la imagen");
+            await img.decode().catch(() => { throw new Error(`No se pudo cargar image: ${checked.image}`); });
           }
           await document.fonts.ready;
           await frame();
@@ -99,12 +104,16 @@ export default function StillStage({ locale }: { locale: "es" | "en" }) {
         <div className={styles.brand}>STORM STUDIOS LEARNING{lessonNumber ? ` · ${locale === "es" ? "LECCIÓN" : "LESSON"} ${lessonNumber}` : ""}</div>
         {still?.kind === "title" ? <div className={styles.title}><div className={styles.rule} /><h1>{still.heading}</h1><p>{still.caption}</p></div> : <>
           <header className={styles.heading}><h1>{still?.heading}</h1><p>{still?.caption}</p></header>
-          <div ref={paper} className={styles.paper}>
+          <div ref={paper} className={still?.kind === "image" ? styles.image : styles.paper}>
+            {/* Captures preserve the public SVG without image optimization. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            {still?.kind === "image" && <img key={state?.serial} data-testid="still-image" src={still.image} alt={still.caption ?? still.heading ?? ""} />}
             {state?.score && state.layout && <div key={state.serial} className={styles.music}>
               <ScoreView score={state.score} selected={selected} locale={locale} onSelect={noop} tick={null} from={still?.measures?.[0]} to={still?.measures?.[1]} focusVoice={still?.focusVoice ?? "all"} showAnnotations={still?.showCiphers ?? true} capture={still} captureLayout={state.layout} />
             </div>}
           </div>
         </>}
+        {state?.musicPlaying && still?.musicCredit && <div data-testid="music-credit" className={styles.credit}>{still.musicCredit}</div>}
         <div className={styles.footer}><span>Storm Studios Learning{state?.context.title ? ` · ${state.context.title}` : ""}</span><span>{state ? `${state.context.index} / ${state.context.total}` : ""}</span></div>
       </div>
     </div>

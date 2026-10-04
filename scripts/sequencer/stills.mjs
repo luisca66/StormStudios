@@ -13,9 +13,10 @@ async function main() {
   const options = {};
   while (args.length) {
     const flag = args.shift(), value = args.shift();
-    if (!["--out", "--base", "--only", "--context"].includes(flag) || !value || value.startsWith("--")) throw new Error(`Opción inválida: ${flag}`);
+    if (!["--out", "--base", "--only", "--context", "--music"].includes(flag) || !value || value.startsWith("--")) throw new Error(`Opción inválida: ${flag}`);
     options[flag] = value;
   }
+  if (options["--music"] && !["true", "false"].includes(options["--music"])) throw new Error("--music debe ser true o false");
   const board = JSON.parse(await readFile(input, "utf8"));
   const contextBoard = options["--context"] ? JSON.parse(await readFile(path.resolve(options["--context"]), "utf8")) : board;
   if (!["es", "en"].includes(board.locale)) throw new Error("locale debe ser es o en");
@@ -57,13 +58,13 @@ async function main() {
       if (only && !only.has(still.id)) continue;
       const file = `${String(index + 1).padStart(2, "0")}-${still.id}.png`;
       try {
-        const originalId = options["--context"] ? still.id.replace(/-cursor-\d+$/, "") : still.id;
+        const originalId = options["--context"] ? still.id.replace(/(?:-cursor-\d+|-music-credit)$/, "") : still.id;
         const contextIndex = contextBoard.stills.findIndex(s => s.id === originalId);
         if (contextIndex < 0) throw new Error(`No hay contexto para ${originalId}`);
-        await page.evaluate(async ({ still, score, format, context }) => {
-          await window.stormStage.render(still, score, format, context);
+        await page.evaluate(async ({ still, score, format, context, playback }) => {
+          await window.stormStage.render(still, score, format, context, playback);
         }, { still, score: still.project ? prepared.scores[still.project] : null, format: storyboard.format,
-          context: { lesson: contextBoard.lesson, title: contextBoard.title, index: contextIndex + 1, total: contextBoard.stills.length } });
+          context: { lesson: contextBoard.lesson, title: contextBoard.title, index: contextIndex + 1, total: contextBoard.stills.length }, playback: { music: options["--music"] === "true" } });
         await page.waitForFunction(() => document.documentElement.dataset.stageReady === "1");
         const element = page.getByTestId("still");
         const bounds = await element.boundingBox();

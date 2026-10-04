@@ -1,0 +1,1526 @@
+{
+  "version": 1,
+  "lesson": "06-leccion-5",
+  "locale": "en",
+  "title": "Lesson 5 — Degrees, Chords and Tonality",
+  "source": "content/storyboards/en/06-leccion-5.guion.txt",
+  "format": {
+    "aspect": "16:9",
+    "theme": "storm"
+  },
+  "projects": {
+    "escala": {
+      "setup": {
+        "mode": "single",
+        "title": "Do mayor",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nC4 cuarto; D4 cuarto; E4 cuarto; F4 cuarto\ncompas 2\nG4 cuarto; A4 cuarto; B4 cuarto; C5 cuarto",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "II",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "III",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "VI",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "VII",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "text": "I",
+          "kind": "roman"
+        }
+      ]
+    },
+    "espejo": {
+      "setup": {
+        "mode": "single",
+        "title": "Do mayor por terceras",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nD4 cuarto; F4 cuarto; A4 cuarto; C5 cuarto\ncompas 2\nE5 cuarto; G5 cuarto; B5 cuarto; silencio cuarto",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "II",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "VI",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "III",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "VII",
+          "kind": "roman"
+        }
+      ]
+    },
+    "la-menor": {
+      "setup": {
+        "mode": "single",
+        "title": "La menor natural",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nA4 cuarto; B4 cuarto; C5 cuarto; D5 cuarto\ncompas 2\nE5 cuarto; F5 cuarto; G5 cuarto; A5 cuarto"
+    },
+    "la-armonica": {
+      "setup": {
+        "mode": "single",
+        "title": "La menor armónica",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nA4 cuarto; B4 cuarto; C5 cuarto; D5 cuarto\ncompas 2\nE5 cuarto; F5 cuarto; G#5 cuarto; A5 cuarto"
+    },
+    "vii7": {
+      "setup": {
+        "mode": "single",
+        "title": "Sensible, IV y VI",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[B4 D5 F5 A5] entera"
+    },
+    "modales-alterados": {
+      "setup": {
+        "mode": "single",
+        "title": "Grados atractivos modales",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nDb4 entera\ncompas 2\nF#4 entera\ncompas 3\nBb4 entera"
+    },
+    "terceras": {
+      "setup": {
+        "mode": "single",
+        "title": "Acordes por terceras sobre Do",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 5,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 E4 G4] entera\ncompas 2\n[C4 E4 G4 B4] entera\ncompas 3\n[C4 E4 G4 B4 D5] entera\ncompas 4\n[C4 E4 G4 B4 D5 F5] entera\ncompas 5\n[C4 E4 G4 B4 D5 F5 A5] entera"
+    },
+    "cuatro-tipos": {
+      "setup": {
+        "mode": "single",
+        "title": "Los cuatro tipos de acordes de quinta",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 4,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 E4 G4] entera\ncompas 2\n[C4 Eb4 G4] entera\ncompas 3\n[C4 Eb4 Gb4] entera\ncompas 4\n[C4 E4 G#4] entera"
+    },
+    "regiones": {
+      "setup": {
+        "mode": "single",
+        "title": "Regiones tonales de Do mayor",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[D4 F4 A4] cuarto; [F4 A4 C5] cuarto; [A4 C5 E5] cuarto; [C4 E4 G4] cuarto\ncompas 2\n[E4 G4 B4] cuarto; [G4 B4 D5] cuarto; [B4 D5 F5] cuarto; silencio cuarto",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "II",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "VI",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "III",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "VII",
+          "kind": "roman"
+        }
+      ]
+    },
+    "sostenidos": {
+      "setup": {
+        "mode": "single",
+        "title": "Orden de los sostenidos",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nF#4 cuarto; C#5 cuarto; G#4 cuarto; D#5 cuarto\ncompas 2\nA#4 cuarto; E#5 cuarto; B#4 cuarto; silencio cuarto"
+    },
+    "bemoles": {
+      "setup": {
+        "mode": "single",
+        "title": "Orden de los bemoles",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nBb4 cuarto; Eb4 cuarto; Ab4 cuarto; Db4 cuarto\ncompas 2\nGb4 cuarto; Cb4 cuarto; Fb4 cuarto; silencio cuarto"
+    }
+  },
+  "stills": [
+    {
+      "id": "titulo",
+      "kind": "title",
+      "heading": "Degrees, Chords and Tonality",
+      "caption": "Lesson 5 · Harmony Course · Storm Studios Learning",
+      "narration": "Hello, and welcome back to Storm Studios Learning. In the previous lesson we built fifth chords on every degree of the basic scales. Before we start writing for the vocal quartet, we need to complete a few ideas about degrees, chords and tonality."
+    },
+    {
+      "id": "explicativa",
+      "kind": "title",
+      "heading": "An explanatory lesson",
+      "caption": "Everything we see today will be used in the following lessons",
+      "narration": "This is an explanatory lesson. It has no assignment for the Virtual Teacher, but everything we see today will be used in the following lessons."
+    },
+    {
+      "id": "grados",
+      "project": "escala",
+      "heading": "The names of the degrees",
+      "caption": "C major",
+      "narration": "Let's start with the names of the degrees. Each degree of the scale has its own name. We will see them in C major.",
+      "showCiphers": true
+    },
+    {
+      "id": "tonica",
+      "project": "espejo",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 4,
+          "color": "amber",
+          "label": "tonic"
+        }
+      ],
+      "heading": "Tonic",
+      "caption": "The center of the key",
+      "narration": "The first degree is the tonic. It is the center of the key.",
+      "showCiphers": true
+    },
+    {
+      "id": "dominante",
+      "project": "espejo",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 4,
+          "color": "amber",
+          "label": "tonic"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "color": "cyan",
+          "label": "dominant"
+        }
+      ],
+      "heading": "Dominant",
+      "caption": "A fifth above the tonic",
+      "narration": "The fifth degree, a fifth above the tonic, is the dominant.",
+      "showCiphers": true
+    },
+    {
+      "id": "subdominante",
+      "project": "espejo",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "color": "cyan",
+          "label": "subdominant"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "color": "amber",
+          "label": "tonic"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "color": "cyan",
+          "label": "dominant"
+        }
+      ],
+      "heading": "Subdominant",
+      "caption": "A fifth below the tonic",
+      "narration": "And a fifth below the tonic we have the fourth degree, the subdominant.",
+      "showCiphers": true
+    },
+    {
+      "id": "mediante",
+      "project": "espejo",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "color": "cyan",
+          "label": "subdominant"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "color": "amber",
+          "label": "tonic"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "color": "violet",
+          "label": "mediant"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "color": "cyan",
+          "label": "dominant"
+        }
+      ],
+      "heading": "Mediant",
+      "caption": "Halfway between tonic and dominant",
+      "narration": "The third degree, halfway between the tonic and the dominant, is called the mediant.",
+      "showCiphers": true
+    },
+    {
+      "id": "submediante",
+      "project": "espejo",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "color": "cyan",
+          "label": "subdominant"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "color": "violet",
+          "label": "submediant"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "color": "amber",
+          "label": "tonic"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "color": "violet",
+          "label": "mediant"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "color": "cyan",
+          "label": "dominant"
+        }
+      ],
+      "heading": "Submediant",
+      "caption": "Halfway between tonic and subdominant, going down",
+      "narration": "And halfway between the tonic and the subdominant, but going down, we have the sixth degree, the submediant.",
+      "showCiphers": true
+    },
+    {
+      "id": "supertonica",
+      "project": "escala",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "color": "amber",
+          "label": "tonic"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "color": "green",
+          "label": "supertonic"
+        }
+      ],
+      "heading": "Supertonic",
+      "caption": "Just above the tonic",
+      "narration": "The second degree, just above the tonic, is the supertonic.",
+      "showCiphers": true
+    },
+    {
+      "id": "espejo",
+      "project": "espejo",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "color": "cyan",
+          "label": "subdominant"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "color": "violet",
+          "label": "submediant"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "color": "amber",
+          "label": "tonic"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "color": "violet",
+          "label": "mediant"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "color": "cyan",
+          "label": "dominant"
+        }
+      ],
+      "heading": "A mirror around the tonic",
+      "narration": "Notice how the names mirror each other around the tonic: the dominant above and the subdominant below; the mediant above and the submediant below.",
+      "showCiphers": true
+    },
+    {
+      "id": "sensible",
+      "project": "escala",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 5,
+          "color": "rose",
+          "label": "leading tone · half step"
+        }
+      ],
+      "heading": "Seventh degree: leading tone",
+      "caption": "A half step below the tonic",
+      "narration": "We still need the seventh degree. When the seventh degree is a half step below the tonic, as in the major scale and in harmonic minor, we call it the leading tone.",
+      "showCiphers": true
+    },
+    {
+      "id": "subtonica",
+      "project": "la-menor",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 5,
+          "color": "cyan",
+          "label": "whole step"
+        }
+      ],
+      "heading": "Subtonic",
+      "caption": "A whole step below the tonic",
+      "narration": "But in the natural minor scale, the seventh degree is a whole step below the tonic. In that case we call it the subtonic.",
+      "showCiphers": true
+    },
+    {
+      "id": "la-subtonica",
+      "project": "la-menor",
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "cyan",
+          "label": "subtonic"
+        }
+      ],
+      "heading": "A natural minor",
+      "caption": "G is the subtonic",
+      "narration": "For example, in A natural minor, G is the subtonic.",
+      "showCiphers": true
+    },
+    {
+      "id": "la-sensible",
+      "project": "la-armonica",
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "rose",
+          "label": "leading tone"
+        }
+      ],
+      "heading": "A harmonic minor",
+      "caption": "G♯ is the leading tone",
+      "narration": "In A harmonic minor, G sharp is the leading tone.",
+      "showCiphers": true
+    },
+    {
+      "id": "funciones",
+      "kind": "title",
+      "heading": "Functions of the degrees",
+      "caption": "Tonal · modal · secondary · attractive",
+      "narration": "Now let's look at the functions of the degrees."
+    },
+    {
+      "id": "tonales",
+      "project": "escala",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "amber",
+          "label": "tonal"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "tonal"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "amber",
+          "label": "tonal"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "tonal"
+        }
+      ],
+      "heading": "Tonal or principal degrees",
+      "caption": "I · IV · V",
+      "narration": "The first, fourth and fifth degrees are the tonal, or principal, degrees. They are the ones that hold the key together.",
+      "showCiphers": true
+    },
+    {
+      "id": "modales",
+      "project": "escala",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "violet",
+          "label": "modal"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "violet",
+          "label": "modal"
+        }
+      ],
+      "heading": "Modal degrees",
+      "caption": "III · VI",
+      "narration": "The third and sixth degrees are the modal degrees, because they tell us whether we are in major or in minor.",
+      "showCiphers": true
+    },
+    {
+      "id": "secundarios",
+      "project": "escala",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "cyan",
+          "label": "secondary"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "cyan",
+          "label": "secondary"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "cyan",
+          "label": "secondary"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "cyan",
+          "label": "secondary"
+        }
+      ],
+      "heading": "Secondary degrees",
+      "caption": "II · III · VI · VII",
+      "narration": "The secondary degrees are all those that are not principal: the second, the third, the sixth and the seventh.",
+      "showCiphers": true
+    },
+    {
+      "id": "atractivos",
+      "kind": "title",
+      "heading": "Attractive degrees",
+      "caption": "They require a special resolution",
+      "narration": "And then we have the attractive degrees. We call a note attractive when its harmonic tendency requires a special resolution."
+    },
+    {
+      "id": "sensible-atractiva",
+      "project": "escala",
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "rose",
+          "label": "leading tone"
+        }
+      ],
+      "heading": "The leading tone",
+      "caption": "The most important attractive note",
+      "narration": "The most important attractive note is the leading tone.",
+      "showCiphers": true
+    },
+    {
+      "id": "con-sensible",
+      "project": "vii7",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 1,
+          "color": "rose",
+          "label": "B · D · F · A"
+        }
+      ],
+      "heading": "IV and VI with the leading tone",
+      "caption": "F and A in the same chord as B",
+      "narration": "The fourth and sixth degrees also become attractive when they appear in the same chord as the leading tone.",
+      "showCiphers": true
+    },
+    {
+      "id": "modales-alterados",
+      "project": "modales-alterados",
+      "reveal": {
+        "measure": 1
+      },
+      "heading": "Modal attractive degrees",
+      "narration": "We also consider attractive three altered degrees that come from the modes.",
+      "showCiphers": true
+    },
+    {
+      "id": "frigio",
+      "project": "modales-alterados",
+      "reveal": {
+        "measure": 2
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 1,
+          "color": "violet",
+          "label": "Phrygian II"
+        }
+      ],
+      "heading": "Phrygian II · D♭",
+      "narration": "The Phrygian second degree. In C, it is D flat.",
+      "showCiphers": true
+    },
+    {
+      "id": "lidio",
+      "project": "modales-alterados",
+      "reveal": {
+        "measure": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 1,
+          "color": "violet",
+          "label": "Phrygian II"
+        },
+        {
+          "measure": 2,
+          "endMeasure": 2,
+          "color": "violet",
+          "label": "Lydian IV"
+        }
+      ],
+      "heading": "Lydian IV · F♯",
+      "narration": "The Lydian fourth degree. In C, it is F sharp.",
+      "showCiphers": true
+    },
+    {
+      "id": "mixolidio",
+      "project": "modales-alterados",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 1,
+          "color": "violet",
+          "label": "Phrygian II"
+        },
+        {
+          "measure": 2,
+          "endMeasure": 2,
+          "color": "violet",
+          "label": "Lydian IV"
+        },
+        {
+          "measure": 3,
+          "endMeasure": 3,
+          "color": "violet",
+          "label": "Mixolydian VII"
+        }
+      ],
+      "heading": "Mixolydian VII · B♭",
+      "narration": "And the Mixolydian seventh degree. In C, it is B flat.",
+      "showCiphers": true
+    },
+    {
+      "id": "repaso-modos",
+      "kind": "title",
+      "heading": "Review the modes",
+      "caption": "Lesson 2",
+      "narration": "If you want to review the modes, go back to lesson two."
+    },
+    {
+      "id": "acorde",
+      "kind": "title",
+      "heading": "The chord",
+      "caption": "Any simultaneity of different sounds",
+      "narration": "Now let's move on to chords. In the previous lesson we said that a chord is any simultaneity of different sounds."
+    },
+    {
+      "id": "terceras",
+      "project": "terceras",
+      "reveal": {
+        "measure": 2
+      },
+      "heading": "Stacked thirds",
+      "caption": "Built from the root",
+      "narration": "And that we build it from a generating sound, the root, by stacking thirds.",
+      "showCiphers": true
+    },
+    {
+      "id": "quinta",
+      "project": "terceras",
+      "reveal": {
+        "measure": 2
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 1,
+          "color": "amber",
+          "label": "5th"
+        }
+      ],
+      "heading": "Fifth chord",
+      "caption": "Two thirds",
+      "narration": "With two thirds we get the fifth chord, which you already know.",
+      "showCiphers": true
+    },
+    {
+      "id": "septima",
+      "project": "terceras",
+      "reveal": {
+        "measure": 3
+      },
+      "highlights": [
+        {
+          "measure": 2,
+          "endMeasure": 2,
+          "color": "amber",
+          "label": "7th"
+        }
+      ],
+      "heading": "Seventh chord",
+      "caption": "Three thirds",
+      "narration": "If we stack three thirds, we get the seventh chord.",
+      "showCiphers": true
+    },
+    {
+      "id": "novena",
+      "project": "terceras",
+      "reveal": {
+        "measure": 4
+      },
+      "highlights": [
+        {
+          "measure": 3,
+          "endMeasure": 3,
+          "color": "amber",
+          "label": "9th"
+        }
+      ],
+      "heading": "Ninth chord",
+      "caption": "Four thirds",
+      "narration": "With four thirds, the ninth chord.",
+      "showCiphers": true
+    },
+    {
+      "id": "onceava",
+      "project": "terceras",
+      "reveal": {
+        "measure": 5
+      },
+      "highlights": [
+        {
+          "measure": 4,
+          "endMeasure": 4,
+          "color": "amber",
+          "label": "11th"
+        }
+      ],
+      "heading": "Eleventh chord",
+      "caption": "Five thirds",
+      "narration": "With five, the eleventh chord.",
+      "showCiphers": true
+    },
+    {
+      "id": "treceava",
+      "project": "terceras",
+      "highlights": [
+        {
+          "measure": 5,
+          "endMeasure": 5,
+          "color": "amber",
+          "label": "13th"
+        }
+      ],
+      "heading": "Thirteenth chord",
+      "caption": "Six thirds",
+      "narration": "And with six thirds, the thirteenth chord.",
+      "showCiphers": true
+    },
+    {
+      "id": "nombre",
+      "project": "terceras",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 1,
+          "color": "cyan",
+          "label": "5th"
+        },
+        {
+          "measure": 2,
+          "endMeasure": 2,
+          "color": "cyan",
+          "label": "7th"
+        },
+        {
+          "measure": 3,
+          "endMeasure": 3,
+          "color": "cyan",
+          "label": "9th"
+        },
+        {
+          "measure": 4,
+          "endMeasure": 4,
+          "color": "cyan",
+          "label": "11th"
+        },
+        {
+          "measure": 5,
+          "endMeasure": 5,
+          "color": "cyan",
+          "label": "13th"
+        }
+      ],
+      "heading": "The name comes from the highest note",
+      "caption": "Interval between the root and the highest note",
+      "narration": "The name always comes from the interval between the root and the highest note of the chord.",
+      "showCiphers": true
+    },
+    {
+      "id": "terceras-escuchar",
+      "project": "terceras",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "Chords in thirds on C",
+      "narration": "Let's listen to the five chords on C.",
+      "showCiphers": true
+    },
+    {
+      "id": "armonia",
+      "kind": "title",
+      "heading": "Harmony",
+      "caption": "Intervallic structure of chords and the laws of their connection",
+      "narration": "Let's also remember that harmony studies the intervallic structure of chords and the laws by which they are connected."
+    },
+    {
+      "id": "armonias",
+      "kind": "title",
+      "heading": "Harmonies, in plural",
+      "caption": "Period · genre · stylistic movement · composer",
+      "narration": "And that we speak of harmonies, in plural, because those laws change with the period, the genre, the stylistic movement and the composer."
+    },
+    {
+      "id": "serie-intro",
+      "kind": "title",
+      "heading": "The harmonic series",
+      "caption": "Whole-number multiples of the fundamental frequency",
+      "narration": "The harmonic series helps us understand that history. When a note sounds, we don't only hear its fundamental frequency, but a whole series of natural harmonics, which are whole-number multiples of that frequency."
+    },
+    {
+      "id": "serie",
+      "kind": "image",
+      "heading": "Harmonic series on C",
+      "narration": "This is the harmonic series on C.",
+      "image": "/images/curso/leccion-5/serie-armonicos-en.svg"
+    },
+    {
+      "id": "serie-octava",
+      "kind": "image",
+      "heading": "Harmonic 2: the octave",
+      "narration": "The second harmonic is the octave.",
+      "image": "/images/curso/leccion-5/video/serie-octava-en.svg"
+    },
+    {
+      "id": "serie-quinta",
+      "kind": "image",
+      "heading": "Harmonic 3: the fifth",
+      "narration": "The third, the fifth.",
+      "image": "/images/curso/leccion-5/video/serie-quinta-en.svg"
+    },
+    {
+      "id": "serie-octava-2",
+      "kind": "image",
+      "heading": "Harmonic 4: the octave again",
+      "narration": "The fourth, the octave again.",
+      "image": "/images/curso/leccion-5/video/serie-octava-2-en.svg"
+    },
+    {
+      "id": "serie-tercera",
+      "kind": "image",
+      "heading": "Harmonic 5: the major third",
+      "narration": "The fifth harmonic is the major third.",
+      "image": "/images/curso/leccion-5/video/serie-tercera-en.svg"
+    },
+    {
+      "id": "serie-acorde",
+      "kind": "image",
+      "heading": "Harmonics 1 to 6: a major chord",
+      "narration": "With the first six harmonics we already have a complete major chord.",
+      "image": "/images/curso/leccion-5/video/serie-acorde-mayor-en.svg"
+    },
+    {
+      "id": "serie-septima",
+      "kind": "image",
+      "heading": "Harmonic 7: a flat B♭",
+      "narration": "The seventh harmonic is a B flat slightly lower than the one on the piano. That is why we say it is flat.",
+      "image": "/images/curso/leccion-5/video/serie-septima-en.svg"
+    },
+    {
+      "id": "serie-flechas",
+      "kind": "image",
+      "heading": "Flat ↓ and sharp ↑",
+      "narration": "Other harmonics also sound slightly lower or slightly higher than the note we use to write them. The arrows show this.",
+      "image": "/images/curso/leccion-5/video/serie-flechas-en.svg"
+    },
+    {
+      "id": "serie-historia",
+      "kind": "image",
+      "heading": "Harmonies through history",
+      "narration": "Throughout history, Western music has gradually accepted as consonant harmonics that lie further and further along this series. Let's walk through that history with an example from each stage.",
+      "image": "/images/curso/leccion-5/serie-armonicos-en.svg"
+    },
+    {
+      "id": "monodia",
+      "kind": "image",
+      "musicFile": "../../../.local-work/06-leccion-5-musica/01-monodia.mp3",
+      "musicCredit": "Hildegard von Bingen — Canticles of Ecstasy",
+      "heading": "Monody",
+      "caption": "Harmonics 1 and 2",
+      "narration": "First, monody: a single melodic line. It corresponds to harmonics one and two, the fundamental and its octave. Let's listen.",
+      "image": "/images/curso/leccion-5/video/serie-monodia-en.svg"
+    },
+    {
+      "id": "organum",
+      "kind": "image",
+      "musicFile": "../../../.local-work/06-leccion-5-musica/02-organum.mp3",
+      "musicCredit": "Pérotin — Viderunt omnes · David Munrow",
+      "heading": "Organum",
+      "caption": "Harmonics 3 and 4",
+      "narration": "Next comes organum, which adds parallel voices in fifths and fourths. These are harmonics three and four. Let's listen.",
+      "image": "/images/curso/leccion-5/video/serie-organum-en.svg"
+    },
+    {
+      "id": "ars-nova",
+      "kind": "image",
+      "musicFile": "../../../.local-work/06-leccion-5-musica/03-ars-nova.mp3",
+      "musicCredit": "Palestrina — Missa Papae Marcelli · Dresdner Kammerchor",
+      "heading": "Ars Nova",
+      "caption": "Harmonics 5 and 6",
+      "narration": "With the Ars Nova, in the fourteenth century, and later in the Renaissance, the third is added, and with it the complete chord. These are harmonics five and six. Let's listen.",
+      "image": "/images/curso/leccion-5/video/serie-ars-nova-en.svg"
+    },
+    {
+      "id": "preclasico",
+      "kind": "image",
+      "musicFile": "../../../.local-work/06-leccion-5-musica/04-preclasico.mp3",
+      "musicCredit": "J. S. Bach — “O Haupt voll Blut und Wunden”, St Matthew Passion",
+      "heading": "Pre-Classical",
+      "caption": "Harmonics 7 and 8 · Bach · Handel · Mozart · Beethoven",
+      "narration": "In the pre-classical period, from the sixteenth to the eighteenth century, with Bach, Handel, Mozart and Beethoven, the seventh appears. These are harmonics seven and eight. Let's listen.",
+      "image": "/images/curso/leccion-5/video/serie-preclasico-en.svg"
+    },
+    {
+      "id": "clasico",
+      "kind": "image",
+      "musicFile": "../../../.local-work/06-leccion-5-musica/05-clasico.mp3",
+      "musicCredit": "Chopin — Prelude in E minor, Op. 28 No. 4",
+      "heading": "Classical",
+      "caption": "Harmonics 9 and 10 · Schubert · Chopin · Brahms",
+      "narration": "Then come Schubert, Chopin and Brahms, who appear in our chart as the classical period. Their harmony reaches harmonics nine and ten, the ninth. Let's listen.",
+      "image": "/images/curso/leccion-5/video/serie-clasico-en.svg"
+    },
+    {
+      "id": "siglo-xx",
+      "kind": "image",
+      "heading": "Twentieth century",
+      "caption": "Harmonics 11 to 20",
+      "narration": "From the eleventh to the twentieth harmonic we find three twentieth-century movements.",
+      "image": "/images/curso/leccion-5/video/serie-siglo-xx-en.svg"
+    },
+    {
+      "id": "impresionismo",
+      "kind": "image",
+      "musicFile": "../../../.local-work/06-leccion-5-musica/06-impresionismo.mp3",
+      "musicCredit": "Debussy — La cathédrale engloutie, Préludes, Book 1",
+      "heading": "Impressionism",
+      "caption": "Debussy · Ravel · Fauré · Satie",
+      "narration": "Impressionism, with Debussy, Ravel, Fauré and Satie. Let's listen.",
+      "image": "/images/curso/leccion-5/video/serie-impresionismo-en.svg"
+    },
+    {
+      "id": "expresionismo",
+      "kind": "image",
+      "musicFile": "../../../.local-work/06-leccion-5-musica/07-expresionismo.mp3",
+      "musicCredit": "Stravinsky — The Rite of Spring",
+      "heading": "Expressionism",
+      "caption": "Stravinsky · Shostakovich · Bartók · Scriabin",
+      "narration": "Expressionism, with Stravinsky, Shostakovich, Bartók and Scriabin. Let's listen.",
+      "image": "/images/curso/leccion-5/video/serie-expresionismo-en.svg"
+    },
+    {
+      "id": "dodecafonia",
+      "kind": "image",
+      "musicFile": "../../../.local-work/06-leccion-5-musica/08-dodecafonia.mp3",
+      "musicCredit": "Alban Berg — Violin Concerto",
+      "heading": "Dodecaphony",
+      "caption": "Schoenberg · Berg · Webern · Hindemith",
+      "narration": "And dodecaphony, with Schoenberg, Berg and Webern, which uses all twelve tones without a tonal center. Hindemith also appears in the chart. Let's listen.",
+      "image": "/images/curso/leccion-5/video/serie-dodecafonia-en.svg"
+    },
+    {
+      "id": "microtonalismo",
+      "kind": "image",
+      "musicFile": "../../../.local-work/06-leccion-5-musica/09-microtonalismo.mp3",
+      "musicCredit": "Julián Carrillo — Preludio a Colón (1925)",
+      "heading": "Microtonalism",
+      "caption": "Harmonics 21 to 24 · Julián Carrillo",
+      "narration": "Finally, beyond the twentieth harmonic, microtonalism uses intervals smaller than a half step. Its great pioneer was the Mexican composer Julián Carrillo, with his Sonido Trece. Let's listen.",
+      "image": "/images/curso/leccion-5/video/serie-microtonalismo-en.svg"
+    },
+    {
+      "id": "cuatro-tipos",
+      "project": "cuatro-tipos",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 1,
+          "color": "amber",
+          "label": "major"
+        },
+        {
+          "measure": 2,
+          "endMeasure": 2,
+          "color": "cyan",
+          "label": "minor"
+        },
+        {
+          "measure": 3,
+          "endMeasure": 3,
+          "color": "rose",
+          "label": "diminished"
+        },
+        {
+          "measure": 4,
+          "endMeasure": 4,
+          "color": "violet",
+          "label": "augmented"
+        }
+      ],
+      "heading": "Four types of fifth chords",
+      "caption": "Major or minor by the third; augmented or diminished by the fifth",
+      "narration": "Now let's go back to fifth chords. If we take each degree of the basic scales as a root, we only get four types of chords: major, minor, diminished and augmented. A chord is major or minor because of its third, and augmented or diminished because of its fifth.",
+      "showCiphers": true
+    },
+    {
+      "id": "regiones-intro",
+      "kind": "image",
+      "heading": "Tonal regions",
+      "narration": "The chords of a scale are grouped into three tonal regions: the subdominant region, the tonic region and the dominant region.",
+      "image": "/images/curso/leccion-5/regiones-tonales-en.svg"
+    },
+    {
+      "id": "regiones-principal",
+      "project": "regiones",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "principal"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "principal"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "principal"
+        }
+      ],
+      "heading": "One principal and two secondary chords",
+      "caption": "The secondary chords, a third above and below",
+      "narration": "Each region has a principal chord that gives it its name, and two secondary chords, a third above and a third below it.",
+      "showCiphers": true
+    },
+    {
+      "id": "regiones-terceras",
+      "project": "regiones",
+      "heading": "C major arranged in thirds",
+      "narration": "If we arrange the chords of C major in thirds, it becomes very clear.",
+      "showCiphers": true
+    },
+    {
+      "id": "region-sd",
+      "project": "regiones",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 4,
+          "color": "cyan",
+          "label": "Subdominant"
+        }
+      ],
+      "heading": "Subdominant region",
+      "caption": "IV principal · II and VI secondary",
+      "narration": "The subdominant region has the fourth degree as its principal chord, and the second and sixth as secondary chords.",
+      "showCiphers": true
+    },
+    {
+      "id": "region-t",
+      "project": "regiones",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endMeasure": 2,
+          "endBeat": 2,
+          "color": "amber",
+          "label": "Tonic"
+        }
+      ],
+      "heading": "Tonic region",
+      "caption": "I principal · VI and III secondary",
+      "narration": "The tonic region has the first degree, with the sixth and the third.",
+      "showCiphers": true
+    },
+    {
+      "id": "region-d",
+      "project": "regiones",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 4,
+          "color": "rose",
+          "label": "Dominant"
+        }
+      ],
+      "heading": "Dominant region",
+      "caption": "V principal · III and VII secondary",
+      "narration": "And the dominant region has the fifth degree, with the third and the seventh.",
+      "showCiphers": true
+    },
+    {
+      "id": "regiones-modales",
+      "project": "regiones",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "violet",
+          "label": "SD · T"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "violet",
+          "label": "T · D"
+        }
+      ],
+      "heading": "III and VI: two regions",
+      "caption": "The modal chords",
+      "narration": "Notice that the third and the sixth, the modal chords, belong to two regions at the same time.",
+      "showCiphers": true
+    },
+    {
+      "id": "sustitucion",
+      "kind": "image",
+      "heading": "Substitution within a region",
+      "caption": "Without changing the harmonic sense",
+      "narration": "Chords of the same region can substitute for each other without changing the harmonic sense of a passage.",
+      "image": "/images/curso/leccion-5/regiones-tonales-en.svg"
+    },
+    {
+      "id": "tonalidad",
+      "kind": "title",
+      "heading": "Tonality",
+      "caption": "Relationships, functions and hierarchies around the tonic",
+      "narration": "Finally, let's talk about tonality. We call tonality the set of relationships, functions and hierarchies that all the sounds of our musical system adopt around one of them, which we choose as the tonal center and call the tonic."
+    },
+    {
+      "id": "modular",
+      "kind": "title",
+      "heading": "Modulating",
+      "caption": "Replacing one tonal center with another",
+      "narration": "To modulate is to replace one tonal center with another. We will study it later."
+    },
+    {
+      "id": "alteraciones",
+      "kind": "image",
+      "heading": "Accidentals show the key",
+      "narration": "The altered, or unaltered, notes of a passage tell us its key. If we order the keys by the order in which new accidentals appear, we discover a fixed relationship of perfect fifths.",
+      "image": "/images/curso/leccion-5/orden-alteraciones-en.svg"
+    },
+    {
+      "id": "sostenidos",
+      "project": "sostenidos",
+      "heading": "Order of sharps",
+      "caption": "F · C · G · D · A · E · B",
+      "narration": "Sharps appear in this order: F, C, G, D, A, E and B.",
+      "showCiphers": true
+    },
+    {
+      "id": "sostenidos-quintas",
+      "project": "sostenidos",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "P5"
+        }
+      ],
+      "heading": "Each one a perfect fifth above",
+      "narration": "Each one is a perfect fifth above the previous one.",
+      "showCiphers": true
+    },
+    {
+      "id": "bemoles",
+      "project": "bemoles",
+      "heading": "Order of flats",
+      "caption": "B · E · A · D · G · C · F",
+      "narration": "Flats appear in the opposite order: B, E, A, D, G, C and F.",
+      "showCiphers": true
+    },
+    {
+      "id": "bemoles-quintas",
+      "project": "bemoles",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "P5"
+        }
+      ],
+      "heading": "Each one a perfect fifth below",
+      "narration": "Each one is a perfect fifth below the previous one.",
+      "showCiphers": true
+    },
+    {
+      "id": "circulo",
+      "kind": "image",
+      "heading": "The circle of fifths",
+      "narration": "With this we build the circle of fifths.",
+      "image": "/images/curso/leccion-5/circulo-quintas-en.svg"
+    },
+    {
+      "id": "circulo-do",
+      "kind": "image",
+      "heading": "C major",
+      "caption": "No accidentals",
+      "narration": "At the top is C major, with no accidentals.",
+      "image": "/images/curso/leccion-5/video/circulo-do-en.svg"
+    },
+    {
+      "id": "circulo-sostenidos",
+      "kind": "image",
+      "heading": "A fifth above: one more sharp",
+      "narration": "Going clockwise, each key is a perfect fifth above the previous one and adds a sharp: G, D, A, E, B, F sharp and C sharp.",
+      "image": "/images/curso/leccion-5/video/circulo-sostenidos-en.svg"
+    },
+    {
+      "id": "circulo-bemoles",
+      "kind": "image",
+      "heading": "A fifth below: one more flat",
+      "narration": "Going counterclockwise, each key is a perfect fifth below and adds a flat: F, B flat, E flat, A flat, D flat, G flat and C flat.",
+      "image": "/images/curso/leccion-5/video/circulo-bemoles-en.svg"
+    },
+    {
+      "id": "circulo-enarmonicas",
+      "kind": "image",
+      "heading": "Three enharmonic pairs",
+      "caption": "Same sound, different spelling",
+      "narration": "At the bottom of the circle, three positions have two names. B and C flat, F sharp and G flat, C sharp and D flat sound the same, but they are written with different key signatures.",
+      "image": "/images/curso/leccion-5/video/circulo-enarmonicas-en.svg"
+    },
+    {
+      "id": "circulo-mayores",
+      "kind": "image",
+      "heading": "Fifteen major keys",
+      "narration": "In total we have fifteen major keys.",
+      "image": "/images/curso/leccion-5/video/circulo-mayores-en.svg"
+    },
+    {
+      "id": "circulo-menores",
+      "kind": "image",
+      "heading": "Relative minors",
+      "caption": "A minor third below, same key signature",
+      "narration": "Each key signature also serves a minor key, its relative, a minor third below.",
+      "image": "/images/curso/leccion-5/video/circulo-menores-en.svg"
+    },
+    {
+      "id": "circulo-relativas",
+      "kind": "image",
+      "heading": "A minor · E minor · D minor",
+      "caption": "Relatives of C, G and F major",
+      "narration": "A minor is the relative of C major. E minor, of G major. And D minor, of F major.",
+      "image": "/images/curso/leccion-5/video/circulo-relativas-en.svg"
+    },
+    {
+      "id": "circulo-30",
+      "kind": "image",
+      "heading": "Thirty keys",
+      "narration": "This gives us fifteen minor keys: thirty keys in total.",
+      "image": "/images/curso/leccion-5/circulo-quintas-en.svg"
+    },
+    {
+      "id": "recapitulemos",
+      "kind": "title",
+      "heading": "Let's recap",
+      "narration": "Let's recap."
+    },
+    {
+      "id": "recap-grados",
+      "kind": "image",
+      "heading": "Names and functions of the degrees",
+      "narration": "The degrees have names and functions: tonal, modal, secondary and attractive.",
+      "image": "/images/curso/leccion-5/grados-en.svg"
+    },
+    {
+      "id": "recap-terceras",
+      "project": "terceras",
+      "heading": "Chords in thirds",
+      "narration": "Chords are built by stacking thirds, from the fifth chord to the thirteenth chord.",
+      "showCiphers": true
+    },
+    {
+      "id": "recap-serie",
+      "kind": "image",
+      "heading": "The harmonic series",
+      "narration": "The harmonic series helps us understand how harmonies changed throughout history.",
+      "image": "/images/curso/leccion-5/serie-armonicos-en.svg"
+    },
+    {
+      "id": "recap-regiones",
+      "kind": "image",
+      "heading": "Tonal regions",
+      "narration": "The chords of a scale are grouped into the subdominant, tonic and dominant regions.",
+      "image": "/images/curso/leccion-5/regiones-tonales-en.svg"
+    },
+    {
+      "id": "recap-circulo",
+      "kind": "image",
+      "heading": "The circle of fifths",
+      "narration": "And the circle of fifths organizes the thirty keys.",
+      "image": "/images/curso/leccion-5/circulo-quintas-en.svg"
+    },
+    {
+      "id": "siguiente",
+      "kind": "title",
+      "heading": "Next lesson",
+      "caption": "The vocal quartet: soprano · alto · tenor · bass",
+      "narration": "In the next lesson we will start writing for the vocal quartet: soprano, alto, tenor and bass."
+    },
+    {
+      "id": "cierre",
+      "kind": "title",
+      "heading": "Thank you",
+      "caption": "See you in lesson 6",
+      "narration": "Thank you for joining me. See you in lesson six."
+    }
+  ]
+}

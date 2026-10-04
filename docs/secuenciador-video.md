@@ -29,4 +29,14 @@ npm run video -- content/storyboards/en/05-leccion-4.json --audio content/storyb
 
 Para cualquier clip repartido, cada entrada del mapa puede incluir `partialText: { "17": "texto exacto de esta parte" }`. El corte de audio se ajusta al silencio detectado y el SRT usa ese texto, sin depender de un idioma o número de clip. El mapa español antiguo conserva su compatibilidad para el clip 16. En inglés el clip compartido es el 17, entre `do-tercera` y `do-quinta`.
 
-Los originales de voz y todos los MP3/WAV/PNG/MP4 generados quedan fuera de Git, en `.local-work/` o `stills/`. La copia a `H:` y la subida a R2 son pasos de entrega explícitos, fuera del comando reutilizable.
+Los originales de voz y todos los MP3/WAV/PNG/MP4 generados quedan fuera de Git, en `.local-work/` o `stills/`. La copia a `H:` y la entrega remota son pasos de entrega explícitos, fuera del comando reutilizable.
+
+### Imágenes SVG y fragmentos musicales externos
+
+Un still `kind: "image"` usa `image` (ruta pública local del SVG) en lugar de `project`; conserva el encabezado, el pie y el fondo del tema Storm. Ejecuta `npm run stills` después de cambiar imágenes o storyboards para actualizar el manifest.
+
+`musicFile` acepta una ruta absoluta o relativa **al storyboard original**. Suena después de todos los clips de voz de ese still. Sin `musicTrim` se usa el archivo completo; con `[inicio, fin]` solo ese intervalo, en segundos. Un recorte invertido, no finito o fuera del archivo falla; un archivo ausente indica su ruta y el id del still antes de decodificar la narración. No se admite `audio: true` junto con `musicFile`, ni cursor en música externa.
+
+El fragmento se normaliza a −19 LUFS, conserva su duración a 48 kHz y lleva fade in/fade out de 0.5 s. Si dura menos de un segundo, los fades se solapan. El ajuste final de la mezcla sigue siendo −16 LUFS como antes. El fragmento se suma a `musicSeconds` y `timeline.json` registra archivo, `sourceStart`/`sourceEnd`, inicio/final globales, crédito, imagen y `cursors: []`.
+
+`musicCredit` contiene «Obra — Compositor · Intérpretes». El montaje captura una variante en `video/work/credits/` y la muestra exclusivamente durante el fragmento: la narración y la pausa final usan la imagen original sin crédito. No se edita el storyboard original, ni se sube el archivo musical al sitio, a Git o a R2.

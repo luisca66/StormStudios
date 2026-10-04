@@ -1,0 +1,133 @@
+Hola, bienvenidos de nuevo a Storm Studios Learning.
+En la lección anterior construimos los acordes de quinta sobre cada grado de las escalas básicas.
+Antes de empezar a escribir para el cuarteto vocal, necesitamos completar algunas ideas sobre los grados, los acordes y la tonalidad.
+Esta es una lección explicativa.
+No tiene tarea para el maestro virtual, pero todo lo que veamos hoy lo vamos a usar en las siguientes lecciones.
+Vamos a empezar por los nombres de los grados.
+Cada grado de la escala tiene un nombre propio.
+Los vamos a ver en Do mayor.
+El primer grado es la tónica.
+Es el centro de la tonalidad.
+El quinto grado, una quinta arriba de la tónica, es la dominante.
+Y una quinta abajo de la tónica tenemos el cuarto grado, la subdominante.
+El tercer grado, a la mitad del camino entre la tónica y la dominante, se llama mediante.
+Y a la mitad del camino entre la tónica y la subdominante, pero hacia abajo, tenemos el sexto grado, la submediante.
+El segundo grado, justo arriba de la tónica, es la supertónica.
+Fíjate cómo los nombres se acomodan como en un espejo alrededor de la tónica: la dominante arriba y la subdominante abajo; la mediante arriba y la submediante abajo.
+Nos falta el séptimo grado.
+Cuando el séptimo grado está a medio tono de la tónica, como en la escala mayor y en la menor armónica, lo llamamos sensible.
+Pero en la escala menor natural, el séptimo grado está a un tono de la tónica.
+En ese caso lo llamamos subtónica.
+Por ejemplo, en La menor natural, Sol es la subtónica.
+En La menor armónica, Sol sostenido es la sensible.
+Ahora veamos las funciones de los grados.
+Los grados primero, cuarto y quinto son los grados tonales, o principales.
+Son los que sostienen la tonalidad.
+Los grados tercero y sexto son los grados modales, porque nos dicen si estamos en modo mayor o en modo menor.
+Los grados secundarios son todos los que no son principales: el segundo, el tercero, el sexto y el séptimo.
+Y luego tenemos los grados atractivos.
+Llamamos atractiva a una nota que, por su tendencia armónica, requiere de una resolución especial.
+La nota atractiva más importante es la sensible.
+El cuarto y el sexto grados también se vuelven atractivos cuando aparecen en el mismo acorde junto con la sensible.
+Además, consideramos atractivos tres grados alterados que vienen de los modos.
+El segundo grado frigio.
+En Do, es Re bemol.
+El cuarto grado lidio.
+En Do, es Fa sostenido.
+Y el séptimo grado mixolidio.
+En Do, es Si bemol.
+Si quieres repasar los modos, regresa a la lección dos.
+Pasemos ahora a los acordes.
+En la lección anterior dijimos que un acorde es toda simultaneidad de sonidos diferentes.
+Y que lo construimos a partir de un sonido generador, la fundamental, superponiendo terceras.
+Con dos terceras obtenemos el acorde de quinta, que ya conoces.
+Si superponemos tres terceras, obtenemos el acorde de séptima.
+Con cuatro terceras, el acorde de novena.
+Con cinco, el acorde de onceava.
+Y con seis terceras, el acorde de treceava.
+El nombre siempre viene del intervalo entre la fundamental y la nota más aguda del acorde.
+Vamos a escuchar los cinco acordes sobre Do.
+Recordemos también que la armonía estudia la estructura interválica de los acordes y las leyes con las que se enlazan.
+Y que hablamos de armonías, en plural, porque esas leyes cambian según la época, el género, la corriente estilística y el compositor.
+La serie de los armónicos nos ayuda a entender esa historia.
+Cuando suena una nota, no solo escuchamos su frecuencia fundamental, sino toda una serie de armónicos naturales, que son múltiplos enteros de esa frecuencia.
+Esta es la serie de armónicos sobre Do.
+El segundo armónico es la octava.
+El tercero, la quinta.
+El cuarto, otra vez la octava.
+El quinto armónico es la tercera mayor.
+Con los primeros seis armónicos ya tenemos un acorde mayor completo.
+El séptimo armónico es un Si bemol un poco más bajo que el del piano.
+Por eso decimos que es calante.
+Otros armónicos también suenan un poco más bajos o un poco más altos que la nota con la que los escribimos.
+Las flechas lo indican.
+A lo largo de la historia, la música occidental ha ido aceptando como consonantes armónicos cada vez más lejanos de esta serie.
+Vamos a recorrer esa historia con un ejemplo de cada etapa.
+Primero, la monodia: una sola línea melódica.
+Corresponde a los armónicos uno y dos, la fundamental y su octava.
+Escuchemos.
+Después viene el organum, que añade voces paralelas en quintas y cuartas.
+Son los armónicos tres y cuatro.
+Escuchemos.
+Con el Ars Nova, en el siglo catorce, y después en el Renacimiento, se incorpora la tercera, y con ella el acorde completo.
+Son los armónicos cinco y seis.
+Escuchemos.
+En el periodo preclásico, del siglo dieciséis al dieciocho, con Bach, Händel, Mozart y Beethoven, aparece la séptima.
+Son los armónicos siete y ocho.
+Escuchemos.
+Después vienen Schubert, Chopin y Brahms, que en nuestra tabla aparecen como el periodo clásico.
+Su armonía llega a los armónicos nueve y diez, la novena.
+Escuchemos.
+Del armónico once al veinte encontramos tres corrientes del siglo veinte.
+El impresionismo, con Debussy, Ravel, Fauré y Satie.
+Escuchemos.
+El expresionismo, con Stravinsky, Shostakovich, Bartók y Scriabin.
+Escuchemos.
+Y la dodecafonía, con Schoenberg, Berg y Webern, que utiliza los doce sonidos sin un centro tonal.
+En la tabla también aparece Hindemith.
+Escuchemos.
+Finalmente, más allá del armónico veinte, el microtonalismo utiliza intervalos más pequeños que el medio tono.
+Su gran pionero fue el mexicano Julián Carrillo, con su Sonido Trece.
+Escuchemos.
+Ahora regresemos a los acordes de quinta.
+Si tomamos cada grado de las escalas básicas como fundamental, solo obtenemos cuatro tipos de acordes: mayor, menor, disminuido y aumentado.
+Un acorde es mayor o menor por su tercera, y aumentado o disminuido por su quinta.
+Los acordes de una misma escala se agrupan en tres regiones tonales: la región de subdominante, la de tónica y la de dominante.
+Cada región tiene un acorde principal que le da su nombre, y dos acordes secundarios, una tercera arriba y una tercera abajo de él.
+Si ordenamos los acordes de Do mayor por terceras, se ve muy claro.
+La región de subdominante tiene al cuarto grado como acorde principal, y al segundo y al sexto como secundarios.
+La región de tónica tiene al primer grado, con el sexto y el tercero.
+Y la región de dominante tiene al quinto grado, con el tercero y el séptimo.
+Fíjate que el tercero y el sexto, los acordes modales, pertenecen a dos regiones al mismo tiempo.
+Los acordes de una misma región pueden sustituirse entre sí sin que se altere el sentido armónico de un pasaje.
+Por último, hablemos de la tonalidad.
+Llamamos tonalidad al conjunto de relaciones, funciones y jerarquías que adoptan todos los sonidos de nuestro sistema musical alrededor de uno de ellos, que elegimos como centro tonal, y al que llamamos tónica.
+Modular es sustituir un centro tonal por otro.
+Lo estudiaremos más adelante.
+Las notas alteradas, o no alteradas, de un pasaje nos indican su tonalidad.
+Si ordenamos las tonalidades según el orden en que aparecen las nuevas alteraciones, descubrimos una relación fija de quintas justas.
+Los sostenidos aparecen en este orden: Fa, Do, Sol, Re, La, Mi y Si.
+Cada uno está una quinta justa arriba del anterior.
+Los bemoles aparecen en el orden contrario: Si, Mi, La, Re, Sol, Do y Fa.
+Cada uno está una quinta justa abajo del anterior.
+Con esto construimos el círculo de quintas.
+Arriba está Do mayor, sin alteraciones.
+En el sentido de las agujas del reloj, cada tonalidad está una quinta justa arriba de la anterior y añade un sostenido: Sol, Re, La, Mi, Si, Fa sostenido y Do sostenido.
+En sentido contrario, cada tonalidad está una quinta justa abajo y añade un bemol: Fa, Si bemol, Mi bemol, La bemol, Re bemol, Sol bemol y Do bemol.
+Abajo del círculo, tres posiciones tienen dos nombres.
+Si y Do bemol, Fa sostenido y Sol bemol, Do sostenido y Re bemol suenan igual, pero se escriben con armaduras distintas.
+En total tenemos quince tonalidades mayores.
+Cada armadura sirve también para una tonalidad menor, su relativa, que está una tercera menor abajo.
+La menor es la relativa de Do mayor.
+Mi menor, la de Sol mayor.
+Y Re menor, la de Fa mayor.
+Así completamos quince tonalidades menores: treinta tonalidades en total.
+Recapitulemos.
+Los grados tienen nombres y funciones: tonales, modales, secundarios y atractivos.
+Los acordes se construyen superponiendo terceras, desde el acorde de quinta hasta el de treceava.
+La serie de armónicos nos ayuda a entender cómo cambiaron las armonías a lo largo de la historia.
+Los acordes de una escala se agrupan en las regiones de subdominante, tónica y dominante.
+Y el círculo de quintas organiza las treinta tonalidades.
+En la próxima lección empezaremos a escribir para el cuarteto vocal armónico: soprano, contralto, tenor y bajo.
+Gracias por acompañarme.
+Nos vemos en la lección seis.

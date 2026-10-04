@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "lesson": "prueba-imagen-musica",
+  "locale": "es",
+  "title": "Prueba C · imagen y música externa",
+  "projects": {},
+  "stills": [
+    {
+      "id": "titulo",
+      "kind": "title",
+      "heading": "Prueba de imagen y música",
+      "caption": "Herramientas de video · Lección 5",
+      "narration": "Hola, bienvenidos de nuevo a Storm Studios Learning."
+    },
+    {
+      "id": "imagen",
+      "kind": "image",
+      "heading": "El círculo de quintas",
+      "narration": "En la lección anterior construimos los acordes de quinta sobre cada grado de las escalas básicas.",
+      "image": "/images/curso/leccion-5/circulo-quintas-es.svg"
+    },
+    {
+      "id": "musica",
+      "kind": "image",
+      "musicFile": "../../../.local-work/06-leccion-5-musica/04-preclasico.mp3",
+      "musicCredit": "J. S. Bach — «O Haupt voll Blut und Wunden», Pasión según San Mateo",
+      "heading": "Preclásico",
+      "caption": "Armónicos 7 y 8 · Bach · Händel · Mozart · Beethoven",
+      "narration": "Antes de empezar a escribir para el cuarteto vocal, necesitamos completar algunas ideas sobre los grados, los acordes y la tonalidad.",
+      "image": "/images/curso/leccion-5/video/serie-preclasico-es.svg",
+      "musicTrim": [
+        0,
+        6
+      ]
+    }
+  ]
+}

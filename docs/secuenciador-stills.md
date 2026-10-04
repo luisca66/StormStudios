@@ -93,8 +93,12 @@ La ruta se resuelve **desde la carpeta del storyboard**, no desde el directorio 
 | Campo | Regla |
 | --- | --- |
 | `id` | Obligatorio y único, no vacío: letras minúsculas, números y guiones (`[a-z0-9-]+`); se usa en el nombre del PNG |
-| `kind` | `score` por defecto; `title` muestra solo tarjeta de heading/caption |
-| `project` | Nombre de proyecto obligatorio para score; title no lo necesita |
+| `kind` | `score` por defecto; `title` muestra solo tarjeta de heading/caption; `image` muestra una imagen pública centrada, con encabezado |
+| `project` | Nombre de proyecto obligatorio para score; title e image no lo necesitan |
+| `image` | Ruta pública local obligatoria para `kind: "image"`, p. ej. `/images/curso/leccion-5/circulo-quintas-es.svg`; se espera su carga y se escala con `object-fit: contain`, sin deformar ni ocultar el fondo Storm |
+| `musicFile` | Archivo externo absoluto o relativo a la carpeta del storyboard; se reproduce después de la voz en `video`, no se copia ni publica por `stills` |
+| `musicTrim` | Opcional: `[inicio, fin]` en segundos finitos, con `0 <= inicio < fin`; sin él se usa todo el archivo |
+| `musicCredit` | Línea al pie solo durante la música; `video` captura una variante con el crédito |
 | `heading` | Texto opcional grande, visible |
 | `caption` | Texto opcional debajo del encabezado |
 | `narration` | Narración opcional, solo en manifest, no se dibuja |
@@ -165,3 +169,19 @@ npx tsc --noEmit
 npx eslint lib/sequencer/storyboard-resolve.ts lib/sequencer/storyboard-resolve.test.ts lib/sequencer/agent-api.ts lib/sequencer/agent-api.test.ts lib/sequencer/capture-decoration.ts components/sequencer/ScoreView.tsx components/sequencer/StillStage.tsx scripts/sequencer/stills.mjs "app/[locale]/sequencer/v4/stage/page.tsx" e2e/sequencer-stills.spec.ts
 npx playwright test e2e/sequencer-stills.spec.ts --workers=1
 ```
+
+### Imágenes y música externa
+
+```json
+{
+  "id": "circulo",
+  "kind": "image",
+  "image": "/images/curso/leccion-5/circulo-quintas-es.svg",
+  "heading": "El círculo de quintas",
+  "musicFile": "../../../.local-work/06-leccion-5-musica/04-preclasico.mp3",
+  "musicTrim": [0, 8],
+  "musicCredit": "Obra — Compositor · Intérpretes"
+}
+```
+
+`audio: true` y `musicFile` son excluyentes. La música externa no admite cursores. `audio` requiere partitura; un título o imagen puede usar `musicFile`. `musicTrim` requiere `musicFile`. El montaje comprueba que el recorte termina dentro del archivo y falla indicando el still si falta el MP3. Las capturas normales no muestran el crédito. Las variantes del montaje usan `stills --context <original> --music true`, con sufijo `-music-credit`, preservando el índice del original. `window.stormStage.render` recibe como quinto argumento opcional `{music: true}` para esa variante.

@@ -18,7 +18,9 @@ const sourceSchema = z.union([
   z.object({ setup, text: z.string(), annotations: z.array(z.object({ measure, beat: positive, text: z.string(), kind: z.enum(["roman", "text"]) }).strict()).optional() }).strict(),
 ]);
 const stillSchema = z.object({
-  id: z.string().regex(/^[a-z0-9-]+$/), kind: z.enum(["score", "title"]).optional(), project: z.string().optional(),
+  id: z.string().regex(/^[a-z0-9-]+$/), kind: z.enum(["score", "title", "image"]).optional(), project: z.string().optional(),
+  image: z.string().regex(/^\/(?!\/)/, "debe ser una ruta pública local").optional(),
+  musicFile: z.string().min(1).optional(), musicTrim: z.tuple([z.number().finite().nonnegative(), positive]).optional(), musicCredit: z.string().min(1).optional(),
   heading: z.string().optional(), caption: z.string().optional(), narration: z.string().optional(), duration: positive.optional(),
   measures: z.tuple([measure, measure]).optional(), voices: z.union([z.literal("all"), z.array(voice).min(1)]).optional(), focusVoice: voice.optional(),
   reveal: position.optional(), highlights: z.array(highlight).optional(), marks: z.array(mark).optional(), cursor: position.optional(), showCiphers: z.boolean().optional(), audio: z.boolean().optional(),
@@ -71,7 +73,16 @@ export function validateStoryboard(value: unknown): Storyboard {
     const fail = (message: string): never => { throw new Error(`Still "${still.id}": ${message}`); };
     if (ids.has(still.id)) fail("id duplicado");
     ids.add(still.id);
-    if (still.kind === "title") continue;
+    if (still.audio && still.musicFile) fail("audio y musicFile son excluyentes");
+    if (still.musicTrim && (!still.musicFile || still.musicTrim[1] <= still.musicTrim[0])) fail("musicTrim requiere musicFile e inicio menor que fin");
+    if (still.musicCredit && !still.musicFile && !still.audio) fail("musicCredit requiere música");
+    if (still.musicFile && still.cursor) fail("musicFile no admite cursores");
+    if (still.kind === "image" || still.kind === "title") {
+      if (still.audio) fail("audio requiere un still de partitura");
+      if (still.kind === "image" && !still.image) fail("falta image");
+      continue;
+    }
+    if (still.image) fail("image requiere kind image");
     if (!still.project || !Object.hasOwn(board.projects, still.project)) fail(`project inexistente: ${still.project ?? "(falta project)"}`);
     const name = still.project!;
     if (!scores.has(name)) {

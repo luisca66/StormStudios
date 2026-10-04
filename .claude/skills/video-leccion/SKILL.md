@@ -98,6 +98,8 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 
 - **Tutorial secuenciador EN (2026-10-02)**: la voz inglesa salió ~18 % más corta (352 s contra 432 s); bastó reescalar los «at» de 10 clips con la razón EN/ES. Revisar a tamaño completo un fotograma de cada pantalla: la hoja de contactos no dejó ver que el título nuevo del proyecto salía «Sin título» en inglés (bug del producto, ya corregido).
 
+- **Prueba de herramientas C (2026-10-04)**: esperar `img.decode()` antes de capturar SVG; usar una variante con crédito únicamente durante la música externa y conservar el PNG original para voz y pausa. Resolver MP3 desde el storyboard original y validar el final del recorte antes de montar. Prueba de 3 stills: 28.433 s, 6 s de música, siete fotogramas con diferencia media en gris < 4.
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).

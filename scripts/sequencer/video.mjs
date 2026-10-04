@@ -5,6 +5,8 @@ import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { concatFile, docxParagraphs, nearestPause, silenceMidpoints, srtTime, validateAudioMap, partialSubtitle } from "./video-utils.mjs";
 
+import { externalMusic, externalMusicFilter } from "./external-music.mjs";
+
 const here = path.dirname(fileURLToPath(import.meta.url));
 async function run(command, args, capture = false) {
   return new Promise((resolve, reject) => {
@@ -37,6 +39,14 @@ async function main() {
   const board = JSON.parse(await readFile(input, "utf8"));
   const map = JSON.parse(await readFile(path.resolve(options["--audio"]), "utf8"));
   validateAudioMap(board, map);
+  const external = new Map();
+  for (const still of board.stills) {
+    if (still.audio && still.musicFile) throw new Error(`Still "${still.id}": audio y musicFile son excluyentes`);
+    if (still.musicFile) {
+      if (still.cursor) throw new Error(`Still "${still.id}": musicFile no admite cursores`);
+      external.set(still.id, await externalMusic(still, input, duration));
+    }
+  }
   const clips = path.resolve(options["--clips"]);
   const stills = path.resolve("stills", board.locale, board.lesson);
   const out = path.resolve(options["--out"] ?? path.join(stills, "video"));
@@ -105,6 +115,18 @@ async function main() {
     await run(process.execPath, [path.join(here, "stills.mjs"), derivedFile, "--out", cursorDir, "--context", input, ...baseArgs]);
     cursorManifest = JSON.parse(await readFile(path.join(cursorDir, "manifest.json"), "utf8"));
   }
+  // Credit captures are shown exclusively during external music; voice keeps the original PNG.
+  const credited = structuredClone(board);
+  for (const source of Object.values(credited.projects)) if (source.file) source.file = path.resolve(path.dirname(input), source.file);
+  credited.stills = board.stills.filter(s => s.musicFile && s.musicCredit).map(s => ({ ...s, id: `${s.id}-music-credit` }));
+  let creditManifest = { stills: [] };
+  const creditDir = path.join(work, "credits");
+  if (credited.stills.length) {
+    const creditFile = path.join(work, "credit-storyboard.json");
+    await writeFile(creditFile, JSON.stringify(credited, null, 2) + "\n");
+    await run(process.execPath, [path.join(here, "stills.mjs"), creditFile, "--out", creditDir, "--context", input, "--music", "true", ...baseArgs]);
+    creditManifest = JSON.parse(await readFile(path.join(creditDir, "manifest.json"), "utf8"));
+  }
   const silence = new Map();
   async function silent(seconds) {
     if (!silence.has(seconds)) {
@@ -151,6 +173,17 @@ async function main() {
         image(cursorPng, end - start);
         segment.music.cursors.push({ ...beats[i], file: cursorPng, start: time + start, end: time + end });
       }
+      audioFiles.push(file); time += length; musicSeconds += length;
+    }
+    if (still.musicFile) {
+      const source = external.get(still.id), file = path.join(work, `${index + 1}-external-music.wav`);
+      await ffmpeg(["-i", source.file, "-af", externalMusicFilter(source), "-ac", "2", "-c:a", "pcm_s16le", file]);
+      const length = await duration(file);
+      if (Math.abs(length - source.seconds) > 1 / 48000) throw new Error(`Still "${still.id}": duración musical inesperada ${length}`);
+      const credit = creditManifest.stills.find(s => s.id === `${still.id}-music-credit`);
+      const musicPng = credit ? path.join(creditDir, credit.file) : png;
+      segment.music = { file: source.file, sourceStart: source.sourceStart, sourceEnd: source.sourceEnd, start: time, end: time + length, credit: still.musicCredit, image: musicPng, cursors: [] };
+      image(musicPng, length);
       audioFiles.push(file); time += length; musicSeconds += length;
     }
     await addSilence(.6); image(png, .6);

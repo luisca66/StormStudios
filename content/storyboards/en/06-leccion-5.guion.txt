@@ -1,0 +1,133 @@
+Hello, and welcome back to Storm Studios Learning.
+In the previous lesson we built fifth chords on every degree of the basic scales.
+Before we start writing for the vocal quartet, we need to complete a few ideas about degrees, chords and tonality.
+This is an explanatory lesson.
+It has no assignment for the Virtual Teacher, but everything we see today will be used in the following lessons.
+Let's start with the names of the degrees.
+Each degree of the scale has its own name.
+We will see them in C major.
+The first degree is the tonic.
+It is the center of the key.
+The fifth degree, a fifth above the tonic, is the dominant.
+And a fifth below the tonic we have the fourth degree, the subdominant.
+The third degree, halfway between the tonic and the dominant, is called the mediant.
+And halfway between the tonic and the subdominant, but going down, we have the sixth degree, the submediant.
+The second degree, just above the tonic, is the supertonic.
+Notice how the names mirror each other around the tonic: the dominant above and the subdominant below; the mediant above and the submediant below.
+We still need the seventh degree.
+When the seventh degree is a half step below the tonic, as in the major scale and in harmonic minor, we call it the leading tone.
+But in the natural minor scale, the seventh degree is a whole step below the tonic.
+In that case we call it the subtonic.
+For example, in A natural minor, G is the subtonic.
+In A harmonic minor, G sharp is the leading tone.
+Now let's look at the functions of the degrees.
+The first, fourth and fifth degrees are the tonal, or principal, degrees.
+They are the ones that hold the key together.
+The third and sixth degrees are the modal degrees, because they tell us whether we are in major or in minor.
+The secondary degrees are all those that are not principal: the second, the third, the sixth and the seventh.
+And then we have the attractive degrees.
+We call a note attractive when its harmonic tendency requires a special resolution.
+The most important attractive note is the leading tone.
+The fourth and sixth degrees also become attractive when they appear in the same chord as the leading tone.
+We also consider attractive three altered degrees that come from the modes.
+The Phrygian second degree.
+In C, it is D flat.
+The Lydian fourth degree.
+In C, it is F sharp.
+And the Mixolydian seventh degree.
+In C, it is B flat.
+If you want to review the modes, go back to lesson two.
+Now let's move on to chords.
+In the previous lesson we said that a chord is any simultaneity of different sounds.
+And that we build it from a generating sound, the root, by stacking thirds.
+With two thirds we get the fifth chord, which you already know.
+If we stack three thirds, we get the seventh chord.
+With four thirds, the ninth chord.
+With five, the eleventh chord.
+And with six thirds, the thirteenth chord.
+The name always comes from the interval between the root and the highest note of the chord.
+Let's listen to the five chords on C.
+Let's also remember that harmony studies the intervallic structure of chords and the laws by which they are connected.
+And that we speak of harmonies, in plural, because those laws change with the period, the genre, the stylistic movement and the composer.
+The harmonic series helps us understand that history.
+When a note sounds, we don't only hear its fundamental frequency, but a whole series of natural harmonics, which are whole-number multiples of that frequency.
+This is the harmonic series on C.
+The second harmonic is the octave.
+The third, the fifth.
+The fourth, the octave again.
+The fifth harmonic is the major third.
+With the first six harmonics we already have a complete major chord.
+The seventh harmonic is a B flat slightly lower than the one on the piano.
+That is why we say it is flat.
+Other harmonics also sound slightly lower or slightly higher than the note we use to write them.
+The arrows show this.
+Throughout history, Western music has gradually accepted as consonant harmonics that lie further and further along this series.
+Let's walk through that history with an example from each stage.
+First, monody: a single melodic line.
+It corresponds to harmonics one and two, the fundamental and its octave.
+Let's listen.
+Next comes organum, which adds parallel voices in fifths and fourths.
+These are harmonics three and four.
+Let's listen.
+With the Ars Nova, in the fourteenth century, and later in the Renaissance, the third is added, and with it the complete chord.
+These are harmonics five and six.
+Let's listen.
+In the pre-classical period, from the sixteenth to the eighteenth century, with Bach, Handel, Mozart and Beethoven, the seventh appears.
+These are harmonics seven and eight.
+Let's listen.
+Then come Schubert, Chopin and Brahms, who appear in our chart as the classical period.
+Their harmony reaches harmonics nine and ten, the ninth.
+Let's listen.
+From the eleventh to the twentieth harmonic we find three twentieth-century movements.
+Impressionism, with Debussy, Ravel, Fauré and Satie.
+Let's listen.
+Expressionism, with Stravinsky, Shostakovich, Bartók and Scriabin.
+Let's listen.
+And dodecaphony, with Schoenberg, Berg and Webern, which uses all twelve tones without a tonal center.
+Hindemith also appears in the chart.
+Let's listen.
+Finally, beyond the twentieth harmonic, microtonalism uses intervals smaller than a half step.
+Its great pioneer was the Mexican composer Julián Carrillo, with his Sonido Trece.
+Let's listen.
+Now let's go back to fifth chords.
+If we take each degree of the basic scales as a root, we only get four types of chords: major, minor, diminished and augmented.
+A chord is major or minor because of its third, and augmented or diminished because of its fifth.
+The chords of a scale are grouped into three tonal regions: the subdominant region, the tonic region and the dominant region.
+Each region has a principal chord that gives it its name, and two secondary chords, a third above and a third below it.
+If we arrange the chords of C major in thirds, it becomes very clear.
+The subdominant region has the fourth degree as its principal chord, and the second and sixth as secondary chords.
+The tonic region has the first degree, with the sixth and the third.
+And the dominant region has the fifth degree, with the third and the seventh.
+Notice that the third and the sixth, the modal chords, belong to two regions at the same time.
+Chords of the same region can substitute for each other without changing the harmonic sense of a passage.
+Finally, let's talk about tonality.
+We call tonality the set of relationships, functions and hierarchies that all the sounds of our musical system adopt around one of them, which we choose as the tonal center and call the tonic.
+To modulate is to replace one tonal center with another.
+We will study it later.
+The altered, or unaltered, notes of a passage tell us its key.
+If we order the keys by the order in which new accidentals appear, we discover a fixed relationship of perfect fifths.
+Sharps appear in this order: F, C, G, D, A, E and B.
+Each one is a perfect fifth above the previous one.
+Flats appear in the opposite order: B, E, A, D, G, C and F.
+Each one is a perfect fifth below the previous one.
+With this we build the circle of fifths.
+At the top is C major, with no accidentals.
+Going clockwise, each key is a perfect fifth above the previous one and adds a sharp: G, D, A, E, B, F sharp and C sharp.
+Going counterclockwise, each key is a perfect fifth below and adds a flat: F, B flat, E flat, A flat, D flat, G flat and C flat.
+At the bottom of the circle, three positions have two names.
+B and C flat, F sharp and G flat, C sharp and D flat sound the same, but they are written with different key signatures.
+In total we have fifteen major keys.
+Each key signature also serves a minor key, its relative, a minor third below.
+A minor is the relative of C major.
+E minor, of G major.
+And D minor, of F major.
+This gives us fifteen minor keys: thirty keys in total.
+Let's recap.
+The degrees have names and functions: tonal, modal, secondary and attractive.
+Chords are built by stacking thirds, from the fifth chord to the thirteenth chord.
+The harmonic series helps us understand how harmonies changed throughout history.
+The chords of a scale are grouped into the subdominant, tonic and dominant regions.
+And the circle of fifths organizes the thirty keys.
+In the next lesson we will start writing for the vocal quartet: soprano, alto, tenor and bass.
+Thank you for joining me.
+See you in lesson six.

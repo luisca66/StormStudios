@@ -102,3 +102,28 @@ test("CLI embeds relative files, honors only/order, emits exact PNG and manifest
   const png = await readFile(path.join(folder, "02-chosen.png"));
   expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([960, 540]);
 });
+
+for (const aspect of ["16:9", "9:16", "1:1"] as const) {
+  test(`image SVG fits ${aspect}, waits for decode and shows credit only during music`, async ({ page }) => {
+    const still: Still = { id: "image", kind: "image", image: "/images/curso/leccion-5/circulo-quintas-es.svg", heading: "El círculo de quintas", caption: "Quince tonalidades", musicFile: "local.mp3", musicCredit: "Obra — Compositor · Intérpretes" };
+    const render = async (music = false) => page.evaluate(({ still, aspect, music }) => window.stormStage!.render(still, null, { aspect }, undefined, { music }), { still, aspect, music });
+    const width = aspect === "16:9" ? 1920 : 1080, height = aspect === "9:16" ? 1920 : 1080;
+    await page.setViewportSize({ width, height });
+    await render();
+    await expect(page.getByTestId("still-image")).toHaveAttribute("src", still.image!);
+    await expect(page.getByTestId("music-credit")).toHaveCount(0);
+    const bounds = await page.getByTestId("still-image").evaluate(img => {
+      const image = img as HTMLImageElement, box = image.getBoundingClientRect();
+      return { complete: image.complete && image.naturalWidth > 0, left: box.left, top: box.top, right: box.right, bottom: box.bottom, fit: getComputedStyle(image).objectFit };
+    });
+    expect(bounds.complete).toBe(true); expect(bounds.fit).toBe("contain");
+    expect(bounds.left).toBeGreaterThan(0); expect(bounds.top).toBeGreaterThan(0);
+    expect(bounds.right).toBeLessThan(width); expect(bounds.bottom).toBeLessThan(height);
+    await expect(page.getByTestId("score-view")).toHaveCount(0);
+    const png = await page.getByTestId("still").screenshot();
+    expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([width, height]);
+    await render(true); await expect(page.getByTestId("music-credit")).toHaveText(still.musicCredit!);
+    await render(); await expect(page.getByTestId("music-credit")).toHaveCount(0);
+    await expect(page.evaluate(still => window.stormStage!.render({ ...still, image: "/images/missing.svg" }, null), still)).rejects.toThrow(/Still "image".*No se pudo cargar image/);
+  });
+}
