@@ -913,9 +913,9 @@
           "label": "11ª"
         }
       ],
-      "heading": "Acorde de onceava",
+      "heading": "Acorde de oncena",
       "caption": "Cinco terceras",
-      "narration": "Con cinco, el acorde de onceava.",
+      "narration": "Con cinco, el acorde de oncena.",
       "showCiphers": true
     },
     {
@@ -929,9 +929,9 @@
           "label": "13ª"
         }
       ],
-      "heading": "Acorde de treceava",
+      "heading": "Acorde de trecena",
       "caption": "Seis terceras",
-      "narration": "Y con seis terceras, el acorde de treceava.",
+      "narration": "Y con seis terceras, el acorde de trecena.",
       "showCiphers": true
     },
     {
@@ -1115,9 +1115,9 @@
       "kind": "image",
       "musicFile": "../../../.local-work/06-leccion-5-musica/05-clasico.mp3",
       "musicCredit": "Chopin — Preludio en mi menor, op. 28 n.º 4",
-      "heading": "Clásico",
+      "heading": "Clásico y romántico",
       "caption": "Armónicos 9 y 10 · Schubert · Chopin · Brahms",
-      "narration": "Después vienen Schubert, Chopin y Brahms, que en nuestra tabla aparecen como el periodo clásico. Su armonía llega a los armónicos nueve y diez, la novena. Escuchemos.",
+      "narration": "Después vienen Schubert, Chopin y Brahms, que en nuestra tabla aparecen como el periodo clásico y romántico. Su armonía llega a los armónicos nueve y diez, la novena. Escuchemos.",
       "image": "/images/curso/leccion-5/video/serie-clasico-es.svg"
     },
     {
@@ -1484,7 +1484,7 @@
       "id": "recap-terceras",
       "project": "terceras",
       "heading": "Acordes por terceras",
-      "narration": "Los acordes se construyen superponiendo terceras, desde el acorde de quinta hasta el de treceava.",
+      "narration": "Los acordes se construyen superponiendo terceras, desde el acorde de quinta hasta el de trecena.",
       "showCiphers": true
     },
     {

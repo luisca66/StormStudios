@@ -75,7 +75,7 @@
 075 75_Chapter_1.mp3 9.040
 076 76_Chapter_1.mp3 2.720
 077 77_Chapter_1.mp3 1.360
-078 78_Chapter_1.mp3 6.160
+078 78_Chapter_1.mp3 6.720
 079 79_Chapter_1.mp3 4.320
 080 80_Chapter_1.mp3 1.200
 081 81_Chapter_1.mp3 5.360
@@ -131,4 +131,4 @@
 131 131_Chapter_1.mp3 6.880
 132 132_Chapter_1.mp3 1.680
 133 133_Chapter_1.mp3 1.600
-Suma de duraciones: 600.880 s
+Suma de duraciones: 601.440 s

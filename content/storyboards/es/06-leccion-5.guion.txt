@@ -43,8 +43,8 @@ Y que lo construimos a partir de un sonido generador, la fundamental, superponie
 Con dos terceras obtenemos el acorde de quinta, que ya conoces.
 Si superponemos tres terceras, obtenemos el acorde de séptima.
 Con cuatro terceras, el acorde de novena.
-Con cinco, el acorde de onceava.
-Y con seis terceras, el acorde de treceava.
+Con cinco, el acorde de oncena.
+Y con seis terceras, el acorde de trecena.
 El nombre siempre viene del intervalo entre la fundamental y la nota más aguda del acorde.
 Vamos a escuchar los cinco acordes sobre Do.
 Recordemos también que la armonía estudia la estructura interválica de los acordes y las leyes con las que se enlazan.
@@ -75,7 +75,7 @@ Escuchemos.
 En el periodo preclásico, del siglo dieciséis al dieciocho, con Bach, Händel, Mozart y Beethoven, aparece la séptima.
 Son los armónicos siete y ocho.
 Escuchemos.
-Después vienen Schubert, Chopin y Brahms, que en nuestra tabla aparecen como el periodo clásico.
+Después vienen Schubert, Chopin y Brahms, que en nuestra tabla aparecen como el periodo clásico y romántico.
 Su armonía llega a los armónicos nueve y diez, la novena.
 Escuchemos.
 Del armónico once al veinte encontramos tres corrientes del siglo veinte.
@@ -124,7 +124,7 @@ Y Re menor, la de Fa mayor.
 Así completamos quince tonalidades menores: treinta tonalidades en total.
 Recapitulemos.
 Los grados tienen nombres y funciones: tonales, modales, secundarios y atractivos.
-Los acordes se construyen superponiendo terceras, desde el acorde de quinta hasta el de treceava.
+Los acordes se construyen superponiendo terceras, desde el acorde de quinta hasta el de trecena.
 La serie de armónicos nos ayuda a entender cómo cambiaron las armonías a lo largo de la historia.
 Los acordes de una escala se agrupan en las regiones de subdominante, tónica y dominante.
 Y el círculo de quintas organiza las treinta tonalidades.

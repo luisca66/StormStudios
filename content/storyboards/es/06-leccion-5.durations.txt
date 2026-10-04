@@ -43,8 +43,8 @@
 043 43_Chapter_1.mp3 4.400
 044 44_Chapter_1.mp3 4.240
 045 45_Chapter_1.mp3 3.040
-046 46_Chapter_1.mp3 2.640
-047 47_Chapter_1.mp3 3.440
+046 46_Chapter_1.mp3 2.560
+047 47_Chapter_1.mp3 3.520
 048 48_Chapter_1.mp3 5.920
 049 49_Chapter_1.mp3 2.640
 050 50_Chapter_1.mp3 7.360
@@ -75,7 +75,7 @@
 075 75_Chapter_1.mp3 9.200
 076 76_Chapter_1.mp3 2.800
 077 77_Chapter_1.mp3 0.880
-078 78_Chapter_1.mp3 6.880
+078 78_Chapter_1.mp3 7.840
 079 79_Chapter_1.mp3 4.720
 080 80_Chapter_1.mp3 0.960
 081 81_Chapter_1.mp3 5.120
@@ -124,11 +124,11 @@
 124 124_Chapter_1.mp3 5.520
 125 125_Chapter_1.mp3 1.120
 126 126_Chapter_1.mp3 7.360
-127 127_Chapter_1.mp3 6.880
+127 127_Chapter_1.mp3 6.320
 128 128_Chapter_1.mp3 6.080
 129 129_Chapter_1.mp3 6.240
 130 130_Chapter_1.mp3 3.600
 131 131_Chapter_1.mp3 8.160
 132 132_Chapter_1.mp3 1.680
 133 133_Chapter_1.mp3 2.000
-Suma de duraciones: 654.400 s
+Suma de duraciones: 654.800 s
