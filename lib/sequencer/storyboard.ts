@@ -50,7 +50,11 @@ export type NoteMark = { measure: number; beat: number; voice?: VoiceId; color?:
 
 export type Still = {
   id: string; // file name without extension: "01-titulo" → 01-titulo.png. Unique, [a-z0-9-]
-  kind?: "score" | "title"; // "title" = card with heading/caption only (no project needed)
+  kind?: "score" | "title" | "image"; // title/image need no project; score is the default
+  image?: string; // public image path, required for kind image
+  musicFile?: string; // absolute or relative to the storyboard
+  musicTrim?: [number, number]; // seconds [start, end]
+  musicCredit?: string; // visible only during music in the video
   project?: string; // key in Storyboard.projects (required for kind "score")
   heading?: string; // large text drawn on the still
   caption?: string; // one or two lines under the heading

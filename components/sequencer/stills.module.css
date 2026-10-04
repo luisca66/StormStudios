@@ -25,3 +25,7 @@
 .still[data-theme=paper] .heading p,.still[data-theme=paper] .title p,.still[data-theme=paper] .footer { color:#536175; }
 .still[data-theme=paper] .brand { color:#6552ab; }
 .still[data-theme=paper] .title::before { background:repeating-linear-gradient(to bottom,transparent 0,transparent 34px,#18203010 35px,#18203010 36px); }
+
+.image { position:relative; flex:1; min-height:0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.image img { display:block; width:100%; height:100%; object-fit:contain; }
+.credit { flex-shrink:0; padding-top:18px; font-size:22px; line-height:1.35; text-align:center; overflow-wrap:anywhere; }

@@ -1,0 +1,46 @@
+{
+  "format": "H.264 1920x1080 yuv420p 30fps / AAC 48kHz",
+  "duration": 28.433333,
+  "voiceSeconds": 18.32,
+  "musicSeconds": 6,
+  "pauseSeconds": 4.1,
+  "frames": [
+    {
+      "time": 1.7,
+      "meanGrayDifference": 0.1467,
+      "expected": "01-titulo.png"
+    },
+    {
+      "time": 6.2,
+      "meanGrayDifference": 0.1314,
+      "expected": "02-imagen.png"
+    },
+    {
+      "time": 13.5,
+      "meanGrayDifference": 0.1633,
+      "expected": "03-musica.png"
+    },
+    {
+      "time": 22.1,
+      "meanGrayDifference": 0.2331,
+      "expected": "01-musica-music-credit.png"
+    },
+    {
+      "time": 24.8,
+      "meanGrayDifference": 0.2331,
+      "expected": "01-musica-music-credit.png"
+    },
+    {
+      "time": 27.6,
+      "meanGrayDifference": 0.2326,
+      "expected": "01-musica-music-credit.png"
+    },
+    {
+      "time": 28.05,
+      "meanGrayDifference": 0.2176,
+      "expected": "03-musica.png"
+    }
+  ],
+  "privateDrive": "https://drive.google.com/file/d/1vtcfpy2vqOksk4451Loz17JX6aw5ED8b/view?usp=drivesdk",
+  "bytes": 970054
+}

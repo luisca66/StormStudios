@@ -98,6 +98,15 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 
 - **Tutorial secuenciador EN (2026-10-02)**: la voz inglesa salió ~18 % más corta (352 s contra 432 s); bastó reescalar los «at» de 10 clips con la razón EN/ES. Revisar a tamaño completo un fotograma de cada pantalla: la hoja de contactos no dejó ver que el título nuevo del proyecto salía «Sin título» en inglés (bug del producto, ya corregido).
 
+- **Prueba de herramientas C (2026-10-04)**: esperar `img.decode()` antes de capturar SVG; usar una variante con crédito únicamente durante la música externa y conservar el PNG original para voz y pausa. Resolver MP3 desde el storyboard original y validar el final del recorte antes de montar. Prueba de 3 stills: 28.433 s, 6 s de música, siete fotogramas con diferencia media en gris < 4.
+
+- **L5 ES (2026-10-04)**: recortar el viewBox del SVG y ampliar sus etiquetas mejora el círculo de quintas a 1080p. Los nueve ejemplos completos de Cubase suman 175.848 s; junto al piano suman 192.715 s. Validar el tiempo total incluyendo música y pausas, no solo voz: 948.967 s de MP4.
+- **L5 EN (2026-10-04)**: con 133 clips completos y mapas alineados se reutilizan los mismos 90 stills, música y pausas; la voz inglesa de 600.880 s da un MP4 de 895.444 s. Verificar metadatos privados y tamaño de cada copia de Drive después de subirla.
+
+- **L5, revisión de sonoridad (2026-10-04)**: la doble pasada lineal de música evita la compresión dinámica del fragmento, pero no garantiza la diferencia respecto a voz en el MP4. Ars nova, clásico y expresionismo necesitan ganancia limitada por pico a −4.5 dBTP; el ajuste final de mezcla también puede caer en dinámico. Medir EBU R128 por segmento después de AAC y reportar los valores fuera de objetivo antes de considerar aprobado el audio.
+
+- **L5, limitador y mezcla fija (2026-10-04)**: sobremuestrear el limitador a 192 kHz, desactivar autonivel y compensar su latencia. Añadir 3 s de silencio de análisis y recortarlo de la salida vacía el buffer de loudnorm y mejora la medición de clips cortos. Con música lineal a −19 LUFS y ganancia fija/limitador final, ambos MP4 miden −16.0 LUFS / −1.4 dBTP; 17/18 tramos cumplen la diferencia solicitada, impresionismo ES queda −1.9 LU. Respetar el encargo de reportar el desvío sin iteraciones adicionales.
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).
