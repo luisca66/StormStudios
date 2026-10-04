@@ -53,6 +53,7 @@ test("agent writes four measures, edits exactly, undoes, switches views and reco
 for (const example of SEQUENCER_EXAMPLES) {
   test("example renders without errors: " + example.id, async ({ page }) => {
     await page.goto("/es/sequencer/v4");
+    await page.waitForFunction(() => Boolean(window.stormSequencer));
     await page.getByLabel("Ejemplo", { exact: true }).selectOption(example.id);
     await page.getByRole("button", { name: "Validar texto", exact: true }).click();
     await expect(page.getByTestId("text-validation")).toContainText("0 errores");
@@ -272,24 +273,45 @@ test("staff and piano roll audition each moved pitch before releasing the mouse"
     AudioContext.prototype.createBufferSource=function(){const source=original.call(this),start=source.start.bind(source);source.start=(...args:Parameters<typeof source.start>)=>{played.push(source.playbackRate.value);start(...args);};return source;};
   });
   await page.goto("/es/sequencer/v4");
+  await page.waitForFunction(() => Boolean(window.stormSequencer));
   await page.getByLabel("Texto musical").fill("voz melody\ncompas 1\nC4 negra");
   await page.getByRole("button",{name:"Validar texto",exact:true}).click();await page.getByRole("button",{name:"Aplicar texto",exact:true}).click();
-  await page.getByTestId('score-view').locator('[data-note-id]').first().scrollIntoViewIfNeeded();
-  let box=(await page.getByTestId('score-view').locator('[data-note-id]').first().boundingBox())!;
+  const svg=page.getByTestId('score-view').locator('svg').first(),note=svg.locator('[data-note-id]');
+  await expect(note).toHaveCount(1);
+  await expect(note).toHaveAttribute('aria-label',/C4/);
+  // Scroll the whole staff into view: a glyph's tall font box can otherwise
+  // be considered visible while its center is covered by the sticky transport.
+  await svg.evaluate(element=>element.scrollIntoView({block:'center',behavior:'instant'}));
+  const staffBox=(await svg.boundingBox())!,step=Math.max(7,5*staffBox.height/215);
+  let box=(await note.locator('.vf-notehead').boundingBox())!;
   await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();
   await expect.poll(()=>page.evaluate(()=>(window as unknown as {played:number[]}).played.length)).toBeGreaterThan(0);
   const heard=await page.evaluate(()=>(window as unknown as {played:number[]}).played.length);
-  await page.mouse.move(box.x+box.width/2,box.y+box.height/2-12);
+  await page.mouse.move(box.x+box.width/2,box.y+box.height/2-step);
+  await expect(svg.locator('text',{hasText:'D4'})).toBeVisible();
   await expect.poll(()=>page.evaluate(()=>(window as unknown as {played:number[]}).played.length)).toBeGreaterThan(heard);
+  const heardFirstMove=await page.evaluate(()=>(window as unknown as {played:number[]}).played.length);
+  await page.mouse.move(box.x+box.width/2,box.y+box.height/2-2*step);
+  await expect(svg.locator('text',{hasText:'E4'})).toBeVisible();
+  await expect.poll(()=>page.evaluate(()=>(window as unknown as {played:number[]}).played.length)).toBeGreaterThan(heardFirstMove);
+  await expect(note).toHaveAttribute('aria-label',/C4/); // Model commits only on release.
   await page.mouse.up();
+  await expect(note).toHaveAttribute('aria-label',/E4/);
   await page.getByRole('button',{name:'Piano Roll',exact:true}).click();
   await page.locator('[data-roll-note]').first().scrollIntoViewIfNeeded();
   box=(await page.locator('[data-roll-note]').first().boundingBox())!;
+  const beforePress=await page.evaluate(()=>(window as unknown as {played:number[]}).played.length);
   await page.mouse.move(box.x+10,box.y+10);await page.mouse.down();
+  await expect.poll(()=>page.evaluate(()=>(window as unknown as {played:number[]}).played.length)).toBeGreaterThan(beforePress);
   const beforeMove=await page.evaluate(()=>(window as unknown as {played:number[]}).played.length);
   await page.mouse.move(box.x+10,box.y-42);
   await expect.poll(()=>page.evaluate(()=>(window as unknown as {played:number[]}).played.length)).toBeGreaterThan(beforeMove);
+  const heardRollMove=await page.evaluate(()=>(window as unknown as {played:number[]}).played.length);
+  await page.mouse.move(box.x+10,box.y-68);
+  await expect.poll(()=>page.evaluate(()=>(window as unknown as {played:number[]}).played.length)).toBeGreaterThan(heardRollMove);
+  await expect(page.locator('[data-roll-note]').first()).toHaveText(/E4/);
   await page.mouse.up();
+  await expect(page.locator('[data-roll-note]').first()).toHaveText(/G4/);
 });
 
 test("Space plays and stops from anywhere except text fields, and the transport does not move",async({page})=>{
