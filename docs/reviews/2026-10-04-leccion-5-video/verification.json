@@ -1,0 +1,30 @@
+{
+  "es": {
+    "mp4Seconds": 948.966667,
+    "timelineSeconds": 948.964667,
+    "voiceSeconds": 654.4000000000001,
+    "musicSeconds": 192.71466699999996,
+    "pauseSeconds": 101.85,
+    "stills": 90,
+    "clips": 133,
+    "srtEntries": 133,
+    "bytes": 32526854,
+    "sha256": "b3328b8460d32b54a2d8398e406d4a7e2722fae3db18e7401bf845b30962451b",
+    "drive": "https://drive.google.com/file/d/1kS_Q4elkBokxDixqS1OfRckiJ6lAZPJu/view?usp=drivesdk",
+    "drivePrivate": true
+  },
+  "en": {
+    "mp4Seconds": 895.444,
+    "timelineSeconds": 895.4446669999998,
+    "voiceSeconds": 600.8799999999997,
+    "musicSeconds": 192.71466699999996,
+    "pauseSeconds": 101.85,
+    "stills": 90,
+    "clips": 133,
+    "srtEntries": 133,
+    "bytes": 30534335,
+    "sha256": "ed2ec458ee935d98286858e0159ffdae09830271792b92c8e6c3310abb11362c",
+    "drive": "https://drive.google.com/file/d/1rxrfMXI_Vb_ZkB07XFzPcA0pxp7lAHR9/view?usp=drivesdk",
+    "drivePrivate": true
+  }
+}
