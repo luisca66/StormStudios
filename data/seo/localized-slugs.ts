@@ -53,7 +53,7 @@ export const LESSON_URL_SLUGS: Record<string, Record<Locale, string>> = {
   },
   "06-leccion-5": {
     es: "06-leccion-5",
-    en: "06-lesson-5-second-inversion-64-cadence",
+    en: "06-lesson-5-degrees-chords-tonality",
   },
 };
 
