@@ -19,7 +19,27 @@ export async function externalMusic(still, storyboardFile, duration) {
   catch (error) { throw new Error(`Still "${still.id}", musicFile "${file}": ${error.message}`); }
 }
 
-export function externalMusicFilter(window) {
+export function musicNormalization(measured) {
+  const inputI = Number(measured.input_i), inputTP = Number(measured.input_tp);
+  const inputLRA = Number(measured.input_lra), threshold = Number(measured.input_thresh);
+  if (![inputI, inputTP, inputLRA, threshold].every(Number.isFinite)) throw new Error("Música externa sin sonoridad medible");
+  const targetI = -19, targetTP = -4.5;
+  const requestedGain = targetI - inputI, peakGain = targetTP - inputTP;
+  const gain = Math.min(requestedGain, peakGain);
+  return { mode: requestedGain <= peakGain ? "linear" : "peak-limited-gain", targetI, targetTP,
+    inputI, inputTP, inputLRA, threshold, requestedGain, gain, expectedI: inputI + gain,
+    expectedTP: inputTP + gain, targetLRA: Math.max(11, inputLRA) };
+}
+
+export function externalMusicPreparation(window) {
   const samples = Math.round(window.seconds * 48000);
-  return `atrim=start=${window.sourceStart}:end=${window.sourceEnd},asetpts=PTS-STARTPTS,loudnorm=I=-19:TP=-4.5:LRA=11,aresample=48000,asetpts=N/SR/TB,apad,atrim=end_sample=${samples},afade=t=in:st=0:d=0.5,afade=t=out:st=${Math.max(0, window.seconds - .5)}:d=0.5`;
+  return `atrim=start=${window.sourceStart}:end=${window.sourceEnd},asetpts=PTS-STARTPTS,aresample=48000,asetpts=N/SR/TB,apad,atrim=end_sample=${samples},afade=t=in:st=0:d=0.5,afade=t=out:st=${Math.max(0, window.seconds - .5)}:d=0.5`;
+}
+
+export function externalMusicFilter(window, normalization) {
+  const n = normalization;
+  const filter = n.mode === "linear"
+    ? `loudnorm=I=${n.targetI}:TP=${n.targetTP}:LRA=${n.targetLRA}:measured_I=${n.inputI}:measured_TP=${n.inputTP}:measured_LRA=${n.inputLRA}:measured_thresh=${n.threshold}:linear=true:print_format=json`
+    : `volume=${n.gain}dB`;
+  return `${externalMusicPreparation(window)},${filter},aresample=48000,apad,atrim=end_sample=${Math.round(window.seconds * 48000)}`;
 }

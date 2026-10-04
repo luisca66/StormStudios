@@ -103,6 +103,8 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 - **L5 ES (2026-10-04)**: recortar el viewBox del SVG y ampliar sus etiquetas mejora el círculo de quintas a 1080p. Los nueve ejemplos completos de Cubase suman 175.848 s; junto al piano suman 192.715 s. Validar el tiempo total incluyendo música y pausas, no solo voz: 948.967 s de MP4.
 - **L5 EN (2026-10-04)**: con 133 clips completos y mapas alineados se reutilizan los mismos 90 stills, música y pausas; la voz inglesa de 600.880 s da un MP4 de 895.444 s. Verificar metadatos privados y tamaño de cada copia de Drive después de subirla.
 
+- **L5, revisión de sonoridad (2026-10-04)**: la doble pasada lineal de música evita la compresión dinámica del fragmento, pero no garantiza la diferencia respecto a voz en el MP4. Ars nova, clásico y expresionismo necesitan ganancia limitada por pico a −4.5 dBTP; el ajuste final de mezcla también puede caer en dinámico. Medir EBU R128 por segmento después de AAC y reportar los valores fuera de objetivo antes de considerar aprobado el audio.
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).

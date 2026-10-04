@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { concatFile, docxParagraphs, nearestPause, silenceMidpoints, srtTime, validateAudioMap, partialSubtitle } from "./video-utils.mjs";
 
-import { externalMusic, externalMusicFilter } from "./external-music.mjs";
+import { externalMusic, externalMusicFilter, externalMusicPreparation, musicNormalization } from "./external-music.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 async function run(command, args, capture = false) {
@@ -177,12 +177,21 @@ async function main() {
     }
     if (still.musicFile) {
       const source = external.get(still.id), file = path.join(work, `${index + 1}-external-music.wav`);
-      await ffmpeg(["-i", source.file, "-af", externalMusicFilter(source), "-ac", "2", "-c:a", "pcm_s16le", file]);
+      const analysis = await run("ffmpeg", ["-hide_banner", "-i", source.file, "-af", `${externalMusicPreparation(source)},loudnorm=I=-19:TP=-4.5:LRA=11:print_format=json`, "-f", "null", "-"], true);
+      const measured = JSON.parse(analysis.stderr.match(/\{\s*"input_i"[\s\S]*?\}/)?.[0] ?? "null");
+      if (!measured) throw new Error(`Still "${still.id}": análisis musical fallido`);
+      const normalization = musicNormalization(measured);
+      const applied = await run("ffmpeg", ["-hide_banner", "-nostats", "-y", "-i", source.file, "-af", externalMusicFilter(source, normalization), "-ac", "2", "-c:a", "pcm_s16le", file], true);
+      if (normalization.mode === "linear") {
+        const result = JSON.parse(applied.stderr.match(/\{\s*"input_i"[\s\S]*?\}/)?.[0] ?? "null");
+        if (result?.normalization_type !== "linear") throw new Error(`Still "${still.id}": loudnorm no aplicó modo lineal`);
+        normalization.output = result;
+      }
       const length = await duration(file);
       if (Math.abs(length - source.seconds) > 1 / 48000) throw new Error(`Still "${still.id}": duración musical inesperada ${length}`);
       const credit = creditManifest.stills.find(s => s.id === `${still.id}-music-credit`);
       const musicPng = credit ? path.join(creditDir, credit.file) : png;
-      segment.music = { file: source.file, sourceStart: source.sourceStart, sourceEnd: source.sourceEnd, start: time, end: time + length, credit: still.musicCredit, image: musicPng, cursors: [] };
+      segment.music = { file: source.file, sourceStart: source.sourceStart, sourceEnd: source.sourceEnd, start: time, end: time + length, credit: still.musicCredit, image: musicPng, normalization, cursors: [] };
       image(musicPng, length);
       audioFiles.push(file); time += length; musicSeconds += length;
     }
