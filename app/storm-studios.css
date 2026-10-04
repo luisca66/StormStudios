@@ -259,6 +259,9 @@ body:has(.ss-root) .ss-site-header :focus-visible {
   color: rgba(240,238,255,0.9);
   margin: 2rem 0 0.75rem;
 }
+.blog-prose .lesson-figure { overflow-x: auto; margin: 1.5rem 0 2rem; -webkit-overflow-scrolling: touch; }
+.blog-prose .lesson-figure img { display: block; width: 100%; min-width: 600px; height: auto; }
+.blog-prose .lesson-figure.wide img { min-width: 960px; }
 .blog-prose table { display: block; width: 100%; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: 0 0 2rem; font-size: .9rem; }
 .blog-prose th, .blog-prose td { border-bottom: 1px solid rgba(255,255,255,.08); padding: .5rem .6rem; text-align: left; vertical-align: top; }
 .blog-prose th { color: #f0eeff; font-weight: 600; border-bottom-color: rgba(139,92,246,.4); }

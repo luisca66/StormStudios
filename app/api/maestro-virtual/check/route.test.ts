@@ -1,8 +1,9 @@
 import { NextRequest } from 'next/server';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { POST } from './route';
+import * as lessonConfigs from '@/data/course/lessons/lesson-configs';
 
 function midiRequest(lessonId: string, locale = 'es', ip?: string) {
   const formData = new FormData();
@@ -69,7 +70,11 @@ describe('POST /api/maestro-virtual/check', () => {
   });
 
   it('normalizes unsupported locale values before returning SATB feedback', async () => {
-    const response = await POST(midiRequest('06-leccion-5', 'en\nforged-log-line'));
+    const config = vi.spyOn(lessonConfigs, 'getLessonConfig').mockReturnValueOnce({
+      id: 'satb-test', validator: 'satb', voiceCount: 4, activeRules: [],
+    });
+    const response = await POST(midiRequest('satb-test', 'en\nforged-log-line'));
+    config.mockRestore();
 
     expect(response.status).toBe(501);
     expect(response.headers.get('cache-control')).toBe('no-store');

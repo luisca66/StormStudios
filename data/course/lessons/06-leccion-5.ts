@@ -7,61 +7,17 @@ export const lesson: LessonConfig = {
   lessonNumber: 5,
   module: "triadas-satb",
   status: "construction",
-
   title: {
-    es: "Lección 5 — Segunda Inversión y Cadencia ⁶₄",
-    en: "Lesson 5 — Second Inversion and the ⁶₄ Cadence",
+    es: "Lección 5 — Grados, acordes y tonalidad",
+    en: "Lesson 5 — Degrees, Chords and Tonality",
   },
   description: {
-    es: "Acordes en segunda inversión: usos restringidos (cadencial, de paso, de bordadura). La cadencia ⁶₄ de dominante como clímax armónico.",
-    en: "Chords in second inversion: restricted uses (cadential, passing, pedal). The dominant ⁶₄ cadence as harmonic climax.",
+    es: "Nombres y funciones de los grados, acordes por terceras, las armonías y la serie de armónicos, regiones tonales y el círculo de quintas.",
+    en: "Degree names and functions, chords in stacked thirds, the harmonies and the harmonic series, tonal regions and the circle of fifths.",
   },
-  estimatedMinutes: 90,
-
+  estimatedMinutes: 30,
   prerequisites: ["05-leccion-4"],
-
-  videos: [
-    // TODO: agregar youtubeId
-  ],
-
-  activeRules: [
-    "voice-range-satb",
-    "voice-crossing",
-    "voice-overlap",
-    "no-parallel-fifths",
-    "no-parallel-octaves",
-    "no-hidden-fifths",
-    "contrary-motion-preferred",
-    "stepwise-motion-preference",
-    "root-position-doubling",
-    "common-tone-retention",
-    "leading-tone-resolution",
-    "first-inversion-doubling",
-    "cadence-satb",
-    // Nota: segunda inversión se valida contextualmente — se agrega en Fase 5
-  ],
-
-  exercise: {
-    type: "four-voice-chorale",
-    voiceCount: 4,
-    voices: ["soprano", "alto", "tenor", "bass"],
-    keySignatures: ["C", "G", "F", "D", "Bb"],
-    chordTypes: ["major", "minor"],
-    inversions: ["root", "first", "second"],
-    minChords: 6,
-    maxChords: 10,
-    description: {
-      es: "Escribe un coral que incluya la cadencia I⁶₄-V-I al final. Puede incluir acordes en todas las posiciones.",
-      en: "Write a chorale that includes the I⁶₄-V-I cadence at the end. May include chords in all positions.",
-    },
-  },
-
-  feedback: {
-    "cadence-satb": {
-      es: "Asegúrate de incluir la cadencia I⁶₄-V-I al final del ejercicio.",
-      en: "Make sure to include the I⁶₄-V-I cadence at the end of the exercise.",
-    },
-  },
-
-  tags: ["segunda inversión", "cadencia ⁶₄", "coral completo"],
+  videos: [],
+  activeRules: [],
+  tags: ["grados", "acordes por terceras", "armonías", "serie de armónicos", "regiones tonales", "tonalidad", "círculo de quintas"],
 };
