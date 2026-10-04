@@ -19,16 +19,25 @@ export async function externalMusic(still, storyboardFile, duration) {
   catch (error) { throw new Error(`Still "${still.id}", musicFile "${file}": ${error.message}`); }
 }
 
-export function musicNormalization(measured) {
+export function musicNormalization(measured, targetI = -19, targetTP = -1.5) {
   const inputI = Number(measured.input_i), inputTP = Number(measured.input_tp);
   const inputLRA = Number(measured.input_lra), threshold = Number(measured.input_thresh);
   if (![inputI, inputTP, inputLRA, threshold].every(Number.isFinite)) throw new Error("Música externa sin sonoridad medible");
-  const targetI = -19, targetTP = -4.5;
   const requestedGain = targetI - inputI, peakGain = targetTP - inputTP;
-  const gain = Math.min(requestedGain, peakGain);
-  return { mode: requestedGain <= peakGain ? "linear" : "peak-limited-gain", targetI, targetTP,
+  const gain = requestedGain;
+  return { mode: requestedGain <= peakGain ? "linear" : "fixed-gain-limiter", targetI, targetTP,
     inputI, inputTP, inputLRA, threshold, requestedGain, gain, expectedI: inputI + gain,
-    expectedTP: inputTP + gain, targetLRA: Math.max(11, inputLRA) };
+    peakBeforeLimiter: inputTP + gain, expectedTP: Math.min(targetTP, inputTP + gain), targetLRA: Math.max(11, inputLRA) };
+}
+
+export function peakLimiter(ceiling) {
+  return `alimiter=limit=${ceiling}dB:attack=5:release=50:level=false:latency=true`;
+}
+
+export function normalizationFilter(n) {
+  return n.mode === "linear"
+    ? `loudnorm=I=${n.targetI}:TP=${n.targetTP}:LRA=${n.targetLRA}:measured_I=${n.inputI}:measured_TP=${n.inputTP}:measured_LRA=${n.inputLRA}:measured_thresh=${n.threshold}:linear=true:print_format=json`
+    : `volume=${n.gain}dB,${peakLimiter(n.targetTP)}`;
 }
 
 export function externalMusicPreparation(window) {
@@ -37,9 +46,5 @@ export function externalMusicPreparation(window) {
 }
 
 export function externalMusicFilter(window, normalization) {
-  const n = normalization;
-  const filter = n.mode === "linear"
-    ? `loudnorm=I=${n.targetI}:TP=${n.targetTP}:LRA=${n.targetLRA}:measured_I=${n.inputI}:measured_TP=${n.inputTP}:measured_LRA=${n.inputLRA}:measured_thresh=${n.threshold}:linear=true:print_format=json`
-    : `volume=${n.gain}dB`;
-  return `${externalMusicPreparation(window)},${filter},aresample=48000,apad,atrim=end_sample=${Math.round(window.seconds * 48000)}`;
+  return `${externalMusicPreparation(window)},aresample=192000,${peakLimiter(-6)},apad=pad_dur=3,${normalizationFilter(normalization)},aresample=48000,apad,atrim=end_sample=${Math.round(window.seconds * 48000)}`;
 }

@@ -8,12 +8,14 @@
     "stills": 90,
     "clips": 133,
     "srtEntries": 133,
-    "bytes": 32534402,
-    "sha256": "8689d4c1d23448e0d9979702312f84d4d6a8c5edfbff7a5d16c21f37152480c1",
+    "bytes": 32532280,
+    "sha256": "36e8dd3dd3d21f7c6b759d2abf095416c5b41a876143b9c57b06bc7a5bbbd3ca",
     "drive": "https://drive.google.com/file/d/1kS_Q4elkBokxDixqS1OfRckiJ6lAZPJu/view?usp=drivesdk",
     "drivePrivate": true,
     "loudnessTargetMet": false,
-    "maximumTruePeak": -1.3
+    "maximumTruePeak": -1.4,
+    "globalIntegrated": -16,
+    "finalNormalizationMode": "fixed-gain-limiter"
   },
   "en": {
     "mp4Seconds": 895.444,
@@ -24,11 +26,13 @@
     "stills": 90,
     "clips": 133,
     "srtEntries": 133,
-    "bytes": 30536694,
-    "sha256": "ec97caa557b78e1887817d3546fd61c121c1ee6566fdf7c3ea548be43b30b428",
+    "bytes": 30531164,
+    "sha256": "22bd2c05fbc96f71120d6af0603c3403a40ca1a4b07feb57daa192cae7ca191b",
     "drive": "https://drive.google.com/file/d/1rxrfMXI_Vb_ZkB07XFzPcA0pxp7lAHR9/view?usp=drivesdk",
     "drivePrivate": true,
-    "loudnessTargetMet": false,
-    "maximumTruePeak": -1.4
+    "loudnessTargetMet": true,
+    "maximumTruePeak": -1.4,
+    "globalIntegrated": -16,
+    "finalNormalizationMode": "fixed-gain-limiter"
   }
 }

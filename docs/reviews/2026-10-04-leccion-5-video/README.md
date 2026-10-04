@@ -4,8 +4,8 @@ Montaje realizado sobre `codex/video-imagen-musica` (#34), después de incorpora
 
 | Versión | MP4 | Timeline | Voz | Música | Pausas | Bytes |
 | --- | --- | --- | --- | --- | --- | --- |
-| ES | 948.966667 s | 948.964667 s | 654.400 s | 192.714667 s | 101.850 s | 32534402 |
-| EN | 895.444 s | 895.444667 s | 600.880 s | 192.714667 s | 101.850 s | 30536694 |
+| ES | 948.966667 s | 948.964667 s | 654.400 s | 192.714667 s | 101.850 s | 32532280 |
+| EN | 895.444 s | 895.444667 s | 600.880 s | 192.714667 s | 101.850 s | 30531164 |
 
 La música incluye los nueve MP3 completos (175.848 s) y el piano del secuenciador. Sin `musicTrim`. Los MP3 originales conservan sus hashes SHA-256; narraciones, guiones, mapas y storyboards no se modificaron.
 
@@ -30,4 +30,4 @@ npm run video -- content/storyboards/<locale>/06-leccion-5.json --audio content/
 
 B: lint, TypeScript y 539 pruebas unitarias aprobados. C: lint, TypeScript, 555 unitarias y 9 Playwright aprobados. Las previews de B y C se desplegaron correctamente. El CI general conserva el fallo previo de audición al arrastrar del editor, también presente en main; no afecta a los comandos de captura y montaje ejecutados.
 
-Claude confirmó formato, continuidad, SRT y los 180 fotogramas. Se remontó el audio con dos pasadas lineales y ganancia limitada por pico, reemplazando las entregas en los mismos nombres/IDs. **Pendiente: el rango de música − voz no se cumple en todos los fragmentos**; véase [mediciones e incidencia](audio-normalization.md). MP3/WAV/PNG/MP4 permanecen fuera de Git.
+Claude confirmó formato, continuidad, SRT y los 180 fotogramas. Se remontó una vez por idioma con limitador previo a la música y normalización lineal a −19 LUFS / −1.5 dBTP. La mezcla usa ganancia fija y limitador a −1.5 dBTP, según el nuevo encargo. Las entregas se reemplazaron en los mismos nombres/IDs. **17/18 tramos cumplen: impresionismo ES queda 0.1 LU por encima del rango solicitado**, sin iteraciones adicionales; véase [mediciones e incidencia](audio-normalization.md). MP3/WAV/PNG/MP4 permanecen fuera de Git.

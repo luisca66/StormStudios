@@ -1,25 +1,32 @@
-# Revisión de sonoridad — Lección 5
+# Revisión de sonoridad — Lección 5, limitador y mezcla con ganancia fija
 
-Se aplicó la normalización solicitada de `musicFile`: primera medición después del recorte/fades, segunda pasada lineal a −19 LUFS / −4.5 dBTP con los cuatro parámetros medidos y LRA objetivo al menos igual a la medida. Se verifica que FFmpeg confirme `linear`. Si la ganancia necesaria supera el pico permitido, se aplica únicamente ganancia constante limitada por pico; cada decisión queda en `music.normalization` del timeline.
+Aplicado el nuevo encargo: cada fragmento externo se recorta, recibe sus fades, se sobremuestrea a 192 kHz y pasa por `alimiter` (−6 dB, ataque 5 ms, liberación 50 ms, `level=false`, compensación de latencia). Se mide y normaliza con `loudnorm` lineal a −19 LUFS / −1.5 dBTP. Tres segundos de silencio de análisis vacían el buffer en ambas pasadas; se recortan de la salida y se conserva su longitud en muestras. Se verifica el modo lineal aplicado y se mide cada WAV final con EBU R128 antes de la mezcla. Los nueve fragmentos miden −19.0 LUFS, salvo ars nova a −18.9, en ambos idiomas; cumplen ±0.3 LUFS.
 
-**El objetivo final de −2 a −3.5 LU no se alcanza en todos los fragmentos.** Ars nova, clásico y expresionismo activan la ganancia limitada por pico en ambos idiomas. Además, la normalización final de la mezcla no puede elevarla a −16 LUFS manteniendo −1.5 dBTP solo con ganancia: su pico de entrada ya es −1.5 dBTP. FFmpeg cae en modo dinámico y modifica la relación entre segmentos. No se añadió compresión a los fragmentos ni se modificó la normalización de voz o mezcla final.
+La mezcla calcula una sola ganancia para llegar a −16 LUFS. En ambos idiomas no cabe bajo −1.5 dBTP, por lo que utiliza la alternativa autorizada: `volume` con ganancia fija (ES +0.96 dB / EN +0.84 dB) y `alimiter` a −1.5 dBTP, sobremuestreado y sin autonivel. Nunca aplica loudnorm dinámico a la mezcla de salida. El informe `normalization.measured` describe la primera pasada de análisis; su salida dinámica se descarta. El modo efectivamente aplicado se registra en `normalization.mode`, y los resultados del MP4 en `normalization.verified`.
 
-Medición directamente del AAC de cada MP4 con `ffmpeg -ss <inicio> -i <mp4> -t <duración> -vn -af ebur128=peak=true -f null -`. Voz: desde el inicio del primer clip hasta el final del último del mismo still, incluidas las pausas internas de 0.25 s. Música: intervalo completo del timeline, incluidos los fades. Valores integrados del resumen final, a 0.1 LU; intervalos y niveles absolutos en `loudness.json`.
+Medición directamente del AAC de cada MP4 con `ffmpeg -ss <inicio> -i <mp4> -t <duración> -vn -af ebur128=peak=true -f null -`. Voz: desde el inicio del primer clip hasta el final del último del mismo still, incluidas las pausas internas de 0.25 s. Música: intervalo completo del timeline, incluidos los fades. Valores integrados del resumen final a 0.1 LU; intervalos y niveles absolutos en `loudness.json`.
 
-| Still | Música − voz ES (LU) | Música − voz EN (LU) | Modo del fragmento |
+| Still | Música − voz ES (LU) | Música − voz EN (LU) | Reducción de pico previa (dB) |
 | --- | --- | --- | --- |
-| monodia | -2.6 | -2.8 | linear |
-| organum | -2.1 | -2.0 | linear |
-| ars-nova | -3.3 | **-3.7** | peak-limited-gain |
-| preclasico | -2.4 | -2.4 | linear |
-| clasico | **-3.7** | -3.4 | peak-limited-gain |
-| impresionismo | **-1.7** | **-1.9** | linear |
-| expresionismo | **-4.6** | **-4.7** | peak-limited-gain |
-| dodecafonia | -2.4 | -2.3 | linear |
-| microtonalismo | **-1.7** | **-1.8** | linear |
+| monodia | -2.7 | -2.9 | 0.00 |
+| organum | -2.4 | -2.5 | 0.00 |
+| ars-nova | -2.5 | -2.9 | 1.49 |
+| preclasico | -2.6 | -2.6 | 1.38 |
+| clasico | -2.6 | -2.4 | 0.00 |
+| impresionismo | **-1.9** | -2.3 | 0.00 |
+| expresionismo | -2.2 | -2.4 | 0.94 |
+| dodecafonia | -2.6 | -2.6 | 1.52 |
+| microtonalismo | -2.0 | -2.3 | 4.14 |
 
-No hay saturación: pico verdadero máximo de todo el MP4 ES −1.3 dBTP y EN −1.4 dBTP después de AAC. El límite de −4.5 dBTP corresponde al fragmento antes del ajuste final de mezcla.
+**17 de 18 tramos cumplen −2 a −3.5 LU.** Solo impresionismo ES queda fuera: −1.9 LU, 0.1 LU por encima del límite de −2.0. No se realizaron ajustes adicionales ni otro remontaje tras medirlo, conforme al encargo. La reducción de pico de la tabla es la diferencia entre el máximo verdadero antes/después del limitador previo, antes de la ganancia de normalización; queda registrada con ambas mediciones en cada timeline.
 
-Remontaje con `npm run video` en ES/EN, reutilizando los 90 PNG base capturados (el comando genera sus variantes de cursor/crédito). Duraciones, 133 clips/SRT, continuidad y formato comprobados; se conservaron narración, música de origen, storyboard y tiempos. Copias de H: verificadas byte por byte. Archivos de Drive reemplazados en los mismos IDs, conservando nombres y privacidad; tamaño verificado por metadatos.
+| Versión | Sonoridad global | Pico verdadero máximo | Duración MP4 |
+| --- | --- | --- | --- |
+| ES | −16.0 LUFS | −1.4 dBTP | 948.966667 s |
+| EN | −16.0 LUFS | −1.4 dBTP | 895.444 s |
 
-Pruebas: lint y TypeScript aprobados; 559 unitarias aprobadas, 3 todo; 9 Playwright aprobadas. La revisión visual/SRT anterior fue aprobada por Claude; esta revisión de audio documenta una incidencia pendiente, no una aprobación del objetivo de sonoridad.
+Ambos cumplen −16 ±0.5 LUFS y pico ≤ −1.0 dBTP, medidos después de AAC. Revisión con [`alimiter` documentado por FFmpeg](https://ffmpeg.org/ffmpeg-filters.html#alimiter), sobremuestreo y compensación de latencia.
+
+Remontaje único con `npm run video` por idioma reutilizando los 90 PNG base. Duraciones, 133 clips/SRT, continuidad y formato comprobados; narración, música de origen, storyboard y tiempos conservados. Entregas reemplazadas en H: y los mismos IDs privados de Drive, con los mismos nombres. Copias de H: verificadas byte por byte; tamaño y privacidad remotos verificados por metadatos.
+
+Pruebas: lint y TypeScript aprobados; 560 unitarias aprobadas, 3 todo; 9 Playwright aprobadas. Incluyen la ganancia de mezcla, selección lineal frente a ganancia fija/limitador, frontera del pico, atenuación, LRA, ausencia de autonivel, compensación de latencia y silencio.

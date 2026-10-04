@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { externalMusic, externalMusicFilter, musicWindow, musicNormalization } from "./external-music.mjs";
+import { externalMusic, externalMusicFilter, musicWindow, musicNormalization, normalizationFilter, peakLimiter } from "./external-music.mjs";
 
 describe("external lesson music", () => {
   it("uses the whole file by default and preserves exact trim offsets", () => {
@@ -14,19 +14,28 @@ describe("external lesson music", () => {
     expect(filter).toContain("measured_I=-22:measured_TP=-10:measured_LRA=2:measured_thresh=-32:linear=true");
     expect(filter).toContain("atrim=end_sample=288000");
     expect(filter).toContain("afade=t=in:st=0:d=0.5,afade=t=out:st=5.5:d=0.5");
+    expect(filter).toContain("aresample=192000,alimiter=limit=-6dB:attack=5:release=50:level=false:latency=true,apad=pad_dur=3,loudnorm");
   });
   it("uses constant gain to reach the target and preserves the measured LRA", () => {
     expect(musicNormalization({ input_i: "-24", input_tp: "-12", input_lra: "14", input_thresh: "-34" }))
       .toMatchObject({ mode: "linear", gain: 5, expectedI: -19, expectedTP: -7, targetLRA: 14 });
   });
-  it("caps gain at the true peak ceiling when the loudness target is impossible", () => {
-    const normalization = musicNormalization({ input_i: -25, input_tp: -8, input_lra: 4, input_thresh: -35 });
-    expect(normalization).toMatchObject({ mode: "peak-limited-gain", requestedGain: 6, gain: 3.5, expectedI: -21.5, expectedTP: -4.5 });
-    expect(externalMusicFilter(musicWindow({ id: "peak" }, 5), normalization)).toContain("volume=3.5dB");
+  it("uses the full fixed gain followed by a limiter when the final mix cannot fit linearly", () => {
+    const normalization = musicNormalization({ input_i: -17, input_tp: -1.5, input_lra: 4, input_thresh: -27 }, -16, -1.5);
+    expect(normalization).toMatchObject({ mode: "fixed-gain-limiter", requestedGain: 1, gain: 1, expectedI: -16, peakBeforeLimiter: -.5, expectedTP: -1.5 });
+    expect(normalizationFilter(normalization)).toBe("volume=1dB,alimiter=limit=-1.5dB:attack=5:release=50:level=false:latency=true");
+    expect(normalizationFilter(normalization)).not.toContain("loudnorm");
   });
   it("attenuates loud sources and accepts the exact peak boundary", () => {
-    expect(musicNormalization({ input_i: -15, input_tp: -.5, input_lra: 2, input_thresh: -25 }))
-      .toMatchObject({ mode: "linear", gain: -4, expectedI: -19, expectedTP: -4.5 });
+    expect(musicNormalization({ input_i: -15, input_tp: 2.5, input_lra: 2, input_thresh: -25 }))
+      .toMatchObject({ mode: "linear", gain: -4, expectedI: -19, expectedTP: -1.5 });
+  });
+  it("keeps the final mix linear when its peak has sufficient headroom", () => {
+    const normalization = musicNormalization({ input_i: -18, input_tp: -5, input_lra: 3, input_thresh: -28 }, -16, -1.5);
+    expect(normalization).toMatchObject({ mode: "linear", gain: 2, expectedTP: -3 });
+    expect(normalizationFilter(normalization)).toContain("loudnorm=I=-16:TP=-1.5");
+    expect(normalizationFilter(normalization)).not.toContain("alimiter");
+    expect(peakLimiter(-6)).toContain("level=false:latency=true");
   });
   it("rejects silence or invalid loudness measurements", () => {
     expect(() => musicNormalization({ input_i: "-inf", input_tp: "-inf", input_lra: 0, input_thresh: -70 })).toThrow(/sin sonoridad medible/);

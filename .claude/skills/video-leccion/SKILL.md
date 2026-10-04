@@ -105,6 +105,8 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 
 - **L5, revisión de sonoridad (2026-10-04)**: la doble pasada lineal de música evita la compresión dinámica del fragmento, pero no garantiza la diferencia respecto a voz en el MP4. Ars nova, clásico y expresionismo necesitan ganancia limitada por pico a −4.5 dBTP; el ajuste final de mezcla también puede caer en dinámico. Medir EBU R128 por segmento después de AAC y reportar los valores fuera de objetivo antes de considerar aprobado el audio.
 
+- **L5, limitador y mezcla fija (2026-10-04)**: sobremuestrear el limitador a 192 kHz, desactivar autonivel y compensar su latencia. Añadir 3 s de silencio de análisis y recortarlo de la salida vacía el buffer de loudnorm y mejora la medición de clips cortos. Con música lineal a −19 LUFS y ganancia fija/limitador final, ambos MP4 miden −16.0 LUFS / −1.4 dBTP; 17/18 tramos cumplen la diferencia solicitada, impresionismo ES queda −1.9 LU. Respetar el encargo de reportar el desvío sin iteraciones adicionales.
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).
