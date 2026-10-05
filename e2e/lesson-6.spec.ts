@@ -3,20 +3,15 @@ import { join } from "node:path";
 import { LESSON_URL_SLUGS } from "../data/seo/localized-slugs";
 
 for (const locale of ["es", "en"] as const) {
-  test(`Lesson 6 uploads SATB MIDI and shows chord analysis in ${locale} (Spanish published, English under construction)`, async ({ page }) => {
+  test(`Lesson 6 uploads SATB MIDI and shows chord analysis in ${locale}`, async ({ page }) => {
     const es = locale === "es";
     const course = es ? "curso-armonia" : "harmony-course";
     const slug = LESSON_URL_SLUGS["07-leccion-6"][locale];
+    const videoId = es ? "GbyIAJ5bKac" : "WXghlxZc9Y8";
     await page.goto(`/${locale}/${course}/${slug}`);
-    if (es) {
-      await expect(page.getByRole("heading", { name: "Lección en construcción", exact: true })).toHaveCount(0);
-      await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0);
-      await expect(page.locator('img[src*="GbyIAJ5bKac"], iframe[src*="GbyIAJ5bKac"]').first()).toBeAttached();
-    } else {
-      // Spanish is published, so the English page shows the translation-pending banner.
-      await expect(page.getByRole("heading", { name: "Coming soon", exact: true })).toBeVisible();
-      await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
-    }
+    await expect(page.getByRole("heading", { name: es ? "Lección en construcción" : "Coming soon", exact: true })).toHaveCount(0);
+    await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0);
+    await expect(page.locator(`img[src*="${videoId}"], iframe[src*="${videoId}"]`).first()).toBeAttached();
     await page.locator('input[type="file"]').setInputFiles(join(process.cwd(), "lib/maestro-virtual/__fixtures__/Leccion_6_Do_mayor_correcta.mid"));
     await expect(page.getByText(es ? "Puntuación: 100/100" : "Score: 100/100", { exact: true })).toBeVisible();
     const heading = page.getByRole("heading", { name: es ? "Análisis de los acordes" : "Chord analysis", exact: true });

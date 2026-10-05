@@ -8,8 +8,6 @@ export const lesson: LessonConfig = {
   lessonNumber: 6,
   module: "triadas-satb",
   status: "published",
-  // La versión en inglés se publica cuando esté su video de YouTube.
-  statusByLocale: { en: "construction" },
   title: {
     es: "Lección 6 — Cuarteto vocal armónico",
     en: "Lesson 6 — The Harmonic Vocal Quartet",
@@ -23,6 +21,11 @@ export const lesson: LessonConfig = {
     es: [{
       youtubeId: "GbyIAJ5bKac",
       embedUrl: "https://www.youtube.com/embed/GbyIAJ5bKac?si=8XvgQHlFba0pzZ7Z",
+      title: { es: "Cuarteto vocal armónico", en: "The Harmonic Vocal Quartet" },
+    }],
+    en: [{
+      youtubeId: "WXghlxZc9Y8",
+      embedUrl: "https://www.youtube.com/embed/WXghlxZc9Y8?si=XzxC1YUqYh8mIKca",
       title: { es: "Cuarteto vocal armónico", en: "The Harmonic Vocal Quartet" },
     }],
   },

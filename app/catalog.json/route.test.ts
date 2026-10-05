@@ -12,10 +12,9 @@ it("publishes working localized catalog URLs and only published languages of eac
   const lesson5 = catalog.course.lessons.find((lesson: { id: string }) => lesson.id === "06-leccion-5");
   expect(lesson5.urls.es).toBe("https://www.stormstudios.com.mx/es/curso-armonia/06-leccion-5");
   expect(lesson5.urls.en).toBe("https://www.stormstudios.com.mx/en/harmony-course/06-lesson-5-degrees-chords-tonality");
-  // Lesson 6 is published in Spanish; English waits for its video.
   const lesson6 = catalog.course.lessons.find((lesson: { id: string }) => lesson.id === "07-leccion-6");
   expect(lesson6.urls.es).toBe("https://www.stormstudios.com.mx/es/curso-armonia/07-leccion-6");
-  expect(lesson6.urls.en).toBeUndefined();
+  expect(lesson6.urls.en).toBe("https://www.stormstudios.com.mx/en/harmony-course/07-lesson-6-harmonic-vocal-quartet");
   for (const app of catalog.apps) {
     for (const locale of ["es", "en"]) {
       for (const url of Object.values(app.urls[locale])) {
