@@ -1,7 +1,7 @@
 import { expect, it } from "vitest";
 import sitemap from "./sitemap";
 
-it("lists Lessons 4, 5 and 6 in both languages", async () => {
+it("lists Lessons 4, 5 and 6 in both languages and excludes Lesson 7 in construction", async () => {
   const entries = await sitemap();
   const spanish = entries.find((entry) => entry.url.endsWith("/es/curso-armonia/05-leccion-4"));
   expect(spanish).toBeDefined();
@@ -15,4 +15,5 @@ it("lists Lessons 4, 5 and 6 in both languages", async () => {
   expect(entries.some((entry) => entry.url.endsWith("/en/harmony-course/06-lesson-5-degrees-chords-tonality"))).toBe(true);
   expect(entries.some((entry) => entry.url.endsWith("/es/curso-armonia/07-leccion-6"))).toBe(true);
   expect(entries.some((entry) => entry.url.endsWith("/en/harmony-course/07-lesson-6-harmonic-vocal-quartet"))).toBe(true);
+  expect(entries.some((entry) => /08-(leccion|lesson)-7/.test(entry.url))).toBe(false);
 });
