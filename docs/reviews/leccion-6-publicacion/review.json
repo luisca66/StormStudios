@@ -1,0 +1,42 @@
+[
+  {
+    "locale": "es",
+    "colorScheme": "dark",
+    "url": "http://localhost:3000/es/curso-armonia/07-leccion-6",
+    "figures": 5,
+    "tables": 3,
+    "forms": 1,
+    "teacherScore": 100,
+    "errors": []
+  },
+  {
+    "locale": "es",
+    "colorScheme": "light",
+    "url": "http://localhost:3000/es/curso-armonia/07-leccion-6",
+    "figures": 5,
+    "tables": 3,
+    "forms": 1,
+    "teacherScore": 100,
+    "errors": []
+  },
+  {
+    "locale": "en",
+    "colorScheme": "dark",
+    "url": "http://localhost:3000/en/harmony-course/07-lesson-6-harmonic-vocal-quartet",
+    "figures": 5,
+    "tables": 3,
+    "forms": 1,
+    "teacherScore": 100,
+    "errors": []
+  },
+  {
+    "locale": "en",
+    "colorScheme": "light",
+    "url": "http://localhost:3000/en/harmony-course/07-lesson-6-harmonic-vocal-quartet",
+    "figures": 5,
+    "tables": 3,
+    "forms": 1,
+    "teacherScore": 100,
+    "errors": []
+  }
+]

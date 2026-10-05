@@ -84,12 +84,7 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
           <div className="ss-divider mb-8" />
 
           {getLessonStatus(lesson, locale) === "construction" ? (
-            <>
-              <ConstructionBanner locale={locale} translationPending={lesson.status === "published"} />
-              {lesson.id === "07-leccion-6" && lesson.exercise && (
-                <ExerciseUpload lessonId={lesson.id} locale={locale} />
-              )}
-            </>
+            <ConstructionBanner locale={locale} translationPending={lesson.status === "published"} />
           ) : (
           <>
           {/* Videos de la lección */}
