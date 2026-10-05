@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import type { Still, Storyboard } from "../lib/sequencer/storyboard";
 import example from "../content/storyboards/es/ejemplo-intervalos.json";
+import lessonSix from "../content/storyboards/es/07-leccion-6.json";
 import type { Score } from "../lib/sequencer/types";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -11,6 +12,38 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/es/sequencer/v4/stage");
   await page.waitForFunction(() => !!window.stormStage);
 });
+
+for (const locale of ["es", "en"] as const) {
+  test(`short SATB systems retain complete ${locale} names, aligned notes and clear marks`, async ({ page }) => {
+    await page.goto(`/${locale}/sequencer/v4/stage`);
+    await page.waitForFunction(() => !!window.stormStage);
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    const prepared = await page.evaluate(board => window.stormStage!.prepare(board), { ...lessonSix, locale });
+    for (const id of ["do-duplica", "solb-duplica", "tesituras", "estados"]) {
+      const still = prepared.storyboard.stills.find(s => s.id === id)!;
+      await page.evaluate(({ still, score }) => window.stormStage!.render(still, score), { still, score: prepared.scores[still.project!] });
+      const result = await page.getByTestId("score-view").evaluate(surface => {
+        const bounds = (e: Element) => { const b = e.getBoundingClientRect(); return { left: b.left, right: b.right, top: b.top, bottom: b.bottom }; };
+        const texts = [...surface.querySelectorAll("svg text")];
+        const notes = [...surface.querySelectorAll(".vf-notehead")].map(bounds);
+        return {
+          names: texts.map(e => e.textContent),
+          labels: [...surface.querySelectorAll("[data-mark-label]")].map(bounds), notes,
+          system: bounds(surface.querySelector("svg")!), paper: bounds(surface.closest("[data-testid=still]")!),
+        };
+      });
+      for (const name of ["Soprano", locale === "es" ? "Contralto" : "Alto", "Tenor", locale === "es" ? "Bajo" : "Bass"]) expect(result.names).toContain(name);
+      expect(result.system.left).toBeGreaterThan(result.paper.left + 80);
+      expect(result.system.right).toBeLessThan(result.paper.right - 80);
+      const overlaps = (a: typeof result.system, b: typeof result.system) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+      for (const [i, label] of result.labels.entries()) {
+        expect(result.notes.some(note => overlaps(label, note))).toBe(false);
+        expect(result.labels.slice(i + 1).some(other => overlaps(label, other))).toBe(false);
+      }
+      if (id.endsWith("duplica")) expect(Math.max(...result.notes.map(n => n.left)) - Math.min(...result.notes.map(n => n.left))).toBeLessThan(3);
+    }
+  });
+}
 
 test("stage exports audible Piano WAV through the local proxy, stopping at reveal", async ({ page }) => {
   const sample = Buffer.alloc(44 + 4410 * 2);
