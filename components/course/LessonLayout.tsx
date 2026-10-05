@@ -86,6 +86,8 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
           {getLessonStatus(lesson, locale) === "construction" ? (
             <>
               <ConstructionBanner locale={locale} translationPending={lesson.status === "published"} />
+              {/* L6 keeps SATB uploads available before publication. Once published,
+                  the normal exercise block below renders the form exactly once. */}
               {lesson.id === "07-leccion-6" && lesson.exercise && (
                 <ExerciseUpload lessonId={lesson.id} locale={locale} />
               )}
