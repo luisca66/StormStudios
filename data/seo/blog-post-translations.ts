@@ -34,6 +34,13 @@ export const BLOG_POST_TRANSLATIONS: BlogPostTranslation[] = [
       es: "2026-09-30-storm-sequencer-v4",
     },
   },
+  {
+    key: "lessons-4-and-5-published",
+    slugs: {
+      en: "2026-10-04-lessons-4-and-5-published",
+      es: "2026-10-04-lecciones-4-y-5-publicadas",
+    },
+  },
 ];
 
 export function findBlogTranslationBySlug(locale: Locale, slug: string) {
