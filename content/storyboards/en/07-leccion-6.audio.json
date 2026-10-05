@@ -1,0 +1,848 @@
+{
+  "lesson": "07-leccion-6",
+  "source": {
+    "script": "content/storyboards/en/07-leccion-6.guion.txt",
+    "durations": "content/storyboards/en/07-leccion-6.durations.txt",
+    "clipPattern": "{n}_Chapter_1.mp3",
+    "clips": 118
+  },
+  "note": "Una frase del guion por clip; cada still cubre clips completos.",
+  "stills": [
+    {
+      "id": "titulo",
+      "start": {
+        "clip": 1,
+        "at": 0
+      },
+      "end": {
+        "clip": 3,
+        "at": 1
+      }
+    },
+    {
+      "id": "acordes-sueltos",
+      "start": {
+        "clip": 4,
+        "at": 0
+      },
+      "end": {
+        "clip": 6,
+        "at": 1
+      }
+    },
+    {
+      "id": "voces",
+      "start": {
+        "clip": 7,
+        "at": 0
+      },
+      "end": {
+        "clip": 7,
+        "at": 1
+      }
+    },
+    {
+      "id": "piano",
+      "start": {
+        "clip": 8,
+        "at": 0
+      },
+      "end": {
+        "clip": 10,
+        "at": 1
+      }
+    },
+    {
+      "id": "secuenciador",
+      "start": {
+        "clip": 11,
+        "at": 0
+      },
+      "end": {
+        "clip": 12,
+        "at": 1
+      }
+    },
+    {
+      "id": "tesituras",
+      "start": {
+        "clip": 13,
+        "at": 0
+      },
+      "end": {
+        "clip": 15,
+        "at": 1
+      }
+    },
+    {
+      "id": "tesitura-soprano",
+      "start": {
+        "clip": 16,
+        "at": 0
+      },
+      "end": {
+        "clip": 16,
+        "at": 1
+      }
+    },
+    {
+      "id": "tesitura-contralto",
+      "start": {
+        "clip": 17,
+        "at": 0
+      },
+      "end": {
+        "clip": 17,
+        "at": 1
+      }
+    },
+    {
+      "id": "tesitura-tenor",
+      "start": {
+        "clip": 18,
+        "at": 0
+      },
+      "end": {
+        "clip": 18,
+        "at": 1
+      }
+    },
+    {
+      "id": "tesitura-bajo",
+      "start": {
+        "clip": 19,
+        "at": 0
+      },
+      "end": {
+        "clip": 19,
+        "at": 1
+      }
+    },
+    {
+      "id": "tesituras-limites",
+      "start": {
+        "clip": 20,
+        "at": 0
+      },
+      "end": {
+        "clip": 20,
+        "at": 1
+      }
+    },
+    {
+      "id": "separaciones",
+      "start": {
+        "clip": 21,
+        "at": 0
+      },
+      "end": {
+        "clip": 21,
+        "at": 1
+      }
+    },
+    {
+      "id": "sep-sa",
+      "start": {
+        "clip": 22,
+        "at": 0
+      },
+      "end": {
+        "clip": 22,
+        "at": 1
+      }
+    },
+    {
+      "id": "sep-at",
+      "start": {
+        "clip": 23,
+        "at": 0
+      },
+      "end": {
+        "clip": 23,
+        "at": 1
+      }
+    },
+    {
+      "id": "sep-tb",
+      "start": {
+        "clip": 24,
+        "at": 0
+      },
+      "end": {
+        "clip": 24,
+        "at": 1
+      }
+    },
+    {
+      "id": "bajo-robusto",
+      "start": {
+        "clip": 25,
+        "at": 0
+      },
+      "end": {
+        "clip": 27,
+        "at": 1
+      }
+    },
+    {
+      "id": "sin-cruces",
+      "start": {
+        "clip": 28,
+        "at": 0
+      },
+      "end": {
+        "clip": 29,
+        "at": 1
+      }
+    },
+    {
+      "id": "tres-notas",
+      "start": {
+        "clip": 30,
+        "at": 0
+      },
+      "end": {
+        "clip": 33,
+        "at": 1
+      }
+    },
+    {
+      "id": "do-mayor",
+      "start": {
+        "clip": 34,
+        "at": 0
+      },
+      "end": {
+        "clip": 34,
+        "at": 1
+      }
+    },
+    {
+      "id": "do-bajo",
+      "start": {
+        "clip": 35,
+        "at": 0
+      },
+      "end": {
+        "clip": 35,
+        "at": 1
+      }
+    },
+    {
+      "id": "do-tenor",
+      "start": {
+        "clip": 36,
+        "at": 0
+      },
+      "end": {
+        "clip": 36,
+        "at": 1
+      }
+    },
+    {
+      "id": "do-contralto",
+      "start": {
+        "clip": 37,
+        "at": 0
+      },
+      "end": {
+        "clip": 37,
+        "at": 1
+      }
+    },
+    {
+      "id": "do-soprano",
+      "start": {
+        "clip": 38,
+        "at": 0
+      },
+      "end": {
+        "clip": 38,
+        "at": 1
+      }
+    },
+    {
+      "id": "do-duplica",
+      "start": {
+        "clip": 39,
+        "at": 0
+      },
+      "end": {
+        "clip": 39,
+        "at": 1
+      }
+    },
+    {
+      "id": "do-intervalos",
+      "start": {
+        "clip": 40,
+        "at": 0
+      },
+      "end": {
+        "clip": 41,
+        "at": 1
+      }
+    },
+    {
+      "id": "do-escuchar",
+      "start": {
+        "clip": 42,
+        "at": 0
+      },
+      "end": {
+        "clip": 42,
+        "at": 1
+      }
+    },
+    {
+      "id": "sensible-excepcion",
+      "start": {
+        "clip": 43,
+        "at": 0
+      },
+      "end": {
+        "clip": 44,
+        "at": 1
+      }
+    },
+    {
+      "id": "sensible-si",
+      "start": {
+        "clip": 45,
+        "at": 0
+      },
+      "end": {
+        "clip": 46,
+        "at": 1
+      }
+    },
+    {
+      "id": "sensible-acordes",
+      "start": {
+        "clip": 47,
+        "at": 0
+      },
+      "end": {
+        "clip": 48,
+        "at": 1
+      }
+    },
+    {
+      "id": "sensible-resuelve",
+      "start": {
+        "clip": 49,
+        "at": 0
+      },
+      "end": {
+        "clip": 49,
+        "at": 1
+      }
+    },
+    {
+      "id": "duplicaciones",
+      "start": {
+        "clip": 50,
+        "at": 0
+      },
+      "end": {
+        "clip": 50,
+        "at": 1
+      }
+    },
+    {
+      "id": "dup-tercera",
+      "start": {
+        "clip": 51,
+        "at": 0
+      },
+      "end": {
+        "clip": 51,
+        "at": 1
+      }
+    },
+    {
+      "id": "sin-quinta",
+      "start": {
+        "clip": 52,
+        "at": 0
+      },
+      "end": {
+        "clip": 53,
+        "at": 1
+      }
+    },
+    {
+      "id": "triple-fund",
+      "start": {
+        "clip": 54,
+        "at": 0
+      },
+      "end": {
+        "clip": 54,
+        "at": 1
+      }
+    },
+    {
+      "id": "triple-tercera",
+      "start": {
+        "clip": 55,
+        "at": 0
+      },
+      "end": {
+        "clip": 55,
+        "at": 1
+      }
+    },
+    {
+      "id": "nunca-suprimir",
+      "start": {
+        "clip": 56,
+        "at": 0
+      },
+      "end": {
+        "clip": 58,
+        "at": 1
+      }
+    },
+    {
+      "id": "completos",
+      "start": {
+        "clip": 59,
+        "at": 0
+      },
+      "end": {
+        "clip": 59,
+        "at": 1
+      }
+    },
+    {
+      "id": "disminuido",
+      "start": {
+        "clip": 60,
+        "at": 0
+      },
+      "end": {
+        "clip": 61,
+        "at": 1
+      }
+    },
+    {
+      "id": "aumentado",
+      "start": {
+        "clip": 62,
+        "at": 0
+      },
+      "end": {
+        "clip": 63,
+        "at": 1
+      }
+    },
+    {
+      "id": "aumentado-sensible",
+      "start": {
+        "clip": 64,
+        "at": 0
+      },
+      "end": {
+        "clip": 64,
+        "at": 1
+      }
+    },
+    {
+      "id": "estados",
+      "start": {
+        "clip": 65,
+        "at": 0
+      },
+      "end": {
+        "clip": 66,
+        "at": 1
+      }
+    },
+    {
+      "id": "estado-fund",
+      "start": {
+        "clip": 67,
+        "at": 0
+      },
+      "end": {
+        "clip": 67,
+        "at": 1
+      }
+    },
+    {
+      "id": "estado-63",
+      "start": {
+        "clip": 68,
+        "at": 0
+      },
+      "end": {
+        "clip": 68,
+        "at": 1
+      }
+    },
+    {
+      "id": "estado-64",
+      "start": {
+        "clip": 69,
+        "at": 0
+      },
+      "end": {
+        "clip": 69,
+        "at": 1
+      }
+    },
+    {
+      "id": "cifrados",
+      "start": {
+        "clip": 70,
+        "at": 0
+      },
+      "end": {
+        "clip": 71,
+        "at": 1
+      }
+    },
+    {
+      "id": "la-intro",
+      "start": {
+        "clip": 72,
+        "at": 0
+      },
+      "end": {
+        "clip": 73,
+        "at": 1
+      }
+    },
+    {
+      "id": "la-bajo",
+      "start": {
+        "clip": 74,
+        "at": 0
+      },
+      "end": {
+        "clip": 74,
+        "at": 1
+      }
+    },
+    {
+      "id": "la-fund",
+      "start": {
+        "clip": 75,
+        "at": 0
+      },
+      "end": {
+        "clip": 75,
+        "at": 1
+      }
+    },
+    {
+      "id": "la-duplica",
+      "start": {
+        "clip": 76,
+        "at": 0
+      },
+      "end": {
+        "clip": 76,
+        "at": 1
+      }
+    },
+    {
+      "id": "solb-intro",
+      "start": {
+        "clip": 77,
+        "at": 0
+      },
+      "end": {
+        "clip": 78,
+        "at": 1
+      }
+    },
+    {
+      "id": "solb-bajo",
+      "start": {
+        "clip": 79,
+        "at": 0
+      },
+      "end": {
+        "clip": 79,
+        "at": 1
+      }
+    },
+    {
+      "id": "solb-fund-terc",
+      "start": {
+        "clip": 80,
+        "at": 0
+      },
+      "end": {
+        "clip": 80,
+        "at": 1
+      }
+    },
+    {
+      "id": "solb-duplica",
+      "start": {
+        "clip": 81,
+        "at": 0
+      },
+      "end": {
+        "clip": 81,
+        "at": 1
+      }
+    },
+    {
+      "id": "estados-escuchar",
+      "start": {
+        "clip": 82,
+        "at": 0
+      },
+      "end": {
+        "clip": 82,
+        "at": 1
+      }
+    },
+    {
+      "id": "posicion",
+      "start": {
+        "clip": 83,
+        "at": 0
+      },
+      "end": {
+        "clip": 84,
+        "at": 1
+      }
+    },
+    {
+      "id": "posicion-8",
+      "start": {
+        "clip": 85,
+        "at": 0
+      },
+      "end": {
+        "clip": 85,
+        "at": 1
+      }
+    },
+    {
+      "id": "posicion-3",
+      "start": {
+        "clip": 86,
+        "at": 0
+      },
+      "end": {
+        "clip": 86,
+        "at": 1
+      }
+    },
+    {
+      "id": "posicion-5",
+      "start": {
+        "clip": 87,
+        "at": 0
+      },
+      "end": {
+        "clip": 87,
+        "at": 1
+      }
+    },
+    {
+      "id": "posicion-escuchar",
+      "start": {
+        "clip": 88,
+        "at": 0
+      },
+      "end": {
+        "clip": 88,
+        "at": 1
+      }
+    },
+    {
+      "id": "disposicion",
+      "start": {
+        "clip": 89,
+        "at": 0
+      },
+      "end": {
+        "clip": 90,
+        "at": 1
+      }
+    },
+    {
+      "id": "disposicion-def",
+      "start": {
+        "clip": 91,
+        "at": 0
+      },
+      "end": {
+        "clip": 92,
+        "at": 1
+      }
+    },
+    {
+      "id": "cerrada",
+      "start": {
+        "clip": 93,
+        "at": 0
+      },
+      "end": {
+        "clip": 94,
+        "at": 1
+      }
+    },
+    {
+      "id": "abierta",
+      "start": {
+        "clip": 95,
+        "at": 0
+      },
+      "end": {
+        "clip": 96,
+        "at": 1
+      }
+    },
+    {
+      "id": "disposicion-escuchar",
+      "start": {
+        "clip": 97,
+        "at": 0
+      },
+      "end": {
+        "clip": 97,
+        "at": 1
+      }
+    },
+    {
+      "id": "tarea",
+      "start": {
+        "clip": 98,
+        "at": 0
+      },
+      "end": {
+        "clip": 98,
+        "at": 1
+      }
+    },
+    {
+      "id": "tarea-grados",
+      "start": {
+        "clip": 99,
+        "at": 0
+      },
+      "end": {
+        "clip": 101,
+        "at": 1
+      }
+    },
+    {
+      "id": "tarea-libre",
+      "start": {
+        "clip": 102,
+        "at": 0
+      },
+      "end": {
+        "clip": 103,
+        "at": 1
+      }
+    },
+    {
+      "id": "tarea-enteras",
+      "start": {
+        "clip": 104,
+        "at": 0
+      },
+      "end": {
+        "clip": 105,
+        "at": 1
+      }
+    },
+    {
+      "id": "maestro-revisa",
+      "start": {
+        "clip": 106,
+        "at": 0
+      },
+      "end": {
+        "clip": 109,
+        "at": 1
+      }
+    },
+    {
+      "id": "maestro-describe",
+      "start": {
+        "clip": 110,
+        "at": 0
+      },
+      "end": {
+        "clip": 110,
+        "at": 1
+      }
+    },
+    {
+      "id": "recapitulemos",
+      "start": {
+        "clip": 111,
+        "at": 0
+      },
+      "end": {
+        "clip": 111,
+        "at": 1
+      }
+    },
+    {
+      "id": "recap-tesituras",
+      "start": {
+        "clip": 112,
+        "at": 0
+      },
+      "end": {
+        "clip": 113,
+        "at": 1
+      }
+    },
+    {
+      "id": "recap-duplicaciones",
+      "start": {
+        "clip": 114,
+        "at": 0
+      },
+      "end": {
+        "clip": 114,
+        "at": 1
+      }
+    },
+    {
+      "id": "recap-estado",
+      "start": {
+        "clip": 115,
+        "at": 0
+      },
+      "end": {
+        "clip": 115,
+        "at": 1
+      }
+    },
+    {
+      "id": "siguiente",
+      "start": {
+        "clip": 116,
+        "at": 0
+      },
+      "end": {
+        "clip": 116,
+        "at": 1
+      }
+    },
+    {
+      "id": "cierre",
+      "start": {
+        "clip": 117,
+        "at": 0
+      },
+      "end": {
+        "clip": 118,
+        "at": 1
+      }
+    }
+  ]
+}

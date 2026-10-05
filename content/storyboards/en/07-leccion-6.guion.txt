@@ -1,0 +1,118 @@
+Hello, and welcome back to Storm Studios Learning.
+In the previous lesson we completed the ideas of degrees, chords and tonality.
+Today we take a very important step: we are going to write chords for the harmonic vocal quartet.
+In this lesson we will build individual chords.
+We will not yet see how each voice moves from one chord to the next, or how chords are connected.
+We will study that later.
+The vocal quartet has two female voices, soprano and alto, and two male voices, tenor and bass.
+In the original course we wrote the four voices on a piano score.
+Soprano and alto shared the treble clef staff, with their stems pointing in opposite directions.
+Tenor and bass shared the bass clef staff, also with opposite stems.
+In the Storm Studios sequencer, in SATB quartet mode, each voice has its own staff.
+Soprano and alto in treble clef, tenor and bass in bass clef.
+The first thing we need to know is the range of each voice.
+Ranges vary a lot depending on the style, the composer and the choir, but in this course we will use fixed ranges.
+We take C four as middle C on the piano.
+The soprano sings from C four up to G five.
+The alto, from G three up to D five.
+The tenor, from B two up to G four.
+And the bass, from F two up to B three.
+The notes you write for each voice must stay within these limits.
+The second thing is the spacing between the voices.
+Between soprano and alto we use no more than a twelfth.
+Between alto and tenor, no more than a tenth.
+And between tenor and bass, no more than a fifteenth, that is, two octaves.
+We want the three upper voices as compact as possible.
+On the other hand, the further the bass is from the rest, the more robust the chord sounds.
+The low note generates more overtones, and the other chord tones settle on them.
+Also, the voices do not cross.
+The soprano always stays above the alto, the alto above the tenor, and the tenor above the bass.
+Now, a fifth chord has three notes: root, third and fifth.
+But the quartet has four voices.
+What do we do with three notes to make a four note chord?
+We double one of them.
+Let's look at a C major chord.
+In the bass we write C three.
+In the tenor, G three.
+In the alto, E four.
+And in the soprano, C again, on C five.
+We are doubling the root.
+Between bass and tenor there is a fifth, between tenor and alto a sixth, and between alto and soprano another sixth.
+The ranges and the spacing are correct.
+Let's listen to it.
+We can double any note of the chord, with one exception: the leading tone.
+The leading tone is the only note we never double.
+In the major scale, the leading tone is the seventh degree.
+In C major it is B.
+The note B appears in three chords of C major: it is the third of the fifth degree, the root of the seventh and the fifth of the third.
+In those three chords, B goes in a single voice.
+The leading tone tends to resolve to the tonic; if we double it, that resolution ends up in two voices at once.
+In major and minor chords, we preferably double the root or the fifth.
+Doubling the third is possible, but it sounds a little harsh.
+In major and minor chords we can also omit the fifth.
+Then we double the root and the third.
+Or we triple the root and use a single third.
+Less often, we can triple the third.
+What we never omit is the root or the third.
+Without the root, the chord cannot be recognized.
+And without the third, we cannot tell whether the chord is major or minor.
+Diminished and augmented chords are always complete.
+In C major, the diminished chord is the one on the seventh degree: B, D and F.
+Its root, B, is the leading tone, so we double D or F.
+The augmented chord appears in the harmonic minor scale, on the third degree.
+In A harmonic minor it is C, E and G sharp.
+Its fifth, G sharp, is the leading tone, so we double C or E.
+Let's move on to the states of the chord.
+The state depends on the note in the bass.
+If the bass has the root, the chord is in root position.
+If the bass has the third, it is in first inversion.
+And if the bass has the fifth, it is in second inversion.
+We figure first inversion as six three, and second inversion as six four.
+These figures come from the intervals the other chord tones form above the bass.
+Let's see an example with A major in first inversion.
+A major is A, C sharp and E.
+To put it in first inversion, we write C sharp in the bass.
+We cannot omit the root, so we write A.
+And here we double the root.
+Now G flat major in second inversion.
+G flat major is G flat, B flat and D flat.
+For second inversion we need D flat in the bass.
+We need the root and the third.
+And now we double the fifth.
+Let's listen to the three states.
+Now the melodic position.
+The melodic position depends on the note the soprano sings.
+If the soprano has the root, we say the chord is in melodic position of the octave.
+If it has the third, in melodic position of the third.
+And if it has the fifth, in melodic position of the fifth.
+Let's listen to the three positions.
+Finally, the internal spacing.
+Here we only look at the three upper voices: soprano, alto and tenor.
+The spacing is close when no other note of the same chord fits between them.
+And it is open when one does fit.
+In this C major chord, between tenor and alto, and between alto and soprano, no other note of C major fits.
+The spacing is close.
+In this other one, a C fits between tenor and alto.
+The spacing is open.
+Let's listen to the difference.
+Now the assignment for the Virtual Teacher.
+You are going to write seven chords, one on each degree of a major scale.
+You can choose any major key you like.
+And you can write the seven chords in any order you like.
+Each chord can have the state, melodic position and spacing you choose.
+I recommend varying them, so you practice every combination.
+Write each chord as a whole note, with the four voices together, one chord per measure.
+Work in the sequencer in SATB quartet mode and export your assignment as a MIDI file.
+The Virtual Teacher recognizes the key and the degree of each chord, and checks that all seven degrees are there.
+It also checks the ranges, the spacing between the voices and that they do not cross.
+It checks doublings, triplings and omissions, and that you have not doubled the leading tone.
+And it checks that the notes are spelled correctly in the key.
+Also, for each chord it tells you its state, its melodic position and its spacing.
+Let's recap.
+The vocal quartet has four voices, each with its own range.
+The voices respect their spacing and do not cross.
+We can double any note except the leading tone, and in major and minor chords we can omit the fifth.
+The bass determines the state of the chord, the soprano its melodic position, and the three upper voices its spacing.
+In the following lessons we will learn to connect chords.
+Thank you for joining me.
+See you in lesson seven.

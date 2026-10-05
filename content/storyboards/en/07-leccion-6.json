@@ -1,0 +1,1506 @@
+{
+  "version": 1,
+  "lesson": "07-leccion-6",
+  "locale": "en",
+  "title": "Lesson 6 — The Harmonic Vocal Quartet",
+  "source": "content/storyboards/en/07-leccion-6.guion.txt",
+  "format": {
+    "aspect": "16:9",
+    "theme": "storm"
+  },
+  "projects": {
+    "do": {
+      "setup": {
+        "mode": "satb",
+        "title": "C major",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 entera\nvoz alto\ncompas 1\nE4 entera\nvoz tenor\ncompas 1\nG3 entera\nvoz bass\ncompas 1\nC3 entera"
+    },
+    "tesituras": {
+      "setup": {
+        "mode": "satb",
+        "title": "Ranges",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC4 entera\ncompas 2\nG5 entera\nvoz alto\ncompas 1\nG3 entera\ncompas 2\nD5 entera\nvoz tenor\ncompas 1\nB2 entera\ncompas 2\nG4 entera\nvoz bass\ncompas 1\nF2 entera\ncompas 2\nB3 entera"
+    },
+    "separaciones": {
+      "setup": {
+        "mode": "satb",
+        "title": "Maximum spacing",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nG5 entera\ncompas 2\nsilencio entera\ncompas 3\nsilencio entera\nvoz alto\ncompas 1\nC4 entera\ncompas 2\nE4 entera\ncompas 3\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nC3 entera\ncompas 3\nF4 entera\nvoz bass\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\ncompas 3\nF2 entera"
+    },
+    "sensible": {
+      "setup": {
+        "mode": "satb",
+        "title": "The leading tone in C major",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nB4 entera\ncompas 2\nD4 entera\ncompas 3\nE4 entera\nvoz alto\ncompas 1\nG4 entera\ncompas 2\nB3 entera\ncompas 3\nB3 entera\nvoz tenor\ncompas 1\nD4 entera\ncompas 2\nF3 entera\ncompas 3\nG3 entera\nvoz bass\ncompas 1\nG2 entera\ncompas 2\nD3 entera\ncompas 3\nE3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "VII",
+          "kind": "roman"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "III",
+          "kind": "roman"
+        }
+      ]
+    },
+    "duplicaciones": {
+      "setup": {
+        "mode": "satb",
+        "title": "Doublings in C major",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 entera\ncompas 2\nG4 entera\ncompas 3\nE4 entera\nvoz alto\ncompas 1\nE4 entera\ncompas 2\nE4 entera\ncompas 3\nG3 entera\nvoz tenor\ncompas 1\nG3 entera\ncompas 2\nG3 entera\ncompas 3\nE3 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nC3 entera\ncompas 3\nC3 entera"
+    },
+    "sin-quinta": {
+      "setup": {
+        "mode": "satb",
+        "title": "C major without the fifth",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nE4 entera\ncompas 2\nC5 entera\ncompas 3\nE5 entera\nvoz alto\ncompas 1\nC4 entera\ncompas 2\nE4 entera\ncompas 3\nE4 entera\nvoz tenor\ncompas 1\nE3 entera\ncompas 2\nC4 entera\ncompas 3\nE3 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nC3 entera\ncompas 3\nC3 entera"
+    },
+    "disminuido": {
+      "setup": {
+        "mode": "satb",
+        "title": "VII of C major",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nD4 entera\nvoz alto\ncompas 1\nB3 entera\nvoz tenor\ncompas 1\nF3 entera\nvoz bass\ncompas 1\nD3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "VII",
+          "kind": "roman"
+        }
+      ]
+    },
+    "aumentado": {
+      "setup": {
+        "mode": "satb",
+        "title": "III of A harmonic minor",
+        "key": "Am",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nE4 entera\nvoz alto\ncompas 1\nC4 entera\nvoz tenor\ncompas 1\nG#3 entera\nvoz bass\ncompas 1\nC3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "III",
+          "kind": "roman"
+        }
+      ]
+    },
+    "estados": {
+      "setup": {
+        "mode": "satb",
+        "title": "States of C major",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 entera\ncompas 2\nC5 entera\ncompas 3\nG4 entera\nvoz alto\ncompas 1\nE4 entera\ncompas 2\nC4 entera\ncompas 3\nC4 entera\nvoz tenor\ncompas 1\nG3 entera\ncompas 2\nG3 entera\ncompas 3\nE3 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nE3 entera\ncompas 3\nG2 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "I 6/3",
+          "kind": "roman"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "I 6/4",
+          "kind": "roman"
+        }
+      ]
+    },
+    "la-63": {
+      "setup": {
+        "mode": "satb",
+        "title": "A major",
+        "key": "A",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nA4 entera\nvoz alto\ncompas 1\nE4 entera\nvoz tenor\ncompas 1\nA3 entera\nvoz bass\ncompas 1\nC#3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I 6/3",
+          "kind": "roman"
+        }
+      ]
+    },
+    "solb-64": {
+      "setup": {
+        "mode": "satb",
+        "title": "G♭ major",
+        "key": "Gb",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nDb4 entera\nvoz alto\ncompas 1\nBb3 entera\nvoz tenor\ncompas 1\nGb3 entera\nvoz bass\ncompas 1\nDb3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I 6/4",
+          "kind": "roman"
+        }
+      ]
+    },
+    "posicion": {
+      "setup": {
+        "mode": "satb",
+        "title": "Melodic position",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 entera\ncompas 2\nE5 entera\ncompas 3\nG5 entera\nvoz alto\ncompas 1\nE4 entera\ncompas 2\nG4 entera\ncompas 3\nC5 entera\nvoz tenor\ncompas 1\nG3 entera\ncompas 2\nC4 entera\ncompas 3\nE4 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nC3 entera\ncompas 3\nC3 entera"
+    },
+    "disposicion": {
+      "setup": {
+        "mode": "satb",
+        "title": "Internal spacing",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nE4 entera\ncompas 2\nC5 entera\nvoz alto\ncompas 1\nC4 entera\ncompas 2\nE4 entera\nvoz tenor\ncompas 1\nG3 entera\ncompas 2\nG3 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nC3 entera"
+    },
+    "tarea": {
+      "setup": {
+        "mode": "satb",
+        "title": "Assignment: seven degrees of C major",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 7,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 entera\ncompas 2\nD5 entera\ncompas 3\nE4 entera\ncompas 4\nF4 entera\ncompas 5\nB4 entera\ncompas 6\nC5 entera\ncompas 7\nD4 entera\nvoz alto\ncompas 1\nE4 entera\ncompas 2\nA4 entera\ncompas 3\nB3 entera\ncompas 4\nA3 entera\ncompas 5\nG4 entera\ncompas 6\nA4 entera\ncompas 7\nB3 entera\nvoz tenor\ncompas 1\nG3 entera\ncompas 2\nD4 entera\ncompas 3\nG3 entera\ncompas 4\nF3 entera\ncompas 5\nD4 entera\ncompas 6\nC4 entera\ncompas 7\nF3 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nF3 entera\ncompas 3\nE3 entera\ncompas 4\nC3 entera\ncompas 5\nG2 entera\ncompas 6\nA2 entera\ncompas 7\nD3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "II 6/3",
+          "kind": "roman"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "III",
+          "kind": "roman"
+        },
+        {
+          "measure": 4,
+          "beat": 1,
+          "text": "IV 6/4",
+          "kind": "roman"
+        },
+        {
+          "measure": 5,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 6,
+          "beat": 1,
+          "text": "VI",
+          "kind": "roman"
+        },
+        {
+          "measure": 7,
+          "beat": 1,
+          "text": "VII 6/3",
+          "kind": "roman"
+        }
+      ]
+    }
+  },
+  "stills": [
+    {
+      "id": "titulo",
+      "kind": "title",
+      "heading": "The Harmonic Vocal Quartet",
+      "caption": "Lesson 6 · Harmony Course · Storm Studios Learning",
+      "narration": "Hello, and welcome back to Storm Studios Learning. In the previous lesson we completed the ideas of degrees, chords and tonality. Today we take a very important step: we are going to write chords for the harmonic vocal quartet."
+    },
+    {
+      "id": "acordes-sueltos",
+      "kind": "title",
+      "heading": "Individual chords",
+      "caption": "No melodic motion or connections yet",
+      "narration": "In this lesson we will build individual chords. We will not yet see how each voice moves from one chord to the next, or how chords are connected. We will study that later."
+    },
+    {
+      "id": "voces",
+      "project": "do",
+      "heading": "Soprano · alto · tenor · bass",
+      "caption": "Two female and two male voices",
+      "narration": "The vocal quartet has two female voices, soprano and alto, and two male voices, tenor and bass.",
+      "showCiphers": true
+    },
+    {
+      "id": "piano",
+      "kind": "title",
+      "heading": "In the original course",
+      "caption": "Piano score: two voices per staff, with opposite stems",
+      "narration": "In the original course we wrote the four voices on a piano score. Soprano and alto shared the treble clef staff, with their stems pointing in opposite directions. Tenor and bass shared the bass clef staff, also with opposite stems."
+    },
+    {
+      "id": "secuenciador",
+      "project": "do",
+      "heading": "SATB quartet",
+      "caption": "One staff per voice in the sequencer",
+      "narration": "In the Storm Studios sequencer, in SATB quartet mode, each voice has its own staff. Soprano and alto in treble clef, tenor and bass in bass clef.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesituras",
+      "project": "tesituras",
+      "heading": "Ranges",
+      "caption": "Lowest and highest note of each voice · C4 = middle C",
+      "narration": "The first thing we need to know is the range of each voice. Ranges vary a lot depending on the style, the composer and the choir, but in this course we will use fixed ranges. We take C four as middle C on the piano.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-soprano",
+      "project": "tesituras",
+      "focusVoice": "soprano",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "C4 – G5"
+        }
+      ],
+      "heading": "Soprano",
+      "caption": "C4 to G5",
+      "narration": "The soprano sings from C four up to G five.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-contralto",
+      "project": "tesituras",
+      "focusVoice": "alto",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "alto",
+          "color": "amber",
+          "label": "G3 – D5"
+        }
+      ],
+      "heading": "Alto",
+      "caption": "G3 to D5",
+      "narration": "The alto, from G three up to D five.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-tenor",
+      "project": "tesituras",
+      "focusVoice": "tenor",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "tenor",
+          "color": "amber",
+          "label": "B2 – G4"
+        }
+      ],
+      "heading": "Tenor",
+      "caption": "B2 to G4",
+      "narration": "The tenor, from B two up to G four.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-bajo",
+      "project": "tesituras",
+      "focusVoice": "bass",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "bass",
+          "color": "amber",
+          "label": "F2 – B3"
+        }
+      ],
+      "heading": "Bass",
+      "caption": "F2 to B3",
+      "narration": "And the bass, from F two up to B three.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesituras-limites",
+      "project": "tesituras",
+      "heading": "Stay within these limits",
+      "narration": "The notes you write for each voice must stay within these limits.",
+      "showCiphers": true
+    },
+    {
+      "id": "separaciones",
+      "kind": "title",
+      "heading": "Spacing between adjacent voices",
+      "caption": "Soprano–alto · alto–tenor · tenor–bass",
+      "narration": "The second thing is the spacing between the voices."
+    },
+    {
+      "id": "sep-sa",
+      "project": "separaciones",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "12th"
+        }
+      ],
+      "heading": "Soprano – alto",
+      "caption": "At most a twelfth",
+      "narration": "Between soprano and alto we use no more than a twelfth.",
+      "showCiphers": true
+    },
+    {
+      "id": "sep-at",
+      "project": "separaciones",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "12th"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "10th"
+        }
+      ],
+      "heading": "Alto – tenor",
+      "caption": "At most a tenth",
+      "narration": "Between alto and tenor, no more than a tenth.",
+      "showCiphers": true
+    },
+    {
+      "id": "sep-tb",
+      "project": "separaciones",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "12th"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "10th"
+        },
+        {
+          "measure": 3,
+          "color": "violet",
+          "label": "15th"
+        }
+      ],
+      "heading": "Tenor – bass",
+      "caption": "At most a fifteenth: two octaves",
+      "narration": "And between tenor and bass, no more than a fifteenth, that is, two octaves.",
+      "showCiphers": true
+    },
+    {
+      "id": "bajo-robusto",
+      "project": "do",
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "bass",
+          "color": "violet",
+          "label": "bass"
+        }
+      ],
+      "heading": "Compact upper voices",
+      "caption": "A more distant bass makes the chord more robust",
+      "narration": "We want the three upper voices as compact as possible. On the other hand, the further the bass is from the rest, the more robust the chord sounds. The low note generates more overtones, and the other chord tones settle on them.",
+      "showCiphers": true
+    },
+    {
+      "id": "sin-cruces",
+      "project": "do",
+      "heading": "Voices do not cross",
+      "caption": "Soprano above alto, alto above tenor, tenor above bass",
+      "narration": "Also, the voices do not cross. The soprano always stays above the alto, the alto above the tenor, and the tenor above the bass.",
+      "showCiphers": true
+    },
+    {
+      "id": "tres-notas",
+      "kind": "title",
+      "heading": "Three notes, four voices",
+      "caption": "We double one of them",
+      "narration": "Now, a fifth chord has three notes: root, third and fifth. But the quartet has four voices. What do we do with three notes to make a four note chord? We double one of them."
+    },
+    {
+      "id": "do-mayor",
+      "project": "do",
+      "heading": "C major",
+      "narration": "Let's look at a C major chord.",
+      "showCiphers": true
+    },
+    {
+      "id": "do-bajo",
+      "project": "do",
+      "focusVoice": "bass",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "amber",
+          "label": "C3"
+        }
+      ],
+      "heading": "Bass: C3",
+      "narration": "In the bass we write C three.",
+      "showCiphers": true
+    },
+    {
+      "id": "do-tenor",
+      "project": "do",
+      "focusVoice": "tenor",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "tenor",
+          "color": "amber",
+          "label": "G3"
+        }
+      ],
+      "heading": "Tenor: G3",
+      "narration": "In the tenor, G three.",
+      "showCiphers": true
+    },
+    {
+      "id": "do-contralto",
+      "project": "do",
+      "focusVoice": "alto",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "alto",
+          "color": "amber",
+          "label": "E4"
+        }
+      ],
+      "heading": "Alto: E4",
+      "narration": "In the alto, E four.",
+      "showCiphers": true
+    },
+    {
+      "id": "do-soprano",
+      "project": "do",
+      "focusVoice": "soprano",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "C5"
+        }
+      ],
+      "heading": "Soprano: C5",
+      "narration": "And in the soprano, C again, on C five.",
+      "showCiphers": true
+    },
+    {
+      "id": "do-duplica",
+      "project": "do",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "amber",
+          "label": "root"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "root"
+        }
+      ],
+      "heading": "Doubled root",
+      "narration": "We are doubling the root.",
+      "showCiphers": true
+    },
+    {
+      "id": "do-intervalos",
+      "project": "do",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "tenor",
+          "color": "cyan",
+          "label": "5th"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "alto",
+          "color": "cyan",
+          "label": "6th"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "soprano",
+          "color": "cyan",
+          "label": "6th"
+        }
+      ],
+      "heading": "Correct ranges and spacing",
+      "caption": "Bass–tenor 5th · tenor–alto 6th · alto–soprano 6th",
+      "narration": "Between bass and tenor there is a fifth, between tenor and alto a sixth, and between alto and soprano another sixth. The ranges and the spacing are correct.",
+      "showCiphers": true
+    },
+    {
+      "id": "do-escuchar",
+      "project": "do",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "C major",
+      "narration": "Let's listen to it.",
+      "showCiphers": true
+    },
+    {
+      "id": "sensible-excepcion",
+      "kind": "title",
+      "heading": "We double any note except the leading tone",
+      "caption": "The only note we never double",
+      "narration": "We can double any note of the chord, with one exception: the leading tone. The leading tone is the only note we never double."
+    },
+    {
+      "id": "sensible-si",
+      "project": "sensible",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "soprano",
+          "color": "rose",
+          "label": "B"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "voice": "alto",
+          "color": "rose",
+          "label": "B"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "voice": "alto",
+          "color": "rose",
+          "label": "B"
+        }
+      ],
+      "heading": "In C major, the leading tone is B",
+      "caption": "The seventh degree of the scale",
+      "narration": "In the major scale, the leading tone is the seventh degree. In C major it is B.",
+      "showCiphers": true
+    },
+    {
+      "id": "sensible-acordes",
+      "project": "sensible",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "B = 3rd"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "B = root"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "B = 5th"
+        }
+      ],
+      "heading": "V · VII · III",
+      "caption": "B goes in a single voice",
+      "narration": "The note B appears in three chords of C major: it is the third of the fifth degree, the root of the seventh and the fifth of the third. In those three chords, B goes in a single voice.",
+      "showCiphers": true
+    },
+    {
+      "id": "sensible-resuelve",
+      "kind": "title",
+      "heading": "The leading tone resolves to the tonic",
+      "caption": "Doubled, that resolution would be in two voices",
+      "narration": "The leading tone tends to resolve to the tonic; if we double it, that resolution ends up in two voices at once."
+    },
+    {
+      "id": "duplicaciones",
+      "project": "duplicaciones",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "root ×2"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "5th ×2"
+        }
+      ],
+      "heading": "Major and minor chords",
+      "caption": "Preferably a doubled root or fifth",
+      "narration": "In major and minor chords, we preferably double the root or the fifth.",
+      "showCiphers": true
+    },
+    {
+      "id": "dup-tercera",
+      "project": "duplicaciones",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "root ×2"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "5th ×2"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "3rd ×2"
+        }
+      ],
+      "heading": "Doubled third",
+      "caption": "Possible, but a little harsh",
+      "narration": "Doubling the third is possible, but it sounds a little harsh.",
+      "showCiphers": true
+    },
+    {
+      "id": "sin-quinta",
+      "project": "sin-quinta",
+      "reveal": {
+        "measure": 2
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "cyan",
+          "label": "root ×2 · 3rd ×2"
+        }
+      ],
+      "heading": "Without the fifth",
+      "caption": "Root and third doubled",
+      "narration": "In major and minor chords we can also omit the fifth. Then we double the root and the third.",
+      "showCiphers": true
+    },
+    {
+      "id": "triple-fund",
+      "project": "sin-quinta",
+      "reveal": {
+        "measure": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "cyan",
+          "label": "root ×2 · 3rd ×2"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "root ×3"
+        }
+      ],
+      "heading": "Tripled root",
+      "caption": "And a single third",
+      "narration": "Or we triple the root and use a single third.",
+      "showCiphers": true
+    },
+    {
+      "id": "triple-tercera",
+      "project": "sin-quinta",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "cyan",
+          "label": "root ×2 · 3rd ×2"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "root ×3"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "3rd ×3"
+        }
+      ],
+      "heading": "Tripled third",
+      "caption": "Less often",
+      "narration": "Less often, we can triple the third.",
+      "showCiphers": true
+    },
+    {
+      "id": "nunca-suprimir",
+      "kind": "title",
+      "heading": "We never omit the root or the third",
+      "caption": "Without the root the chord is not recognized · without the third we cannot tell major from minor",
+      "narration": "What we never omit is the root or the third. Without the root, the chord cannot be recognized. And without the third, we cannot tell whether the chord is major or minor."
+    },
+    {
+      "id": "completos",
+      "kind": "title",
+      "heading": "Diminished and augmented chords",
+      "caption": "Always complete",
+      "narration": "Diminished and augmented chords are always complete."
+    },
+    {
+      "id": "disminuido",
+      "project": "disminuido",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "alto",
+          "color": "rose",
+          "label": "leading tone"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "amber",
+          "label": "D ×2"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "D ×2"
+        }
+      ],
+      "heading": "VII of C major: B · D · F",
+      "caption": "B is the leading tone: we double D or F",
+      "narration": "In C major, the diminished chord is the one on the seventh degree: B, D and F. Its root, B, is the leading tone, so we double D or F.",
+      "showCiphers": true
+    },
+    {
+      "id": "aumentado",
+      "project": "aumentado",
+      "heading": "III of A harmonic minor",
+      "caption": "C · E · G♯",
+      "narration": "The augmented chord appears in the harmonic minor scale, on the third degree. In A harmonic minor it is C, E and G sharp.",
+      "showCiphers": true
+    },
+    {
+      "id": "aumentado-sensible",
+      "project": "aumentado",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "tenor",
+          "color": "rose",
+          "label": "leading tone"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "amber",
+          "label": "C ×2"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "alto",
+          "color": "amber",
+          "label": "C ×2"
+        }
+      ],
+      "heading": "G♯ is the leading tone",
+      "caption": "We double C or E",
+      "narration": "Its fifth, G sharp, is the leading tone, so we double C or E.",
+      "showCiphers": true
+    },
+    {
+      "id": "estados",
+      "project": "estados",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 3,
+          "voice": "bass",
+          "color": "violet",
+          "label": "bass"
+        }
+      ],
+      "heading": "Chord states",
+      "caption": "They depend on the bass note",
+      "narration": "Let's move on to the states of the chord. The state depends on the note in the bass.",
+      "showCiphers": true
+    },
+    {
+      "id": "estado-fund",
+      "project": "estados",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "root",
+          "voice": "bass"
+        }
+      ],
+      "heading": "Root position",
+      "caption": "Root in the bass",
+      "narration": "If the bass has the root, the chord is in root position.",
+      "showCiphers": true
+    },
+    {
+      "id": "estado-63",
+      "project": "estados",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "root",
+          "voice": "bass"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "3rd",
+          "voice": "bass"
+        }
+      ],
+      "heading": "First inversion",
+      "caption": "Third in the bass",
+      "narration": "If the bass has the third, it is in first inversion.",
+      "showCiphers": true
+    },
+    {
+      "id": "estado-64",
+      "project": "estados",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "root",
+          "voice": "bass"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "3rd",
+          "voice": "bass"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "5th",
+          "voice": "bass"
+        }
+      ],
+      "heading": "Second inversion",
+      "caption": "Fifth in the bass",
+      "narration": "And if the bass has the fifth, it is in second inversion.",
+      "showCiphers": true
+    },
+    {
+      "id": "cifrados",
+      "project": "estados",
+      "heading": "Figures 6/3 and 6/4",
+      "caption": "Intervals of the other notes above the bass",
+      "narration": "We figure first inversion as six three, and second inversion as six four. These figures come from the intervals the other chord tones form above the bass.",
+      "showCiphers": true
+    },
+    {
+      "id": "la-intro",
+      "project": "la-63",
+      "heading": "A major in first inversion",
+      "caption": "A · C♯ · E",
+      "narration": "Let's see an example with A major in first inversion. A major is A, C sharp and E.",
+      "showCiphers": true
+    },
+    {
+      "id": "la-bajo",
+      "project": "la-63",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "cyan",
+          "label": "C♯ · 3rd"
+        }
+      ],
+      "heading": "C♯ in the bass",
+      "narration": "To put it in first inversion, we write C sharp in the bass.",
+      "showCiphers": true
+    },
+    {
+      "id": "la-fund",
+      "project": "la-63",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "cyan",
+          "label": "C♯ · 3rd"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "tenor",
+          "color": "amber",
+          "label": "root"
+        }
+      ],
+      "heading": "We do not omit the root",
+      "narration": "We cannot omit the root, so we write A.",
+      "showCiphers": true
+    },
+    {
+      "id": "la-duplica",
+      "project": "la-63",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "cyan",
+          "label": "C♯ · 3rd"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "tenor",
+          "color": "amber",
+          "label": "root"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "root"
+        }
+      ],
+      "heading": "Doubled root",
+      "narration": "And here we double the root.",
+      "showCiphers": true
+    },
+    {
+      "id": "solb-intro",
+      "project": "solb-64",
+      "heading": "G♭ major in second inversion",
+      "caption": "G♭ · B♭ · D♭",
+      "narration": "Now G flat major in second inversion. G flat major is G flat, B flat and D flat.",
+      "showCiphers": true
+    },
+    {
+      "id": "solb-bajo",
+      "project": "solb-64",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "rose",
+          "label": "D♭ · 5th"
+        }
+      ],
+      "heading": "D♭ in the bass",
+      "narration": "For second inversion we need D flat in the bass.",
+      "showCiphers": true
+    },
+    {
+      "id": "solb-fund-terc",
+      "project": "solb-64",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "rose",
+          "label": "D♭ · 5th"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "tenor",
+          "color": "amber",
+          "label": "root"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "alto",
+          "color": "cyan",
+          "label": "3rd"
+        }
+      ],
+      "heading": "Root and third",
+      "narration": "We need the root and the third.",
+      "showCiphers": true
+    },
+    {
+      "id": "solb-duplica",
+      "project": "solb-64",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "rose",
+          "label": "D♭ · 5th"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "tenor",
+          "color": "amber",
+          "label": "root"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "alto",
+          "color": "cyan",
+          "label": "3rd"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "soprano",
+          "color": "rose",
+          "label": "5th"
+        }
+      ],
+      "heading": "Doubled fifth",
+      "narration": "And now we double the fifth.",
+      "showCiphers": true
+    },
+    {
+      "id": "estados-escuchar",
+      "project": "estados",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "The three states",
+      "caption": "C major: root position · 6/3 · 6/4",
+      "narration": "Let's listen to the three states.",
+      "showCiphers": true
+    },
+    {
+      "id": "posicion",
+      "project": "posicion",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 3,
+          "voice": "soprano",
+          "color": "violet",
+          "label": "soprano"
+        }
+      ],
+      "heading": "Melodic position",
+      "caption": "It depends on the soprano note",
+      "narration": "Now the melodic position. The melodic position depends on the note the soprano sings.",
+      "showCiphers": true
+    },
+    {
+      "id": "posicion-8",
+      "project": "posicion",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "octave",
+          "voice": "soprano"
+        }
+      ],
+      "heading": "Melodic position of the octave",
+      "caption": "Root in the soprano",
+      "narration": "If the soprano has the root, we say the chord is in melodic position of the octave.",
+      "showCiphers": true
+    },
+    {
+      "id": "posicion-3",
+      "project": "posicion",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "octave",
+          "voice": "soprano"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "3rd",
+          "voice": "soprano"
+        }
+      ],
+      "heading": "Melodic position of the third",
+      "caption": "Third in the soprano",
+      "narration": "If it has the third, in melodic position of the third.",
+      "showCiphers": true
+    },
+    {
+      "id": "posicion-5",
+      "project": "posicion",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "octave",
+          "voice": "soprano"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "3rd",
+          "voice": "soprano"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "5th",
+          "voice": "soprano"
+        }
+      ],
+      "heading": "Melodic position of the fifth",
+      "caption": "Fifth in the soprano",
+      "narration": "And if it has the fifth, in melodic position of the fifth.",
+      "showCiphers": true
+    },
+    {
+      "id": "posicion-escuchar",
+      "project": "posicion",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "The three melodic positions",
+      "narration": "Let's listen to the three positions.",
+      "showCiphers": true
+    },
+    {
+      "id": "disposicion",
+      "project": "disposicion",
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "soprano",
+          "color": "violet"
+        },
+        {
+          "measure": 1,
+          "voice": "alto",
+          "color": "violet"
+        },
+        {
+          "measure": 1,
+          "voice": "tenor",
+          "color": "violet"
+        },
+        {
+          "measure": 2,
+          "voice": "soprano",
+          "color": "violet"
+        },
+        {
+          "measure": 2,
+          "voice": "alto",
+          "color": "violet"
+        },
+        {
+          "measure": 2,
+          "voice": "tenor",
+          "color": "violet"
+        }
+      ],
+      "heading": "Internal spacing",
+      "caption": "Only the three upper voices",
+      "narration": "Finally, the internal spacing. Here we only look at the three upper voices: soprano, alto and tenor.",
+      "showCiphers": true
+    },
+    {
+      "id": "disposicion-def",
+      "project": "disposicion",
+      "heading": "Close or open",
+      "caption": "Does another chord tone fit between them?",
+      "narration": "The spacing is close when no other note of the same chord fits between them. And it is open when one does fit.",
+      "showCiphers": true
+    },
+    {
+      "id": "cerrada",
+      "project": "disposicion",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "close"
+        }
+      ],
+      "heading": "Close spacing",
+      "caption": "G · C · E: no other note of C major fits",
+      "narration": "In this C major chord, between tenor and alto, and between alto and soprano, no other note of C major fits. The spacing is close.",
+      "showCiphers": true
+    },
+    {
+      "id": "abierta",
+      "project": "disposicion",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "close"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "open · C fits"
+        }
+      ],
+      "heading": "Open spacing",
+      "caption": "A C fits between G and E",
+      "narration": "In this other one, a C fits between tenor and alto. The spacing is open.",
+      "showCiphers": true
+    },
+    {
+      "id": "disposicion-escuchar",
+      "project": "disposicion",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "Close and open",
+      "narration": "Let's listen to the difference.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea",
+      "kind": "title",
+      "heading": "Assignment for the Virtual Teacher",
+      "narration": "Now the assignment for the Virtual Teacher."
+    },
+    {
+      "id": "tarea-grados",
+      "project": "tarea",
+      "heading": "Seven chords, one per degree",
+      "caption": "Any major key, in any order",
+      "narration": "You are going to write seven chords, one on each degree of a major scale. You can choose any major key you like. And you can write the seven chords in any order you like.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea-libre",
+      "project": "tarea",
+      "heading": "Free state, position and spacing",
+      "caption": "Vary them to practice every combination",
+      "narration": "Each chord can have the state, melodic position and spacing you choose. I recommend varying them, so you practice every combination.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea-enteras",
+      "project": "tarea",
+      "heading": "One whole note per measure",
+      "caption": "Sequencer in SATB quartet mode · export the MIDI",
+      "narration": "Write each chord as a whole note, with the four voices together, one chord per measure. Work in the sequencer in SATB quartet mode and export your assignment as a MIDI file.",
+      "showCiphers": true
+    },
+    {
+      "id": "maestro-revisa",
+      "kind": "title",
+      "heading": "The Virtual Teacher checks",
+      "caption": "Key and degrees · ranges · spacing and crossings · doublings, omissions and leading tone · spelling",
+      "narration": "The Virtual Teacher recognizes the key and the degree of each chord, and checks that all seven degrees are there. It also checks the ranges, the spacing between the voices and that they do not cross. It checks doublings, triplings and omissions, and that you have not doubled the leading tone. And it checks that the notes are spelled correctly in the key."
+    },
+    {
+      "id": "maestro-describe",
+      "project": "tarea",
+      "heading": "And describes each chord",
+      "caption": "State · melodic position · spacing",
+      "narration": "Also, for each chord it tells you its state, its melodic position and its spacing.",
+      "showCiphers": true
+    },
+    {
+      "id": "recapitulemos",
+      "kind": "title",
+      "heading": "Let's recap",
+      "narration": "Let's recap."
+    },
+    {
+      "id": "recap-tesituras",
+      "project": "tesituras",
+      "heading": "Ranges and spacing",
+      "caption": "No voice crossing",
+      "narration": "The vocal quartet has four voices, each with its own range. The voices respect their spacing and do not cross.",
+      "showCiphers": true
+    },
+    {
+      "id": "recap-duplicaciones",
+      "project": "duplicaciones",
+      "heading": "Doublings and omissions",
+      "caption": "Never the leading tone · in major and minor chords the fifth may be omitted",
+      "narration": "We can double any note except the leading tone, and in major and minor chords we can omit the fifth.",
+      "showCiphers": true
+    },
+    {
+      "id": "recap-estado",
+      "project": "estados",
+      "heading": "Bass: state · soprano: melodic position",
+      "caption": "Three upper voices: spacing",
+      "narration": "The bass determines the state of the chord, the soprano its melodic position, and the three upper voices its spacing.",
+      "showCiphers": true
+    },
+    {
+      "id": "siguiente",
+      "kind": "title",
+      "heading": "Next lessons",
+      "caption": "Connecting chords",
+      "narration": "In the following lessons we will learn to connect chords."
+    },
+    {
+      "id": "cierre",
+      "kind": "title",
+      "heading": "Thank you",
+      "caption": "See you in lesson 7",
+      "narration": "Thank you for joining me. See you in lesson seven."
+    }
+  ]
+}
