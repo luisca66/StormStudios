@@ -41,6 +41,13 @@ export const BLOG_POST_TRANSLATIONS: BlogPostTranslation[] = [
       es: "2026-10-04-lecciones-4-y-5-publicadas",
     },
   },
+  {
+    key: "videos-made-with-ai",
+    slugs: {
+      en: "2026-10-04-videos-made-with-artificial-intelligence",
+      es: "2026-10-04-videos-con-inteligencia-artificial",
+    },
+  },
 ];
 
 export function findBlogTranslationBySlug(locale: Locale, slug: string) {
