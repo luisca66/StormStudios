@@ -5,7 +5,7 @@
  * (ruteo explícito, no por coincidencia de substring en el id).
  */
 
-export type ValidatorKind = 'major-scales' | 'minor-scales' | 'modes' | 'triads' | 'satb';
+export type ValidatorKind = 'major-scales' | 'minor-scales' | 'modes' | 'triads' | 'satb' | 'satb-chords';
 
 export interface ValidatorConfig {
   id: string;
@@ -54,6 +54,21 @@ const VALIDATOR_CONFIGS: Record<string, ValidatorConfig> = {
     validator: 'triads',
     voiceCount: 1,
     activeRules: ['TRIAD_MISSING_SCALE', 'TRIAD_DUPLICATE_SCALE', 'TRIAD_AMBIGUOUS_SCALE', 'TRIAD_UNRECOGNIZED', 'TRIAD_MISSING_CHORD', 'TRIAD_EXTRA_CHORD', 'TRIAD_NOTE_COUNT', 'TRIAD_WRONG_NOTE', 'TRIAD_ENHARMONIC', 'TRIAD_MISSING_SPELLING'],
+  },
+  // Lección 6: construcción de los siete acordes en cuatro voces.
+  '07-leccion-6': {
+    id: '07-leccion-6',
+    validator: 'satb-chords',
+    voiceCount: 4,
+    activeRules: [
+      'SATB_NO_CHORDS', 'SATB_FILE_LIMIT', 'SATB_KEY',
+      'SATB_VOICE_NOTES', 'SATB_MISSING_VOICE', 'SATB_UNRECOGNIZED',
+      'SATB_FOREIGN_NOTE', 'SATB_ENHARMONIC', 'SATB_MISSING_SPELLING',
+      'SATB_MISSING_ROOT', 'SATB_MISSING_THIRD', 'SATB_INCOMPLETE_DIMINISHED',
+      'SATB_LEADING_TONE_DOUBLED', 'SATB_RANGE', 'SATB_VOICE_CROSSING',
+      'SATB_SPACING', 'SATB_CHORD_INFO', 'SATB_MISSING_DEGREE',
+      'SATB_DUPLICATE_DEGREE', 'SATB_CHORD_COUNT',
+    ],
   },
 };
 

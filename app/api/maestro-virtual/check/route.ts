@@ -6,8 +6,9 @@ import { validateLesson1Scales } from '@/lib/maestro-virtual/scale-validator';
 import { validateMinorScales } from '@/lib/maestro-virtual/minor-scale-validator';
 import { validateLesson2Modes } from '@/lib/maestro-virtual/modes-validator';
 import { validateCompleteLesson4Triads } from '@/lib/maestro-virtual/complete-triads-validator';
+import { validateLesson6SatbChords } from '@/lib/maestro-virtual/satb-chords-validator';
 import { getLessonConfig } from '@/data/course/lessons/lesson-configs';
-import type { FeedbackItem } from '@/types/course';
+import type { FeedbackDescription, FeedbackItem } from '@/types/course';
 
 const MAX_MIDI_FILE_BYTES = 2 * 1024 * 1024;
 // Un multipart añade límites, nombres de campos y separadores al archivo.
@@ -201,6 +202,7 @@ async function readBoundedBody(request: NextRequest): Promise<BoundedBodyResult>
  *   - 'modes'        → validateLesson2Modes    (modos paralelos)
  *   - 'minor-scales' → validateMinorScales     (escalas menores)
  *   - 'triads'       → validateCompleteLesson4Triads (ejercicio completo, orden libre)
+ *   - 'satb-chords'  → validateLesson6SatbChords (construcción, sin enlaces)
  *   - 'satb'         → 501 hasta que su motor de reglas esté listo
  *
  * Devuelve MaestroFeedback compatible con ExerciseUpload.tsx.
@@ -292,6 +294,7 @@ export async function POST(request: NextRequest) {
       case 'modes':        rawErrors = validateLesson2Modes(voiceData);  break;
       case 'minor-scales': rawErrors = validateMinorScales(voiceData); break;
       case 'triads': rawErrors = validateCompleteLesson4Triads(voiceData); break;
+      case 'satb-chords': rawErrors = validateLesson6SatbChords(voiceData); break;
       default:
         return invalidRequest('validator_unavailable', 501);
     }
@@ -334,6 +337,38 @@ export async function POST(request: NextRequest) {
         }]
       : [];
 
+    // Errores primero: el mismo límite de 100 se comparte con las descripciones.
+    // El aviso de truncamiento existente sigue siendo un elemento adicional.
+    const information = rawErrors.filter(item => item.severity === 'info');
+    const descriptions: FeedbackDescription[] = information
+      .slice(0, MAX_REPORTED_VIOLATIONS - violations.length)
+      .map(item => ({
+        ruleId: item.rule,
+        ruleName: { es: item.titleEs, en: item.titleEn },
+        severity: 'info',
+        measure: item.position,
+        message: { es: item.detailEs, en: item.detailEn },
+      }));
+    if (information.length > descriptions.length) {
+      const message = {
+        es: `Se muestran ${descriptions.length} de ${information.length} descripciones; se priorizan los errores.`,
+        en: `Showing ${descriptions.length} of ${information.length} descriptions; errors take priority.`,
+      };
+      if (suggestions.length) {
+        // Un único aviso adicional, como en la respuesta anterior a SATB.
+        suggestions[0].message.es += ` ${message.es}`;
+        suggestions[0].message.en += ` ${message.en}`;
+      } else {
+        suggestions.push({
+          ruleId: 'DESCRIPTIONS_TRUNCATED',
+          ruleName: { es: 'Análisis resumido', en: 'Analysis summarized' },
+          severity: 'warning',
+          measure: 0,
+          message,
+        });
+      }
+    }
+
     const score      = Math.max(0, Math.round(100 - errorCount * 15));
     const passed     = errorCount === 0;
 
@@ -354,6 +389,7 @@ export async function POST(request: NextRequest) {
       passed,
       violations,
       suggestions,
+      ...(lessonConfig.validator === 'satb-chords' ? { descriptions } : {}),
       summary,
     });
 

@@ -1,7 +1,7 @@
 import type { LessonConfig } from "@/types/course";
 
-// Curso Medrano pp. 12–13: el cuarteto vocal armónico. En construcción; su tarea SATB y el
-// Maestro Virtual se definen al implementar la lección.
+// Curso Medrano pp. 12–13: el cuarteto vocal armónico. En construcción;
+// la subida permite revisar la tarea SATB antes de publicar el contenido.
 export const lesson: LessonConfig = {
   id: "07-leccion-6",
   slug: "07-leccion-6",
@@ -20,5 +20,12 @@ export const lesson: LessonConfig = {
   prerequisites: ["06-leccion-5"],
   videos: [],
   activeRules: [],
+  exercise: {
+    type: "four-voice-chorale",
+    voiceCount: 4,
+    voices: ["soprano", "alto", "tenor", "bass"],
+    minChords: 7,
+    maxChords: 7,
+  },
   tags: ["cuarteto vocal", "SATB", "tesituras", "duplicaciones", "estados", "disposición"],
 };

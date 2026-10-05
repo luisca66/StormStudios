@@ -325,7 +325,7 @@ function FeedbackDisplay({
   const unitWord =
     feedback.lessonId === "03-leccion-2" ? (es ? "modo" : "mode")
     : feedback.lessonId === "02-leccion-1" ? (es ? "escala" : "scale")
-    : feedback.lessonId === "05-leccion-4" ? (es ? "acorde" : "chord")
+    : (feedback.lessonId === "05-leccion-4" || feedback.lessonId === "07-leccion-6") ? (es ? "acorde" : "chord")
     : (es ? "compás" : "measure");
 
   return (
@@ -377,6 +377,25 @@ function FeedbackDisplay({
               </p>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Análisis informativo: tonalidad y descripción de cada acorde */}
+      {!!feedback.descriptions?.length && (
+        <div>
+          <h4 className="font-semibold text-gray-700 text-sm mb-2">
+            {es ? "Análisis de los acordes" : "Chord analysis"}
+          </h4>
+          <ul className="space-y-2 list-none">
+            {feedback.descriptions.map((item, i) => (
+              <li key={i} className="text-sm bg-gray-50 border border-gray-200 rounded-lg p-3">
+                <p className="font-semibold text-gray-700">{item.ruleName[es ? "es" : "en"]}</p>
+                {item.message[es ? "es" : "en"] && (
+                  <p className="text-gray-600 mt-1">{item.message[es ? "es" : "en"]}</p>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 

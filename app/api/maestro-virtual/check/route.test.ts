@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import { POST } from './route';
+import * as satbChords from '@/lib/maestro-virtual/satb-chords-validator';
+import type { MaestroFeedback } from '@/types/course';
 import * as lessonConfigs from '@/data/course/lessons/lesson-configs';
 
 function midiRequest(lessonId: string, locale = 'es', ip?: string) {
@@ -94,5 +96,72 @@ describe('POST /api/maestro-virtual/check', () => {
     const limitedResponse = await POST(midiRequest('__proto__', 'es', ip));
     expect(limitedResponse.status).toBe(429);
     expect(limitedResponse.headers.get('retry-after')).toBeTruthy();
+  });
+});
+
+
+describe('Lesson 6 SATB chord review', () => {
+  function request(fixture: string, locale = 'es') {
+    const bytes = new Uint8Array(readFileSync(join(process.cwd(), 'lib/maestro-virtual/__fixtures__', fixture)));
+    const form = new FormData();
+    form.append('midi', new Blob([bytes]), fixture);
+    form.append('lessonId', '07-leccion-6');
+    form.append('locale', locale);
+    return new NextRequest('http://localhost/api/maestro-virtual/check', {
+      method: 'POST', body: form, headers: { 'x-forwarded-for': '198.51.100.76' },
+    });
+  }
+
+  it.each([
+    ['Leccion_6_Do_mayor_correcta.mid', 'es', 'Tonalidad reconocida: Do mayor.'],
+    ['Leccion_6_Re_mayor_desordenada_correcta.mid', 'en', 'Detected key: D major.'],
+  ])('accepts %s and returns bilingual chord descriptions', async (fixture, locale, title) => {
+    const response = await POST(request(fixture, locale));
+    expect(response.status).toBe(200);
+    const feedback: MaestroFeedback = await response.json();
+    expect(feedback).toMatchObject({ lessonId: '07-leccion-6', passed: true, score: 100, violations: [], suggestions: [] });
+    expect(feedback.descriptions).toHaveLength(8);
+    expect(feedback.descriptions![0].ruleName[locale as 'es' | 'en']).toBe(title);
+    expect(feedback.descriptions!.every(item => item.severity === 'info')).toBe(true);
+    expect(feedback.descriptions!.filter(item => item.ruleId === 'SATB_CHORD_INFO').map(item => item.measure)).toEqual([1, 2, 3, 4, 5, 6, 7]);
+    expect(feedback.descriptions![1].message.es).toContain('Estado:');
+    expect(feedback.descriptions![1].message.en).toContain('State:');
+  });
+
+  it('scores only the eight errors and also returns the analysis', async () => {
+    const response = await POST(request('Leccion_6_Do_mayor_errores.mid'));
+    expect(response.status).toBe(200);
+    const feedback: MaestroFeedback = await response.json();
+    expect(feedback).toMatchObject({ passed: false, score: 0 });
+    expect(feedback.violations).toHaveLength(8);
+    expect(feedback.violations.every(item => item.severity === 'error')).toBe(true);
+    expect(feedback.summary.es).toContain('8 errores');
+    expect(feedback.descriptions!.length).toBeGreaterThan(0);
+  });
+
+  it.each([1, 95, 120])('prioritizes errors within the shared report limit (%i errors)', async (count) => {
+    const item = (severity: 'error' | 'info'): satbChords.SatbFeedback => ({
+      rule: severity === 'error' ? 'SATB_RANGE' : 'SATB_CHORD_INFO', severity,
+      position: 1, titleEs: 'Título', titleEn: 'Title', detailEs: 'Detalle', detailEn: 'Detail',
+    });
+    const validator = vi.spyOn(satbChords, 'validateLesson6SatbChords').mockReturnValueOnce([
+      ...Array.from({ length: 8 }, () => item('info')),
+      ...Array.from({ length: count }, () => item('error')),
+    ]);
+    try {
+      const response = await POST(request('Leccion_6_Do_mayor_correcta.mid'));
+      expect(response.status).toBe(200);
+      const feedback: MaestroFeedback = await response.json();
+      expect(feedback.violations).toHaveLength(Math.min(count, 100));
+      expect(feedback.descriptions).toHaveLength(Math.min(8, Math.max(0, 100 - count)));
+      expect(feedback.score).toBe(Math.max(0, 100 - count * 15));
+      expect(feedback.passed).toBe(false);
+      expect(feedback.suggestions.some(item => item.ruleId === 'FEEDBACK_TRUNCATED')).toBe(count > 100);
+      expect(feedback.suggestions.some(item => item.ruleId === 'DESCRIPTIONS_TRUNCATED')).toBe(count > 92 && count <= 100);
+      expect(feedback.suggestions.length).toBeLessThanOrEqual(1);
+      if (count > 92) expect(feedback.suggestions[0].message.en).toContain('descriptions');
+    } finally {
+      validator.mockRestore();
+    }
   });
 });
