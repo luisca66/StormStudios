@@ -107,6 +107,8 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 
 - **L5, limitador y mezcla fija (2026-10-04)**: sobremuestrear el limitador a 192 kHz, desactivar autonivel y compensar su latencia. Añadir 3 s de silencio de análisis y recortarlo de la salida vacía el buffer de loudnorm y mejora la medición de clips cortos. Con música lineal a −19 LUFS y ganancia fija/limitador final, ambos MP4 miden −16.0 LUFS / −1.4 dBTP; 17/18 tramos cumplen la diferencia solicitada, impresionismo ES queda −1.9 LU. Respetar el encargo de reportar el desvío sin iteraciones adicionales.
 
+- **L6 ES/EN (2026-10-05)**: en SATB, reservar margen para Contralto, centrar sistemas de 1–3 compases y separar las redondas de las firmas; las marcas necesitan su propio espacio bajo cada pentagrama. Se conservaron seis PNG de L4/L5 sin diferencias. Normalizar a −19 LUFS no dejó el Piano a 2–3 dB RMS de la voz: calibrar cada escucha con volumedetect y comprobar el MP4 después de AAC dio −2.5/−2.6 dB; reportar LUFS por separado. 76 stills, 118 clips por idioma, 328 fotogramas correctos; videos de 656.167 s y 609.933 s. Los guiones TXT requieren una línea no vacía por clip; actualizar Drive después del ajuste final y verificar tamaños.
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).

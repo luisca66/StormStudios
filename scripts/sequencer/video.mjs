@@ -3,7 +3,7 @@ import { readFile, writeFile, mkdir, access } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
-import { concatFile, docxParagraphs, nearestPause, silenceMidpoints, srtTime, validateAudioMap, partialSubtitle } from "./video-utils.mjs";
+import { concatFile, scriptParagraphs, nearestPause, silenceMidpoints, srtTime, validateAudioMap, partialSubtitle } from "./video-utils.mjs";
 
 import { externalMusic, externalMusicFilter, externalMusicPreparation, musicNormalization, normalizationFilter, peakLimiter } from "./external-music.mjs";
 
@@ -38,6 +38,13 @@ async function meter(file) {
   const truePeak = Number(/Peak:\s*([-\d.]+) dBFS/.exec(summary)?.[1]);
   if (![integrated, truePeak].every(Number.isFinite)) throw new Error(`Medición EBU R128 fallida: ${file}`);
   return { integrated, truePeak };
+}
+
+async function meanVolume(file) {
+  const result = await run("ffmpeg", ["-hide_banner", "-nostats", "-i", file, "-af", "volumedetect", "-f", "null", "-"], true);
+  const mean = Number(/mean_volume:\s*([-\d.]+) dB/.exec(result.stderr)?.[1]);
+  if (!Number.isFinite(mean)) throw new Error(`Audio sin nivel medible: ${file}`);
+  return mean;
 }
 
 async function main() {
@@ -82,7 +89,7 @@ async function main() {
     manifest = JSON.parse(await readFile(manifestFile, "utf8"));
   }
   if (manifest.width !== 1920 || manifest.height !== 1080) throw new Error("El video requiere stills de 1920×1080");
-  const paragraphs = docxParagraphs(await readFile(map.source.script));
+  const paragraphs = scriptParagraphs(await readFile(map.source.script), map.source.script);
   if (paragraphs.length !== map.source.clips) throw new Error(`Guion: ${paragraphs.length} párrafos, esperaba ${map.source.clips}`);
   const officialText = await readFile(map.source.durations, "utf8");
   const durations = new Map([...officialText.matchAll(/^\s*\d+\s+(\d+)_Chapter_1\.mp3\s+([\d.]+)\s*$/gm)].map(m => [Number(m[1]), Number(m[2])]));
@@ -162,6 +169,7 @@ async function main() {
     const segment = { id: still.id, start: time, clips: [], music: null };
     const prefix = index === 0 ? 1.5 : .4;
     await addSilence(prefix);
+    const narrationFilesStart = audioFiles.length;
     for (let n = entry.start.clip; n <= entry.end.clip; n++) {
       if (n > entry.start.clip) await addSilence(.25);
       const from = n === entry.start.clip ? atTime(entry.start) : 0;
@@ -181,8 +189,19 @@ async function main() {
       const wav = path.join(stills, capture.audio), file = path.join(work, `${index + 1}-music.wav`);
       const sourceLength = await duration(wav);
       await ffmpeg(["-i", wav, "-af", `loudnorm=I=-19:TP=-4.5:LRA=11,aresample=48000,asetpts=N/SR/TB,apad,atrim=end_sample=${Math.round(sourceLength * 48000)}`, "-ac", "2", "-c:a", "pcm_s16le", file]);
+      // Short voice clips and decaying piano chords differ in RMS despite their LUFS targets.
+      // Calibrate each listening example against its own normalized narration, preserving peaks.
+      const voiceList = path.join(work, `${index + 1}-voice-concat.txt`), voiceFile = path.join(work, `${index + 1}-voice.wav`);
+      await writeFile(voiceList, audioFiles.slice(narrationFilesStart).map(concatFile).join("\n") + "\n");
+      await ffmpeg(["-f", "concat", "-safe", "0", "-i", voiceList, "-c:a", "copy", voiceFile]);
+      const voiceMeanDb = await meanVolume(voiceFile), musicMeanDb = await meanVolume(file);
+      const gainDb = voiceMeanDb - musicMeanDb - 2.5;
+      const calibrated = path.join(work, `${index + 1}-music-calibrated.wav`);
+      await ffmpeg(["-i", file, "-af", `aresample=192000,volume=${gainDb}dB,${peakLimiter(-1.5)},aresample=48000,apad,atrim=end_sample=${Math.round(sourceLength * 48000)}`, "-ac", "2", "-c:a", "pcm_s16le", calibrated]);
+      const verifiedMeanDb = await meanVolume(calibrated), deltaDb = verifiedMeanDb - voiceMeanDb;
+      if (deltaDb < -3 || deltaDb > -2) throw new Error(`Still "${still.id}": piano vs voz fuera de objetivo (${deltaDb.toFixed(1)} dB)`);
       const length = await duration(file);
-      segment.music = { file: wav, start: time, end: time + length, tempo: capture.music.tempo, cursors: [] };
+      segment.music = { file: wav, start: time, end: time + length, tempo: capture.music.tempo, cursors: [], relativeLevel: { voiceMeanDb, musicMeanDb, gainDb, verifiedMeanDb, deltaDb, targetDeltaDb: -2.5 } };
       const beats = capture.music.beats, ids = cursorIds.get(still.id);
       for (let i = 0; i < beats.length; i++) {
         const start = beats[i].time, end = Math.min(length, beats[i + 1]?.time ?? length);
@@ -190,7 +209,7 @@ async function main() {
         image(cursorPng, end - start);
         segment.music.cursors.push({ ...beats[i], file: cursorPng, start: time + start, end: time + end });
       }
-      audioFiles.push(file); time += length; musicSeconds += length;
+      audioFiles.push(calibrated); time += length; musicSeconds += length;
     }
     if (still.musicFile) {
       const source = external.get(still.id), file = path.join(work, `${index + 1}-external-music.wav`);
