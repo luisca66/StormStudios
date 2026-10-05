@@ -7,8 +7,6 @@ export const lesson: LessonConfig = {
   lessonNumber: 5,
   module: "triadas-satb",
   status: "published",
-  // La versión en inglés se publica cuando esté su video de YouTube.
-  statusByLocale: { en: "construction" },
   title: {
     es: "Lección 5 — Grados, acordes y tonalidad",
     en: "Lesson 5 — Degrees, Chords and Tonality",
@@ -23,6 +21,11 @@ export const lesson: LessonConfig = {
     es: [{
       youtubeId: "-_J26zK4hYQ",
       embedUrl: "https://www.youtube.com/embed/-_J26zK4hYQ?si=vmLmDv_-BUgmlSse",
+      title: { es: "Grados, acordes y tonalidad", en: "Degrees, Chords and Tonality" },
+    }],
+    en: [{
+      youtubeId: "0FtX3vwcqUc",
+      embedUrl: "https://www.youtube.com/embed/0FtX3vwcqUc?si=n1_qlkO__fXJxwcV",
       title: { es: "Grados, acordes y tonalidad", en: "Degrees, Chords and Tonality" },
     }],
   },
