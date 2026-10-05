@@ -89,7 +89,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
         const revealTick = capture?.reveal ? positionTick(capture.reveal.measure, capture.reveal.beat) : Infinity;
         const prepared=voices.map((sourceVoice, row) => {
           const voice={...sourceVoice,clef:clefAt(score,sourceVoice.id,measure)};
-          const staveX = captureLayout ? (systemStart ? (score.mode === "single" ? 6 : 75) : 0) : systemStart ? 110 : 0;
+          const staveX = captureLayout ? (systemStart ? (score.mode === "single" ? 6 : 135) : 0) : systemStart ? 110 : 0;
           const stave = new V.Stave(staveX, row * rowHeight + (captureLayout?.staveY ?? 14), width - staveX);
           if (systemStart || voice.clef!==clefAt(score,voice.id,measure-1)) stave.addClef(voice.clef);
           if (systemStart || previous.key !== meta.key)
@@ -107,7 +107,12 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
             if (focusVoice !== "all" && focusVoice !== voice.id) stave.setStyle({ strokeStyle: "#aab2bd", fillStyle: "#aab2bd" });
           }
           stave.setContext(context).draw();
-          if (systemStart && (!capture || score.mode !== "single")) context.setFont("Academico", 14).fillText(voice.name, 8, row * rowHeight + (captureLayout ? 90 : 79));
+          if (systemStart && (!capture || score.mode !== "single")) {
+            const name = captureLayout && score.mode === "satb"
+              ? ({ soprano: "Soprano", alto: locale === "es" ? "Contralto" : "Alto", tenor: "Tenor", bass: locale === "es" ? "Bajo" : "Bass", melody: voice.name })[voice.id]
+              : voice.name;
+            context.setFont("Academico", captureLayout ? 18 : 14).fillText(name, 8, row * rowHeight + (captureLayout ? 90 : 79));
+          }
           const events = displayEvents(voice.events, start, end);
           const notes = events.map(event => {
             const gap = event.id.startsWith("gap:");
@@ -149,6 +154,19 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
         const formatter=new V.Formatter();
         prepared.forEach(({vexVoice})=>formatter.joinVoices([vexVoice]));
         formatter.formatToStave(prepared.map(p=>p.vexVoice),prepared[0].stave);
+        if (captureLayout && score.mode === "satb") {
+          const ticks = new Set(prepared.flatMap(p => p.events.map(e => e.start)));
+          if (ticks.size === 1) {
+            // A single whole-note chord has no spacing contexts after it. Give it breathing room
+            // after the key/meter instead of leaving it at VexFlow's default left edge.
+            const stave = prepared[0].stave;
+            const note = prepared[0].notes[0];
+            note.setStave(stave);
+            const desired = stave.getNoteStartX() + (stave.getNoteEndX() - stave.getNoteStartX()) * .35;
+            const tickContext = note.getTickContext();
+            tickContext.setX(tickContext.getX() + desired - note.getAbsoluteX());
+          }
+        }
         // Capture shares tick contexts across voices, including beats silent in the first voice.
         if (capture) prepared.forEach(({ notes, stave }) => notes.forEach(note => note.setStave(stave)));
         const section=target.closest<HTMLElement>("section");
@@ -489,7 +507,7 @@ export default function ScoreView({ score, selected, locale, onSelect, mouse,tic
       </article>
     </div>;
   }
-  return <div ref={surface} className={styles.scoreSurface} data-layout={captureLayout ? "capture" : layout} data-testid="score-view"><div className={styles.measures}>
+  return <div ref={surface} className={styles.scoreSurface} data-mode={score.mode} data-layout={captureLayout ? "capture" : layout} data-testid="score-view"><div className={styles.measures}>
     {numbers.map(n=>renderMeasure(n))}
   </div></div>;
 }

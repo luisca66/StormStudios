@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { concatFile, nearestPause, silenceMidpoints, srtTime, validateAudioMap, xmlParagraphs, partialSubtitle } from "./video-utils.mjs";
+import { concatFile, nearestPause, silenceMidpoints, srtTime, validateAudioMap, xmlParagraphs, partialSubtitle, scriptParagraphs } from "./video-utils.mjs";
 import spanish from "../../content/storyboards/es/05-leccion-4.json";
 import english from "../../content/storyboards/en/05-leccion-4.json";
 import englishMap from "../../content/storyboards/en/05-leccion-4.audio.json";
 
 describe("lesson video timing and script", () => {
+  it("reads UTF-8 text scripts without changing spoken punctuation or clip order", () => {
+    expect(scriptParagraphs(Buffer.from("\uFEFF Hola, Do♭.\r\n\r\nUna tercera.\n"), "guion.TXT")).toEqual(["Hola, Do♭.", "Una tercera."]);
+    expect(() => scriptParagraphs(Buffer.from("not a ZIP"), "script.docx")).toThrow();
+  });
   it("preserves Spanish music and the 58 visual steps while covering all English voice clips", () => {
     expect(english.stills.map(s => s.id)).toEqual(spanish.stills.map(s => s.id));
     for (const key of Object.keys(spanish.projects) as Array<keyof typeof spanish.projects>) {

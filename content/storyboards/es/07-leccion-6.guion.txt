@@ -1,0 +1,118 @@
+Hola, bienvenidos de nuevo a Storm Studios Learning.
+En la lección anterior completamos las ideas de grados, acordes y tonalidad.
+Hoy damos un paso muy importante: vamos a escribir acordes para el cuarteto vocal armónico.
+En esta lección vamos a construir acordes sueltos.
+Todavía no vamos a ver cómo se mueve cada voz de un acorde al siguiente, ni cómo se enlazan los acordes.
+Eso lo estudiaremos más adelante.
+El cuarteto vocal tiene dos voces femeninas, la soprano y la contralto, y dos voces masculinas, el tenor y el bajo.
+En el curso original escribíamos las cuatro voces en una partitura de piano.
+La soprano y la contralto compartían el pentagrama en clave de sol, con las plicas en direcciones opuestas.
+El tenor y el bajo compartían el pentagrama en clave de fa, también con plicas opuestas.
+En el secuenciador de Storm Studios, en el modo Cuarteto SATB, cada voz tiene su propio pentagrama.
+La soprano y la contralto en clave de sol, el tenor y el bajo en clave de fa.
+Lo primero que necesitamos saber es la tesitura de cada voz, es decir, su rango.
+Los rangos cambian mucho según el estilo, el compositor y el coro, pero en este curso vamos a usar rangos fijos.
+Tomamos el Do cuatro como el Do central del piano.
+La soprano canta desde el Do cuatro hasta el Sol cinco.
+La contralto, desde el Sol tres hasta el Re cinco.
+El tenor, desde el Si dos hasta el Sol cuatro.
+Y el bajo, desde el Fa dos hasta el Si tres.
+Las notas que escribas para cada voz tienen que respetar estos límites.
+Lo segundo es la separación entre las voces.
+Entre la soprano y la contralto no usamos más de una doceava.
+Entre la contralto y el tenor, no más de una décima.
+Y entre el tenor y el bajo, no más de una quinceava, es decir, dos octavas.
+Las tres voces de arriba queremos que estén lo más compactas posible.
+En cambio, mientras más separado está el bajo del resto, más robusto suena el acorde.
+La nota grave genera más armónicos, y sobre ellos se acomodan las demás notas del acorde.
+Además, las voces no se cruzan.
+La soprano siempre va arriba de la contralto, la contralto arriba del tenor, y el tenor arriba del bajo.
+Ahora, un acorde de quinta tiene tres notas: fundamental, tercera y quinta.
+Pero el cuarteto tiene cuatro voces.
+¿Qué hacemos con tres notas para formar un acorde de cuatro?
+Duplicamos una de ellas.
+Veamos un acorde de Do mayor.
+En el bajo ponemos Do tres.
+En el tenor, Sol tres.
+En la contralto, Mi cuatro.
+Y en la soprano, otra vez Do, en Do cinco.
+Estamos duplicando la fundamental.
+Entre el bajo y el tenor hay una quinta, entre el tenor y la contralto una sexta, y entre la contralto y la soprano otra sexta.
+Las tesituras y las separaciones son correctas.
+Vamos a escucharlo.
+Podemos duplicar cualquier nota del acorde, con una excepción: la sensible.
+La sensible es la única nota que no duplicamos.
+En la escala mayor, la sensible es el séptimo grado.
+En Do mayor es Si.
+La nota Si aparece en tres acordes de Do mayor: es la tercera del quinto grado, la fundamental del séptimo y la quinta del tercero.
+En esos tres acordes, el Si va en una sola voz.
+La sensible tiende a resolver a la tónica; si la duplicamos, esa resolución queda en dos voces a la vez.
+En los acordes mayores y menores, de preferencia duplicamos la fundamental o la quinta.
+Duplicar la tercera es posible, pero suena un poquito duro.
+En los acordes mayores y menores también podemos suprimir la quinta.
+Entonces duplicamos la fundamental y la tercera.
+O triplicamos la fundamental y ponemos una sola tercera.
+Con menos frecuencia, podemos triplicar la tercera.
+Lo que nunca suprimimos es la fundamental ni la tercera.
+Sin fundamental no se reconoce el acorde.
+Y sin tercera no sabemos si el acorde es mayor o menor.
+Los acordes disminuidos y aumentados siempre se presentan completos.
+En Do mayor, el acorde disminuido es el del séptimo grado: Si, Re y Fa.
+Su fundamental, Si, es la sensible, así que duplicamos el Re o el Fa.
+El acorde aumentado aparece en la escala menor armónica, sobre el tercer grado.
+En La menor armónica es Do, Mi y Sol sostenido.
+Su quinta, Sol sostenido, es la sensible, así que duplicamos el Do o el Mi.
+Pasemos a los estados del acorde.
+El estado depende de la nota que está en el bajo.
+Si el bajo tiene la fundamental, el acorde está en estado fundamental.
+Si el bajo tiene la tercera, está en primera inversión.
+Y si el bajo tiene la quinta, está en segunda inversión.
+La primera inversión la ciframos seis tres, y la segunda inversión, seis cuatro.
+Estos cifrados vienen de los intervalos que forman las otras notas del acorde sobre el bajo.
+Veamos un ejemplo con La mayor en primera inversión.
+La mayor es La, Do sostenido y Mi.
+Para que esté en primera inversión, ponemos Do sostenido en el bajo.
+No podemos suprimir la fundamental, así que ponemos La.
+Y aquí duplicamos la fundamental.
+Ahora Sol bemol mayor en segunda inversión.
+Sol bemol mayor es Sol bemol, Si bemol y Re bemol.
+Para la segunda inversión necesitamos Re bemol en el bajo.
+Necesitamos la fundamental y la tercera.
+Y ahora duplicamos la quinta.
+Escuchemos los tres estados.
+Ahora la posición melódica.
+La posición melódica depende de la nota que canta la soprano.
+Si la soprano tiene la fundamental, decimos que el acorde está en posición melódica de octava.
+Si tiene la tercera, en posición melódica de tercera.
+Y si tiene la quinta, en posición melódica de quinta.
+Escuchemos las tres posiciones.
+Por último, la disposición interna.
+Aquí solo miramos las tres voces de arriba: soprano, contralto y tenor.
+La disposición es cerrada cuando, entre ellas, no cabe otra nota del mismo acorde.
+Y es abierta cuando sí cabe.
+En este acorde de Do mayor, entre el tenor y la contralto, y entre la contralto y la soprano, no cabe ninguna otra nota de Do mayor.
+La disposición es cerrada.
+En este otro, entre el tenor y la contralto cabe un Do.
+La disposición es abierta.
+Escuchemos la diferencia.
+Ahora la tarea para el maestro virtual.
+Vas a escribir siete acordes, uno sobre cada grado de una escala mayor.
+Puedes elegir la tonalidad mayor que quieras.
+Y puedes escribir los siete acordes en el orden que quieras.
+Cada acorde puede tener el estado, la posición melódica y la disposición que tú elijas.
+Te recomiendo variarlos, para que practiques todas las combinaciones.
+Escribe cada acorde como una entera, con las cuatro voces al mismo tiempo, un acorde por compás.
+Trabaja en el secuenciador en modo Cuarteto SATB y exporta tu tarea como archivo MIDI.
+El maestro virtual reconoce la tonalidad y el grado de cada acorde, y revisa que estén los siete grados.
+También revisa las tesituras, las separaciones entre las voces y que no se crucen.
+Revisa las duplicaciones, las triplicaciones y las supresiones, y que no hayas duplicado la sensible.
+Y revisa que las notas estén bien escritas en la tonalidad.
+Además, de cada acorde te dice su estado, su posición melódica y su disposición.
+Recapitulemos.
+El cuarteto vocal tiene cuatro voces, cada una con su tesitura.
+Las voces respetan sus separaciones y no se cruzan.
+Podemos duplicar cualquier nota menos la sensible, y en los acordes mayores y menores podemos suprimir la quinta.
+El bajo determina el estado del acorde, la soprano su posición melódica, y las tres voces de arriba su disposición.
+En las siguientes lecciones vamos a aprender a enlazar los acordes.
+Gracias por acompañarme.
+Nos vemos en la lección siete.

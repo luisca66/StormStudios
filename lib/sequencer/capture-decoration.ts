@@ -56,7 +56,9 @@ export function decorateCapture(svg: SVGSVGElement, still: Still, measure: numbe
   for (const mark of still.marks ?? []) if (mark.measure === measure && mark.label) {
     const row = rows.find(r => !mark.voice || r.voice === mark.voice)!;
     const tick = positionTick(measure, mark.beat);
-    add("text", { ...textStyle, x: captureX(row, tick) + 5, y: row.top - px(40), "font-size": px(22), "font-weight": 600, opacity: tick >= reveal ? 0 : 1 }, mark.label);
+    const vocal = rows.some(r => r.voice !== "melody");
+    add("text", { ...textStyle, x: captureX(row, tick) + (vocal ? px(44) : 5), y: vocal ? row.bottom + px(30) : row.top - px(40),
+      "text-anchor": vocal ? "start" : "middle", "data-mark-label": "true", "font-size": px(22), "font-weight": 600, opacity: tick >= reveal ? 0 : 1 }, mark.label);
   }
   if (still.cursor?.measure === measure) {
     const x = captureX(rows[0], positionTick(measure, still.cursor.beat));

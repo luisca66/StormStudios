@@ -8,6 +8,7 @@
 .paper { position:relative; flex:1; min-height:0; border-radius:24px; background:#fdfcf8; box-shadow:0 40px 80px -40px #000; overflow:hidden; color:#182030; }
 .music { position:absolute; width:calc(100% - 128px); left:64px; top:50%; transform:translateY(-50%); }
 .music [data-testid=score-view] > div { display:flex; gap:0; }
+.music [data-testid=score-view][data-mode=satb] > div { justify-content:center; }
 .music [data-measure] { min-width:0; background:transparent; border:0; border-radius:0; box-shadow:none; padding:0; margin:0; overflow:visible; }
 .music [data-measure] > div { min-height:0; }
 .music svg { display:block; overflow:visible; }

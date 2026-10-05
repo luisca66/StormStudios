@@ -1,5 +1,12 @@
 import { inflateRawSync } from "node:zlib";
 
+/** Plain scripts contain one paragraph per nonempty line, like the exported voice clips. */
+export function scriptParagraphs(data, filename) {
+  return /\.txt$/i.test(filename)
+    ? data.toString("utf8").replace(/^\uFEFF/, "").split(/\r?\n/).map(line => line.trim()).filter(Boolean)
+    : docxParagraphs(data);
+}
+
 /** Explicit text for a divided voice clip, supplied by the audio map. */
 export function partialSubtitle(entry, clip, paragraph, from, to, duration) {
   if (from === 0 && to === duration) return paragraph;
