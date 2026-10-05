@@ -48,6 +48,13 @@ export const BLOG_POST_TRANSLATIONS: BlogPostTranslation[] = [
       es: "2026-10-04-videos-con-inteligencia-artificial",
     },
   },
+  {
+    key: "lesson-6-published",
+    slugs: {
+      en: "2026-10-05-lesson-6-published",
+      es: "2026-10-05-leccion-6-publicada",
+    },
+  },
 ];
 
 export function findBlogTranslationBySlug(locale: Locale, slug: string) {
