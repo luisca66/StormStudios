@@ -113,6 +113,8 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 
 - **L7 v2 ES/EN (2026-10-06)**: el renderizador de imágenes ya llena 1760×670 con `object-fit: contain`; recortar el viewBox del SVG amplía la figura sin cambiar L5. Revisar también los cuatro recapitulativos y retirar etiquetas de highlights cuando invaden la voz superior. La entrega v2 requiere reemplazar bytes con Drive `files.update` para conservar IDs y enlaces, y comprobar después tamaño y permisos privados.
 
+- **L7 v3 ES/EN (2026-10-06)**: al añadir una frase y un still, validar de nuevo los 118 clips y retirar PNG obsoletos por nombre contra el manifest (el render no los borra). Tres cuartos y un silencio por compás conservan los 36 pulsos del cursor. 344 fotogramas correctos; 683.733 s / 647.880 s, ocho escuchas entre −2.4 y −2.7 dB RMS tras AAC. Ante error interno de Drive, leer metadata antes de reintentar y comprobar tamaño y privacidad al terminar.
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).
