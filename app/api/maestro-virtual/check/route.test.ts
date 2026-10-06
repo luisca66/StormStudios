@@ -100,6 +100,52 @@ describe('POST /api/maestro-virtual/check', () => {
 });
 
 
+describe('Lesson 7 melodic line review', () => {
+  function request(fixture: string, locale: 'es' | 'en') {
+    const bytes = new Uint8Array(readFileSync(join(process.cwd(), 'lib/maestro-virtual/__fixtures__', fixture)));
+    const form = new FormData();
+    form.append('midi', new Blob([bytes]), fixture);
+    form.append('lessonId', '08-leccion-7');
+    form.append('locale', locale);
+    return new NextRequest('http://localhost/api/maestro-virtual/check', {
+      method: 'POST', body: form, headers: { 'x-forwarded-for': '198.51.100.77' },
+    });
+  }
+
+  it.each([
+    ['Leccion_7_Soprano_Do_mayor_correcta.mid', 'es', 'Voz: soprano. Tonalidad reconocida: Do mayor.'],
+    ['Leccion_7_Contralto_Sol_mayor_correcta.mid', 'es', 'Voz: contralto. Tonalidad reconocida: Sol mayor.'],
+    ['Leccion_7_Tenor_Re_mayor_correcta.mid', 'en', 'Voice: tenor. Detected key: D major.'],
+    ['Leccion_7_Bajo_Sib_mayor_correcta.mid', 'es', 'Voz: bajo. Tonalidad reconocida: Si bemol mayor.'],
+  ] as const)('accepts %s and returns melody descriptions', async (fixture, locale, title) => {
+    const response = await POST(request(fixture, locale));
+    expect(response.status).toBe(200);
+    const feedback: MaestroFeedback = await response.json();
+    expect(feedback).toMatchObject({ lessonId: '08-leccion-7', passed: true, score: 100, violations: [], suggestions: [] });
+    expect(feedback.descriptions?.map(item => item.ruleId)).toEqual(['MELODY_KEY', 'MELODY_SUMMARY']);
+    expect(feedback.descriptions![0].ruleName[locale]).toBe(title);
+    expect(feedback.descriptions![1].message.es).toBeTruthy();
+    expect(feedback.descriptions![1].message.en).toBeTruthy();
+  });
+
+  it.each([
+    ['Leccion_7_Soprano_Do_mayor_errores.mid', 25, [
+      ['MELODIC_FORBIDDEN_INTERVAL', 3], ['MELODIC_REPEATED_NOTE', 4],
+      ['MELODY_RANGE', 7], ['MELODIC_SUCCESSIVE_LEAPS', 7], ['MELODY_END_TONIC', 8],
+    ]],
+    ['Leccion_7_Tenor_Re_mayor_errores.mid', 55, [
+      ['MELODIC_LEADING_TONE_OCTAVE', 3], ['MELODY_ENHARMONIC', 6], ['MELODIC_DIMINISHED_UNRESOLVED', 6],
+    ]],
+  ] as const)('reports the expected errors in %s', async (fixture, score, errors) => {
+    const response = await POST(request(fixture, 'es'));
+    expect(response.status).toBe(200);
+    const feedback: MaestroFeedback = await response.json();
+    expect(feedback).toMatchObject({ passed: false, score });
+    expect(feedback.violations.map(item => [item.ruleId, item.measure])).toEqual(errors);
+    expect(feedback.descriptions?.map(item => item.ruleId)).toEqual(['MELODY_KEY', 'MELODY_SUMMARY']);
+  });
+});
+
 describe('Lesson 6 SATB chord review', () => {
   function request(fixture: string, locale = 'es') {
     const bytes = new Uint8Array(readFileSync(join(process.cwd(), 'lib/maestro-virtual/__fixtures__', fixture)));

@@ -7,6 +7,7 @@ import { validateMinorScales } from '@/lib/maestro-virtual/minor-scale-validator
 import { validateLesson2Modes } from '@/lib/maestro-virtual/modes-validator';
 import { validateCompleteLesson4Triads } from '@/lib/maestro-virtual/complete-triads-validator';
 import { validateLesson6SatbChords } from '@/lib/maestro-virtual/satb-chords-validator';
+import { validateLesson7MelodicLine } from '@/lib/maestro-virtual/melodic-lines-validator';
 import { getLessonConfig } from '@/data/course/lessons/lesson-configs';
 import type { FeedbackDescription, FeedbackItem } from '@/types/course';
 
@@ -203,6 +204,7 @@ async function readBoundedBody(request: NextRequest): Promise<BoundedBodyResult>
  *   - 'minor-scales' → validateMinorScales     (escalas menores)
  *   - 'triads'       → validateCompleteLesson4Triads (ejercicio completo, orden libre)
  *   - 'satb-chords'  → validateLesson6SatbChords (construcción, sin enlaces)
+ *   - 'melodic-lines' → validateLesson7MelodicLine (una melodía por voz)
  *   - 'satb'         → 501 hasta que su motor de reglas esté listo
  *
  * Devuelve MaestroFeedback compatible con ExerciseUpload.tsx.
@@ -295,6 +297,7 @@ export async function POST(request: NextRequest) {
       case 'minor-scales': rawErrors = validateMinorScales(voiceData); break;
       case 'triads': rawErrors = validateCompleteLesson4Triads(voiceData); break;
       case 'satb-chords': rawErrors = validateLesson6SatbChords(voiceData); break;
+      case 'melodic-lines': rawErrors = validateLesson7MelodicLine(voiceData); break;
       default:
         return invalidRequest('validator_unavailable', 501);
     }
@@ -389,7 +392,7 @@ export async function POST(request: NextRequest) {
       passed,
       violations,
       suggestions,
-      ...(lessonConfig.validator === 'satb-chords' ? { descriptions } : {}),
+      ...(['satb-chords', 'melodic-lines'].includes(lessonConfig.validator) ? { descriptions } : {}),
       summary,
     });
 

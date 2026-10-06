@@ -5,12 +5,12 @@
  * (ruteo explícito, no por coincidencia de substring en el id).
  */
 
-export type ValidatorKind = 'major-scales' | 'minor-scales' | 'modes' | 'triads' | 'satb' | 'satb-chords';
+export type ValidatorKind = 'major-scales' | 'minor-scales' | 'modes' | 'triads' | 'satb' | 'satb-chords' | 'melodic-lines';
 
 export interface ValidatorConfig {
   id: string;
   validator: ValidatorKind;
-  voiceCount: number;   // 1 = una voz (Soprano) · 4 = SATB
+  voiceCount: number;   // 1 = una voz · 4 = SATB
   activeRules: string[];
 }
 
@@ -68,6 +68,21 @@ const VALIDATOR_CONFIGS: Record<string, ValidatorConfig> = {
       'SATB_LEADING_TONE_DOUBLED', 'SATB_RANGE', 'SATB_VOICE_CROSSING',
       'SATB_SPACING', 'SATB_CHORD_INFO', 'SATB_MISSING_DEGREE',
       'SATB_DUPLICATE_DEGREE', 'SATB_CHORD_COUNT',
+    ],
+  },
+  // Lección 7: una melodía por archivo, en cualquiera de las voces SATB.
+  '08-leccion-7': {
+    id: '08-leccion-7',
+    validator: 'melodic-lines',
+    voiceCount: 1,
+    activeRules: [
+      'MELODY_NO_NOTES', 'MELODY_SEVERAL_VOICES', 'MELODY_FILE_LIMIT',
+      'MELODY_SIMULTANEOUS_NOTES', 'MELODY_KEY', 'MELODY_NOTE_COUNT',
+      'MELODY_FOREIGN_NOTE', 'MELODY_ENHARMONIC', 'MELODY_MISSING_SPELLING',
+      'MELODY_START_TONIC', 'MELODY_END_TONIC', 'MELODY_RANGE', 'MELODY_SUMMARY',
+      'MELODIC_FORBIDDEN_INTERVAL', 'MELODIC_REPEATED_NOTE',
+      'MELODIC_LEADING_TONE_OCTAVE', 'MELODIC_DIMINISHED_UNRESOLVED',
+      'MELODIC_SUCCESSIVE_LEAPS',
     ],
   },
 };
