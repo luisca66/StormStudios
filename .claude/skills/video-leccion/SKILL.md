@@ -111,6 +111,8 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 
 - **L7 ES/EN (2026-10-06)**: los reveals y highlights de mitades/cuartos se revisan por pulso conservando los 9 compases; las voces SATB ocultas permiten ampliar el sistema sin perder etiquetas. Verificar el rango musical también cuando empieza en el compás 3 y comparar tres cursores por escucha contra sus PNG. 79 stills y 117 clips por idioma; 340 fotogramas correctos, 672.880 s / 638.733 s. Las ocho escuchas quedaron entre −2.4 y −2.6 dB RMS tras AAC, aunque los enlaces dieron Δ LU de 0 a +0.5: reportar RMS y LUFS por separado.
 
+- **L7 v2 ES/EN (2026-10-06)**: el renderizador de imágenes ya llena 1760×670 con `object-fit: contain`; recortar el viewBox del SVG amplía la figura sin cambiar L5. Revisar también los cuatro recapitulativos y retirar etiquetas de highlights cuando invaden la voz superior. La entrega v2 requiere reemplazar bytes con Drive `files.update` para conservar IDs y enlaces, y comprobar después tamaño y permisos privados.
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).
