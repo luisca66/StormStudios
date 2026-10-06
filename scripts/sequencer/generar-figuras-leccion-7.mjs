@@ -152,7 +152,7 @@ try {
       const L = t => t[locale];
       node('title', {}, L(fig.title));
       const label = (x, y, text, color = muted, size = 15, anchor = 'middle') => node('text', { x, y, fill: color, stroke: 'none', 'font-family': 'Georgia, "Times New Roman", serif', 'font-size': size, 'text-anchor': anchor }, text);
-      label(W / 2, 30, L(fig.title), ink, 21);
+      const titleNode = label(W / 2, 30, L(fig.title), ink, 24);
       const degree = p => Number(p.slice(-1)) * 7 + 'CDEFGAB'.indexOf(p[0]);
       const SOLFA = ['Do', 'Re', 'Mi', 'Fa', 'Sol', 'La', 'Si'];
       const noteName = p => (locale === 'es' ? SOLFA['CDEFGAB'.indexOf(p[0])] : p[0]) + (p.slice(1, -1) === '#' ? '♯' : p.slice(1, -1) === 'b' ? '♭' : '') + p.slice(-1);
@@ -170,19 +170,19 @@ try {
           if (g.header && (!spans.length || spans[spans.length - 1].header !== L(g.header))) spans.push({ header: L(g.header), x0: x, x1: x + w });
           else if (g.header) spans[spans.length - 1].x1 = x + w;
           const markText = g.mark === 'ok' ? '✓ ' : g.mark === 'no' ? '✗ ' : '';
-          const t = label(cx, top - 22, '', violet, 15);
+          const t = label(cx, top - 22, '', violet, 17);
           if (markText) { const m = document.createElementNS('http://www.w3.org/2000/svg', 'tspan'); m.setAttribute('fill', g.mark === 'ok' ? okc : noc); m.textContent = markText; t.appendChild(m); }
           const s = document.createElementNS('http://www.w3.org/2000/svg', 'tspan'); s.textContent = L(g.label); t.appendChild(s);
           g._x = x; x += w + GAP;
         });
         spans.forEach(s => {
-          label((s.x0 + s.x1) / 2, top - 46, s.header, ink, 16);
+          label((s.x0 + s.x1) / 2, top - 46, s.header, ink, 18);
           node('line', { x1: s.x0 + 6, x2: s.x1 - 6, y1: top - 40, y2: top - 40, stroke: violet, 'stroke-width': 1, opacity: 0.6 });
         });
         // Pentagramas.
         fig.staves.forEach((clef, si) => {
           const y = top + si * 100;
-          const stave = new V.Stave(STAFF_X, y - 40, RIGHT - STAFF_X).addClef(clef === 't' ? 'treble' : 'bass').setStyle({ fillStyle: ink, strokeStyle: ink });
+          const sx = Math.max(STAFF_X, left - 72), stave = new V.Stave(sx, y - 40, left + width + 14 - sx).addClef(clef === 't' ? 'treble' : 'bass').setStyle({ fillStyle: ink, strokeStyle: ink });
           stave.setContext(ctx).draw();
           // Doble barra entre grupos.
           groups.forEach((g, gi) => { if (gi) { const bx = g._x - GAP / 2; node('line', { x1: bx, x2: bx, y1: y, y2: y + 40, stroke: muted, 'stroke-width': 1 }); node('line', { x1: bx + 4, x2: bx + 4, y1: y, y2: y + 40, stroke: muted, 'stroke-width': 1 }); } });
@@ -208,12 +208,22 @@ try {
             const centerX = note.getAbsoluteX() + note.getGlyphWidth() / 2;
             if (Math.abs(centerX - cx) > 0.01) throw Error(`${id} ${pitches}: alineación horizontal`);
             audit.push({ row: r + 1, group: L(g.label), column: ci + 1, staff: clef, pitches, ys });
-            label(cx, (si === fig.staves.length - 1 ? y + 88 : y + 72), pitches.map(noteName).join(' · '), muted, 13);
+            label(cx, (si === fig.staves.length - 1 ? y + 88 : y + 72), pitches.map(noteName).join(' · '), muted, 16);
           }));
         });
       });
-      if (fig.footer) label(W / 2, H - 16, L(fig.footer), muted, 14);
-      return { svg: svg.outerHTML, audit, H };
+      const footerNode = fig.footer ? label(W / 2, H - 16, L(fig.footer), muted, 17) : null;
+      // Center title and footer over the music, then crop the viewBox to the content.
+      titleNode.remove(); footerNode?.remove();
+      const music = svg.getBBox(), mid = music.x + music.width / 2;
+      titleNode.setAttribute('x', mid); svg.appendChild(titleNode);
+      if (footerNode) { footerNode.setAttribute('x', mid); svg.appendChild(footerNode); }
+      const bb = svg.getBBox(), pad = 16;
+      const vb = [bb.x - pad, bb.y - pad, bb.width + 2 * pad, bb.height + 2 * pad].map(v => Math.round(v * 10) / 10);
+      svg.setAttribute('viewBox', vb.join(' '));
+      svg.setAttribute('width', vb[2]);
+      svg.setAttribute('height', vb[3]);
+      return { svg: svg.outerHTML, audit, W: vb[2], H: vb[3] };
     }, { id, fig, locale });
     await writeFile(resolve(out, `${id}-${locale}.svg`), result.svg + '\n');
     await writeFile(resolve(preview, `${id}-${locale}-notes.json`), JSON.stringify(result.audit, null, 2));
@@ -223,7 +233,7 @@ try {
       document.getElementById('figure').replaceChildren(img);
       await img.decode();
     }, result.svg);
-    await page.addStyleTag({ content: `body { margin: 0; background: #0c0a18; } #figure { width: 960px; height: ${result.H}px; }` });
+    await page.addStyleTag({ content: `body { margin: 0; background: #0c0a18; } #figure { width: ${result.W}px; height: ${result.H}px; }` });
     await page.locator('#figure').screenshot({ path: resolve(preview, `${id}-${locale}.png`) });
     console.log(`${id}-${locale}: ${result.audit.length} columnas verificadas; PNG listo`);
   }

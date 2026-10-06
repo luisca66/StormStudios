@@ -1515,19 +1515,27 @@
       "highlights": [
         {
           "measure": 1,
-          "color": "rose",
-          "label": "5th",
-          "voice": "tenor"
+          "voice": "tenor",
+          "color": "rose"
+        },
+        {
+          "measure": 1,
+          "voice": "bass",
+          "color": "rose"
         },
         {
           "measure": 2,
-          "color": "rose",
-          "label": "5th",
-          "voice": "tenor"
+          "voice": "tenor",
+          "color": "rose"
+        },
+        {
+          "measure": 2,
+          "voice": "bass",
+          "color": "rose"
         }
       ],
       "heading": "IV – V with parallel fifths",
-      "caption": "Tenor and bass",
+      "caption": "Tenor and bass: F – C, then G – D",
       "narration": "Let's listen to a connection of two chords with parallel fifths.",
       "showCiphers": true
     },

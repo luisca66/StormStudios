@@ -1515,19 +1515,27 @@
       "highlights": [
         {
           "measure": 1,
-          "color": "rose",
-          "label": "5ª",
-          "voice": "tenor"
+          "voice": "tenor",
+          "color": "rose"
+        },
+        {
+          "measure": 1,
+          "voice": "bass",
+          "color": "rose"
         },
         {
           "measure": 2,
-          "color": "rose",
-          "label": "5ª",
-          "voice": "tenor"
+          "voice": "tenor",
+          "color": "rose"
+        },
+        {
+          "measure": 2,
+          "voice": "bass",
+          "color": "rose"
         }
       ],
       "heading": "IV – V con quintas paralelas",
-      "caption": "Tenor y bajo",
+      "caption": "Tenor y bajo: Fa – Do y luego Sol – Re",
       "narration": "Escuchemos un enlace de dos acordes con quintas paralelas.",
       "showCiphers": true
     },
