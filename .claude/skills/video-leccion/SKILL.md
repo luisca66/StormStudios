@@ -115,6 +115,8 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 
 - **L7 v3 ES/EN (2026-10-06)**: al añadir una frase y un still, validar de nuevo los 118 clips y retirar PNG obsoletos por nombre contra el manifest (el render no los borra). Tres cuartos y un silencio por compás conservan los 36 pulsos del cursor. 344 fotogramas correctos; 683.733 s / 647.880 s, ocho escuchas entre −2.4 y −2.7 dB RMS tras AAC. Ante error interno de Drive, leer metadata antes de reintentar y comprobar tamaño y privacidad al terminar.
 
+- **L7 v4 ES/EN (2026-10-06)**: al cambiar la composición de un SVG, limpiar las carpetas completas de stills antes de renderizar y revisar también sus recapitulativos. La figura de intervalos en dos filas conserva notas y etiquetas legibles a 1080p. 80 stills y 118 clips por idioma; 344/344 fotogramas correctos, 683.733 s / 647.880 s y ocho escuchas entre −2.4 y −2.7 dB RMS. Reemplazar Drive con `files.update` y comprobar nombre, tamaño y permiso exclusivo del propietario conserva los enlaces privados.
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).
