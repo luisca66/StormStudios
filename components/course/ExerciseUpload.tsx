@@ -171,6 +171,13 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
               : "Storm Sequencer: use a single staff. Write the first chord note, then hold Ctrl while clicking to add the third and fifth at the same position. Export the entire assignment in one MIDI."}</p>
           </div>
         )}
+        {lessonId === "08-leccion-7" && (
+          <p className="mb-4 text-sm text-gray-600">
+            {es
+              ? "Sube cada voz en un archivo MIDI separado. En Storm Sequencer, usa el modo SATB y escribe solo en el pentagrama de esa voz: ocho cuartos, en cualquier tonalidad mayor, empezando y terminando en el I grado."
+              : "Upload each voice as a separate MIDI file. In Storm Sequencer, use SATB mode and write only on that voice's staff: eight quarter notes in any major key, starting and ending on degree I."}
+          </p>
+        )}
         {/* Referencia visual para lección 1 */}
         {lessonId === "02-leccion-1" && (
           <div className="mb-4 p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs font-mono space-y-1">
@@ -325,6 +332,7 @@ function FeedbackDisplay({
   const unitWord =
     feedback.lessonId === "03-leccion-2" ? (es ? "modo" : "mode")
     : feedback.lessonId === "02-leccion-1" ? (es ? "escala" : "scale")
+    : feedback.lessonId === "08-leccion-7" ? (es ? "nota" : "note")
     : (feedback.lessonId === "05-leccion-4" || feedback.lessonId === "07-leccion-6") ? (es ? "acorde" : "chord")
     : (es ? "compás" : "measure");
 
@@ -380,11 +388,13 @@ function FeedbackDisplay({
         </div>
       )}
 
-      {/* Análisis informativo: tonalidad y descripción de cada acorde */}
+      {/* Análisis informativo de la tonalidad y del ejercicio */}
       {!!feedback.descriptions?.length && (
         <div>
           <h4 className="font-semibold text-gray-700 text-sm mb-2">
-            {es ? "Análisis de los acordes" : "Chord analysis"}
+            {feedback.lessonId === "08-leccion-7"
+              ? (es ? "Análisis de la melodía" : "Melody analysis")
+              : (es ? "Análisis de los acordes" : "Chord analysis")}
           </h4>
           <ul className="space-y-2 list-none">
             {feedback.descriptions.map((item, i) => (
