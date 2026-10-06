@@ -24,11 +24,10 @@ const OK = 'ok', NO = 'no';
 const FIGURES = {
   'intervalos-melodicos': {
     title: T('Intervalos melódicos permitidos ↑↓', 'Allowed melodic intervals ↑↓'),
-    staves: ['t'], col: 56,
+    staves: ['t'], col: 56, width: 1200,
     rows: [[
       { header: T('Grado conjunto', 'Step'), label: T('2ª menor', 'minor 2nd'), cols: [{ t: ['E4'] }, { t: ['F4'] }, { t: ['E4'] }], check: ['m2', 'm2'] },
       { header: T('Grado conjunto', 'Step'), label: T('2ª mayor', 'major 2nd'), cols: [{ t: ['G4'] }, { t: ['A4'] }, { t: ['G4'] }], check: ['M2', 'M2'] },
-    ], [
       { header: T('Camino corto', 'Short path'), label: T('3ª menor', 'minor 3rd'), cols: [{ t: ['D4'] }, { t: ['F4'] }, { t: ['D4'] }], check: ['m3', 'm3'] },
       { header: T('Camino corto', 'Short path'), label: T('3ª mayor', 'major 3rd'), cols: [{ t: ['F4'] }, { t: ['A4'] }, { t: ['F4'] }], check: ['M3', 'M3'] },
       { header: T('Salto corto', 'Short leap'), label: T('4ª justa', 'perfect 4th'), cols: [{ t: ['A4'] }, { t: ['D5'] }, { t: ['A4'] }], check: ['P4', 'P4'] },
@@ -129,7 +128,7 @@ try {
     const result = await page.evaluate(({ id, fig, locale }) => {
       const V = window.Vex.Flow;
       const ink = '#f0eeff', violet = '#c4b5fd', muted = '#c6c3d5', okc = '#86efac', noc = '#fca5a5';
-      const W = 960, COL = fig.col ?? 66, GAP = fig.gap ?? 34, X0 = 128, STAFF_X = 60, RIGHT = 940;
+      const W = fig.width ?? 960, COL = fig.col ?? 66, GAP = fig.gap ?? 34, X0 = 128, STAFF_X = 60, RIGHT = W - 20;
       const staffH = fig.staves.length === 2 ? 210 : 110; // altura de un sistema
       const rowH = staffH + 110;
       const H = 70 + fig.rows.length * rowH + (fig.footer ? 30 : 0);
