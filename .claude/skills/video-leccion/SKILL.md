@@ -109,6 +109,8 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 
 - **L6 ES/EN (2026-10-05)**: en SATB, reservar margen para Contralto, centrar sistemas de 1–3 compases y separar las redondas de las firmas; las marcas necesitan su propio espacio bajo cada pentagrama. Se conservaron seis PNG de L4/L5 sin diferencias. Normalizar a −19 LUFS no dejó el Piano a 2–3 dB RMS de la voz: calibrar cada escucha con volumedetect y comprobar el MP4 después de AAC dio −2.5/−2.6 dB; reportar LUFS por separado. 76 stills, 118 clips por idioma, 328 fotogramas correctos; videos de 656.167 s y 609.933 s. Los guiones TXT requieren una línea no vacía por clip; actualizar Drive después del ajuste final y verificar tamaños.
 
+- **L7 ES/EN (2026-10-06)**: los reveals y highlights de mitades/cuartos se revisan por pulso conservando los 9 compases; las voces SATB ocultas permiten ampliar el sistema sin perder etiquetas. Verificar el rango musical también cuando empieza en el compás 3 y comparar tres cursores por escucha contra sus PNG. 79 stills y 117 clips por idioma; 340 fotogramas correctos, 672.880 s / 638.733 s. Las ocho escuchas quedaron entre −2.4 y −2.6 dB RMS tras AAC, aunque los enlaces dieron Δ LU de 0 a +0.5: reportar RMS y LUFS por separado.
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).
