@@ -109,6 +109,16 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 
 - **L6 ES/EN (2026-10-05)**: en SATB, reservar margen para Contralto, centrar sistemas de 1–3 compases y separar las redondas de las firmas; las marcas necesitan su propio espacio bajo cada pentagrama. Se conservaron seis PNG de L4/L5 sin diferencias. Normalizar a −19 LUFS no dejó el Piano a 2–3 dB RMS de la voz: calibrar cada escucha con volumedetect y comprobar el MP4 después de AAC dio −2.5/−2.6 dB; reportar LUFS por separado. 76 stills, 118 clips por idioma, 328 fotogramas correctos; videos de 656.167 s y 609.933 s. Los guiones TXT requieren una línea no vacía por clip; actualizar Drive después del ajuste final y verificar tamaños.
 
+- **L7 ES/EN (2026-10-06)**: los reveals y highlights de mitades/cuartos se revisan por pulso conservando los 9 compases; las voces SATB ocultas permiten ampliar el sistema sin perder etiquetas. Verificar el rango musical también cuando empieza en el compás 3 y comparar tres cursores por escucha contra sus PNG. 79 stills y 117 clips por idioma; 340 fotogramas correctos, 672.880 s / 638.733 s. Las ocho escuchas quedaron entre −2.4 y −2.6 dB RMS tras AAC, aunque los enlaces dieron Δ LU de 0 a +0.5: reportar RMS y LUFS por separado.
+
+- **L7 v2 ES/EN (2026-10-06)**: el renderizador de imágenes ya llena 1760×670 con `object-fit: contain`; recortar el viewBox del SVG amplía la figura sin cambiar L5. Revisar también los cuatro recapitulativos y retirar etiquetas de highlights cuando invaden la voz superior. La entrega v2 requiere reemplazar bytes con Drive `files.update` para conservar IDs y enlaces, y comprobar después tamaño y permisos privados.
+
+- **L7 v3 ES/EN (2026-10-06)**: al añadir una frase y un still, validar de nuevo los 118 clips y retirar PNG obsoletos por nombre contra el manifest (el render no los borra). Tres cuartos y un silencio por compás conservan los 36 pulsos del cursor. 344 fotogramas correctos; 683.733 s / 647.880 s, ocho escuchas entre −2.4 y −2.7 dB RMS tras AAC. Ante error interno de Drive, leer metadata antes de reintentar y comprobar tamaño y privacidad al terminar.
+
+- **L7 v4 ES/EN (2026-10-06)**: al cambiar la composición de un SVG, limpiar las carpetas completas de stills antes de renderizar y revisar también sus recapitulativos. La figura de intervalos en dos filas conserva notas y etiquetas legibles a 1080p. 80 stills y 118 clips por idioma; 344/344 fotogramas correctos, 683.733 s / 647.880 s y ocho escuchas entre −2.4 y −2.7 dB RMS. Reemplazar Drive con `files.update` y comprobar nombre, tamaño y permiso exclusivo del propietario conserva los enlaces privados.
+
+- **L7 v5 ES/EN (2026-10-06)**: al insertar una frase al final de la tarea, verificar juntos guion, mapa, tabla y 119 MP3 por idioma antes de montar; el nuevo título `armonicos-despues` añade una pausa visual. 81 stills, 348/348 fotogramas correctos y 119 entradas SRT por idioma; 695.133 s / 657.367 s, ocho escuchas entre −2.4 y −2.7 dB RMS tras AAC. Entregar y verificar los reemplazos antes de retirar la v4; actualizar bytes y nombre en Drive conserva los enlaces privados.
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).

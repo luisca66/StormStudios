@@ -1,0 +1,119 @@
+Hello, and welcome back to Storm Studios Learning.
+In the previous lesson we learned how to build chords for the vocal quartet.
+Today we are going to see how the voices move when we go from one chord to the next.
+This lesson has two parts: melodic motion and harmonic motion.
+Melodic motion is about a single voice, and the intervals it sings from one note to the next.
+Harmonic motion is about two voices moving at the same time.
+When we connect two chords, each voice sings its own melody.
+That is why, before we write our first chorale, we are going to practice each voice on its own.
+I remember my first chorale very well.
+There are so many things to watch at the same time that it is very easy to get lost.
+So let's go step by step.
+Let's start with melodic motion.
+When one chord connects to another, each voice can only use these intervals.
+The minor second and the major second.
+The minor third and the major third.
+The perfect fourth and the perfect fifth.
+The minor sixth and the major sixth.
+And the perfect octave.
+They can all go up or down, that is, ascending or descending.
+There are no augmented intervals in this list.
+There are no sevenths either, and nothing larger than an octave.
+These intervals are classified into four groups.
+Seconds are called steps.
+Thirds are called short paths.
+The perfect fourth is a short leap.
+And the perfect fifth, the sixths and the octave are long leaps.
+Let's listen to each one, first going up and then going down.
+The step is the most natural motion for a voice.
+Leaps give the melody character, but they have to be used with care.
+The first rule of care has to do with the leading tone.
+In C major, the leading tone is B, the note that wants to rise to C.
+The leading tone never leaps an octave.
+Now let's look at diminished intervals.
+We said that augmented intervals are not used.
+But the diminished fifth, the diminished fourth and the diminished seventh are allowed, on one condition.
+After the diminished interval, the voice has to change direction.
+We call this compensating.
+In C major, from B up to F there is a diminished fifth.
+If the voice then moves down, for example to E, the diminished fifth is compensated.
+From F down to B there is also a diminished fifth.
+If the voice then moves up, for example to C, it is also compensated.
+But if after B and F the voice keeps rising, to G, the diminished fifth is left uncompensated.
+And watch the direction.
+From F up to B there is no diminished fifth, but an augmented fourth.
+And augmented fourths are not used.
+The diminished fourth and the diminished seventh appear in the minor mode, and we will see them later.
+The last melodic rule is about successive leaps.
+Two leaps in a row in the same direction are not used.
+The exception is a fourth followed by a fifth, or a fifth followed by a fourth.
+For example, from D to G and then to D, going up, is fine.
+And going down, from G to C and then to G, too.
+But from E to A and then to D are two fourths going up, and that is not used.
+If the voice changes direction after a leap, there is no problem.
+Now let's move on to harmonic motion.
+Here we no longer look at a single voice, but at two voices moving at the same time.
+The first rule is the most famous one in all of harmony.
+Parallel fifths and parallel octaves are not used.
+There are parallel fifths or octaves when two voices form a fifth or an octave, and then, moving in the same direction, form a fifth or an octave again.
+For example, the soprano goes from C five to D five, and the bass goes from C three to D three.
+The two voices are an octave apart, and they stay an octave apart.
+Let's listen.
+With parallel octaves, the two voices sound as if they were only one.
+We lose a voice of the quartet.
+Something similar happens with parallel fifths.
+The perfect fifth is such a stable interval that the two voices blend and the sound becomes hollow.
+Contrary fifths and contrary octaves are not used either.
+They are the same fifths or octaves, but with the voices moving in opposite directions.
+For example, the soprano rises from G four to C five while the bass falls from G three to C three.
+We go from one octave to two octaves, and the effect is the same.
+The unison also counts as an octave.
+Now, there are two cases in which fifths are allowed.
+The first is parallel fifths when one of the two, or both, are not perfect.
+For example, from a perfect fifth to a diminished fifth.
+Or from a diminished fifth to a perfect fifth.
+What is not allowed is going from one perfect fifth to another perfect fifth.
+The second case is contrary fifths in voices that are not the outer voices.
+The outer voices are the soprano and the bass, the top one and the bottom one.
+Between the soprano and the bass, contrary fifths are not used.
+But between the tenor and the bass, for example, they are allowed.
+The last harmonic rule is about simultaneous leaps.
+We avoid two voices leaping at the same time in the same direction.
+The exception is when both leaps are perfect fourths.
+If two voices leap at the same time but in opposite directions, there is no problem.
+Let's listen to a connection of two chords with parallel fifths.
+And now the same connection, written correctly.
+We will practice the harmonic rules when we start connecting chords.
+First we will see which chords we can use and how they connect.
+Then you will write connections of two chords.
+And after that you will write your first complete chorale.
+Now, the assignment for the Virtual Teacher.
+This time there are four exercises, one for each voice: soprano, alto, tenor and bass.
+Each exercise is uploaded separately.
+In each one you will write a melody of eight notes, in quarter notes, that is, two measures of four four.
+You can choose any major key, and it can be different in each exercise.
+The melody begins and ends on the first degree, the tonic.
+Work in the sequencer in SATB Quartet mode.
+Write the melody only on the staff of the voice you are practicing, and leave the others empty.
+That way the Virtual Teacher knows which voice it is.
+Use only the allowed intervals and follow the rules of melodic motion.
+In this exercise notes are not repeated.
+When we connect chords we will be able to repeat them, but for now every note moves to a different one.
+And stay within the range of each voice.
+The soprano, from C four to G five.
+The alto, from G three to D five.
+The tenor, from B two to G four.
+And the bass, from F two to B three.
+Export each melody as a MIDI file and upload it.
+The Virtual Teacher recognizes the voice and the key.
+It checks every interval, the range, and that you begin and end on the tonic.
+And if it finds an error, it tells you what it is and on which notes.
+Harmonic motion is not part of this assignment: we will practice it when we connect chords, and the Virtual Teacher will check it then too.
+Let's recap.
+Each voice moves by steps, short paths, short leaps and long leaps.
+We do not use augmented intervals, sevenths, or intervals larger than an octave.
+Diminished intervals are compensated by changing direction.
+We do not leap an octave with the leading tone, or make two leaps in a row in the same direction, except a fourth and a fifth.
+Between two voices, we avoid parallel and contrary fifths and octaves, and simultaneous leaps in the same direction.
+Thank you for joining me.
+See you in lesson eight.
