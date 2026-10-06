@@ -16,6 +16,7 @@ The minor third and the major third.
 The perfect fourth and the perfect fifth.
 The minor sixth and the major sixth.
 And the perfect octave.
+They can all go up or down, that is, ascending or descending.
 There are no augmented intervals in this list.
 There are no sevenths either, and nothing larger than an octave.
 These intervals are classified into four groups.
@@ -23,7 +24,7 @@ Seconds are called steps.
 Thirds are called short paths.
 The perfect fourth is a short leap.
 And the perfect fifth, the sixths and the octave are long leaps.
-Let's listen to each one.
+Let's listen to each one, first going up and then going down.
 The step is the most natural motion for a voice.
 Leaps give the melody character, but they have to be used with care.
 The first rule of care has to do with the leading tone.
@@ -46,9 +47,9 @@ The diminished fourth and the diminished seventh appear in the minor mode, and w
 The last melodic rule is about successive leaps.
 Two leaps in a row in the same direction are not used.
 The exception is a fourth followed by a fifth, or a fifth followed by a fourth.
-For example, from C to F and then to C, going up, is fine.
-From C to G and then to C, too.
-But from D to G and then to C are two fourths going up, and that is not used.
+For example, from D to G and then to D, going up, is fine.
+And going down, from G to C and then to G, too.
+But from E to A and then to D are two fourths going up, and that is not used.
 If the voice changes direction after a leap, there is no problem.
 Now let's move on to harmonic motion.
 Here we no longer look at a single voice, but at two voices moving at the same time.

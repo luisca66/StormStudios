@@ -21,7 +21,7 @@
         "measures": 9,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\nE4 mitad; F4 mitad\ncompas 2\nC4 mitad; D4 mitad\ncompas 3\nD4 mitad; F4 mitad\ncompas 4\nC4 mitad; E4 mitad\ncompas 5\nC4 mitad; F4 mitad\ncompas 6\nC4 mitad; G4 mitad\ncompas 7\nE4 mitad; C5 mitad\ncompas 8\nC4 mitad; A4 mitad\ncompas 9\nC4 mitad; C5 mitad"
+      "text": "voz melody\ncompas 1\nE4 cuarto; F4 cuarto; E4 cuarto; silencio cuarto\ncompas 2\nG4 cuarto; A4 cuarto; G4 cuarto; silencio cuarto\ncompas 3\nD4 cuarto; F4 cuarto; D4 cuarto; silencio cuarto\ncompas 4\nF4 cuarto; A4 cuarto; F4 cuarto; silencio cuarto\ncompas 5\nA4 cuarto; D5 cuarto; A4 cuarto; silencio cuarto\ncompas 6\nG4 cuarto; D5 cuarto; G4 cuarto; silencio cuarto\ncompas 7\nE4 cuarto; C5 cuarto; E4 cuarto; silencio cuarto\ncompas 8\nF4 cuarto; D5 cuarto; F4 cuarto; silencio cuarto\ncompas 9\nD4 cuarto; D5 cuarto; D4 cuarto; silencio cuarto"
     },
     "sensible": {
       "setup": {
@@ -63,7 +63,7 @@
         "measures": 4,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\nC4 cuarto; F4 cuarto; C5 cuarto; silencio cuarto\ncompas 2\nC4 cuarto; G4 cuarto; C5 cuarto; silencio cuarto\ncompas 3\nD4 cuarto; G4 cuarto; C5 cuarto; silencio cuarto\ncompas 4\nC4 cuarto; A4 cuarto; D4 cuarto; silencio cuarto"
+      "text": "voz melody\ncompas 1\nD4 cuarto; G4 cuarto; D5 cuarto; silencio cuarto\ncompas 2\nG5 cuarto; C5 cuarto; G4 cuarto; silencio cuarto\ncompas 3\nE4 cuarto; A4 cuarto; D5 cuarto; silencio cuarto\ncompas 4\nE4 cuarto; C5 cuarto; F4 cuarto; silencio cuarto"
     },
     "octavas-paralelas": {
       "setup": {
@@ -551,6 +551,61 @@
       "showCiphers": true
     },
     {
+      "id": "iv-direccion",
+      "project": "intervalos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "2ª m"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "2ª M"
+        },
+        {
+          "measure": 3,
+          "color": "amber",
+          "label": "3ª m"
+        },
+        {
+          "measure": 4,
+          "color": "amber",
+          "label": "3ª M"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "4ª J"
+        },
+        {
+          "measure": 6,
+          "color": "amber",
+          "label": "5ª J"
+        },
+        {
+          "measure": 7,
+          "color": "amber",
+          "label": "6ª m"
+        },
+        {
+          "measure": 8,
+          "color": "amber",
+          "label": "6ª M"
+        },
+        {
+          "measure": 9,
+          "color": "amber",
+          "label": "8ª J"
+        }
+      ],
+      "heading": "Ascendentes o descendentes",
+      "caption": "Cada intervalo, hacia arriba y hacia abajo",
+      "narration": "Todos se pueden hacer hacia arriba o hacia abajo, es decir, ascendentes o descendentes.",
+      "showCiphers": true
+    },
+    {
       "id": "sin-aumentados",
       "kind": "title",
       "heading": "Sin intervalos aumentados",
@@ -760,7 +815,7 @@
         }
       ],
       "heading": "Los nueve intervalos",
-      "narration": "Escuchemos cada uno.",
+      "narration": "Escuchemos cada uno, primero subiendo y luego bajando.",
       "showCiphers": true
     },
     {
@@ -996,11 +1051,11 @@
         {
           "measure": 1,
           "color": "green",
-          "label": "✓ 4ª + 5ª"
+          "label": "✓ 4ª + 5ª ↑"
         }
       ],
-      "heading": "Do – Fa – Do",
-      "narration": "Por ejemplo, de Do a Fa y luego a Do, subiendo, está bien.",
+      "heading": "Re – Sol – Re, subiendo",
+      "narration": "Por ejemplo, de Re a Sol y luego a Re, subiendo, está bien.",
       "showCiphers": true
     },
     {
@@ -1013,16 +1068,16 @@
         {
           "measure": 1,
           "color": "green",
-          "label": "✓ 4ª + 5ª"
+          "label": "✓ 4ª + 5ª ↑"
         },
         {
           "measure": 2,
           "color": "green",
-          "label": "✓ 5ª + 4ª"
+          "label": "✓ 5ª + 4ª ↓"
         }
       ],
-      "heading": "Do – Sol – Do",
-      "narration": "De Do a Sol y luego a Do, también.",
+      "heading": "Sol – Do – Sol, bajando",
+      "narration": "Y bajando, de Sol a Do y luego a Sol, también.",
       "showCiphers": true
     },
     {
@@ -1035,12 +1090,12 @@
         {
           "measure": 1,
           "color": "green",
-          "label": "✓ 4ª + 5ª"
+          "label": "✓ 4ª + 5ª ↑"
         },
         {
           "measure": 2,
           "color": "green",
-          "label": "✓ 5ª + 4ª"
+          "label": "✓ 5ª + 4ª ↓"
         },
         {
           "measure": 3,
@@ -1048,9 +1103,9 @@
           "label": "✗ 4ª + 4ª"
         }
       ],
-      "heading": "Re – Sol – Do",
+      "heading": "Mi – La – Re",
       "caption": "Dos cuartas hacia arriba",
-      "narration": "Pero de Re a Sol y luego a Do son dos cuartas hacia arriba, y eso no se practica.",
+      "narration": "Pero de Mi a La y luego a Re son dos cuartas hacia arriba, y eso no se practica.",
       "showCiphers": true
     },
     {
@@ -1060,12 +1115,12 @@
         {
           "measure": 1,
           "color": "green",
-          "label": "✓ 4ª + 5ª"
+          "label": "✓ 4ª + 5ª ↑"
         },
         {
           "measure": 2,
           "color": "green",
-          "label": "✓ 5ª + 4ª"
+          "label": "✓ 5ª + 4ª ↓"
         },
         {
           "measure": 3,

@@ -23,21 +23,22 @@ const OK = 'ok', NO = 'no';
 // [[col, 't'|'b', índice], [col, 't'|'b', índice]] por columna (armónico).
 const FIGURES = {
   'intervalos-melodicos': {
-    title: T('Intervalos melódicos permitidos', 'Allowed melodic intervals'),
-    staves: ['t'],
+    title: T('Intervalos melódicos permitidos ↑↓', 'Allowed melodic intervals ↑↓'),
+    staves: ['t'], col: 56,
     rows: [[
-      { header: T('Grado conjunto', 'Step'), label: T('2ª menor', 'minor 2nd'), cols: [{ t: ['E4'] }, { t: ['F4'] }], check: ['m2'] },
-      { header: T('Grado conjunto', 'Step'), label: T('2ª mayor', 'major 2nd'), cols: [{ t: ['C4'] }, { t: ['D4'] }], check: ['M2'] },
-      { header: T('Camino corto', 'Short path'), label: T('3ª menor', 'minor 3rd'), cols: [{ t: ['D4'] }, { t: ['F4'] }], check: ['m3'] },
-      { header: T('Camino corto', 'Short path'), label: T('3ª mayor', 'major 3rd'), cols: [{ t: ['C4'] }, { t: ['E4'] }], check: ['M3'] },
-      { header: T('Salto corto', 'Short leap'), label: T('4ª justa', 'perfect 4th'), cols: [{ t: ['C4'] }, { t: ['F4'] }], check: ['P4'] },
+      { header: T('Grado conjunto', 'Step'), label: T('2ª menor', 'minor 2nd'), cols: [{ t: ['E4'] }, { t: ['F4'] }, { t: ['E4'] }], check: ['m2', 'm2'] },
+      { header: T('Grado conjunto', 'Step'), label: T('2ª mayor', 'major 2nd'), cols: [{ t: ['G4'] }, { t: ['A4'] }, { t: ['G4'] }], check: ['M2', 'M2'] },
     ], [
-      { header: T('Saltos largos', 'Long leaps'), label: T('5ª justa', 'perfect 5th'), cols: [{ t: ['C4'] }, { t: ['G4'] }], check: ['P5'] },
-      { header: T('Saltos largos', 'Long leaps'), label: T('6ª menor', 'minor 6th'), cols: [{ t: ['E4'] }, { t: ['C5'] }], check: ['m6'] },
-      { header: T('Saltos largos', 'Long leaps'), label: T('6ª mayor', 'major 6th'), cols: [{ t: ['C4'] }, { t: ['A4'] }], check: ['M6'] },
-      { header: T('Saltos largos', 'Long leaps'), label: T('8ª justa', 'perfect octave'), cols: [{ t: ['C4'] }, { t: ['C5'] }], check: ['P8'] },
+      { header: T('Camino corto', 'Short path'), label: T('3ª menor', 'minor 3rd'), cols: [{ t: ['D4'] }, { t: ['F4'] }, { t: ['D4'] }], check: ['m3', 'm3'] },
+      { header: T('Camino corto', 'Short path'), label: T('3ª mayor', 'major 3rd'), cols: [{ t: ['F4'] }, { t: ['A4'] }, { t: ['F4'] }], check: ['M3', 'M3'] },
+      { header: T('Salto corto', 'Short leap'), label: T('4ª justa', 'perfect 4th'), cols: [{ t: ['A4'] }, { t: ['D5'] }, { t: ['A4'] }], check: ['P4', 'P4'] },
+    ], [
+      { header: T('Saltos largos', 'Long leaps'), label: T('5ª justa', 'perfect 5th'), cols: [{ t: ['G4'] }, { t: ['D5'] }, { t: ['G4'] }], check: ['P5', 'P5'] },
+      { header: T('Saltos largos', 'Long leaps'), label: T('6ª menor', 'minor 6th'), cols: [{ t: ['E4'] }, { t: ['C5'] }, { t: ['E4'] }], check: ['m6', 'm6'] },
+      { header: T('Saltos largos', 'Long leaps'), label: T('6ª mayor', 'major 6th'), cols: [{ t: ['F4'] }, { t: ['D5'] }, { t: ['F4'] }], check: ['M6', 'M6'] },
+      { header: T('Saltos largos', 'Long leaps'), label: T('8ª justa', 'perfect octave'), cols: [{ t: ['D4'] }, { t: ['D5'] }, { t: ['D4'] }], check: ['P8', 'P8'] },
     ]],
-    footer: T('Sin aumentados, sin 7as y nada mayor que la octava', 'No augmented intervals, no 7ths and nothing larger than an octave'),
+    footer: T('Ascendentes o descendentes · sin aumentados, sin 7as y nada mayor que la octava', 'Ascending or descending · no augmented intervals, no 7ths and nothing larger than an octave'),
   },
   'disminuidos': {
     title: T('Intervalos disminuidos · Do mayor', 'Diminished intervals · C major'),
@@ -55,12 +56,12 @@ const FIGURES = {
     title: T('Saltos sucesivos', 'Successive leaps'),
     staves: ['t'],
     rows: [[
-      { mark: OK, label: T('4ª y 5ª', '4th and 5th'), cols: [{ t: ['C4'] }, { t: ['F4'] }, { t: ['C5'] }], check: ['P4', 'P5'] },
-      { mark: OK, label: T('5ª y 4ª', '5th and 4th'), cols: [{ t: ['C4'] }, { t: ['G4'] }, { t: ['C5'] }], check: ['P5', 'P4'] },
-      { mark: OK, label: T('cambio de dirección', 'change of direction'), cols: [{ t: ['C4'] }, { t: ['A4'] }, { t: ['D4'] }], check: ['M6', 'P5'] },
+      { mark: OK, label: T('4ª y 5ª ↑', '4th and 5th ↑'), cols: [{ t: ['D4'] }, { t: ['G4'] }, { t: ['D5'] }], check: ['P4', 'P5'] },
+      { mark: OK, label: T('5ª y 4ª ↓', '5th and 4th ↓'), cols: [{ t: ['G5'] }, { t: ['C5'] }, { t: ['G4'] }], check: ['P5', 'P4'] },
+      { mark: OK, label: T('cambio de dirección', 'change of direction'), cols: [{ t: ['E4'] }, { t: ['C5'] }, { t: ['F4'] }], check: ['m6', 'P5'] },
     ], [
-      { mark: NO, label: T('4ª y 4ª', '4th and 4th'), cols: [{ t: ['D4'] }, { t: ['G4'] }, { t: ['C5'] }], check: ['P4', 'P4'] },
-      { mark: NO, label: T('5ª y 6ª', '5th and 6th'), cols: [{ t: ['C4'] }, { t: ['G4'] }, { t: ['E5'] }], check: ['P5', 'M6'] },
+      { mark: NO, label: T('4ª y 4ª', '4th and 4th'), cols: [{ t: ['E4'] }, { t: ['A4'] }, { t: ['D5'] }], check: ['P4', 'P4'] },
+      { mark: NO, label: T('5ª y 6ª', '5th and 6th'), cols: [{ t: ['F4'] }, { t: ['C5'] }, { t: ['A5'] }], check: ['P5', 'M6'] },
       { mark: NO, label: T('8ª con la sensible', 'octave on the leading tone'), cols: [{ t: ['B3'] }, { t: ['B4'] }], check: ['P8'] },
     ]],
   },

@@ -4,7 +4,7 @@
     "script": "content/storyboards/en/08-leccion-7.guion.txt",
     "durations": "content/storyboards/en/08-leccion-7.durations.txt",
     "clipPattern": "{n}_Chapter_1.mp3",
-    "clips": 117
+    "clips": 118
   },
   "note": "Una frase del guion por clip; cada still cubre clips completos.",
   "stills": [
@@ -152,728 +152,739 @@
       }
     },
     {
-      "id": "sin-aumentados",
+      "id": "iv-direccion",
       "start": {
         "clip": 19,
         "at": 0
       },
       "end": {
+        "clip": 19,
+        "at": 1
+      }
+    },
+    {
+      "id": "sin-aumentados",
+      "start": {
         "clip": 20,
+        "at": 0
+      },
+      "end": {
+        "clip": 21,
         "at": 1
       }
     },
     {
       "id": "clasificacion",
       "start": {
-        "clip": 21,
+        "clip": 22,
         "at": 0
       },
       "end": {
-        "clip": 21,
+        "clip": 22,
         "at": 1
       }
     },
     {
       "id": "grado-conjunto",
       "start": {
-        "clip": 22,
+        "clip": 23,
         "at": 0
       },
       "end": {
-        "clip": 22,
+        "clip": 23,
         "at": 1
       }
     },
     {
       "id": "camino-corto",
       "start": {
-        "clip": 23,
+        "clip": 24,
         "at": 0
       },
       "end": {
-        "clip": 23,
+        "clip": 24,
         "at": 1
       }
     },
     {
       "id": "salto-corto",
       "start": {
-        "clip": 24,
+        "clip": 25,
         "at": 0
       },
       "end": {
-        "clip": 24,
+        "clip": 25,
         "at": 1
       }
     },
     {
       "id": "saltos-largos",
       "start": {
-        "clip": 25,
+        "clip": 26,
         "at": 0
       },
       "end": {
-        "clip": 25,
+        "clip": 26,
         "at": 1
       }
     },
     {
       "id": "intervalos-escuchar",
       "start": {
-        "clip": 26,
+        "clip": 27,
         "at": 0
       },
       "end": {
-        "clip": 26,
+        "clip": 27,
         "at": 1
       }
     },
     {
       "id": "con-cuidado",
       "start": {
-        "clip": 27,
+        "clip": 28,
         "at": 0
       },
       "end": {
-        "clip": 28,
+        "clip": 29,
         "at": 1
       }
     },
     {
       "id": "sensible",
       "start": {
-        "clip": 29,
+        "clip": 30,
         "at": 0
       },
       "end": {
-        "clip": 30,
+        "clip": 31,
         "at": 1
       }
     },
     {
       "id": "sensible-octava",
       "start": {
-        "clip": 31,
+        "clip": 32,
         "at": 0
       },
       "end": {
-        "clip": 31,
+        "clip": 32,
         "at": 1
       }
     },
     {
       "id": "disminuidos-figura",
       "start": {
-        "clip": 32,
+        "clip": 33,
         "at": 0
       },
       "end": {
-        "clip": 33,
+        "clip": 34,
         "at": 1
       }
     },
     {
       "id": "compensar",
       "start": {
-        "clip": 34,
+        "clip": 35,
         "at": 0
       },
       "end": {
-        "clip": 36,
+        "clip": 37,
         "at": 1
       }
     },
     {
       "id": "dis-si-fa",
       "start": {
-        "clip": 37,
+        "clip": 38,
         "at": 0
       },
       "end": {
-        "clip": 37,
+        "clip": 38,
         "at": 1
       }
     },
     {
       "id": "dis-baja",
       "start": {
-        "clip": 38,
+        "clip": 39,
         "at": 0
       },
       "end": {
-        "clip": 38,
+        "clip": 39,
         "at": 1
       }
     },
     {
       "id": "dis-fa-si",
       "start": {
-        "clip": 39,
+        "clip": 40,
         "at": 0
       },
       "end": {
-        "clip": 39,
+        "clip": 40,
         "at": 1
       }
     },
     {
       "id": "dis-sube",
       "start": {
-        "clip": 40,
+        "clip": 41,
         "at": 0
       },
       "end": {
-        "clip": 40,
+        "clip": 41,
         "at": 1
       }
     },
     {
       "id": "dis-sin-compensar",
       "start": {
-        "clip": 41,
+        "clip": 42,
         "at": 0
       },
       "end": {
-        "clip": 41,
+        "clip": 42,
         "at": 1
       }
     },
     {
       "id": "cuarta-aumentada",
       "start": {
-        "clip": 42,
+        "clip": 43,
         "at": 0
       },
       "end": {
-        "clip": 44,
+        "clip": 45,
         "at": 1
       }
     },
     {
       "id": "modo-menor",
       "start": {
-        "clip": 45,
+        "clip": 46,
         "at": 0
       },
       "end": {
-        "clip": 45,
+        "clip": 46,
         "at": 1
       }
     },
     {
       "id": "saltos-figura",
       "start": {
-        "clip": 46,
+        "clip": 47,
         "at": 0
       },
       "end": {
-        "clip": 48,
+        "clip": 49,
         "at": 1
       }
     },
     {
       "id": "saltos-4-5",
       "start": {
-        "clip": 49,
+        "clip": 50,
         "at": 0
       },
       "end": {
-        "clip": 49,
+        "clip": 50,
         "at": 1
       }
     },
     {
       "id": "saltos-5-4",
       "start": {
-        "clip": 50,
+        "clip": 51,
         "at": 0
       },
       "end": {
-        "clip": 50,
+        "clip": 51,
         "at": 1
       }
     },
     {
       "id": "saltos-4-4",
       "start": {
-        "clip": 51,
+        "clip": 52,
         "at": 0
       },
       "end": {
-        "clip": 51,
+        "clip": 52,
         "at": 1
       }
     },
     {
       "id": "saltos-direccion",
       "start": {
-        "clip": 52,
+        "clip": 53,
         "at": 0
       },
       "end": {
-        "clip": 52,
+        "clip": 53,
         "at": 1
       }
     },
     {
       "id": "armonicos",
       "start": {
-        "clip": 53,
+        "clip": 54,
         "at": 0
       },
       "end": {
-        "clip": 54,
+        "clip": 55,
         "at": 1
       }
     },
     {
       "id": "paralelas-figura",
       "start": {
-        "clip": 55,
+        "clip": 56,
         "at": 0
       },
       "end": {
-        "clip": 57,
+        "clip": 58,
         "at": 1
       }
     },
     {
       "id": "octavas-paralelas",
       "start": {
-        "clip": 58,
+        "clip": 59,
         "at": 0
       },
       "end": {
-        "clip": 59,
+        "clip": 60,
         "at": 1
       }
     },
     {
       "id": "octavas-escuchar",
       "start": {
-        "clip": 60,
+        "clip": 61,
         "at": 0
       },
       "end": {
-        "clip": 60,
+        "clip": 61,
         "at": 1
       }
     },
     {
       "id": "una-sola-voz",
       "start": {
-        "clip": 61,
+        "clip": 62,
         "at": 0
       },
       "end": {
-        "clip": 62,
+        "clip": 63,
         "at": 1
       }
     },
     {
       "id": "quintas-paralelas",
       "start": {
-        "clip": 63,
+        "clip": 64,
         "at": 0
       },
       "end": {
-        "clip": 64,
+        "clip": 65,
         "at": 1
       }
     },
     {
       "id": "contrarias",
       "start": {
-        "clip": 65,
+        "clip": 66,
         "at": 0
       },
       "end": {
-        "clip": 66,
+        "clip": 67,
         "at": 1
       }
     },
     {
       "id": "octavas-contrarias",
       "start": {
-        "clip": 67,
+        "clip": 68,
         "at": 0
       },
       "end": {
-        "clip": 68,
+        "clip": 69,
         "at": 1
       }
     },
     {
       "id": "unisono",
       "start": {
-        "clip": 69,
+        "clip": 70,
         "at": 0
       },
       "end": {
-        "clip": 69,
+        "clip": 70,
         "at": 1
       }
     },
     {
       "id": "dos-casos",
       "start": {
-        "clip": 70,
+        "clip": 71,
         "at": 0
       },
       "end": {
-        "clip": 70,
+        "clip": 71,
         "at": 1
       }
     },
     {
       "id": "no-justas",
       "start": {
-        "clip": 71,
+        "clip": 72,
         "at": 0
       },
       "end": {
-        "clip": 71,
+        "clip": 72,
         "at": 1
       }
     },
     {
       "id": "justa-dis",
       "start": {
-        "clip": 72,
+        "clip": 73,
         "at": 0
       },
       "end": {
-        "clip": 72,
+        "clip": 73,
         "at": 1
       }
     },
     {
       "id": "dis-justa",
       "start": {
-        "clip": 73,
+        "clip": 74,
         "at": 0
       },
       "end": {
-        "clip": 73,
+        "clip": 74,
         "at": 1
       }
     },
     {
       "id": "justa-justa",
       "start": {
-        "clip": 74,
+        "clip": 75,
         "at": 0
       },
       "end": {
-        "clip": 74,
+        "clip": 75,
         "at": 1
       }
     },
     {
       "id": "extremas",
       "start": {
-        "clip": 75,
+        "clip": 76,
         "at": 0
       },
       "end": {
-        "clip": 76,
+        "clip": 77,
         "at": 1
       }
     },
     {
       "id": "contrarias-sb",
       "start": {
-        "clip": 77,
+        "clip": 78,
         "at": 0
       },
       "end": {
-        "clip": 77,
+        "clip": 78,
         "at": 1
       }
     },
     {
       "id": "contrarias-tb",
       "start": {
-        "clip": 78,
+        "clip": 79,
         "at": 0
       },
       "end": {
-        "clip": 78,
+        "clip": 79,
         "at": 1
       }
     },
     {
       "id": "simultaneos-figura",
       "start": {
-        "clip": 79,
+        "clip": 80,
         "at": 0
       },
       "end": {
-        "clip": 79,
+        "clip": 80,
         "at": 1
       }
     },
     {
       "id": "simultaneos-no",
       "start": {
-        "clip": 80,
+        "clip": 81,
         "at": 0
       },
       "end": {
-        "clip": 80,
+        "clip": 81,
         "at": 1
       }
     },
     {
       "id": "simultaneos-cuartas",
       "start": {
-        "clip": 81,
+        "clip": 82,
         "at": 0
       },
       "end": {
-        "clip": 81,
+        "clip": 82,
         "at": 1
       }
     },
     {
       "id": "simultaneos-contrarios",
       "start": {
-        "clip": 82,
+        "clip": 83,
         "at": 0
       },
       "end": {
-        "clip": 82,
+        "clip": 83,
         "at": 1
       }
     },
     {
       "id": "enlace-mal",
       "start": {
-        "clip": 83,
+        "clip": 84,
         "at": 0
       },
       "end": {
-        "clip": 83,
+        "clip": 84,
         "at": 1
       }
     },
     {
       "id": "enlace-bien",
       "start": {
-        "clip": 84,
+        "clip": 85,
         "at": 0
       },
       "end": {
-        "clip": 84,
+        "clip": 85,
         "at": 1
       }
     },
     {
       "id": "proximas",
       "start": {
-        "clip": 85,
+        "clip": 86,
         "at": 0
       },
       "end": {
-        "clip": 88,
+        "clip": 89,
         "at": 1
       }
     },
     {
       "id": "tarea",
       "start": {
-        "clip": 89,
+        "clip": 90,
         "at": 0
       },
       "end": {
-        "clip": 89,
+        "clip": 90,
         "at": 1
       }
     },
     {
       "id": "cuatro-ejercicios",
       "start": {
-        "clip": 90,
+        "clip": 91,
         "at": 0
       },
       "end": {
-        "clip": 91,
+        "clip": 92,
         "at": 1
       }
     },
     {
       "id": "tarea-soprano",
       "start": {
-        "clip": 92,
+        "clip": 93,
         "at": 0
       },
       "end": {
-        "clip": 94,
+        "clip": 95,
         "at": 1
       }
     },
     {
       "id": "tarea-tenor",
       "start": {
-        "clip": 95,
+        "clip": 96,
         "at": 0
       },
       "end": {
-        "clip": 97,
+        "clip": 98,
         "at": 1
       }
     },
     {
       "id": "tarea-reglas",
       "start": {
-        "clip": 98,
+        "clip": 99,
         "at": 0
       },
       "end": {
-        "clip": 100,
+        "clip": 101,
         "at": 1
       }
     },
     {
       "id": "tarea-tesituras",
       "start": {
-        "clip": 101,
+        "clip": 102,
         "at": 0
       },
       "end": {
-        "clip": 101,
+        "clip": 102,
         "at": 1
       }
     },
     {
       "id": "tesitura-soprano",
       "start": {
-        "clip": 102,
+        "clip": 103,
         "at": 0
       },
       "end": {
-        "clip": 102,
+        "clip": 103,
         "at": 1
       }
     },
     {
       "id": "tesitura-contralto",
       "start": {
-        "clip": 103,
+        "clip": 104,
         "at": 0
       },
       "end": {
-        "clip": 103,
+        "clip": 104,
         "at": 1
       }
     },
     {
       "id": "tesitura-tenor",
       "start": {
-        "clip": 104,
+        "clip": 105,
         "at": 0
       },
       "end": {
-        "clip": 104,
+        "clip": 105,
         "at": 1
       }
     },
     {
       "id": "tesitura-bajo",
       "start": {
-        "clip": 105,
+        "clip": 106,
         "at": 0
       },
       "end": {
-        "clip": 105,
+        "clip": 106,
         "at": 1
       }
     },
     {
       "id": "tarea-exporta",
       "start": {
-        "clip": 106,
+        "clip": 107,
         "at": 0
       },
       "end": {
-        "clip": 106,
+        "clip": 107,
         "at": 1
       }
     },
     {
       "id": "maestro-revisa",
       "start": {
-        "clip": 107,
+        "clip": 108,
         "at": 0
       },
       "end": {
-        "clip": 109,
+        "clip": 110,
         "at": 1
       }
     },
     {
       "id": "recapitulemos",
       "start": {
-        "clip": 110,
+        "clip": 111,
         "at": 0
       },
       "end": {
-        "clip": 110,
+        "clip": 111,
         "at": 1
       }
     },
     {
       "id": "recap-intervalos",
       "start": {
-        "clip": 111,
+        "clip": 112,
         "at": 0
       },
       "end": {
-        "clip": 112,
+        "clip": 113,
         "at": 1
       }
     },
     {
       "id": "recap-disminuidos",
       "start": {
-        "clip": 113,
+        "clip": 114,
         "at": 0
       },
       "end": {
-        "clip": 113,
+        "clip": 114,
         "at": 1
       }
     },
     {
       "id": "recap-saltos",
       "start": {
-        "clip": 114,
+        "clip": 115,
         "at": 0
       },
       "end": {
-        "clip": 114,
+        "clip": 115,
         "at": 1
       }
     },
     {
       "id": "recap-armonicos",
       "start": {
-        "clip": 115,
+        "clip": 116,
         "at": 0
       },
       "end": {
-        "clip": 115,
+        "clip": 116,
         "at": 1
       }
     },
     {
       "id": "cierre",
       "start": {
-        "clip": 116,
+        "clip": 117,
         "at": 0
       },
       "end": {
-        "clip": 117,
+        "clip": 118,
         "at": 1
       }
     }

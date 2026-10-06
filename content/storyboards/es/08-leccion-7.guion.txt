@@ -16,6 +16,7 @@ La tercera menor y la tercera mayor.
 La cuarta justa y la quinta justa.
 La sexta menor y la sexta mayor.
 Y la octava justa.
+Todos se pueden hacer hacia arriba o hacia abajo, es decir, ascendentes o descendentes.
 En esta lista no hay intervalos aumentados.
 Tampoco hay séptimas, ni intervalos más grandes que la octava.
 Estos intervalos se clasifican en cuatro grupos.
@@ -23,7 +24,7 @@ Las segundas se llaman grado conjunto.
 Las terceras se llaman camino corto.
 La cuarta justa es un salto corto.
 Y la quinta justa, las sextas y la octava son saltos largos.
-Escuchemos cada uno.
+Escuchemos cada uno, primero subiendo y luego bajando.
 El grado conjunto es el movimiento más natural para una voz.
 Los saltos le dan carácter a la melodía, pero hay que usarlos con cuidado.
 La primera regla de cuidado tiene que ver con la sensible.
@@ -46,9 +47,9 @@ La cuarta disminuida y la séptima disminuida aparecen en el modo menor, y las v
 La última regla melódica es sobre los saltos sucesivos.
 No se practican dos saltos seguidos en la misma dirección.
 La excepción es una cuarta seguida de una quinta, o una quinta seguida de una cuarta.
-Por ejemplo, de Do a Fa y luego a Do, subiendo, está bien.
-De Do a Sol y luego a Do, también.
-Pero de Re a Sol y luego a Do son dos cuartas hacia arriba, y eso no se practica.
+Por ejemplo, de Re a Sol y luego a Re, subiendo, está bien.
+Y bajando, de Sol a Do y luego a Sol, también.
+Pero de Mi a La y luego a Re son dos cuartas hacia arriba, y eso no se practica.
 Si después de un salto la voz cambia de dirección, no hay problema.
 Ahora pasemos a los movimientos armónicos.
 Aquí ya no vemos una sola voz, sino dos voces que se mueven al mismo tiempo.

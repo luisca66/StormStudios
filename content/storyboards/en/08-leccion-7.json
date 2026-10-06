@@ -21,7 +21,7 @@
         "measures": 9,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\nE4 mitad; F4 mitad\ncompas 2\nC4 mitad; D4 mitad\ncompas 3\nD4 mitad; F4 mitad\ncompas 4\nC4 mitad; E4 mitad\ncompas 5\nC4 mitad; F4 mitad\ncompas 6\nC4 mitad; G4 mitad\ncompas 7\nE4 mitad; C5 mitad\ncompas 8\nC4 mitad; A4 mitad\ncompas 9\nC4 mitad; C5 mitad"
+      "text": "voz melody\ncompas 1\nE4 cuarto; F4 cuarto; E4 cuarto; silencio cuarto\ncompas 2\nG4 cuarto; A4 cuarto; G4 cuarto; silencio cuarto\ncompas 3\nD4 cuarto; F4 cuarto; D4 cuarto; silencio cuarto\ncompas 4\nF4 cuarto; A4 cuarto; F4 cuarto; silencio cuarto\ncompas 5\nA4 cuarto; D5 cuarto; A4 cuarto; silencio cuarto\ncompas 6\nG4 cuarto; D5 cuarto; G4 cuarto; silencio cuarto\ncompas 7\nE4 cuarto; C5 cuarto; E4 cuarto; silencio cuarto\ncompas 8\nF4 cuarto; D5 cuarto; F4 cuarto; silencio cuarto\ncompas 9\nD4 cuarto; D5 cuarto; D4 cuarto; silencio cuarto"
     },
     "sensible": {
       "setup": {
@@ -63,7 +63,7 @@
         "measures": 4,
         "tempo": 72
       },
-      "text": "voz melody\ncompas 1\nC4 cuarto; F4 cuarto; C5 cuarto; silencio cuarto\ncompas 2\nC4 cuarto; G4 cuarto; C5 cuarto; silencio cuarto\ncompas 3\nD4 cuarto; G4 cuarto; C5 cuarto; silencio cuarto\ncompas 4\nC4 cuarto; A4 cuarto; D4 cuarto; silencio cuarto"
+      "text": "voz melody\ncompas 1\nD4 cuarto; G4 cuarto; D5 cuarto; silencio cuarto\ncompas 2\nG5 cuarto; C5 cuarto; G4 cuarto; silencio cuarto\ncompas 3\nE4 cuarto; A4 cuarto; D5 cuarto; silencio cuarto\ncompas 4\nE4 cuarto; C5 cuarto; F4 cuarto; silencio cuarto"
     },
     "octavas-paralelas": {
       "setup": {
@@ -551,6 +551,61 @@
       "showCiphers": true
     },
     {
+      "id": "iv-direccion",
+      "project": "intervalos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "m2"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "M2"
+        },
+        {
+          "measure": 3,
+          "color": "amber",
+          "label": "m3"
+        },
+        {
+          "measure": 4,
+          "color": "amber",
+          "label": "M3"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "P4"
+        },
+        {
+          "measure": 6,
+          "color": "amber",
+          "label": "P5"
+        },
+        {
+          "measure": 7,
+          "color": "amber",
+          "label": "m6"
+        },
+        {
+          "measure": 8,
+          "color": "amber",
+          "label": "M6"
+        },
+        {
+          "measure": 9,
+          "color": "amber",
+          "label": "P8"
+        }
+      ],
+      "heading": "Ascending or descending",
+      "caption": "Every interval, up and down",
+      "narration": "They can all go up or down, that is, ascending or descending.",
+      "showCiphers": true
+    },
+    {
       "id": "sin-aumentados",
       "kind": "title",
       "heading": "No augmented intervals",
@@ -760,7 +815,7 @@
         }
       ],
       "heading": "The nine intervals",
-      "narration": "Let's listen to each one.",
+      "narration": "Let's listen to each one, first going up and then going down.",
       "showCiphers": true
     },
     {
@@ -996,11 +1051,11 @@
         {
           "measure": 1,
           "color": "green",
-          "label": "✓ 4th + 5th"
+          "label": "✓ 4th + 5th ↑"
         }
       ],
-      "heading": "C – F – C",
-      "narration": "For example, from C to F and then to C, going up, is fine.",
+      "heading": "D – G – D, going up",
+      "narration": "For example, from D to G and then to D, going up, is fine.",
       "showCiphers": true
     },
     {
@@ -1013,16 +1068,16 @@
         {
           "measure": 1,
           "color": "green",
-          "label": "✓ 4th + 5th"
+          "label": "✓ 4th + 5th ↑"
         },
         {
           "measure": 2,
           "color": "green",
-          "label": "✓ 5th + 4th"
+          "label": "✓ 5th + 4th ↓"
         }
       ],
-      "heading": "C – G – C",
-      "narration": "From C to G and then to C, too.",
+      "heading": "G – C – G, going down",
+      "narration": "And going down, from G to C and then to G, too.",
       "showCiphers": true
     },
     {
@@ -1035,12 +1090,12 @@
         {
           "measure": 1,
           "color": "green",
-          "label": "✓ 4th + 5th"
+          "label": "✓ 4th + 5th ↑"
         },
         {
           "measure": 2,
           "color": "green",
-          "label": "✓ 5th + 4th"
+          "label": "✓ 5th + 4th ↓"
         },
         {
           "measure": 3,
@@ -1048,9 +1103,9 @@
           "label": "✗ 4th + 4th"
         }
       ],
-      "heading": "D – G – C",
+      "heading": "E – A – D",
       "caption": "Two fourths upward",
-      "narration": "But from D to G and then to C are two fourths going up, and that is not used.",
+      "narration": "But from E to A and then to D are two fourths going up, and that is not used.",
       "showCiphers": true
     },
     {
@@ -1060,12 +1115,12 @@
         {
           "measure": 1,
           "color": "green",
-          "label": "✓ 4th + 5th"
+          "label": "✓ 4th + 5th ↑"
         },
         {
           "measure": 2,
           "color": "green",
-          "label": "✓ 5th + 4th"
+          "label": "✓ 5th + 4th ↓"
         },
         {
           "measure": 3,
