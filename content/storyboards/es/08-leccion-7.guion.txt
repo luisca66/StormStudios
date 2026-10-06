@@ -108,6 +108,7 @@ Exporta cada melodía como archivo MIDI y súbela.
 El maestro virtual reconoce la voz y la tonalidad.
 Revisa cada intervalo, la tesitura y que empieces y termines en la tónica.
 Y si encuentra un error, te explica cuál es y en qué notas está.
+Los movimientos armónicos no entran en esta tarea: los vamos a practicar cuando hagamos enlaces de acordes, y ahí el maestro virtual también los va a revisar.
 Recapitulemos.
 Cada voz se mueve con grados conjuntos, caminos cortos, saltos cortos y saltos largos.
 No usamos intervalos aumentados, ni séptimas, ni intervalos mayores que la octava.

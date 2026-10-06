@@ -4,7 +4,7 @@
     "script": "content/storyboards/es/08-leccion-7.guion.txt",
     "durations": "content/storyboards/es/08-leccion-7.durations.txt",
     "clipPattern": "{n}_Chapter_1.mp3",
-    "clips": 118
+    "clips": 119
   },
   "note": "Una frase del guion por clip; cada still cubre clips completos.",
   "stills": [
@@ -823,68 +823,79 @@
       }
     },
     {
-      "id": "recapitulemos",
+      "id": "armonicos-despues",
       "start": {
         "clip": 111,
         "at": 0
       },
       "end": {
         "clip": 111,
+        "at": 1
+      }
+    },
+    {
+      "id": "recapitulemos",
+      "start": {
+        "clip": 112,
+        "at": 0
+      },
+      "end": {
+        "clip": 112,
         "at": 1
       }
     },
     {
       "id": "recap-intervalos",
       "start": {
-        "clip": 112,
+        "clip": 113,
         "at": 0
       },
       "end": {
-        "clip": 113,
+        "clip": 114,
         "at": 1
       }
     },
     {
       "id": "recap-disminuidos",
       "start": {
-        "clip": 114,
+        "clip": 115,
         "at": 0
       },
       "end": {
-        "clip": 114,
+        "clip": 115,
         "at": 1
       }
     },
     {
       "id": "recap-saltos",
       "start": {
-        "clip": 115,
+        "clip": 116,
         "at": 0
       },
       "end": {
-        "clip": 115,
+        "clip": 116,
         "at": 1
       }
     },
     {
       "id": "recap-armonicos",
       "start": {
-        "clip": 116,
+        "clip": 117,
         "at": 0
       },
       "end": {
-        "clip": 116,
+        "clip": 117,
         "at": 1
       }
     },
     {
       "id": "cierre",
       "start": {
-        "clip": 117,
+        "clip": 118,
         "at": 0
       },
       "end": {
-        "clip": 118,
+        "clip": 119,
         "at": 1
       }
     }

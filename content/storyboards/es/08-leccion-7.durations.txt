@@ -108,12 +108,13 @@
 108 108_Chapter_1.mp3 3.680
 109 109_Chapter_1.mp3 5.280
 110 110_Chapter_1.mp3 4.080
-111 111_Chapter_1.mp3 1.200
-112 112_Chapter_1.mp3 7.120
-113 113_Chapter_1.mp3 5.680
-114 114_Chapter_1.mp3 4.400
-115 115_Chapter_1.mp3 7.520
-116 116_Chapter_1.mp3 8.160
-117 117_Chapter_1.mp3 1.760
-118 118_Chapter_1.mp3 2.000
-Suma de duraciones: 538.320 s
+111 111_Chapter_1.mp3 10.400
+112 112_Chapter_1.mp3 1.200
+113 113_Chapter_1.mp3 7.120
+114 114_Chapter_1.mp3 5.680
+115 115_Chapter_1.mp3 4.400
+116 116_Chapter_1.mp3 7.520
+117 117_Chapter_1.mp3 8.160
+118 118_Chapter_1.mp3 1.760
+119 119_Chapter_1.mp3 2.000
+Suma de duraciones: 548.720 s

@@ -108,6 +108,7 @@ Export each melody as a MIDI file and upload it.
 The Virtual Teacher recognizes the voice and the key.
 It checks every interval, the range, and that you begin and end on the tonic.
 And if it finds an error, it tells you what it is and on which notes.
+Harmonic motion is not part of this assignment: we will practice it when we connect chords, and the Virtual Teacher will check it then too.
 Let's recap.
 Each voice moves by steps, short paths, short leaps and long leaps.
 We do not use augmented intervals, sevenths, or intervals larger than an octave.

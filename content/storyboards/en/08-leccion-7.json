@@ -1770,6 +1770,13 @@
       "narration": "The Virtual Teacher recognizes the voice and the key. It checks every interval, the range, and that you begin and end on the tonic. And if it finds an error, it tells you what it is and on which notes."
     },
     {
+      "id": "armonicos-despues",
+      "kind": "title",
+      "heading": "Harmonic motion, in chord connections",
+      "caption": "The Virtual Teacher will check it there too",
+      "narration": "Harmonic motion is not part of this assignment: we will practice it when we connect chords, and the Virtual Teacher will check it then too."
+    },
+    {
       "id": "recapitulemos",
       "kind": "title",
       "heading": "Let's recap",

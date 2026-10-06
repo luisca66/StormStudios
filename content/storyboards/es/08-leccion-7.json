@@ -1770,6 +1770,13 @@
       "narration": "El maestro virtual reconoce la voz y la tonalidad. Revisa cada intervalo, la tesitura y que empieces y termines en la tónica. Y si encuentra un error, te explica cuál es y en qué notas está."
     },
     {
+      "id": "armonicos-despues",
+      "kind": "title",
+      "heading": "Los movimientos armónicos, en los enlaces",
+      "caption": "Ahí el Maestro Virtual también los revisará",
+      "narration": "Los movimientos armónicos no entran en esta tarea: los vamos a practicar cuando hagamos enlaces de acordes, y ahí el maestro virtual también los va a revisar."
+    },
+    {
       "id": "recapitulemos",
       "kind": "title",
       "heading": "Recapitulemos",

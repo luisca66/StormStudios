@@ -152,12 +152,13 @@ const STILLS = [
   ["tesitura-bajo", [106, 106], tesitura("bass", "Fa2 – Si3", "F2 – B3"), { heading: "Bajo", caption: "Fa2 a Si3" }, { heading: "Bass", caption: "F2 to B3" }],
   ["tarea-exporta", [107, 107], score("tarea-bajo", { focusVoice: "bass" }), { heading: "Exporta cada melodía como MIDI", caption: "Y súbela al Maestro Virtual" }, { heading: "Export each melody as MIDI", caption: "And upload it to the Virtual Teacher" }],
   ["maestro-revisa", [108, 110], title, { heading: "El Maestro Virtual revisa", caption: "Voz y tonalidad · cada intervalo · tesitura · tónica inicial y final" }, { heading: "The Virtual Teacher checks", caption: "Voice and key · every interval · range · opening and closing tonic" }],
-  ["recapitulemos", [111, 111], title, { heading: "Recapitulemos" }, { heading: "Let's recap" }],
-  ["recap-intervalos", [112, 113], image("intervalos-melodicos"), { heading: "Intervalos permitidos" }, { heading: "Allowed intervals" }],
-  ["recap-disminuidos", [114, 114], image("disminuidos"), { heading: "Disminuidos: se compensan" }, { heading: "Diminished: compensated" }],
-  ["recap-saltos", [115, 115], image("saltos-sucesivos"), { heading: "Sensible y saltos sucesivos" }, { heading: "Leading tone and successive leaps" }],
-  ["recap-armonicos", [116, 116], image("paralelas"), { heading: "Entre dos voces" }, { heading: "Between two voices" }],
-  ["cierre", [117, 118], title, { heading: "Gracias", caption: "Nos vemos en la lección 8" }, { heading: "Thank you", caption: "See you in lesson 8" }],
+  ["armonicos-despues", [111, 111], title, { heading: "Los movimientos armónicos, en los enlaces", caption: "Ahí el Maestro Virtual también los revisará" }, { heading: "Harmonic motion, in chord connections", caption: "The Virtual Teacher will check it there too" }],
+  ["recapitulemos", [112, 112], title, { heading: "Recapitulemos" }, { heading: "Let's recap" }],
+  ["recap-intervalos", [113, 114], image("intervalos-melodicos"), { heading: "Intervalos permitidos" }, { heading: "Allowed intervals" }],
+  ["recap-disminuidos", [115, 115], image("disminuidos"), { heading: "Disminuidos: se compensan" }, { heading: "Diminished: compensated" }],
+  ["recap-saltos", [116, 116], image("saltos-sucesivos"), { heading: "Sensible y saltos sucesivos" }, { heading: "Leading tone and successive leaps" }],
+  ["recap-armonicos", [117, 117], image("paralelas"), { heading: "Entre dos voces" }, { heading: "Between two voices" }],
+  ["cierre", [118, 119], title, { heading: "Gracias", caption: "Nos vemos en la lección 8" }, { heading: "Thank you", caption: "See you in lesson 8" }],
 ];
 
 // ── Build ────────────────────────────────────────────────────────────────────────────────────────
