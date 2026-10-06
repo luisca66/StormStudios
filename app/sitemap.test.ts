@@ -15,5 +15,7 @@ it("lists Lessons 4, 5 and 6 in both languages and excludes Lesson 7 in construc
   expect(entries.some((entry) => entry.url.endsWith("/en/harmony-course/06-lesson-5-degrees-chords-tonality"))).toBe(true);
   expect(entries.some((entry) => entry.url.endsWith("/es/curso-armonia/07-leccion-6"))).toBe(true);
   expect(entries.some((entry) => entry.url.endsWith("/en/harmony-course/07-lesson-6-harmonic-vocal-quartet"))).toBe(true);
-  expect(entries.some((entry) => /08-(leccion|lesson)-7/.test(entry.url))).toBe(false);
+  expect(entries.some((entry) => entry.url.endsWith("/es/curso-armonia/08-leccion-7"))).toBe(true);
+  expect(entries.some((entry) => entry.url.endsWith("/en/harmony-course/08-lesson-7-melodic-harmonic-motion"))).toBe(true);
+  expect(entries.some((entry) => /09-(leccion|lesson)-8/.test(entry.url))).toBe(false);
 });

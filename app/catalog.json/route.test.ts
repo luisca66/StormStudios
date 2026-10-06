@@ -15,7 +15,10 @@ it("publishes working localized catalog URLs and only published languages of eac
   const lesson6 = catalog.course.lessons.find((lesson: { id: string }) => lesson.id === "07-leccion-6");
   expect(lesson6.urls.es).toBe("https://www.stormstudios.com.mx/es/curso-armonia/07-leccion-6");
   expect(lesson6.urls.en).toBe("https://www.stormstudios.com.mx/en/harmony-course/07-lesson-6-harmonic-vocal-quartet");
-  expect(catalog.course.lessons.map((lesson: { id: string }) => lesson.id)).not.toContain("08-leccion-7");
+  const lesson7 = catalog.course.lessons.find((lesson: { id: string }) => lesson.id === "08-leccion-7");
+  expect(lesson7.urls.es).toBe("https://www.stormstudios.com.mx/es/curso-armonia/08-leccion-7");
+  expect(lesson7.urls.en).toBe("https://www.stormstudios.com.mx/en/harmony-course/08-lesson-7-melodic-harmonic-motion");
+  expect(catalog.course.lessons.map((lesson: { id: string }) => lesson.id)).not.toContain("09-leccion-8");
   for (const app of catalog.apps) {
     for (const locale of ["es", "en"]) {
       for (const url of Object.values(app.urls[locale])) {

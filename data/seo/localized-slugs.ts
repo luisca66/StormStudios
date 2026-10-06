@@ -63,6 +63,10 @@ export const LESSON_URL_SLUGS: Record<string, Record<Locale, string>> = {
     es: "08-leccion-7",
     en: "08-lesson-7-melodic-harmonic-motion",
   },
+  "09-leccion-8": {
+    es: "09-leccion-8",
+    en: "09-lesson-8-harmonic-material-connections",
+  },
 };
 
 export function translateResourceSlug(locale: Locale, slug: string, targetLocale: Locale) {
