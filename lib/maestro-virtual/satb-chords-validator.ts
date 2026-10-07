@@ -69,7 +69,7 @@ export type KeyModel = { key: string; tonic: Spelling; triads: ChordTone[][]; le
 export type Chord = { position: number; tick: number; notes: Partial<Record<SatbVoice, ParsedNote>>; problems: SatbVoice[] };
 type Fit = { degree: number; inside: number; hasRoot: boolean; hasThird: boolean; score: number };
 
-const KEY_MODELS: KeyModel[] = MAJOR_KEYS.map(key => {
+export const MAJOR_KEY_MODELS: KeyModel[] = MAJOR_KEYS.map(key => {
   const scale = buildScale(key, 'MAJOR').notes.slice(0, 7);
   const tone = (index: number, member: Member): ChordTone => {
     const note = scale[index % 7];
@@ -136,7 +136,7 @@ export function groupChords(data: VoiceData): Chord[] {
 export function detectKey(chords: Chord[], data: VoiceData): KeyModel {
   const signatures = new Set(data.keyChanges.map(change => change.key));
   let best: { model: KeyModel; score: number[] } | undefined;
-  for (const model of KEY_MODELS) {
+  for (const model of MAJOR_KEY_MODELS) {
     let fit = 0, spelled = 0;
     const degrees = new Set<number>();
     for (const chord of chords) {

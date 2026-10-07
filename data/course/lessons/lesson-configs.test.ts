@@ -11,7 +11,7 @@ describe('getLessonConfig', () => {
     const config = getLessonConfig('09-leccion-8');
     expect(config).toMatchObject({ validator: 'satb-links', voiceCount: 4 });
     expect(lesson8.status).toBe('construction');
-    const files = ['Leccion_8_Do_mayor_correcta.mid', 'Leccion_8_Sol_mayor_desordenada_correcta.mid', 'Leccion_8_Re_mayor_errores.mid'];
+    const files = ['Leccion_8_Do_mayor_correcta.mid', 'Leccion_8_tonalidades_variadas_correcta.mid', 'Leccion_8_sin_armaduras_ambiguo.mid', 'Leccion_8_Re_mayor_errores.mid'];
     for (const file of files) {
       const bytes = new Uint8Array(readFileSync(new URL(`../../../lib/maestro-virtual/__fixtures__/${file}`, import.meta.url)));
       for (const item of validateLesson8SatbLinks(parseMidiBuffer(bytes.buffer))) expect(config!.activeRules).toContain(item.rule);
