@@ -383,7 +383,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
           svg.addEventListener("pointerdown",down);svg.addEventListener("contextmenu",erase);
           cleanups.push(()=>{svg.removeEventListener("pointerdown",down);svg.removeEventListener("contextmenu",erase);});
         }
-        if (svg && capture) decorateCapture(svg, capture, measure, captureRows, positionTick, captureLayout?.scale ?? 1, showAnnotations ? score.annotations : []);
+        if (svg && capture) decorateCapture(svg, capture, measure, captureRows, positionTick, captureLayout?.scale ?? 1, showAnnotations ? score.annotations : [], !!captureLayout && captureLayout.from === captureLayout.to);
         setError("");
       } catch (error) {
         setError(error instanceof Error ? error.message : "Notation error");

@@ -119,6 +119,8 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 
 - **L7 v5 ES/EN (2026-10-06)**: al insertar una frase al final de la tarea, verificar juntos guion, mapa, tabla y 119 MP3 por idioma antes de montar; el nuevo título `armonicos-despues` añade una pausa visual. 81 stills, 348/348 fotogramas correctos y 119 entradas SRT por idioma; 695.133 s / 657.367 s, ocho escuchas entre −2.4 y −2.7 dB RMS tras AAC. Entregar y verificar los reemplazos antes de retirar la v4; actualizar bytes y nombre en Drive conserva los enlaces privados.
 
+- **L8 ES/EN (2026-10-07)**: con dos mitades por compás, poner las etiquetas por voz al lado de los sistemas de un solo compás evita invadir notas de voces vecinas; conservar el texto y revisar armaduras/cifrados en pulsos 1 y 3. Validar rangos [2,2] y 44 pulsos del material. 67 stills y 118 clips por idioma; 358/358 fotogramas correctos, 839.067 s / 810.333 s, 30 escuchas entre −2.4 y −2.7 dB RMS tras AAC. Acreditar cuenta y carpeta de Drive con metadata de la entrega anterior antes de subir; verificar tamaño y permiso exclusivo del propietario.
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).

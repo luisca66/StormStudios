@@ -11,7 +11,7 @@ export function captureX(row: CaptureRow, tick: number): number {
   return a.x + (b.x - a.x) * (b.tick === a.tick ? 0 : Math.max(0, Math.min(1, (tick - a.tick) / (b.tick - a.tick))));
 }
 
-export function decorateCapture(svg: SVGSVGElement, still: Still, measure: number, rows: CaptureRow[], positionTick: (measure: number, beat?: number) => number, scale = 1, annotations: ScoreAnnotation[] = []) {
+export function decorateCapture(svg: SVGSVGElement, still: Still, measure: number, rows: CaptureRow[], positionTick: (measure: number, beat?: number) => number, scale = 1, annotations: ScoreAnnotation[] = [], sideLabels = false) {
   const ns = "http://www.w3.org/2000/svg";
   const add = (tag: string, attrs: Record<string, string | number>, text?: string) => {
     const el = document.createElementNS(ns, tag);
@@ -46,10 +46,13 @@ export function decorateCapture(svg: SVGSVGElement, still: Still, measure: numbe
     const y = first.top - px(30);
     add("rect", { x, y, width: Math.max(px(8), right - x), height: last.bottom - first.top + px(60), rx: px(16), fill, "fill-opacity": .18, stroke: fill, "stroke-width": px(3), "data-highlight": "true" });
     if (h.label && measure === h.measure) {
-      const center = (x + right) / 2;
-      const label = add("text", { ...textStyle, x: center, y: y - px(25), fill: "#0b0f1d", "font-size": px(24), "font-weight": 600, "dominant-baseline": "central", "data-highlight-label": "true" }, h.label) as SVGTextElement;
+      // Single-measure systems have a free side gutter; keep voice labels clear of neighboring ledger notes.
+      const beside = sideLabels && !!h.voice;
+      const center = beside ? first.right + px(24) : (x + right) / 2;
+      const labelY = beside ? (first.top + first.bottom) / 2 : y - px(25);
+      const label = add("text", { ...textStyle, x: center, y: labelY, "text-anchor": beside ? "start" : "middle", fill: "#0b0f1d", "font-size": px(24), "font-weight": 600, "dominant-baseline": "central", "data-highlight-label": "true" }, h.label) as SVGTextElement;
       const labelWidth = label.getComputedTextLength() + px(32);
-      const pill = add("rect", { x: center - labelWidth / 2, y: y - px(45), width: labelWidth, height: px(40), rx: px(20), fill, stroke: "none" });
+      const pill = add("rect", { x: beside ? center - px(16) : center - labelWidth / 2, y: labelY - px(20), width: labelWidth, height: px(40), rx: px(20), fill, stroke: "none" });
       svg.insertBefore(pill, label);
     }
   }
