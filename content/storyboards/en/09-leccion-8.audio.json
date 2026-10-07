@@ -1,0 +1,749 @@
+{
+  "lesson": "09-leccion-8",
+  "source": {
+    "script": "content/storyboards/en/09-leccion-8.guion.txt",
+    "durations": "content/storyboards/en/09-leccion-8.durations.txt",
+    "clipPattern": "{n}_Chapter_1.mp3",
+    "clips": 118
+  },
+  "note": "Una frase del guion por clip; cada still cubre clips completos.",
+  "stills": [
+    {
+      "id": "titulo",
+      "start": {
+        "clip": 1,
+        "at": 0
+      },
+      "end": {
+        "clip": 3,
+        "at": 1
+      }
+    },
+    {
+      "id": "enlazar",
+      "start": {
+        "clip": 4,
+        "at": 0
+      },
+      "end": {
+        "clip": 5,
+        "at": 1
+      }
+    },
+    {
+      "id": "tres-partes",
+      "start": {
+        "clip": 6,
+        "at": 0
+      },
+      "end": {
+        "clip": 6,
+        "at": 1
+      }
+    },
+    {
+      "id": "material",
+      "start": {
+        "clip": 7,
+        "at": 0
+      },
+      "end": {
+        "clip": 7,
+        "at": 1
+      }
+    },
+    {
+      "id": "material-figura",
+      "start": {
+        "clip": 8,
+        "at": 0
+      },
+      "end": {
+        "clip": 9,
+        "at": 1
+      }
+    },
+    {
+      "id": "mat-i",
+      "start": {
+        "clip": 10,
+        "at": 0
+      },
+      "end": {
+        "clip": 10,
+        "at": 1
+      }
+    },
+    {
+      "id": "mat-ii",
+      "start": {
+        "clip": 11,
+        "at": 0
+      },
+      "end": {
+        "clip": 11,
+        "at": 1
+      }
+    },
+    {
+      "id": "mat-iii",
+      "start": {
+        "clip": 12,
+        "at": 0
+      },
+      "end": {
+        "clip": 12,
+        "at": 1
+      }
+    },
+    {
+      "id": "mat-iv-v",
+      "start": {
+        "clip": 13,
+        "at": 0
+      },
+      "end": {
+        "clip": 13,
+        "at": 1
+      }
+    },
+    {
+      "id": "mat-vi",
+      "start": {
+        "clip": 14,
+        "at": 0
+      },
+      "end": {
+        "clip": 14,
+        "at": 1
+      }
+    },
+    {
+      "id": "mat-vii",
+      "start": {
+        "clip": 15,
+        "at": 0
+      },
+      "end": {
+        "clip": 15,
+        "at": 1
+      }
+    },
+    {
+      "id": "tres-cosas",
+      "start": {
+        "clip": 16,
+        "at": 0
+      },
+      "end": {
+        "clip": 16,
+        "at": 1
+      }
+    },
+    {
+      "id": "seis-cuatro",
+      "start": {
+        "clip": 17,
+        "at": 0
+      },
+      "end": {
+        "clip": 19,
+        "at": 1
+      }
+    },
+    {
+      "id": "iii-vi",
+      "start": {
+        "clip": 20,
+        "at": 0
+      },
+      "end": {
+        "clip": 21,
+        "at": 1
+      }
+    },
+    {
+      "id": "vii",
+      "start": {
+        "clip": 22,
+        "at": 0
+      },
+      "end": {
+        "clip": 23,
+        "at": 1
+      }
+    },
+    {
+      "id": "tabla",
+      "start": {
+        "clip": 24,
+        "at": 0
+      },
+      "end": {
+        "clip": 27,
+        "at": 1
+      }
+    },
+    {
+      "id": "tabla-i",
+      "start": {
+        "clip": 28,
+        "at": 0
+      },
+      "end": {
+        "clip": 30,
+        "at": 1
+      }
+    },
+    {
+      "id": "tabla-ii",
+      "start": {
+        "clip": 31,
+        "at": 0
+      },
+      "end": {
+        "clip": 32,
+        "at": 1
+      }
+    },
+    {
+      "id": "tabla-iii",
+      "start": {
+        "clip": 33,
+        "at": 0
+      },
+      "end": {
+        "clip": 34,
+        "at": 1
+      }
+    },
+    {
+      "id": "tabla-iv",
+      "start": {
+        "clip": 35,
+        "at": 0
+      },
+      "end": {
+        "clip": 35,
+        "at": 1
+      }
+    },
+    {
+      "id": "tabla-v",
+      "start": {
+        "clip": 36,
+        "at": 0
+      },
+      "end": {
+        "clip": 37,
+        "at": 1
+      }
+    },
+    {
+      "id": "tabla-v-iv",
+      "start": {
+        "clip": 38,
+        "at": 0
+      },
+      "end": {
+        "clip": 38,
+        "at": 1
+      }
+    },
+    {
+      "id": "tabla-vi",
+      "start": {
+        "clip": 39,
+        "at": 0
+      },
+      "end": {
+        "clip": 40,
+        "at": 1
+      }
+    },
+    {
+      "id": "tabla-vii",
+      "start": {
+        "clip": 41,
+        "at": 0
+      },
+      "end": {
+        "clip": 41,
+        "at": 1
+      }
+    },
+    {
+      "id": "obligatorias",
+      "start": {
+        "clip": 42,
+        "at": 0
+      },
+      "end": {
+        "clip": 43,
+        "at": 1
+      }
+    },
+    {
+      "id": "repetir",
+      "start": {
+        "clip": 44,
+        "at": 0
+      },
+      "end": {
+        "clip": 45,
+        "at": 1
+      }
+    },
+    {
+      "id": "tecnica",
+      "start": {
+        "clip": 46,
+        "at": 0
+      },
+      "end": {
+        "clip": 46,
+        "at": 1
+      }
+    },
+    {
+      "id": "construir",
+      "start": {
+        "clip": 47,
+        "at": 0
+      },
+      "end": {
+        "clip": 49,
+        "at": 1
+      }
+    },
+    {
+      "id": "cada-voz",
+      "start": {
+        "clip": 50,
+        "at": 0
+      },
+      "end": {
+        "clip": 51,
+        "at": 1
+      }
+    },
+    {
+      "id": "nota-comun",
+      "start": {
+        "clip": 52,
+        "at": 0
+      },
+      "end": {
+        "clip": 54,
+        "at": 1
+      }
+    },
+    {
+      "id": "seis-pares",
+      "start": {
+        "clip": 55,
+        "at": 0
+      },
+      "end": {
+        "clip": 56,
+        "at": 1
+      }
+    },
+    {
+      "id": "paralelas",
+      "start": {
+        "clip": 57,
+        "at": 0
+      },
+      "end": {
+        "clip": 59,
+        "at": 1
+      }
+    },
+    {
+      "id": "sensible",
+      "start": {
+        "clip": 60,
+        "at": 0
+      },
+      "end": {
+        "clip": 62,
+        "at": 1
+      }
+    },
+    {
+      "id": "ocho",
+      "start": {
+        "clip": 63,
+        "at": 0
+      },
+      "end": {
+        "clip": 63,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej1",
+      "start": {
+        "clip": 64,
+        "at": 0
+      },
+      "end": {
+        "clip": 64,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej1-voces",
+      "start": {
+        "clip": 65,
+        "at": 0
+      },
+      "end": {
+        "clip": 66,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej2",
+      "start": {
+        "clip": 67,
+        "at": 0
+      },
+      "end": {
+        "clip": 67,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej2-voces",
+      "start": {
+        "clip": 68,
+        "at": 0
+      },
+      "end": {
+        "clip": 70,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej3",
+      "start": {
+        "clip": 71,
+        "at": 0
+      },
+      "end": {
+        "clip": 71,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej3-voces",
+      "start": {
+        "clip": 72,
+        "at": 0
+      },
+      "end": {
+        "clip": 73,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej4",
+      "start": {
+        "clip": 74,
+        "at": 0
+      },
+      "end": {
+        "clip": 74,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej4-voces",
+      "start": {
+        "clip": 75,
+        "at": 0
+      },
+      "end": {
+        "clip": 76,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej5",
+      "start": {
+        "clip": 77,
+        "at": 0
+      },
+      "end": {
+        "clip": 77,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej5-voces",
+      "start": {
+        "clip": 78,
+        "at": 0
+      },
+      "end": {
+        "clip": 80,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej6",
+      "start": {
+        "clip": 81,
+        "at": 0
+      },
+      "end": {
+        "clip": 81,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej6-voces",
+      "start": {
+        "clip": 82,
+        "at": 0
+      },
+      "end": {
+        "clip": 83,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej7",
+      "start": {
+        "clip": 84,
+        "at": 0
+      },
+      "end": {
+        "clip": 84,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej7-voces",
+      "start": {
+        "clip": 85,
+        "at": 0
+      },
+      "end": {
+        "clip": 87,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej8",
+      "start": {
+        "clip": 88,
+        "at": 0
+      },
+      "end": {
+        "clip": 88,
+        "at": 1
+      }
+    },
+    {
+      "id": "ej8-voces",
+      "start": {
+        "clip": 89,
+        "at": 0
+      },
+      "end": {
+        "clip": 90,
+        "at": 1
+      }
+    },
+    {
+      "id": "errores",
+      "start": {
+        "clip": 91,
+        "at": 0
+      },
+      "end": {
+        "clip": 91,
+        "at": 1
+      }
+    },
+    {
+      "id": "error-paralelas",
+      "start": {
+        "clip": 92,
+        "at": 0
+      },
+      "end": {
+        "clip": 93,
+        "at": 1
+      }
+    },
+    {
+      "id": "error-paralelas-bien",
+      "start": {
+        "clip": 94,
+        "at": 0
+      },
+      "end": {
+        "clip": 94,
+        "at": 1
+      }
+    },
+    {
+      "id": "error-sensible",
+      "start": {
+        "clip": 95,
+        "at": 0
+      },
+      "end": {
+        "clip": 95,
+        "at": 1
+      }
+    },
+    {
+      "id": "error-sensible-bien",
+      "start": {
+        "clip": 96,
+        "at": 0
+      },
+      "end": {
+        "clip": 96,
+        "at": 1
+      }
+    },
+    {
+      "id": "tarea",
+      "start": {
+        "clip": 97,
+        "at": 0
+      },
+      "end": {
+        "clip": 97,
+        "at": 1
+      }
+    },
+    {
+      "id": "tarea-tonalidades",
+      "start": {
+        "clip": 98,
+        "at": 0
+      },
+      "end": {
+        "clip": 98,
+        "at": 1
+      }
+    },
+    {
+      "id": "tarea-enlaces",
+      "start": {
+        "clip": 99,
+        "at": 0
+      },
+      "end": {
+        "clip": 101,
+        "at": 1
+      }
+    },
+    {
+      "id": "tarea-compas",
+      "start": {
+        "clip": 102,
+        "at": 0
+      },
+      "end": {
+        "clip": 104,
+        "at": 1
+      }
+    },
+    {
+      "id": "tarea-exporta",
+      "start": {
+        "clip": 105,
+        "at": 0
+      },
+      "end": {
+        "clip": 105,
+        "at": 1
+      }
+    },
+    {
+      "id": "maestro-revisa",
+      "start": {
+        "clip": 106,
+        "at": 0
+      },
+      "end": {
+        "clip": 109,
+        "at": 1
+      }
+    },
+    {
+      "id": "recapitulemos",
+      "start": {
+        "clip": 110,
+        "at": 0
+      },
+      "end": {
+        "clip": 110,
+        "at": 1
+      }
+    },
+    {
+      "id": "recap-material",
+      "start": {
+        "clip": 111,
+        "at": 0
+      },
+      "end": {
+        "clip": 112,
+        "at": 1
+      }
+    },
+    {
+      "id": "recap-tabla",
+      "start": {
+        "clip": 113,
+        "at": 0
+      },
+      "end": {
+        "clip": 113,
+        "at": 1
+      }
+    },
+    {
+      "id": "recap-tecnica",
+      "start": {
+        "clip": 114,
+        "at": 0
+      },
+      "end": {
+        "clip": 115,
+        "at": 1
+      }
+    },
+    {
+      "id": "proxima",
+      "start": {
+        "clip": 116,
+        "at": 0
+      },
+      "end": {
+        "clip": 116,
+        "at": 1
+      }
+    },
+    {
+      "id": "cierre",
+      "start": {
+        "clip": 117,
+        "at": 0
+      },
+      "end": {
+        "clip": 118,
+        "at": 1
+      }
+    }
+  ]
+}
