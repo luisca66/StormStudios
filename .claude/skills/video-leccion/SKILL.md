@@ -121,6 +121,8 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 
 - **L8 ES/EN (2026-10-07)**: con dos mitades por compás, poner las etiquetas por voz al lado de los sistemas de un solo compás evita invadir notas de voces vecinas; conservar el texto y revisar armaduras/cifrados en pulsos 1 y 3. Validar rangos [2,2] y 44 pulsos del material. 67 stills y 118 clips por idioma; 358/358 fotogramas correctos, 839.067 s / 810.333 s, 30 escuchas entre −2.4 y −2.7 dB RMS tras AAC. Acreditar cuenta y carpeta de Drive con metadata de la entrega anterior antes de subir; verificar tamaño y permiso exclusivo del propietario.
 
+- **L8 v2 ES/EN (2026-10-07)**: los highlights por voz deben incluir cabezas, plicas y líneas adicionales del rango visible, usando límites de VexFlow por evento; mantener rellenos detrás de la música, bordes por encima y etiquetas centradas en el recuadro extendido. Probar también focusVoice. Cambiaron 13 stills por idioma; 358/358 fotogramas correctos, 839.067 s / 810.333 s, 30 escuchas entre −2.4 y −2.7 dB RMS tras AAC y mezclas −16 LUFS / −1.3 dBTP. Reemplazar bytes y nombres en Drive con files.update conserva IDs; verificar reemplazos antes de borrar v1 de H:.
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).

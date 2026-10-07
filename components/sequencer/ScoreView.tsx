@@ -190,6 +190,17 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
             });
           } else vexVoice.draw(context, stave);
           const geometry: CaptureRow = { voice: voice.id, top: stave.getYForLine(0), bottom: stave.getYForLine(4), left: stave.getNoteStartX() - 10, right: stave.getNoteEndX(), anchors: (capture ? prepared : [{ events, notes }]).flatMap(p => p.events.map((e, i) => ({ tick: e.start, x: p.notes[i].getAbsoluteX() }))).concat({ tick: end, x: stave.getNoteEndX() }) };
+          if (capture) geometry.notes = events.flatMap((event, i) => {
+            if (!event.pitches.length || event.start >= revealTick) return [];
+            const note = notes[i], box = note.getBoundingBox();
+            const ys = note.getYs();
+            const stem = note.hasStem() ? note.getStemExtents() : null;
+            const top = Math.min(box.getY(), ...ys.map(y => y - 5), ...(stem ? [stem.topY, stem.baseY] : []));
+            const bottom = Math.max(box.getY() + box.getH(), ...ys.map(y => y + 5), ...(stem ? [stem.topY, stem.baseY] : []));
+            note.getSVGElement()?.setAttribute("data-capture-ink-top", String(top));
+            note.getSVGElement()?.setAttribute("data-capture-ink-bottom", String(bottom));
+            return [{ tick: event.start, top, bottom }];
+          });
           captureRows.push(geometry);
           let clipIndex = 0;
           const clipMusic = (draw: () => void) => {
