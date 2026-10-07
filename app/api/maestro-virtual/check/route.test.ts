@@ -6,6 +6,38 @@ import { POST } from './route';
 import * as satbChords from '@/lib/maestro-virtual/satb-chords-validator';
 import type { MaestroFeedback } from '@/types/course';
 import * as lessonConfigs from '@/data/course/lessons/lesson-configs';
+import { LESSON8_EXPECTED_ERRORS } from '@/lib/maestro-virtual/__fixtures__/lesson8-expected-errors';
+
+describe('Lesson 8 SATB link review', () => {
+  function request(fixture: string, locale: string) {
+    const bytes = new Uint8Array(readFileSync(join(process.cwd(), 'lib/maestro-virtual/__fixtures__', fixture)));
+    const form = new FormData();
+    form.append('midi', new Blob([bytes]), fixture);
+    form.append('lessonId', '09-leccion-8');
+    form.append('locale', locale);
+    return new NextRequest('http://localhost/api/maestro-virtual/check', { method: 'POST', body: form, headers: { 'x-forwarded-for': '198.51.100.78' } });
+  }
+  it.each([
+    ['Leccion_8_Do_mayor_correcta.mid', 'es', 'Tonalidad reconocida: Do mayor.'],
+    ['Leccion_8_Sol_mayor_desordenada_correcta.mid', 'en', 'Detected key: G major.'],
+  ])('accepts %s with bilingual descriptions', async (fixture, locale, title) => {
+    const response = await POST(request(fixture, locale));
+    expect(response.status).toBe(200);
+    const feedback: MaestroFeedback = await response.json();
+    expect(feedback).toMatchObject({ lessonId: '09-leccion-8', passed: true, score: 100, violations: [], suggestions: [] });
+    expect(feedback.descriptions).toHaveLength(9);
+    expect(feedback.descriptions![0].ruleName[locale as 'es' | 'en']).toBe(title);
+    expect(feedback.descriptions!.filter(d => d.ruleId === 'LINK_INFO')).toHaveLength(8);
+  });
+  it('reports the known incorrect MIDI with exact rules and chord positions', async () => {
+    const response = await POST(request('Leccion_8_Re_mayor_errores.mid', 'es'));
+    expect(response.status).toBe(200);
+    const feedback: MaestroFeedback = await response.json();
+    expect(feedback).toMatchObject({ passed: false, score: 0 });
+    expect(feedback.violations.map(v => [v.ruleId, v.measure])).toEqual(LESSON8_EXPECTED_ERRORS);
+    expect(feedback.descriptions).toHaveLength(8);
+  });
+});
 
 function midiRequest(lessonId: string, locale = 'es', ip?: string) {
   const formData = new FormData();

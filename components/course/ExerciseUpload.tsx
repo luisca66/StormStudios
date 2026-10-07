@@ -333,7 +333,7 @@ function FeedbackDisplay({
     feedback.lessonId === "03-leccion-2" ? (es ? "modo" : "mode")
     : feedback.lessonId === "02-leccion-1" ? (es ? "escala" : "scale")
     : feedback.lessonId === "08-leccion-7" ? (es ? "nota" : "note")
-    : (feedback.lessonId === "05-leccion-4" || feedback.lessonId === "07-leccion-6") ? (es ? "acorde" : "chord")
+    : (feedback.lessonId === "05-leccion-4" || feedback.lessonId === "07-leccion-6" || feedback.lessonId === "09-leccion-8") ? (es ? "acorde" : "chord")
     : (es ? "compás" : "measure");
 
   return (

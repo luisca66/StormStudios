@@ -5,7 +5,7 @@
  * (ruteo explícito, no por coincidencia de substring en el id).
  */
 
-export type ValidatorKind = 'major-scales' | 'minor-scales' | 'modes' | 'triads' | 'satb' | 'satb-chords' | 'melodic-lines';
+export type ValidatorKind = 'major-scales' | 'minor-scales' | 'modes' | 'triads' | 'satb' | 'satb-chords' | 'melodic-lines' | 'satb-links';
 
 export interface ValidatorConfig {
   id: string;
@@ -83,6 +83,21 @@ const VALIDATOR_CONFIGS: Record<string, ValidatorConfig> = {
       'MELODIC_FORBIDDEN_INTERVAL', 'MELODIC_REPEATED_NOTE',
       'MELODIC_LEADING_TONE_OCTAVE', 'MELODIC_DIMINISHED_UNRESOLVED',
       'MELODIC_SUCCESSIVE_LEAPS',
+    ],
+  },
+  '09-leccion-8': {
+    id: '09-leccion-8', validator: 'satb-links', voiceCount: 4,
+    activeRules: [
+      'SATB_NO_CHORDS', 'SATB_FILE_LIMIT', 'SATB_KEY',
+      'SATB_VOICE_NOTES', 'SATB_MISSING_VOICE', 'SATB_UNRECOGNIZED',
+      'SATB_FOREIGN_NOTE', 'SATB_ENHARMONIC', 'SATB_MISSING_SPELLING',
+      'SATB_MISSING_ROOT', 'SATB_MISSING_THIRD', 'SATB_INCOMPLETE_DIMINISHED',
+      'SATB_LEADING_TONE_DOUBLED', 'SATB_RANGE', 'SATB_VOICE_CROSSING', 'SATB_SPACING',
+      'LINK_CHORD_COUNT', 'LINK_UNASSIGNED', 'LINK_DUPLICATE', 'LINK_MISSING',
+      'LINK_UNRECOGNIZED', 'LINK_INFO', 'LINK_LEADING_TONE_SOPRANO',
+      'MELODIC_FORBIDDEN_INTERVAL', 'MELODIC_LEADING_TONE_OCTAVE', 'MELODIC_DIMINISHED_UNRESOLVED',
+      'HARMONIC_PARALLEL_OCTAVES', 'HARMONIC_CONTRARY_OCTAVES',
+      'HARMONIC_PARALLEL_FIFTHS', 'HARMONIC_CONTRARY_FIFTHS', 'HARMONIC_SIMULTANEOUS_LEAPS',
     ],
   },
 };

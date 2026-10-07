@@ -65,8 +65,8 @@ const QUALITY_NAMES = {
 };
 
 type ChordTone = { member: Member; pc: number; spelling: Spelling };
-type KeyModel = { key: string; tonic: Spelling; triads: ChordTone[][]; leadingPc: number };
-type Chord = { position: number; tick: number; notes: Partial<Record<SatbVoice, ParsedNote>>; problems: SatbVoice[] };
+export type KeyModel = { key: string; tonic: Spelling; triads: ChordTone[][]; leadingPc: number };
+export type Chord = { position: number; tick: number; notes: Partial<Record<SatbVoice, ParsedNote>>; problems: SatbVoice[] };
 type Fit = { degree: number; inside: number; hasRoot: boolean; hasThird: boolean; score: number };
 
 const KEY_MODELS: KeyModel[] = MAJOR_KEYS.map(key => {
@@ -121,7 +121,7 @@ function fitDegree(model: KeyModel, pcs: number[]): Fit {
   return best!;
 }
 
-function groupChords(data: VoiceData): Chord[] {
+export function groupChords(data: VoiceData): Chord[] {
   const byTick = new Map<number, Chord>();
   for (const voice of SATB_VOICES) for (const note of data.voices[voice] ?? []) {
     let chord = byTick.get(note.tick);
@@ -133,7 +133,7 @@ function groupChords(data: VoiceData): Chord[] {
 }
 
 /** Elige la tonalidad mayor que mejor explica los acordes; desempata por grafías y armadura. */
-function detectKey(chords: Chord[], data: VoiceData): KeyModel {
+export function detectKey(chords: Chord[], data: VoiceData): KeyModel {
   const signatures = new Set(data.keyChanges.map(change => change.key));
   let best: { model: KeyModel; score: number[] } | undefined;
   for (const model of KEY_MODELS) {
@@ -179,6 +179,35 @@ export function validateLesson6SatbChords(data: VoiceData): SatbFeedback[] {
 
   const model = detectKey(chords, data);
   add('info', 'SATB_KEY', 0, `Tonalidad reconocida: ${keyName(model, 'es')} mayor.`, `Detected key: ${keyName(model, 'en')} major.`);
+
+  const analysis = analyzeSatbChords(chords, model);
+  out.push(...analysis.feedback);
+  const degreeCount = analysis.degreeCount;
+
+  // Los 7 grados, una vez cada uno.
+  for (let d = 0; d < 7; d++) {
+    const triad = model.triads[d];
+    const name = (locale: 'es' | 'en') => `${ROMAN[d]} (${spellingName(triad[0].spelling, locale)} ${QUALITY_NAMES[QUALITY(d)][locale]})`;
+    const at = degreeCount.get(d) ?? [];
+    if (!at.length) err('SATB_MISSING_DEGREE', 0, `Falta el grado ${name('es')}.`, `Missing degree ${name('en')}.`,
+      `Notas del acorde: ${triad.map(t => spellingName(t.spelling, 'es')).join('–')}.`, `Chord notes: ${triad.map(t => spellingName(t.spelling, 'en')).join('–')}.`);
+    else if (at.length > 1) err('SATB_DUPLICATE_DEGREE', at[1], `El grado ${name('es')} aparece ${at.length} veces.`, `Degree ${name('en')} appears ${at.length} times.`,
+      `Acordes ${at.join(', ')}. La tarea pide un acorde de cada grado.`, `Chords ${at.join(', ')}. The assignment asks for one chord per degree.`);
+  }
+  if (chords.length !== 7) err('SATB_CHORD_COUNT', 0, `Se encontraron ${chords.length} acordes; la tarea pide 7.`, `Found ${chords.length} chords; the assignment asks for 7.`,
+    'Un acorde de cada grado de la escala mayor.', 'One chord on each degree of the major scale.');
+
+  return out.sort((a, b) => a.position - b.position);
+}
+
+/** Shared construction checks; assignment counts belong to each lesson. */
+export function analyzeSatbChords(chords: Chord[], model: KeyModel) {
+  const out: SatbFeedback[] = [];
+  const add = (severity: SatbFeedback['severity'], rule: string, position: number, es: string, en: string, detailEs = '', detailEn = '') => {
+    out.push({ rule, severity, position, titleEs: es, titleEn: en, detailEs, detailEn });
+  };
+  const err = (rule: string, position: number, es: string, en: string, detailEs = '', detailEn = '') =>
+    add('error', rule, position, es, en, detailEs, detailEn);
 
   const degreeCount = new Map<number, number[]>();
   for (const chord of chords) {
@@ -304,18 +333,16 @@ export function validateLesson6SatbChords(data: VoiceData): SatbFeedback[] {
       `State: ${state ? state[1] : '—'}. Melodic position: ${melodic ? melodic[1] : '—'}. Spacing: ${closed ? 'close' : 'open'}. ${doubling('en') ? 'Notes: ' + doubling('en') + '.' : ''}`.trim());
   }
 
-  // Los 7 grados, una vez cada uno.
-  for (let d = 0; d < 7; d++) {
-    const triad = model.triads[d];
-    const name = (locale: 'es' | 'en') => `${ROMAN[d]} (${spellingName(triad[0].spelling, locale)} ${QUALITY_NAMES[QUALITY(d)][locale]})`;
-    const at = degreeCount.get(d) ?? [];
-    if (!at.length) err('SATB_MISSING_DEGREE', 0, `Falta el grado ${name('es')}.`, `Missing degree ${name('en')}.`,
-      `Notas del acorde: ${triad.map(t => spellingName(t.spelling, 'es')).join('–')}.`, `Chord notes: ${triad.map(t => spellingName(t.spelling, 'en')).join('–')}.`);
-    else if (at.length > 1) err('SATB_DUPLICATE_DEGREE', at[1], `El grado ${name('es')} aparece ${at.length} veces.`, `Degree ${name('en')} appears ${at.length} times.`,
-      `Acordes ${at.join(', ')}. La tarea pide un acorde de cada grado.`, `Chords ${at.join(', ')}. The assignment asks for one chord per degree.`);
-  }
-  if (chords.length !== 7) err('SATB_CHORD_COUNT', 0, `Se encontraron ${chords.length} acordes; la tarea pide 7.`, `Found ${chords.length} chords; the assignment asks for 7.`,
-    'Un acorde de cada grado de la escala mayor.', 'One chord on each degree of the major scale.');
+  return { feedback: out, degreeCount };
+}
 
-  return out.sort((a, b) => a.position - b.position);
+/** Degree is one-based; inversion is 0 (root), 1 (6/3), or 2 (6/4). */
+export function identifySatbChord(chord: Chord, model: KeyModel) {
+  if (SATB_VOICES.some(v => !chord.notes[v]) || chord.problems.length) return null;
+  const notes = Object.values(chord.notes) as ParsedNote[];
+  const fit = fitDegree(model, notes.map(n => pcOf(n.midi)));
+  if (!fit.hasRoot || !fit.hasThird || fit.inside !== 4) return null;
+  const triad = model.triads[fit.degree];
+  const inversion = triad.findIndex(t => t.pc === pcOf(chord.notes.BASS!.midi));
+  return { degree: fit.degree + 1, inversion, root: triad[0].spelling };
 }
