@@ -1,6 +1,7 @@
 import { StudyPaths } from "@/components/home/StudyPaths";
 import { MusicPlayer } from "@/components/MusicPlayer";
 import { HomeCTA } from "@/components/home/HomeCTA";
+import { HomeDemoVideo } from "@/components/home/HomeDemoVideo";
 import { HomeFeatures } from "@/components/home/HomeFeatures";
 import { HomeGrowthSection } from "@/components/home/HomeGrowthSection";
 import { HomeHero } from "@/components/home/HomeHero";
@@ -67,6 +68,7 @@ export default async function HomePage({
       <div className="ss-orb ss-orb-c" />
 
       <HomeHero />
+      <HomeDemoVideo />
       <StudyPaths />
 
 
