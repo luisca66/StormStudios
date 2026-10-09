@@ -8,10 +8,11 @@ import { readFileSync } from 'node:fs';
 import { getAllLessons } from '@/lib/course';
 
 describe('getLessonConfig', () => {
-  it('registers Lesson 8 without publishing it and covers every emitted rule', () => {
+  it('registers every Lesson 8 feedback rule for the published lesson', () => {
     const config = getLessonConfig('09-leccion-8');
     expect(config).toMatchObject({ validator: 'satb-links', voiceCount: 4 });
-    expect(lesson8.status).toBe('construction');
+    expect(lesson8.status).toBe('published');
+    expect(lesson8.exercise).toMatchObject({ type: 'four-voice-chorale', voiceCount: 4 });
     const files = ['Leccion_8_Do_mayor_correcta.mid', 'Leccion_8_tonalidades_variadas_correcta.mid', 'Leccion_8_sin_armaduras_ambiguo.mid', 'Leccion_8_Re_mayor_errores.mid'];
     for (const file of files) {
       const bytes = new Uint8Array(readFileSync(new URL(`../../../lib/maestro-virtual/__fixtures__/${file}`, import.meta.url)));

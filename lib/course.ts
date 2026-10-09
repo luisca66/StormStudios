@@ -29,6 +29,7 @@ import { lesson as l06 } from "@/data/course/lessons/06-leccion-5";
 import { lesson as l07 } from "@/data/course/lessons/07-leccion-6";
 import { lesson as l08 } from "@/data/course/lessons/08-leccion-7";
 import { lesson as l09 } from "@/data/course/lessons/09-leccion-8";
+import { lesson as l10 } from "@/data/course/lessons/10-leccion-9";
 
 // ─── Registro maestro ─────────────────────────────────────────────────────────
 
@@ -37,7 +38,7 @@ import { lesson as l09 } from "@/data/course/lessons/09-leccion-8";
  * Para agregar una lección nueva: importarla arriba y añadirla aquí.
  */
 const ALL_LESSONS: LessonConfig[] = [
-  l00, lP01, lP02, lP03, lP04, lP041, l02, l03, l04, l05, l06, l07, l08, l09,
+  l00, lP01, lP02, lP03, lP04, lP041, l02, l03, l04, l05, l06, l07, l08, l09, l10,
 ]
   .filter((l) => l.status !== "hidden") // las ocultas no se publican ni se enlazan
   .sort((a, b) => a.order - b.order);
