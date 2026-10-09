@@ -6,6 +6,63 @@ import { POST } from './route';
 import * as satbChords from '@/lib/maestro-virtual/satb-chords-validator';
 import type { MaestroFeedback } from '@/types/course';
 import * as lessonConfigs from '@/data/course/lessons/lesson-configs';
+import { LESSON8_EXPECTED_ERRORS } from '@/lib/maestro-virtual/__fixtures__/lesson8-expected-errors';
+
+describe('Lesson 8 SATB link review', () => {
+  function request(fixture: string, locale: string, removeInitialSignature = false) {
+    let bytes = new Uint8Array(readFileSync(join(process.cwd(), 'lib/maestro-virtual/__fixtures__', fixture)));
+    if (removeInitialSignature) {
+      // The one-track fixture starts with the six-byte key-signature event.
+      const withoutSignature = new Uint8Array(bytes.length - 6);
+      withoutSignature.set(bytes.subarray(0, 22));
+      withoutSignature.set(bytes.subarray(28), 22);
+      new DataView(withoutSignature.buffer).setUint32(18, withoutSignature.length - 22);
+      bytes = withoutSignature;
+    }
+    const form = new FormData();
+    form.append('midi', new Blob([bytes]), fixture);
+    form.append('lessonId', '09-leccion-8');
+    form.append('locale', locale);
+    return new NextRequest('http://localhost/api/maestro-virtual/check', { method: 'POST', body: form, headers: { 'x-forwarded-for': '198.51.100.78' } });
+  }
+  it.each([
+    ['Leccion_8_Do_mayor_correcta.mid', 'es', 'Tonalidades usadas: Do mayor.'],
+    ['Leccion_8_tonalidades_variadas_correcta.mid', 'en', 'Keys used: G major, D major, F major, B flat major, A major, E flat major, C major, E major.'],
+  ])('accepts %s with bilingual descriptions', async (fixture, locale, title) => {
+    const response = await POST(request(fixture, locale));
+    expect(response.status).toBe(200);
+    const feedback: MaestroFeedback = await response.json();
+    expect(feedback).toMatchObject({ lessonId: '09-leccion-8', passed: true, score: 100, violations: [], suggestions: [] });
+    expect(feedback.descriptions).toHaveLength(fixture.includes('Do_mayor') ? 10 : 9);
+    expect(feedback.descriptions![0].ruleName[locale as 'es' | 'en']).toBe(title);
+    expect(feedback.descriptions!.filter(d => d.ruleId === 'LINK_INFO')).toHaveLength(8);
+    expect(feedback.descriptions!.filter(d => d.ruleId === 'LINK_REPEATED_KEY')).toHaveLength(fixture.includes('Do_mayor') ? 1 : 0);
+  });
+  it('resolves the initial-G-only MIDI without false construction errors', async () => {
+    const response = await POST(request('Leccion_8_sin_armaduras_ambiguo.mid', 'es'));
+    const feedback: MaestroFeedback = await response.json();
+    expect(feedback).toMatchObject({ passed: true, score: 100, violations: [] });
+    expect(feedback.descriptions!.find(d => d.measure === 5 && d.ruleId === 'LINK_INFO')!.ruleName.es).toContain('Fa mayor, V–I');
+  });
+  it('reports unresolved key ambiguity by POST without guessing construction errors', async () => {
+    const response = await POST(request('Leccion_8_sin_armaduras_ambiguo.mid', 'es', true));
+    expect(response.status).toBe(200);
+    const feedback: MaestroFeedback = await response.json();
+    expect(feedback).toMatchObject({ passed: false, score: 55 });
+    expect(feedback.violations.map(v => [v.ruleId, v.measure])).toEqual([
+      ['LINK_MISSING', 0], ['LINK_AMBIGUOUS_KEY', 2], ['LINK_AMBIGUOUS_KEY', 6],
+    ]);
+    expect(feedback.descriptions!.filter(d => d.ruleId === 'LINK_INFO')).toHaveLength(6);
+  });
+  it('reports the known incorrect MIDI with exact rules and chord positions', async () => {
+    const response = await POST(request('Leccion_8_Re_mayor_errores.mid', 'es'));
+    expect(response.status).toBe(200);
+    const feedback: MaestroFeedback = await response.json();
+    expect(feedback).toMatchObject({ passed: false, score: 0 });
+    expect(feedback.violations.map(v => [v.ruleId, v.measure])).toEqual(LESSON8_EXPECTED_ERRORS);
+    expect(feedback.descriptions).toHaveLength(9);
+  });
+});
 
 function midiRequest(lessonId: string, locale = 'es', ip?: string) {
   const formData = new FormData();

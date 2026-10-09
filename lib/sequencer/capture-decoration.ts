@@ -2,7 +2,7 @@ import type { Still } from "./storyboard";
 import { STILL_COLORS } from "./storyboard-resolve";
 import type { ScoreAnnotation, VoiceId } from "./types";
 
-export type CaptureRow = { voice: VoiceId; top: number; bottom: number; anchors: { tick: number; x: number }[]; left: number; right: number };
+export type CaptureRow = { voice: VoiceId; top: number; bottom: number; anchors: { tick: number; x: number }[]; left: number; right: number; notes?: { tick: number; top: number; bottom: number }[] };
 /** Interpolate actual VexFlow tick contexts, never assumed uniform beats. */
 export function captureX(row: CaptureRow, tick: number): number {
   const anchors = [...row.anchors].sort((a, b) => a.tick - b.tick);
@@ -11,7 +11,7 @@ export function captureX(row: CaptureRow, tick: number): number {
   return a.x + (b.x - a.x) * (b.tick === a.tick ? 0 : Math.max(0, Math.min(1, (tick - a.tick) / (b.tick - a.tick))));
 }
 
-export function decorateCapture(svg: SVGSVGElement, still: Still, measure: number, rows: CaptureRow[], positionTick: (measure: number, beat?: number) => number, scale = 1, annotations: ScoreAnnotation[] = []) {
+export function decorateCapture(svg: SVGSVGElement, still: Still, measure: number, rows: CaptureRow[], positionTick: (measure: number, beat?: number) => number, scale = 1, annotations: ScoreAnnotation[] = [], sideLabels = false) {
   const ns = "http://www.w3.org/2000/svg";
   const add = (tag: string, attrs: Record<string, string | number>, text?: string) => {
     const el = document.createElementNS(ns, tag);
@@ -43,13 +43,28 @@ export function decorateCapture(svg: SVGSVGElement, still: Still, measure: numbe
     const x = inside.length ? Math.max(first.left, Math.min(...inside) - px(40)) : from === -Infinity ? first.left : captureX(first, from) - px(22);
     const right = inside.length ? Math.max(...inside) + px(64) : to === Infinity ? first.right : captureX(first, to) - px(22);
     const fill = STILL_COLORS[h.color ?? "amber"];
-    const y = first.top - px(30);
-    add("rect", { x, y, width: Math.max(px(8), right - x), height: last.bottom - first.top + px(60), rx: px(16), fill, "fill-opacity": .18, stroke: fill, "stroke-width": px(3), "data-highlight": "true" });
+    // Voice highlights include the ink of only that voice and only events in this beat range.
+    const ink = h.voice ? selected.flatMap(r => (r.notes ?? []).filter(n => n.tick >= from && n.tick < Math.min(to, reveal))) : [];
+    const y = Math.min(first.top - px(30), ...ink.map(n => n.top - px(8)));
+    const bottom = Math.max(last.bottom + px(30), ...ink.map(n => n.bottom + px(8)));
+    const shape = { x, y, width: Math.max(px(8), right - x), height: bottom - y, rx: px(16) };
+    if (h.voice) {
+      // Put translucent fills behind the engraving, and every border above all fills.
+      // Neighboring voices can share ledger-note space without losing either outline.
+      const background = add("rect", { ...shape, fill, "fill-opacity": .18, stroke: "none" });
+      svg.insertBefore(background, svg.firstChild);
+      add("rect", { ...shape, fill: "none", stroke: fill, "stroke-width": px(3), "data-highlight": "true", "data-highlight-voice": h.voice });
+    } else {
+      add("rect", { ...shape, fill, "fill-opacity": .18, stroke: fill, "stroke-width": px(3), "data-highlight": "true" });
+    }
     if (h.label && measure === h.measure) {
-      const center = (x + right) / 2;
-      const label = add("text", { ...textStyle, x: center, y: y - px(25), fill: "#0b0f1d", "font-size": px(24), "font-weight": 600, "dominant-baseline": "central", "data-highlight-label": "true" }, h.label) as SVGTextElement;
+      // Single-measure systems have a free side gutter; keep voice labels clear of neighboring ledger notes.
+      const beside = sideLabels && !!h.voice;
+      const center = beside ? first.right + px(24) : (x + right) / 2;
+      const labelY = beside ? (y + bottom) / 2 : y - px(25);
+      const label = add("text", { ...textStyle, x: center, y: labelY, "text-anchor": beside ? "start" : "middle", fill: "#0b0f1d", "font-size": px(24), "font-weight": 600, "dominant-baseline": "central", "data-highlight-label": "true" }, h.label) as SVGTextElement;
       const labelWidth = label.getComputedTextLength() + px(32);
-      const pill = add("rect", { x: center - labelWidth / 2, y: y - px(45), width: labelWidth, height: px(40), rx: px(20), fill, stroke: "none" });
+      const pill = add("rect", { x: beside ? center - px(16) : center - labelWidth / 2, y: labelY - px(20), width: labelWidth, height: px(40), rx: px(20), fill, stroke: "none" });
       svg.insertBefore(pill, label);
     }
   }

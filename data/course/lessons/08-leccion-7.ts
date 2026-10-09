@@ -25,8 +25,8 @@ export const lesson: LessonConfig = {
       title: { es: "Movimientos melódicos y armónicos", en: "Melodic and Harmonic Motion" },
     }],
     en: [{
-      youtubeId: "__YOUTUBE_ID_EN__",
-      embedUrl: "__EMBED_URL_EN__",
+      youtubeId: "t6OGFBwUk5k",
+      embedUrl: "https://www.youtube.com/embed/t6OGFBwUk5k?si=uaU3CkbV4UR-K8NG",
       title: { es: "Movimientos melódicos y armónicos", en: "Melodic and Harmonic Motion" },
     }],
   },
