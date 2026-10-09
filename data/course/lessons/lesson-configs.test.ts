@@ -5,6 +5,7 @@ import { lesson as lesson8 } from './09-leccion-8';
 import { validateLesson8SatbLinks } from '@/lib/maestro-virtual/satb-links-validator';
 import { parseMidiBuffer } from '@/lib/maestro-virtual/midi-parser';
 import { readFileSync } from 'node:fs';
+import { getAllLessons } from '@/lib/course';
 
 describe('getLessonConfig', () => {
   it('registers Lesson 8 without publishing it and covers every emitted rule', () => {
@@ -30,6 +31,13 @@ describe('getLessonConfig', () => {
     );
     expect(new Set(config!.activeRules)).toEqual(emittedRules);
     expect(lesson7.status).toBe('published');
+  });
+  it('shows the MIDI upload on every published lesson that has a validator', () => {
+    // LessonLayout only renders ExerciseUpload when the lesson declares an exercise.
+    const missing = getAllLessons()
+      .filter(lesson => lesson.status === 'published' && getLessonConfig(lesson.id) && !lesson.exercise)
+      .map(lesson => lesson.id);
+    expect(missing).toEqual([]);
   });
   it('only returns own configured lesson IDs', () => {
     expect(getLessonConfig('04-leccion-3')?.validator).toBe('minor-scales');

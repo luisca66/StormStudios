@@ -122,6 +122,7 @@ export type ExerciseType =
   | "major-scales"
   | "modes"
   | "four-voice-chorale"
+  | "single-voice-melody"
   | "two-voice"
   | "melody-harmonization"
   | "figured-bass"
