@@ -19,7 +19,7 @@ describe('getLessonConfig', () => {
     expect(config!.activeRules).not.toContain('MELODIC_REPEATED_NOTE');
     expect(config!.activeRules).not.toContain('MELODIC_SUCCESSIVE_LEAPS');
   });
-  it('registers every Lesson 7 feedback rule while keeping the lesson in construction', () => {
+  it('registers every Lesson 7 feedback rule for the published lesson', () => {
     const config = getLessonConfig('08-leccion-7');
     expect(config).toMatchObject({ validator: 'melodic-lines', voiceCount: 1 });
     const emittedRules = new Set(
@@ -29,7 +29,7 @@ describe('getLessonConfig', () => {
       )
     );
     expect(new Set(config!.activeRules)).toEqual(emittedRules);
-    expect(lesson7.status).toBe('construction');
+    expect(lesson7.status).toBe('published');
   });
   it('only returns own configured lesson IDs', () => {
     expect(getLessonConfig('04-leccion-3')?.validator).toBe('minor-scales');
