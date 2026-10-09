@@ -20,8 +20,8 @@ export const lesson: LessonConfig = {
   prerequisites: ["07-leccion-6"],
   videosByLocale: {
     es: [{
-      youtubeId: "__YOUTUBE_ID_ES__",
-      embedUrl: "__EMBED_URL_ES__",
+      youtubeId: "a5b0wj5lrHQ",
+      embedUrl: "https://www.youtube.com/embed/a5b0wj5lrHQ?si=2D1YMC-w-AXms2-b",
       title: { es: "Movimientos melódicos y armónicos", en: "Melodic and Harmonic Motion" },
     }],
     en: [{
