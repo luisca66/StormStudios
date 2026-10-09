@@ -20,8 +20,8 @@ export const lesson: LessonConfig = {
   prerequisites: ["08-leccion-7"],
   videosByLocale: {
     es: [{
-      youtubeId: "__YOUTUBE_ID_ES__",
-      embedUrl: "__EMBED_URL_ES__",
+      youtubeId: "s9j4HSFxKvs",
+      embedUrl: "https://www.youtube.com/embed/s9j4HSFxKvs?si=VBnOYAwhVHfySG3e",
       title: { es: "Material armónico y enlaces", en: "Harmonic Material and Chord Connections" },
     }],
     en: [{
