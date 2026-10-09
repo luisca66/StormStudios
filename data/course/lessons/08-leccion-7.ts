@@ -31,5 +31,11 @@ export const lesson: LessonConfig = {
     }],
   },
   activeRules: [],
+  // Cuatro ejercicios que se suben por separado: una melodía de 8 cuartos por voz.
+  exercise: {
+    type: "single-voice-melody",
+    voiceCount: 1,
+    voices: ["soprano", "alto", "tenor", "bass"],
+  },
   tags: ["cuarteto vocal", "SATB", "movimiento melódico", "intervalos", "quintas paralelas", "octavas paralelas"],
 };
