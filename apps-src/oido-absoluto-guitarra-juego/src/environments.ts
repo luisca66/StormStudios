@@ -4,13 +4,14 @@ import hornUrl from "./assets/mundo-corno.glb?url";
 import pianoUrl from "./assets/mundo-piano.glb?url";
 import bassoonUrl from "./assets/mundo-fagot.glb?url";
 import choirUrl from "./assets/mundo-coro.glb?url";
+import celloUrl from "./assets/mundo-cello.glb?url";
 import { buildMaterial, buildModel, loadModel, type ModelData } from "../../shared-3d/src";
 import type { MazeWall } from "./maze";
 
 // Mundos de Resonancia (Astra, art/blender/mundo-<id>/): la misma pedagogía en escenarios distintos.
 // Contrato común: world (decorado), wall_x (5 m en X), wall_z (5.7 m en Z), post, portal_frame,
 // portal_ring 0…n y portal_core. Pivotes en la base (muros y postes) y en el centro del hueco (portal).
-export type EnvironmentId = "guitarra" | "corno" | "piano" | "fagot" | "coro";
+export type EnvironmentId = "guitarra" | "corno" | "piano" | "fagot" | "coro" | "cello";
 
 export interface EnvironmentInfo {
   id: EnvironmentId;
@@ -50,9 +51,14 @@ export const ENVIRONMENTS: EnvironmentInfo[] = [
     levelNames: ["El aliento", "Las voces", "Los atriles", "Las bóvedas", "El rosetón"],
     where: "en la catedral del coro", enter: "Entrar al coro",
   },
+  {
+    id: "cello", name: "Dentro del cello", place: "Bajo la tapa, entre el alma y las efes",
+    levelNames: ["El arco", "Las cuerdas", "El puente", "El alma", "Las efes"],
+    where: "dentro del cello", enter: "Entrar al cello",
+  },
 ];
 
-const URLS: Record<EnvironmentId, string> = { guitarra: guitarUrl, corno: hornUrl, piano: pianoUrl, fagot: bassoonUrl, coro: choirUrl };
+const URLS: Record<EnvironmentId, string> = { guitarra: guitarUrl, corno: hornUrl, piano: pianoUrl, fagot: bassoonUrl, coro: choirUrl, cello: celloUrl };
 const cache = new Map<EnvironmentId, Promise<ModelData>>();
 
 export function loadEnvironment(id: EnvironmentId): Promise<ModelData> {
@@ -69,7 +75,11 @@ const WALL_Z_LENGTH = 5.7;
 export function buildWorldDecor(model: ModelData): THREE.Group {
   const built = buildModel(model, { emissive: true, castShadow: false, receiveShadow: true });
   const root = new THREE.Group();
-  for (const mesh of built.byPart("world").filter(Boolean)) root.add(mesh);
+  for (const mesh of built.byPart("world").filter(Boolean)) {
+    // Los interiores (cello, coro…) se ven desde dentro: Blender dibuja ambas caras y aquí también.
+    mesh.material.side = THREE.DoubleSide;
+    root.add(mesh);
+  }
   root.position.y = FLOOR_Y;
   return root;
 }

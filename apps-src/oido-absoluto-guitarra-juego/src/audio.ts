@@ -45,7 +45,9 @@ export class GuitarAudio {
   private lastStep = -1;
 
   preload(samples: NoteSample[]) {
-    samples.slice(0, 24).forEach((sample) => {
+    // Muestras repartidas en todo el grupo (en aleatorio, de todos los timbres), no sólo las primeras.
+    const step = Math.max(1, Math.ceil(samples.length / 24));
+    samples.filter((_, index) => index % step === 0).forEach((sample) => {
       const audio = new Audio(sampleUrl(sample));
       audio.preload = "metadata";
     });

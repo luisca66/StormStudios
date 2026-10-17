@@ -35,7 +35,16 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
      el botón de entrada siguen al mundo. ✅ **Fagot** (15 mallas, 57 752 tri) y **coro** (12 partes, 32 208 tri;
      Claude aflojó a 5 cm un control de medidas de Astra que fallaba por 2 cm de moldura) entregados e integrados:
      5 entornos en el selector.
-  4. Siguiente: que Luis lo juegue; decidir si cada entorno suena con su instrumento; publicar con su OK.
+  4. ✅ **Timbres (2026-10-17, aprobado por Luis):** menú 01 con «Timbre: Del entorno» (cada mundo suena con su
+     instrumento) o «Aleatorio · avanzado» (sortea timbre y luego nota entre guitarra, piano, corno, fagot, coro y
+     cello). Fuera de la guitarra del entorno, las cuerdas se vuelven **registro grave / medio / agudo** según la
+     tesitura real (`TIMBRES` en `catalog.ts`; muestras R2 `samples.stormstudios.com.mx/{Inst}/{nota}{oct}.mp3`,
+     octavas 2–6). Bitácora con secciones **Timbres** y **Registros** (lo anterior cuenta como guitarra).
+  5. ✅ **Mundo «Dentro del cello»** (Astra; 12 partes, 58 120 tri, 316 KB): tapa con efes de luz, alma, barra,
+     puente con cuerdas y arco. Claude aflojó a 1 cm el control del muro (filete de 4 mm). El decorado se dibuja
+     ahora a doble cara (los interiores tenían las normales hacia dentro y se veía el piso negro). Nombres de
+     nivel provisionales: El arco, Las cuerdas, El puente, El alma, Las efes (**falta el visto bueno de Luis**).
+  6. Siguiente: que Luis lo juegue y apruebe los nombres del cello; publicar con su OK.
 
 - **Walking AP Multi, nivel 4 «El Pantano»** ✅ **publicado** (2026-10-17) tras jugarlo Luis («¡Hermoso!»).
   Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-PANTANO-BLENDER.md`. **Walking AP Multi tiene sus 5
