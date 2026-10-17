@@ -15,7 +15,7 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 
 - **Walking AP Multi, nivel 4 «El Pantano»** ✅ **completo e integrado, sin publicar** (2026-10-17).
   Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-PANTANO-BLENDER.md`. **Siguiente:** que Luis lo
-  juegue y, con su OK, `npm run deploy` en `apps-src/oido-absoluto-multi-juego`. Arañitas renovadas a pedido de Luis (se perdían en la penumbra).
+  juegue y, con su OK, `npm run deploy` en `apps-src/oido-absoluto-multi-juego`. Arañitas nuevas de Astra (jade, ojos grandes), a pedido de Luis.
 
 - **Walking AP Multi, nivel 3 «El Cosmos»** (elegido por Claude con la delegación de Luis; solo se renuevan
   juegos 3D). Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-COSMOS-BLENDER.md`.

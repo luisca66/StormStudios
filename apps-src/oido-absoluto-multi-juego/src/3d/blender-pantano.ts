@@ -5,7 +5,7 @@ import mangrovesUrl from "./assets/manglares.glb?url";
 import rocksUrl from "./assets/rocas-pantano.glb?url";
 import plantsUrl from "./assets/plantas-pantano.glb?url";
 import mushroomsUrl from "./assets/hongos.glb?url";
-import spiderUrl from "./assets/arana.glb?url";
+import spiderUrl from "./assets/arana-pantano.glb?url";
 import { buildMaterial, buildModel } from "../../../shared-3d/src";
 import { loadKit } from "./blender-kit-field";
 
@@ -19,14 +19,14 @@ export const swampPlantsKit = loadKit(plantsUrl, "Plantas del pantano");
 export const mushroomsKit = loadKit(mushroomsUrl, "Hongos");
 export const spiderKit = loadKit(spiderUrl, "Arañita");
 
-/** Cuerpo y ojos de la arañita (art/blender/arana/); los ojos cuelgan del cuerpo para subir y bajar con él. */
-export function buildSpiderBody(): THREE.Mesh {
+/** Arañita de Astra (art/blender/arana-pantano/): cuerpo con ojos y 8 patas rígidas con pivote en la cadera. */
+export function buildSpider(): { body: THREE.Mesh; legs: THREE.Mesh[] } {
   const built = buildModel(spiderKit.model(), { emissive: true, castShadow: true });
   const [body] = built.byPart("body");
   const [eyes] = built.byPart("eyes");
   eyes.position.sub(body.position);
   body.add(eyes);
-  return body;
+  return { body, legs: built.byPart("leg") };
 }
 
 // ---- Cocodrilo: partes rígidas en el espacio de Godot (mira a −Z); el jugador gira el modelo π.

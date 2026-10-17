@@ -10,7 +10,7 @@ import { BlenderCastle, buildBlenderCastle, isCastleReady } from "./blender-cast
 import { buildKitField, KitPlacement } from "./blender-kit-field";
 import { FLOWER_PARTS, flowersKit, hedgesKit, ROCK_PARTS, rocksKit, TREE_PARTS, treesKit, wallKit } from "./blender-pradera-kits";
 import { type Animated, type AsteroidPlacement, type PlanetPlacement, buildAsteroidField, buildCosmosPlanets, buildGalaxy, buildNebula, cosmosAsteroidsKit, cosmosPlanetsKit, radialTexture } from "./blender-cosmos";
-import { type Placement, buildSpiderBody, buildSwampField, mangrovesKit, mushroomsKit, spiderKit, swampPlantsKit, swampPortalKit, swampRocksKit } from "./blender-pantano";
+import { type Placement, buildSpider, buildSwampField, mangrovesKit, mushroomsKit, spiderKit, swampPlantsKit, swampPortalKit, swampRocksKit } from "./blender-pantano";
 
 export interface Obstacle {
   x: number;
@@ -2142,11 +2142,13 @@ export class LevelEnvironment {
     const eyeMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.0, 0.7, 0.0) });
 
     let ab: THREE.Object3D;
+    let blenderLegs: THREE.Mesh[] | undefined;
     if (spiderKit.ready()) {
-      // Arañita de Blender (art/blender/arana/, Claude): cuerpo violeta con manchas y ojos ámbar que brillan.
-      ab = buildSpiderBody();
+      // Arañita de Blender (art/blender/arana-pantano/, Astra): tierna, jade, ojos grandes.
+      const spider = buildSpider();
+      ab = spider.body;
       root.add(ab);
-      legMat.color.setHex(0x4a2f5a);
+      blenderLegs = spider.legs;
     } else {
       ab = new THREE.Mesh(new THREE.SphereGeometry(0.36, 14, 10), chitin);
       ab.scale.set(1.0, 0.6, 1.52); ab.position.set(0, 0.38, 0.17); root.add(ab);
@@ -2164,24 +2166,33 @@ export class LevelEnvironment {
 
     // 8 legs (femur + tibia), pivots stored for the gait
     const legs: any[] = [];
-    const zOff = [-0.22, -0.07, 0.07, 0.20];
-    for (let i = 0; i < 4; i++) {
-      for (const side of [-1, 1]) {
-        const socket = new THREE.Group();
-        socket.position.set(side * 0.27, 0.34, zOff[i]); root.add(socket);
-        const fp = new THREE.Group();
-        fp.rotation.z = side * THREE.MathUtils.degToRad(52); fp.rotation.x = (i - 1.5) * 0.28 * side;
-        socket.add(fp);
-        const femurLen = 0.46;
-        const femur = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.038, femurLen, 6), legMat);
-        femur.position.y = -femurLen * 0.5; fp.add(femur);
-        const tp = new THREE.Group();
-        tp.position.y = -femurLen; tp.rotation.z = side * THREE.MathUtils.degToRad(-80); fp.add(tp);
-        const tibiaLen = 0.60;
-        const tibia = new THREE.Mesh(new THREE.CylinderGeometry(0.021, 0.007, tibiaLen, 5), legMat);
-        tibia.position.y = -tibiaLen * 0.5; tp.add(tibia);
-        legs.push({ fp, baseRx: fp.rotation.x, baseRz: fp.rotation.z, side, idx: i });
+    if (blenderLegs) {
+      // segment = 2·i + (derecha ? 1 : 0): mismo orden y pivotes que las patas de código
+      blenderLegs.forEach((leg, seg) => {
+        root.add(leg);
+        legs.push({ fp: leg, baseRx: 0, baseRz: 0, side: seg % 2 ? 1 : -1, idx: Math.floor(seg / 2) });
+      });
+    } else {
+      const zOff = [-0.22, -0.07, 0.07, 0.20];
+      for (let i = 0; i < 4; i++) {
+        for (const side of [-1, 1]) {
+          const socket = new THREE.Group();
+          socket.position.set(side * 0.27, 0.34, zOff[i]); root.add(socket);
+          const fp = new THREE.Group();
+          fp.rotation.z = side * THREE.MathUtils.degToRad(52); fp.rotation.x = (i - 1.5) * 0.28 * side;
+          socket.add(fp);
+          const femurLen = 0.46;
+          const femur = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.038, femurLen, 6), legMat);
+          femur.position.y = -femurLen * 0.5; fp.add(femur);
+          const tp = new THREE.Group();
+          tp.position.y = -femurLen; tp.rotation.z = side * THREE.MathUtils.degToRad(-80); fp.add(tp);
+          const tibiaLen = 0.60;
+          const tibia = new THREE.Mesh(new THREE.CylinderGeometry(0.021, 0.007, tibiaLen, 5), legMat);
+          tibia.position.y = -tibiaLen * 0.5; tp.add(tibia);
+          legs.push({ fp, baseRx: fp.rotation.x, baseRz: fp.rotation.z, side, idx: i });
+        }
       }
+
     }
 
     this.group.add(root);
