@@ -101,6 +101,7 @@ metido en la niebla, para que no se vea una línea ni el final del mundo. La col
 | Manglares | `manglares/` | Claude | 🎮 3 variantes + árbol de borde; 120 en el interior y el borde de selva | v1 |
 | Rocas y tronco | `rocas-pantano/` | Claude | 🎮 rocas con musgo, troncos caídos con hongos de repisa y tocones | v1 |
 | Plantas de agua | `plantas-pantano/` | Claude | 🎮 nenúfares sobre las charcas, juncos en la orilla, helechos y arbustos | v1 |
+| Arañitas | `arana/` | Claude | 🎮 cuerpo violeta con manchas y 4 ojos ámbar que brillan; patas y caminata de código; ×1.6 para que se vean (Luis: «me faltan mis arañitas») | v1 |
 | Hongos luminosos | `hongos/` | Claude | 🎮 turquesa, magenta y lima, al pie de árboles, rocas y tocones | v1 |
 
 Los kits los modeló Claude en lugar de Gemini (sesión del 2026-10-17, sin encargos a otros agentes).
@@ -113,5 +114,4 @@ Los kits los modeló Claude en lugar de Gemini (sesión del 2026-10-17, sin enca
 | Triángulos por cuadro (incluye sombras) | ~26 000 | ~854 000 (como La Pradera: mismo FPS en el navegador de pruebas) |
 
 Límites: dos filas escalonadas de manglares grandes con arbustos entre ellos, sin sombras (quedan en la
-niebla). Pendientes: que Luis juegue el nivel; las arañas siguen procedurales (~300 mallas), se decide si
-se renuevan; publicar con su OK.
+niebla). Pendiente: publicar con OK de Luis.

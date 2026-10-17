@@ -10,7 +10,7 @@ import { BlenderCastle, buildBlenderCastle, isCastleReady } from "./blender-cast
 import { buildKitField, KitPlacement } from "./blender-kit-field";
 import { FLOWER_PARTS, flowersKit, hedgesKit, ROCK_PARTS, rocksKit, TREE_PARTS, treesKit, wallKit } from "./blender-pradera-kits";
 import { type Animated, type AsteroidPlacement, type PlanetPlacement, buildAsteroidField, buildCosmosPlanets, buildGalaxy, buildNebula, cosmosAsteroidsKit, cosmosPlanetsKit, radialTexture } from "./blender-cosmos";
-import { type Placement, buildSwampField, mangrovesKit, mushroomsKit, swampPlantsKit, swampPortalKit, swampRocksKit } from "./blender-pantano";
+import { type Placement, buildSpiderBody, buildSwampField, mangrovesKit, mushroomsKit, spiderKit, swampPlantsKit, swampPortalKit, swampRocksKit } from "./blender-pantano";
 
 export interface Obstacle {
   x: number;
@@ -2136,22 +2136,31 @@ export class LevelEnvironment {
 
   private spawnSpider(x: number, sc: number, z: number): void {
     const root = new THREE.Group();
-    root.position.set(x, 0, z); root.scale.setScalar(sc);
+    // ×1.6 desde que el pantano tiene arbustos y juncos: si no, se perdían (pedido de Luis: «me faltan mis arañitas»)
+    root.position.set(x, 0, z); root.scale.setScalar(sc * 1.6);
     const chitin = new THREE.MeshStandardMaterial({ color: new THREE.Color(0.052, 0.038, 0.036), roughness: 0.84, metalness: 0.08 });
     const legMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(0.072, 0.052, 0.048), roughness: 0.9 });
     const eyeMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.0, 0.7, 0.0) });
 
-    const ab = new THREE.Mesh(new THREE.SphereGeometry(0.36, 14, 10), chitin);
-    ab.scale.set(1.0, 0.6, 1.52); ab.position.set(0, 0.38, 0.17); root.add(ab);
-    const ceph = new THREE.Mesh(new THREE.SphereGeometry(0.23, 12, 8), chitin);
-    ceph.scale.set(0.94, 0.74, 0.96); ceph.position.set(0, 0.39, -0.33); root.add(ceph);
-    const waist = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), chitin);
-    waist.position.set(0, 0.38, -0.05); root.add(waist);
+    let ab: THREE.Object3D;
+    if (spiderKit.ready()) {
+      // Arañita de Blender (art/blender/arana/, Claude): cuerpo violeta con manchas y ojos ámbar que brillan.
+      ab = buildSpiderBody();
+      root.add(ab);
+      legMat.color.setHex(0x4a2f5a);
+    } else {
+      ab = new THREE.Mesh(new THREE.SphereGeometry(0.36, 14, 10), chitin);
+      ab.scale.set(1.0, 0.6, 1.52); ab.position.set(0, 0.38, 0.17); root.add(ab);
+      const ceph = new THREE.Mesh(new THREE.SphereGeometry(0.23, 12, 8), chitin);
+      ceph.scale.set(0.94, 0.74, 0.96); ceph.position.set(0, 0.39, -0.33); root.add(ceph);
+      const waist = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), chitin);
+      waist.position.set(0, 0.38, -0.05); root.add(waist);
 
-    const eyeCfg = [[0.098, 0.51, -0.50, 0.046], [-0.098, 0.51, -0.50, 0.046], [0.052, 0.525, -0.535, 0.030], [-0.052, 0.525, -0.535, 0.030]];
-    for (const e of eyeCfg) {
-      const eye = new THREE.Mesh(new THREE.SphereGeometry(e[3], 8, 6), eyeMat);
-      eye.position.set(e[0], e[1], e[2]); root.add(eye);
+      const eyeCfg = [[0.098, 0.51, -0.50, 0.046], [-0.098, 0.51, -0.50, 0.046], [0.052, 0.525, -0.535, 0.030], [-0.052, 0.525, -0.535, 0.030]];
+      for (const e of eyeCfg) {
+        const eye = new THREE.Mesh(new THREE.SphereGeometry(e[3], 8, 6), eyeMat);
+        eye.position.set(e[0], e[1], e[2]); root.add(eye);
+      }
     }
 
     // 8 legs (femur + tibia), pivots stored for the gait
