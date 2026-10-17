@@ -1,0 +1,55 @@
+# --- funciones extra (Claude)
+def mushroom(base, height, cap_r, cap_hex, mat, lean=(0.0, 0.0)):
+    """Hongo: pie claro y sombrero redondo con pintitas claras."""
+    out = []
+    top = Vector(base) + Vector((lean[0], lean[1], height))
+    bpy.ops.mesh.primitive_cone_add(vertices=10, radius1=cap_r * 0.32, radius2=cap_r * 0.22, depth=height, location=(0, 0, 0))
+    stem = bpy.context.object
+    d = top - Vector(base)
+    stem.rotation_mode = "QUATERNION"
+    stem.rotation_quaternion = Vector((0, 0, 1)).rotation_difference(d.normalized())
+    stem.location = (Vector(base) + top) / 2
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=False)
+    stem.data.materials.append(mat)
+    paint(stem, lambda co, n: mix("cfd8c0", "f2f5e8", 0.5))
+    out.append(stem)
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=18, ring_count=10, radius=1, location=(0, 0, 0))
+    cap = bpy.context.object
+    cap.scale = (cap_r, cap_r, cap_r * 0.62)
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    for v in cap.data.vertices:            # media esfera: aplana la parte de abajo
+        if v.co.z < 0:
+            v.co.z *= 0.25
+    cap.data.update()
+    cap.location = top
+    bpy.ops.object.transform_apply(location=True, rotation=False, scale=False)
+    cap.data.materials.append(mat)
+
+    def cap_color(co, n, c=cap_hex, t=top, r=cap_r):
+        rel = co - t
+        dots = math.sin(rel.x * 13 / r) * math.sin(rel.y * 11 / r) > 0.7 and rel.z > r * 0.2
+        if rel.z < 0:
+            return mix(c, "ffffff", 0.55)              # láminas de abajo, más claras
+        return mix(c, "ffffff", 0.7) if dots else mix(c, "ffffff", 0.15 * (rel.z / (r * 0.62)))
+    paint(cap, cap_color)
+    for f in cap.data.polygons:
+        f.use_smooth = True
+    out.append(cap)
+    return out
+
+
+# ------------------------------------------------------------------ MODELO
+glow_t = material("Hongo turquesa", roughness=0.4, emission=1.4, emission_hex="5ff0d0")
+glow_m = material("Hongo magenta", roughness=0.4, emission=1.4, emission_hex="ff6fd0")
+glow_l = material("Hongo lima", roughness=0.4, emission=1.3, emission_hex="c8ff5a")
+
+join(mushroom((0, 0, -0.05), 0.9, 0.5, "5ff0d0", glow_t) + mushroom((0.45, 0.2, -0.05), 0.5, 0.3, "5ff0d0", glow_t, (0.1, 0.05)),
+     "Hongos turquesa", "mush_tall")
+cluster = []
+for (x, y, h, r) in ((0, 0, 0.45, 0.28), (0.3, 0.15, 0.32, 0.2), (-0.25, 0.22, 0.28, 0.18), (0.08, -0.3, 0.22, 0.15)):
+    cluster += mushroom((x, y, -0.05), h, r, "ff6fd0", glow_m, (x * 0.2, y * 0.2))
+join(cluster, "Hongos magenta", "mush_cluster")
+shelf = []
+for (x, y, h, r) in ((0, 0, 0.12, 0.35), (0.42, 0.1, 0.1, 0.25), (-0.36, -0.12, 0.09, 0.22)):
+    shelf += mushroom((x, y, -0.05), h, r, "c8ff5a", glow_l)
+join(shelf, "Hongos lima", "mush_flat")

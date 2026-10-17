@@ -76,3 +76,11 @@ La cámara de juego está a ~25 m, Y = −1.5 respecto del portal (2 m sobre sue
 Al reanudar, Astra debe revisar ambos renders: arco reconocible a distancia, curvas sin facetas visibles, raíces y musgo cohesionados, pigmento legible, paso central despejado y emisión sin blancos quemados. Quedan hasta dos rondas de corrección; no se afirma aprobación visual en esta v1.
 
 No usar los aros ni el remolino como colisión sólida. Colocar el origen a 3.5 m del suelo del nivel; orientar +Z hacia el centro del nivel según el integrador.
+
+## Resultado de ejecución automática
+
+6 mallas; 19468 triángulos; dimensiones XYZ [10.174, 9.014, 2.058] m.
+
+GLB de juego con AO exportado.
+
+Renders generados; revisión visual de Astra pendiente.

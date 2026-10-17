@@ -1,0 +1,94 @@
+# --- funciones extra (Claude)
+def mossy(co, n):
+    """Piedra gris verdosa; musgo en lo que mira hacia arriba."""
+    up = n.z
+    if up > 0.45:
+        return mix("3f6a2e", "5f8f40", (up - 0.45) / 0.55)
+    return mix("3c4034", "6d7560", 0.5 + 0.5 * up)
+
+
+def blob_rock(radius_xyz, noise, strength, mat):
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=3, radius=1, location=(0, 0, 0))
+    ob = bpy.context.object
+    ob.scale = radius_xyz
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    tex = bpy.data.textures.new(f"Bultos {ob.name}", "CLOUDS")
+    tex.noise_scale = noise
+    mod = ob.modifiers.new("Bultos", "DISPLACE")
+    mod.texture = tex
+    mod.strength = strength
+    apply_modifiers(ob)
+    z_min = min(v.co.z for v in ob.data.vertices)
+    for v in ob.data.vertices:            # apoya en el suelo y se hunde un poco
+        v.co.z -= z_min + 0.12
+    ob.data.update()
+    ob.data.materials.append(mat)
+    paint(ob, mossy)
+    for f in ob.data.polygons:
+        f.use_smooth = True
+    return ob
+
+
+def wood_color(co, n, half):
+    """Corteza oscura y húmeda, musgo arriba, corte claro en las puntas (eje del tronco = X de Blender)."""
+    if abs(co.x) > half - 0.03:
+        return mix("8a7350", "b39a6e", 0.5)
+    if n.z > 0.5:
+        return mix("3f6a2e", "5f8f40", (n.z - 0.5) / 0.5)
+    return mix("33281a", "5a4630", 0.5 + 0.5 * n.z)
+
+
+def log(length, radius, mat):
+    """Tronco caído: perfil torneado a lo largo (con anillos para pintar) acostado en X."""
+    h = length / 2
+    prof = [(0.0, -h), (radius * 0.88, -h), (radius, -h + 0.05), (radius * 1.04, -h * 0.6), (radius * 0.97, -h * 0.2),
+            (radius * 1.02, h * 0.2), (radius * 0.95, h * 0.6), (radius * 0.93, h - 0.05), (radius * 0.84, h), (0.0, h)]
+    v, f = kit.g_lathe(prof, 16)
+    ob = kit.make("Tronco", v, f, mat, kit.T(pos=(0, radius * 0.8, 0), rot=(0, 0, math.pi / 2)), part="tmp",
+                  smooth_angle=1.0, tint=0)
+    tex = bpy.data.textures.new(f"Corteza {ob.name}", "CLOUDS")
+    tex.noise_scale = 0.4
+    mod = ob.modifiers.new("Rugoso", "DISPLACE")
+    mod.texture = tex
+    mod.strength = radius * 0.15
+    apply_modifiers(ob)
+    paint(ob, lambda co, n: wood_color(co, n, h))
+    return ob
+
+
+def stump(mat):
+    """Tocón: base que se abre en raíces, corte claro arriba y musgo abajo."""
+    prof = [(0.0, -0.1), (0.9, -0.1), (0.75, 0.12), (0.64, 0.35), (0.61, 0.7), (0.6, 1.05), (0.57, 1.15), (0.48, 1.2), (0.0, 1.24)]
+    v, f = kit.g_lathe(prof, 16)
+    ob = kit.make("Tocón", v, f, mat, kit.T(), part="tmp", smooth_angle=1.0, tint=0)
+    tex = bpy.data.textures.new("Tocón", "CLOUDS")
+    tex.noise_scale = 0.35
+    mod = ob.modifiers.new("Rugoso", "DISPLACE")
+    mod.texture = tex
+    mod.strength = 0.08
+    apply_modifiers(ob)
+    paint(ob, lambda co, n: mix("8a7350", "b39a6e", 0.6) if co.z > 1.16 else
+          (mix("3f6a2e", "5f8f40", 0.5) if co.z < 0.35 else mix("33281a", "5a4630", 0.4 + 0.3 * n.z)))
+    return ob
+
+
+# ------------------------------------------------------------------ MODELO
+stone = material("Piedra", roughness=0.85)
+bark_m = material("Madera", roughness=0.9)
+
+a = blob_rock((1.1, 0.9, 0.7), 0.7, 0.35, stone)
+a = join([a], "Roca A", "rock_moss_a")
+b = blob_rock((0.7, 0.6, 1.0), 0.6, 0.3, stone)
+b = join([b], "Roca B", "rock_moss_b")
+lg = log(5.0, 0.45, bark_m)
+mush = []
+for k, x in enumerate((-1.2, 0.3, 1.5)):       # hongos de repisa en el tronco
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=12, ring_count=6, radius=0.22, location=(x, -0.42, 0.55 + k * 0.08))
+    m = bpy.context.object
+    m.scale = (1.0, 0.6, 0.35)
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    m.data.materials.append(bark_m)
+    paint(m, lambda co, n: "c9b48a")
+    mush.append(m)
+lg = join([lg] + mush, "Tronco caído", "log")
+st = join([stump(bark_m)], "Tocón", "stump")

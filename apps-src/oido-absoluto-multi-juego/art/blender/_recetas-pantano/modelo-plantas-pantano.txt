@@ -1,0 +1,132 @@
+# --- funciones extra (Claude)
+def stick(a, b, r_a, r_b, mat, color, sides=6):
+    a, b = Vector(a), Vector(b)
+    d = b - a
+    bpy.ops.mesh.primitive_cone_add(vertices=sides, radius1=r_a, radius2=r_b, depth=d.length, location=(0, 0, 0))
+    ob = bpy.context.object
+    ob.rotation_mode = "QUATERNION"
+    ob.rotation_quaternion = Vector((0, 0, 1)).rotation_difference(d.normalized())
+    ob.location = (a + b) / 2
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=False)
+    ob.data.materials.append(mat)
+    paint(ob, color if callable(color) else (lambda co, n, c=color: c))
+    for f in ob.data.polygons:
+        f.use_smooth = True
+    return ob
+
+
+def lily_pad(radius, mat, z=0.02):
+    """Hoja de nenúfar: disco fino con la muesca en V y borde levantado."""
+    seg = 24
+    verts = [(0, 0, z)]
+    for i in range(seg + 1):
+        a = 0.35 + i / seg * (math.tau - 0.7)          # deja la muesca entre -0.35 y 0.35 rad
+        r = radius * (1.0 + 0.04 * math.sin(i * 1.7))
+        verts.append((math.cos(a) * r, math.sin(a) * r, z + 0.025))
+    faces = [(0, i + 1, i + 2) for i in range(seg)]
+    me = bpy.data.meshes.new("Nenúfar")
+    me.from_pydata(verts, [], faces)
+    me.update()
+    ob = bpy.data.objects.new("Nenúfar", me)
+    bpy.context.collection.objects.link(ob)
+    ob.data.materials.append(mat)
+    paint(ob, lambda co, n: mix("2f5a24", "5f8f40", Vector((co.x, co.y)).length / radius))
+    mod = ob.modifiers.new("Grosor", "SOLIDIFY")
+    mod.thickness = 0.03
+    return ob
+
+
+def blossom(center, mat):
+    """Flor de loto rosa: 8 pétalos alargados en corona y centro amarillo."""
+    out = []
+    for k in range(8):
+        a = k / 8 * math.tau
+        bpy.ops.mesh.primitive_uv_sphere_add(segments=8, ring_count=6, radius=0.12, location=(0, 0, 0))
+        p = bpy.context.object
+        p.scale = (0.9, 0.45, 1.9)
+        p.rotation_euler = (0, math.radians(35), a)
+        bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
+        p.location = Vector(center) + Vector((math.cos(a) * 0.12, math.sin(a) * 0.12, 0.12))
+        bpy.ops.object.transform_apply(location=True, rotation=False, scale=False)
+        p.data.materials.append(mat)
+        paint(p, lambda co, n: mix("ff9ec4", "fff0f6", (co.z - center[2]) / 0.3))
+        out.append(p)
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=10, ring_count=6, radius=0.08, location=(center[0], center[1], center[2] + 0.1))
+    c = bpy.context.object
+    c.data.materials.append(mat)
+    paint(c, lambda co, n: "ffd84d")
+    out.append(c)
+    return out
+
+
+def reeds(mat):
+    """Mata de juncos: tallos finos e inclinados, algunos con espiga marrón."""
+    out = []
+    for k in range(9):
+        a = k / 9 * math.tau + rng.uniform(-0.3, 0.3)
+        r = rng.uniform(0.05, 0.35)
+        h = rng.uniform(1.4, 2.6)
+        base = (math.cos(a) * r, math.sin(a) * r, -0.05)
+        top = (base[0] + math.cos(a) * 0.25, base[1] + math.sin(a) * 0.25, h)
+        out.append(stick(base, top, 0.035, 0.012, mat, lambda co, n: mix("3f6a2e", "8fae5a", co.z / 2.6), sides=5))
+        if k % 2 == 0:
+            t = Vector(top)
+            dirn = (t - Vector(base)).normalized()
+            out.append(stick(t - dirn * 0.45, t - dirn * 0.05, 0.06, 0.05, mat, "5a3a1a", sides=6))
+    return out
+
+
+def fern(mat):
+    """Helecho: 8 frondas de hojitas planas y alargadas que se arquean hacia afuera."""
+    out = []
+    for k in range(8):
+        a = k / 8 * math.tau + rng.uniform(-0.15, 0.15)
+        for dist, length, tilt, z in ((0.35, 0.5, 40, 0.32), (0.85, 0.45, 5, 0.52), (1.25, 0.32, -25, 0.42)):
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=10, ring_count=6, radius=1, location=(0, 0, 0))
+            ob = bpy.context.object
+            ob.scale = (length, 0.13, 0.025)            # hoja: larga en X, angosta y muy fina
+            ob.rotation_euler = (0, -math.radians(tilt), a)
+            bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
+            ob.location = (math.cos(a) * dist, math.sin(a) * dist, z)
+            bpy.ops.object.transform_apply(location=True, rotation=False, scale=False)
+            ob.data.materials.append(mat)
+            paint(ob, lambda co, n: mix("2f5a24", "6fae52", min(1.0, Vector((co.x, co.y)).length / 1.4)))
+            for f in ob.data.polygons:
+                f.use_smooth = True
+            out.append(ob)
+    return out
+
+
+def bush(mat):
+    """Arbusto húmedo: tres bultos blandos de verde oscuro."""
+    out = []
+    for (x, y, r, h) in ((0, 0, 1.6, 1.3), (1.2, 0.4, 1.1, 0.9), (-1.0, -0.5, 1.2, 1.0)):
+        bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=3, radius=1, location=(0, 0, 0))
+        ob = bpy.context.object
+        ob.scale = (r, r, h)
+        bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+        tex = bpy.data.textures.new(f"Hojas {ob.name}", "CLOUDS")
+        tex.noise_scale = 0.6
+        mod = ob.modifiers.new("Bultos", "DISPLACE")
+        mod.texture = tex
+        mod.strength = 0.3
+        apply_modifiers(ob)
+        for v in ob.data.vertices:
+            v.co += Vector((x, y, h * 0.55))
+        ob.data.update()
+        ob.data.materials.append(mat)
+        paint(ob, lambda co, n: mix("1e3a1b", "4f7f36", 0.5 + 0.5 * n.z))
+        for f in ob.data.polygons:
+            f.use_smooth = True
+        out.append(ob)
+    return out
+
+
+# ------------------------------------------------------------------ MODELO
+leafm = material("Hojas", roughness=0.6)
+
+join([lily_pad(0.9, leafm)], "Nenúfar", "lily_pad")
+join([lily_pad(0.7, leafm)] + blossom((0.0, 0.0, 0.04), leafm), "Nenúfar con flor", "lily_flower")
+join(reeds(leafm), "Juncos", "reeds")
+join(fern(leafm), "Helecho", "fern")
+join(bush(leafm), "Arbusto", "bush")
