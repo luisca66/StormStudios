@@ -2143,7 +2143,7 @@ export class LevelEnvironment {
 
   private spawnSpider(x: number, sc: number, z: number): void {
     const root = new THREE.Group();
-    root.position.set(x, 0, z); root.scale.setScalar(sc);
+    root.position.set(x, 0, z); root.scale.setScalar(sc * 0.7); // un poco más chicas (pedido de Luis)
     const chitin = new THREE.MeshStandardMaterial({ color: new THREE.Color(0.052, 0.038, 0.036), roughness: 0.84, metalness: 0.08 });
     const legMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(0.072, 0.052, 0.048), roughness: 0.9 });
     const eyeMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.0, 0.7, 0.0) });
