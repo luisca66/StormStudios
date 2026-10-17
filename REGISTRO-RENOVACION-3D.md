@@ -13,6 +13,21 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 
 ## En curso
 
+- **Resonancia: un mundo por instrumento** (pedido de Luis el 2026-10-17: «otros instrumentos», para que el
+  juego dure años). Primer mundo nuevo: **«Dentro del piano de cola»**; de paso se rehace en Blender
+  **«La guitarra gigante»** (hoy primitivas en `src/world.ts`). Ambos encargados a **Astra** con el mismo
+  contrato: `world`, `wall_x` (5 m), `wall_z` (5.7 m), `post`, `portal_frame`, `portal_ring` 0…n,
+  `portal_core` (briefs en `apps-src/oido-absoluto-guitarra-juego/art/blender/mundo-piano/` y `mundo-guitarra/`).
+  Se lanzaron encadenados (piano, luego guitarra); registros en `%LOCALAPPDATA%\StormStudiosgentes\`.
+  **Siguiente:**
+  1. Ejecutar `modelar-mundo-piano.py` y `modelar-mundo-guitarra.py` con `bpy-run.ps1`, revisar renders
+     (reanudar a Astra solo si hace falta, máx. 2 rondas).
+  2. **Pedagogía del piano (decide Luis):** qué registro y notas entrena, en qué orden se desbloquea, si la
+     bitácora lleva el progreso por instrumento. Hoy todo está pensado por cuerda y traste de guitarra
+     (`src/catalog.ts`, `src/progress.ts`). Las muestras de piano ya están en R2 (las usan Walking AP Multi y Cosmic Ear).
+  3. Integrar: selector de mundo/instrumento, muros instanciados (`wall_x`/`wall_z`/`post`) en `buildMaze`,
+     decorado `world` en lugar de `buildInstrumentWorld`, portal nuevo; probar y publicar con OK de Luis.
+
 - **Walking AP Multi, nivel 4 «El Pantano»** ✅ **publicado** (2026-10-17) tras jugarlo Luis («¡Hermoso!»).
   Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-PANTANO-BLENDER.md`. **Walking AP Multi tiene sus 5
   niveles renovados.** Siguiente: punto 12 de `PLAN-3D-BLENDER.md` (cometa exterior de El Cometa o laberinto de Resonancia). Arañitas nuevas de Astra (jade, ojos grandes), a pedido de Luis.
