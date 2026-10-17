@@ -26,11 +26,12 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
      hasta que decida cómo hacerlo. Para las pruebas, **mundo «Dentro del corno»** encargado a Astra
      (`art/blender/mundo-corno/`, mismo contrato). ✅ Entregado y ejecutado: 11 partes, 47 956 tri, 311 KB
      (arcos de tubo dorado, válvulas, bombas en U, gran campana). Las muestras de corno ya están en R2.
-  2. **Pedagogía del corno (y después del piano), decide Luis:** qué registro y notas entrena, en qué orden se desbloquea, si la
-     bitácora lleva el progreso por instrumento. Hoy todo está pensado por cuerda y traste de guitarra
-     (`src/catalog.ts`, `src/progress.ts`). Las muestras de piano ya están en R2 (las usan Walking AP Multi y Cosmic Ear).
-  3. Integrar: selector de mundo/instrumento, muros instanciados (`wall_x`/`wall_z`/`post`) en `buildMaze`,
-     decorado `world` en lugar de `buildInstrumentWorld`, portal nuevo; probar y publicar con OK de Luis.
+  2. ✅ **Integrado (2026-10-17), sin publicar.** Luis: «la pedagogía de todos es la misma, el menú exactamente
+     el mismo, pero ahora puedes escoger entorno». Menú: nueva sección «02 · Elige el entorno» (Guitarra, Corno,
+     Piano; se recuerda en el navegador). `src/environments.ts` carga los GLB con `shared-3d` (dedupe de Three en
+     `vite.config.ts`); `world.ts` usa el decorado `world`, muros instanciados `wall_x`/`wall_z`/`post` y el portal
+     de cada mundo (×2.2), con la guitarra de primitivas como reserva. El sonido sigue siendo la guitarra.
+  3. Siguiente: que Luis lo juegue; decidir si cada entorno suena con su instrumento; publicar con su OK.
 
 - **Walking AP Multi, nivel 4 «El Pantano»** ✅ **publicado** (2026-10-17) tras jugarlo Luis («¡Hermoso!»).
   Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-PANTANO-BLENDER.md`. **Walking AP Multi tiene sus 5

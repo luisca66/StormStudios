@@ -11,6 +11,7 @@ import {
   samplesFor,
 } from "./catalog";
 import { GuitarWorld } from "./world";
+import { ENVIRONMENTS, type EnvironmentId } from "./environments";
 import { ProgressRepository, type AnswerTally } from "./progress";
 
 type Screen = "menu" | "groups" | "warmup" | "gameplay" | "victory" | "stats";
@@ -28,6 +29,16 @@ const QA_MODE = import.meta.env.DEV && new URLSearchParams(window.location.searc
 const TARGET_STREAK = QA_MODE ? 3 : 20;
 const progressRepository = new ProgressRepository(QA_MODE ? "resonancia-guitar-progress-qa-v1" : "resonancia-guitar-progress-v1");
 let progress = progressRepository.get();
+
+const ENV_KEY = "resonancia-entorno-v1";
+const readEnvironment = (): EnvironmentId => {
+  try {
+    const saved = localStorage.getItem(ENV_KEY);
+    if (ENVIRONMENTS.some((e) => e.id === saved)) return saved as EnvironmentId;
+  } catch { /* sin almacenamiento: se usa la guitarra */ }
+  return "guitarra";
+};
+let environment: EnvironmentId = readEnvironment();
 
 let screen: Screen = "menu";
 let levelIndex = 0;
@@ -48,6 +59,7 @@ const world = new GuitarWorld(canvas, {
 });
 
 world.setGameplay(false);
+void world.setEnvironment(environment);
 render();
 
 app.addEventListener("click", (event) => {
@@ -58,6 +70,7 @@ app.addEventListener("click", (event) => {
   audio.primeFootsteps();
 
   if (action === "toggle-string") toggleString(target.dataset.string as StringId);
+  if (action === "choose-env") chooseEnvironment(target.dataset.env as EnvironmentId);
   if (action === "choose-level") openGroups(Number(target.dataset.level));
   if (action === "choose-group") openWarmup(Number(target.dataset.group));
   if (action === "warmup-note") void playWarmup(target.dataset.pitch as Pitch);
@@ -307,6 +320,14 @@ function render() {
   if (screen === "stats") app.innerHTML = renderStats();
 }
 
+function chooseEnvironment(id: EnvironmentId) {
+  if (!ENVIRONMENTS.some((e) => e.id === id)) return;
+  environment = id;
+  try { localStorage.setItem(ENV_KEY, id); } catch { /* no se recuerda, no pasa nada */ }
+  void world.setEnvironment(id);
+  render();
+}
+
 function renderMenu() {
   return `
     <main class="menu-layout">
@@ -342,6 +363,18 @@ function renderMenu() {
 
         <header class="section-head level-head">
           <span>02</span>
+          <div><p>Escenario</p><h2>Elige el entorno</h2></div>
+        </header>
+        <div class="string-picker env-picker">
+          ${ENVIRONMENTS.map((env) => `
+            <button class="string-choice ${environment === env.id ? "is-on" : ""}" data-action="choose-env" data-env="${env.id}" aria-pressed="${environment === env.id}">
+              <span>${env.id[0].toUpperCase() + env.id.slice(1)}</span><strong>${env.name}</strong>
+            </button>
+          `).join("")}
+        </div>
+
+        <header class="section-head level-head">
+          <span>03</span>
           <div><p>Ruta auditiva</p><h2>Entra al instrumento</h2></div>
         </header>
         <div class="level-list">
