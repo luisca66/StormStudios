@@ -24,7 +24,8 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
      guitarra 15 mallas, 38 948 tri, 216 KB. Renders v1 buenos; falta que Luis los vea y verlos en el juego.
      Luis: **«la guitarra está genial»**; el piano lo ve más complicado → **queda en pausa** (archivos guardados)
      hasta que decida cómo hacerlo. Para las pruebas, **mundo «Dentro del corno»** encargado a Astra
-     (`art/blender/mundo-corno/`, mismo contrato). Las muestras de corno ya están en R2.
+     (`art/blender/mundo-corno/`, mismo contrato). ✅ Entregado y ejecutado: 11 partes, 47 956 tri, 311 KB
+     (arcos de tubo dorado, válvulas, bombas en U, gran campana). Las muestras de corno ya están en R2.
   2. **Pedagogía del corno (y después del piano), decide Luis:** qué registro y notas entrena, en qué orden se desbloquea, si la
      bitácora lleva el progreso por instrumento. Hoy todo está pensado por cuerda y traste de guitarra
      (`src/catalog.ts`, `src/progress.ts`). Las muestras de piano ya están en R2 (las usan Walking AP Multi y Cosmic Ear).
