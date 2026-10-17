@@ -26,7 +26,10 @@ export function buildSpider(): { body: THREE.Mesh; legs: THREE.Mesh[] } {
   const [eyes] = built.byPart("eyes");
   eyes.position.sub(body.position);
   body.add(eyes);
-  return { body, legs: built.byPart("leg") };
+  const legs = built.byPart("leg");
+  // Casi negras, como le gustaban a Luis: el dibujo del lomo queda apenas insinuado; los ojos no cambian.
+  for (const m of [body, ...legs]) m.material.color.multiplyScalar(0.17);
+  return { body, legs };
 }
 
 // ---- Cocodrilo: partes rígidas en el espacio de Godot (mira a −Z); el jugador gira el modelo π.

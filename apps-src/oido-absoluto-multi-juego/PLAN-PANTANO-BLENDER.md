@@ -101,7 +101,7 @@ metido en la niebla, para que no se vea una línea ni el final del mundo. La col
 | Manglares | `manglares/` | Claude | 🎮 3 variantes + árbol de borde; 120 en el interior y el borde de selva | v1 |
 | Rocas y tronco | `rocas-pantano/` | Claude | 🎮 rocas con musgo, troncos caídos con hongos de repisa y tocones | v1 |
 | Plantas de agua | `plantas-pantano/` | Claude | 🎮 nenúfares sobre las charcas, juncos en la orilla, helechos y arbustos | v1 |
-| Arañitas | `arana-pantano/` | Astra | 🎮 arañita jade de ojos grandes, lengüita y mechoncitos; 8 patas rígidas que mueve la caminata de siempre; tamaño de siempre (el intento de Claude quedó grande y feo, se borró) | v1 (sin rondas) |
+| Arañitas | `arana-pantano/` | Astra | 🎮 arañita jade de ojos grandes, lengüita y mechoncitos; 8 patas rígidas que mueve la caminata de siempre; tamaño de siempre; casi negras y 30 en vez de 14, a pedido de Luis (el intento de Claude quedó grande y feo, se borró) | v1 (sin rondas) |
 | Hongos luminosos | `hongos/` | Claude | 🎮 turquesa, magenta y lima, al pie de árboles, rocas y tocones | v1 |
 
 Los kits los modeló Claude en lugar de Gemini (sesión del 2026-10-17, sin encargos a otros agentes).

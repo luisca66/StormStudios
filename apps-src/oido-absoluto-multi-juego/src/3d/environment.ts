@@ -2132,6 +2132,13 @@ export class LevelEnvironment {
     for (const s of spots) {
       this.spawnSpider(s[0] * scale, s[2], s[1] * scale);
     }
+    // Luis veía muy pocas: 16 más repartidas por el pantano (30 en total)
+    for (let added = 0, tries = 0; added < 16 && tries < 200; tries++) {
+      const x = (Math.random() * 2 - 1) * (half - 12), z = (Math.random() * 2 - 1) * (half - 12);
+      if (Math.hypot(x, z) < 14) continue;
+      this.spawnSpider(x, 0.8 + Math.random() * 0.4, z);
+      added++;
+    }
   }
 
   private spawnSpider(x: number, sc: number, z: number): void {
