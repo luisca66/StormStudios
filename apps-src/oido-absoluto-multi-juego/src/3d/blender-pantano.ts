@@ -28,7 +28,12 @@ export function buildSpider(): { body: THREE.Mesh; legs: THREE.Mesh[] } {
   body.add(eyes);
   const legs = built.byPart("leg");
   // Casi negras, como le gustaban a Luis: el dibujo del lomo queda apenas insinuado; los ojos no cambian.
-  for (const m of [body, ...legs]) m.material.color.multiplyScalar(0.17);
+  for (const m of [body, ...legs]) {
+    m.material.vertexColors = false;            // sin el jade pintado: negras de verdad
+    m.material.color.setHex(0x0b0a0d);
+    m.material.roughness = 0.45;                // un brillo suave para que se lea el volumen
+    m.material.needsUpdate = true;
+  }
   return { body, legs };
 }
 
