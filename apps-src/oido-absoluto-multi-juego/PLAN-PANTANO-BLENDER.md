@@ -106,7 +106,7 @@ metido en la niebla, para que no se vea una línea ni el final del mundo. La col
 
 Los kits los modeló Claude en lugar de Gemini (sesión del 2026-10-17, sin encargos a otros agentes).
 
-## 7. Resultado (2026-10-17) — nivel completo, sin publicar
+## 7. Resultado (2026-10-17) — nivel completo y publicado
 
 | Medida | Antes | Ahora |
 |---|---:|---:|
@@ -114,4 +114,4 @@ Los kits los modeló Claude en lugar de Gemini (sesión del 2026-10-17, sin enca
 | Triángulos por cuadro (incluye sombras) | ~26 000 | ~854 000 (como La Pradera: mismo FPS en el navegador de pruebas) |
 
 Límites: dos filas escalonadas de manglares grandes con arbustos entre ellos, sin sombras (quedan en la
-niebla). Pendiente: publicar con OK de Luis.
+niebla). Después, a pedido de Luis: arañitas negras y más chicas (30), y textura discreta de barro en el piso. Publicado el 2026-10-17.

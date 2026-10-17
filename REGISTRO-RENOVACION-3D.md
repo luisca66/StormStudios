@@ -13,9 +13,9 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 
 ## En curso
 
-- **Walking AP Multi, nivel 4 «El Pantano»** ✅ **completo e integrado, sin publicar** (2026-10-17).
-  Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-PANTANO-BLENDER.md`. **Siguiente:** que Luis lo
-  juegue y, con su OK, `npm run deploy` en `apps-src/oido-absoluto-multi-juego`. Arañitas nuevas de Astra (jade, ojos grandes), a pedido de Luis.
+- **Walking AP Multi, nivel 4 «El Pantano»** ✅ **publicado** (2026-10-17) tras jugarlo Luis («¡Hermoso!»).
+  Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-PANTANO-BLENDER.md`. **Walking AP Multi tiene sus 5
+  niveles renovados.** Siguiente: punto 12 de `PLAN-3D-BLENDER.md` (cometa exterior de El Cometa o laberinto de Resonancia). Arañitas nuevas de Astra (jade, ojos grandes), a pedido de Luis.
 
 - **Walking AP Multi, nivel 3 «El Cosmos»** (elegido por Claude con la delegación de Luis; solo se renuevan
   juegos 3D). Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-COSMOS-BLENDER.md`.
@@ -31,7 +31,7 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 
 ### 2026-10-17
 
-- ✅ **El Pantano (nivel 4 de Walking AP Multi) completo, sin publicar.** Todo hecho por Claude en una sesión,
+- ✅ **El Pantano (nivel 4 de Walking AP Multi) completo y publicado.** Todo hecho por Claude en una sesión,
   sin encargos a otros agentes: cocodrilo mejorado con los mismos pivotes (patas, cola, cabeza y parpadeo
   como antes); portal de Astra ejecutado tal cual; kits de manglares (con árbol de borde), rocas con musgo y
   troncos, plantas de agua y hongos luminosos. Se conservaron la niebla y la penumbra (pedido de Luis); el
