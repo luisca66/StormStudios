@@ -10,10 +10,34 @@ import type { MazeWall } from "./maze";
 // portal_ring 0…n y portal_core. Pivotes en la base (muros y postes) y en el centro del hueco (portal).
 export type EnvironmentId = "guitarra" | "corno" | "piano";
 
-export const ENVIRONMENTS: { id: EnvironmentId; name: string; place: string }[] = [
-  { id: "guitarra", name: "La guitarra gigante", place: "Sobre el diapasón, entre trastes y cuerdas" },
-  { id: "corno", name: "Dentro del corno", place: "Entre tubos de latón y la gran campana" },
-  { id: "piano", name: "Dentro del piano de cola", place: "Entre el arpa, los martillos y las cuerdas" },
+export interface EnvironmentInfo {
+  id: EnvironmentId;
+  name: string;
+  place: string;
+  /** Nombres de los 5 niveles: un viaje por el camino del sonido en ese instrumento (aprobados por Luis). */
+  levelNames: [string, string, string, string, string];
+  /** Dónde se resuelve el laberinto, para la frase de introducción del menú. */
+  where: string;
+  /** Texto del botón para empezar. */
+  enter: string;
+}
+
+export const ENVIRONMENTS: EnvironmentInfo[] = [
+  {
+    id: "guitarra", name: "La guitarra gigante", place: "Sobre el diapasón, entre trastes y cuerdas",
+    levelNames: ["El puente", "La tapa armónica", "La roseta", "El mástil", "El clavijero"],
+    where: "sobre el diapasón", enter: "Entrar al diapasón",
+  },
+  {
+    id: "corno", name: "Dentro del corno", place: "Entre tubos de latón y la gran campana",
+    levelNames: ["La boquilla", "El tudel", "Las válvulas", "Los tubos enroscados", "La campana"],
+    where: "entre los tubos del corno", enter: "Entrar al corno",
+  },
+  {
+    id: "piano", name: "Dentro del piano de cola", place: "Entre el arpa, los martillos y las cuerdas",
+    levelNames: ["Las teclas", "Los martillos", "Las cuerdas", "La tabla armónica", "La tapa abierta"],
+    where: "dentro del piano de cola", enter: "Entrar al piano",
+  },
 ];
 
 const URLS: Record<EnvironmentId, string> = { guitarra: guitarUrl, corno: hornUrl, piano: pianoUrl };

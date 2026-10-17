@@ -39,6 +39,9 @@ const readEnvironment = (): EnvironmentId => {
   return "guitarra";
 };
 let environment: EnvironmentId = readEnvironment();
+const envInfo = () => ENVIRONMENTS.find((e) => e.id === environment) ?? ENVIRONMENTS[0];
+/** El nombre del nivel depende del mundo; la pedagogía (familias de altura) es la misma en todos. */
+const levelName = (level: { id: number; name: string }) => envInfo().levelNames[level.id - 1] ?? level.name;
 
 let screen: Screen = "menu";
 let levelIndex = 0;
@@ -335,7 +338,7 @@ function renderMenu() {
         <div class="string-signature" aria-hidden="true">${Array.from({ length: 6 }, (_, i) => `<i style="--i:${i}"></i>`).join("")}</div>
         <p class="kicker">Oído absoluto · Guitarra clásica</p>
         <h1>Resonancia</h1>
-        <p class="intro">Resuelve un laberinto nuevo sobre el diapasón. La música borra la referencia anterior; al final, reconoce la nota que emerge sobre ella.</p>
+        <p class="intro">Resuelve un laberinto nuevo ${envInfo().where}. La música borra la referencia anterior; al final, reconoce la nota que emerge sobre ella.</p>
         <div class="rule-copy">
           <span>La misión</span>
           <strong>${TARGET_STREAK} aciertos consecutivos</strong>
@@ -389,7 +392,7 @@ function renderMenu() {
               return `
             <button class="level-row" data-action="choose-level" data-level="${index}" style="--level-accent:${level.accent}">
               <span class="level-number">${String(level.id).padStart(2, "0")}</span>
-              <span><strong>${level.name}</strong><small>${progressLabel}</small></span>
+              <span><strong>${levelName(level)}</strong><small>${progressLabel}</small></span>
               ${record?.completions ? `<b class="completion-mark" aria-label="Nivel completado">◆</b>` : `<i>↗</i>`}
             </button>
               `;
@@ -408,7 +411,7 @@ function renderGroups() {
       <button class="text-button" data-action="back-menu">← Volver al inicio</button>
       <div class="chapter-mark" style="--level-accent:${level.accent}"><span>${String(level.id).padStart(2, "0")}</span></div>
       <p class="kicker">${level.place}</p>
-      <h1>${level.name}</h1>
+      <h1>${levelName(level)}</h1>
       <p class="intro narrow">${level.description} Elige una familia para comenzar.</p>
       <div class="group-list">
         ${level.groups.map((group, index) => {
@@ -445,7 +448,7 @@ function renderWarmup() {
       <div class="warmup-meta">
         <span>${pitches.length} alturas</span><span>${selectedStrings.size} cuerdas activas</span><span>${currentPool().length} muestras</span>
       </div>
-      <button class="primary-action" data-action="start">Entrar al diapasón <span>→</span></button>
+      <button class="primary-action" data-action="start">${envInfo().enter} <span>→</span></button>
     </main>
   `;
 }
@@ -459,7 +462,7 @@ function renderGameplay() {
       <div class="hud-top">
         <section class="mission-strip">
           <button class="exit-button" data-action="back-menu" aria-label="Salir al menú">×</button>
-          <div><span>Nivel ${level.id}</span><strong>${level.name}</strong></div>
+          <div><span>Nivel ${level.id}</span><strong>${levelName(level)}</strong></div>
         </section>
         <section class="streak-meter" style="--progress:${progress}%">
           <div><span>Racha</span><strong>${streak}<small>/${TARGET_STREAK}</small></strong></div>
@@ -521,7 +524,7 @@ function renderVictory() {
     <main class="screen-panel victory-panel">
       <div class="victory-rosette" aria-hidden="true"><i></i><i></i><i></i><span>${TARGET_STREAK}</span></div>
       <p class="kicker">Resonancia completa</p>
-      <h1>${level.name} vuelve a sonar</h1>
+      <h1>${levelName(level)} vuelve a sonar</h1>
       <p class="intro narrow">Reconociste ${TARGET_STREAK === 20 ? "veinte" : TARGET_STREAK} alturas consecutivas y activaste las seis cuerdas.</p>
       <div class="victory-stats"><span><small>Aciertos</small>${hits}</span><span><small>Errores</small>${mistakes}</span><span><small>Racha</small>${TARGET_STREAK}</span></div>
       <p class="record-note">Mejor racha histórica en esta zona: <strong>${levelRecord?.bestStreak ?? TARGET_STREAK}</strong> · Completada <strong>${levelRecord?.completions ?? 1}</strong> ${levelRecord?.completions === 1 ? "vez" : "veces"}</p>
@@ -586,7 +589,7 @@ function renderStats() {
           <header><span>Recorrido</span><p>Sesiones y mejores rachas por zona</p></header>
           ${levelRecords.map(({ level, record }) => `<article>
             <span>${String(level.id).padStart(2, "0")}</span>
-            <div><strong>${level.name}</strong><small>${record?.sessions ?? 0} ${record?.sessions === 1 ? "sesión" : "sesiones"} · mejor racha ${record?.bestStreak ?? 0}</small></div>
+            <div><strong>${levelName(level)}</strong><small>${record?.sessions ?? 0} ${record?.sessions === 1 ? "sesión" : "sesiones"} · mejor racha ${record?.bestStreak ?? 0}</small></div>
             <b>${record?.completions ? `${record.completions} ◆` : "—"}</b>
           </article>`).join("")}
         </section>
