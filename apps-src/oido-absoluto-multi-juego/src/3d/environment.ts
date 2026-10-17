@@ -455,6 +455,40 @@ export class LevelEnvironment {
   }
 
   // ==================== TEXTURE GENERATORS ====================
+  /** Barro del pantano, discreto: el tono de siempre con manchas de humedad, musgo y puntitos (sin costuras). */
+  private generateMudTexture(): THREE.CanvasTexture {
+    const S = 512;
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = S;
+    const ctx = canvas.getContext("2d")!;
+    ctx.fillStyle = "#606a47";                       // = el color plano anterior (0.12, 0.15, 0.07 lineal)
+    ctx.fillRect(0, 0, S, S);
+    // Dibuja cada mancha también en los bordes opuestos para que el mosaico no tenga costuras.
+    const blob = (x: number, y: number, r: number, color: string) => {
+      for (const dx of [-S, 0, S]) for (const dy of [-S, 0, S]) {
+        const g = ctx.createRadialGradient(x + dx, y + dy, 0, x + dx, y + dy, r);
+        g.addColorStop(0, color);
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = g;
+        ctx.fillRect(x + dx - r, y + dy - r, r * 2, r * 2);
+      }
+    };
+    for (let i = 0; i < 40; i++) blob(Math.random() * S, Math.random() * S, 30 + Math.random() * 70, "rgba(48,52,32,0.35)");   // humedad
+    for (let i = 0; i < 30; i++) blob(Math.random() * S, Math.random() * S, 20 + Math.random() * 50, "rgba(92,112,62,0.28)");  // musgo
+    for (let i = 0; i < 18; i++) blob(Math.random() * S, Math.random() * S, 15 + Math.random() * 35, "rgba(120,110,80,0.18)"); // barro seco
+    for (let i = 0; i < 2500; i++) {                // puntitos: ramitas, semillas, granos
+      const shade = Math.random() < 0.5 ? "rgba(40,38,26,0.35)" : "rgba(130,128,96,0.22)";
+      ctx.fillStyle = shade;
+      ctx.fillRect(Math.random() * S, Math.random() * S, 1 + Math.random() * 1.5, 1 + Math.random() * 1.5);
+    }
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(24, 24);                     // ~15 m por mosaico
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = 4;
+    return texture;
+  }
+
   private generateGrassTexture(): THREE.CanvasTexture {
     const canvas = document.createElement("canvas");
     canvas.width = 512;
@@ -1808,7 +1842,7 @@ export class LevelEnvironment {
     // Muddy ground (darker so distant trees fade into the murk)
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(this.arenaSize + 80, this.arenaSize + 80),
-      new THREE.MeshStandardMaterial({ color: new THREE.Color(0.12, 0.15, 0.07), roughness: 0.97 })
+      new THREE.MeshStandardMaterial({ map: this.generateMudTexture(), roughness: 0.95 })
     );
     ground.rotation.x = -Math.PI / 2; ground.position.y = -0.05; this.group.add(ground);
 
