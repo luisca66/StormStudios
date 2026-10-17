@@ -82,7 +82,7 @@ def fern(mat):
     for k in range(8):
         a = k / 8 * math.tau + rng.uniform(-0.15, 0.15)
         for dist, length, tilt, z in ((0.35, 0.5, 40, 0.32), (0.85, 0.45, 5, 0.52), (1.25, 0.32, -25, 0.42)):
-            bpy.ops.mesh.primitive_uv_sphere_add(segments=10, ring_count=6, radius=1, location=(0, 0, 0))
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=6, ring_count=4, radius=1, location=(0, 0, 0))
             ob = bpy.context.object
             ob.scale = (length, 0.13, 0.025)            # hoja: larga en X, angosta y muy fina
             ob.rotation_euler = (0, -math.radians(tilt), a)

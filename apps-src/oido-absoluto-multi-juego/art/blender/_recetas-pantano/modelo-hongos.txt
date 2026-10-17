@@ -3,7 +3,7 @@ def mushroom(base, height, cap_r, cap_hex, mat, lean=(0.0, 0.0)):
     """Hongo: pie claro y sombrero redondo con pintitas claras."""
     out = []
     top = Vector(base) + Vector((lean[0], lean[1], height))
-    bpy.ops.mesh.primitive_cone_add(vertices=10, radius1=cap_r * 0.32, radius2=cap_r * 0.22, depth=height, location=(0, 0, 0))
+    bpy.ops.mesh.primitive_cone_add(vertices=7, radius1=cap_r * 0.32, radius2=cap_r * 0.22, depth=height, location=(0, 0, 0))
     stem = bpy.context.object
     d = top - Vector(base)
     stem.rotation_mode = "QUATERNION"
@@ -13,7 +13,7 @@ def mushroom(base, height, cap_r, cap_hex, mat, lean=(0.0, 0.0)):
     stem.data.materials.append(mat)
     paint(stem, lambda co, n: mix("cfd8c0", "f2f5e8", 0.5))
     out.append(stem)
-    bpy.ops.mesh.primitive_uv_sphere_add(segments=18, ring_count=10, radius=1, location=(0, 0, 0))
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=12, ring_count=7, radius=1, location=(0, 0, 0))
     cap = bpy.context.object
     cap.scale = (cap_r, cap_r, cap_r * 0.62)
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)

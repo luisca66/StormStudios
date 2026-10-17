@@ -10,6 +10,7 @@ import { BlenderCastle, buildBlenderCastle, isCastleReady } from "./blender-cast
 import { buildKitField, KitPlacement } from "./blender-kit-field";
 import { FLOWER_PARTS, flowersKit, hedgesKit, ROCK_PARTS, rocksKit, TREE_PARTS, treesKit, wallKit } from "./blender-pradera-kits";
 import { type Animated, type AsteroidPlacement, type PlanetPlacement, buildAsteroidField, buildCosmosPlanets, buildGalaxy, buildNebula, cosmosAsteroidsKit, cosmosPlanetsKit, radialTexture } from "./blender-cosmos";
+import { type Placement, buildSwampField, mangrovesKit, mushroomsKit, swampPlantsKit, swampPortalKit, swampRocksKit } from "./blender-pantano";
 
 export interface Obstacle {
   x: number;
@@ -1793,8 +1794,9 @@ export class LevelEnvironment {
     const HALF = this.arenaSize / 2; // 140 when arenaSize = 280
 
     // Moody, dim green environment (matches Level04_Swamp.tscn — kept dark so the
-    // fireflies, glowing water, wisp and crocodile eyes pop against the murk)
-    const hemi = new THREE.HemisphereLight(new THREE.Color(0.10, 0.22, 0.08), new THREE.Color(0.03, 0.05, 0.02), 0.22);
+    // fireflies, glowing water, wisp and crocodile eyes pop against the murk).
+    // Luis pidió conservar lo oscuro y húmedo: la luz sube apenas para que el cocodrilo se lea.
+    const hemi = new THREE.HemisphereLight(new THREE.Color(0.10, 0.22, 0.08), new THREE.Color(0.03, 0.05, 0.02), 0.35);
     this.group.add(hemi);
     const sun = new THREE.DirectionalLight(new THREE.Color(0.45, 0.72, 0.38), 0.38);
     sun.position.set(-40, 60, 40);
@@ -1805,34 +1807,148 @@ export class LevelEnvironment {
 
     // Muddy ground (darker so distant trees fade into the murk)
     const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(this.arenaSize, this.arenaSize),
+      new THREE.PlaneGeometry(this.arenaSize + 80, this.arenaSize + 80),
       new THREE.MeshStandardMaterial({ color: new THREE.Color(0.12, 0.15, 0.07), roughness: 0.97 })
     );
     ground.rotation.x = -Math.PI / 2; ground.position.y = -0.05; this.group.add(ground);
 
-    this.spawnWaterPatches(HALF);
-    this.spawnMangroves(HALF, 120);
-    this.spawnMossRocks(HALF);
-    this.spawnLilyPads(HALF);
-    this.spawnReeds(HALF);
+    const pools = this.spawnWaterPatches(HALF);
+    if (mangrovesKit.ready() && swampRocksKit.ready() && swampPlantsKit.ready() && mushroomsKit.ready()) {
+      this.spawnSwampKits(HALF, pools);
+    } else {
+      this.spawnMangroves(HALF, 120);
+      this.spawnMossRocks(HALF);
+      this.spawnLilyPads(HALF);
+      this.spawnReeds(HALF);
+      this.spawnSwampBushes(HALF, 70);
+      this.spawnBoundarySwampTrees(HALF);
+    }
     this.spawnSwampFireflies(HALF);
-    this.spawnSwampBushes(HALF, 70);
-    this.spawnSwampArch(HALF);
-    this.spawnBoundarySwampTrees(HALF);
+    if (!swampPortalKit.ready()) this.spawnSwampArch(HALF);
     this.spawnSpiders(HALF);
   }
 
-  private spawnWaterPatches(half: number): void {
+  /** Pantano con los kits de Blender (PLAN-PANTANO-BLENDER.md): todo instanciado, una malla por pieza. */
+  private spawnSwampKits(half: number, pools: { x: number; z: number; r: number }[]): void {
+    const rnd = (a: number, b: number) => a + Math.random() * (b - a);
+    const turn = () => Math.random() * Math.PI * 2;
+    const inPool = (x: number, z: number, pad = 0) => pools.some((p) => Math.hypot(x - p.x, z - p.z) < p.r + pad);
+    const MUSH = ["mush_tall", "mush_cluster", "mush_flat"];
+    const trees: Placement[] = [], border: Placement[] = [], rocks: Placement[] = [], plants: Placement[] = [], shrooms: Placement[] = [];
+
+    // Manglares del interior, con hongos al pie de algunos
+    const TREES = ["mangrove_a", "mangrove_b", "mangrove_c"];
+    for (let i = 0; i < 120; i++) {
+      const x = rnd(-1, 1) * (half - 6), z = rnd(-1, 1) * (half - 6);
+      if (Math.hypot(x, z) < 12) continue;
+      const scale = rnd(0.75, 1.25);
+      trees.push({ part: TREES[i % 3], x, z, scale, rotY: turn() });
+      this.obstacles.push({ x, y: 0, z, radius: 0.6 * scale });
+      if (Math.random() < 0.4) shrooms.push({ part: MUSH[i % 3], x: x + rnd(-1.8, 1.8), z: z + rnd(-1.8, 1.8), scale: rnd(0.8, 1.5), rotY: turn() });
+    }
+
+    // Borde de selva cerrada: dos filas escalonadas de árboles grandes con arbustos entre ellos (pedido de Luis)
+    for (let side = 0; side < 4; side++) {
+      for (let row = 0; row < 2; row++) {
+        const d = half + 2 + row * 9;
+        const step = 17;
+        for (let s = -half - 20 + (row * step) / 2; s <= half + 20; s += step) {
+          const along = s + rnd(-3, 3), off = d + rnd(-2.5, 2.5);
+          const [x, z] = side === 0 ? [along, -off] : side === 1 ? [along, off] : side === 2 ? [-off, along] : [off, along];
+          border.push({ part: row === 0 ? "mangrove_wall" : "mangrove_c", x, z, scale: rnd(0.9, 1.4) * (row === 0 ? 1 : 1.5), rotY: turn() });
+          if (row === 0) this.obstacles.push({ x, y: 0, z, radius: 1.2 });
+          const [bx, bz] = side < 2 ? [along + step / 2, z * (half - 4) / Math.abs(z)] : [x * (half - 4) / Math.abs(x), along + step / 2];
+          if (row === 0) border.push({ part: "bush", x: bx + rnd(-1, 1), z: bz + rnd(-1, 1), scale: rnd(1.4, 2.2), rotY: turn() });
+        }
+      }
+    }
+
+    // Arbustos húmedos del interior (colisión como antes)
+    for (let i = 0; i < 70; i++) {
+      const x = rnd(-1, 1) * (half - 10), z = rnd(-1, 1) * (half - 10);
+      if (Math.hypot(x, z) < 18 || inPool(x, z)) continue;
+      plants.push({ part: "bush", x, z, scale: rnd(1.2, 2.0), rotY: turn() });
+      this.obstacles.push({ x, y: 0, z, radius: 3.0 });
+    }
+
+    // Helechos sueltos y juncos, más densos en la orilla de las charcas
+    for (let i = 0; i < 60; i++) {
+      const x = rnd(-1, 1) * (half - 3), z = rnd(-1, 1) * (half - 3);
+      if (inPool(x, z) || Math.hypot(x, z) < 8) continue;
+      plants.push({ part: "fern", x, z, scale: rnd(0.8, 1.6), rotY: turn() });
+    }
+    for (const p of pools) {
+      const n = Math.round(p.r * 1.2);
+      for (let k = 0; k < n; k++) {
+        const a = turn(), r = p.r + rnd(-0.5, 1.5);
+        plants.push({ part: "reeds", x: p.x + Math.cos(a) * r, z: p.z + Math.sin(a) * r, scale: rnd(0.8, 1.3), rotY: turn() });
+      }
+      // Nenúfares sobre el agua, algunos con flor
+      const pads = Math.round(p.r * 0.9);
+      for (let k = 0; k < pads; k++) {
+        const a = turn(), r = Math.sqrt(Math.random()) * (p.r - 1);
+        plants.push({ part: Math.random() < 0.3 ? "lily_flower" : "lily_pad", x: p.x + Math.cos(a) * r, z: p.z + Math.sin(a) * r, y: 0.06, scale: rnd(0.7, 1.4), rotY: turn() });
+      }
+    }
+
+    // Rocas con musgo, troncos caídos y tocones
+    for (let i = 0; i < 24; i++) {
+      const x = rnd(-1, 1) * (half - 4), z = rnd(-1, 1) * (half - 4);
+      if (Math.hypot(x, z) < 14 || inPool(x, z)) continue;
+      const scale = rnd(0.7, 1.5);
+      rocks.push({ part: i % 2 ? "rock_moss_a" : "rock_moss_b", x, z, scale, rotY: turn() });
+      this.obstacles.push({ x, y: 0, z, radius: 0.9 * scale });
+      if (Math.random() < 0.5) shrooms.push({ part: MUSH[i % 3], x: x + rnd(-1.4, 1.4), z: z + rnd(-1.4, 1.4), scale: rnd(0.7, 1.2), rotY: turn() });
+    }
+    for (let i = 0; i < 12; i++) {
+      const x = rnd(-1, 1) * (half - 8), z = rnd(-1, 1) * (half - 8);
+      if (Math.hypot(x, z) < 16 || inPool(x, z, 2)) continue;
+      const rotY = turn(), scale = rnd(0.9, 1.2);
+      rocks.push({ part: "log", x, z, scale, rotY });
+      // El tronco mira a lo largo de su X local: dos colisiones a lo largo del tronco
+      for (const t of [-1.6, 0, 1.6]) this.obstacles.push({ x: x + Math.cos(rotY) * t * scale, y: 0, z: z - Math.sin(rotY) * t * scale, radius: 0.6 * scale });
+    }
+    for (let i = 0; i < 10; i++) {
+      const x = rnd(-1, 1) * (half - 6), z = rnd(-1, 1) * (half - 6);
+      if (Math.hypot(x, z) < 14 || inPool(x, z)) continue;
+      const scale = rnd(0.8, 1.3);
+      rocks.push({ part: "stump", x, z, scale, rotY: turn() });
+      this.obstacles.push({ x, y: 0, z, radius: 0.75 * scale });
+      shrooms.push({ part: "mush_flat", x: x + 0.6, z, scale: rnd(0.8, 1.2), rotY: turn() });
+    }
+
+    // Más hongos sueltos: los puntos de luz dentro de la niebla
+    for (let i = 0; i < 40; i++) {
+      const x = rnd(-1, 1) * (half - 4), z = rnd(-1, 1) * (half - 4);
+      if (inPool(x, z)) continue;
+      shrooms.push({ part: MUSH[i % 3], x, z, scale: rnd(0.8, 1.6), rotY: turn() });
+    }
+
+    this.group.add(buildSwampField(mangrovesKit.model(), trees));
+    // El borde queda dentro de la niebla: sin sombras (se dibujaría dos veces)
+    this.group.add(buildSwampField(mangrovesKit.model(), border.filter((b) => b.part !== "bush"), false));
+    this.group.add(buildSwampField(swampPlantsKit.model(), border.filter((b) => b.part === "bush"), false));
+    this.group.add(buildSwampField(swampRocksKit.model(), rocks));
+    this.group.add(buildSwampField(swampPlantsKit.model(), plants, false));
+    this.group.add(buildSwampField(mushroomsKit.model(), shrooms, false));
+  }
+
+  private spawnWaterPatches(half: number): { x: number; z: number; r: number }[] {
+    const pools: { x: number; z: number; r: number }[] = [];
+    const mat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(0.06, 0.22, 0.10), transparent: true, opacity: 0.72, roughness: 0.1,
+      emissive: new THREE.Color(0.04, 0.16, 0.10), emissiveIntensity: 0.6, depthWrite: false
+    });
     for (let i = 0; i < 15; i++) {
       const r = 5 + Math.random() * 17;
-      const mat = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(0.06, 0.22, 0.10), transparent: true, opacity: 0.72, roughness: 0.1,
-        emissive: new THREE.Color(0.04, 0.14, 0.06), emissiveIntensity: 0.5, depthWrite: false
-      });
-      const water = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.06, 18), mat);
-      water.position.set((Math.random() * 2 - 1) * (half - 8), 0.02, (Math.random() * 2 - 1) * (half - 8));
+      const x = (Math.random() * 2 - 1) * (half - 8), z = (Math.random() * 2 - 1) * (half - 8);
+      if (Math.hypot(x, z) < r + 6) continue; // el cocodrilo no nace en el agua
+      const water = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.06, 32), mat);
+      water.position.set(x, 0.02, z);
       this.group.add(water);
+      pools.push({ x, z, r });
     }
+    return pools;
   }
 
   private spawnMangroves(half: number, count: number): void {

@@ -149,7 +149,8 @@ relajó para los modelos de Blender.
   `apps-src/oido-absoluto-multi-juego/PLAN-PRADERA-BLENDER.md` §7.
   Nivel 3 «El Cosmos»: ✅ **completo y publicado** (2026-09-26): cohete (Claude), portal (Astra),
   asteroides, planetas y cristal de nota (Gemini). Detalle en `PLAN-COSMOS-BLENDER.md`.
-  Nivel 4 «El Pantano»: sigue procedural.
+  Nivel 4 «El Pantano»: ✅ **completo, sin publicar** (2026-10-17): cocodrilo y kits (Claude), portal (Astra).
+  Detalle en `PLAN-PANTANO-BLENDER.md`. Con esto, Walking AP Multi tiene sus 5 niveles renovados.
 - **Cosmic Ear** — `cosmic-ear` (desglose auditivo): ✅ **rediseño completo publicado** (2026-09-26):
   Three 0.160 y módulos, nave y estación (Claude), planetas-instrumento (Astra), lunas y asteroides
   (Gemini). Detalle en `apps-src/cosmic-ear/PLAN-COSMIC-EAR.md`.

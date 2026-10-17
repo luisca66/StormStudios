@@ -95,10 +95,23 @@ metido en la niebla, para que no se vea una línea ni el final del mundo. La col
 
 | Pieza | Carpeta | Dueño | Estado | Ronda |
 |---|---|---|---|---|
-| Luz, agua, niebla, luciérnagas | — | Claude | ⏳ | — |
-| Cocodrilo | `cocodrilo/` | Claude | 📦 modelado (14 partes, 5 056 tri, mismos pivotes); falta integrar | v1 |
-| Portal | `portal-pantano/` | Astra | 📦 script entregado; falta que Claude lo ejecute y revise | v1 |
-| Manglares | `manglares/` | Gemini | 📝 receta en prueba (`_recetas-pantano/modelo-manglares.txt`) | — |
-| Rocas y tronco | `rocas-pantano/` | Gemini | ⏳ | — |
-| Plantas de agua | `plantas-pantano/` | Gemini | ⏳ | — |
-| Hongos luminosos | `hongos/` | Gemini | ⏳ | — |
+| Luz, agua, niebla, luciérnagas | — | Claude | 🎮 niebla y penumbra conservadas (hemisférica 0.22 → 0.35); agua con brillo suave; luciérnagas de antes | — |
+| Cocodrilo | `cocodrilo/` | Claude | 🎮 integrado con los mismos pivotes: patas, cola, cabeza y parpadeo como antes | v1 |
+| Portal | `portal-pantano/` | Astra | 🎮 19 468 tri, de pie mirando al centro; aros que giran y remolino que late | v1 (sin rondas) |
+| Manglares | `manglares/` | Claude | 🎮 3 variantes + árbol de borde; 120 en el interior y el borde de selva | v1 |
+| Rocas y tronco | `rocas-pantano/` | Claude | 🎮 rocas con musgo, troncos caídos con hongos de repisa y tocones | v1 |
+| Plantas de agua | `plantas-pantano/` | Claude | 🎮 nenúfares sobre las charcas, juncos en la orilla, helechos y arbustos | v1 |
+| Hongos luminosos | `hongos/` | Claude | 🎮 turquesa, magenta y lima, al pie de árboles, rocas y tocones | v1 |
+
+Los kits los modeló Claude en lugar de Gemini (sesión del 2026-10-17, sin encargos a otros agentes).
+
+## 7. Resultado (2026-10-17) — nivel completo, sin publicar
+
+| Medida | Antes | Ahora |
+|---|---:|---:|
+| Draw calls, vista inicial | 354 | **114** |
+| Triángulos por cuadro (incluye sombras) | ~26 000 | ~854 000 (como La Pradera: mismo FPS en el navegador de pruebas) |
+
+Límites: dos filas escalonadas de manglares grandes con arbustos entre ellos, sin sombras (quedan en la
+niebla). Pendientes: que Luis juegue el nivel; las arañas siguen procedurales (~300 mallas), se decide si
+se renuevan; publicar con su OK.

@@ -4,6 +4,7 @@ import { buildBlenderRainbowPortal, preloadBlenderRainbowPortal } from "./blende
 import { buildModel } from "../../../shared-3d/src";
 import { gateKit } from "./blender-pradera-kits";
 import { buildCosmosPortal, cosmosPortalKit, type CosmosPortal } from "./blender-cosmos";
+import { buildSwampPortal, swampPortalKit, type SwampPortal } from "./blender-pantano";
 
 export class LevelGate {
   public group: THREE.Group;
@@ -35,6 +36,7 @@ export class LevelGate {
   private wormholeDisc?: THREE.Mesh;
   private wormholeGlow?: THREE.PointLight;
   private cosmosPortal?: CosmosPortal;
+  private swampPortal?: SwampPortal;
   private wormholeT = 0;
 
   constructor(private level: number, private scene: THREE.Scene, private arenaSize: number) {
@@ -102,6 +104,10 @@ export class LevelGate {
     else if (this.level === 4) {
       // Spin rings (faster once unlocked) and flicker the disc
       this.swampGlowT += delta;
+      if (this.swampPortal) {
+        this.swampPortal.setOpen(t);
+        this.swampPortal.update(delta, this.swampGlowT);
+      }
       const open = this.isUnlocked;
       for (let i = 0; i < this.swampRings.length; i++) {
         let speed = 0.3 + i * 0.12;
@@ -273,6 +279,16 @@ export class LevelGate {
       portal.position.copy(this.position);
       portal.rotation.y = Math.atan2(-1, -1); // face the play area
       this.group.add(portal);
+
+      // Portal de Blender (art/blender/portal-pantano/, Astra): arco de raíces que mira al centro del nivel.
+      if (swampPortalKit.ready()) {
+        portal.rotation.set(0, 0, 0);
+        this.swampPortal = buildSwampPortal();
+        portal.add(this.swampPortal.root);
+        portal.lookAt(0, this.position.y, 0);
+        portal.add(new THREE.PointLight(0x5ff0d0, 10, 30));
+        return;
+      }
 
       const ringColor = new THREE.Color(0.18, 0.72, 0.38);
       const glowColor = new THREE.Color(0.35, 0.95, 0.55);
