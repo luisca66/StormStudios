@@ -1,0 +1,14 @@
+Hola Astra. Te encargo la arañita del nivel 4 «El Pantano» de Walking AP Multi, en Blender con bpy.
+
+La idea: una arañita tierna y bonita de cuento, que vive en un pantano encantado y oscuro. Al dueño del proyecto le encantan: nada de miedo, mucho encanto, ojos grandes que brillan. Un intento anterior quedó feo; hazla con personalidad.
+
+MODO AUTOMÁTICO: Claude te lanzó desde la línea de comandos y nadie está mirando. No hagas preguntas: decide tú y anota en ENTREGA.md lo que decidas distinto del brief.
+
+IMPORTANTE: tu sandbox no puede cargar Blender (bpy da "DLL load failed: Access is denied"). No lo intentes: escribe modelar-arana-pantano.py completo, deja ENTREGA.md como v1 con "Lista para: ejecución de Claude" y detente. Claude lo ejecuta en la PC de Luis y te reanuda con los renders para tu revisión propia.
+
+Proyecto (tu directorio actual): C:\Users\Luis\Documents\Claude Cowork\nuevo_website\storm-studios\StormStudios
+Tu carpeta, la única donde escribes: apps-src\oido-absoluto-multi-juego\art\blender\arana-pantano\
+
+Lee plantillas-blender\INSTRUCCIONES-ASTRA.md y el BRIEF.md de tu carpeta. Ojo con el contrato de las patas (partes, pivotes y orden): el juego ya tiene la caminata y moverá tus patas desde esos pivotes. kit.py está en apps-src\grados-mayores-juego\art\blender\ (tu script lo importa así: ROOT.parents[3] / "grados-mayores-juego" / "art" / "blender"). Un script que ya funciona con este kit y que trabaja en espacio del juego (Y arriba): apps-src\oido-absoluto-multi-juego\art\blender\cocodrilo\modelar-cocodrilo.py.
+
+Hay otros agentes trabajando a la vez: no escribas fuera de tu carpeta, no toques BRIEF.md ni PROMPT.txt y no uses git ni npm. Al terminar, resume: triángulos, partes y en qué te apartaste del brief.
