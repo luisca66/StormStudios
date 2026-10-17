@@ -20,8 +20,8 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
   `portal_core` (briefs en `apps-src/oido-absoluto-guitarra-juego/art/blender/mundo-piano/` y `mundo-guitarra/`).
   Se lanzaron encadenados (piano, luego guitarra); registros en `%LOCALAPPDATA%\StormStudiosgentes\`.
   **Siguiente:**
-  1. Ejecutar `modelar-mundo-piano.py` y `modelar-mundo-guitarra.py` con `bpy-run.ps1`, revisar renders
-     (reanudar a Astra solo si hace falta, máx. 2 rondas).
+  1. ✅ Astra entregó los dos y Claude los ejecutó (2026-10-17): piano 12 partes, 32 640 tri, 287 KB;
+     guitarra 15 mallas, 38 948 tri, 216 KB. Renders v1 buenos; falta que Luis los vea y verlos en el juego.
   2. **Pedagogía del piano (decide Luis):** qué registro y notas entrena, en qué orden se desbloquea, si la
      bitácora lleva el progreso por instrumento. Hoy todo está pensado por cuerda y traste de guitarra
      (`src/catalog.ts`, `src/progress.ts`). Las muestras de piano ya están en R2 (las usan Walking AP Multi y Cosmic Ear).
