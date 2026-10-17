@@ -1,0 +1,34 @@
+{
+  "trianglesByPart": {
+    "world": 27688,
+    "wall_x": 1068,
+    "wall_z": 1068,
+    "post": 36,
+    "portal_frame": 688,
+    "portal_ring": 1408,
+    "portal_core": 252
+  },
+  "totalTriangles": 32208,
+  "meshCount": 12,
+  "trianglesByMesh": {
+    "Nave y bóveda": 10160,
+    "Sillería tallada": 4680,
+    "Voces y tracería": 5520,
+    "Gran rosetón": 848,
+    "Partituras abiertas": 6480,
+    "wall_x": 1068,
+    "wall_z": 1068,
+    "post": 36,
+    "Cadre du rosetón": 688,
+    "Pétalos giratorios": 656,
+    "Tracería giratoria": 752,
+    "Luz de llegada": 252
+  },
+  "gameGlbBytes": 324876,
+  "status": "GLB y JSON con AO por familia",
+  "ao": {
+    "distance": 1.5,
+    "strength": 0.7
+  },
+  "visualReview": "pendiente de Astra"
+}

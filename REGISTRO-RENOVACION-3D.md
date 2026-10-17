@@ -31,7 +31,11 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
      Piano; se recuerda en el navegador). `src/environments.ts` carga los GLB con `shared-3d` (dedupe de Three en
      `vite.config.ts`); `world.ts` usa el decorado `world`, muros instanciados `wall_x`/`wall_z`/`post` y el portal
      de cada mundo (×2.2), con la guitarra de primitivas como reserva. El sonido sigue siendo la guitarra.
-  3. Siguiente: que Luis lo juegue; decidir si cada entorno suena con su instrumento; publicar con su OK.
+  3. ✅ Nombres de nivel por mundo (aprobados por Luis): camino del sonido en cada instrumento; la frase del menú y
+     el botón de entrada siguen al mundo. ✅ **Fagot** (15 mallas, 57 752 tri) y **coro** (12 partes, 32 208 tri;
+     Claude aflojó a 5 cm un control de medidas de Astra que fallaba por 2 cm de moldura) entregados e integrados:
+     5 entornos en el selector.
+  4. Siguiente: que Luis lo juegue; decidir si cada entorno suena con su instrumento; publicar con su OK.
 
 - **Walking AP Multi, nivel 4 «El Pantano»** ✅ **publicado** (2026-10-17) tras jugarlo Luis («¡Hermoso!»).
   Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-PANTANO-BLENDER.md`. **Walking AP Multi tiene sus 5

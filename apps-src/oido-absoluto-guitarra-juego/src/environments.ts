@@ -2,13 +2,15 @@ import * as THREE from "three";
 import guitarUrl from "./assets/mundo-guitarra.glb?url";
 import hornUrl from "./assets/mundo-corno.glb?url";
 import pianoUrl from "./assets/mundo-piano.glb?url";
+import bassoonUrl from "./assets/mundo-fagot.glb?url";
+import choirUrl from "./assets/mundo-coro.glb?url";
 import { buildMaterial, buildModel, loadModel, type ModelData } from "../../shared-3d/src";
 import type { MazeWall } from "./maze";
 
 // Mundos de Resonancia (Astra, art/blender/mundo-<id>/): la misma pedagogía en escenarios distintos.
 // Contrato común: world (decorado), wall_x (5 m en X), wall_z (5.7 m en Z), post, portal_frame,
 // portal_ring 0…n y portal_core. Pivotes en la base (muros y postes) y en el centro del hueco (portal).
-export type EnvironmentId = "guitarra" | "corno" | "piano";
+export type EnvironmentId = "guitarra" | "corno" | "piano" | "fagot" | "coro";
 
 export interface EnvironmentInfo {
   id: EnvironmentId;
@@ -38,9 +40,19 @@ export const ENVIRONMENTS: EnvironmentInfo[] = [
     levelNames: ["Las teclas", "Los martillos", "Las cuerdas", "La tabla armónica", "La tapa abierta"],
     where: "dentro del piano de cola", enter: "Entrar al piano",
   },
+  {
+    id: "fagot", name: "Dentro del fagot", place: "Un bosque de madera con llaves plateadas",
+    levelNames: ["La caña", "El tudel", "Las llaves", "La bota", "El pabellón"],
+    where: "dentro del fagot", enter: "Entrar al fagot",
+  },
+  {
+    id: "coro", name: "Dentro del coro", place: "Una catedral de voces bajo el rosetón",
+    levelNames: ["El aliento", "Las voces", "Los atriles", "Las bóvedas", "El rosetón"],
+    where: "en la catedral del coro", enter: "Entrar al coro",
+  },
 ];
 
-const URLS: Record<EnvironmentId, string> = { guitarra: guitarUrl, corno: hornUrl, piano: pianoUrl };
+const URLS: Record<EnvironmentId, string> = { guitarra: guitarUrl, corno: hornUrl, piano: pianoUrl, fagot: bassoonUrl, coro: choirUrl };
 const cache = new Map<EnvironmentId, Promise<ModelData>>();
 
 export function loadEnvironment(id: EnvironmentId): Promise<ModelData> {
