@@ -22,7 +22,10 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
   **Siguiente:**
   1. ✅ Astra entregó los dos y Claude los ejecutó (2026-10-17): piano 12 partes, 32 640 tri, 287 KB;
      guitarra 15 mallas, 38 948 tri, 216 KB. Renders v1 buenos; falta que Luis los vea y verlos en el juego.
-  2. **Pedagogía del piano (decide Luis):** qué registro y notas entrena, en qué orden se desbloquea, si la
+     Luis: **«la guitarra está genial»**; el piano lo ve más complicado → **queda en pausa** (archivos guardados)
+     hasta que decida cómo hacerlo. Para las pruebas, **mundo «Dentro del corno»** encargado a Astra
+     (`art/blender/mundo-corno/`, mismo contrato). Las muestras de corno ya están en R2.
+  2. **Pedagogía del corno (y después del piano), decide Luis:** qué registro y notas entrena, en qué orden se desbloquea, si la
      bitácora lleva el progreso por instrumento. Hoy todo está pensado por cuerda y traste de guitarra
      (`src/catalog.ts`, `src/progress.ts`). Las muestras de piano ya están en R2 (las usan Walking AP Multi y Cosmic Ear).
   3. Integrar: selector de mundo/instrumento, muros instanciados (`wall_x`/`wall_z`/`post`) en `buildMaze`,
