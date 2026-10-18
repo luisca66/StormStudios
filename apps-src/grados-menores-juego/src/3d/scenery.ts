@@ -13,6 +13,20 @@ import {
   SIBLING_ROAR_DURATION_S, AEROSTATO_BALLOON_ALTITUDE, type RouteSpec,
 } from "@/config";
 import { TrackManager, newTrackFrame, makeRng, type TrackFrame } from "./track";
+import siblingUrl from "./assets/cometa-hermano.json?url";
+
+/** Malla del JSON de Blender (art/blender/cometa-hermano/), mismo formato que la carlinga. */
+interface SiblingMeshData {
+  name: string;
+  part: string;
+  pivot: number[];
+  position: number[];
+  normal: number[];
+  index: number[];
+  vertexColor?: number[];
+  roughness: number;
+  metalness: number;
+}
 
 interface SceneryChunk {
   group: THREE.Group;
@@ -93,6 +107,87 @@ const ROCK_GEOMETRIES = [
   new THREE.DodecahedronGeometry(1, 1),
 ];
 const CRYSTAL_GEOMETRY = new THREE.OctahedronGeometry(1, 0);
+
+// --- Cometa hermano (§5.6) -------------------------------------------------------
+
+/** Halo de la coma: blanco azulado en el centro, cian que se apaga. */
+function comaTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = 128;
+  const g = canvas.getContext("2d")!;
+  const grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grad.addColorStop(0, "rgba(240,252,255,0.9)");
+  grad.addColorStop(0.18, "rgba(170,232,250,0.5)");
+  grad.addColorStop(0.5, "rgba(90,180,230,0.14)");
+  grad.addColorStop(1, "rgba(60,140,210,0)");
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 128, 128);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+const comaMaterial = new THREE.SpriteMaterial({
+  map: comaTexture(), transparent: true, depthWrite: false,
+  blending: THREE.AdditiveBlending, opacity: 0.85, fog: false,
+});
+
+const ionTailMaterial = new THREE.PointsMaterial({
+  map: moteTexture(), color: 0x8fd8ff, size: 1.0, sizeAttenuation: true,
+  transparent: true, opacity: 0.45, depthWrite: false,
+  blending: THREE.AdditiveBlending, fog: false, vertexColors: true,
+});
+
+const dustTailMaterial = new THREE.PointsMaterial({
+  map: moteTexture(), color: 0xffd9a0, size: 1.8, sizeAttenuation: true,
+  transparent: true, opacity: 0.32, depthWrite: false,
+  blending: THREE.AdditiveBlending, fog: false, vertexColors: true,
+});
+
+/** Cola de partículas: `place(t, rnd)` da la posición; el brillo se apaga hacia la punta. */
+function tailPoints(
+  count: number, _length: number,
+  place: (t: number, rnd: () => number) => [number, number, number],
+  material: THREE.PointsMaterial,
+): THREE.Points {
+  const rnd = makeRng(count * 7919);
+  const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    // Más densidad cerca del núcleo: t sesgado hacia 0.
+    const t = Math.pow(rnd(), 1.6);
+    positions.set(place(t, rnd), i * 3);
+    const k = (1 - t) * (0.6 + 0.4 * rnd());
+    colors.set([k, k, k], i * 3);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+  const points = new THREE.Points(geo, material);
+  points.frustumCulled = false;
+  return points;
+}
+
+/** Una malla del modelo: hielo con color por vértice, o cristal que brilla solo (sin luz). */
+function siblingMesh(part: SiblingMeshData): THREE.Mesh {
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(part.position, 3));
+  geometry.setAttribute("normal", new THREE.Float32BufferAttribute(part.normal, 3));
+  if (part.vertexColor) geometry.setAttribute("color", new THREE.Float32BufferAttribute(part.vertexColor, 3));
+  geometry.setIndex(part.index);
+  geometry.computeBoundingSphere();
+  const material = part.part === "crystals"
+    ? new THREE.MeshBasicMaterial({ vertexColors: Boolean(part.vertexColor), color: 0xffffff })
+    : new THREE.MeshStandardMaterial({
+      vertexColors: Boolean(part.vertexColor), roughness: part.roughness, metalness: part.metalness,
+      // Brillo propio de hielo: si no, a contraluz de la nebulosa se lee como una roca negra.
+      flatShading: true, emissive: new THREE.Color("#3a7fa8"), emissiveIntensity: 0.35,
+    });
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.name = part.name;
+  mesh.position.fromArray(part.pivot);
+  return mesh;
+}
 
 /** Probabilidad por segundo de que el cometa hermano se asome (solo en zona muerta). */
 const SIBLING_SPAWN_PER_SECOND = 0.25;
@@ -189,7 +284,7 @@ export class Scenery {
   private balloon: THREE.Sprite | null = null;
   /** Cometa hermano que se cruza (§5.6): SOLO en zona muerta. */
   private sibling: {
-    group: THREE.Group; distance: number; side: number; active: boolean; remaining: number;
+    group: THREE.Group; body: THREE.Group; distance: number; side: number; active: boolean; remaining: number;
   } | null = null;
   private siblingsLeft = 0;
   /** Lo llama el renderer para que suene el rugido con doppler. */
@@ -737,31 +832,55 @@ export class Scenery {
     this.scene.add(balloon);
   }
 
-  /** Cometa hermano: núcleo + cola, viaja en sentido contrario por una vía paralela. */
+  /**
+   * Cometa hermano: viaja en sentido contrario por una vía paralela. El núcleo es de Blender
+   * (hielo facetado con cristales que brillan, la familia de la proa de la carlinga); la coma
+   * y las dos colas son partículas: la iónica, recta y azul, y la de polvo, curva y dorada.
+   * El grupo mira hacia su cola (+Z): la marcha es -Z.
+   */
   private buildSibling(): void {
     const group = new THREE.Group();
-    const core = new THREE.Mesh(
+    const body = new THREE.Group();
+    body.scale.setScalar(1.8);
+    group.add(body);
+    // Reserva mientras llega el modelo (o si no llega).
+    const fallback = new THREE.Mesh(
       new THREE.IcosahedronGeometry(1.1, 0),
       new THREE.MeshStandardMaterial({
         color: "#9fd8e8", roughness: 0.4, flatShading: true,
         emissive: new THREE.Color("#2a6070"), emissiveIntensity: 0.8,
       }),
     );
-    group.add(core);
-    // La cola: motas hacia atrás, siempre alejándose de la estrella natal.
-    const tail = 46;
-    const positions = new Float32Array(tail * 3);
-    for (let i = 0; i < tail; i++) {
-      const t = i / tail;
-      positions[i * 3] = (Math.random() - 0.5) * t * 8;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * t * 8;
-      positions[i * 3 + 2] = t * 42;
-    }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    group.add(new THREE.Points(geo, iceParticleMaterial));
+    body.add(fallback);
+    fetch(siblingUrl)
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`Cometa hermano: HTTP ${response.status}`);
+        const data = (await response.json()) as { meshes: SiblingMeshData[] };
+        body.remove(fallback);
+        for (const part of data.meshes) body.add(siblingMesh(part));
+      })
+      .catch((error: unknown) => console.warn(error));
+
+    // La coma: el halo de gas que el sol arranca del hielo.
+    const coma = new THREE.Sprite(comaMaterial);
+    coma.scale.setScalar(13);
+    group.add(coma);
+
+    // Cola iónica: recta, estrecha y azul, siempre opuesta a la marcha.
+    group.add(tailPoints(420, 70, (t, rnd) => [
+      (rnd() - 0.5) * (0.6 + t * 2.2),
+      (rnd() - 0.5) * (0.6 + t * 2.2),
+      0.8 + t * 70,
+    ], ionTailMaterial));
+    // Cola de polvo: más ancha, curva hacia un lado y dorada.
+    group.add(tailPoints(320, 46, (t, rnd) => [
+      t * t * 16 + (rnd() - 0.5) * (1 + t * 7),
+      (rnd() - 0.5) * (1 + t * 5),
+      0.8 + t * 46,
+    ], dustTailMaterial));
+
     group.visible = false;
-    this.sibling = { group, distance: 0, side: 1, active: false, remaining: 0 };
+    this.sibling = { group, body, distance: 0, side: 1, active: false, remaining: 0 };
     this.scene.add(group);
   }
 
@@ -785,6 +904,9 @@ export class Scenery {
         .addScaledVector(this.frame.up, 4);
       // La cola siempre apunta hacia atrás respecto a su marcha.
       s.group.lookAt(s.group.position.clone().addScaledVector(this.frame.tan, 10));
+      // El núcleo gira despacio sobre sí mismo: los cristales destellan al pasar.
+      s.body.rotation.z += dt * 0.35;
+      s.body.rotation.x += dt * 0.12;
       if (s.remaining <= 0 || s.distance < cometDistance - 90) {
         s.active = false;
         s.group.visible = false;

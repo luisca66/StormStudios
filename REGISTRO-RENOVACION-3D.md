@@ -13,6 +13,14 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 
 ## En curso
 
+- **El Cometa: el cometa visto desde fuera** (2026-10-17, pedido de Luis). En el juego el cometa propio sólo se
+  ve desde la carlinga; el único visto desde fuera es el **cometa hermano** que cruza de frente (antes un
+  icosaedro con motas). Claude lo modeló en Blender (`apps-src/grados-menores-juego/art/blender/cometa-hermano/`):
+  núcleo de hielo facetado con rocas pegadas, de la familia de la proa, y 7 cristales cian atrás (972 tri,
+  28 KB). En `scenery.ts`: modelo por JSON con reserva, coma luminosa, cola iónica recta azul y cola de polvo
+  curva dorada; el núcleo gira despacio y tiene brillo propio para no leerse negro a contraluz.
+  **Siguiente:** que Luis lo vea jugando; publicar con su OK.
+
 - **Resonancia: un mundo por instrumento** (pedido de Luis el 2026-10-17: «otros instrumentos», para que el
   juego dure años). Primer mundo nuevo: **«Dentro del piano de cola»**; de paso se rehace en Blender
   **«La guitarra gigante»** (hoy primitivas en `src/world.ts`). Ambos encargados a **Astra** con el mismo
