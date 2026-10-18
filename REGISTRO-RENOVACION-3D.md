@@ -44,7 +44,7 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
      puente con cuerdas y arco. Claude aflojó a 1 cm el control del muro (filete de 4 mm). El decorado se dibuja
      ahora a doble cara (los interiores tenían las normales hacia dentro y se veía el piso negro). Nombres de
      nivel aprobados por Luis: El arco, Las cuerdas, El puente, El alma, Las efes.
-  6. Siguiente: Luis lo está jugando en Chrome; publicar con su OK.
+  6. ✅ **Publicado (2026-10-17)** con el OK de Luis: seis mundos y timbres.
 
 - **Walking AP Multi, nivel 4 «El Pantano»** ✅ **publicado** (2026-10-17) tras jugarlo Luis («¡Hermoso!»).
   Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-PANTANO-BLENDER.md`. **Walking AP Multi tiene sus 5
