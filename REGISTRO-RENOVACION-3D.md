@@ -43,8 +43,8 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
   5. ✅ **Mundo «Dentro del cello»** (Astra; 12 partes, 58 120 tri, 316 KB): tapa con efes de luz, alma, barra,
      puente con cuerdas y arco. Claude aflojó a 1 cm el control del muro (filete de 4 mm). El decorado se dibuja
      ahora a doble cara (los interiores tenían las normales hacia dentro y se veía el piso negro). Nombres de
-     nivel provisionales: El arco, Las cuerdas, El puente, El alma, Las efes (**falta el visto bueno de Luis**).
-  6. Siguiente: que Luis lo juegue y apruebe los nombres del cello; publicar con su OK.
+     nivel aprobados por Luis: El arco, Las cuerdas, El puente, El alma, Las efes.
+  6. Siguiente: Luis lo está jugando en Chrome; publicar con su OK.
 
 - **Walking AP Multi, nivel 4 «El Pantano»** ✅ **publicado** (2026-10-17) tras jugarlo Luis («¡Hermoso!»).
   Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-PANTANO-BLENDER.md`. **Walking AP Multi tiene sus 5
