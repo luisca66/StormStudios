@@ -131,7 +131,7 @@ relajó para los modelos de Blender.
 
 ### Sin Blender todavía
 
-- **El Cometa** — `grados-menores-juego` (publicado): ✅ carlinga de Blender (2026-09-15, Astra + grietas de Claude). ✅ cometa hermano de Blender (2026-10-17, Claude: núcleo de hielo facetado con cristales; coma y colas iónica/polvo en código). Siguen procedurales los anillos y el perihelio.
+- **El Cometa** — `grados-menores-juego` (publicado): ✅ carlinga de Blender (2026-09-15, Astra + grietas de Claude). ✅ cometa hermano de Blender (2026-10-17, Claude: núcleo de hielo facetado con cristales; coma y colas iónica/polvo en código). ✅ anillos y perihelio de latón (2026-10-17, Claude: anillo de navegación con limbo graduado, baliza de cristal ámbar con cardán, doble aro de la espiral, medallones del rosetón y observatorio). Siguen en código la estrella, el planeta, las auroras y los meteoros.
   Brief listo para Astra: `art/blender/carlinga/BRIEF.md` (2026-09-15) — carlinga + proa de hielo.
 - **Resonancia** — `oido-absoluto-guitarra-juego`: ✅ robot luthier en Blender, articulado
   (codos y rodillas), con mochila de guitarra y pisadas sincronizadas (2026-09-14, Claude). El

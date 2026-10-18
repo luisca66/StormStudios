@@ -13,6 +13,15 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 
 ## En curso
 
+- **El Cometa: anillos y perihelio de latón** (2026-10-17, pedido de Luis). Claude modeló en Blender
+  (`apps-src/grados-menores-juego/art/blender/anillos/`, 8 mallas, 10 318 tri, 96 KB): anillo de navegación
+  (limbo de astrolabio con 48 graduaciones y esferas cardinales), baliza (cristal ámbar en un cardán), aro de
+  la espiral del perihelio (doble aro con puentes y tachones), medallón del rosetón (estrella de 12 puntas) y
+  observatorio (montaña nevada, tambor, cúpula con ranura y telescopio hacia el cometa). `src/3d/brass-models.ts`
+  los carga una vez; `rings.ts` y `perihelion.ts` usan las primitivas de antes como reserva. El latón del
+  modelo es menos metálico y con más brillo propio: sin mapa de entorno el metal puro se veía negro.
+  **Siguiente:** que Luis lo vea jugando; publicar con su OK.
+
 - **El Cometa: el cometa visto desde fuera** (2026-10-17, pedido de Luis). En el juego el cometa propio sólo se
   ve desde la carlinga; el único visto desde fuera es el **cometa hermano** que cruza de frente (antes un
   icosaedro con motas). Claude lo modeló en Blender (`apps-src/grados-menores-juego/art/blender/cometa-hermano/`):

@@ -10,6 +10,7 @@
 import * as THREE from "three";
 import { newTrackFrame, type TrackFrame, type TrackManager } from "./track";
 import { EXPRESO_THREAD_LIGHT_PERIOD_S } from "@/config";
+import { MODEL_BRASS, MODEL_BRASS_LIT, MODEL_BRASS_WARM, brassModels, isBrassGeometry } from "./brass-models";
 
 /** Hasta dónde se adentra el cometa tras el último anillo, ya en órbita. */
 export const ORBIT_DEPTH = 120;
@@ -187,19 +188,32 @@ export class Perihelion {
 
     // El observatorio en su montaña, con la cúpula abierta: el lugar EXACTO del menú,
     // visto desde el cielo. Cierra el círculo sin una palabra (§12).
-    const mount = new THREE.Mesh(
-      new THREE.ConeGeometry(2.4, 3.2, 7),
-      new THREE.MeshStandardMaterial({ color: "#243447", roughness: 1, flatShading: true }),
-    );
     const surface = planet.position.clone().addScaledVector(this.frame.up, 30);
-    mount.position.copy(surface);
-    group.add(mount);
-    const dome = new THREE.Mesh(
-      new THREE.SphereGeometry(1.15, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2),
-      BRASS_LIT,
-    );
-    dome.position.copy(surface).addScaledVector(this.frame.up, 1.7);
-    group.add(dome);
+    const model = brassModels();
+    if (model) {
+      // El de Blender: montaña nevada, tambor de latón, cúpula con la ranura abierta y el
+      // telescopio apuntando hacia el cometa que vuelve (-tan).
+      const observatory = new THREE.Group();
+      this.basis.makeBasis(this.frame.right, this.frame.up, this.frame.tan.clone().negate());
+      observatory.quaternion.setFromRotationMatrix(this.basis);
+      observatory.position.copy(surface).addScaledVector(this.frame.up, -0.5);
+      for (const piece of model.observatory) observatory.add(new THREE.Mesh(piece.geometry, piece.material));
+      observatory.add(new THREE.Mesh(model.observatoryDome, MODEL_BRASS_WARM));
+      group.add(observatory);
+    } else {
+      const mount = new THREE.Mesh(
+        new THREE.ConeGeometry(2.4, 3.2, 7),
+        new THREE.MeshStandardMaterial({ color: "#243447", roughness: 1, flatShading: true }),
+      );
+      mount.position.copy(surface);
+      group.add(mount);
+      const dome = new THREE.Mesh(
+        new THREE.SphereGeometry(1.15, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2),
+        BRASS_LIT,
+      );
+      dome.position.copy(surface).addScaledVector(this.frame.up, 1.7);
+      group.add(dome);
+    }
 
     // El haz vertical del observatorio: solo en la gala, saludando al que vuelve.
     const beam = new THREE.Mesh(
@@ -303,9 +317,13 @@ export class Perihelion {
     rose.quaternion.setFromRotationMatrix(this.basis);
     for (let i = 0; i < 12; i++) {
       const a = (i / 12) * Math.PI * 2 - Math.PI / 2;
-      const medallion = new THREE.Mesh(MEDALLION_GEO, litClasses.has(i) ? BRASS_LIT : BRASS);
+      const lit = litClasses.has(i);
+      // El de Blender ya mira a +Z (estrella de doce puntas en relieve); el cilindro hay que tumbarlo.
+      const medallion = model
+        ? new THREE.Mesh(model.medallion, lit ? MODEL_BRASS_LIT : MODEL_BRASS)
+        : new THREE.Mesh(MEDALLION_GEO, lit ? BRASS_LIT : BRASS);
       medallion.position.set(Math.cos(a) * 15, Math.sin(a) * 15, 0);
-      medallion.rotation.x = Math.PI / 2;
+      if (!model) medallion.rotation.x = Math.PI / 2;
       rose.add(medallion);
     }
     group.add(rose);
@@ -348,7 +366,9 @@ export class Perihelion {
       ring.position.copy(this.frame.pos)
         .addScaledVector(this.frame.right, Math.sin(turn) * 5.5)
         .addScaledVector(this.frame.up, (1 - Math.cos(turn)) * 3.2);
-      const torus = new THREE.Mesh(RING_GEO, BRASS);
+      const model = brassModels();
+      // Doble aro de latón con puentes y tachones (Blender); el toro de siempre como reserva.
+      const torus = model ? new THREE.Mesh(model.periRing, MODEL_BRASS) : new THREE.Mesh(RING_GEO, BRASS);
       ring.add(torus);
       this.group.add(ring);
       this.rings.push(ring);
@@ -360,7 +380,7 @@ export class Perihelion {
     const ring = this.rings[index];
     if (!ring) return;
     for (const child of ring.children) {
-      if (child instanceof THREE.Mesh) child.material = BRASS_LIT;
+      if (child instanceof THREE.Mesh) child.material = child.material === MODEL_BRASS ? MODEL_BRASS_LIT : BRASS_LIT;
     }
   }
 
@@ -446,7 +466,7 @@ export class Perihelion {
       });
       // Las geometrías compartidas del módulo (anillos, medallones) NO se liberan.
       for (const geometry of geometries) {
-        if (geometry !== RING_GEO && geometry !== MEDALLION_GEO) geometry.dispose();
+        if (geometry !== RING_GEO && geometry !== MEDALLION_GEO && !isBrassGeometry(geometry)) geometry.dispose();
       }
     }
     this.starMap?.dispose();

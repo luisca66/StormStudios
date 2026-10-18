@@ -12,6 +12,7 @@
 import * as THREE from "three";
 import { DEAD_ZONE_LENGTH, DISPOSE_BEHIND, SEGMENTS_AHEAD, SEGMENT_LENGTH } from "@/config";
 import { newTrackFrame, type TrackFrame, type TrackManager } from "./track";
+import { MODEL_AMBER, MODEL_BRASS, brassModels } from "./brass-models";
 
 export type RingResult = "pending" | "correct" | "wrong";
 
@@ -117,7 +118,10 @@ export class Rings {
     this.basis.makeBasis(this.frame.right, this.frame.up, this.frame.tan.clone().negate());
     ring.quaternion.setFromRotationMatrix(this.basis);
     ring.position.copy(this.frame.pos);
-    ring.add(new THREE.Mesh(RING_GEO, BRASS), new THREE.Mesh(RING_INNER_GEO, BRASS));
+    // Latón de Blender (limbo graduado de astrolabio); primitivas si el modelo no ha llegado.
+    const model = brassModels();
+    if (model) ring.add(new THREE.Mesh(model.navRing, MODEL_BRASS));
+    else ring.add(new THREE.Mesh(RING_GEO, BRASS), new THREE.Mesh(RING_INNER_GEO, BRASS));
 
     const bladeA = new THREE.Mesh(BLADE_GEO, BLADE_PENDING);
     const bladeB = new THREE.Mesh(BLADE_GEO, BLADE_PENDING);
@@ -133,8 +137,9 @@ export class Rings {
     pulsar.position.copy(this.frame.pos)
       .addScaledVector(this.frame.right, 5.2)
       .addScaledVector(this.frame.up, 2.4);
-    const core = new THREE.Mesh(PULSAR_CORE_GEO, BRASS);
-    const pulsarRing = new THREE.Mesh(PULSAR_RING_GEO, BRASS);
+    // La baliza: cristal ámbar que late dentro de un cardán de latón.
+    const core = model ? new THREE.Mesh(model.pulsarCore, MODEL_AMBER) : new THREE.Mesh(PULSAR_CORE_GEO, BRASS);
+    const pulsarRing = model ? new THREE.Mesh(model.pulsarRing, MODEL_BRASS) : new THREE.Mesh(PULSAR_RING_GEO, BRASS);
     pulsar.add(core, pulsarRing);
     group.add(pulsar);
 
