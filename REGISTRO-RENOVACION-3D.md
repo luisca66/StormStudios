@@ -19,7 +19,7 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
   núcleo de hielo facetado con rocas pegadas, de la familia de la proa, y 7 cristales cian atrás (972 tri,
   28 KB). En `scenery.ts`: modelo por JSON con reserva, coma luminosa, cola iónica recta azul y cola de polvo
   curva dorada; el núcleo gira despacio y tiene brillo propio para no leerse negro a contraluz.
-  **Siguiente:** que Luis lo vea jugando; publicar con su OK.
+  ✅ **Publicado (2026-10-17)** con el OK de Luis.
 
 - **Resonancia: un mundo por instrumento** (pedido de Luis el 2026-10-17: «otros instrumentos», para que el
   juego dure años). Primer mundo nuevo: **«Dentro del piano de cola»**; de paso se rehace en Blender
