@@ -1,0 +1,8 @@
+Ronda 2 del diapasón (revisión de Claude en Chrome, 1024×768 y 1280×760). Buen avance: la perspectiva hacia el clavijero, la madera y los trastes metálicos van bien. Corrige esto en la vista POV:
+
+1. ORDEN DE LAS CUERDAS INVERTIDO. Desde los ojos del guitarrista sentado, la 6ª (Mi grave, la más gruesa) es la más cercana a la cara y queda ARRIBA en su campo visual; la 1ª (Mi agudo) queda ABAJO y más lejos. Hoy la 1ª está arriba y la 6ª abajo: así lo ve alguien de enfrente, no el guitarrista. Voltea la cámara al lado correcto (mirando desde arriba del canto de las graves) y que todo lo demás siga cuadrando (marcadores, toques, etiquetas, prueba de geometría).
+2. QUE QUEPA. En escritorio, de la cejuela al traste 12 tiene que verse completo sin barra de desplazamiento horizontal (hoy se corta en el 11 a 1024 px de ancho y aparece el scroll). Ajusta encuadre, giro y escala al ancho disponible; en teléfono vertical puede seguir el desplazamiento si de verdad no cabe, pero en horizontal tampoco debería hacer falta.
+3. ETIQUETAS DE LA CEJUELA. Los nombres de cuerda (1·E, 2·B…) se encimen y se cortan junto al clavijero. Colócalas donde se lean sin chocar (fuera del mástil, alineadas con cada cuerda, tamaño legible).
+4. CUERDAS MÁS REALES. Las graves entorchadas (4ª, 5ª, 6ª) deben verse claramente más gruesas y metálicas con su textura de entorchado; las agudas (1ª, 2ª, 3ª) de nailon traslúcido, con el grosor creciente 1ª→3ª. Hoy se ven casi iguales. Un poco de sombra de cada cuerda sobre el diapasón ayuda a leer la altura.
+
+Mantén todo lo demás (pedagogía, selector, idioma, accesibilidad). Actualiza ENTREGA.md con lo que cambió.
