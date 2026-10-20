@@ -57,14 +57,15 @@ def pt(u, v):
     p = persp(u)
     top = (lerp(FAR_TOP[0], NEAR_TOP[0], p), lerp(FAR_TOP[1], NEAR_TOP[1], p))
     bot = (lerp(FAR_BOT[0], NEAR_BOT[0], p), lerp(FAR_BOT[1], NEAR_BOT[1], p))
-    return (lerp(top[0], bot[0], v), lerp(top[1], bot[1], v))
+    # Volteado en vertical, como la vista POV de la app: el mástil sube hacia la caja y la 6ª queda abajo.
+    return (lerp(top[0], bot[0], v), S - lerp(top[1], bot[1], v))
 
 
 neck = Image.new("RGBA", (S, S), (0, 0, 0, 0))
 nd = ImageDraw.Draw(neck)
 
 # Canto del diapasón (el grosor que se ve bajo las agudas) y sombra sobre la caja.
-edge = [pt(0, 1), pt(1, 1), (NEAR_BOT[0] + 10, NEAR_BOT[1] + 120), (FAR_BOT[0] + 4, FAR_BOT[1] + 30)]
+edge = [pt(0, 1), pt(1, 1), (NEAR_BOT[0] + 10, S - NEAR_BOT[1] - 120), (FAR_BOT[0] + 4, S - FAR_BOT[1] - 30)]
 shadow = Image.new("L", (S, S), 0)
 ImageDraw.Draw(shadow).polygon([(x + 40, y + 90) for x, y in edge], fill=170)
 shadow = shadow.filter(ImageFilter.GaussianBlur(60))

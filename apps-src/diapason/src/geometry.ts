@@ -7,6 +7,7 @@ const cross=(a:Vec,b:Vec):Vec=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1
 // Millimetres. Camera is above the bass edge, looking left towards the nut.
 const eye:Vec=[470,230,260], forward=norm(sub([160,0,0],eye));
 const right=norm(cross(forward,[0,0,-1])), up=cross(right,forward);
+const H=460; // alto del lienzo de referencia (1100 × 460)
 export const fret=(n:number)=>650*(1-Math.pow(2,-n/12));
 export const width=(x:number)=>52+10*x/325;
 export const stringY=(s:number,x:number)=>(s-2.5)*(43+14*x/650)/5;
@@ -15,7 +16,9 @@ export function project(x:number,y:number,z=0):Point {
   const v=sub([x,y,z],eye), depth=dot(v,forward);
   // Camera roll follows the neck across the player's lap. Uniform scale preserves perspective.
   const u=1500*dot(v,right)/depth, w=-1500*dot(v,up)/depth, roll=48*Math.PI/180;
-  return {x:480+.75*(u*Math.cos(roll)-w*Math.sin(roll)),y:200+.75*(u*Math.sin(roll)+w*Math.cos(roll))};
+  // Volteo vertical (Luis, 2026-10-20): así ve el mástil el guitarrista sentado, con la 1ª arriba,
+  // la 6ª abajo y el mástil subiendo hacia la caja. Los textos se dibujan derechos aparte.
+  return {x:480+.75*(u*Math.cos(roll)-w*Math.sin(roll)),y:H-(200+.75*(u*Math.sin(roll)+w*Math.cos(roll)))};
 }
 export const position=(s:number,f:number)=>project(positionX(f),stringY(s,positionX(f)),3);
 export function inside(p:Point,poly:Point[]) {
@@ -38,7 +41,7 @@ export function hitPosition(p:Point):[number,number]|null {
 export const STRING_DIAMETERS=[1.5,2.1,2.8,3.7,4.5,5.3] as const;
 export function stringLabels(viewportWidth:number){
   const spacing=Math.max(24,20*1100/viewportWidth);
-  return Array.from({length:6},(_,s)=>({s,label:{x:115,y:170+(2.5-s)*spacing},anchor:project(-22,stringY(s,-22),3)}));
+  return Array.from({length:6},(_,s)=>({s,label:{x:115,y:H-170-(2.5-s)*spacing},anchor:project(-22,stringY(s,-22),3)}));
 }
 export function draw(canvas:HTMLCanvasElement,active:[number,number]|null,preview:[number,number]|null=null) {
   const c=canvas.getContext('2d')!;
@@ -47,9 +50,9 @@ export function draw(canvas:HTMLCanvasElement,active:[number,number]|null,previe
   const line=(a:Point,b:Point,color:string,size=1)=>{c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.strokeStyle=color;c.lineWidth=size;c.stroke();};
   const polygon=(points:Point[],fill:string|CanvasGradient)=>{c.beginPath();points.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.closePath();c.fillStyle=fill;c.fill();};
   const board=(z:number)=>[project(0,-26,z),project(345,-width(345)/2,z),project(345,width(345)/2,z),project(0,26,z)];
-  const bg=c.createRadialGradient(800,180,20,550,230,700);bg.addColorStop(0,'#44352b');bg.addColorStop(.55,'#201b18');bg.addColorStop(1,'#100e0d');c.fillStyle=bg;c.fillRect(0,0,1100,460);
+  const bg=c.createRadialGradient(800,H-180,20,550,H-230,700);bg.addColorStop(0,'#44352b');bg.addColorStop(.55,'#201b18');bg.addColorStop(1,'#100e0d');c.fillStyle=bg;c.fillRect(0,0,1100,460);
   // A restrained glimpse of the cedar body situates the neck against the player.
-  const body=c.createLinearGradient(800,0,1100,400);body.addColorStop(0,'#b57e43');body.addColorStop(.5,'#80522d');body.addColorStop(1,'#d7a366');
+  const body=c.createLinearGradient(800,H,1100,H-400);body.addColorStop(0,'#b57e43');body.addColorStop(.5,'#80522d');body.addColorStop(1,'#d7a366');
   const bodyPts:Point[]=[];for(let i=0;i<70;i++){const a=i/69*Math.PI*2;bodyPts.push(project(490+150*Math.cos(a),140*Math.sin(a),-13));}polygon(bodyPts,body);
   for(let i=0;i<45;i++){const y=-135+i*6;line(project(360,y,-12),project(600,y,-12),'#2d190b18',1);}
   // Slotted headstock, bone nut, and mahogany neck edge.
@@ -59,18 +62,18 @@ export function draw(canvas:HTMLCanvasElement,active:[number,number]|null,previe
   c.save();c.shadowColor='#000b';c.shadowBlur=22;c.shadowOffsetY=20;polygon(board(-8),'#18100c');c.restore();
   polygon([project(0,26,0),project(345,width(345)/2,0),project(345,width(345)/2,-12),project(0,26,-12)],'#61412e');
   line(project(0,26,-6),project(345,width(345)/2,-6),'#956749',1);
-  const wood=c.createLinearGradient(350,90,850,350);wood.addColorStop(0,'#211a17');wood.addColorStop(.45,'#49352a');wood.addColorStop(.65,'#2b201b');wood.addColorStop(1,'#171312');polygon(board(0),wood);
+  const wood=c.createLinearGradient(350,H-90,850,H-350);wood.addColorStop(0,'#211a17');wood.addColorStop(.45,'#49352a');wood.addColorStop(.65,'#2b201b');wood.addColorStop(1,'#171312');polygon(board(0),wood);
   c.save();c.beginPath();board(0).forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.closePath();c.clip();
   // Deterministic longitudinal grain, drawn in world coordinates before projection.
   for(let i=0;i<190;i++){const y=-35+i*.38;c.beginPath();for(let x=0;x<=350;x+=5){const p=project(x,y+Math.sin(x*.027+i*1.7)*.18+Math.sin(x*.008+i)*.5,0);x?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y);}c.strokeStyle=i%3?'#d7985820':'#05040366';c.lineWidth=i%5===0?1.2:.5;c.stroke();}c.restore();
   line(project(0,26,.1),project(345,width(345)/2,.1),'#c3976870',1.4);
   for(const f of [3,5,7,9,12]){
-    const x=positionX(f);for(const y of f===12?[-9,9]:[0]){const p=project(x,y,.1);c.beginPath();c.ellipse(p.x,p.y,3.2,2.2,-.35,0,Math.PI*2);c.fillStyle='#c8bd9c8a';c.fill();}
+    const x=positionX(f);for(const y of f===12?[-9,9]:[0]){const p=project(x,y,.1);c.beginPath();c.ellipse(p.x,p.y,3.2,2.2,.35,0,Math.PI*2);c.fillStyle='#c8bd9c8a';c.fill();}
     const p=project(x,width(x)/2,-4);c.beginPath();c.arc(p.x,p.y,1.8,0,Math.PI*2);c.fillStyle='#e6d4ab';c.fill();
   }
   for(let f=0;f<=12;f++){
     const x=fret(f),a=project(x,-width(x)/2,.6),b=project(x,width(x)/2,.6);
-    line({x:a.x+1,y:a.y+2},{x:b.x+1,y:b.y+2},'#0009',f?4:7);
+    line({x:a.x+1,y:a.y-2},{x:b.x+1,y:b.y-2},'#0009',f?4:7);
     const metal=c.createLinearGradient(a.x,a.y,b.x,b.y);metal.addColorStop(0,'#8b8171');metal.addColorStop(.2,'#fff5d9');metal.addColorStop(.45,'#a49d93');metal.addColorStop(.7,'#eae6da');metal.addColorStop(1,'#6b6862');
     c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.strokeStyle=f?metal:'#e6d7b6';c.lineWidth=f?2.5:6;c.stroke();
     const p=project(f===0?-10:positionX(f),-width(x)/2-11);c.fillStyle='#e0d0b6';c.font='12px Arial';c.textAlign='center';c.fillText(String(f),p.x,p.y);

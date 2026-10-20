@@ -14,7 +14,7 @@ assert.ok(span(project(fret(12),0),project(fret(11),0))>span(project(fret(1),0),
 console.log('PASS: 78 positions, 156 neighbouring hits, bounds, open strings, 650 mm scale and perspective.');
 
 for(let f=0;f<=12;f++)for(let s=1;s<6;s++)
- assert.ok(position(s,f).y<position(s-1,f).y,`Bass string ${s+1} above ${s}, fret ${f}`);
+ assert.ok(position(s,f).y>position(s-1,f).y,`Bass string ${s+1} below ${s}, fret ${f} (vista del guitarrista)`);
 for(const viewportWidth of [562,802,900,982,1098]){
  const scale=viewportWidth/1100;
  for(let s=0;s<6;s++)for(let f=0;f<=12;f++){
@@ -22,11 +22,11 @@ for(const viewportWidth of [562,802,900,982,1098]){
   assert.deepEqual(hitPosition({x:screen.x/scale,y:screen.y/scale}),[s,f]);
  }
  const labels=stringLabels(viewportWidth);
- for(let s=1;s<6;s++)assert.ok((labels[s-1].label.y-labels[s].label.y)*scale>=19.99,'Labels have at least 20 CSS pixels between baselines');
+ for(let s=1;s<6;s++)assert.ok((labels[s].label.y-labels[s-1].label.y)*scale>=19.99,'Labels have at least 20 CSS pixels between baselines');
  for(const x of [0,fret(12)])for(const side of [-1,1]){
   const p=project(x,side*width(x)/2);
   assert.ok(p.x>0&&p.x<1100&&p.y>0&&p.y<460,'Entire nut and twelfth fret fit');
  }
 }
 for(let s=1;s<6;s++)assert.ok(STRING_DIAMETERS[s]>STRING_DIAMETERS[s-1]);
-console.log('PASS round 2: bass above treble at every fret; responsive hit mapping, full nut/12th fret, separated labels and graded string diameters.');
+console.log('PASS: bass below treble (guitarist view) at every fret; responsive hit mapping, full nut/12th fret, separated labels and graded string diameters.');
