@@ -101,7 +101,9 @@ export default async function AppDetailPage({ params }: Props) {
                 href={app.webUrl as Parameters<typeof Link>[0]["href"]}
                 className="inline-flex items-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition font-medium shadow-md"
               >
-                🎮 {locale === "es" ? "Abrir práctica" : "Open practice"}
+                🎮 {app.isUtility
+                  ? (locale === "es" ? "Abrir app" : "Open app")
+                  : (locale === "es" ? "Abrir práctica" : "Open practice")}
               </Link>
             )}
             {app.gameUrl && (
@@ -152,7 +154,9 @@ export default async function AppDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <div className="ss-glass rounded-xl p-5 mt-8"><h2 className="text-xl mb-3">{locale === "es" ? "Antes de empezar" : "Before you start"}</h2><p>{locale === "es" ? "Abre la práctica, lee sus instrucciones y comienza con una dificultad que puedas resolver. Activa el sonido desde la app y ajusta el volumen a un nivel cómodo." : "Open practice, read its instructions and start at a manageable difficulty. Enable sound within the app and set a comfortable volume."}</p>{app.gameUrl && <p className="mt-3">{locale === "es" ? "La práctica y el modo juego son dos experiencias distintas: usa la primera para trabajar la habilidad y la segunda para aplicarla en el juego." : "Practice and game mode are separate experiences: use the first to work on the skill and the second to apply it in the game."}</p>}<p className="mt-3"><Link href="/privacidad" className="underline">{locale === "es" ? "Permisos y datos de las apps" : "App permissions and data"}</Link></p></div>
+      <div className="ss-glass rounded-xl p-5 mt-8"><h2 className="text-xl mb-3">{locale === "es" ? "Antes de empezar" : "Before you start"}</h2><p>{app.isUtility
+        ? (locale === "es" ? "Es una herramienta de uso libre: ábrela cuando la necesites mientras estudias. Funciona en el navegador, en computadora y en teléfono, y recuerda tu configuración en este dispositivo." : "It is a free-use tool: open it whenever you need it while you practice. It runs in the browser on computers and phones, and remembers your settings on this device.")
+        : (locale === "es" ? "Abre la práctica, lee sus instrucciones y comienza con una dificultad que puedas resolver. Activa el sonido desde la app y ajusta el volumen a un nivel cómodo." : "Open practice, read its instructions and start at a manageable difficulty. Enable sound within the app and set a comfortable volume.")}</p>{app.gameUrl && <p className="mt-3">{locale === "es" ? "La práctica y el modo juego son dos experiencias distintas: usa la primera para trabajar la habilidad y la segunda para aplicarla en el juego." : "Practice and game mode are separate experiences: use the first to work on the skill and the second to apply it in the game."}</p>}<p className="mt-3"><Link href="/privacidad" className="underline">{locale === "es" ? "Permisos y datos de las apps" : "App permissions and data"}</Link></p></div>
       {/* Descripción larga */}
       {longDescriptionParagraphs.length > 0 && (
         <div className="mt-12 prose prose-lg prose-gray max-w-none">

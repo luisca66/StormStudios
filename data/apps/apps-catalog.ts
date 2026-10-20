@@ -3,7 +3,7 @@ import type { BilingualText } from "@/types/course";
 export type AppEntry = {
   slug: string;
   name: BilingualText;
-  category: "ear-training" | "cognitive" | "theory" | "sequencer" | "other";
+  category: "ear-training" | "cognitive" | "theory" | "sequencer" | "utility" | "other";
   description: BilingualText;
   longDescription?: BilingualText;
   playStoreUrl?: string;
@@ -19,7 +19,105 @@ export type AppEntry = {
   features?: BilingualText[];
   // Herramienta de apoyo (sección "Herramientas Web"); las demás van en "Web Apps".
   isTool?: boolean;
+  // Utility App (sección propia): útil para el músico pero fuera de la metodología.
+  isUtility?: boolean;
 };
+
+// Utility Apps: sección propia en /apps (útiles para el músico, fuera de la metodología).
+export const UTILITY_APPS: AppEntry[] = [
+  {
+    slug: "metronomo",
+    name: { es: "Metrónomo Pro", en: "Metronome Pro" },
+    category: "utility",
+    description: {
+      es: "Metrónomo preciso con acentos por pulso, subdivisiones, polirritmos y tres temas visuales.",
+      en: "Precise metronome with per-beat accents, subdivisions, polyrhythms and three visual themes.",
+    },
+    longDescription: {
+      es: "Un metrónomo de estudio que no se desfasa: programa cada golpe con el reloj de audio del navegador. Cambia el compás, marca el acento de cada pulso con un toque, divide el pulso hasta en cuatro y suma una segunda voz para practicar polirritmos de 2 a 7. Ajusta el tempo deslizando, con los botones o con TAP. Elige entre tres temas: Vórtice, Péndulo y Señal.",
+      en: "A practice metronome that never drifts: every click is scheduled on the browser's audio clock. Change the meter, set each beat's accent with a tap, subdivide the beat up to four, and add a second voice to practice polyrhythms from 2 to 7. Set the tempo by swiping, with the buttons or with TAP. Choose between three themes: Vortex, Pendulum and Signal.",
+    },
+    webUrl: "/apps/metronomo/jugar",
+    isUtility: true,
+    features: [
+      { es: "Tempo de 20 a 240 BPM con marca de tempo (Largo a Prestissimo)", en: "Tempo from 20 to 240 BPM with tempo marking (Largo to Prestissimo)" },
+      { es: "Acento por pulso y compás ajustable", en: "Per-beat accent and adjustable meter" },
+      { es: "Subdivisiones y polirritmos con una segunda voz", en: "Subdivisions and polyrhythms with a second voice" },
+      { es: "TAP para marcar el tempo con toques", en: "TAP to set the tempo by tapping" },
+      { es: "Tres temas visuales y se recuerda tu configuración", en: "Three visual themes; your settings are remembered" },
+    ],
+    icon: "/images/app-metronomo.jpg",
+  },
+  {
+    slug: "afinador",
+    name: { es: "Afinador Cromático", en: "Chromatic Tuner" },
+    category: "utility",
+    description: {
+      es: "Afinador cromático de C2 a C7 con lectura en cents, medidor amplio y procesamiento 100% en tu dispositivo.",
+      en: "Chromatic tuner from C2 to C7 with cents readout, a wide meter and 100% on-device processing.",
+    },
+    longDescription: {
+      es: "Afina cualquier instrumento con el micrófono de tu computadora o teléfono. El afinador reconoce las doce notas cromáticas de C2 a C7, muestra la frecuencia, la desviación en cents y un medidor que se pone verde cuando estás afinado. Prefiere no mostrar nada antes que inventar una lectura dudosa, y mantiene la lectura mientras la nota sigue sonando.\n\nTodo el audio se procesa en tu dispositivo: no se graba, no se guarda y no se envía a ningún lado. La afinación de referencia es A4 = 440 Hz, y puedes elegir entre sostenidos y bemoles.",
+      en: "Tune any instrument with your computer's or phone's microphone. The tuner recognizes all twelve chromatic notes from C2 to C7, shows the frequency, the deviation in cents and a meter that turns green when you are in tune. It would rather show nothing than invent a doubtful reading, and it keeps the reading while the note keeps ringing.\n\nAll audio is processed on your device: it is never recorded, stored or sent anywhere. The reference pitch is A4 = 440 Hz, and you can choose between sharps and flats.",
+    },
+    webUrl: "/apps/afinador/jugar",
+    isUtility: true,
+    features: [
+      { es: "Notas cromáticas de C2 a C7", en: "Chromatic notes from C2 to C7" },
+      { es: "Lectura en Hz y en cents, con medidor bajo / afinado / alto", en: "Hz and cents readout with a flat / in tune / sharp meter" },
+      { es: "Rechaza lecturas dudosas en vez de inventarlas", en: "Rejects doubtful readings instead of inventing them" },
+      { es: "Sostenidos o bemoles, a tu elección", en: "Sharps or flats, your choice" },
+      { es: "El audio nunca sale de tu dispositivo", en: "Audio never leaves your device" },
+    ],
+    icon: "/images/app-afinador.jpg",
+  },
+  {
+    slug: "diapason",
+    name: { es: "Diapasón", en: "Fretboard" },
+    category: "utility",
+    description: {
+      es: "Aprende las notas del mástil de la guitarra con muestras reales, en vista plana o vista desde el guitarrista.",
+      en: "Learn the notes on the guitar fretboard with real samples, in a flat view or from the guitarist's point of view.",
+    },
+    longDescription: {
+      es: "Un entrenador para memorizar las notas del diapasón de la guitarra, de la cuerda al aire al traste 12 en las seis cuerdas. La app te pregunta una cuerda y un traste, tú respondes la nota y escuchas la muestra real de esa posición.\n\nPuedes estudiar en vista plana, como un diagrama, o en la vista desde el guitarrista: el mástil en perspectiva, tal como lo ves sentado al estudiar. Juega en modo Clásico, a tu ritmo, o en Time Attack, con reloj por pregunta y tres errores permitidos. Elige sostenidos o bemoles.",
+      en: "A trainer to memorize the notes on the guitar fretboard, from the open string to the 12th fret on all six strings. The app asks you for a string and a fret, you answer the note and hear the real sample of that position.\n\nYou can study in a flat view, like a diagram, or in the guitarist's view: the neck in perspective, just as you see it sitting down to practice. Play in Classic mode, at your own pace, or in Time Attack, with a clock per question and three strikes. Choose sharps or flats.",
+    },
+    webUrl: "/apps/diapason/jugar",
+    isUtility: true,
+    features: [
+      { es: "Las 78 posiciones de las seis cuerdas, del aire al traste 12", en: "All 78 positions on the six strings, open to 12th fret" },
+      { es: "Vista plana o vista desde el guitarrista, en perspectiva", en: "Flat view or the guitarist's view, in perspective" },
+      { es: "Muestras reales de guitarra para cada posición", en: "Real guitar samples for every position" },
+      { es: "Modos Clásico y Time Attack", en: "Classic and Time Attack modes" },
+      { es: "Sostenidos o bemoles, y se recuerda tu vista", en: "Sharps or flats, and your view is remembered" },
+    ],
+    icon: "/images/app-diapason.jpg",
+  },
+  {
+    slug: "etimologica",
+    name: { es: "Etimológica", en: "Etimológica" },
+    category: "utility",
+    description: {
+      es: "Gimnasia cerebral para amantes de las palabras: descubre el significado y el origen de 200 palabras del español.",
+      en: "Brain training for word lovers: discover the meaning and origin of 200 Spanish words.",
+    },
+    longDescription: {
+      es: "Un juego para quienes disfrutan del idioma. Cada palabra llega con sus pistas etimológicas y cuatro definiciones posibles: elige la correcta y descubre su ficha completa, con su raíz, su historia y un dato curioso.\n\nSon 200 palabras en cinco categorías que se desbloquean conforme aciertas: latín vulgar, arabismos, nahuatlismos, helenismos y neologismos. Gana puntos, mantén la racha y completa tu colección.",
+      en: "A game for people who enjoy language. Each word comes with its etymological clues and four possible definitions: pick the right one and unlock its full card, with its root, its history and a fun fact.\n\nThere are 200 words in five categories that unlock as you answer correctly: Vulgar Latin, Arabisms, Nahuatl words, Hellenisms and neologisms. Earn points, keep your streak and complete your collection. The words are in Spanish.",
+    },
+    webUrl: "/apps/etimologica/jugar",
+    isUtility: true,
+    features: [
+      { es: "200 palabras del español con su etimología completa", en: "200 Spanish words with their full etymology" },
+      { es: "Cinco categorías que se desbloquean al acertar", en: "Five categories that unlock as you answer correctly" },
+      { es: "Rachas, puntos y colección de fichas", en: "Streaks, points and a card collection" },
+      { es: "Estadísticas de tu progreso", en: "Statistics of your progress" },
+      { es: "Se juega con el ratón, el dedo o el teclado (1 a 4)", en: "Play with the mouse, your finger or the keyboard (1 to 4)" },
+    ],
+    icon: "/images/app-etimologica.jpg",
+  },
+];
 
 export const APPS: AppEntry[] = [
   {
@@ -342,6 +440,7 @@ export const APPS: AppEntry[] = [
     ],
     icon: "/images/secuenciador.png",
   },
+  ...UTILITY_APPS,
 ];
 
 export function getAppBySlug(slug: string): AppEntry | undefined {

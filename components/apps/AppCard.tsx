@@ -12,6 +12,7 @@ const CATEGORY_LABELS: Record<string, Record<string, string>> = {
   cognitive: { es: "Cognitivo", en: "Cognitive" },
   theory: { es: "Teoría Musical", en: "Music Theory" },
   sequencer: { es: "Secuenciador", en: "Sequencer" },
+  utility: { es: "Utilidad", en: "Utility" },
   other: { es: "Otro", en: "Other" },
 };
 

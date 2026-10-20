@@ -45,6 +45,22 @@ export const routing = defineRouting({
       en: "/apps/acordes-cantar/game",
     },
     "/apps/desglose/jugar": "/apps/desglose/jugar",
+    "/apps/afinador/jugar": {
+      es: "/apps/afinador/jugar",
+      en: "/apps/afinador/play",
+    },
+    "/apps/diapason/jugar": {
+      es: "/apps/diapason/jugar",
+      en: "/apps/diapason/play",
+    },
+    "/apps/etimologica/jugar": {
+      es: "/apps/etimologica/jugar",
+      en: "/apps/etimologica/play",
+    },
+    "/apps/metronomo/jugar": {
+      es: "/apps/metronomo/jugar",
+      en: "/apps/metronomo/play",
+    },
     "/apps/intervalos-cantados/jugar": {
       es: "/apps/intervalos-cantados/jugar",
       en: "/apps/intervalos-cantados/play",
