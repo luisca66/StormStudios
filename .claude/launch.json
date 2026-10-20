@@ -157,6 +157,54 @@
         "3100"
       ],
       "port": 3100
+    },
+    {
+      "name": "metronomo",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "apps-src/metronomo"
+      ],
+      "port": 5191,
+      "url": "http://127.0.0.1:5191"
+    },
+    {
+      "name": "diapason",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "apps-src/diapason"
+      ],
+      "port": 5192,
+      "url": "http://127.0.0.1:5192"
+    },
+    {
+      "name": "etimologica",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "apps-src/etimologica"
+      ],
+      "port": 5193,
+      "url": "http://127.0.0.1:5193"
+    },
+    {
+      "name": "afinador",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "apps-src/afinador"
+      ],
+      "port": 5194,
+      "url": "http://127.0.0.1:5194"
     }
   ]
 }

@@ -1,0 +1,21 @@
+Eres el programador de Storm Studios para este encargo. Lee primero apps-src/UTILITY-APPS.md (contrato común) y respétalo.
+
+Encargo: ETIMOLÓGICA web, en apps-src/etimologica/ (Vite + TypeScript, puerto 5193). Es un juego para descubrir el significado y el origen de palabras del español.
+
+Fuente en apps-src/etimologica/referencia/: la app Android completa.
+- kotlin/com/example/etimologica/data/WordData.kt: todas las palabras (id, palabra, categoría, significado correcto, tres distractores, raíz, etimología, dato histórico, curiosidad, ...).
+- data/model/: Word, Category, UserProgress. data/db y repository: lo que se guarda (progreso, rachas, colección, estadísticas).
+- ui/screens/: Home, Category, Game, Card, Collection, Stats. ui/components/: CategoryTile, OptionButton, EtymologyCard, StreakBadge, ConfettiEffect. ui/theme: colores y tipografía.
+- viewmodel/: la lógica del juego.
+- res/ y ../aristoteles.png: imágenes de la app.
+
+Qué hacer:
+1. Extrae TODAS las palabras de WordData.kt a src/data/words.json (y las categorías a categories.json) con un script reproducible en scripts/ (Node o Python) que lea el .kt. Verifica que el número de palabras coincide con el original y que ningún campo se perdió (incluidos los saltos de línea y los caracteres griegos y latinos).
+2. Rehaz las seis pantallas y la lógica del juego en TypeScript, fiel a la app: mismo flujo, mismas reglas, mismas rachas y colección. El progreso se guarda en localStorage (en lugar de Room).
+3. Mantén su identidad visual (paleta y tipografía de ui/theme, Aristóteles, el confeti), adaptada a web: se ve bien en escritorio y en teléfono, con teclado (1-4 para elegir opción, Enter para seguir).
+4. Interfaz en español e inglés por ?lang; el contenido de las palabras se queda en español.
+5. Pruebas con Vitest de la lógica (barajar opciones, rachas, progreso) y del JSON (conteo y campos).
+
+IMPORTANTE sobre tu entorno: NO puedes ejecutar comandos de terminal (ni node, ni npm, ni python, ni listar carpetas por terminal): se rechazan y te detienen. Trabaja SOLO leyendo y escribiendo archivos con tus herramientas de archivos. Para el paso 1, escribe el script de extracción y ADEMÁS genera tú mismo words.json leyendo WordData.kt; Claude correrá el script para comparar. Claude instalará, compilará y probará.
+
+Termina con ENTREGA.md según el contrato.

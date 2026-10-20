@@ -1,0 +1,17 @@
+Eres Sol, programador de Storm Studios. Lee primero apps-src/UTILITY-APPS.md (contrato común) y respétalo.
+
+Encargo: el AFINADOR CROMÁTICO web, en apps-src/afinador/ (Vite + TypeScript, puerto 5194).
+
+Fuentes en apps-src/afinador/referencia/:
+- 2026-05-10-afinador-cromatico.md: requisitos de la app (léelos: C2–C7, ±1 cent con señal limpia, rechazar lecturas dudosas, "No se detecta nota", la lectura no desaparece mientras la nota sigue, medidor rápido pero orgánico, ♯/♭, A4 = 440, nada sale del dispositivo).
+- core-dsp/: el motor en Kotlin con sus pruebas (PitchDetector, SignalAnalyzer, SmoothingFilter, NoteMapper, Fft, InstrumentMode, TunerConfig).
+- app-kotlin/: la app Android (captura, ViewModel, pantallas).
+- diseno/: el rediseño visual de alta fidelidad (README.md + Afinador.html). Esa es la interfaz que queremos.
+
+Qué hacer:
+1. Porta el motor a TypeScript puro en src/dsp/ (sin DOM), fiel al de Kotlin, y porta también sus pruebas a Vitest (más una prueba con senoides sintéticas en varias notas de C2 a C7 que verifique ±1 cent, y una con ruido que verifique que no inventa nota).
+2. Captura de micrófono con getUserMedia + AudioWorklet (el worklet solo junta muestras y las manda; la detección puede correr en el worklet o en el hilo principal, decide tú por latencia y estabilidad). Desactiva echoCancellation, noiseSuppression y autoGainControl. Pide permiso con una pantalla clara que explique por qué (texto de PermissionScreen) y maneja el rechazo.
+3. La interfaz del diseño de diseno/ con alta fidelidad, adaptada a web: pantalla completa, oscuro, medidor circular grande, nota gigante, Hz, cents, color bajo/afinado/alto, indicador claro de afinado, toggle ♯/♭ (se recuerda), en español e inglés por ?lang. Que se vea bien en escritorio (horizontal) y en teléfono (vertical).
+4. Animación del medidor a 60 fps con requestAnimationFrame, interpolando sin temblor.
+
+No uses librerías de detección de tono externas. Termina con ENTREGA.md según el contrato.
