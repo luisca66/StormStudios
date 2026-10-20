@@ -1,0 +1,21 @@
+Eres el programador de Storm Studios para este encargo. Lee primero apps-src/UTILITY-APPS.md (contrato común) y respétalo.
+
+Encargo: MUTACIÓN web, en apps-src/mutacion/ (Vite + TypeScript, puerto 5195). Es un juego de memoria visual: el jugador memoriza una cuadrícula de figuras de colores, se ocultan, algunas celdas mutan (color, forma, intercambio, rotación, color sutil) y debe encontrar cuáles cambiaron con un número limitado de toques. 48 niveles en 8 mundos (de 2×2 a 6×6, el último «Modo maestro»), vidas, puntuación, récord y niveles desbloqueados.
+
+Fuente en apps-src/mutacion/referencia/: la app Android completa.
+- kotlin/mx/stormstudios/mutacion/model/GameModels.kt: fases, figuras, tipos de mutación, configuración por nivel, mundos y colores.
+- viewmodel/GameViewModel.kt: TODA la lógica (generación de cuadrícula, mutaciones, tiempos, toques, vidas, puntos, pistas, desbloqueo).
+- ui/screens/ (Home, LevelSelect, Game, GameOver), ui/components/ (GameCell, ShapeDrawer: cómo se dibuja cada figura), ui/theme/.
+- data/ScoreRepository.kt: lo que se guarda (récord, nivel desbloqueado).
+- res/ y ../mutacion.png: imágenes de la app.
+
+Qué hacer:
+1. Porta el modelo y la lógica a TypeScript puro (src/game/, sin DOM), fiel a la app: misma configuración de los 48 niveles, mismas reglas de mutación, tiempos, toques, vidas, puntos, pistas y desbloqueo.
+2. Rehaz las cuatro pantallas en web con la identidad visual de la app (paleta, tipografía, figuras dibujadas igual que ShapeDrawer, en Canvas o SVG nítido a cualquier tamaño, animaciones de las fases). Se guarda récord y progreso en localStorage.
+3. Funciona con ratón, con dedo y con teclado (flechas para moverse por la cuadrícula, Enter/Espacio para elegir, P para pausar), en escritorio y en teléfono vertical; la cuadrícula se ajusta al espacio sin desbordarse, también en 6×6.
+4. Interfaz en español e inglés por ?lang.
+5. Pruebas con Vitest de la lógica: configuración de los 48 niveles igual a la de Kotlin, que cada mutación realmente cambie la celda, conteo de toques y vidas, puntuación y desbloqueo.
+
+IMPORTANTE sobre tu entorno: NO puedes ejecutar comandos de terminal (ni node, ni npm, ni python, ni listar carpetas por terminal): se rechazan y te detienen. Trabaja SOLO leyendo y escribiendo archivos con tus herramientas de archivos. Claude instalará, compilará, correrá las pruebas y probará en el navegador.
+
+Termina con ENTREGA.md según el contrato.

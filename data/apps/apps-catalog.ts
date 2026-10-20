@@ -119,6 +119,29 @@ export const UTILITY_APPS: AppEntry[] = [
     ],
     icon: "/images/app-etimologica.jpg",
   },
+  {
+    slug: "mutacion",
+    name: { es: "Mutación", en: "Mutation" },
+    category: "utility",
+    description: {
+      es: "Entrena tu memoria visual: memoriza la cuadrícula y encuentra las figuras que cambiaron. 48 niveles.",
+      en: "Train your visual memory: memorize the grid and find the shapes that changed. 48 levels.",
+    },
+    longDescription: {
+      es: "Memoriza una cuadrícula de figuras de colores. Cuando se oculta, algunas celdas mutan: cambian de color, de forma, de lugar o de giro, o apenas de tono. Encuentra cuáles cambiaron con los toques que tienes.\n\nSon 48 niveles en ocho mundos, de una cuadrícula de 2×2 hasta el Modo maestro en 6×6. Tienes tres vidas, sumas puntos por cada acierto y un bono por las rondas perfectas, y cada nivel que superas abre el siguiente.",
+      en: "Memorize a grid of colored shapes. When it hides, some cells mutate: they change color, shape, place or rotation, or just their shade. Find which ones changed with the taps you have.\n\nThere are 48 levels in eight worlds, from a 2×2 grid up to Master mode in 6×6. You have three lives, earn points for every hit and a bonus for perfect rounds, and every level you clear opens the next one.",
+    },
+    webUrl: "/apps/mutacion/jugar",
+    isUtility: true,
+    features: [
+      { es: "48 niveles en 8 mundos, de 2×2 a 6×6", en: "48 levels in 8 worlds, from 2×2 to 6×6" },
+      { es: "Cinco tipos de mutación: color, forma, intercambio, giro y tono sutil", en: "Five mutation types: color, shape, swap, rotation and subtle shade" },
+      { es: "Vidas, puntos, bono por ronda perfecta y récord", en: "Lives, points, perfect-round bonus and high score" },
+      { es: "Se juega con el ratón, el dedo o el teclado", en: "Play with the mouse, your finger or the keyboard" },
+      { es: "Tu progreso se guarda en este dispositivo", en: "Your progress is saved on this device" },
+    ],
+    icon: "/images/app-mutacion.jpg",
+  },
 ];
 
 export const APPS: AppEntry[] = [

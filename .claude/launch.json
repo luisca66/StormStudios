@@ -205,6 +205,18 @@
       ],
       "port": 5194,
       "url": "http://127.0.0.1:5194"
+    },
+    {
+      "name": "mutacion",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "apps-src/mutacion"
+      ],
+      "port": 5195,
+      "url": "http://127.0.0.1:5195"
     }
   ]
 }

@@ -10,6 +10,7 @@ en su carpeta de `apps-src/`, con su fuente original copiada en `referencia/` (n
 | `diapason/` | Diapasón: entrenador de notas en el mástil, vista plana y vista POV con selector | `diapason-guitarra*.html` | Astra (`gpt-6-astra`): rediseño POV |
 | `etimologica/` | Etimológica: juego de etimología de palabras en español | app Android (Kotlin, Compose, Room) | Gemini 4 Argon |
 | `afinador/` | Afinador cromático C2–C7 | app Android (`core-dsp` + Compose) y diseño `Afinador.html` | Sol (`gpt-6.1-sol`) |
+| `mutacion/` | Mutación: memoria visual, encuentra las figuras que cambiaron (48 niveles) | app Android (Kotlin, Compose) | Gemini 4 Argon |
 
 ## Reglas para todas
 
@@ -19,7 +20,7 @@ en su carpeta de `apps-src/`, con su fuente original copiada en `referencia/` (n
   (`npm run build && node scripts/copy-dist.mjs`), y `scripts/copy-dist.mjs` que copia `dist/` a
   `public/apps/<carpeta>/` del sitio (mismo código, cambia solo el nombre del destino).
 - `vite.config.ts`: `base` = `"/apps/<carpeta>/"` al compilar y `"./"` en desarrollo; `server.host`
-  `127.0.0.1`, `strictPort`. Puertos: metrónomo 5191, diapasón 5192, etimológica 5193, afinador 5194.
+  `127.0.0.1`, `strictPort`. Puertos: metrónomo 5191, diapasón 5192, etimológica 5193, afinador 5194, mutación 5195.
 - **Idioma por `?lang=es|en`** (por defecto `es`). Todos los textos de interfaz en los dos idiomas.
   (Etimológica: el contenido de las palabras es español; la interfaz, bilingüe.)
 - Vive dentro de un **iframe a pantalla completa** del sitio (`GameShell`): nada de cabeceras propias

@@ -57,6 +57,10 @@ export const routing = defineRouting({
       es: "/apps/etimologica/jugar",
       en: "/apps/etimologica/play",
     },
+    "/apps/mutacion/jugar": {
+      es: "/apps/mutacion/jugar",
+      en: "/apps/mutacion/play",
+    },
     "/apps/metronomo/jugar": {
       es: "/apps/metronomo/jugar",
       en: "/apps/metronomo/play",
