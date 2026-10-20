@@ -6,7 +6,7 @@ export class InstrumentMode {
   match(note: MusicalNote | null) { return note ? this.targets.find(t => t.midi === note.midi) ?? null : null; }
 }
 function mode(id: string, labels: string[], midis: number[]) { return new InstrumentMode(id, labels.map((label, i) => ({ label, midi: midis[i] }))); }
-// Ported for parity and tests. The web UI remains chromatic only.
+// Los mismos modos que la app Android: el usuario los elige en el panel del modo.
 export const InstrumentModes = {
   Chromatic: new InstrumentMode('chromatic'),
   GuitarStandard: mode('guitar_standard', ['6E', '5A', '4D', '3G', '2B', '1E'], [40, 45, 50, 55, 59, 64]),

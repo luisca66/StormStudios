@@ -1,5 +1,6 @@
 import captureUrl from './capture.worklet.ts?worker&url';
 import type { SmoothedTunerState } from '../dsp/SmoothingFilter';
+import type { TunerSettings } from './pitch.worker';
 export interface Reading extends SmoothedTunerState { hasPitch: boolean; rms: number; confidence: number }
 export class Microphone {
   private stream?: MediaStream;
@@ -10,6 +11,9 @@ export class Microphone {
   private generation = 0;
   private timer?: ReturnType<typeof setInterval>;
   private lastFrame = 0;
+  private settings: TunerSettings = { a4: 440, lowestMidi: 36 };
+  /** Calibración e instrumento: se aplican al momento y al volver a encender el micrófono. */
+  configure(settings: TunerSettings) { this.settings = settings; this.worker?.postMessage({ settings }); }
   async start(onReading: (reading: Reading) => void, onFailure: (code: string) => void) {
     this.stop();
     const generation = this.generation;
@@ -30,6 +34,7 @@ export class Microphone {
       await context.audioWorklet.addModule(captureUrl);
       if (generation !== this.generation) return;
       const worker = new Worker(new URL('./pitch.worker.ts', import.meta.url), { type: 'module' }); this.worker = worker;
+      worker.postMessage({ settings: this.settings });
       const node = new AudioWorkletNode(context, 'tuner-capture', { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1] }); this.node = node;
       const source = context.createMediaStreamSource(stream); this.source = source;
       node.port.onmessage = (event: MessageEvent<{ samples: Float32Array; sampleRate: number }>) => {

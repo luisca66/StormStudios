@@ -14,8 +14,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: locale === "es" ? "Afinador Cromático" : "Chromatic Tuner",
     description:
       locale === "es"
-        ? "Afinador cromático de C2 a C7 con lectura en cents, medidor amplio y procesamiento 100% en tu dispositivo."
-        : "Chromatic tuner from C2 to C7 with cents readout, a wide meter and 100% on-device processing.",
+        ? "Afinador cromático con modos para guitarra, bajo, ukulele, violín, viola y cello, lectura en cents y calibración de La4."
+        : "Chromatic tuner with guitar, bass, ukulele, violin, viola and cello modes, cents readout and A4 calibration.",
     noIndex: true,
   });
 }

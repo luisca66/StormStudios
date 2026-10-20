@@ -39,3 +39,20 @@
 @media(max-height:580px) and (max-aspect-ratio:6/5) { .note-section { padding-top:3px } .note-row { height:72px } #letter { font-size:82px } #accidental { font-size:40px; margin-bottom:6px } #octave { font-size:26px; margin-bottom:5px } .freq-line { margin-top:6px; font-size:9px; gap:8px } .cents-row { height:38px; margin-top:3px } #cents { font-size:34px } .status-txt { font-size:9px; margin-top:2px } .meter-caption { font-size:9px } .panels { gap:8px } }
 @media(max-height:450px) and (min-aspect-ratio:6/5) { .tuner { padding:8px 24px } .instrument { flex-direction:row } .note-section { width:40%; padding:0 } .note-row { height:78px } #letter { font-size:88px } #accidental { font-size:40px } .hint { display:none } .cents-row { height:38px; margin-top:0 } #cents { font-size:32px } .meter-wrap { flex:1; width:55%; height:100% } .panels { grid-template-columns:1fr 1fr auto; gap:18px; padding-top:4px } .status-txt { font-size:10px } .freq-line { font-size:9px; margin-top:5px } }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important } }
+
+/* Modo de instrumento y calibración (como en la app Android) */
+.mode-chip { margin-bottom:6px; background:#ffffff0a; border:1px solid #ffffff12; border-radius:22px; padding:7px 14px; min-height:32px; color:#a4afbf; font:700 10px/1 'Space Grotesk',sans-serif; letter-spacing:.12em; text-transform:uppercase; cursor:pointer }
+.mode-chip:hover { background:#ffffff14 } .mode-chip.on-string { color:var(--active); border-color:color-mix(in srgb,var(--active) 40%,transparent) }
+.mode-panel { margin:auto; width:min(440px,calc(100vw - 32px)); max-height:calc(100dvh - 32px); overflow:auto; background:#0b1220; color:#f4f7fa; border:1px solid #ffffff14; border-radius:24px; padding:24px }
+.mode-panel::backdrop { background:#02040acc; backdrop-filter:blur(4px) }
+.mode-panel h2 { text-align:center; color:#a4afbf; font-size:10px; letter-spacing:.15em; text-transform:uppercase; margin:4px 0 14px }
+.mode-panel h2:not(:first-child) { margin-top:24px }
+.mode-list { display:flex; flex-direction:column; gap:10px }
+.mode-row { display:flex; justify-content:space-between; align-items:center; gap:12px; width:100%; text-align:left; background:#ffffff09; border:1px solid #ffffff10; border-radius:18px; padding:13px 16px; color:#dfe5ec; cursor:pointer }
+.mode-row strong { display:block; font-size:16px } .mode-row small { display:block; margin-top:3px; color:#7f8b9a; font-size:10px; font-weight:700; letter-spacing:.10em; text-transform:uppercase }
+.mode-row code { font:700 11px 'JetBrains Mono',monospace; color:#7f8b9a; white-space:nowrap }
+.mode-row[aria-checked="true"] { background:#ffffff14; border-color:#3fe08f66 } .mode-row[aria-checked="true"] strong { color:#3fe08f } .mode-row[aria-checked="true"] code { color:#b8c3cf }
+.calibration { display:flex; align-items:center; justify-content:center; gap:16px }
+.calibration button { background:#ffffff0f; border:1px solid #ffffff17; border-radius:24px; padding:12px 22px; color:#e6ebf0; font:700 15px 'JetBrains Mono',monospace; cursor:pointer }
+.calibration output { min-width:130px; text-align:center; color:#3fe08f; font:700 22px 'JetBrains Mono',monospace }
+#mode-close { display:block; margin:24px auto 0 }

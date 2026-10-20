@@ -13,6 +13,10 @@ const es = {
   capture: 'Se interrumpió la captura de audio. Vuelve a activar el micrófono.',
   hint: 'Toca una sola nota y deja que suene.', range: 'C2–C7', meter: 'Desviación de afinación en cents',
   paused: 'La escucha se pausó al salir de la app. Activa el micrófono para continuar.',
+  mode: 'Modo', standard: 'Afinación estándar', allNotes: 'Todas las notas', calibration: 'Calibración', close: 'Listo',
+  modeHint: 'Elige el instrumento o la calibración',
+  instruments: { chromatic: 'Cromático', guitar_standard: 'Guitarra', bass_standard: 'Bajo', ukulele_standard: 'Ukulele', violin_standard: 'Violín', viola_standard: 'Viola', cello_standard: 'Cello' } as Record<string, string>,
+  lower: 'Bajar 1 Hz', higher: 'Subir 1 Hz',
 };
 const en: typeof es = {
   title: 'Chromatic tuner', listening: 'Listening', detecting: 'Detecting', stopped: 'Microphone off', checking: 'Checking signal',
@@ -29,6 +33,10 @@ const en: typeof es = {
   capture: 'Audio capture was interrupted. Enable the microphone again.',
   hint: 'Play one note and let it ring.', range: 'C2–C7', meter: 'Tuning deviation in cents',
   paused: 'Listening was paused when you left the app. Enable the microphone to continue.',
+  mode: 'Mode', standard: 'Standard tuning', allNotes: 'All notes', calibration: 'Calibration', close: 'Done',
+  modeHint: 'Choose the instrument or the calibration',
+  instruments: { chromatic: 'Chromatic', guitar_standard: 'Guitar', bass_standard: 'Bass', ukulele_standard: 'Ukulele', violin_standard: 'Violin', viola_standard: 'Viola', cello_standard: 'Cello' },
+  lower: 'Lower 1 Hz', higher: 'Raise 1 Hz',
 };
 export const language = new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'es';
 export const t = language === 'en' ? en : es;
