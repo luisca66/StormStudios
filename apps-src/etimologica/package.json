@@ -1,0 +1,20 @@
+{
+  "name": "storm-etimologica",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5193",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 5193",
+    "test": "vitest run",
+    "extract": "node scripts/extract-words.mjs",
+    "deploy": "npm run build && node scripts/copy-dist.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.1.0",
+    "vitest": "^4.1.11"
+  }
+}
