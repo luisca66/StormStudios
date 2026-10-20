@@ -20,7 +20,7 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
   observatorio (montaña nevada, tambor, cúpula con ranura y telescopio hacia el cometa). `src/3d/brass-models.ts`
   los carga una vez; `rings.ts` y `perihelion.ts` usan las primitivas de antes como reserva. El latón del
   modelo es menos metálico y con más brillo propio: sin mapa de entorno el metal puro se veía negro.
-  **Siguiente:** que Luis lo vea jugando; publicar con su OK.
+  ✅ **Publicado (2026-10-20)** con el OK de Luis. Con esto, los siete juegos 3D quedan renovados.
 
 - **El Cometa: el cometa visto desde fuera** (2026-10-17, pedido de Luis). En el juego el cometa propio sólo se
   ve desde la carlinga; el único visto desde fuera es el **cometa hermano** que cruza de frente (antes un
