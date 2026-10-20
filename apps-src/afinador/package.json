@@ -1,0 +1,8 @@
+{
+  "name": "storm-afinador", "version": "1.0.0", "private": true, "type": "module",
+  "scripts": {
+    "dev": "vite --configLoader native", "build": "tsc --noEmit && vite build", "test": "vitest run --configLoader native --pool threads --maxWorkers 1",
+    "deploy": "npm run build && node scripts/copy-dist.mjs"
+  },
+  "devDependencies": { "typescript": "5.9.3", "vite": "8.1.0", "vitest": "4.1.11", "@types/node": "24.10.0" }
+}
