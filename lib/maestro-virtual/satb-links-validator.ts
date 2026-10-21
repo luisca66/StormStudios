@@ -10,7 +10,7 @@ export const LESSON8_LINKS: { from: ProgressionChord; to: ProgressionChord }[] =
   [5, 6, 0, 0], [6, 2, 0, 0], [1, 7, 0, 1], [4, 5, 1, 0],
 ].map(([a, b, ai, bi]) => ({ from: { degree: a, inversion: ai }, to: { degree: b, inversion: bi } }));
 const linkName = (a: ProgressionChord, b: ProgressionChord) => `${chordSymbol(a)}–${chordSymbol(b)}`;
-const pitches = (chord: Chord, model: KeyModel) => {
+export const pitches = (chord: Chord, model: KeyModel) => {
   const result: Partial<Record<SatbVoice, Pitch>> = {};
   for (const voice of SATB_VOICES) {
     const n = chord.notes[voice];
@@ -26,7 +26,7 @@ type PairReading = { pair: Chord[]; candidates: Reading[]; selected?: Reading; f
 const modelName = (model: KeyModel, locale: 'es' | 'en') => `${spellingName(model.tonic, locale)} ${locale === 'es' ? 'mayor' : 'major'}`;
 
 /** Armadura vigente al primer ataque, nunca la de un acorde posterior. */
-function activeKey(data: VoiceData, tick: number): KeyModel | undefined {
+export function activeKey(data: VoiceData, tick: number): KeyModel | undefined {
   const change = data.keyChanges.filter(c => c.tick <= tick).sort((a, b) => a.tick - b.tick).at(-1);
   return MAJOR_KEY_MODELS.find(model => model.key === change?.key);
 }

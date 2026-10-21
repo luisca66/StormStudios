@@ -37,6 +37,7 @@ describe('parseMidiBuffer — meta-texto de grafía (SP:)', () => {
     expect(sop).toHaveLength(3);
 
     expect(sop[0].midi).toBe(71);
+    expect(sop[0].durationTicks).toBe(128);
     expect(sop[0].spelling).toBe('a##');  // La##
     expect(sop[0].key).toBe('C');
 

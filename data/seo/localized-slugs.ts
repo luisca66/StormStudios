@@ -69,7 +69,7 @@ export const LESSON_URL_SLUGS: Record<string, Record<Locale, string>> = {
   },
   "10-leccion-9": {
     es: "10-leccion-9",
-    en: "10-lesson-9-minor-mode-connections",
+    en: "10-lesson-9-cadences",
   },
 };
 

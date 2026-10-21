@@ -6,6 +6,7 @@
  */
 
 export interface ParsedNote {
+  durationTicks?: number; // note-off minus note-on; absent if the file omits note-off
   midi: number;       // número MIDI absoluto (ej: 60)
   pitch: number;      // clase de altura 0–11
   tick: number;       // tick absoluto de inicio
@@ -114,6 +115,7 @@ export function parseMidiBuffer(buffer: ArrayBuffer): VoiceData {
     };
     let absoluteTick = 0;
     let runningStatus = 0;
+    const sounding = new Map<string, ParsedNote[]>();
     // Grafía incrustada (meta-texto 'SP:…') que precede a cada note-on en esta pista.
     let pendingSpelling: string | null = null;
 
@@ -213,6 +215,13 @@ export function parseMidiBuffer(buffer: ArrayBuffer): VoiceData {
             spelling: pendingSpelling ?? undefined,
           });
           pendingSpelling = null;
+          const id = `${channel}:${note}`;
+          const queue = sounding.get(id) ?? [];
+          queue.push(channelNotes[channel].at(-1)!);
+          sounding.set(id, queue);
+        } else {
+          const started = sounding.get(`${channel}:${note}`)?.shift();
+          if (started) started.durationTicks = absoluteTick - started.tick;
         }
       } else if (msgType === 0xA || msgType === 0xB) { readDataByte(); readDataByte(); }
       else if (msgType === 0xC || msgType === 0xD)   { readDataByte(); }
