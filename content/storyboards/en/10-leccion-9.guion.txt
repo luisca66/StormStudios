@@ -1,0 +1,79 @@
+Hello, and welcome back to Storm Studios Learning.
+In lesson eight we learned how to connect two chords in the vocal quartet.
+Before we move on to the minor mode, today we will learn how a musical phrase comes to an end: cadences.
+This lesson has three parts: what a cadence is, the four types of cadence, and half cadences.
+Let's begin.
+We call a cadence a succession of chords with a conclusive intention.
+In other words, a cadence tells us that the music has reached its end, or a point of rest.
+Let's remember the three tonal regions: the subdominant, the dominant and the tonic.
+The natural direction of a cadence leads us toward more and more important tonal regions.
+That is why cadences usually go from the subdominant to the dominant, and from the dominant to the tonic.
+And there is one rule for all of them: at least the last two chords of a cadence are in root position.
+Root position gives the ending its firmness.
+Now let's look at the four types of cadence.
+The first is the authentic cadence: from the fifth degree to the first.
+It is the clearest ending in tonal music, because the dominant resolves directly to the tonic.
+Let's listen to an authentic cadence in G major.
+The second is the plagal cadence: from the fourth degree to the first.
+Here we do not pass through the dominant: we go from the subdominant straight to the tonic.
+Its color is softer, which is why it is associated with the amen at the end of hymns.
+Let's listen to a plagal cadence in B flat major.
+The third is the complete cadence: it travels through all three regions, subdominant, dominant and tonic.
+It begins with a chord from the subdominant region: the fourth degree, the second degree or the sixth degree.
+The fourth and the second can be in root position or in six three.
+Then comes the fifth degree, and finally the first, both in root position.
+Let's listen to a complete cadence in D major, with the second degree in six three.
+The fourth is the extended cadence.
+It also begins in the subdominant region, with the fourth or the second degree, in root position or in six three.
+But before the fifth degree a new chord appears: the first degree in second inversion, the six four.
+In lesson eight we said that the six four is not used freely, only in specific cases.
+This is the first of those cases.
+The first degree in six four has the same bass note as the fifth degree.
+That is why it does not sound like a tonic, but like an ornament that delays the arrival of the dominant.
+And the most important rule: the first degree in six four of the extended cadence is placed on a strong beat.
+In two four time, it goes on the first beat.
+In three four time, also on the first beat.
+And in four four time, on the first or the third beat.
+The six four can last more than one beat, and the fifth degree comes afterwards, always before the final first degree.
+Medrano points out only one exception: in three four time, the six four can go on the second beat, with the fifth on the third, right before the final first degree.
+Let's listen to an extended cadence in E flat major.
+From the fourth degree we move to the first in six four, on a strong beat, then to the fifth, and we end on the first.
+Let's sum up the four types.
+The authentic cadence goes from the fifth to the first.
+The plagal cadence goes from the fourth to the first.
+The complete cadence goes from the fourth, the second or the sixth, to the fifth and the first.
+And the extended cadence goes from the fourth or the second, to the first in six four, to the fifth and the first.
+Now let's look at half cadences.
+We call a half cadence any partial rest inside a chorale.
+These pauses are as important as breathing is for the choir.
+They usually coincide with the end of a phrase of the text, which in a chorale is almost always religious.
+After a half cadence we do not apply connection technique: the music starts again.
+The most common half cadence is on the dominant.
+We reach the fifth degree from the first, the second, the fourth or the sixth, and we stop there.
+We can also reach the fifth through the first degree in six four, coming from the second or the fourth.
+The second is the half cadence on the subdominant: from the first degree to the fourth.
+And the third is the half cadence on the sixth degree, coming from the third, the fifth or the seventh in six three.
+It is often called a deceptive cadence, but that name is not entirely appropriate.
+It is much more precise to say: half cadence on the sixth degree.
+And exceptionally, Bach writes a half cadence on the first degree in some of his chorales.
+Now, the assignment for the virtual teacher.
+In Storm Sequencer, in SATB mode and in four four time, write in a single file one cadence of each type: authentic, plagal, complete and extended.
+You can write them in any order you like.
+Write each cadence in a different major key, and put its key signature at the beginning.
+Each cadence starts in a new measure, and every chord is a half note.
+The final first degree can be a half note or a whole note.
+That is eleven chords in total.
+Export the MIDI file and upload it.
+The virtual teacher recognizes the key and the type of each cadence.
+It checks how each chord is built, the inversions, the six four on a strong beat, the motion of each voice, fifths and octaves, and the leading tone.
+It does not check anything between one cadence and the next.
+And if it finds a mistake, it explains what it is and in which cadence it happens.
+Let's recap.
+A cadence is a succession of chords with a conclusive intention, moving toward more and more important regions.
+Its last two chords are in root position.
+There are four types: authentic, plagal, complete and extended.
+In the extended cadence, the first degree in six four goes on a strong beat.
+And half cadences are partial rests: on the dominant, on the subdominant and on the sixth degree.
+In the next lesson we will look at the minor mode and its special cases.
+Thank you for joining me.
+See you in lesson ten.
