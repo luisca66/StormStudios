@@ -8,8 +8,8 @@ import { lesson } from '@/data/course/lessons/10-leccion-9';
 const authentic = [[71, 67, 62, 43], [72, 67, 64, 48]];
 const plagal = [[72, 69, 60, 53], [72, 67, 64, 48]];
 const complete = [[69, 65, 62, 53], [67, 62, 59, 55], [67, 64, 60, 48]];
-const expanded = [[69, 65, 60, 53], [67, 64, 60, 55], [67, 62, 59, 55], [67, 64, 60, 48]];
-const patterns = [authentic, plagal, complete, expanded];
+const extended = [[69, 65, 60, 53], [67, 64, 60, 55], [67, 62, 59, 55], [67, 64, 60, 48]];
+const patterns = [authentic, plagal, complete, extended];
 function fixture(order = [0, 1, 2, 3], keys = ['C', 'D', 'Eb', 'E']): VoiceData {
   const d: VoiceData = { ticksPerBeat: 960, voices: {}, keyChanges: [], beats: [] };
   let tick = 0;

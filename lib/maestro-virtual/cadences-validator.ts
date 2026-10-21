@@ -6,11 +6,11 @@ import { chordSymbol, type ProgressionChord } from './harmonic-material';
 import { parseSpelling, sameSpelling, spellingName, spellingToPc } from './spelling';
 import { checkHarmonicMotion, checkMelodicLine, intervalName } from './voice-leading';
 
-const TYPES = ['authentic', 'plagal', 'complete', 'expanded'] as const;
+const TYPES = ['authentic', 'plagal', 'complete', 'extended'] as const;
 type CadenceType = typeof TYPES[number];
 const NAMES: Record<CadenceType, [string, string]> = {
   authentic: ['auténtica', 'authentic'], plagal: ['plagal', 'plagal'],
-  complete: ['completa', 'complete'], expanded: ['ampliada', 'expanded'],
+  complete: ['completa', 'complete'], extended: ['ampliada', 'extended'],
 };
 const keyName = (m: KeyModel, l: 'es' | 'en') => `${spellingName(m.tonic, l)} ${l === 'es' ? 'mayor' : 'major'}`;
 
@@ -23,11 +23,11 @@ function cadenceType(chords: (ProgressionChord | null)[], relaxed = false): Cade
   if (degrees === '5,1') type = 'authentic';
   if (degrees === '4,1') type = 'plagal';
   if (cs.length === 3 && [2, 4, 6].includes(cs[0].degree) && degrees.endsWith(',5,1')) type = 'complete';
-  if (cs.length === 4 && [2, 4].includes(cs[0].degree) && degrees.endsWith(',1,5,1')) type = 'expanded';
+  if (cs.length === 4 && [2, 4].includes(cs[0].degree) && degrees.endsWith(',1,5,1')) type = 'extended';
   if (!type || relaxed) return type;
   if (cs.slice(-2).some(c => c.inversion !== 0)) return;
   if (cs.length > 2 && !(cs[0].inversion === 0 || ([2, 4].includes(cs[0].degree) && cs[0].inversion === 1))) return;
-  if (type === 'expanded' && cs[1].inversion !== 2) return;
+  if (type === 'extended' && cs[1].inversion !== 2) return;
   return type;
 }
 
@@ -98,7 +98,7 @@ export function validateLesson9Cadences(data: VoiceData): SatbFeedback[] {
     out.push(...analysis.feedback.filter(f => f.severity === 'error'));
     if (!type) add('CADENCE_UNRECOGNIZED', p, `Cadencia ${index + 1}: ${symbol} no corresponde a un tipo asignado.`, `Cadence ${index + 1}: ${symbol} does not match an assigned type.`,
       'Auténtica V–I; plagal IV–I; completa IV/IV6/3/II/II6/3/VI–V–I; ampliada IV/IV6/3/II/II6/3–I6/4–V–I. Los dos últimos acordes van en estado fundamental.',
-      'Authentic V–I; plagal IV–I; complete IV/IV6/3/II/II6/3/VI–V–I; expanded IV/IV6/3/II/II6/3–I6/4–V–I. The final two chords must be in root position.');
+      'Authentic V–I; plagal IV–I; complete IV/IV6/3/II/II6/3/VI–V–I; extended IV/IV6/3/II/II6/3–I6/4–V–I. The final two chords must be in root position.');
     else {
       if (seen.has(type)) add('CADENCE_DUPLICATE', p, `Cadencia ${NAMES[type][0]} repetida.`, `Repeated ${NAMES[type][1]} cadence.`);
       seen.add(type);
@@ -109,8 +109,8 @@ export function validateLesson9Cadences(data: VoiceData): SatbFeedback[] {
       if (c?.degree !== 1 || c.inversion !== 2) return;
       if (group[i].tick % (2 * beat) !== 0) add('CADENCE_SIX_FOUR_WEAK_BEAT', group[i].position,
         'El I6/4 debe caer en tiempo 1 o 3.', 'I6/4 must fall on beat 1 or 3.');
-      if (!(cadenceType(identified, true) === 'expanded' && i === group.length - 3)) add('CADENCE_SIX_FOUR_POSITION', group[i].position,
-        'El I6/4 solo corresponde antes de V–I en la ampliada.', 'I6/4 belongs immediately before V–I in the expanded cadence.');
+      if (!(cadenceType(identified, true) === 'extended' && i === group.length - 3)) add('CADENCE_SIX_FOUR_POSITION', group[i].position,
+        'El I6/4 solo corresponde antes de V–I en la ampliada.', 'I6/4 belongs immediately before V–I in the extended cadence.');
     });
     if (first.tick % (4 * beat) !== 0) add('CADENCE_START_MEASURE', p, 'Cada cadencia empieza en un compás nuevo.', 'Each cadence starts in a new measure.');
     group.forEach((c, i) => {

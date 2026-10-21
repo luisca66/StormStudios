@@ -15,7 +15,7 @@ export const lesson: LessonConfig = {
   },
   description: {
     es: "Cuatro cadencias en tonalidades mayores: auténtica, plagal, completa y ampliada, con sus estados, pulso fuerte y conducción de voces.",
-    en: "Four cadences in major keys: authentic, plagal, complete and expanded, with inversions, strong beats and voice leading.",
+    en: "Four cadences in major keys: authentic, plagal, complete and extended, with inversions, strong beats and voice leading.",
   },
   prerequisites: ["09-leccion-8"],
   videos: [],

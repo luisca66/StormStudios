@@ -113,6 +113,6 @@ The third and sixth go in root position, the seventh in six three, and six four 
 The general table of connections tells us where each chord can go, and it has some required continuations.
 When connecting, we build each chord correctly, take care of each voice, and check the six pairs of voices.
 And the leading tone in the soprano rises to the tonic.
-In the next lesson we will look at cadences.
+In the next lesson we will look at the minor mode and its special cases.
 Thank you for joining me.
 See you in lesson nine.
