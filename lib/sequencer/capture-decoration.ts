@@ -26,10 +26,28 @@ export function decorateCapture(svg: SVGSVGElement, still: Still, measure: numbe
   const reveal = still.reveal ? positionTick(still.reveal.measure, still.reveal.beat) : Infinity;
   for (const a of annotations) if (a.measure === measure) {
     const tick = positionTick(measure, a.beat);
-    add("text", { ...textStyle, x: captureX(rows[0], tick) + 5, y: rows.at(-1)!.bottom + px(88),
+    const x = captureX(rows[0], tick) + 5, y = rows.at(-1)!.bottom + px(88);
+    const annotation = add("text", { ...textStyle, x, y,
       "font-family": a.kind === "roman" ? "var(--font-dm-serif, Georgia), Georgia, serif" : textStyle["font-family"],
       "font-size": px(a.kind === "roman" ? 40 : 28), "data-annotation": a.kind,
       opacity: tick >= reveal ? 0 : 1 }, a.text);
+    const figured = a.kind === "roman" && /^([IV]+)\s+(\d+)\/(\d+)$/.exec(a.text);
+    if (figured) {
+      // Keep the numeral and its stacked figures together, centered on the real beat anchor.
+      annotation.textContent = figured[1];
+      annotation.setAttribute("text-anchor", "start");
+      const numeralWidth = (annotation as SVGTextElement).getComputedTextLength();
+      for (const [index, digit] of figured.slice(2).entries()) {
+        const span = document.createElementNS(ns, "tspan");
+        span.setAttribute("x", String(x + numeralWidth + px(4)));
+        span.setAttribute("y", String(y + px(index === 0 ? -18 : 2)));
+        span.setAttribute("font-size", String(px(22)));
+        span.textContent = digit;
+        annotation.appendChild(span);
+      }
+      const box = (annotation as SVGTextElement).getBBox();
+      annotation.setAttribute("transform", `translate(${x - (box.x + box.width / 2)} 0)`);
+    }
   }
   for (const h of still.highlights ?? []) {
     if (measure < h.measure || measure > (h.endMeasure ?? h.measure)) continue;
