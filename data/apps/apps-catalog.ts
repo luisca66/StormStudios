@@ -139,7 +139,7 @@ export const UTILITY_APPS: AppEntry[] = [
       { es: "Vidas, puntos, bono por ronda perfecta y récord", en: "Lives, points, perfect-round bonus and high score" },
       { es: "Se juega con el ratón, el dedo o el teclado", en: "Play with the mouse, your finger or the keyboard" },
       { es: "Tu progreso se guarda en este dispositivo", en: "Your progress is saved on this device" },
-      { es: "Música original de Luis Cárdenas, en orden aleatorio, con volumen y silencio", en: "Original music by Luis Cárdenas, in random order, with volume and mute" },
+      { es: "Música original de Luis Cárdenas mientras juegas, en orden aleatorio, con volumen y silencio", en: "Original music by Luis Cárdenas while you play, in random order, with volume and mute" },
     ],
     icon: "/images/app-mutacion.jpg",
   },

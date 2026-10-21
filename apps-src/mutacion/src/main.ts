@@ -9,6 +9,9 @@ import {
 } from "./game";
 import { detectLang, getStrings } from "./i18n";
 import { startMusic } from "./music";
+
+// La música de Luis: sólo en partida, aleatoria sin repetir, con volumen y silencio.
+const music = startMusic();
 import { drawAnimatedLogoOnCanvas, renderGameShapeSvg } from "./shapeDrawer";
 
 type ScreenName = "HOME" | "LEVEL_SELECT" | "GAME" | "GAME_OVER";
@@ -678,6 +681,7 @@ function renderFull(state: GameState): void {
   lastRenderedLevel = state.level;
   lastRenderedLives = state.lives;
   lastRenderedGrid = state.originalGrid;
+  music.setPlaying(currentScreen === "GAME" && !state.isPaused && !state.isGameOver);
 }
 
 // Suscripción al estado del controlador
@@ -815,5 +819,3 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-// La música de Luis: aleatoria sin repetir, con volumen y silencio.
-startMusic();

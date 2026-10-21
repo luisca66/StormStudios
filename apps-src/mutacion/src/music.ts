@@ -1,4 +1,5 @@
-// music.ts — La música de Mutación (compuesta por Luis): 20 pistas en R2 que suenan siempre en orden
+// music.ts — La música de Mutación (compuesta por Luis): 20 pistas en R2 que suenan SOLO mientras se juega,
+// siempre en orden
 // aleatorio y sin repetir hasta agotar la lista; al volver a barajar, la primera nunca es la que
 // acaba de sonar. Control de volumen y silencio en una franja fija bajo el juego (fuera de #app,
 // que se redibuja con cada cambio de estado), recordados en este dispositivo.
@@ -37,7 +38,8 @@ export function shuffled(previous: string | null): string[] {
 const ICON_ON = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
 const ICON_OFF = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 9.5l5 5M21.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
 
-export function startMusic(): void {
+/** Devuelve el control para que el juego diga cuándo se está jugando (sólo entonces suena). */
+export function startMusic(): { setPlaying(playing: boolean): void } {
   const audio = new Audio();
   audio.preload = "auto";
   // Solo en desarrollo: para comprobar desde la consola que la música suena.
@@ -47,7 +49,8 @@ export function startMusic(): void {
   let muted = read(MUTED_KEY) === "1";
   let queue: string[] = [];
   let current: string | null = null;
-  let started = false;
+  let unlocked = false;   // el navegador sólo deja sonar audio después de un gesto del usuario
+  let playing = false;    // en partida, sin pausa ni fin de juego
   let failures = 0;
 
   const dock = document.createElement("div");
@@ -76,7 +79,7 @@ export function startMusic(): void {
     if (queue.length === 0) queue = shuffled(current);
     current = queue.shift()!;
     audio.src = current;
-    void audio.play().catch(() => { /* el navegador espera un gesto; se reintenta en el siguiente */ });
+    if (playing && unlocked && !document.hidden) void audio.play().catch(() => { /* se reintenta en el siguiente gesto */ });
   }
 
   audio.addEventListener("ended", () => { failures = 0; playNext(); });
@@ -86,14 +89,15 @@ export function startMusic(): void {
     if (++failures < TRACKS.length) playNext();
   });
 
-  // Los navegadores sólo dejan sonar audio tras un gesto del usuario.
-  const begin = (): void => {
-    if (started) { if (audio.paused && !document.hidden) void audio.play().catch(() => {}); return; }
-    started = true;
-    playNext();
-  };
-  window.addEventListener("pointerdown", begin);
-  window.addEventListener("keydown", begin);
+  // Suena sólo en partida, con la pestaña visible y después de un gesto; si no, en pausa en su lugar.
+  function update(): void {
+    if (!(playing && unlocked && !document.hidden)) { audio.pause(); return; }
+    if (!current) playNext();
+    else if (audio.paused) void audio.play().catch(() => {});
+  }
+  const unlock = (): void => { if (!unlocked) { unlocked = true; update(); } };
+  window.addEventListener("pointerdown", unlock);
+  window.addEventListener("keydown", unlock);
 
   muteBtn.addEventListener("click", () => {
     if (!muted && volume === 0) volume = 0.5;   // si el volumen estaba en cero, el botón lo devuelve
@@ -110,10 +114,8 @@ export function startMusic(): void {
   });
 
   // Fuera de la pestaña no suena; al volver sigue la misma pista.
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) audio.pause();
-    else if (started) void audio.play().catch(() => {});
-  });
+  document.addEventListener("visibilitychange", update);
 
   apply();
+  return { setPlaying(next: boolean) { if (next !== playing) { playing = next; update(); } } };
 }
