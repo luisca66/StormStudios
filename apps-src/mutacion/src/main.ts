@@ -8,6 +8,7 @@ import {
   WORLDS,
 } from "./game";
 import { detectLang, getStrings } from "./i18n";
+import { startMusic } from "./music";
 import { drawAnimatedLogoOnCanvas, renderGameShapeSvg } from "./shapeDrawer";
 
 type ScreenName = "HOME" | "LEVEL_SELECT" | "GAME" | "GAME_OVER";
@@ -813,3 +814,6 @@ document.addEventListener("visibilitychange", () => {
     controller.pause();
   }
 });
+
+// La música de Luis: aleatoria sin repetir, con volumen y silencio.
+startMusic();
