@@ -1,5 +1,5 @@
 import "./style.css";
-import aristotelesRoundUrl from "../referencia/res/mipmap-xxxhdpi/ic_launcher_round.webp";
+import aristotelesRoundUrl from "./assets/ic_launcher_round.webp";
 import { detectLang, getTranslations, type Translations } from "./i18n";
 import { GameEngine } from "./gameLogic";
 import { triggerConfetti } from "./confetti";
