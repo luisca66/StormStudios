@@ -467,7 +467,9 @@
         {
           "measure": 1,
           "color": "amber",
-          "label": "V root"
+          "label": "V root",
+          "beat": 3,
+          "endBeat": 5
         },
         {
           "measure": 2,
@@ -618,7 +620,9 @@
         {
           "measure": 1,
           "color": "amber",
-          "label": "I 6/4"
+          "label": "I 6/4",
+          "beat": 3,
+          "endBeat": 5
         }
       ],
       "heading": "A new chord: I 6/4",
@@ -632,15 +636,12 @@
       "highlights": [
         {
           "measure": 1,
+          "beat": 3,
+          "endMeasure": 2,
+          "endBeat": 3,
           "voice": "bass",
           "color": "amber",
-          "label": "B♭"
-        },
-        {
-          "measure": 2,
-          "voice": "bass",
-          "color": "amber",
-          "label": "B♭"
+          "label": "I 6/4 and V: the same B♭"
         }
       ],
       "heading": "The same bass as V",
@@ -661,7 +662,9 @@
         {
           "measure": 2,
           "color": "amber",
-          "label": "beat 1"
+          "label": "I 6/4: beat 1",
+          "beat": 1,
+          "endBeat": 2
         }
       ],
       "heading": "In 2/4: first beat",
@@ -675,7 +678,9 @@
         {
           "measure": 2,
           "color": "amber",
-          "label": "beat 1"
+          "label": "I 6/4: beat 1",
+          "beat": 1,
+          "endBeat": 2
         }
       ],
       "heading": "In 3/4: first beat",
@@ -689,7 +694,9 @@
         {
           "measure": 2,
           "color": "amber",
-          "label": "beat 1"
+          "label": "I 6/4: beat 1",
+          "beat": 1,
+          "endBeat": 3
         }
       ],
       "heading": "In 4/4: first or third beat",
@@ -712,7 +719,9 @@
         {
           "measure": 1,
           "color": "amber",
-          "label": "I 6/4 on beat 2"
+          "label": "I 6/4 on beat 2",
+          "beat": 2,
+          "endBeat": 3
         }
       ],
       "heading": "The only exception",

@@ -467,7 +467,9 @@
         {
           "measure": 1,
           "color": "amber",
-          "label": "V fund."
+          "label": "V fund.",
+          "beat": 3,
+          "endBeat": 5
         },
         {
           "measure": 2,
@@ -618,7 +620,9 @@
         {
           "measure": 1,
           "color": "amber",
-          "label": "I 6/4"
+          "label": "I 6/4",
+          "beat": 3,
+          "endBeat": 5
         }
       ],
       "heading": "Un acorde nuevo: el I 6/4",
@@ -632,15 +636,12 @@
       "highlights": [
         {
           "measure": 1,
+          "beat": 3,
+          "endMeasure": 2,
+          "endBeat": 3,
           "voice": "bass",
           "color": "amber",
-          "label": "Si♭"
-        },
-        {
-          "measure": 2,
-          "voice": "bass",
-          "color": "amber",
-          "label": "Si♭"
+          "label": "I 6/4 y V: el mismo Si♭"
         }
       ],
       "heading": "El mismo bajo que el V",
@@ -661,7 +662,9 @@
         {
           "measure": 2,
           "color": "amber",
-          "label": "tiempo 1"
+          "label": "I 6/4: tiempo 1",
+          "beat": 1,
+          "endBeat": 2
         }
       ],
       "heading": "En 2/4: primer tiempo",
@@ -675,7 +678,9 @@
         {
           "measure": 2,
           "color": "amber",
-          "label": "tiempo 1"
+          "label": "I 6/4: tiempo 1",
+          "beat": 1,
+          "endBeat": 2
         }
       ],
       "heading": "En 3/4: primer tiempo",
@@ -689,7 +694,9 @@
         {
           "measure": 2,
           "color": "amber",
-          "label": "tiempo 1"
+          "label": "I 6/4: tiempo 1",
+          "beat": 1,
+          "endBeat": 3
         }
       ],
       "heading": "En 4/4: primero o tercer tiempo",
@@ -712,7 +719,9 @@
         {
           "measure": 1,
           "color": "amber",
-          "label": "I 6/4 en el tiempo 2"
+          "label": "I 6/4 en el tiempo 2",
+          "beat": 2,
+          "endBeat": 3
         }
       ],
       "heading": "La única excepción",
