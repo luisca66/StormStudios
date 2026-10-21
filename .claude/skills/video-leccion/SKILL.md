@@ -125,6 +125,8 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 
 - **L9 ES/EN (2026-10-21)**: apilar 6/3 y 6/4 como parte del numeral y centrar el conjunto sobre el ancla real de VexFlow; comprobar también 2/4, 3/4, mitades con puntillo y silencios SATB. 45 stills y 79 clips por idioma; 234/234 fotogramas correctos, 524.880 s / 505.767 s, 18 escuchas entre −2.4 y −2.6 dB RMS después de AAC, mezclas −16 LUFS / −1.4 dBTP. La metadata de la entrega anterior acredita cuenta y destino de Drive, pero si la revisión automática exige confirmación explícita, dejar la subida pendiente y completar la entrega local.
 
+- **L9 v2 ES/EN (2026-10-21)**: un rango con `beat/endBeat` puede cruzar una barra de compás: unir los fragmentos por voz del mismo sistema para obtener un recuadro continuo; revisar el PNG real además del JSON. Cambiaron exactamente siete PNG por idioma y los otros 38 quedaron idénticos. Conservar la pista AAC original por copia directa garantiza voz/música idénticas en una revisión visual; volver a verificar los MP4 finales después del remux. 234/234 fotogramas correctos, 79 SRT por idioma y 18 escuchas entre −2.4 y −2.6 dB RMS. Con autorización explícita del destino, subir copias privadas nuevas y comprobar tamaño, padre y permiso exclusivo del propietario por metadata.
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).

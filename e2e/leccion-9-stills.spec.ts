@@ -12,6 +12,15 @@ for (const board of [es, en]) {
       await page.evaluate(({ still, score, format }) => window.stormStage!.render(still, score, format), {
         still, score: still.project ? prepared.scores[still.project] : null, format: prepared.storyboard.format,
       });
+      if (still.id === 'mismo-bajo') {
+        const highlight = page.locator('[data-highlight="true"]');
+        await expect(highlight).toHaveCount(1);
+        await expect(highlight).toHaveAttribute('data-highlight-voice', 'bass');
+        const range = await highlight.boundingBox();
+        const bar = await page.locator('[data-measure="2"] svg').boundingBox();
+        expect(range!.x).toBeLessThan(bar!.x);
+        expect(range!.x + range!.width).toBeGreaterThan(bar!.x + 50);
+      }
       const audit = await page.getByTestId('still').evaluate(root => {
         const box = (e: Element) => { const r = e.getBoundingClientRect(); return { left:r.left, right:r.right, top:r.top, bottom:r.bottom }; };
         const paper = root.querySelector('[class*="paper"], [class*="image"]');
