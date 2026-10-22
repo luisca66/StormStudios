@@ -1,4 +1,5 @@
 import { validateLesson8SatbLinks } from '@/lib/maestro-virtual/satb-links-validator';
+import { validateLesson9Cadences } from '@/lib/maestro-virtual/cadences-validator';
 import { NextRequest, NextResponse } from 'next/server';
 import { createHash, randomBytes } from 'node:crypto';
 import { isIP } from 'node:net';
@@ -298,6 +299,7 @@ export async function POST(request: NextRequest) {
       case 'minor-scales': rawErrors = validateMinorScales(voiceData); break;
       case 'triads': rawErrors = validateCompleteLesson4Triads(voiceData); break;
       case 'satb-links': rawErrors = validateLesson8SatbLinks(voiceData); break;
+      case 'cadences': rawErrors = validateLesson9Cadences(voiceData); break;
       case 'satb-chords': rawErrors = validateLesson6SatbChords(voiceData); break;
       case 'melodic-lines': rawErrors = validateLesson7MelodicLine(voiceData); break;
       default:
@@ -394,7 +396,7 @@ export async function POST(request: NextRequest) {
       passed,
       violations,
       suggestions,
-      ...(['satb-chords', 'satb-links', 'melodic-lines'].includes(lessonConfig.validator) ? { descriptions } : {}),
+      ...(['satb-chords', 'satb-links', 'melodic-lines', 'cadences'].includes(lessonConfig.validator) ? { descriptions } : {}),
       summary,
     });
 

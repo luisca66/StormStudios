@@ -5,7 +5,7 @@
  * (ruteo explícito, no por coincidencia de substring en el id).
  */
 
-export type ValidatorKind = 'major-scales' | 'minor-scales' | 'modes' | 'triads' | 'satb' | 'satb-chords' | 'melodic-lines' | 'satb-links';
+export type ValidatorKind = 'major-scales' | 'minor-scales' | 'modes' | 'triads' | 'satb' | 'satb-chords' | 'melodic-lines' | 'satb-links' | 'cadences';
 
 export interface ValidatorConfig {
   id: string;
@@ -13,6 +13,25 @@ export interface ValidatorConfig {
   voiceCount: number;   // 1 = una voz · 4 = SATB
   activeRules: string[];
 }
+
+const VALIDATOR_LESSON9_RULES = [
+  "CADENCE_FILE_LIMIT",
+  "CADENCE_NO_CHORDS",
+  "CADENCE_CHORD_COUNT",
+  "CADENCE_AMBIGUOUS_KEY",
+  "CADENCE_UNRECOGNIZED",
+  "CADENCE_DUPLICATE",
+  "CADENCE_FINAL_INVERSION",
+  "CADENCE_SIX_FOUR_WEAK_BEAT",
+  "CADENCE_SIX_FOUR_POSITION",
+  "CADENCE_START_MEASURE",
+  "CADENCE_DURATION",
+  "CADENCE_INFO",
+  "CADENCE_LEADING_TONE_SOPRANO",
+  "CADENCE_KEYS",
+  "CADENCE_REPEATED_KEY",
+  "CADENCE_MISSING"
+];
 
 const VALIDATOR_CONFIGS: Record<string, ValidatorConfig> = {
   // ── Lección 1: Escalas Mayores (1 voz) ───────────────────────────────────
@@ -99,6 +118,18 @@ const VALIDATOR_CONFIGS: Record<string, ValidatorConfig> = {
       'MELODIC_FORBIDDEN_INTERVAL', 'MELODIC_LEADING_TONE_OCTAVE', 'MELODIC_DIMINISHED_UNRESOLVED',
       'HARMONIC_PARALLEL_OCTAVES', 'HARMONIC_CONTRARY_OCTAVES',
       'HARMONIC_PARALLEL_FIFTHS', 'HARMONIC_CONTRARY_FIFTHS', 'HARMONIC_SIMULTANEOUS_LEAPS',
+    ],
+  },
+  '10-leccion-9': {
+    id: '10-leccion-9', validator: 'cadences', voiceCount: 4,
+    activeRules: [
+      ...VALIDATOR_LESSON9_RULES,
+      'SATB_VOICE_NOTES', 'SATB_MISSING_VOICE', 'SATB_UNRECOGNIZED',
+      'SATB_FOREIGN_NOTE', 'SATB_ENHARMONIC', 'SATB_MISSING_SPELLING',
+      'SATB_MISSING_ROOT', 'SATB_MISSING_THIRD', 'SATB_INCOMPLETE_DIMINISHED',
+      'SATB_LEADING_TONE_DOUBLED', 'SATB_RANGE', 'SATB_VOICE_CROSSING', 'SATB_SPACING',
+      'MELODIC_FORBIDDEN_INTERVAL', 'MELODIC_LEADING_TONE_OCTAVE', 'MELODIC_DIMINISHED_UNRESOLVED', 'MELODIC_SUCCESSIVE_LEAPS',
+      'HARMONIC_PARALLEL_OCTAVES', 'HARMONIC_CONTRARY_OCTAVES', 'HARMONIC_PARALLEL_FIFTHS', 'HARMONIC_CONTRARY_FIFTHS', 'HARMONIC_SIMULTANEOUS_LEAPS',
     ],
   },
 };
