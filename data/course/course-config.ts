@@ -59,6 +59,7 @@ export const COURSE_CONFIG: CourseConfig = {
         "08-leccion-7",
         "09-leccion-8",
         "10-leccion-9",
+        "11-leccion-10",
       ],
     },
   ],

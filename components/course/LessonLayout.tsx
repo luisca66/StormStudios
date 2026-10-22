@@ -19,7 +19,9 @@ type Props = {
 export default function LessonLayout({ lesson, prev, next, locale, children }: Props) {
   const es = locale === "es";
   const course = getCourseConfig();
-  const lessonVideos = lesson.videosByLocale?.[locale as "es" | "en"] ?? lesson.videos;
+  // Publication drafts keep explicit YouTube markers until the uploads are ready.
+  const lessonVideos = (lesson.videosByLocale?.[locale as "es" | "en"] ?? lesson.videos)
+    ?.filter((video) => !/^__YOUTUBE_ID_(ES|EN)__$/.test(video.youtubeId));
   const lessonTools = lesson.toolsByLocale?.[locale as "es" | "en"] ?? lesson.tools;
   // Solo las lecciones del curso principal tienen número; el resto usa su etiqueta (P01, Intro…).
   const unitCode = lesson.title.es.match(/^(P\d+(?:\.\d+)?)/)?.[1];
