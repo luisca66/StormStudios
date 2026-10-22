@@ -8,6 +8,20 @@ import type { MaestroFeedback } from '@/types/course';
 import * as lessonConfigs from '@/data/course/lessons/lesson-configs';
 import { LESSON8_EXPECTED_ERRORS } from '@/lib/maestro-virtual/__fixtures__/lesson8-expected-errors';
 
+it('routes Lesson 9 to cadence review and returns its descriptions', async () => {
+  const bytes = new Uint8Array(readFileSync(join(process.cwd(), 'lib/maestro-virtual/__fixtures__/Leccion_8_Do_mayor_correcta.mid')));
+  const form = new FormData();
+  form.append('midi', new Blob([bytes]), 'connections.mid');
+  form.append('lessonId', '10-leccion-9');
+  const response = await POST(new NextRequest('http://localhost/api/maestro-virtual/check', {
+    method: 'POST', body: form, headers: { 'x-forwarded-for': '198.51.100.79' },
+  }));
+  expect(response.status).toBe(200);
+  const feedback: MaestroFeedback = await response.json();
+  expect(feedback.violations.some(f => f.ruleId === 'CADENCE_MISSING')).toBe(true);
+  expect(feedback.descriptions!.some(f => f.ruleId === 'CADENCE_INFO')).toBe(true);
+});
+
 describe('Lesson 8 SATB link review', () => {
   function request(fixture: string, locale: string, removeInitialSignature = false) {
     let bytes = new Uint8Array(readFileSync(join(process.cwd(), 'lib/maestro-virtual/__fixtures__', fixture)));
