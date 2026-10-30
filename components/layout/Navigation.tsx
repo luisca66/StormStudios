@@ -13,6 +13,7 @@ const navLinks = [
   { key: "resources", href: "/resources" as const },
   { key: "book", href: "/el-libro" as const },
   { key: "mastery", href: "/maestria" as const },
+  { key: "blog", href: "/blog" as const },
   { key: "contact", href: "/contacto" as const },
 ] as const;
 
