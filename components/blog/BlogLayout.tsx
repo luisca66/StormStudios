@@ -5,18 +5,24 @@ interface BlogLayoutProps {
   frontmatter: MDXFrontmatter;
   locale: string;
   children: React.ReactNode;
+  /** Enlace de regreso; por defecto, el blog. */
+  back?: { href: string; label: string };
+  /** Se muestra entre el encabezado y el texto, p. ej. un video. */
+  media?: React.ReactNode;
+  /** Cierre de la página; por defecto, la invitación al curso. */
+  cta?: { title: string; text: string; href: string; label: string };
 }
 
-export function BlogLayout({ frontmatter, locale, children }: BlogLayoutProps) {
+export function BlogLayout({ frontmatter, locale, children, back, media, cta }: BlogLayoutProps) {
   const formattedDate = frontmatter.date
     ? new Date(frontmatter.date).toLocaleDateString(
         locale === "es" ? "es-MX" : "en-US",
-        { year: "numeric", month: "long", day: "numeric" }
+        { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" }
       )
     : null;
 
-  const backHref = `/${locale}/blog`;
-  const backLabel = locale === "es" ? "← Blog" : "← Blog";
+  const backHref = back?.href ?? `/${locale}/blog`;
+  const backLabel = back?.label ?? "← Blog";
 
   return (
     <div className="ss-root" style={{ minHeight: "100vh" }}>
@@ -78,6 +84,8 @@ export function BlogLayout({ frontmatter, locale, children }: BlogLayoutProps) {
           </div>
         </header>
 
+        {media && <div className="mb-12">{media}</div>}
+
         {/* Divider */}
         <div className="ss-divider mb-12" />
 
@@ -92,19 +100,19 @@ export function BlogLayout({ frontmatter, locale, children }: BlogLayoutProps) {
           style={{ border: "1px solid rgba(139,92,246,0.2)" }}
         >
           <p className="ss-serif mb-2" style={{ fontSize: "1.3rem", color: "#f0eeff" }}>
-            {locale === "es" ? "¿Listo para practicar?" : "Ready to practice?"}
+            {cta?.title ?? (locale === "es" ? "¿Listo para practicar?" : "Ready to practice?")}
           </p>
           <p className="ss-mono text-sm mb-6" style={{ color: "var(--ss-muted)" }}>
-            {locale === "es"
+            {cta?.text ?? (locale === "es"
               ? "Aplica estos conceptos en el Curso de Armonía con revisión automática de ejercicios MIDI."
-              : "Apply these concepts in the Harmony Course with automatic MIDI exercise feedback."}
+              : "Apply these concepts in the Harmony Course with automatic MIDI exercise feedback.")}
           </p>
           <Link
-            href="/curso-armonia"
+            href={cta?.href ?? "/curso-armonia"}
             className="inline-block px-6 py-3 rounded-xl ss-mono text-sm font-medium transition-all duration-300"
             style={{ background: "linear-gradient(135deg,#8b5cf6,#3b82f6)", color: "#fff" }}
           >
-            {locale === "es" ? "Ir al Curso →" : "Go to Course →"}
+            {cta?.label ?? (locale === "es" ? "Ir al Curso →" : "Go to Course →")}
           </Link>
         </div>
       </div>

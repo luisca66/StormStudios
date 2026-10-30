@@ -7,15 +7,17 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { getBlogPostSlug } from "@/data/seo/blog-post-translations";
 import { translateLessonSlug, translateResourceSlug } from "@/data/seo/localized-slugs";
+import { getMasteryPieceSlug } from "@/data/seo/mastery-translations";
 
 type DynamicPathname =
   | "/apps/[slug]"
   | "/blog/[slug]"
   | "/curso-armonia/[slug]"
+  | "/maestria/[slug]"
   | "/resources/[slug]";
 
 function isDynamicPathname(pathname: string): pathname is DynamicPathname {
-  return ["/apps/[slug]", "/blog/[slug]", "/curso-armonia/[slug]", "/resources/[slug]"].includes(pathname);
+  return ["/apps/[slug]", "/blog/[slug]", "/curso-armonia/[slug]", "/maestria/[slug]", "/resources/[slug]"].includes(pathname);
 }
 
 export default function LanguageSwitcher() {
@@ -36,6 +38,10 @@ export default function LanguageSwitcher() {
 
         if (pathname === "/blog/[slug]") {
           nextSlug = getBlogPostSlug(currentLocale, currentSlug, nextLocale) ?? currentSlug;
+        }
+
+        if (pathname === "/maestria/[slug]") {
+          nextSlug = getMasteryPieceSlug(currentLocale, currentSlug, nextLocale) ?? currentSlug;
         }
 
         if (pathname === "/resources/[slug]") {

@@ -5,6 +5,7 @@ import { HomeDemoVideo } from "@/components/home/HomeDemoVideo";
 import { HomeFeatures } from "@/components/home/HomeFeatures";
 import { HomeGrowthSection } from "@/components/home/HomeGrowthSection";
 import { HomeHero } from "@/components/home/HomeHero";
+import { HomeMasterySection } from "@/components/home/HomeMasterySection";
 import { HomeResourcesSection } from "@/components/home/HomeResourcesSection";
 import { HomeStructuredData } from "@/components/home/HomeStructuredData";
 import type { Metadata } from "next";
@@ -81,6 +82,8 @@ export default async function HomePage({
       <HomeFeatures />
 
       <HomeResourcesSection />
+
+      <HomeMasterySection />
 
       <HomeCTA />
 

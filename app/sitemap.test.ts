@@ -1,6 +1,17 @@
 import { expect, it } from "vitest";
 import sitemap from "./sitemap";
 
+it("lists the Mastery section and its pieces with translated URLs", async () => {
+  const entries = await sitemap();
+  expect(entries.some((entry) => entry.url.endsWith("/es/maestria"))).toBe(true);
+  expect(entries.some((entry) => entry.url.endsWith("/en/mastery"))).toBe(true);
+  const piece = entries.find((entry) => entry.url.endsWith("/es/maestria/del-sol-a-la-fuerza"));
+  expect(piece?.alternates?.languages).toEqual({
+    "es-MX": "https://www.stormstudios.com.mx/es/maestria/del-sol-a-la-fuerza",
+    "en-US": "https://www.stormstudios.com.mx/en/mastery/from-sunlight-to-strength",
+  });
+});
+
 it("lists the published lessons in both languages and excludes Lesson 9 in construction", async () => {
   const entries = await sitemap();
   const spanish = entries.find((entry) => entry.url.endsWith("/es/curso-armonia/05-leccion-4"));

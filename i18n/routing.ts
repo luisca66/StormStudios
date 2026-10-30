@@ -122,6 +122,14 @@ export const routing = defineRouting({
     },
     "/blog": "/blog",
     "/blog/[slug]": "/blog/[slug]",
+    "/maestria": {
+      es: "/maestria",
+      en: "/mastery",
+    },
+    "/maestria/[slug]": {
+      es: "/maestria/[slug]",
+      en: "/mastery/[slug]",
+    },
     "/contacto": {
       es: "/contacto",
       en: "/contact",
