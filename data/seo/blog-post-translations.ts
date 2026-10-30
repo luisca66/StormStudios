@@ -55,6 +55,13 @@ export const BLOG_POST_TRANSLATIONS: BlogPostTranslation[] = [
       es: "2026-10-05-leccion-6-publicada",
     },
   },
+  {
+    key: "mastery-section",
+    slugs: {
+      en: "2026-10-30-new-mastery-section",
+      es: "2026-10-30-nueva-seccion-maestria",
+    },
+  },
 ];
 
 export function findBlogTranslationBySlug(locale: Locale, slug: string) {
