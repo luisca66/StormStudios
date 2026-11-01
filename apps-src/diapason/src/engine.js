@@ -17,8 +17,8 @@ const OPEN_MIDI = [64, 59, 55, 50, 45, 40];
 // Open-string note indices into NOTES_SHARP (same data, used for noteAt())
 const OPEN_IDX = [4, 11, 7, 2, 9, 4]; // E B G D A E
 
-// Display labels (high e → low E)
-const SNAMES = ['e','B','G','D','A','E'];
+// Display labels (string number only: the open notes are what the student must learn)
+const SNAMES = ['1','2','3','4','5','6'];
 
 // Server folder names per string (same order)
 const SFOLDER = [

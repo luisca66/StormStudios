@@ -56,4 +56,6 @@ Pendiente de integración: revisión táctil en un teléfono físico, comprobaci
 - Etiquetas fuera del clavijero, en columna 6→1 y conectadas a su cuerda. Texto de 14 px efectivos y separación mínima de 20 px entre líneas, incluso al reducir la escena.
 - Graves de tres grosores diferenciados, núcleo metálico, reflejo y vueltas de entorchado. Nailon translúcido con grosor creciente 1ª→3ª y reflejos en sus bordes. Sombras proyectadas sobre el plano de madera para separar visualmente la cuerda del diapasón.
 
+Actualización (2026-11-01): las etiquetas de cuerda, en la POV y en la vista plana, muestran solo el número (1–6) y ya no la nota, porque las notas al aire son lo que el alumno debe saber.
+
 Validación de esta ronda: build y TypeScript correctos; prueba geométrica ampliada con orden vertical de todas las cuerdas en los 13 trastes, toques a cinco escalas, cejuela/traste 12 completos, separación de etiquetas y grosores. En Chrome, tamaños CSS medidos: 1024×768 (scrollWidth/clientWidth: 982/982), 1280×760 (1098/1098) y 844×390 horizontal (802/802), sin desbordamiento horizontal del mástil. Revisión visual de los dos tamaños de escritorio, toque de la 6ª en traste 12 y navegación con flecha abajo a la 5ª, conservando la pregunta. La emulación horizontal no sustituye la prueba táctil pendiente en teléfono físico.
