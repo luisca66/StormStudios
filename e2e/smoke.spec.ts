@@ -36,7 +36,9 @@ for (const locale of ["es", "en"] as const) {
 
 test("language switch keeps the lesson", async ({ page }) => {
   await page.goto("/es/curso-armonia/p01-notas");
-  await page.getByRole("button", { name: "Cambiar idioma a English" }).click();
+  const switchLanguage = page.getByRole("button", { name: "Cambiar idioma a English" });
+  await expect(switchLanguage).toBeEnabled({ timeout: 15_000 });
+  await switchLanguage.click();
   await expect(page).toHaveURL(/\/en\/harmony-course\/p01-writing-musical-notes$/);
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
 });

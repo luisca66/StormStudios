@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { AUDIO_ASSETS, AUDIO_BASE_URL, GameData, MnemonicSet } from "@/data/apps/memoria-data";
+import { MAX_MNEMONIC_WORD_LENGTH } from './mnemonic-schema';
 
 type MemoriaGameProps = {
   locale: string;
@@ -50,6 +51,7 @@ export default function MemoriaGame({ locale, wordsData, onSaveWords }: MemoriaG
   const [isEditing, setIsEditing] = useState(false);
   const [editedWords, setEditedWords] = useState<MnemonicSet>({});
   const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
 
   // Audio refs
   const bgMusicRef = useRef<HTMLAudioElement | null>(null);
@@ -226,19 +228,21 @@ export default function MemoriaGame({ locale, wordsData, onSaveWords }: MemoriaG
   };
 
   const openModal = () => {
+    setSaveError(false);
     setEditedWords(wordsData[currentRange] || {});
     setIsEditing(false);
     setShowModal(true);
   };
 
   const handleSaveModal = async () => {
+    setSaveError(false);
     setIsSaving(true);
     try {
       await onSaveWords(currentRange, editedWords);
       setIsEditing(false);
       setTimeout(() => setShowModal(false), 600);
-    } catch (error) {
-      console.error(error);
+    } catch {
+      setSaveError(true);
     } finally {
       setIsSaving(false);
     }
@@ -336,6 +340,8 @@ export default function MemoriaGame({ locale, wordsData, onSaveWords }: MemoriaG
               &times;
             </button>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">{T.modalTitle} - {currentRange}</h2>
+            {isEditing && <p className="text-sm text-gray-600 mb-3">{isEN ? 'Up to 100 characters per word.' : 'Hasta 100 caracteres por palabra.'}</p>}
+            {saveError && <p role="alert" className="text-sm text-red-700 mb-3">{isEN ? 'Your words could not be saved. Try again.' : 'No se pudieron guardar tus palabras. Intenta de nuevo.'}</p>}
             
             <ul className="max-h-[60vh] overflow-y-auto border border-gray-200 rounded-lg p-2 space-y-1">
               {Object.keys(editedWords).sort((a,b) => parseInt(a)-parseInt(b) || a.localeCompare(b)).map((key) => (
@@ -344,6 +350,8 @@ export default function MemoriaGame({ locale, wordsData, onSaveWords }: MemoriaG
                   {isEditing ? (
                     <input 
                       type="text" 
+                      maxLength={MAX_MNEMONIC_WORD_LENGTH}
+                      aria-label={`${isEN ? 'Word for' : 'Palabra para'} ${key}`}
                       value={editedWords[key]} 
                       onChange={(e) => setEditedWords({...editedWords, [key]: e.target.value})}
                       className="text-right p-1.5 rounded bg-indigo-50 border-2 border-indigo-500 focus:outline-none focus:ring-0 min-w-[100px] w-full max-w-[200px]"

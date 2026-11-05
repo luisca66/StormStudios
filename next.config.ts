@@ -52,7 +52,8 @@ const gameCsp = [
   "worker-src 'self' blob:",
   "img-src 'self' data: blob: https:",
   "media-src 'self' data: blob: https:",
-  "connect-src 'self' https: wss:",
+  // Audio actual y dos buckets heredados usados por Diapasón/clientes en caché.
+  "connect-src 'self' https://samples.stormstudios.com.mx https://musica.stormstudios.com.mx https://sfx.stormstudios.com.mx https://pub-905d3540e35b4c49bb36ccc2d2d99752.r2.dev https://pub-16e19eafae5742d9b4b9472f6e0faed8.r2.dev",
   "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
   "frame-ancestors 'self'",
   "base-uri 'self'",
