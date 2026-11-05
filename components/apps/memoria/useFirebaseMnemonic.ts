@@ -4,6 +4,7 @@ import { getAuth, signInAnonymously, onAuthStateChanged, User, Auth } from "fire
 import { getFirestore, doc, getDoc, setDoc, Firestore } from "firebase/firestore";
 import { FIREBASE_CONFIG, COLLECTION_BY_LANG, GameData, GAME_DATA_ES, GAME_DATA_EN, PRACTICE_DATA_ES, PRACTICE_DATA_EN } from "@/data/apps/memoria-data";
 import { mergeMnemonicWords, parseMnemonicRange } from './mnemonic-schema';
+import { initializeMnemonicAppCheck } from './app-check';
 
 type AppState = {
   db: Firestore | null;
@@ -32,7 +33,8 @@ export function useFirebaseMnemonic(locale: string) {
     async function initFirebase() {
       try {
         const apps = getApps();
-        const app = apps.length ? apps.find(a => a.name === "memoria-app") || apps[0] : initializeApp(FIREBASE_CONFIG, "memoria-app");
+        const app = apps.find(a => a.name === "memoria-app") ?? initializeApp(FIREBASE_CONFIG, "memoria-app");
+        initializeMnemonicAppCheck(app);
         const auth = getAuth(app);
         const db = getFirestore(app);
 

@@ -6,7 +6,7 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 // ─── Content Security Policy ─────────────────────────────────────────────────
 // Dos políticas porque el sitio combina dos mundos:
-//   1. La app Next.js (estricta): sin CDNs externos de script; 'unsafe-eval' se
+//   1. La app Next.js: scripts propios y reCAPTCHA acotado; 'unsafe-eval' se
 //      habilita solo en desarrollo porque React lo usa para sus herramientas de
 //      depuración. connect-src queda acotado a Firebase.
 //   2. Los juegos HTML autónomos en /apps y /tools (permisiva): sus librerías y
@@ -15,16 +15,18 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 // El catch-all estricto excluye /apps y /tools con un negative-lookahead para que
 // cada ruta reciba UNA sola cabecera CSP (dos romperían los juegos por intersección).
 
-// CSP estricta para la app Next.js. 'unsafe-inline' en script es inevitable
+// CSP para la app Next.js. reCAPTCHA se permite sólo en sus rutas oficiales
+// para la certificación de App Check de Memoria; no se admiten CDNs generales.
+// 'unsafe-inline' en script es inevitable
 // porque Next inyecta scripts de hidratación inline sin nonce en render estático;
-// En producción quitamos 'unsafe-eval' y los CDNs externos. media-src permite
+// En producción quitamos 'unsafe-eval' y los CDNs generales. media-src permite
 // https para el audio servido vía <audio> (lectura musical, memoria, elefantito);
 // connect-src permite los tres dominios de audio porque la lectura rítmica carga samples con
 // fetch()+decodeAudioData (Web Audio), que se rige por connect-src, no media-src.
 const appScriptSrc =
   process.env.NODE_ENV === "development"
-    ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
-    : "script-src 'self' 'unsafe-inline'";
+    ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/"
+    : "script-src 'self' 'unsafe-inline' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/";
 
 const appCsp = [
   "default-src 'self'",
@@ -33,8 +35,8 @@ const appCsp = [
   "font-src 'self' data:",
   "img-src 'self' data: blob: https:",
   "media-src 'self' data: blob: https:",
-  "connect-src 'self' https://*.googleapis.com https://*.gstatic.com https://*.firebaseio.com https://*.firebasestorage.app https://samples.stormstudios.com.mx https://musica.stormstudios.com.mx https://sfx.stormstudios.com.mx wss://*.firebaseio.com",
-  "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
+  "connect-src 'self' https://*.googleapis.com https://*.gstatic.com https://*.firebaseio.com https://*.firebasestorage.app https://www.google.com/recaptcha/ https://samples.stormstudios.com.mx https://musica.stormstudios.com.mx https://sfx.stormstudios.com.mx wss://*.firebaseio.com",
+  "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/",
   "frame-ancestors 'self'",
   "base-uri 'self'",
   "form-action 'self'",
