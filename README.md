@@ -19,13 +19,15 @@ El sitio usa Next.js 16, React, TypeScript y next-intl. Antes de modificar APIs 
 ```sh
 npm run check
 npm run apps:check
-npm audit --audit-level=high
+npm run test:microphones
+npm run test:rules
+npm audit --audit-level=moderate
 npm run apps:audit
 ```
 
 `check` ejecuta lint, pruebas unitarias y build de Next. Después del build, `npm run test:e2e` corre las pruebas de humo con Playwright contra `next start` (la primera vez, `npx playwright install chromium`). `apps:check` compila las 15 apps Vite y compara cada archivo generado con la copia servida desde `public/apps`. Si modificas fuentes de apps, ejecuta primero `npm run apps:build` y revisa el diff de fuentes y bundles. Este comando sincroniza archivos locales; no despliega a internet. Conserva assets antiguos para no romper clientes que aún cargan una versión anterior. Un bundle que ya no referencia ningún `index.html` puede retirarse 90 días después de su reemplazo; anota la fecha en el commit que lo reemplaza. Las herramientas HTML heredadas (secuenciador y juegos `*-gemini.html`) y Cosmic Ear usan CSS de Tailwind precompilado: si cambias sus clases, ejecuta `npm run legacy:css` (y después `npm run apps:build` para Cosmic Ear). `grados-mayores` e `intervalos-reconocimiento` son JavaScript escrito a mano sin compilación: su fuente son los archivos de `public/apps/<app>/` y se editan ahí. Solo `acordes-cantar` es un bundle sin fuente: sus cambios se hacen publicando una copia del bundle con nombre nuevo, como documenta `docs/cloudflare-audio.md`.
 
-El proyecto de Vercel está conectado con el repositorio GitHub. Publicar en su rama de producción puede activar un despliegue. Primero revisar cambios y pruebas, y acordar la publicación. El workflow `.github/workflows/quality.yml` ejecuta controles en push y pull request; debe comprobarse su primer resultado en GitHub.
+El proyecto de Vercel está conectado con el repositorio GitHub. Publicar en su rama de producción puede activar un despliegue. Primero revisar cambios y pruebas, y acordar la publicación. El workflow `.github/workflows/quality.yml` separa `verify`, `security` y `firestore` para que una compilación fallida no omita las auditorías. Los tres trabajos deben aprobar antes de publicar. `test:rules` descarga la CLI oficial fijada en una carpeta local ignorada y ejecuta únicamente un proyecto demo; requiere Java 21 o posterior. Nunca sustituir ese ID por el proyecto real en las pruebas.
 
 ## Mapa del proyecto
 

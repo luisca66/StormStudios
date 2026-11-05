@@ -1,7 +1,7 @@
-import { AudioEngine } from "@/audio/engine";
-import { MicPitchDetector, MicUnsupportedError } from "@/audio/pitch";
-import { INSTRUMENTS, LISTEN_WINDOW_MS, TUNING_TOLERANCE, type Instrument } from "@/config";
-import { type Lang, strings } from "@/i18n";
+import type { AudioEngine } from "../audio/engine";
+import { MicPitchDetector, MicUnsupportedError } from "../audio/pitch";
+import { INSTRUMENTS, LISTEN_WINDOW_MS, TUNING_TOLERANCE, type Instrument } from "../config";
+import { type Lang, strings } from "../i18n";
 import {
   INTERVALS,
   INTERVAL_BY_ID,
@@ -14,8 +14,8 @@ import {
   type Direction,
   type IntervalDef,
   type Question,
-} from "@/music/core";
-import { StatsRepository, type StatsMap } from "@/stats/repository";
+} from "../music/core";
+import { StatsRepository, type StatsMap } from "../stats/repository";
 
 export type Screen = "menu" | "setup" | "training" | "stats";
 export type GameMode = "classic" | "time" | "survival";
@@ -67,6 +67,7 @@ export class GameController {
   private askedSet = new Set<string>();
   private timerId: number | null = null;
   private autoNextTimer: number | null = null;
+  private recordingGeneration = 0;
   private state: AppState;
 
   constructor(
@@ -136,27 +137,31 @@ export class GameController {
   }
 
   openMode(mode: GameMode): void {
+    this.cancelRecording();
     this.clearTimers();
     this.audio.stopAll();
-    this.patch({ screen: "setup", selectedMode: mode, session: null, current: null });
+    this.patch({ screen: "setup", selectedMode: mode, session: null, current: null, processing: false, recording: false });
   }
 
   openMenu(): void {
+    this.cancelRecording();
     this.clearTimers();
     this.audio.stopAll();
-    this.patch({ screen: "menu", session: null, current: null, confirmClear: false });
+    this.patch({ screen: "menu", session: null, current: null, confirmClear: false, processing: false, recording: false });
   }
 
   openSetup(): void {
+    this.cancelRecording();
     this.clearTimers();
     this.audio.stopAll();
-    this.patch({ screen: "setup", session: null, current: null });
+    this.patch({ screen: "setup", session: null, current: null, processing: false, recording: false });
   }
 
   openStats(): void {
+    this.cancelRecording();
     this.clearTimers();
     this.audio.stopAll();
-    this.patch({ screen: "stats", session: null, current: null, stats: this.statsRepository.getStats() });
+    this.patch({ screen: "stats", session: null, current: null, stats: this.statsRepository.getStats(), processing: false, recording: false });
   }
 
   setTrainingType(trainingType: TrainingType): void {
@@ -168,6 +173,7 @@ export class GameController {
   }
 
   startTraining(intervalId: IntervalDef["id"] | ""): void {
+    this.cancelRecording();
     this.clearTimers();
     this.resetQuestionMemory();
     this.patch({
@@ -247,7 +253,9 @@ export class GameController {
       return;
     }
 
+    const generation = this.recordingGeneration;
     this.patch({ processing: true });
+    this.startTimerIfNeeded();
 
     if (this.state.trainingType === "NOMENCLATURE_ONLY") {
       this.evaluateAnswer(null);
@@ -256,12 +264,15 @@ export class GameController {
 
     try {
       await this.audio.unlock();
+      if (generation !== this.recordingGeneration) return;
       this.patch({ recording: true, result: this.t.singing, resultKind: "" });
       const frequencies = await this.mic.listen(LISTEN_WINDOW_MS);
-      if (!this.state.session || this.state.session.ended) return;
+      if (generation !== this.recordingGeneration || !this.state.session || this.state.session.ended) return;
       this.patch({ recording: false });
       this.evaluateAnswer(frequencies);
     } catch (error) {
+      if (generation !== this.recordingGeneration) return;
+      this.mic.dispose();
       this.patch({
         processing: false,
         recording: false,
@@ -285,9 +296,20 @@ export class GameController {
   }
 
   dispose(): void {
+    this.cancelRecording();
     this.clearTimers();
-    this.mic.dispose();
     this.audio.stopAll();
+  }
+
+  suspend(): void {
+    this.cancelRecording();
+    this.audio.stopAll();
+    this.patch({ processing: false, recording: false, result: "", resultKind: "", flash: "none" });
+  }
+
+  private cancelRecording(): void {
+    this.recordingGeneration += 1;
+    this.mic.dispose();
   }
 
   private evaluateAnswer(frequencies: number[] | null): void {
@@ -432,6 +454,7 @@ export class GameController {
   private endSession(reason: "timeout" | "lives"): void {
     const session = this.state.session;
     if (!session) return;
+    this.cancelRecording();
     this.clearTimers();
     this.audio.stopAll();
     this.patch({

@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useTransition } from "react";
+import { useSyncExternalStore, useTransition } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { getBlogPostSlug } from "@/data/seo/blog-post-translations";
@@ -20,6 +20,8 @@ function isDynamicPathname(pathname: string): pathname is DynamicPathname {
   return ["/apps/[slug]", "/blog/[slug]", "/curso-armonia/[slug]", "/maestria/[slug]", "/resources/[slug]"].includes(pathname);
 }
 
+const subscribeToHydration = () => () => {};
+
 export default function LanguageSwitcher() {
   const locale = useLocale();
   const t = useTranslations("language");
@@ -27,6 +29,8 @@ export default function LanguageSwitcher() {
   const pathname = usePathname();
   const params = useParams<{ slug?: string | string[] }>();
   const [isPending, startTransition] = useTransition();
+  // Keep the server-rendered button disabled until its click handler is hydrated.
+  const hydrated = useSyncExternalStore(subscribeToHydration, () => true, () => false);
 
   const handleSwitch = () => {
     const nextLocale: Locale = locale === "es" ? "en" : "es";
@@ -63,7 +67,7 @@ export default function LanguageSwitcher() {
   return (
     <button
       onClick={handleSwitch}
-      disabled={isPending}
+      disabled={!hydrated || isPending}
       className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium border border-gray-300 rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50"
       aria-label={`${t("ariaLabel")} ${t("switch")}`}
     >

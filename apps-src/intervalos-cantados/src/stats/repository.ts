@@ -1,4 +1,4 @@
-import { STATS_KEY } from "@/config";
+import { STATS_KEY } from "../config";
 
 export interface StatEntry {
   correct: number;

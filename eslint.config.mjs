@@ -11,6 +11,7 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    ".local-work/**",
     // Apps construidas/vendored: bundles y fuentes copiadas, no las linteamos.
     "public/apps/**",
     "public/vendor/**",

@@ -13,6 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:rules": "node scripts/test-firestore-rules.mjs",
+    "test:microphones": "vitest run --config apps-src/acordes-cantar-juego/vitest.config.ts && npm --prefix apps-src/intervalos-cantados test",
     "apps:install": "node scripts/apps-maintenance.mjs install",
     "apps:build": "node scripts/apps-maintenance.mjs build",
     "apps:check": "node scripts/apps-maintenance.mjs check",
@@ -24,13 +26,13 @@
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
-    "@next/mdx": "^16.4.2",
+    "@next/mdx": "16.4.5",
     "@tailwindcss/typography": "^0.5.19",
     "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "firebase": "^12.13.0",
     "gray-matter": "^4.0.3",
-    "next": "^16.4.2",
+    "next": "16.4.5",
     "next-intl": "^4.13.0",
     "next-mdx-remote": "^6.0.0",
     "react": "19.2.9",
@@ -42,6 +44,7 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "5.0.2",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^24",
@@ -49,12 +52,18 @@
     "@types/react-dom": "^19",
     "@vitest/ui": "^4.1.12",
     "eslint": "^9",
-    "eslint-config-next": "^16.4.2",
+    "eslint-config-next": "16.4.5",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.12"
   },
   "overrides": {
+    "@tailwindcss/typography": {
+      "postcss-selector-parser": "6.1.5"
+    },
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "11.0.1"
+    },
     "@firebase/firestore": {
       "@grpc/grpc-js": "1.13.6"
     },
