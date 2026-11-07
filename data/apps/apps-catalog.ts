@@ -466,6 +466,23 @@ export const APPS: AppEntry[] = [
     ],
     icon: "/images/secuenciador.png",
   },
+  {
+    slug: "storm-sequencer-v4",
+    name: { es: "Storm Sequencer v4.0", en: "Storm Sequencer v4.0" },
+    category: "sequencer",
+    description: {
+      es: "Escribe música con mouse, teclado o texto: partitura continua, páginas y cuarteto SATB.",
+      en: "Write music with mouse, keyboard or text: continuous score, pages and SATB quartet.",
+    },
+    webUrl: "/sequencer/v4",
+    isTool: true,
+    features: [
+      { es: "Escritura con mouse, teclado o texto", en: "Write with mouse, keyboard or text" },
+      { es: "Partitura continua o por páginas, con cuarteto SATB", en: "Continuous or paged score, with SATB quartet" },
+      { es: "Exporta MIDI, MusicXML, WAV e imagen (PNG/SVG)", en: "Export MIDI, MusicXML, WAV and image (PNG/SVG)" },
+    ],
+    icon: "/images/secuenciador.png",
+  },
   ...UTILITY_APPS,
 ];
 
