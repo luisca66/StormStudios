@@ -117,6 +117,13 @@ const nextConfig: NextConfig = {
   // ─── Redirects: legacy WordPress URLs y rutas obsoletas ────────────────────
   async redirects() {
     return [
+      // ── Dominio canónico: el apex redirige a www (antes lo hacía Vercel) ──
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "stormstudios.com.mx" }],
+        destination: "https://www.stormstudios.com.mx/:path*",
+        permanent: true,
+      },
       // ── Batería: conservar enlaces antiguos con URL canónica v9.6 ─────────
       {
         source: "/apps/storm-bateria-v9.5.html",
