@@ -8,6 +8,9 @@
     "mapa-audio": "node scripts/sequencer/mapa-audio.mjs",
     "dev": "next dev",
     "build": "next build",
+    "cf:build": "opennextjs-cloudflare build",
+    "cf:preview": "npm run cf:build && opennextjs-cloudflare preview",
+    "cf:deploy": "npm run cf:build && opennextjs-cloudflare deploy -- --keep-vars",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
@@ -28,7 +31,6 @@
     "@mdx-js/react": "^3.1.1",
     "@next/mdx": "16.4.5",
     "@tailwindcss/typography": "^0.5.19",
-    "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "firebase": "^12.13.0",
     "gray-matter": "^4.0.3",
@@ -45,6 +47,7 @@
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "5.0.2",
+    "@opennextjs/cloudflare": "1.20.15",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^24",
@@ -55,7 +58,8 @@
     "eslint-config-next": "16.4.5",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^4.1.12"
+    "vitest": "^4.1.12",
+    "wrangler": "4.148.0"
   },
   "overrides": {
     "@tailwindcss/typography": {
@@ -77,5 +81,10 @@
   },
   "engines": {
     "node": ">=24 <25"
+  },
+  "allowScripts": {
+    "workerd@1.20261006.1": true,
+    "esbuild@0.28.2": true,
+    "esbuild@0.28.1": true
   }
 }

@@ -148,6 +148,8 @@ const nextConfig: NextConfig = {
   },
 
   images: {
+    // Workers Free: servir originales sin depender de Cloudflare Images.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
