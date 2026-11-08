@@ -59,7 +59,7 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.12",
-    "wrangler": "4.148.0"
+    "wrangler": "4.156.0"
   },
   "overrides": {
     "@tailwindcss/typography": {
@@ -77,14 +77,20 @@
     "next": {
       "postcss": "8.5.28"
     },
-    "sharp": ">=0.35.5"
+    "sharp": ">=0.35.5",
+    "@node-minify/core": {
+      "glob": "14.0.3"
+    },
+    "@opennextjs/cloudflare": {
+      "glob": "14.0.3"
+    }
   },
   "engines": {
     "node": ">=24 <25"
   },
   "allowScripts": {
-    "workerd@1.20261006.1": true,
     "esbuild@0.28.2": true,
-    "esbuild@0.28.1": true
+    "esbuild@0.28.1": true,
+    "workerd@1.20261023.1": true
   }
 }
