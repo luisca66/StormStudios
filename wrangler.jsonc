@@ -4,6 +4,9 @@
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-11-07",
   "compatibility_flags": ["nodejs_compat"],
+  // El sitio vive solo en stormstudios.com.mx; sin copias en workers.dev.
+  "workers_dev": false,
+  "preview_urls": false,
   "routes": [
     { "pattern": "www.stormstudios.com.mx", "custom_domain": true },
     { "pattern": "stormstudios.com.mx", "custom_domain": true }
