@@ -22,6 +22,11 @@ apps-src/*/referencia/
 /.next/
 /out/
 
+# Cloudflare Workers / OpenNext
+/.open-next/
+/.wrangler/
+.dev.vars*
+
 # production
 /build
 
@@ -53,3 +58,6 @@ next-env.d.ts
 /.local-work/
 # Lesson video stills (generated)
 stills/
+# Planes de lanzamiento de los agentes (trabajo local)
+apps-src/plan-lanzamiento/
+apps-src/cloudflare-migracion/
