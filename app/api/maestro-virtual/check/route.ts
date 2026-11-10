@@ -199,7 +199,7 @@ async function readBoundedBody(request: NextRequest): Promise<BoundedBodyResult>
 export async function POST(request: NextRequest) {
   try {
     const ip = getClientIp(request.headers);
-    if (!(await passesEdgeRateLimit('MAESTRO_LIMITER', rateLimitKey(ip)))) {
+    if (!(await passesEdgeRateLimit('MAESTRO_LIMITER', ip))) {
       return rateLimitedResponse(60);
     }
 
