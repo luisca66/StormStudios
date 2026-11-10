@@ -113,6 +113,20 @@ export function getLessonNav(
 }
 
 /**
+ * Lecciones publicadas en un idioma donde el Maestro Virtual revisa el MIDI
+ * (tienen ejercicio y número de lección). Fuente única para los textos que
+ * describen su alcance, para que no se queden atrás al publicar lecciones.
+ */
+export function getVirtualTeacherLessons(locale: Locale): LessonConfig[] {
+  return ALL_LESSONS.filter(
+    (lesson) =>
+      lesson.exercise &&
+      lesson.lessonNumber !== undefined &&
+      getLessonStatus(lesson, locale) === "published"
+  );
+}
+
+/**
  * Retorna las lecciones de un módulo dado.
  */
 export function getLessonsByModule(moduleId: string): LessonConfig[] {

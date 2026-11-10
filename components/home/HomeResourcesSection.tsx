@@ -57,7 +57,7 @@ export async function HomeResourcesSection() {
             }}
           >
             <span className="ss-mono" style={{ fontSize: "0.62rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "#93c5fd" }}>
-              {es ? "Guia" : "Guide"}
+              {es ? "Guía" : "Guide"}
             </span>
             <h3 className="ss-serif" style={{ fontSize: "1.35rem", lineHeight: 1.2, color: "white" }}>
               {resource.title[locale as "es" | "en"]}

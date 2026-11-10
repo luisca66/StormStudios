@@ -14,10 +14,19 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS",
-    // Conserva headers, redirects y rewrites de Next también para public/.
-    // Cada petición pasa por el Worker y consume su cuota gratuita.
-    "run_worker_first": true,
+    // Todo pasa por el Worker para conservar headers, redirects y rewrites de
+    // Next, salvo /_next/static: archivos con hash que se sirven directo desde
+    // la capa de assets con la caché de public/_headers.
+    "run_worker_first": ["/*", "!/_next/static/*"],
     "html_handling": "none",
     "not_found_handling": "none"
-  }
+  },
+  // Límites compartidos entre instancias para las API públicas
+  // (lib/http/edge-rate-limit.ts). El periodo solo admite 10 o 60 segundos.
+  "ratelimits": [
+    { "name": "CONTACT_LIMITER", "namespace_id": "1001", "simple": { "limit": 3, "period": 60 } },
+    { "name": "MAESTRO_LIMITER", "namespace_id": "1002", "simple": { "limit": 10, "period": 60 } }
+  ],
+  // Logs de las API (console.error) visibles en el panel de Cloudflare.
+  "observability": { "enabled": true }
 }

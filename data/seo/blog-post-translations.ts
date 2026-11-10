@@ -56,6 +56,27 @@ export const BLOG_POST_TRANSLATIONS: BlogPostTranslation[] = [
     },
   },
   {
+    key: "lesson-7-published",
+    slugs: {
+      en: "2026-10-09-lesson-7-published",
+      es: "2026-10-09-leccion-7-publicada",
+    },
+  },
+  {
+    key: "lesson-8-published",
+    slugs: {
+      en: "2026-10-09-lesson-8-published",
+      es: "2026-10-09-leccion-8-publicada",
+    },
+  },
+  {
+    key: "3d-games-renewed-utility-apps",
+    slugs: {
+      en: "2026-10-20-3d-games-renewed-and-utility-apps",
+      es: "2026-10-20-juegos-3d-renovados-y-utility-apps",
+    },
+  },
+  {
     key: "mastery-section",
     slugs: {
       en: "2026-10-30-new-mastery-section",
