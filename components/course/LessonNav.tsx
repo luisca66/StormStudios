@@ -9,59 +9,75 @@ type Props = {
   locale: string;
 };
 
+const CARD_CLASS =
+  "group flex w-full items-center gap-3 p-4 rounded-xl transition-colors ss-mono";
+const CARD_STYLE = {
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(139,92,246,0.3)",
+  color: "#f0eeff",
+  textDecoration: "none",
+} as const;
+
 export default function LessonNav({ prev, next, locale }: Props) {
   const es = locale === "es";
   const currentLocale = locale as Locale;
 
   return (
-    <nav className="flex items-center justify-between gap-4 pt-8 mt-8 border-t border-gray-200">
-      {/* Anterior */}
-      <div className="flex-1">
+    // En el teléfono las tarjetas se apilan: en una sola fila, «Siguiente»
+    // quedaba fuera de la pantalla.
+    <nav
+      aria-label={es ? "Lección anterior y siguiente" : "Previous and next lesson"}
+      className="flex flex-col sm:flex-row sm:items-stretch gap-3 sm:gap-4 pt-8 mt-8"
+      style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
+    >
+      <div className="flex-1 min-w-0 flex">
         {prev ? (
           <Link
             href={{
               pathname: "/curso-armonia/[slug]",
               params: { slug: getLessonUrlSlug(prev, currentLocale) },
             }}
-            className="bg-white group flex items-center gap-3 p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all"
+            className={`${CARD_CLASS} hover:border-violet-400`}
+            style={CARD_STYLE}
           >
-            <span className="text-2xl text-gray-400 group-hover:text-blue-500 transition">←</span>
-            <div className="min-w-0">
-              <p className="text-xs text-gray-600 uppercase tracking-wide mb-0.5">
+            <span aria-hidden className="text-2xl" style={{ color: "#a78bfa" }}>←</span>
+            <span className="min-w-0">
+              <span className="block text-xs uppercase tracking-wide mb-0.5" style={{ color: "var(--ss-muted)" }}>
                 {es ? "Anterior" : "Previous"}
-              </p>
-              <p className="text-sm font-semibold text-gray-800 group-hover:text-blue-700 transition truncate">
+              </span>
+              <span className="block text-sm font-semibold truncate">
                 {prev.title[locale as "es" | "en"]}
-              </p>
-            </div>
+              </span>
+            </span>
           </Link>
-        ) : (
-          <div />
-        )}
+        ) : null}
       </div>
 
-      {/* Siguiente */}
-      <div className="flex-1 flex justify-end">
+      <div className="flex-1 min-w-0 flex">
         {next ? (
           <Link
             href={{
               pathname: "/curso-armonia/[slug]",
               params: { slug: getLessonUrlSlug(next, currentLocale) },
             }}
-            className="bg-white group flex items-center gap-3 p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all text-right"
+            className={`${CARD_CLASS} justify-end text-right hover:border-violet-400`}
+            style={CARD_STYLE}
           >
-            <div className="min-w-0">
-              <p className="text-xs text-gray-600 uppercase tracking-wide mb-0.5">
+            <span className="min-w-0">
+              <span className="block text-xs uppercase tracking-wide mb-0.5" style={{ color: "var(--ss-muted)" }}>
                 {es ? "Siguiente" : "Next"}
-              </p>
-              <p className="text-sm font-semibold text-gray-800 group-hover:text-blue-700 transition truncate">
+              </span>
+              <span className="block text-sm font-semibold truncate">
                 {next.title[locale as "es" | "en"]}
-              </p>
-            </div>
-            <span className="text-2xl text-gray-400 group-hover:text-blue-500 transition">→</span>
+              </span>
+            </span>
+            <span aria-hidden className="text-2xl" style={{ color: "#a78bfa" }}>→</span>
           </Link>
         ) : (
-          <div className="p-4 rounded-xl border border-dashed border-gray-200 text-center text-sm text-gray-400">
+          <div
+            className="w-full p-4 rounded-xl text-center text-sm ss-mono"
+            style={{ border: "1px dashed rgba(255,255,255,0.2)", color: "var(--ss-muted)" }}
+          >
             {es ? "🎓 ¡Fin del contenido actual!" : "🎓 End of current content!"}
           </div>
         )}

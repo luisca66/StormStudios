@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHash, randomBytes } from "node:crypto";
-import { isIP } from "node:net";
 import { z } from "zod";
+import { getClientIp } from "@/lib/http/client-ip";
+import { passesEdgeRateLimit } from "@/lib/http/edge-rate-limit";
 
 export const runtime = "nodejs";
 
@@ -13,9 +14,9 @@ const MAX_REQUEST_BODY_BYTES = 8 * 1024;
 const MAX_RATE_LIMIT_ENTRIES = 10_000;
 const RATE_LIMIT_SALT = randomBytes(16).toString("hex");
 
-// Protección local por proceso: reduce abuso contra una instancia, pero no es un
-// rate limit distribuido. En producción debe complementarse con WAF o un store
-// compartido si el volumen o el abuso lo justifican.
+// Dos capas: el binding CONTACT_LIMITER de Cloudflare cuenta entre todas las
+// instancias (ver lib/http/edge-rate-limit.ts) y este contador en memoria, que
+// solo ve su propio isolate, cubre `next dev`/`next start` y ráfagas locales.
 const ipRequestLog = new Map<string, number[]>();
 let lastRateLimitCleanupAt = 0;
 
@@ -49,23 +50,6 @@ function escapeHtml(value: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
-}
-
-function getClientIp(request: NextRequest): string {
-  const forwardedFor = request.headers.get("x-vercel-forwarded-for")
-    ?? request.headers.get("x-forwarded-for");
-  const candidates = [
-    forwardedFor?.split(",")[0]?.trim(),
-    request.headers.get("x-real-ip")?.trim(),
-  ];
-
-  for (const candidate of candidates) {
-    if (candidate && isIP(candidate)) {
-      return candidate;
-    }
-  }
-
-  return "unknown";
 }
 
 function getRateLimitKey(ip: string): string {
@@ -219,7 +203,12 @@ export async function POST(request: NextRequest) {
       return errorResponse("invalid_request", 400);
     }
 
-    const ip = getClientIp(request);
+    const ip = getClientIp(request.headers);
+
+    if (!(await passesEdgeRateLimit("CONTACT_LIMITER", getRateLimitKey(ip)))) {
+      return errorResponse("rate_limited", 429, true, 60);
+    }
+
     const rateLimit = getRateLimitResult(ip);
 
     if (rateLimit.limited) {

@@ -43,6 +43,22 @@ test("language switch keeps the lesson", async ({ page }) => {
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
 });
 
+test("the next-lesson link stays on screen on a phone", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/es/curso-armonia/02-leccion-1");
+  const next = page.getByRole("navigation", { name: "Lección anterior y siguiente" }).getByRole("link", { name: /Siguiente/ });
+  await next.scrollIntoViewIfNeeded();
+  const box = await next.boundingBox();
+  expect(box).not.toBeNull();
+  expect(box!.x).toBeGreaterThanOrEqual(0);
+  expect(box!.x + box!.width).toBeLessThanOrEqual(375);
+});
+
+test("blog call to action keeps the reader's language", async ({ page }) => {
+  await page.goto("/en/blog/2026-05-21-welcome");
+  await expect(page.getByRole("link", { name: /Go to Course/ })).toHaveAttribute("href", "/en/harmony-course");
+});
+
 test("unknown slug renders the full 404 page", async ({ page }) => {
   const response = await page.goto("/es/apps/no-existe");
   expect(response?.status()).toBe(404);

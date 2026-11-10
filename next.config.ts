@@ -66,6 +66,8 @@ const gameCsp = [
 
 // Cabeceras comunes a ambos mundos (no entran en conflicto entre reglas).
 const baseSecurityHeaders = [
+  // Vercel lo enviaba solo; en Cloudflare hay que declararlo.
+  { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -155,7 +157,7 @@ const nextConfig: NextConfig = {
   },
 
   images: {
-    // Workers Free: servir originales sin depender de Cloudflare Images.
+    // Cloudflare Images no está configurado: se sirven los archivos originales.
     unoptimized: true,
     remotePatterns: [
       {
