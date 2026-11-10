@@ -34,19 +34,30 @@ export async function passesEdgeRateLimit(name: EdgeLimiterName, ip: string): Pr
   try {
     const { env } = await getCloudflareContext({ async: true });
     limiter = (env as unknown as Record<string, RateLimitBinding | undefined>)[name];
-  } catch {
+  } catch (error) {
+    // Sin contexto de Cloudflare: `next dev`, `next start` o pruebas. En
+    // producción no debería pasar; el aviso permite detectarlo en los logs.
+    if (process.env.NODE_ENV === "production") {
+      console.warn(`[rate-limit] no Cloudflare context: ${error instanceof Error ? error.message : "unknown error"}`);
+    }
     return true;
   }
 
   if (!limiter) {
+    // En Cloudflare el binding debe existir (wrangler.jsonc): avisar en los logs.
+    console.error(`[rate-limit] binding ${name} not available`);
     return true;
   }
 
   try {
     const { success } = await limiter.limit({ key });
+    if (!success) {
+      console.warn(`[rate-limit] ${name} blocked a request`);
+    }
     return success;
-  } catch {
+  } catch (error) {
     // Si el servicio de límites falla, no bloquear a usuarios legítimos.
+    console.error(`[rate-limit] ${name} failed: ${error instanceof Error ? error.message : "unknown error"}`);
     return true;
   }
 }
