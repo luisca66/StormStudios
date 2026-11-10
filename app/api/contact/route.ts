@@ -205,7 +205,7 @@ export async function POST(request: NextRequest) {
 
     const ip = getClientIp(request.headers);
 
-    if (!(await passesEdgeRateLimit("CONTACT_LIMITER", getRateLimitKey(ip)))) {
+    if (!(await passesEdgeRateLimit("CONTACT_LIMITER", ip))) {
       return errorResponse("rate_limited", 429, true, 60);
     }
 
