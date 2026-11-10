@@ -60,7 +60,7 @@ export default async function ElLibroPage({ params }: Props) {
       <div className="grid md:grid-cols-[260px_1fr] gap-12 items-start">
         {/* Portada */}
         <div className="flex justify-center ss-reveal">
-          <Image src="/images/portada-libro.jpg"
+          <Image src="/images/portada-libro.webp"
             alt={locale === "es" ? "Portada — Los Seres Musicales" : "Cover — The Musical Beings"}
             width={260} height={350} priority
             className="rounded-xl object-cover"

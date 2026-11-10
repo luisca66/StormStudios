@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "images": "node scripts/optimize-images.mjs",
     "stills": "node scripts/sequencer/stills.mjs",
     "video": "node scripts/sequencer/video.mjs",
     "mapa-audio": "node scripts/sequencer/mapa-audio.mjs",

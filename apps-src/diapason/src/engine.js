@@ -4,7 +4,8 @@ import { t, english } from "./i18n";
 //  GUITAR DATA
 // ══════════════════════════════════════════════════════════════════════════════
 
-const BASE = 'https://pub-905d3540e35b4c49bb36ccc2d2d99752.r2.dev/';
+// Dominio propio del bucket de guitarra (CDN y caché de un año); r2.dev es solo para desarrollo.
+const BASE = 'https://musica.stormstudios.com.mx/';
 
 // Chromatic scale — canonical names always use sharps internally
 const NOTES_SHARP = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];

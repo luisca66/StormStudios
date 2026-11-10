@@ -73,8 +73,8 @@ export default async function CursoArmoniaPage({ params }: Props) {
         {/* Retratos */}
         <div className="flex justify-center gap-10 mb-14 ss-reveal" style={{ animationDelay: "0.15s" }}>
           {[
-            { src: "/images/shostakovich.jpg", name: "Dmitri Shostakovich" },
-            { src: "/images/medrano.jpg",       name: "Humberto Hernández Medrano" },
+            { src: "/images/shostakovich.webp", name: "Dmitri Shostakovich" },
+            { src: "/images/medrano.webp",       name: "Humberto Hernández Medrano" },
           ].map((p) => (
             <div key={p.name} className="text-center">
               <div className="w-40 h-40 rounded-full overflow-hidden mx-auto mb-3 ss-glass flex items-center justify-center"
