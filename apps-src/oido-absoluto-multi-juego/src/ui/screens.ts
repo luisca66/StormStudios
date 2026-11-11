@@ -1,344 +1,145 @@
-import { GameStateManager, Note } from "@/game/state";
-import { COPY, GameCopy, getLocale, INSTRUMENTS } from "@/i18n";
+import { GameState, GameStateManager } from "@/game/state";
+import { COPY, GameCopy, getLocale } from "@/i18n";
+import { WORLD_RANGES, completedInWorld, levelsOfWorld, getLevel, pitchName, pitchClassName, SequenceId } from "@/game/progression";
 
-export function mountUI(
-  root: HTMLElement, 
-  stateManager: GameStateManager, 
-  onAnswerSelected: (isCorrect: boolean) => void,
-  onResetChallenge: () => void,
-  triggerSpawn: () => void
-): void {
+import { renderStatistics, downloadStatistics, sessionFigures, percentage, help } from "./statistics";
+
+const worldIcons = ["🌾", "🌊", "🌌", "🐊", "🦄"];
+const escape = (text: string) => text.replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]!);
+const button = (action: string, label: string, primary = false, data = "") =>
+  `<button class="${primary ? "primary" : "secondary"}-button" data-action="${action}" ${data}>${label}</button>`;
+const notation = (s: GameState, c: GameCopy) => `<button class="chip on" data-action="notation" aria-label="${c.notation}" aria-pressed="${s.accidentals === "flats"}">♯ / ♭ · ${s.accidentals === "sharps" ? "♯" : "♭"}</button>`;
+const volume = (s: GameState, c: GameCopy) => `<label class="volume-control">🔊 ${c.volume}<input aria-label="${c.volume}" class="volume-slider" type="range" min="0" max="1" step="0.02" value="${s.volume}"></label>`;
+
+export function mountUI(root: HTMLElement, manager: GameStateManager,
+  onAnswerSelected: (correct: boolean) => void, onResetChallenge: () => void, triggerSpawn: () => void): void {
   const copy = COPY[getLocale()];
-  
-  // Re-render UI on state updates
-  stateManager.subscribe((state) => {
-    root.innerHTML = render(state, stateManager, copy);
-    
-    // Bind Volume Slider dynamically
-    const volSlider = root.querySelector(".volume-slider") as HTMLInputElement;
-    if (volSlider) {
-      volSlider.addEventListener("input", (e) => {
-        const val = parseFloat((e.target as HTMLInputElement).value);
-        stateManager.updateVolume(val);
-      });
+  const screenHost = document.createElement("div");
+  const noticeHost = document.createElement("div");
+  screenHost.className = noticeHost.className = "ui-screen-host";
+  root.replaceChildren(screenHost, noticeHost);
+  let noticeVisible = false;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const dismiss = () => {
+    clearTimeout(timer);
+    const state = manager.getState();
+    if (!state.isPlaying || !state.feedback) return;
+    const correct = state.feedback.correct;
+    manager.dismissFeedback();
+    if (correct) triggerSpawn(); else onResetChallenge();
+  };
+  manager.subscribe(state => {
+    if (!state.feedback) clearTimeout(timer);
+    // Keep level-list scroll position while toggling notation.
+    const previous = screenHost.querySelector(".level-grid")?.scrollTop ?? 0;
+    screenHost.innerHTML = render(state, manager, copy);
+    // Keep the notice mounted across answers so assistive technology announces it only once.
+    if (noticeVisible !== state.storageWarning) {
+      noticeVisible = state.storageWarning;
+      noticeHost.innerHTML = noticeVisible ? `<aside class="storage-notice" role="status"><span>${copy.stats.storageWarning}</span><button class="chip" data-action="dismiss-storage-warning" aria-label="${copy.stats.dismiss}">×</button></aside>` : "";
     }
+    const grid = screenHost.querySelector(".level-grid"); if (grid) grid.scrollTop = previous;
   });
-
-  // Global Click listener for data-actions
-  root.addEventListener("click", (e) => {
-    const target = (e.target as HTMLElement).closest<HTMLElement>("[data-action]");
+  root.addEventListener("input", event => {
+    if ((event.target as HTMLElement).matches(".volume-slider"))
+      manager.updateVolume(Number((event.target as HTMLInputElement).value));
+  });
+  root.addEventListener("change", event => {
+    const target = event.target as HTMLSelectElement;
+    if (target.matches('[data-action="stats-filter"]'))
+      manager.setStatsLevel(target.value === "all" ? null : Number(target.value));
+  });
+  root.addEventListener("click", event => {
+    const target = (event.target as HTMLElement).closest<HTMLElement>("[data-action]");
     if (!target) return;
-
-    const action = target.dataset.action;
-    
-    if (action === "select-level") {
-      const id = parseInt(target.dataset.id || "1", 10);
-      stateManager.selectLevel(id);
-    } 
-    else if (action === "select-instrument") {
-      const inst = target.dataset.id || "Piano";
-      stateManager.selectInstrument(inst);
-    } 
-    else if (action === "select-group") {
-      const idx = parseInt(target.dataset.id || "0", 10);
-      stateManager.selectNoteGroup(idx);
-    } 
-    else if (action === "confirm-warmup") {
-      stateManager.confirmWarmup();
-      triggerSpawn(); // Spawn first note target in 3D
-    } 
-    else if (action === "warmup-note") {
-      const idx = parseInt(target.dataset.index || "0", 10);
-      const oct = parseInt(target.dataset.octave || "3", 10);
-      stateManager["audio"].playNote(stateManager.getState().selectedInstrument, idx, oct);
-    } 
-    else if (action === "answer-note") {
-      const idx = parseInt(target.dataset.index || "0", 10);
-      const oct = parseInt(target.dataset.octave || "3", 10);
-      
-      const isCorrect = stateManager.checkAnswer(idx, oct);
-      onAnswerSelected(isCorrect);
-      
-      // Trigger Toast notification
-      const toast = document.getElementById("feedback-toast");
-      if (toast) {
-        toast.className = "feedback-toast show";
-        const icon = document.getElementById("feedback-icon")!;
-        const text = document.getElementById("feedback-text")!;
-        const sub = document.getElementById("feedback-sub")!;
-        
-        if (isCorrect) {
-          toast.style.setProperty("--border-color", "var(--mint)");
-          icon.textContent = "✅";
-          text.textContent = copy.correct;
-          text.style.color = "var(--mint)";
-          sub.textContent = copy.correctSub;
-        } else {
-          toast.style.setProperty("--border-color", "var(--rose)");
-          icon.textContent = "❌";
-          text.textContent = copy.wrong;
-          text.style.color = "var(--rose)";
-          sub.textContent = copy.wrongSub;
-        }
-        
-        // Auto-fadeout toast after 1.8s
-        setTimeout(() => {
-          toast.className = "feedback-toast";
-          if (isCorrect) {
-            triggerSpawn(); // Spawn new note
-          } else {
-            onResetChallenge(); // Teleport player and note
-          }
-        }, 1800);
+    const id = Number(target.dataset.id);
+    switch (target.dataset.action) {
+      case "statistics": manager.openStatistics(); break;
+      case "stats-back": manager.closeStatistics(); break;
+      case "dismiss-storage-warning": manager.dismissStorageWarning(); break;
+      case "export-csv": downloadStatistics(manager, copy); break;
+      case "clear-stats":
+        if (window.confirm(`${copy.sequenceNames[manager.getState().sequence]}: ${copy.stats.clearConfirm}`)) manager.clearStatistics();
+        break;
+      case "world": manager.selectWorld(id); break;
+      case "level": manager.selectLevel(id); break;
+      case "scenario": manager.selectScenario(id); break;
+      case "sequence": manager.selectSequence(target.dataset.id as SequenceId); break;
+      case "resume": manager.selectLevel(manager.continueLevel()); break;
+      case "notation": manager.toggleAccidentals(); break;
+      case "warmup-note": manager.warmupNote(id); break;
+      case "start": manager.confirmWarmup(); break;
+      case "menu": manager.backToMenu(); break;
+      case "advance": manager.advanceLevel(); break;
+      case "loop": manager.toggleLoop(); break;
+      case "replay": manager.replay(); break;
+      case "hear-answer": manager.hearAnswer(); break;
+      case "dismiss": dismiss(); break;
+      case "answer": {
+        if (!manager.getState().currentChallenge || manager.getState().feedback) return;
+        const correct = manager.checkAnswer(id);
+        onAnswerSelected(correct);
+        clearTimeout(timer);
+        timer = setTimeout(dismiss, correct ? 1800 : 6000);
+        break;
       }
-    } 
-    else if (action === "menu") {
-      stateManager.backToMenu();
-    } 
-    else if (action === "advance") {
-      stateManager.advanceLevel();
     }
   });
 }
 
-function render(state: any, stateManager: GameStateManager, copy: GameCopy): string {
-  if (state.activeScreen === "menu") {
-    return renderMenu(state, copy);
+function render(s: GameState, manager: GameStateManager, c: GameCopy): string {
+  if (s.activeScreen === "statistics") return renderStatistics(s, manager, c);
+  const stage = c.levels[s.level.world - 1];
+  const scenario = c.levels[s.scenario - 1];
+  if (s.activeScreen === "menu") return `<main class="screen">
+    <header><div class="eyebrow">${c.eyebrow}</div><h1 class="title">${c.appTitle}</h1><p class="subtitle">${c.appSubtitle}</p></header>
+    ${s.methodCompleted ? `<p role="status" class="completion-message">${c.methodCompleted}</p>` : ""}
+    <section class="setup-section"><span class="section-label">${c.sequence}</span>
+    <div class="chip-row">${(["Hombre", "Mujer"] as const).map(seq => `<button class="chip ${s.sequence === seq ? "on" : ""}" data-action="sequence" data-id="${seq}" aria-pressed="${s.sequence === seq}">${c.sequenceNames[seq]}</button>`).join("")}</div>
+    <p class="subtitle">${c.sequenceHelp}</p></section>
+    ${button("resume", `${c.continueLevel} ${manager.continueLevel()}`, true)}
+    ${button("statistics", c.stats.title)}
+    <section class="setup-section"><h2 class="section-label">${c.methodStages}</h2><p class="subtitle">${c.scenarioHelp}</p></section>
+    <section class="mode-list">${c.levels.map((w, index) => {
+      const id = index + 1, [first, last] = WORLD_RANGES[id];
+      return `<button class="mode-card" data-action="world" data-id="${id}"><span class="accent-bar"></span><span class="mode-icon">${worldIcons[index]}</span><span class="mode-body"><span class="mode-title">${w.name}</span><span class="mode-subtitle">${w.menuSubtitle} · ${first}–${last}</span><span class="mode-subtitle">${completedInWorld(s.progress, id)} / ${last - first + 1} ${c.completed}</span></span><span class="mode-arrow">›</span></button>`;
+    }).join("")}</section>${volume(s, c)}</main>`;
+  if (s.activeScreen === "level-selection") return `<main class="screen level-screen">
+    <header class="header-row">${button("menu", `‹ ${c.back}`)}<h1>${c.levels[s.selectedWorld - 1].name}</h1></header>
+    ${button("statistics", c.stats.title)}
+    <div class="toolbar"><h2>${c.chooseLevel} · ${c.sequenceNames[s.sequence]}</h2>${notation(s, c)}</div>
+    <section class="level-grid">${levelsOfWorld(s.sequence, s.selectedWorld).map(level => `<button class="level-card ${s.progress.completed.includes(level.number) ? "completed" : ""}" data-action="level" data-id="${level.number}">
+      <strong>${c.levelShort} ${level.number} ${s.progress.completed.includes(level.number) ? `✓ ${c.completedMark}` : ""}</strong>
+      <span>${escape(getLocale() === "en" ? level.commentEnglish : level.comment)}</span>
+      <span class="level-notes">${level.pitches.map(p => escape(pitchName(p, s.accidentals))).join(" · ")}</span>
+      <span>${c.streak}: ${s.progress.streaks[level.number] ?? 0} / ${level.requiredStreak}</span></button>`).join("")}</section></main>`;
+  if (s.activeScreen === "warmup") return `<main class="screen">
+    <header class="header-row">${button("world", `‹ ${c.back}`, false, `data-id="${s.level.world}"`)}<span>${stage.name} · ${c.levelShort} ${s.levelNumber}</span></header>
+    <h1 class="title">${c.warmupTitle}</h1><p class="subtitle">${c.warmupCopy}</p>
+    <p class="subtitle">${escape(getLocale() === "en" ? s.level.commentEnglish : s.level.comment)}</p>
+    ${notation(s, c)}<div class="keyboard-row">${s.level.pitches.map((pitch, index) => `<button class="key-btn" data-action="warmup-note" data-id="${index}">${escape(pitchName(pitch, s.accidentals))}</button>`).join("")}</div>
+    <fieldset class="scenario-selector"><legend class="section-label">${c.chooseScenario}</legend>
+    <div class="scenario-options">${c.levels.map((item, index) => `<button class="chip ${s.scenario === index + 1 ? "on" : ""}" data-action="scenario" data-id="${index + 1}" aria-pressed="${s.scenario === index + 1}"><span aria-hidden="true">${worldIcons[index]}</span> ${item.name}</button>`).join("")}</div></fieldset>
+    ${volume(s, c)}${button("start", c.startGame, true)}</main>`;
+  if (s.activeScreen === "victory") {
+    const next = getLevel(s.sequence, s.levelNumber + 1);
+    const nextLabel = next ? `${c.nextLevel}: ${next.number}` : c.finishMethod;
+    return `<main class="screen victory-screen"><span class="trophy">🏆</span><h1 class="title">${c.victoryTitle}</h1><p>${c.levelShort} ${s.levelNumber} · ${scenario.name}</p><p class="subtitle">${c.victoryBody}</p>
+    <section class="stats-card"><div class="metric-heading"><h2>${c.stats.sessionSummary}</h2>${help(c.stats.sessionSummary, c.stats.helpSession, c)}</div>${sessionFigures(s.sessionSummary, c)}</section>
+    ${button("advance", nextLabel, true)}${button("world", c.chooseLevel, false, `data-id="${s.level.world}"`)}${button("menu", c.mainMenu)}</main>`;
   }
-  if (state.activeScreen === "note-selection") {
-    return renderNoteSelection(state, stateManager, copy);
-  }
-  if (state.activeScreen === "warmup") {
-    return renderWarmup(state, stateManager, copy);
-  }
-  if (state.activeScreen === "gameplay") {
-    return renderGameplayHUD(state, stateManager, copy);
-  }
-  if (state.activeScreen === "victory") {
-    return renderVictory(state, copy);
-  }
-  return "";
-}
-
-function renderMenu(state: any, copy: GameCopy): string {
-  const colors = ["var(--mint)", "var(--aqua)", "var(--indigo)", "var(--gold)", "var(--purple)"];
-  const icons = ["🌾", "🌊", "🌌", "🐊", "🦄"];
-
-  return `
-    <main class="screen">
-      <header class="topline">
-        <div class="brand">
-          <span class="mark">🎵</span>
-          <div>
-            <div class="eyebrow">${copy.eyebrow}</div>
-            <h1 class="title">${copy.appTitle}</h1>
-            <p class="subtitle">${copy.appSubtitle}</p>
-          </div>
-        </div>
-      </header>
-
-      <section class="mode-list">
-        <h2 class="section-label" style="margin-bottom: 4px;">${copy.selectLevel}</h2>
-        ${[1, 2, 3, 4, 5].map((lvl) => {
-          const levelCopy = copy.levels[lvl - 1];
-          return `
-            <div class="mode-card" data-action="select-level" data-id="${lvl}" style="--card-color: ${colors[lvl - 1]}">
-              <span class="accent-bar"></span>
-              <span class="mode-icon">${icons[lvl - 1]}</span>
-              <span class="mode-body">
-                <span class="mode-title">${levelCopy.name}</span>
-                <span class="mode-subtitle">${levelCopy.menuSubtitle}</span>
-              </span>
-              <span class="mode-arrow">›</span>
-            </div>
-          `;
-        }).join("")}
-      </section>
-
-      <section class="setup-section" style="margin-top: 10px;">
-        <span class="section-label">${copy.instrumentTone}</span>
-        <div class="chip-row">
-          ${INSTRUMENTS.map((inst) => `
-            <button class="chip ${state.selectedInstrument === inst ? "on" : ""}" data-action="select-instrument" data-id="${inst}">
-              ${copy.instruments[inst]}
-            </button>
-          `).join("")}
-        </div>
-      </section>
-    </main>
-  `;
-}
-
-function renderNoteSelection(state: any, stateManager: GameStateManager, copy: GameCopy): string {
-  const levelConfig = stateManager.levels[state.currentLevel];
-  const levelCopy = copy.levels[state.currentLevel - 1];
-
-  return `
-    <main class="screen">
-      <header class="header-row">
-        <button class="secondary-button" style="padding: 6px 12px; font-size: 0.88rem;" data-action="menu">‹ ${copy.back}</button>
-        <div style="text-align: right;">
-          <div class="eyebrow">${copy.step1}</div>
-          <h2 style="font-size: 1.4rem; font-weight: 800; margin: 0; color: var(--aqua);">${levelCopy.name}</h2>
-        </div>
-      </header>
-
-      <h1 class="title" style="font-size: 1.8rem; margin: 10px 0;">${copy.noteGroup}</h1>
-      <p class="subtitle" style="margin-bottom: 12px;">${copy.chooseGroup}</p>
-
-      <section class="mode-list">
-        ${levelConfig.groups.map((group, idx) => `
-          <div class="mode-card" data-action="select-group" data-id="${idx}" style="--card-color: var(--gold); min-height: 80px;">
-            <span class="accent-bar"></span>
-            <span class="mode-icon">🎹</span>
-            <span class="mode-body">
-              <span class="mode-title" style="font-family: var(--font-mono); font-size: 1.15rem;">
-                ${levelConfig.groupLabels[idx]}
-              </span>
-            </span>
-            <span class="mode-arrow">›</span>
-          </div>
-        `).join("")}
-      </section>
-    </main>
-  `;
-}
-
-function renderWarmup(state: any, stateManager: GameStateManager, copy: GameCopy): string {
-  const levelConfig = stateManager.levels[state.currentLevel];
-  const levelCopy = copy.levels[state.currentLevel - 1];
-
-  return `
-    <main class="screen">
-      <header class="header-row">
-        <button class="secondary-button" style="padding: 6px 12px; font-size: 0.88rem;" data-action="select-level" data-id="${state.currentLevel}">‹ ${copy.back}</button>
-        <div style="text-align: right;">
-          <div class="eyebrow">${copy.step2}</div>
-          <h2 style="font-size: 1.4rem; font-weight: 800; margin: 0; color: var(--gold);">${levelCopy.name}</h2>
-        </div>
-      </header>
-
-      <h1 class="title" style="font-size: 1.8rem; margin: 10px 0;">${copy.warmupTitle}</h1>
-      <p class="subtitle" style="margin-bottom: 10px;">${copy.warmupCopy}</p>
-
-      <div class="keyboard-row">
-        ${state.selectedNotes.map((note: Note) => {
-          const noteName = stateManager.noteNames[note.note_index];
-          return `
-            <button class="key-btn" data-action="warmup-note" data-index="${note.note_index}" data-octave="${note.octave}">
-              <span>${noteName}</span>
-              <span style="font-size: 0.65rem; opacity: 0.5; margin-top: 4px;">${copy.octave} ${note.octave}</span>
-            </button>
-          `;
-        }).join("")}
-      </div>
-
-      <button class="primary-button" style="margin-top: 15px;" data-action="confirm-warmup">
-        ${copy.startGame}
-      </button>
-    </main>
-  `;
-}
-
-function renderGameplayHUD(state: any, stateManager: GameStateManager, copy: GameCopy): string {
-  const levelName = copy.levels[state.currentLevel - 1].name;
-  const instructions = copy.instructions[state.currentLevel - 1];
-
-  // Draw notes selector keyboard inside the bottom answer panel
-  let answerMarkup = "";
-  if (state.currentChallenge) {
-    answerMarkup = `
-      <div class="answer-panel">
-        <div class="eyebrow" style="text-align: center; color: var(--gold);">${copy.heardQuestion}</div>
-        <div class="answer-grid">
-          ${state.selectedNotes.map((note: Note) => {
-            const noteName = stateManager.noteNames[note.note_index];
-            return `
-              <button class="answer-btn" data-action="answer-note" data-index="${note.note_index}" data-octave="${note.octave}">
-                ${noteName}
-              </button>
-            `;
-          }).join("")}
-        </div>
-      </div>
-    `;
-  }
-
-  return `
-    <div class="hud-wrapper">
-      <div class="hud-top">
-        <div style="display: flex; gap: 12px;">
-          <div class="hud-card">
-            <span class="hud-label">${copy.streak}</span>
-            <span class="hud-value"><span class="accent">${state.streak}</span> / ${state.maxStreakToUnlock}</span>
-          </div>
-          <div class="hud-card">
-            <span class="hud-label">${copy.hits}</span>
-            <span class="hud-value">${state.score}</span>
-          </div>
-          <div class="hud-card" style="align-items: center; justify-content: center; opacity: 0.85;">
-            <span class="hud-label">${levelName}</span>
-            <span style="font-size: 0.88rem; font-weight: bold; margin-top: 2px;">${copy.levelShort} ${state.currentLevel}</span>
-          </div>
-        </div>
-        
-        <div class="hud-instruction">${instructions}</div>
-      </div>
-
-      <div class="hud-bottom">
-        ${answerMarkup}
-
-        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-          <div class="volume-control">
-            <span>🔊</span>
-            <input class="volume-slider" type="range" min="0" max="1" step="0.02" value="${state.volume}" />
-          </div>
-
-          <div style="display: flex; gap: 8px;">
-            <button class="secondary-button" style="padding: 8px 14px; font-size: 0.85rem;" data-action="menu">
-              ${copy.exitToMenu}
-            </button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Toast feedback notifier -->
-      <div id="feedback-toast" class="feedback-toast">
-        <div id="feedback-icon" class="feedback-icon">✅</div>
-        <div id="feedback-text" class="feedback-text">${copy.correct}</div>
-        <div id="feedback-sub" style="font-size: 0.9rem; color: var(--muted);">${copy.initialToastSub}</div>
-      </div>
-
-      <!-- 2D Canvas for Search Radar -->
-      <canvas id="radar-canvas" width="144" height="144"></canvas>
-    </div>
-  `;
-}
-
-function renderVictory(state: any, copy: GameCopy): string {
-  return `
-    <main class="screen" style="text-align: center; gap: 24px; max-width: 500px;">
-      <div>
-        <span style="font-size: 4.5rem;">🏆</span>
-        <h1 class="title" style="color: var(--gold); margin-top: 10px;">${copy.victoryTitle}</h1>
-        <p class="subtitle" style="font-size: 1.1rem; margin-top: 6px;">${copy.victoryBody}</p>
-      </div>
-
-      <div style="padding: 16px; background: rgba(255,255,255,0.02); border-radius: var(--radius); border: 1px solid var(--border);">
-        <div class="eyebrow">${copy.totalScore}</div>
-        <div style="font-size: 3rem; font-weight: 800; color: var(--ink); margin-top: 4px;">
-          ${state.score} ${copy.hitsLower}
-        </div>
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-        <button class="primary-button" data-action="advance">
-          ${copy.nextLevel}
-        </button>
-        <button class="secondary-button" data-action="menu">
-          ${copy.mainMenu}
-        </button>
-      </div>
-    </main>
-  `;
+  const feedback = s.feedback;
+  return `<div class="hud-wrapper"><div class="hud-top"><div class="hud-summary">
+    <div class="hud-card"><div class="metric-heading"><span class="hud-label">${c.streak}</span>${help(c.streak, c.stats.helpStreak, c)}</div><strong class="hud-value">${s.streak} / ${s.level.requiredStreak}</strong></div>
+    <div class="hud-card"><div class="metric-heading"><span class="hud-label">${c.stats.currentSession}</span>${help(c.stats.currentSession, c.stats.helpSession, c)}</div><strong class="hud-value">${percentage(s.sessionSummary?.percentage)}</strong></div>
+    <div class="hud-card"><span class="hud-label">${scenario.name}</span><strong>${c.levelShort} ${s.levelNumber}</strong></div></div>
+    <div class="hud-instruction">${c.instructions[s.scenario - 1]}</div></div>
+    ${s.isGateUnlocked ? `<p class="portal-message" role="status">${c.portal}</p>` : ""}
+    <div class="hud-bottom">${s.currentChallenge ? `<section class="answer-panel"><div class="eyebrow">${c.heardQuestion}</div><div class="answer-grid">${s.level.answerClasses.map(pc => `<button class="answer-btn" data-action="answer" data-id="${pc}">${escape(pitchClassName(pc, s.accidentals))}</button>`).join("")}</div></section>` : ""}
+    <div class="game-toolbar">${volume(s, c)}${notation(s, c)}
+    <button class="secondary-button" data-action="loop" aria-pressed="${s.loopNote}">🔁 ${c.loop}: ${s.loopNote ? c.on : c.off}</button>
+    ${s.currentChallenge ? button("replay", c.replay) : ""}${button("menu", c.exitToMenu)}</div></div>
+    ${feedback ? `<div class="feedback-toast show" role="${feedback.correct ? "status" : "alertdialog"}" aria-label="${feedback.correct ? c.correct : c.wrong}"><div class="feedback-icon">${feedback.correct ? "✅" : "❌"}</div><strong class="feedback-text">${feedback.correct ? c.correct : c.wrong}</strong>
+      ${feedback.correct ? `<p>${c.correctSub}</p>` : `<p>${c.correctNote} <strong>${escape(pitchName(feedback.question.pitch, s.accidentals))}</strong> · ${c.instruments[feedback.question.timbre]}</p><p>${feedback.distance.semitones} ${c.semitones} ${feedback.distance.direction > 0 ? "↑" : feedback.distance.direction < 0 ? "↓" : ""}</p><div class="chip-row">${button("hear-answer", c.hearAnswer)}${button("dismiss", c.continue, true)}</div>`}</div>` : ""}
+    <canvas id="radar-canvas" width="144" height="144"></canvas></div>`;
 }

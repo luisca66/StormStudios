@@ -1,5 +1,6 @@
 import * as THREE from "three";
-import { GameStateManager, Note } from "@/game/state";
+import { ARENA_SIZES, GameStateManager } from "@/game/state";
+import { Question } from "@/game/progression";
 import { PlayerController } from "./player";
 import { LevelEnvironment } from "./environment";
 import { LevelGate } from "./gate";
@@ -24,13 +25,15 @@ export class Game3DRenderer {
   // Note target object state
   private activeNoteMesh: THREE.Group | null = null;
   private activeNotePos = new THREE.Vector3();
-  private activeNoteChallenge: Note | null = null;
+  private activeNoteChallenge: Question | null = null;
   private noteFloatingOffset = 0;
   private noteHasBeenTriggered = false;
   private activeClam: BlenderClam | null = null; // objetivo de nota del nivel 2
   private activeBalloon: BlenderBalloon | null = null; // objetivo de nota del nivel 5
   private noteSpawnTime = 0;
 
+  private loadedScenario = 0;
+  private wasPlaying = false;
   private isDisposed = false;
   private loggedFrameError = false;
   private clock = new THREE.Clock();
@@ -75,9 +78,20 @@ export class Game3DRenderer {
 
     // Subscribe to state changes to reload environment/players
     this.stateManager.subscribe((state) => {
-      if (state.isPlaying && !this.player) {
-        this.loadLevel(state.currentLevel);
-      } else if (!state.isPlaying && this.player) {
+      const entering = state.isPlaying && !this.wasPlaying;
+      this.wasPlaying = state.isPlaying;
+      if (entering) {
+        if (!this.player || this.loadedScenario !== state.scenario) {
+          this.loadScenario(state.scenario);
+        } else {
+          // Keep the scenery; only reset the player, portal and exercise.
+          this.player.resetPosition();
+          this.gate?.clear();
+          this.gate = new LevelGate(state.scenario, this.scene, ARENA_SIZES[state.scenario]);
+          this.snapCamera = true;
+        }
+        this.spawnNextChallenge();
+      } else if (!state.isPlaying && state.activeScreen === "menu" && this.player) {
         this.clearLevel();
       }
 
@@ -101,24 +115,22 @@ export class Game3DRenderer {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   };
 
-  public loadLevel(level: number): void {
+  public loadScenario(scenario: number): void {
     this.clearLevel();
 
-    const state = this.stateManager.getState();
-    const arenaSize = this.stateManager.levels[level].arenaSize;
+    const arenaSize = ARENA_SIZES[scenario];
 
     // 1. Spawnea el environment
-    this.environment = new LevelEnvironment(level, this.scene, arenaSize);
+    this.environment = new LevelEnvironment(scenario, this.scene, arenaSize);
 
     // 2. Spawnea el Player
-    this.player = new PlayerController(level, this.stateManager["audio"]);
+    this.player = new PlayerController(scenario, this.stateManager.audio);
     this.scene.add(this.player.mesh);
 
     // 3. Spawnea el Gate
-    this.gate = new LevelGate(level, this.scene, arenaSize);
+    this.gate = new LevelGate(scenario, this.scene, arenaSize);
 
-    // 4. Spawnea la primera nota
-    this.spawnNextChallenge();
+    this.loadedScenario = scenario;
 
     this.snapCamera = true;
     this.clock.getDelta(); // reset clock
@@ -165,24 +177,26 @@ export class Game3DRenderer {
     this.noteHasBeenTriggered = false;
 
     const state = this.stateManager.getState();
-    if (state.selectedNotes.length === 0) return;
+    if (!state.isPlaying || state.isGateUnlocked || state.feedback) {
+      this.activeNoteChallenge = null;
+      return;
+    }
 
-    // Pick random note from selected notes
-    const challengeNote = state.selectedNotes[Math.floor(Math.random() * state.selectedNotes.length)];
+    const challengeNote = this.stateManager.nextQuestion();
     this.activeNoteChallenge = challengeNote;
 
     // Generate random far coordinate
-    const arenaSize = this.stateManager.levels[state.currentLevel].arenaSize;
+    const arenaSize = ARENA_SIZES[state.scenario];
     const half = arenaSize / 2 - 15;
     const playerPos = this.player ? this.player.mesh.position : new THREE.Vector3(0,0,0);
 
     // Search distance
     let minDist = 80;
     let maxDist = 130;
-    if (state.currentLevel === 3) {
+    if (state.scenario === 3) {
       minDist = 180;
       maxDist = 260;
-    } else if (state.currentLevel === 5) {
+    } else if (state.scenario === 5) {
       minDist = 80;
       maxDist = 160;
     }
@@ -203,13 +217,13 @@ export class Game3DRenderer {
     }
 
     let targetY = 1.5;
-    if (state.currentLevel === 2) {
+    if (state.scenario === 2) {
       targetY = -35 + Math.random() * 45; // -35m to +10m
-    } else if (state.currentLevel === 3) {
+    } else if (state.scenario === 3) {
       targetY = playerPos.y + (Math.random() - 0.5) * 20.0;
-    } else if (state.currentLevel === 4) {
+    } else if (state.scenario === 4) {
       targetY = 1.0 + Math.random() * 1.5;
-    } else if (state.currentLevel === 5) {
+    } else if (state.scenario === 5) {
       targetY = playerPos.y + (Math.random() - 0.5) * 16.0;
     }
 
@@ -218,7 +232,7 @@ export class Game3DRenderer {
     this.noteFloatingOffset = Math.random() * Math.PI * 2;
 
     // Render Note Mesh
-    this.activeNoteMesh = this.buildNoteTargetMesh(state.currentLevel, challengeNote.note_index);
+    this.activeNoteMesh = this.buildNoteTargetMesh(state.scenario, challengeNote.pitch.pitchClass);
     this.activeNoteMesh.position.copy(this.activeNotePos);
     this.scene.add(this.activeNoteMesh);
 
@@ -228,43 +242,9 @@ export class Game3DRenderer {
 
   // Triggered when answering incorrectly: teleports note and player
   public resetChallengePosition(): void {
-    if (this.player) {
-      this.player.resetPosition();
-    }
-    
-    // Teleport active note far from center (where player is teleported)
-    const state = this.stateManager.getState();
-    const arenaSize = this.stateManager.levels[state.currentLevel].arenaSize;
-    const half = arenaSize / 2 - 15;
-    
-    let minDist = 80;
-    let maxDist = 120;
-    let px = 0, pz = 0;
-    for (let i = 0; i < 30; i++) {
-      const dist = minDist + Math.random() * (maxDist - minDist);
-      const angle = Math.random() * Math.PI * 2;
-      px = Math.max(-half, Math.min(half, Math.cos(angle) * dist));
-      pz = Math.max(-half, Math.min(half, Math.sin(angle) * dist));
-      if (Math.sqrt(px*px + pz*pz) >= minDist) break;
-    }
-    
-    let py = 1.5;
-    if (state.currentLevel === 2) py = -35 + Math.random() * 45;
-    else if (state.currentLevel === 3) py = (Math.random() - 0.5) * 20;
-    else if (state.currentLevel === 4) py = 1.0 + Math.random() * 1.5;
-    else if (state.currentLevel === 5) py = (Math.random() - 0.5) * 16;
-
-    if (this.environment) py = Math.max(py, this.environment.getClearanceHeight(px, pz));
-    this.activeNotePos.set(px, py, pz);
-    if (this.activeNoteMesh) {
-      this.activeNoteMesh.position.copy(this.activeNotePos);
-    }
-    this.noteHasBeenTriggered = false;
-    this.activeClam?.reopen();
-    this.noteSpawnTime = this.clock.getElapsedTime();
-
-    // Note relocated after a miss: restart the search timer
-    if (this.radar) this.radar.resetSearch();
+    if (!this.stateManager.getState().isPlaying) return;
+    this.player?.resetPosition();
+    this.spawnNextChallenge();
   }
 
   // Build the 3D visual target representation
@@ -438,7 +418,7 @@ export class Game3DRenderer {
 
   private stopNoteSound(): void {
     // Stops active notes
-    this.stateManager["audio"].stopAllNotes();
+    this.stateManager.audio.stopAllNotes();
   }
 
   public triggerGateCutscene(): void {
@@ -458,8 +438,8 @@ export class Game3DRenderer {
     if (state.isPlaying && this.player && this.environment && this.gate) {
       try {
       // 1. Update player physics and inputs
-      const arenaSize = this.stateManager.levels[state.currentLevel].arenaSize;
-      this.player.update(delta, arenaSize);
+      const arenaSize = ARENA_SIZES[state.scenario];
+      if (!state.feedback) this.player.update(delta, arenaSize);
 
       // 2. Check environment obstacle collisions and displace player
       const displacement = this.environment.checkCollisions(this.player.mesh.position, this.player.collisionRadius);
@@ -489,10 +469,9 @@ export class Game3DRenderer {
 
         // Check proximity collision with note
         const dist = this.player.mesh.position.distanceTo(this.activeNoteMesh.position);
-        if (dist < 3.2 && !this.noteHasBeenTriggered) {
+        if (dist < 3.2 && !this.noteHasBeenTriggered && !state.feedback && !state.isGateUnlocked) {
           this.noteHasBeenTriggered = true;
           this.stateManager.setChallenge(this.activeNoteChallenge!);
-          this.stateManager["audio"].playNote(state.selectedInstrument, this.activeNoteChallenge!.note_index, this.activeNoteChallenge!.octave);
           
           if (this.activeClam) {
             // La concha se cierra de golpe sobre la perla al sonar la nota.
@@ -528,10 +507,10 @@ export class Game3DRenderer {
         const playerUp = new THREE.Vector3(0, 1, 0).applyQuaternion(this.player.mesh.quaternion);
 
         let camOffset: THREE.Vector3;
-        if (state.currentLevel === 1 || state.currentLevel === 4) {
+        if (state.scenario === 1 || state.scenario === 4) {
           // Terrestrial follow behind. The crocodile (lvl 4) is larger, so sit
           // the camera further back and higher (matches Godot's croc cam).
-          const isCroc = state.currentLevel === 4;
+          const isCroc = state.scenario === 4;
           const relativeOffset = isCroc ? new THREE.Vector3(0, 4.0, -8.5) : new THREE.Vector3(0, 2.5, -6.0);
           camOffset = relativeOffset.applyMatrix4(this.player.mesh.matrixWorld);
           this.camera.position.lerp(camOffset, this.snapCamera ? 1 : delta * 6.0);
@@ -542,7 +521,7 @@ export class Game3DRenderer {
           // 6DOF follow behind and copy local up vector for rolls.
           // Level 5's unicorn is taller, so pull the camera further back and higher
           // and look slightly ahead so it sits in the lower third (like Godot).
-          const isUnicorn = state.currentLevel === 5;
+          const isUnicorn = state.scenario === 5;
           const back = isUnicorn ? -9.0 : -5.5;
           const up = isUnicorn ? 4.0 : 1.8;
           camOffset = this.player.mesh.position.clone()
@@ -568,7 +547,8 @@ export class Game3DRenderer {
           delta,
           this.player ? this.player.mesh.position : null,
           this.activeNoteMesh ? this.activeNotePos : null,
-          this.camera
+          this.camera,
+          this.activeNoteChallenge?.pitch.pitchClass ?? 0
         );
       }
       } catch (err) {
