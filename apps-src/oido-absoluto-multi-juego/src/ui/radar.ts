@@ -37,7 +37,7 @@ export class SearchRadar {
     if (canvas) canvas.style.display = "none";
   }
 
-  public update(delta: number, playerPos: THREE.Vector3 | null, notePos: THREE.Vector3 | null, camera: THREE.PerspectiveCamera): void {
+  public update(delta: number, playerPos: THREE.Vector3 | null, notePos: THREE.Vector3 | null, camera: THREE.PerspectiveCamera, pitchClass = 0): void {
     const canvas = document.getElementById("radar-canvas") as HTMLCanvasElement;
     if (!canvas) return;
     this.canvas = canvas;
@@ -60,13 +60,13 @@ export class SearchRadar {
 
     if (this.searchTime >= this.searchHintDelay) {
       this.canvas.style.display = "block";
-      this.draw(playerPos, notePos, camera);
+      this.draw(playerPos, notePos, camera, pitchClass);
     } else {
       this.canvas.style.display = "none";
     }
   }
 
-  private draw(playerPos: THREE.Vector3, notePos: THREE.Vector3, camera: THREE.PerspectiveCamera): void {
+  private draw(playerPos: THREE.Vector3, notePos: THREE.Vector3, camera: THREE.PerspectiveCamera, pitchClass: number): void {
     const ctx = this.ctx;
     const center = this.radarRadius;
 
@@ -136,9 +136,7 @@ export class SearchRadar {
     const blipY = center + rz; // mapped dz to canvas Y coordinate
 
     // Draw Blip Dot
-    const challengeNote = this.stateManager.getState().currentChallenge;
-    const noteIndex = challengeNote ? challengeNote.note_index : 0;
-    const noteColor = this.noteColors[noteIndex] || "#ffffff";
+    const noteColor = this.noteColors[pitchClass] || "#ffffff";
 
     // Glow ring
     ctx.beginPath();

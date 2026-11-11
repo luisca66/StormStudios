@@ -51,4 +51,7 @@ document.addEventListener("click", unlockAudio);
 document.addEventListener("keydown", unlockAudio);
 document.addEventListener("touchstart", unlockAudio);
 
+// Solo en desarrollo: acceso desde la consola para probar sin recorrer el escenario.
+if (import.meta.env.DEV) (window as unknown as { __game: unknown }).__game = { stateManager, renderer, audio };
+
 console.log("Walking AP Multi initialized successfully.");
