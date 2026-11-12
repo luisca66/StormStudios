@@ -3,8 +3,10 @@ import Image from "next/image";
 import AudioPlayer from "@/components/media/AudioPlayer";
 import YouTubeEmbed from "@/components/media/YouTubeEmbed";
 import VimeoEmbed from "@/components/media/VimeoEmbed";
+import BotonCompra from "@/components/BotonCompra";
 
 const components = {
+  BotonCompra,
   AudioPlayer,
   YouTubeEmbed,
   VimeoEmbed,
