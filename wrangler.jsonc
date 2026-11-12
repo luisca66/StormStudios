@@ -21,6 +21,10 @@
     "html_handling": "none",
     "not_found_handling": "none"
   },
+  // Datos propios y anónimos; sin cookies, IP ni identificadores de visitante.
+  "analytics_engine_datasets": [
+    { "binding": "SITE_ANALYTICS", "dataset": "storm_site_events", "remote": false }
+  ],
   // Límites compartidos entre instancias para las API públicas
   // (lib/http/edge-rate-limit.ts). El periodo solo admite 10 o 60 segundos.
   "ratelimits": [

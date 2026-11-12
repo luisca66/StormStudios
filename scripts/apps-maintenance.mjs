@@ -2,6 +2,7 @@ import { readdir, readFile, cp, access } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { instrumentHtml, instrumentStandalone } from "./instrument-standalone.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const mode = process.argv[2] || "build";
@@ -24,7 +25,12 @@ async function checkFiles(source, target) {
     const from = path.join(source, entry.name);
     const to = path.join(target, entry.name);
     if (entry.isDirectory()) await checkFiles(from, to);
-    else if (!(await readFile(from)).equals(await readFile(to))) throw new Error(`Published bundle differs: ${to}`);
+    else {
+      const source = await readFile(from);
+      const published = await readFile(to);
+      const expected = entry.name.endsWith(".html") ? Buffer.from(instrumentHtml(source.toString("utf8"))) : source;
+      if (!expected.equals(published)) throw new Error(`Published bundle differs: ${to}`);
+    }
   }
 }
 const failedAudits = [];
@@ -49,4 +55,5 @@ for (const folder of folders) {
   else await checkFiles(dist, target);
 }
 if (failedAudits.length) throw new Error(`Dependency audits failed: ${failedAudits.join(", ")}`);
+if (mode === "build") await instrumentStandalone(root);
 console.log(`All apps: ${mode} passed.`);

@@ -3,6 +3,8 @@ import { createHash, randomBytes } from "node:crypto";
 import { z } from "zod";
 import { getClientIp } from "@/lib/http/client-ip";
 import { passesEdgeRateLimit } from "@/lib/http/edge-rate-limit";
+import { contextSchema, normalizeEvent } from "@/lib/analytics/events";
+import { writeEvent } from "@/lib/analytics/write";
 
 export const runtime = "nodejs";
 
@@ -40,6 +42,7 @@ const ContactSchema = z.object({
   elapsedMs: z.number().int().min(0).max(MAX_SUBMIT_TIME_MS),
   // Identificador del intento, estable entre reintentos del mismo envío.
   attemptId: z.string().regex(/^[A-Za-z0-9-]{8,64}$/),
+  measurement: contextSchema.optional().catch(undefined),
 }).strict();
 
 // Escapa caracteres HTML para evitar inyección en el cuerpo del correo.
@@ -275,6 +278,13 @@ export async function POST(request: NextRequest) {
     if (error || !data?.id) {
       console.error("[CONTACT API] Email provider rejected the request");
       return errorResponse("temporarily_unavailable", 503, true, 60);
+    }
+
+    // Only after confirmed email delivery; never include the form's contents,
+    // IP, attemptId or provider id in the measurement.
+    if (parsed.data.measurement) {
+      const event = normalizeEvent({ ...parsed.data.measurement, name: "contact_success" });
+      if (event) writeEvent(event);
     }
 
     return NextResponse.json(
