@@ -29,7 +29,18 @@
     "legal": "Blog & Legal",
     "explore": "Explore"
   },
+  "course": {
+    "privateLessons": {
+      "prompt": "Want to study this with me?",
+      "link": "Get in touch"
+    }
+  },
   "home": {
+    "privateLessons": {
+      "title": "Private lessons",
+      "description": "I teach private lessons in instrument, composition, counterpoint and analysis. If you would like to study with me, write to me and we will talk.",
+      "button": "Get in touch"
+    },
     "hero": {
       "badge": "Shostakovich · Medrano · Cárdenas Lineage",
       "titlePrefix": "Learn",
