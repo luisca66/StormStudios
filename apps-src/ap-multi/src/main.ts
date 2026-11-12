@@ -1,960 +1,131 @@
-import "./styles.css";
-import { AssetAudioPlayer } from "./audio-player";
-import {
-  allSamples,
-  allUniqueNoteNames,
-  answerOptions,
-  compareFullNotes,
-  instruments,
-  noteBase,
-  noteOctave,
-  randomInstrument,
-} from "./catalog";
-import { NoteSelector } from "./note-selector";
-import { StatsRepository } from "./stats-repository";
-import type { FeedbackState, GameMode, NoteSample, NoteStat, ScreenName } from "./types";
+import './styles.css';
+import { AssetAudioPlayer } from './audio-player';
+import { AppState, restProgress } from './state';
+import { COPY, getLocale } from './i18n';
+import { renderStatistics, downloadStatistics, help, percentage } from './statistics';
+import { WORLD_RANGES, completedInWorld, levelsOfWorld, pitchClassName, pitchName, sampleName, type Question } from '../../ap-core/progression';
 
-type Locale = "es" | "en";
+const en = getLocale() === 'en';
+const c = COPY[getLocale()];
+const t = (es: string, english: string) => en ? english : es;
+const stages = en ? ['Preparatory exercises and tritones', 'Major thirds', 'Minor thirds', 'Major seconds', 'Semitones'] : ['Preparatorios y tritonos', 'Terceras mayores', 'Terceras menores', 'Segundas mayores', 'Semitonos'];
+const state = new AppState();
+const audio = new AssetAudioPlayer();
+audio.setVolume(state.volume);
+const app = document.querySelector<HTMLDivElement>('#app')!;
+const esc = (value: string) => value.replace(/[&<>"']/g, x => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[x]!);
+let audioError = '';
+let playbackVersion = 0;
+const button = (action: string, label: string, primary = false, disabled = false) => `<button class="${primary ? 'ag-primary-btn' : 'ag-secondary-btn'}" data-action="${action}" ${disabled ? 'disabled' : ''}>${label}</button>`;
+const levelTitle = () => `${c.levelShort} ${state.level.number} · ${stages[state.level.world - 1]}`;
+const notation = () => `<button class="ag-secondary-btn" data-action="notation" aria-label="${c.notation}" aria-pressed="${state.accidentals === 'flats'}">♯ / ♭ · ${state.accidentals === 'sharps' ? '♯' : '♭'}</button>`;
+const controls = () => `<div class="controls">${notation()}<label>${c.volume} <input data-action="volume" aria-label="${c.volume}" type="range" min="0" max="1" step="0.01" value="${state.volume}"></label></div>`;
+const noteList = () => state.level.pitches.map(p => pitchName(p, state.accidentals)).join(' · ');
 
-type Copy = {
-  appTitle: string;
-  subtitle: string;
-  modeLabels: Record<GameMode, string>;
-  modeBadges: Record<GameMode, string>;
-  modeDescriptions: Record<GameMode, string>;
-  instrumentLabels: Record<string, string>;
-  back: string;
-  stats: string;
-  timeAttackDurationLabel: string;
-  noteSelection: string;
-  instrument: string;
-  selected: string;
-  all: string;
-  clear: string;
-  start: string;
-  remove: string;
-  choose: string;
-  newNote: string;
-  volume: string;
-  time: string;
-  score: string;
-  lives: string;
-  streak: string;
-  accuracy: string;
-  session: string;
-  reset: string;
-  noAnswersYet: string;
-  timeUp: string;
-  gameOver: string;
-  playAgain: string;
-  history: string;
-  clearStats: string;
-  emptyStats: string;
-  ready: string;
-  pressNewNote: string;
-  whatNote: string;
-  loop: string;
-  classicTitle: string;
-  totalNotes: (count: number) => string;
-  cannotLoad: (note: NoteSample) => string;
-  correct: (note: NoteSample) => string;
-  incorrect: (note: NoteSample) => string;
-  sessionReset: string;
-  gameOverScore: (score: number) => string;
-  timeUpScore: (score: number) => string;
-  livesTitle: (lives: number) => string;
-};
-
-const STRINGS: Record<Locale, Copy> = {
-  es: {
-    appTitle: "Oído Absoluto Multi",
-    subtitle: "Piano, cello, corno, coro y fagot",
-    modeLabels: {
-      classic: "Entrenamiento clásico",
-      timeAttack: "Modo contrarreloj",
-      survival: "Modo supervivencia",
-    },
-    modeBadges: {
-      classic: "Precisión",
-      timeAttack: "Velocidad",
-      survival: "Presión",
-    },
-    modeDescriptions: {
-      classic: "Sesiones sin límite, precisión visible por nota y repetición controlada.",
-      timeAttack: "Responde tantas notas como puedas antes de que el reloj llegue a cero.",
-      survival: "Tres vidas, avance automático y final inmediato cuando se agotan.",
-    },
-    instrumentLabels: {
-      Cello: "Cello",
-      Piano: "Piano",
-      Corno: "Corno",
-      Coro: "Coro",
-      Fagot: "Fagot",
-      [randomInstrument]: "Aleatorio",
-    },
-    back: "Volver",
-    stats: "Estadísticas",
-    timeAttackDurationLabel: "Duración contrarreloj",
-    noteSelection: "Selección de notas",
-    instrument: "Instrumento",
-    selected: "Seleccionadas",
-    all: "Todas",
-    clear: "Limpiar",
-    start: "Iniciar",
-    remove: "Quitar",
-    choose: "Elegir",
-    newNote: "Nueva nota",
-    volume: "Volumen",
-    time: "Tiempo",
-    score: "Puntuación",
-    lives: "Vidas",
-    streak: "Racha",
-    accuracy: "Precisión",
-    session: "Sesión",
-    reset: "Reiniciar",
-    noAnswersYet: "Sin respuestas todavía",
-    timeUp: "Tiempo agotado",
-    gameOver: "Juego terminado",
-    playAgain: "Jugar otra vez",
-    history: "Historial",
-    clearStats: "Borrar estadísticas",
-    emptyStats: "Todavía no hay respuestas guardadas.",
-    ready: "Listo",
-    pressNewNote: "Presiona Nueva nota.",
-    whatNote: "¿Cuál es la nota?",
-    loop: "Loop",
-    classicTitle: "Sesión clásica",
-    totalNotes: (count) => `${count} ${count === 1 ? "nota" : "notas"}`,
-    cannotLoad: (note) => `No se pudo cargar ${note.noteName} en ${note.instrument}.`,
-    correct: (note) => `Correcto. Era ${note.noteName} (${note.instrument}).`,
-    incorrect: (note) => `Incorrecto. Era ${note.noteName} (${note.instrument}).`,
-    sessionReset: "Sesión reiniciada.",
-    gameOverScore: (score) => `Juego terminado. Puntuación: ${score}.`,
-    timeUpScore: (score) => `Tiempo agotado. Puntuación final: ${score}.`,
-    livesTitle: (lives) => `${lives} vidas`,
-  },
-  en: {
-    appTitle: "Perfect Pitch Multi",
-    subtitle: "Piano, cello, horn, choir, and bassoon",
-    modeLabels: {
-      classic: "Classic training",
-      timeAttack: "Time attack",
-      survival: "Survival mode",
-    },
-    modeBadges: {
-      classic: "Accuracy",
-      timeAttack: "Speed",
-      survival: "Pressure",
-    },
-    modeDescriptions: {
-      classic: "Untimed sessions with visible per-note accuracy and controlled repetition.",
-      timeAttack: "Answer as many notes as possible before the clock reaches zero.",
-      survival: "Three lives, automatic advance, and an immediate ending when they run out.",
-    },
-    instrumentLabels: {
-      Cello: "Cello",
-      Piano: "Piano",
-      Corno: "Horn",
-      Coro: "Choir",
-      Fagot: "Bassoon",
-      [randomInstrument]: "Random",
-    },
-    back: "Back",
-    stats: "Stats",
-    timeAttackDurationLabel: "Time attack duration",
-    noteSelection: "Note selection",
-    instrument: "Instrument",
-    selected: "Selected",
-    all: "All",
-    clear: "Clear",
-    start: "Start",
-    remove: "Remove",
-    choose: "Choose",
-    newNote: "New note",
-    volume: "Volume",
-    time: "Time",
-    score: "Score",
-    lives: "Lives",
-    streak: "Streak",
-    accuracy: "Accuracy",
-    session: "Session",
-    reset: "Reset",
-    noAnswersYet: "No answers yet",
-    timeUp: "Time up",
-    gameOver: "Game over",
-    playAgain: "Play again",
-    history: "History",
-    clearStats: "Clear stats",
-    emptyStats: "No saved answers yet.",
-    ready: "Ready",
-    pressNewNote: "Press New note.",
-    whatNote: "Which note is it?",
-    loop: "Loop",
-    classicTitle: "Classic session",
-    totalNotes: (count) => `${count} ${count === 1 ? "note" : "notes"}`,
-    cannotLoad: (note) => `Could not load ${note.noteName} on ${copyInstrument(note.instrument)}.`,
-    correct: (note) => `Correct. It was ${note.noteName} (${copyInstrument(note.instrument)}).`,
-    incorrect: (note) => `Incorrect. It was ${note.noteName} (${copyInstrument(note.instrument)}).`,
-    sessionReset: "Session reset.",
-    gameOverScore: (score) => `Game over. Score: ${score}.`,
-    timeUpScore: (score) => `Time up. Final score: ${score}.`,
-    livesTitle: (lives) => `${lives} ${lives === 1 ? "life" : "lives"}`,
-  },
-};
-
-const locale = detectLocale();
-const copy = STRINGS[locale];
-document.documentElement.lang = locale;
-document.title = `${copy.appTitle} | Storm Studios`;
-
-const root = document.getElementById("app");
-if (!root) throw new Error("No se encontró el contenedor #app");
-
-class AppController {
-  private screen: ScreenName = "menu";
-  private mode: GameMode = "classic";
-  private timeAttackDuration = 60;
-  private selectedInstrument = instruments[0].displayName;
-  private selectedNoteNames = new Set<string>();
-  private activeNotes: NoteSample[] = [];
-  private currentNote: NoteSample | null = null;
-  private feedback: FeedbackState = { kind: "info", text: copy.ready };
-  private loopEnabled = true;
-  private soundPlaying = false;
-  private consecutiveHits = 0;
-  private totalQuestionsAsked = 0;
-  private totalCorrectAnswers = 0;
-  private sessionStats = new Map<string, NoteStat>();
-  private remainingTime = 0;
-  private timeAttackScore = 0;
-  private timeAttackFinished = false;
-  private timerId: number | null = null;
-  private remainingLives = 3;
-  private survivalScore = 0;
-  private survivalGameOver = false;
-  private persistentStats = new Map<string, NoteStat>();
-
-  private readonly statsRepository = new StatsRepository();
-  private readonly selector = new NoteSelector();
-  private readonly audioPlayer = new AssetAudioPlayer();
-
-  constructor(private readonly appRoot: HTMLElement) {
-    this.persistentStats = this.statsRepository.loadStats();
-    this.render();
-  }
-
-  private render() {
-    this.appRoot.innerHTML = `
-      <main class="ag-shell" data-screen="${this.screen}">
-        ${this.renderHeader()}
-        ${this.renderScreen()}
-      </main>
-    `;
-    this.bindEvents();
-  }
-
-  private renderHeader() {
-    const showBack = this.screen !== "menu";
-    return `
-      <header class="ag-topbar">
-        <div class="ag-brand">
-          ${showBack ? `<button class="ag-icon-btn" data-action="back" aria-label="${copy.back}">‹</button>` : ""}
-          <img class="ag-brand-logo" src="${import.meta.env.BASE_URL}brand/storm-studios-logo.png" alt="Storm Studios" />
-          <div>
-            <p class="ag-kicker">Storm Studios</p>
-            <h1>${copy.appTitle}</h1>
-          </div>
-        </div>
-        <button class="ag-quiet-btn" data-action="stats">${copy.stats}</button>
-      </header>
-    `;
-  }
-
-  private renderScreen() {
-    switch (this.screen) {
-      case "menu":
-        return this.renderMenu();
-      case "selection":
-        return this.renderSelection();
-      case "training":
-        return this.renderTraining();
-      case "stats":
-        return this.renderStats();
-    }
-  }
-
-  private renderMenu() {
-    return `
-      <section class="ag-menu">
-        <div class="ag-menu-panel">
-          <div class="ag-visual">
-            <img src="${import.meta.env.BASE_URL}brand/app-ap-multi.png" alt="${copy.appTitle}" />
-            <div class="ag-orchestra" aria-hidden="true">
-              ${instruments
-                .map(
-                  (instrument, index) => `
-                    <span style="--i:${index + 1}">
-                      ${copy.instrumentLabels[instrument.displayName] ?? instrument.displayName}
-                    </span>
-                  `,
-                )
-                .join("")}
-            </div>
-          </div>
-          <div class="ag-mode-grid">
-            <section class="ag-intro-card">
-              <p class="ag-kicker">Studio Edition</p>
-              <h2>${copy.appTitle}</h2>
-              <p>${copy.subtitle}</p>
-            </section>
-            ${(["classic", "timeAttack", "survival"] as GameMode[])
-              .map(
-                (mode) => `
-                  <button class="ag-mode-card" data-action="select-mode" data-mode="${mode}">
-                    <span>${copy.modeBadges[mode]}</span>
-                    <strong>${copy.modeLabels[mode]}</strong>
-                    <em>${copy.modeDescriptions[mode]}</em>
-                  </button>
-                `,
-              )
-              .join("")}
-            <div class="ag-duration-row" aria-label="${copy.timeAttackDurationLabel}">
-              ${[60, 90, 120]
-                .map(
-                  (duration) => `
-                    <button
-                      class="ag-segment ${this.timeAttackDuration === duration ? "is-active" : ""}"
-                      data-action="set-duration"
-                      data-duration="${duration}"
-                      aria-pressed="${this.timeAttackDuration === duration}"
-                    >
-                      ${duration}s
-                    </button>
-                  `,
-                )
-                .join("")}
-            </div>
-          </div>
-        </div>
-      </section>
-    `;
-  }
-
-  private renderSelection() {
-    const notesByOctave = groupByOctave(allUniqueNoteNames);
-    const selectedCount = this.selectedNoteNames.size;
-    const instrumentChoices = [...instruments.map((instrument) => instrument.displayName), randomInstrument];
-
-    return `
-      <section class="ag-selection">
-        <div class="ag-section-head">
-          <div>
-            <p class="ag-kicker">${copy.modeLabels[this.mode]}</p>
-            <h2>${copy.noteSelection}</h2>
-          </div>
-          <span class="ag-count">${selectedCount}</span>
-        </div>
-        <div class="ag-toolbar">
-          <button class="ag-secondary-btn" data-action="select-all">${copy.all}</button>
-          <button class="ag-secondary-btn" data-action="clear-selection">${copy.clear}</button>
-          <button class="ag-primary-btn" data-action="start-training" ${selectedCount === 0 ? "disabled" : ""}>
-            ${copy.start}
-          </button>
-        </div>
-        <section class="ag-instrument-panel">
-          <div>
-            <p class="ag-kicker">${copy.instrument}</p>
-            <strong>${copy.instrumentLabels[this.selectedInstrument] ?? this.selectedInstrument}</strong>
-          </div>
-          <div class="ag-instrument-grid">
-            ${instrumentChoices
-              .map((instrument) => {
-                const selected = this.selectedInstrument === instrument;
-                return `
-                  <button
-                    class="ag-instrument-chip ${selected ? "is-selected" : ""}"
-                    data-action="set-instrument"
-                    data-instrument="${escapeAttr(instrument)}"
-                    aria-pressed="${selected}"
-                  >
-                    ${copy.instrumentLabels[instrument] ?? instrument}
-                  </button>
-                `;
-              })
-              .join("")}
-          </div>
-        </section>
-        <div class="ag-strings">
-          ${Array.from(notesByOctave.entries())
-            .map(([octave, notes]) => {
-              const activeInOctave = notes.filter((note) => this.selectedNoteNames.has(note)).length;
-              return `
-                <section class="ag-string-block">
-                  <div class="ag-string-head">
-                    <h3>Octava ${octave}</h3>
-                    <button class="ag-mini-btn" data-action="toggle-octave" data-octave="${octave}">
-                      ${activeInOctave === notes.length ? copy.remove : copy.choose}
-                    </button>
-                  </div>
-                  <div class="ag-note-grid">
-                    ${notes
-                      .map((note) => {
-                        const checked = this.selectedNoteNames.has(note);
-                        return `
-                          <button
-                            class="ag-note-toggle ${checked ? "is-selected" : ""}"
-                            data-action="toggle-note"
-                            data-note-name="${escapeAttr(note)}"
-                            aria-pressed="${checked}"
-                          >
-                            ${note}
-                          </button>
-                        `;
-                      })
-                      .join("")}
-                  </div>
-                </section>
-              `;
-            })
-            .join("")}
-        </div>
-      </section>
-    `;
-  }
-
-  private renderTraining() {
-    const isFinished =
-      (this.mode === "timeAttack" && this.timeAttackFinished) ||
-      (this.mode === "survival" && this.survivalGameOver);
-    const canAnswer = this.currentNote !== null && !isFinished;
-    return `
-      <section class="ag-training">
-        <div class="ag-stage">
-          <div class="ag-stage-top">
-            <div>
-              <p class="ag-kicker">${copy.modeLabels[this.mode]}</p>
-              <h2>${this.trainingTitle()}</h2>
-            </div>
-            <span class="ag-count">${this.activeNotes.length}</span>
-          </div>
-          ${this.renderHud()}
-          <div class="ag-resonator" data-playing="${this.soundPlaying}">
-            ${instruments.map((instrument, index) => `<span class="ag-wave" style="--i:${index + 1}">${instrument.displayName}</span>`).join("")}
-          </div>
-          <p class="ag-feedback" data-kind="${this.feedback.kind}">${this.feedback.text}</p>
-          <div class="ag-training-actions">
-            <button class="ag-primary-btn" data-action="new-note" ${this.activeNotes.length === 0 || isFinished ? "disabled" : ""}>
-              ${copy.newNote}
-            </button>
-            <button class="ag-secondary-btn ${this.loopEnabled ? "is-active" : ""}" data-action="toggle-loop" aria-pressed="${this.loopEnabled}">
-              ${copy.loop}
-            </button>
-          </div>
-          <label class="ag-volume">
-            <span>${copy.volume}</span>
-            <input data-action="volume" type="range" min="0" max="100" value="${Math.round(this.audioPlayer.getVolume() * 100)}" />
-          </label>
-        </div>
-        <div class="ag-answer-panel">
-          <div class="ag-answer-grid">
-            ${answerOptions
-              .map(
-                (note) => `
-                  <button class="ag-answer-btn" data-action="answer" data-note="${note}" ${canAnswer ? "" : "disabled"}>
-                    ${note}
-                  </button>
-                `,
-              )
-              .join("")}
-          </div>
-          ${this.mode === "classic" ? this.renderClassicStats() : ""}
-          ${isFinished ? this.renderEndGameCard() : ""}
-        </div>
-      </section>
-    `;
-  }
-
-  private renderHud() {
-    if (this.mode === "timeAttack") {
-      return `
-        <div class="ag-hud">
-          <div><span>${copy.time}</span><strong class="${this.remainingTime <= 10 && this.remainingTime > 0 ? "is-hot" : ""}">${this.remainingTime}s</strong></div>
-          <div><span>${copy.score}</span><strong>${this.timeAttackScore}</strong></div>
-        </div>
-      `;
-    }
-
-    if (this.mode === "survival") {
-      return `
-        <div class="ag-hud">
-          <div><span>${copy.lives}</span><strong>${"♥".repeat(this.remainingLives)}${"♡".repeat(3 - this.remainingLives)}</strong></div>
-          <div><span>${copy.score}</span><strong>${this.survivalScore}</strong></div>
-        </div>
-      `;
-    }
-
-    const accuracy = this.totalQuestionsAsked === 0 ? 0 : this.totalCorrectAnswers / this.totalQuestionsAsked;
-    return `
-      <div class="ag-hud">
-        <div><span>${copy.streak}</span><strong>${this.consecutiveHits}</strong></div>
-        <div><span>${copy.accuracy}</span><strong>${formatPercent(accuracy)}</strong></div>
-      </div>
-    `;
-  }
-
-  private renderClassicStats() {
-    const accuracy = this.totalQuestionsAsked === 0 ? 0 : this.totalCorrectAnswers / this.totalQuestionsAsked;
-    const sortedStats = Array.from(this.sessionStats.entries()).sort(([a], [b]) => compareFullNotes(a, b));
-    return `
-      <section class="ag-session-card">
-        <div class="ag-session-head">
-          <div>
-            <span>${copy.session}</span>
-            <strong>${this.totalCorrectAnswers} / ${this.totalQuestionsAsked}</strong>
-          </div>
-          <button class="ag-mini-btn" data-action="reset-session">${copy.reset}</button>
-        </div>
-        <div class="ag-progress"><span style="width:${accuracy * 100}%"></span></div>
-        <div class="ag-stat-pills">
-          ${
-            sortedStats.length === 0
-              ? `<span class="ag-empty-pill">${copy.noAnswersYet}</span>`
-              : sortedStats
-                  .map(([note, stat]) => {
-                    const noteAccuracy = stat.total === 0 ? 0 : stat.correct / stat.total;
-                    return `<span>${note} ${formatPercent(noteAccuracy)}</span>`;
-                  })
-                  .join("")
-          }
-        </div>
-      </section>
-    `;
-  }
-
-  private renderEndGameCard() {
-    const score = this.mode === "timeAttack" ? this.timeAttackScore : this.survivalScore;
-    const title = this.mode === "timeAttack" ? copy.timeUp : copy.gameOver;
-    return `
-      <section class="ag-end-card">
-        <span>${title}</span>
-        <strong>${score}</strong>
-        <button class="ag-primary-btn" data-action="play-again">${copy.playAgain}</button>
-      </section>
-    `;
-  }
-
-  private renderStats() {
-    const totals = Array.from(this.persistentStats.values()).reduce(
-      (acc, stat) => ({
-        correct: acc.correct + stat.correct,
-        total: acc.total + stat.total,
-      }),
-      { correct: 0, total: 0 },
-    );
-    const totalAccuracy = totals.total === 0 ? 0 : totals.correct / totals.total;
-
-    return `
-      <section class="ag-stats">
-        <div class="ag-section-head">
-          <div>
-            <p class="ag-kicker">${copy.history}</p>
-            <h2>${copy.stats}</h2>
-          </div>
-          <span class="ag-count">${formatPercent(totalAccuracy)}</span>
-        </div>
-        <div class="ag-toolbar">
-          <button class="ag-secondary-btn" data-action="clear-stats" ${this.persistentStats.size === 0 ? "disabled" : ""}>
-            ${copy.clearStats}
-          </button>
-        </div>
-        ${
-          this.persistentStats.size === 0
-            ? `<div class="ag-empty-state">${copy.emptyStats}</div>`
-            : `<div class="ag-stats-list">
-                ${allUniqueNoteNames
-                  .map((note) => {
-                    const stat = this.persistentStats.get(note) ?? { correct: 0, total: 0 };
-                    const accuracy = stat.total === 0 ? 0 : stat.correct / stat.total;
-                    return `
-                      <article class="ag-stat-row">
-                        <div>
-                          <strong>${note}</strong>
-                          <span>${stat.correct} / ${stat.total}</span>
-                        </div>
-                        <div class="ag-progress"><span style="width:${accuracy * 100}%"></span></div>
-                        <em>${formatPercent(accuracy)}</em>
-                      </article>
-                    `;
-                  })
-                  .join("")}
-              </div>`
-        }
-      </section>
-    `;
-  }
-
-  private bindEvents() {
-    this.appRoot.querySelectorAll<HTMLElement>("[data-action]").forEach((element) => {
-      const action = element.dataset.action;
-      element.addEventListener("click", () => {
-        if (element instanceof HTMLButtonElement && element.disabled) return;
-        this.handleAction(action, element);
-      });
-    });
-
-    this.appRoot.querySelector<HTMLInputElement>('input[data-action="volume"]')?.addEventListener("input", (event) => {
-      const input = event.currentTarget as HTMLInputElement;
-      this.audioPlayer.setVolume(Number(input.value) / 100);
-    });
-  }
-
-  private handleAction(action: string | undefined, element: HTMLElement) {
-    switch (action) {
-      case "back":
-        this.goBack();
-        break;
-      case "stats":
-        this.openStats();
-        break;
-      case "select-mode":
-        this.openSelection(element.dataset.mode as GameMode);
-        break;
-      case "set-duration":
-        this.timeAttackDuration = Number(element.dataset.duration) || 60;
-        this.render();
-        break;
-      case "set-instrument":
-        this.selectedInstrument = element.dataset.instrument || instruments[0].displayName;
-        this.render();
-        break;
-      case "select-all":
-        this.selectedNoteNames = new Set(allUniqueNoteNames);
-        this.render();
-        break;
-      case "clear-selection":
-        this.selectedNoteNames.clear();
-        this.render();
-        break;
-      case "toggle-octave":
-        this.toggleOctave(Number(element.dataset.octave) || 0);
-        break;
-      case "toggle-note":
-        this.toggleNote(element.dataset.noteName ?? "");
-        break;
-      case "start-training":
-        this.startTraining();
-        break;
-      case "new-note":
-        void this.playNewNoteRequested();
-        break;
-      case "toggle-loop":
-        this.loopEnabled = !this.loopEnabled;
-        this.audioPlayer.setLooping(this.loopEnabled);
-        this.render();
-        break;
-      case "answer":
-        void this.answer(element.dataset.note ?? "");
-        break;
-      case "reset-session":
-        this.resetClassicStats();
-        this.feedback = { kind: "info", text: copy.sessionReset };
-        this.render();
-        break;
-      case "play-again":
-        this.resetTrainingState();
-        this.render();
-        break;
-      case "clear-stats":
-        this.statsRepository.clearStats();
-        this.persistentStats = new Map();
-        this.render();
-        break;
-    }
-  }
-
-  private goBack() {
-    if (this.screen === "training") {
-      this.stopTraining();
-      this.screen = "menu";
-    } else if (this.screen === "selection") {
-      this.screen = "menu";
-    } else if (this.screen === "stats") {
-      this.screen = "menu";
-    }
-    this.render();
-  }
-
-  private openStats() {
-    this.stopTraining();
-    this.persistentStats = this.statsRepository.loadStats();
-    this.screen = "stats";
-    this.render();
-  }
-
-  private openSelection(mode: GameMode) {
-    this.stopTraining();
-    this.mode = mode;
-    this.screen = "selection";
-    this.selectedInstrument = instruments[0].displayName;
-    this.selectedNoteNames.clear();
-    this.render();
-  }
-
-  private toggleOctave(octave: number) {
-    const notes = allUniqueNoteNames.filter((note) => noteOctave(note) === octave);
-    const allSelected = notes.every((note) => this.selectedNoteNames.has(note));
-    notes.forEach((note) => {
-      if (allSelected) {
-        this.selectedNoteNames.delete(note);
-      } else {
-        this.selectedNoteNames.add(note);
-      }
-    });
-    this.render();
-  }
-
-  private toggleNote(noteName: string) {
-    if (this.selectedNoteNames.has(noteName)) {
-      this.selectedNoteNames.delete(noteName);
-    } else {
-      this.selectedNoteNames.add(noteName);
-    }
-    this.render();
-  }
-
-  private startTraining() {
-    const selectedNotes = this.selectedNoteNames;
-    this.activeNotes =
-      this.selectedInstrument === randomInstrument
-        ? allSamples.filter((sample) => selectedNotes.has(sample.noteName))
-        : allSamples.filter(
-            (sample) => sample.instrument === this.selectedInstrument && selectedNotes.has(sample.noteName),
-          );
-
-    if (this.activeNotes.length === 0) return;
-    this.resetTrainingState();
-    this.screen = "training";
-    this.feedback = { kind: "info", text: copy.pressNewNote };
-    this.render();
-  }
-
-  private resetTrainingState() {
-    this.stopTimer();
-    this.selector.reset();
-    this.currentNote = null;
-    this.soundPlaying = false;
-    this.audioPlayer.stop();
-    this.feedback = { kind: "info", text: copy.pressNewNote };
-
-    if (this.mode === "classic") {
-      this.resetClassicStats();
-    }
-
-    if (this.mode === "timeAttack") {
-      this.remainingTime = this.timeAttackDuration;
-      this.timeAttackScore = 0;
-      this.timeAttackFinished = false;
-    }
-
-    if (this.mode === "survival") {
-      this.remainingLives = 3;
-      this.survivalScore = 0;
-      this.survivalGameOver = false;
-    }
-  }
-
-  private resetClassicStats() {
-    this.consecutiveHits = 0;
-    this.totalQuestionsAsked = 0;
-    this.totalCorrectAnswers = 0;
-    this.sessionStats.clear();
-  }
-
-  private stopTraining() {
-    this.stopTimer();
-    this.audioPlayer.stop();
-    this.soundPlaying = false;
-    this.currentNote = null;
-    this.selector.reset();
-  }
-
-  private async playNewNoteRequested() {
-    if (this.activeNotes.length === 0 || this.timeAttackFinished || this.survivalGameOver) return;
-
-    this.audioPlayer.stop();
-    this.soundPlaying = false;
-    const nextNote = this.selector.getNextRandomNote(this.activeNotes);
-    this.currentNote = nextNote;
-    this.feedback = { kind: "info", text: copy.whatNote };
-
-    if (this.mode === "timeAttack" && this.timerId === null) {
-      this.startTimer();
-    }
-
-    this.render();
-
-    if (!nextNote) return;
-    const playStatus = await this.audioPlayer.play(nextNote.filePath, this.loopEnabled, () => {
-      if (!this.loopEnabled) {
-        this.soundPlaying = false;
-        this.render();
-      }
-    });
-
-    this.soundPlaying = playStatus === "playing" && this.audioPlayer.isPlaying();
-    if (playStatus === "failed") {
-      this.feedback = { kind: "incorrect", text: copy.cannotLoad(nextNote) };
-    }
-    this.render();
-  }
-
-  private async answer(noteOption: string) {
-    const notePlayed = this.currentNote;
-    if (!notePlayed || this.timeAttackFinished || this.survivalGameOver) return;
-
-    this.audioPlayer.stop();
-    this.soundPlaying = false;
-    const wasCorrect = noteBase(notePlayed.noteName) === noteOption;
-
-    if (wasCorrect) {
-      void this.audioPlayer.play("acierto.mp3");
-      this.feedback = { kind: "correct", text: copy.correct(notePlayed) };
-      this.applyCorrectAnswer();
-    } else {
-      void this.audioPlayer.play("error.mp3");
-      this.feedback = { kind: "incorrect", text: copy.incorrect(notePlayed) };
-      this.applyIncorrectAnswer();
-    }
-
-    this.updateSessionStats(notePlayed.noteName, wasCorrect);
-    this.persistentStats = this.statsRepository.recordAnswer(notePlayed.noteName, wasCorrect);
-
-    if (!this.survivalGameOver) {
-      this.currentNote = null;
-    }
-
-    this.render();
-
-    const shouldAutoAdvance =
-      (this.mode === "timeAttack" && !this.timeAttackFinished) ||
-      (this.mode === "survival" && !this.survivalGameOver);
-
-    if (shouldAutoAdvance) {
-      window.setTimeout(() => {
-        void this.playNewNoteRequested();
-      }, 400);
-    }
-  }
-
-  private applyCorrectAnswer() {
-    if (this.mode === "classic") {
-      this.totalQuestionsAsked += 1;
-      this.totalCorrectAnswers += 1;
-      this.consecutiveHits += 1;
-    }
-
-    if (this.mode === "timeAttack") {
-      this.timeAttackScore += 1;
-    }
-
-    if (this.mode === "survival") {
-      this.survivalScore += 1;
-    }
-  }
-
-  private applyIncorrectAnswer() {
-    if (this.mode === "classic") {
-      this.totalQuestionsAsked += 1;
-      this.consecutiveHits = 0;
-    }
-
-    if (this.mode === "survival") {
-      this.remainingLives -= 1;
-      if (this.remainingLives <= 0) {
-        this.remainingLives = 0;
-        this.survivalGameOver = true;
-        this.currentNote = null;
-        this.feedback = { kind: "incorrect", text: copy.gameOverScore(this.survivalScore) };
-      }
-    }
-  }
-
-  private updateSessionStats(noteName: string, wasCorrect: boolean) {
-    const previous = this.sessionStats.get(noteName) ?? { correct: 0, total: 0 };
-    this.sessionStats.set(noteName, {
-      correct: previous.correct + (wasCorrect ? 1 : 0),
-      total: previous.total + 1,
-    });
-  }
-
-  private startTimer() {
-    this.stopTimer();
-    this.remainingTime = this.timeAttackDuration;
-    this.timeAttackFinished = false;
-    this.timerId = window.setInterval(() => {
-      this.remainingTime -= 1;
-      if (this.remainingTime <= 0) {
-        this.finishTimeAttack();
-      } else {
-        this.render();
-      }
-    }, 1000);
-  }
-
-  private finishTimeAttack() {
-    this.stopTimer();
-    this.remainingTime = 0;
-    this.timeAttackFinished = true;
-    this.currentNote = null;
-    this.soundPlaying = false;
-    this.audioPlayer.stop();
-    this.feedback = { kind: "info", text: copy.timeUpScore(this.timeAttackScore) };
-    this.render();
-  }
-
-  private stopTimer() {
-    if (this.timerId !== null) {
-      window.clearInterval(this.timerId);
-      this.timerId = null;
-    }
-  }
-
-  private trainingTitle() {
-    if (this.mode === "timeAttack") return `${this.remainingTime || this.timeAttackDuration}s`;
-    if (this.mode === "survival") return copy.livesTitle(this.remainingLives);
-    return copy.totalNotes(this.activeNotes.length);
-  }
+function menu() {
+  return `<div class="menu-layout"><aside class="brand-art"><img src="${import.meta.env.BASE_URL}brand/app-ap-multi.png" alt="${t('Oído Absoluto Multi', 'Absolute Pitch Multi')}"><p>AP Super · Storm Studios</p></aside><section class="panel"><h2>${t('Tu oído, paso a paso', 'Train your ear, step by step')}</h2><label>${c.sequence}<select data-action="sequence">${(['Hombre', 'Mujer'] as const).map(s => `<option value="${s}" ${s === state.sequence ? 'selected' : ''}>${c.sequenceNames[s]}</option>`).join('')}</select></label><p class="muted">${c.sequenceHelp}</p>${button('continue', `${c.continueLevel} ${state.continueLevel()}`, true)}<h3>${t('Etapas del método', 'Method stages')}</h3><div class="stage-list">${stages.map((name, i) => {
+    const [first, last] = WORLD_RANGES[i + 1];
+    return `<button class="stage-card" data-action="world" data-value="${i + 1}"><strong>${name}</strong><span>${first}–${last} · ${completedInWorld(state.progress, i + 1)} / ${last - first + 1} ${c.completed}</span></button>`;
+  }).join('')}</div>${button('statistics', c.stats.title)}<p class="muted small">${t('La app AP Super para Android añade contrarreloj y modo Avanzado.', 'AP Super for Android adds time trials and Advanced mode.')}</p></section></div>`;
 }
 
-function groupByOctave(notes: string[]) {
-  const grouped = new Map<number, string[]>();
-  notes.forEach((note) => {
-    const octave = noteOctave(note);
-    const group = grouped.get(octave) ?? [];
-    group.push(note);
-    grouped.set(octave, group.sort(compareFullNotes));
-  });
-  return new Map([...grouped.entries()].sort(([a], [b]) => a - b));
+function levels() {
+  return `<section class="panel"><div class="header-row">${button('menu', `‹ ${c.back}`)}<h2>${stages[state.selectedWorld - 1]}</h2>${button('statistics', c.stats.title)}</div><p class="muted">${t('Puedes elegir cualquier nivel. La racha se guarda entre sesiones.', 'Choose any level. Your streak is saved between sessions.')}</p><div class="level-list">${levelsOfWorld(state.sequence, state.selectedWorld).map(l => `<button class="level-card" data-action="level" data-value="${l.number}"><strong>${c.levelShort} ${l.number} ${state.progress.completed.includes(l.number) ? `· ✓ ${c.completedMark}` : ''}</strong><span>${esc(en ? l.commentEnglish : l.comment)}</span><span class="notes">${l.pitches.map(p => pitchName(p, state.accidentals)).join(' · ')}</span><span>${c.streak}: ${state.progress.streaks[l.number] ?? 0} / ${l.requiredStreak}</span></button>`).join('')}</div></section>`;
 }
 
-function formatPercent(value: number) {
-  return new Intl.NumberFormat(locale === "es" ? "es-MX" : "en-US", {
-    style: "percent",
-    maximumFractionDigits: 1,
-  }).format(value);
+function warmup() {
+  return `<section class="panel training"><div class="header-row">${button('levels', `‹ ${c.chooseLevel}`)}<h2>${c.warmupTitle}</h2></div><p class="kicker">${levelTitle()}</p><p>${esc(en ? state.level.commentEnglish : state.level.comment)}</p><p class="muted">${c.warmupCopy}</p>${controls()}<div class="keys">${state.level.pitches.map((p, i) => `<button class="note-key" data-action="warmup-note" data-value="${i}">${pitchName(p, state.accidentals)}</button>`).join('')}</div><p class="muted">${t('Pon tu música de fondo antes de comenzar.', 'Put on your background music before starting.')}</p>${button('start', t('Comenzar', 'Start training'), true)}</section>`;
 }
 
-function detectLocale(): Locale {
-  const param = new URLSearchParams(window.location.search).get("lang");
-  return param?.toLowerCase().startsWith("en") ? "en" : "es";
+function feedback() {
+  const f = state.feedback; if (!f) return '';
+  const direction = f.distance.direction > 0 ? t('por arriba ↑', 'above ↑') : f.distance.direction < 0 ? t('por abajo ↓', 'below ↓') : t('(tritono, sin dirección)', '(tritone, no direction)');
+  return `<div class="feedback ${f.correct ? 'correct' : 'wrong'}" role="status"><strong>${f.correct ? c.correct : c.wrong}</strong>${f.correct ? '' : `<p>${c.correctNote} <b>${pitchName(f.question.pitch, state.accidentals)}</b> · ${c.instruments[f.question.timbre]}. ${t('Tu respuesta quedó a', 'Your answer was')} ${f.distance.semitones} ${f.distance.semitones === 1 ? t('semitono', 'semitone') : c.semitones} ${direction}.</p>${button('hear', c.hearAnswer)}`}</div>`;
 }
 
-function escapeAttr(value: string) {
-  return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+function training() {
+  return `<section class="panel training session-screen"><div class="header-row">${button('levels', `‹ ${c.chooseLevel}`)}<h2>${levelTitle()}</h2></div><div class="hud"><span>${c.streak} <strong>${state.streak} / ${state.level.requiredStreak}</strong>${help(c.streak, c.stats.helpStreak, c)}</span><span>${c.stats.currentSession} <strong>${percentage(state.sessionSummary?.percentage)}</strong>${help(c.stats.currentSession, c.stats.helpSession, c)}</span></div>${controls()}<div class="controls">${button('loop', `${c.loop}: ${state.loopNote ? c.on : c.off}`)}${help(c.loop, t('Encendido, la nota se repite hasta que respondas. Apagado, suena una sola vez.', 'When on, the note repeats until you answer. When off, it plays once.'), c)}${button('replay', c.replay, false, !state.question)}</div><p>${state.question ? c.heardQuestion : t('Pide una nota cuando estés listo.', 'Ask for a note when you are ready.')}</p><div class="orbit" id="rest-ring"><button class="new-note" data-action="new" ${state.question ? 'disabled' : ''}>${t('Nueva nota', 'New note')}</button></div><p class="rest-time" id="rest-time"></p><p class="muted">${t('Después de responder, olvida la nota escuchando música por lo menos 60 segundos. El anillo es un recordatorio; puedes continuar cuando quieras.', 'After answering, forget the note by listening to music for at least 60 seconds. The ring is a reminder; you can continue whenever you wish.')}</p>${feedback()}<div class="keys answer-keys">${state.level.answerClasses.map(pc => `<button class="note-key" data-action="answer" data-value="${pc}" ${state.question ? '' : 'disabled'}>${pitchClassName(pc, state.accidentals)}</button>`).join('')}</div><details class="notes-help"><summary>${t('Notas en juego', 'Notes in this level')}</summary><p>${noteList()}</p></details></section>`;
 }
 
-function copyInstrument(instrument: string) {
-  return STRINGS.en.instrumentLabels[instrument] ?? instrument;
+function victory() {
+  const next = state.nextLevel();
+  return `<section class="panel training"><p class="kicker">${levelTitle()}</p><h2>${c.victoryTitle}</h2><p>${c.victoryBody}</p><p>${c.streak}: ${state.streak} / 20 · ${c.stats.currentSession}: ${percentage(state.sessionSummary?.percentage)}</p>${feedback()}${next ? `${button('next', `${c.nextLevel}: ${next.number}`, true)}<p>${next.world !== state.level.world ? t('Nueva etapa', 'New stage') + ': ' : ''}${stages[next.world - 1]}</p>` : `<p class="method-complete">${c.methodCompleted}</p>`}<div class="controls">${button('levels', c.chooseLevel)}${button('menu', c.mainMenu)}</div></section>`;
 }
 
-new AppController(root);
+function render() {
+  const active = document.activeElement as HTMLElement | null;
+  const focusAction = active?.dataset.action, focusValue = active?.dataset.value;
+  document.documentElement.lang = en ? 'en' : 'es';
+  document.querySelector('meta[name=description]')?.setAttribute('content', t('AP Super: 147 niveles de oído absoluto con seis timbres, de E2 a E5.', 'AP Super: 147 absolute pitch levels with six timbres, from E2 to E5.'));
+  document.title = 'AP Super · ' + t('Oído Absoluto Multi', 'Absolute Pitch Multi');
+  app.innerHTML = `<div class="ag-shell"><header class="ag-topbar"><div class="ag-brand"><img src="${import.meta.env.BASE_URL}brand/storm-studios-logo.png" alt="Storm Studios"><div><p class="kicker">AP Super · 2D</p><h1>${t('Oído Absoluto Multi', 'Absolute Pitch Multi')}</h1></div></div>${state.screen !== 'menu' ? button('menu', t('Menú', 'Menu')) : ''}</header>${state.storageWarning ? `<aside class="notice" role="alert"><p>${t('No se pudieron guardar algunos datos en este dispositivo. El progreso y las respuestas de esta sesión siguen en memoria. Exporta tus estadísticas a CSV antes de salir.', 'Some data could not be saved on this device. This session’s progress and answers remain in memory. Export your statistics to CSV before leaving.')}</p>${button('dismiss-warning', c.stats.dismiss)}</aside>` : ''}<div id="audio-status" role="status">${esc(audioError)}</div>${state.screen === 'menu' ? menu() : state.screen === 'levels' ? levels() : state.screen === 'warmup' ? warmup() : state.screen === 'training' ? training() : state.screen === 'victory' ? victory() : renderStatistics(state, c)}</div>`;
+  if (focusAction) Array.from(app.querySelectorAll<HTMLElement>('[data-action]')).find(e => e.dataset.action === focusAction && e.dataset.value === focusValue)?.focus({ preventScroll: true });
+  updateRing();
+}
+
+function updateRing() {
+  const ring = document.querySelector<HTMLElement>('#rest-ring');
+  const time = document.querySelector<HTMLElement>('#rest-time');
+  if (!ring || !time) return;
+  const progress = restProgress(state.answeredAt);
+  ring.style.setProperty('--rest', `${progress * 360}deg`);
+  ring.classList.toggle('rest-complete', progress === 1);
+  time.textContent = state.answeredAt === null ? '' : `${Math.floor(progress * 60)} / 60 ${t('segundos', 'seconds')}${progress === 1 ? ' ✓' : ''}`;
+}
+
+async function play(question: Question | null, loop = false) {
+  if (!question) return;
+  const version = ++playbackVersion;
+  audioError = '';
+  const status = document.querySelector('#audio-status'); if (status) status.textContent = '';
+  const result = await audio.play(`${question.timbre}/${sampleName(question.pitch)}.mp3`, loop);
+  if (version !== playbackVersion) return;
+  if (result !== 'playing') {
+    audioError = t('No se pudo reproducir el audio. Revisa tu conexión y toca de nuevo para reintentar.', 'Audio could not play. Check your connection and tap again to retry.');
+    const element = document.querySelector('#audio-status'); if (element) element.textContent = audioError;
+  }
+}
+function stop() { playbackVersion++; audio.stop(); audioError = ''; }
+function selectLevel(number: number) { stop(); audio.cancelPreload(); state.selectLevel(number); void audio.preload(state.level.pitches); }
+
+app.addEventListener('click', event => {
+  const target = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-action]');
+  if (!target || target.disabled) return;
+  const action = target.dataset.action, value = Number(target.dataset.value);
+  switch (action) {
+    case 'menu': stop(); audio.cancelPreload(); state.navigate('menu'); break;
+    case 'continue': selectLevel(state.continueLevel()); break;
+    case 'world': stop(); state.selectWorld(value); break;
+    case 'levels': stop(); audio.cancelPreload(); state.selectWorld(state.selectedWorld); break;
+    case 'level': selectLevel(value); break;
+    case 'notation': state.toggleAccidentals(); break;
+    case 'warmup-note': void play(state.warmupQuestion(value)); return;
+    case 'start': stop(); state.startTraining(); break;
+    case 'new': { const question = state.newQuestion(); if (question) void play(question, state.loopNote); break; }
+    case 'replay': void play(state.question, state.loopNote); return;
+    case 'loop': state.toggleLoop(); audio.setLooping(state.loopNote); if (state.question && !audio.isPlaying()) void play(state.question, state.loopNote); break;
+    case 'answer': if (state.answer(value)) stop(); break;
+    case 'hear': void play(state.feedback?.question ?? null); return;
+    case 'next': stop(); state.advanceLevel(); void audio.preload(state.level.pitches); break;
+    case 'statistics': stop(); audio.cancelPreload(); state.openStatistics(); break;
+    case 'stats-back': state.navigate(state.statsReturn); break;
+    case 'export-csv': downloadStatistics(state, c); return;
+    case 'clear-stats': if (window.confirm(c.stats.clearConfirm)) state.clearStatistics(); break;
+    case 'dismiss-warning': state.storageWarning = false; break;
+    default: return;
+  }
+  render();
+});
+app.addEventListener('change', event => {
+  const target = event.target as HTMLSelectElement;
+  if (target.dataset.action === 'sequence') { stop(); state.selectSequence(target.value === 'Mujer' ? 'Mujer' : 'Hombre'); render(); }
+  if (target.dataset.action === 'stats-filter') { state.statsLevel = target.value === 'all' ? null : Number(target.value); render(); }
+});
+app.addEventListener('input', event => {
+  const target = event.target as HTMLInputElement;
+  if (target.dataset.action === 'volume') { state.setVolume(Number(target.value)); audio.setVolume(state.volume); }
+});
+window.addEventListener('storage', event => { if (event.key === null || event.key.startsWith('walking-ap:')) { state.refreshSharedData(); render(); } });
+window.addEventListener('pagehide', () => { stop(); audio.cancelPreload(); });
+setInterval(updateRing, 250);
+render();
