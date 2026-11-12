@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { sendEmail } = vi.hoisted(() => ({ sendEmail: vi.fn() }));
+const { writeMeasurement } = vi.hoisted(() => ({ writeMeasurement: vi.fn() }));
+vi.mock("@/lib/analytics/write", () => ({ writeEvent: writeMeasurement }));
 
 vi.mock("resend", () => ({
   Resend: class {
@@ -36,6 +38,7 @@ function contactRequest(ip: string, overrides: Record<string, unknown> = {}) {
 describe("POST /api/contact", () => {
   beforeEach(() => {
     sendEmail.mockReset();
+    writeMeasurement.mockReset();
     consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
@@ -147,5 +150,36 @@ describe("POST /api/contact", () => {
     const response = await POST(contactRequest("198.51.100.42", { website: "spam.example" }));
     expect(response.status).toBe(200);
     expect(sendEmail).not.toHaveBeenCalled();
+  });
+
+  it("records an anonymous success only after delivery, excluding form data", async () => {
+    process.env.RESEND_API_KEY = "re_test";
+    sendEmail.mockResolvedValue({ data: { id: "email_measurement" }, error: null });
+    const response = await POST(contactRequest("198.51.100.50", {
+      measurement: { path: "/es/contacto", language: "es", referrer: "https://google.com/search?q=private" },
+    }));
+    expect(response.status).toBe(200);
+    expect(writeMeasurement).toHaveBeenCalledExactlyOnceWith({ name: "contact_success", path: "/es/contacto", language: "es", destination: "form", referrer: "google.com", utm_source: "", utm_campaign: "" });
+    expect(JSON.stringify(writeMeasurement.mock.calls)).not.toMatch(/persona@example|198\.51|attempt|Nombre/);
+  });
+
+  it("does not count spam or rejected mail, and ignores malformed measurement metadata", async () => {
+    process.env.RESEND_API_KEY = "re_test";
+    const measurement = { path: "/es/contacto", language: "es" };
+    expect((await POST(contactRequest("198.51.100.51", { website: "spam", measurement }))).status).toBe(200);
+    sendEmail.mockResolvedValue({ data: null, error: { message: "failed" } });
+    expect((await POST(contactRequest("198.51.100.52", { measurement }))).status).toBe(503);
+    expect(writeMeasurement).not.toHaveBeenCalled();
+    sendEmail.mockResolvedValue({ data: { id: "accepted" }, error: null });
+    expect((await POST(contactRequest("198.51.100.53", { measurement: { email: "private@example.com" } }))).status).toBe(200);
+    expect(writeMeasurement).not.toHaveBeenCalled();
+  });
+
+  it("still delivers the message when analytics is unavailable", async () => {
+    process.env.RESEND_API_KEY = "re_test";
+    sendEmail.mockResolvedValue({ data: { id: "accepted_no_analytics" }, error: null });
+    writeMeasurement.mockReturnValue(false);
+    expect((await POST(contactRequest("198.51.100.54", { measurement: { path: "/en/contact", language: "en" } }))).status).toBe(200);
+    expect(writeMeasurement).toHaveBeenCalledOnce();
   });
 });

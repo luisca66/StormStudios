@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
+import Measurement from "@/components/Measurement";
 import { notFound } from "next/navigation";
 import { DM_Mono, DM_Serif_Display, Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
@@ -85,6 +87,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           {locale === "es" ? "Saltar al contenido" : "Skip to content"}
         </a>
         <NextIntlClientProvider messages={clientMessages}>
+          <Suspense fallback={null}><Measurement /></Suspense>
           <Header />
           <main id="contenido" className="flex-1">{children}</main>
           <Footer />

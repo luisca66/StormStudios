@@ -227,7 +227,7 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
           <LessonNav prev={prev} next={next} locale={locale} />
           <p className="ss-mono text-xs mt-6" style={{ color: "var(--ss-muted)", lineHeight: 1.8 }}>
             {t("prompt")}{" "}
-            <Link href="/contacto" style={{ color: "var(--ss-violet-text)", textDecoration: "underline" }}>
+            <Link href="/contacto" data-measure="contact_click" data-destination="lesson" style={{ color: "var(--ss-violet-text)", textDecoration: "underline" }}>
               {t("link")}
             </Link>
           </p>

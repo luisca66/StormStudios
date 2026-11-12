@@ -15,6 +15,8 @@ export async function HomePrivateLessons() {
         </p>
         <Link
           href="/contacto"
+          data-measure="contact_click"
+          data-destination="home"
           className="ss-mono inline-block rounded-lg px-5 py-3 text-sm"
           style={{ color: "var(--ss-violet-text)", background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.3)", textDecoration: "none" }}
         >
