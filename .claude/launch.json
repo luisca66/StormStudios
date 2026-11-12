@@ -217,6 +217,18 @@
       ],
       "port": 5195,
       "url": "http://127.0.0.1:5195"
+    },
+    {
+      "name": "ap-multi-2d",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "apps-src/ap-multi"
+      ],
+      "port": 5176,
+      "url": "http://127.0.0.1:5176"
     }
   ]
 }
