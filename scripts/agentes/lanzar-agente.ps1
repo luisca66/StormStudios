@@ -4,8 +4,8 @@
 
 .DESCRIPTION
   Modo automático de plantillas-blender/REPARTO-AGENTES.md §5. Claude lo ejecuta en segundo plano y
-  recibe aviso cuando el agente termina. Registros, sesiones y últimos mensajes quedan fuera del
-  repositorio, en %LOCALAPPDATA%\StormStudios\agentes\.
+  recibe aviso cuando el agente termina. Registros, sesiones y últimos mensajes quedan en
+  .local-work\agentes\ del repo (ignorado por git; antes %LOCALAPPDATA%\StormStudios\agentes\).
 
   Modelos fijos (decididos por Luis el 2026-09-26):
     Codex (decidido por Luis el 2026-10-20), ambos con razonamiento "medium":
@@ -40,7 +40,9 @@ $pieza = Split-Path $dir -Leaf
 $promptFile = if ($Mensaje) { $Mensaje } else { Join-Path $dir "PROMPT.txt" }
 if (-not (Test-Path $promptFile)) { throw "Falta $promptFile (lo escribe Claude)." }
 
-$logDir = Join-Path $env:LOCALAPPDATA "StormStudios\agentes"
+# Desde Codex 26.1106 (2026-11-12), `codex exec -o` rechaza rutas bajo %LOCALAPPDATA%
+# ("path contains a reparse point"); los registros viven en .local-work/ (ignorado por git).
+$logDir = Join-Path $repo ".local-work\agentes"
 New-Item -ItemType Directory -Force $logDir | Out-Null
 $stamp = Get-Date -Format "yyyyMMdd-HHmm"
 $log = Join-Path $logDir "$pieza-$Agente-$stamp.log"
