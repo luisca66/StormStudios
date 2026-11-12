@@ -7,6 +7,7 @@ import ExerciseUpload from "./ExerciseUpload";
 import { getCourseConfig, getLessonStatus } from "@/lib/course";
 import { Link } from "@/i18n/navigation";
 import LiteYouTube from "@/components/media/LiteYouTube";
+import { useTranslations } from "next-intl";
 
 type Props = {
   lesson: LessonConfig;
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export default function LessonLayout({ lesson, prev, next, locale, children }: Props) {
+  const t = useTranslations("course.privateLessons");
   const es = locale === "es";
   const course = getCourseConfig();
   const lessonVideos = lesson.videosByLocale?.[locale as "es" | "en"] ?? lesson.videos;
@@ -223,6 +225,12 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
 
           {/* Navegación prev/next */}
           <LessonNav prev={prev} next={next} locale={locale} />
+          <p className="ss-mono text-xs mt-6" style={{ color: "var(--ss-muted)", lineHeight: 1.8 }}>
+            {t("prompt")}{" "}
+            <Link href="/contacto" style={{ color: "var(--ss-violet-text)", textDecoration: "underline" }}>
+              {t("link")}
+            </Link>
+          </p>
         </article>
       </div>
     </div>

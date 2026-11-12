@@ -36,7 +36,7 @@ El proyecto de Vercel está conectado con el repositorio GitHub. Publicar en su 
 - `data/course` y `lib/course.ts`: lecciones, reglas y disponibilidad. `construction` muestra aviso; `hidden` no se publica.
 - `data/apps/apps-catalog.ts`: catálogo público de apps, compartido por fichas y `/catalog.json`.
 - `apps-src`: fuentes Vite; `public/apps`: archivos servidos en iframes y herramientas HTML heredadas.
-- `lib/maestro-virtual`: validadores musicales deterministas. La revisión operativa cubre las lecciones 1–3; no usa un modelo generativo por ejercicio.
+- `lib/maestro-virtual`: validadores musicales deterministas. La revisión publicada cubre las lecciones 1–4 y 6–8; no usa un modelo generativo por ejercicio. La lección 9 tiene validador de cadencias, pero sigue en construcción.
 - `lib/course-progress.ts`: validación y almacenamiento local de progreso. El curso permite respaldo JSON de marcas de completado.
 - `app/api/contact`: formulario vía Resend; `app/api/audio`: proxy de audio con rangos y caché controlada.
 - `firestore.rules`: aislamiento por UID para App Memoria. Un archivo local no demuestra que estas reglas estén desplegadas.

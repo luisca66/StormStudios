@@ -29,7 +29,18 @@
     "legal": "Blog y Legal",
     "explore": "Explorar"
   },
+  "course": {
+    "privateLessons": {
+      "prompt": "¿Quieres estudiar esto conmigo?",
+      "link": "Escríbeme"
+    }
+  },
   "home": {
+    "privateLessons": {
+      "title": "Clases particulares",
+      "description": "Doy clases particulares de instrumento, composición, contrapunto y análisis. Si quieres estudiar conmigo, escríbeme y lo platicamos.",
+      "button": "Escríbeme"
+    },
     "hero": {
       "badge": "Linaje Shostakovich · Medrano · Cárdenas",
       "titlePrefix": "Aprende",

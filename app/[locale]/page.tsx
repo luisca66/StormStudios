@@ -1,6 +1,7 @@
 import { StudyPaths } from "@/components/home/StudyPaths";
 import { MusicPlayer } from "@/components/MusicPlayer";
 import { HomeCTA } from "@/components/home/HomeCTA";
+import { HomePrivateLessons } from "@/components/home/HomePrivateLessons";
 import { HomeDemoVideo } from "@/components/home/HomeDemoVideo";
 import { HomeFeatures } from "@/components/home/HomeFeatures";
 import { HomeGrowthSection } from "@/components/home/HomeGrowthSection";
@@ -86,6 +87,8 @@ export default async function HomePage({
       <HomeMasterySection />
 
       <HomeCTA />
+
+      <HomePrivateLessons />
 
       <HomeGrowthSection />
 
