@@ -1,3 +1,4 @@
+import StoreInvitation from "@/components/StoreInvitation";
 import { DarkPageLayout } from "@/components/layout/DarkPageLayout";
 import { JsonLd } from "@/components/JsonLd";
 import { notFound } from "next/navigation";
@@ -182,6 +183,7 @@ export default async function AppDetailPage({ params }: Props) {
           </ul>
         </div>
       )}
+      {slug === "oido-absoluto-multi" && <StoreInvitation locale={locale} />}
     </div></DarkPageLayout>
   );
 }

@@ -62,10 +62,10 @@ el desarrollo local; el binding del Worker desplegado escribe en su dataset.
 | Columna | Contenido |
 | --- | --- |
 | index1 | Nombre del evento (muestreo) |
-| blob1 | `page_view`, `amazon_click`, `contact_click`, `contact_success`, `app_open` |
+| blob1 | `page_view`, `amazon_click`, `contact_click`, `contact_success`, `app_open`, `store_click`, `notify_success` |
 | blob2 | Ruta pública sin query ni hash |
 | blob3 | `es` o `en` |
-| blob4 | Destino: `kindle:amazon.com.mx`, `paperback:amazon.com`, `home`, `lesson`, `form` o ruta de ejecución |
+| blob4 | Destino: `kindle:amazon.com.mx`, `paperback:amazon.com`, `home`, `lesson`, `form`, ruta de ejecución, `play:apsuper`, `appstore:apsuper`, `leccion`, `catalogo` o `libro` |
 | blob5 | Dominio del referrer o vacío |
 | blob6 | `utm_source` o vacío |
 | blob7 | `utm_campaign` o vacío |
@@ -164,3 +164,23 @@ Analytics Engine retiene los datos tres meses.
 - [API SQL, permisos del token y muestreo](https://developers.cloudflare.com/analytics/analytics-engine/sql-api/).
 - [Retención y límites](https://developers.cloudflare.com/analytics/analytics-engine/limits/).
 - [Copiar Account ID](https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/).
+
+## Tienda y avisos de novedades (F1.3 / F2.2)
+
+`lib/store-links.ts` controla todas las invitaciones AP Super: `apSuper.enabled`
+es `false` y no se renderiza nada. Cambiarlo a `true` muestra el bloque en la
+ficha de oído absoluto, debajo de su juego (sin reducir el iframe) y en el libro.
+Los enlaces usan `store_click` con `play:apsuper` o `appstore:apsuper`.
+
+`NotifyForm` aparece debajo de la invitación a clases, al final del catálogo y
+en el libro, en ambos idiomas. `/api/notify` comparte con contacto las defensas
+locales, el binding existente `CONTACT_LIMITER` (cuota compartida), remitente y
+bandeja de Resend. No crea listas automáticas ni recursos: entrega una solicitud
+con origen e idioma a la bandeja para su gestión. Los reintentos conservan la
+clave opaca de idempotencia. Requiere tres segundos desde la carga del formulario.
+
+`notify_success` se escribe solo desde el endpoint tras la aceptación de Resend;
+el destino es `leccion`, `catalogo` o `libro`, validado contra la ruta y el idioma.
+No contiene correo ni ID de intento. El endpoint público de eventos rechaza
+éxitos de correo falsificados. El reporte mensual incluye tiendas y solicitudes
+por origen e idioma. Las pruebas usan Resend simulado y no envían correos reales.

@@ -34,6 +34,7 @@ describe("POST /api/events", () => {
     expect((await POST(request(event, null))).status).toBe(403);
     expect((await POST(request({ ...event, email: "name@example.com" }))).status).toBe(400);
     expect((await POST(request({ ...event, name: "contact_success", path: "/es/contacto" }))).status).toBe(400);
+    expect((await POST(request({ ...event, name: "notify_success", path: "/es/el-libro", destination: "libro" }))).status).toBe(400);
     expect(writeDataPoint).not.toHaveBeenCalled();
   });
   it("bounds streamed bodies even without Content-Length and rejects malformed JSON", async () => {

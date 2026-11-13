@@ -5,7 +5,7 @@ import { LESSON_URL_SLUGS, RESOURCE_SLUGS } from "@/data/seo/localized-slugs";
 import publicPaths from "./public-paths.json";
 import { campaignLabel, referrerDomain } from "./privacy";
 
-export const EVENT_NAMES = ["page_view", "amazon_click", "contact_click", "contact_success", "app_open"] as const;
+export const EVENT_NAMES = ["page_view", "amazon_click", "contact_click", "contact_success", "app_open", "store_click", "notify_success"] as const;
 export type EventName = (typeof EVENT_NAMES)[number];
 
 const knownPaths = new Set(publicPaths);
@@ -86,6 +86,12 @@ export function normalizeEvent(input: unknown): MeasurementEvent | null {
     (event.destination === "lesson" && lessonPaths.has(path))
   )) return null;
   if (event.name === "contact_success" && !["/es/contacto", "/en/contact"].includes(path)) return null;
+  if (event.name === "store_click" && !["play:apsuper", "appstore:apsuper"].includes(event.destination)) return null;
+  if (event.name === "notify_success" && !(
+    (event.destination === "leccion" && lessonPaths.has(path)) ||
+    (event.destination === "catalogo" && ["/es/apps", "/en/apps"].includes(path)) ||
+    (event.destination === "libro" && ["/es/el-libro", "/en/the-book"].includes(path))
+  )) return null;
   if (event.name === "app_open" && !appPaths.has(path)) return null;
   return {
     ...event, path,

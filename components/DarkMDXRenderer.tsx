@@ -5,7 +5,12 @@ import YouTubeEmbed from "@/components/media/YouTubeEmbed";
 import VimeoEmbed from "@/components/media/VimeoEmbed";
 import BotonCompra from "@/components/BotonCompra";
 
+import StoreInvitation from "@/components/StoreInvitation";
+import NotifyForm from "@/components/NotifyForm";
+
 const components = {
+  StoreInvitation,
+  NotifyForm,
   BotonCompra,
   AudioPlayer,
   YouTubeEmbed,

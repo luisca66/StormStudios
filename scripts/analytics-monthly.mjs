@@ -17,6 +17,8 @@ export function monthlyQueries(month) {
     events: `SELECT blob1 AS event, ${count} ${from} GROUP BY event ORDER BY total DESC FORMAT JSON`,
     pages: `SELECT blob2 AS path, blob3 AS language, ${count} ${from} AND blob1 = 'page_view' GROUP BY path, language ORDER BY total DESC LIMIT 20 FORMAT JSON`,
     amazon: `SELECT blob4 AS destination, blob3 AS language, ${count} ${from} AND blob1 = 'amazon_click' GROUP BY destination, language ORDER BY total DESC FORMAT JSON`,
+    stores: `SELECT blob4 AS destination, blob3 AS language, ${count} ${from} AND blob1 = 'store_click' GROUP BY destination, language ORDER BY total DESC FORMAT JSON`,
+    notifications: `SELECT blob4 AS destination, blob3 AS language, ${count} ${from} AND blob1 = 'notify_success' GROUP BY destination, language ORDER BY total DESC FORMAT JSON`,
     contacts: `SELECT blob1 AS event, blob4 AS destination, ${count} ${from} AND blob1 IN ('contact_click', 'contact_success') GROUP BY event, destination ORDER BY total DESC FORMAT JSON`,
     sources: `SELECT blob5 AS referrer, blob6 AS source, blob7 AS campaign, ${count} ${from} AND blob1 = 'page_view' GROUP BY referrer, source, campaign ORDER BY total DESC LIMIT 30 FORMAT JSON`,
     apps: `SELECT blob4 AS destination, ${count} ${from} AND blob1 = 'app_open' GROUP BY destination ORDER BY total DESC LIMIT 20 FORMAT JSON`,
@@ -59,6 +61,16 @@ ${table(["Ruta", "Idioma", "Visitas"], results.pages.map((r) => [r.path, r.langu
 ## Clics a Amazon por formato y tienda
 
 ${table(["Formato:tienda", "Idioma", "Clics"], results.amazon.map((r) => [r.destination, r.language, count(r.total)]))}
+
+## Tiendas de apps
+
+${table(["Tienda:app", "Idioma", "Clics"], (results.stores ?? []).map((r) => [r.destination, r.language, count(r.total)]))}
+
+## Solicitudes de novedades
+
+${table(["Origen", "Idioma", "Envíos"], (results.notifications ?? []).map((r) => [r.destination, r.language, count(r.total)]))}
+
+notify_success: leccion, catalogo o libro; correo aceptado por Resend, sin correo personal en la medición.
 
 ## Contactos
 

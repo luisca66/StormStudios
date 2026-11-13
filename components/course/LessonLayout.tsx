@@ -1,3 +1,4 @@
+import NotifyForm from "@/components/NotifyForm";
 import type { LessonConfig, LessonTool } from "@/types/course";
 import LessonNav from "./LessonNav";
 import LessonSidebar from "./LessonSidebar";
@@ -231,6 +232,7 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
               {t("link")}
             </Link>
           </p>
+          <NotifyForm locale={locale} source="leccion" />
         </article>
       </div>
     </div>

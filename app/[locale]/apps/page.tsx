@@ -1,3 +1,4 @@
+import NotifyForm from "@/components/NotifyForm";
 import type { Metadata } from "next";
 import { APPS } from "@/data/apps/apps-catalog";
 import AppCard from "@/components/apps/AppCard";
@@ -155,6 +156,7 @@ export default async function AppsPage({ params }: Props) {
             </div>
           </div>
         </section>
+        <NotifyForm locale={locale} source="catalogo" />
       </div>
     </div>
   );
