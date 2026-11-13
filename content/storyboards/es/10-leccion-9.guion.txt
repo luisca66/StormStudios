@@ -1,0 +1,79 @@
+Hola, bienvenidos de nuevo a Storm Studios Learning.
+En la lección ocho aprendimos a enlazar dos acordes en el cuarteto vocal.
+Antes de entrar al modo menor, hoy vamos a aprender cómo se termina una frase musical: las cadencias.
+Esta lección tiene tres partes: qué es una cadencia, los cuatro tipos de cadencia y las semicadencias.
+Empecemos.
+Llamamos cadencia a una sucesión de acordes que tiene una intención conclusiva.
+Es decir, una cadencia nos dice que la música llegó a su final, o a un punto de reposo.
+Recordemos las tres regiones tonales: la subdominante, la dominante y la tónica.
+El sentido natural de una cadencia nos lleva hacia regiones tonales cada vez más importantes.
+Por eso las cadencias suelen ir de la subdominante a la dominante, y de la dominante a la tónica.
+Y hay una regla que vale para todas: al menos los dos últimos acordes de una cadencia van en estado fundamental.
+El estado fundamental le da firmeza al final.
+Veamos ahora los cuatro tipos de cadencia.
+La primera es la cadencia auténtica: del quinto grado al primero.
+Es el final más claro de la música tonal, porque la dominante resuelve directamente en la tónica.
+Escuchemos una cadencia auténtica en Sol mayor.
+La segunda es la cadencia plagal: del cuarto grado al primero.
+Aquí no pasamos por la dominante: vamos de la subdominante directamente a la tónica.
+Su color es más suave, y por eso se asocia con el amén de los himnos.
+Escuchemos una cadencia plagal en Si bemol mayor.
+La tercera es la cadencia completa: recorre las tres regiones, subdominante, dominante y tónica.
+Empieza con un acorde de la región subdominante: el cuarto grado, el segundo grado o el sexto grado.
+El cuarto y el segundo pueden ir en estado fundamental o en seis tres.
+Después viene el quinto grado, y al final el primero, los dos en estado fundamental.
+Escuchemos una cadencia completa en Re mayor, con el segundo grado en seis tres.
+La cuarta es la cadencia ampliada.
+También empieza en la región subdominante, con el cuarto o el segundo grado, en estado fundamental o en seis tres.
+Pero antes del quinto grado aparece un acorde nuevo: el primer grado en segunda inversión, el seis cuatro.
+En la lección ocho dijimos que el seis cuatro no se usa libremente, sino en casos específicos.
+Este es el primero de esos casos.
+El primero en seis cuatro tiene en el bajo la misma nota que el quinto grado.
+Por eso no suena como una tónica, sino como un adorno que retrasa la llegada de la dominante.
+Y la regla más importante: el primero en seis cuatro de la cadencia ampliada se coloca en pulso fuerte.
+En un compás de dos cuartos, va en el primer tiempo.
+En un compás de tres cuartos, también en el primer tiempo.
+Y en un compás de cuatro cuartos, en el primero o en el tercer tiempo.
+El seis cuatro puede durar más de un tiempo, y el quinto grado llega después, siempre antes del primero final.
+Medrano señala una sola excepción: en tres cuartos, el seis cuatro puede ir en el segundo tiempo, con el quinto en el tercero, justo antes del primero final.
+Escuchemos una cadencia ampliada en Mi bemol mayor.
+Del cuarto grado pasamos al primero en seis cuatro, en pulso fuerte, después al quinto, y terminamos en el primero.
+Resumamos los cuatro tipos.
+La auténtica va del quinto al primero.
+La plagal va del cuarto al primero.
+La completa va del cuarto, el segundo o el sexto, al quinto y al primero.
+Y la ampliada va del cuarto o el segundo, al primero en seis cuatro, al quinto y al primero.
+Ahora veamos las semicadencias.
+Llamamos semicadencia a cualquier reposo parcial dentro de un coral.
+Estas pausas son tan importantes como respirar para el coro.
+Normalmente coinciden con el final de una frase del texto, que en el coral casi siempre es religioso.
+Después de un reposo semicadencial no aplicamos técnica de enlace: la música vuelve a empezar.
+La semicadencia más común es a la dominante.
+Llegamos al quinto grado desde el primero, el segundo, el cuarto o el sexto, y ahí nos detenemos.
+También podemos llegar al quinto pasando por el primero en seis cuatro, desde el segundo o el cuarto.
+La segunda es la semicadencia a la subdominante: del primer grado al cuarto.
+Y la tercera es la semicadencia al sexto grado, desde el tercero, el quinto o el séptimo en seis tres.
+Muchas veces se le llama cadencia rota, pero ese nombre no es del todo apropiado.
+Es mucho más preciso decir: semicadencia al sexto grado.
+Y excepcionalmente, Bach presenta en sus corales alguna semicadencia al primer grado.
+Ahora, la tarea para el maestro virtual.
+En Storm Sequencer, en modo SATB y en compás de cuatro cuartos, escribe en un solo archivo una cadencia de cada tipo: auténtica, plagal, completa y ampliada.
+Puedes escribirlas en el orden que quieras.
+Escribe cada cadencia en una tonalidad mayor distinta, y pon su armadura al inicio.
+Cada cadencia empieza en un compás nuevo, y todos los acordes son blancas.
+El primero final puede ser una blanca o una redonda.
+En total son once acordes.
+Exporta el archivo MIDI y súbelo.
+El maestro virtual reconoce la tonalidad y el tipo de cada cadencia.
+Revisa la construcción de cada acorde, los estados, el seis cuatro en pulso fuerte, el movimiento de cada voz, las quintas y octavas, y la sensible.
+Entre una cadencia y la siguiente no revisa nada.
+Y si encuentra un error, te explica cuál es y en qué cadencia está.
+Recapitulemos.
+Una cadencia es una sucesión de acordes con intención conclusiva, que va hacia regiones cada vez más importantes.
+Sus dos últimos acordes van en estado fundamental.
+Hay cuatro tipos: auténtica, plagal, completa y ampliada.
+En la ampliada, el primero en seis cuatro va en pulso fuerte.
+Y las semicadencias son los reposos parciales: a la dominante, a la subdominante y al sexto grado.
+En la próxima lección veremos el modo menor y sus casos especiales.
+Gracias por acompañarme.
+Nos vemos en la lección diez.

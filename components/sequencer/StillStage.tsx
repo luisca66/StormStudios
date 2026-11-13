@@ -8,6 +8,7 @@ import type { Score } from "@/lib/sequencer/types";
 import type { Still, Storyboard } from "@/lib/sequencer/storyboard";
 import { resolveProject, stillDimensions, validateStoryboard } from "@/lib/sequencer/storyboard-resolve";
 import { captureLayout, type CaptureLayout } from "@/lib/sequencer/capture-layout";
+import { joinCaptureHighlights } from "@/lib/sequencer/capture-decoration";
 import { SequencerAudio } from "@/lib/sequencer/audio-engine";
 import { stillMusic } from "@/lib/sequencer/still-audio";
 
@@ -83,6 +84,7 @@ export default function StillStage({ locale }: { locale: "es" | "en" }) {
           await document.fonts.ready;
           await frame();
           await frame();
+          if (root.current) joinCaptureHighlights(root.current, checked);
           document.documentElement.dataset.stageReady = "1";
         } catch (error) {
           throw new Error(`Still "${still.id}": ${(error as Error).message}`);

@@ -117,7 +117,7 @@ Voces: `melody` en single; `soprano`, `alto`, `tenor`, `bass` en satb. Voces omi
 
 Todas las posiciones usan **compás desde 1 y pulsos en negras desde 1**, no índices de notas. `beat: 2.5` es la segunda mitad del segundo pulso. En 6/8 hay tres negras: los límites válidos son 1 a 4. `beat` omitido equivale a 1; el límite final del compás se admite para reveal, cursor y endBeat.
 
-Highlight: `{measure, endMeasure?, beat?, endBeat?, voice?, color?, label?}`. `endMeasure` es inclusivo y por defecto igual a measure. Sin beats abarca los compases completos; `endBeat` es exclusivo. Sin voz abarca todas las voces visibles. Las cajas de un rango de varios compases se dividen por compás. El label se dibuja en la primera caja.
+Highlight: `{measure, endMeasure?, beat?, endBeat?, voice?, color?, label?}`. `endMeasure` es inclusivo y por defecto igual a measure. Sin beats abarca los compases completos; `endBeat` es exclusivo. Sin voz abarca todas las voces visibles. Las cajas de un rango de varios compases se dividen por compás; los rangos de una sola voz en el mismo sistema se unen en un recuadro continuo al terminar el render. El label se dibuja en la primera caja.
 
 Mark: `{measure, beat, voice?, color?, label?}`. Debe existir una nota en esa posición. Sin voz, colorea las cabezas de todas las notas que empiezan allí; un acorde colorea todas sus cabezas. No colorea los pentagramas ni las plicas. `label` es opcional y aparece bajo el pentagrama.
 

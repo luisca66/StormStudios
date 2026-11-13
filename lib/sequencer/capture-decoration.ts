@@ -26,12 +26,30 @@ export function decorateCapture(svg: SVGSVGElement, still: Still, measure: numbe
   const reveal = still.reveal ? positionTick(still.reveal.measure, still.reveal.beat) : Infinity;
   for (const a of annotations) if (a.measure === measure) {
     const tick = positionTick(measure, a.beat);
-    add("text", { ...textStyle, x: captureX(rows[0], tick) + 5, y: rows.at(-1)!.bottom + px(88),
+    const x = captureX(rows[0], tick) + 5, y = rows.at(-1)!.bottom + px(88);
+    const annotation = add("text", { ...textStyle, x, y,
       "font-family": a.kind === "roman" ? "var(--font-dm-serif, Georgia), Georgia, serif" : textStyle["font-family"],
       "font-size": px(a.kind === "roman" ? 40 : 28), "data-annotation": a.kind,
       opacity: tick >= reveal ? 0 : 1 }, a.text);
+    const figured = a.kind === "roman" && /^([IV]+)\s+(\d+)\/(\d+)$/.exec(a.text);
+    if (figured) {
+      // Keep the numeral and its stacked figures together, centered on the real beat anchor.
+      annotation.textContent = figured[1];
+      annotation.setAttribute("text-anchor", "start");
+      const numeralWidth = (annotation as SVGTextElement).getComputedTextLength();
+      for (const [index, digit] of figured.slice(2).entries()) {
+        const span = document.createElementNS(ns, "tspan");
+        span.setAttribute("x", String(x + numeralWidth + px(4)));
+        span.setAttribute("y", String(y + px(index === 0 ? -18 : 2)));
+        span.setAttribute("font-size", String(px(22)));
+        span.textContent = digit;
+        annotation.appendChild(span);
+      }
+      const box = (annotation as SVGTextElement).getBBox();
+      annotation.setAttribute("transform", `translate(${x - (box.x + box.width / 2)} 0)`);
+    }
   }
-  for (const h of still.highlights ?? []) {
+  for (const [highlightIndex, h] of (still.highlights ?? []).entries()) {
     if (measure < h.measure || measure > (h.endMeasure ?? h.measure)) continue;
     const selected = rows.filter(r => !h.voice || r.voice === h.voice);
     if (!selected.length) continue;
@@ -51,9 +69,9 @@ export function decorateCapture(svg: SVGSVGElement, still: Still, measure: numbe
     if (h.voice) {
       // Put translucent fills behind the engraving, and every border above all fills.
       // Neighboring voices can share ledger-note space without losing either outline.
-      const background = add("rect", { ...shape, fill, "fill-opacity": .18, stroke: "none" });
+      const background = add("rect", { ...shape, fill, "fill-opacity": .18, stroke: "none", "data-highlight-background": highlightIndex });
       svg.insertBefore(background, svg.firstChild);
-      add("rect", { ...shape, fill: "none", stroke: fill, "stroke-width": px(3), "data-highlight": "true", "data-highlight-voice": h.voice });
+      add("rect", { ...shape, fill: "none", stroke: fill, "stroke-width": px(3), "data-highlight": "true", "data-highlight-voice": h.voice, "data-highlight-index": highlightIndex });
     } else {
       add("rect", { ...shape, fill, "fill-opacity": .18, stroke: fill, "stroke-width": px(3), "data-highlight": "true" });
     }
@@ -80,4 +98,30 @@ export function decorateCapture(svg: SVGSVGElement, still: Still, measure: numbe
     add("line", { x1: x, x2: x, y1: rows[0].top - px(30), y2: rows.at(-1)!.bottom + px(30), stroke: "#3ee39a", "stroke-width": px(4), style: `filter:drop-shadow(0 0 ${px(5)}px #3ee39a88)`, "data-testid": "still-cursor" });
   }
   svg.setAttribute("data-capture-ready", "1");
+}
+
+/** Join voice ranges across adjacent measures after all SVGs have their final positions. */
+export function joinCaptureHighlights(root: HTMLElement, still: Still) {
+  for (const [index, h] of (still.highlights ?? []).entries()) {
+    if (!h.voice || (h.endMeasure ?? h.measure) === h.measure) continue;
+    const boxes = [...root.querySelectorAll<SVGRectElement>(`[data-highlight-index="${index}"]`)];
+    if (boxes.length < 2) continue;
+    const first = boxes[0], svg = first.ownerSVGElement!, matrix = svg.getScreenCTM();
+    if (!matrix) continue;
+    const bounds = boxes.map(box => box.getBoundingClientRect());
+    // Separate systems must keep separate boxes.
+    if (bounds.some(b => Math.abs(b.top - bounds[0].top) > 1)) continue;
+    const inverse = matrix.inverse();
+    const start = new DOMPoint(Math.min(...bounds.map(b => b.left)), Math.min(...bounds.map(b => b.top))).matrixTransform(inverse);
+    const end = new DOMPoint(Math.max(...bounds.map(b => b.right)), Math.max(...bounds.map(b => b.bottom))).matrixTransform(inverse);
+    const background = svg.querySelector<SVGRectElement>(`[data-highlight-background="${index}"]`)!;
+    for (const rect of [first, background]) {
+      rect.setAttribute("x", String(start.x)); rect.setAttribute("y", String(start.y));
+      rect.setAttribute("width", String(end.x - start.x)); rect.setAttribute("height", String(end.y - start.y));
+    }
+    for (const box of boxes.slice(1)) {
+      box.ownerSVGElement!.querySelector(`[data-highlight-background="${index}"]`)?.remove();
+      box.remove();
+    }
+  }
 }

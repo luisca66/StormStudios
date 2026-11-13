@@ -1,0 +1,952 @@
+{
+  "version": 1,
+  "lesson": "10-leccion-9",
+  "locale": "es",
+  "title": "Lección 9 — Cadencias",
+  "source": "content/storyboards/es/10-leccion-9.guion.txt",
+  "format": {
+    "aspect": "16:9",
+    "theme": "storm"
+  },
+  "projects": {
+    "autentica": {
+      "setup": {
+        "mode": "satb",
+        "title": "Cadencia auténtica en Sol mayor",
+        "key": "G",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nF#4 mitad; G4 mitad\nvoz alto\ncompas 1\nD4 mitad; D4 mitad\nvoz tenor\ncompas 1\nA3 mitad; B3 mitad\nvoz bass\ncompas 1\nD3 mitad; G2 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "I",
+          "kind": "roman"
+        }
+      ]
+    },
+    "plagal": {
+      "setup": {
+        "mode": "satb",
+        "title": "Cadencia plagal en Si♭ mayor",
+        "key": "Bb",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nG4 mitad; F4 mitad\nvoz alto\ncompas 1\nEb4 mitad; D4 mitad\nvoz tenor\ncompas 1\nBb3 mitad; Bb3 mitad\nvoz bass\ncompas 1\nEb3 mitad; Bb2 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "I",
+          "kind": "roman"
+        }
+      ]
+    },
+    "completa": {
+      "setup": {
+        "mode": "satb",
+        "title": "Cadencia completa en Re mayor",
+        "key": "D",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nE5 mitad; C#5 mitad\ncompas 2\nD5 entera\nvoz alto\ncompas 1\nB4 mitad; A4 mitad\ncompas 2\nA4 entera\nvoz tenor\ncompas 1\nE4 mitad; E4 mitad\ncompas 2\nF#4 entera\nvoz bass\ncompas 1\nG3 mitad; A3 mitad\ncompas 2\nD3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "II 6/3",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        }
+      ]
+    },
+    "ampliada": {
+      "setup": {
+        "mode": "satb",
+        "title": "Cadencia ampliada en Mi♭ mayor",
+        "key": "Eb",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 mitad; Bb4 mitad\ncompas 2\nBb4 mitad; G4 mitad\nvoz alto\ncompas 1\nAb4 mitad; G4 mitad\ncompas 2\nF4 mitad; Eb4 mitad\nvoz tenor\ncompas 1\nEb4 mitad; Eb4 mitad\ncompas 2\nD4 mitad; Bb3 mitad\nvoz bass\ncompas 1\nAb2 mitad; Bb2 mitad\ncompas 2\nBb2 mitad; Eb3 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "I 6/4",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "I",
+          "kind": "roman"
+        }
+      ]
+    },
+    "pulso-24": {
+      "setup": {
+        "mode": "satb",
+        "title": "Ampliada en 2/4 (Fa mayor)",
+        "key": "F",
+        "time": [
+          2,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nD5 mitad\ncompas 2\nC5 negra; C5 negra\ncompas 3\nC5 mitad\nvoz alto\ncompas 1\nBb4 mitad\ncompas 2\nA4 negra; G4 negra\ncompas 3\nA4 mitad\nvoz tenor\ncompas 1\nF4 mitad\ncompas 2\nF4 negra; E4 negra\ncompas 3\nF4 mitad\nvoz bass\ncompas 1\nBb2 mitad\ncompas 2\nC3 negra; C3 negra\ncompas 3\nF2 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "I 6/4",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        }
+      ]
+    },
+    "pulso-34": {
+      "setup": {
+        "mode": "satb",
+        "title": "Ampliada en 3/4 (La mayor)",
+        "key": "A",
+        "time": [
+          3,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nF#4 mitad puntillo\ncompas 2\nE4 negra; E4 mitad\ncompas 3\nE4 mitad puntillo\nvoz alto\ncompas 1\nD4 mitad puntillo\ncompas 2\nC#4 negra; B3 mitad\ncompas 3\nC#4 mitad puntillo\nvoz tenor\ncompas 1\nA3 mitad puntillo\ncompas 2\nA3 negra; G#3 mitad\ncompas 3\nA3 mitad puntillo\nvoz bass\ncompas 1\nD3 mitad puntillo\ncompas 2\nE3 negra; E3 mitad\ncompas 3\nA2 mitad puntillo",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "I 6/4",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        }
+      ]
+    },
+    "pulso-44": {
+      "setup": {
+        "mode": "satb",
+        "title": "Ampliada en 4/4 (Re mayor)",
+        "key": "D",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nB4 entera\ncompas 2\nA4 mitad; A4 mitad\ncompas 3\nA4 entera\nvoz alto\ncompas 1\nG4 entera\ncompas 2\nF#4 mitad; E4 mitad\ncompas 3\nF#4 entera\nvoz tenor\ncompas 1\nD4 entera\ncompas 2\nD4 mitad; C#4 mitad\ncompas 3\nD4 entera\nvoz bass\ncompas 1\nG2 entera\ncompas 2\nA2 mitad; A2 mitad\ncompas 3\nD3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "I 6/4",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        }
+      ]
+    },
+    "excepcion": {
+      "setup": {
+        "mode": "satb",
+        "title": "Excepción en 3/4 (Si♭ mayor)",
+        "key": "Bb",
+        "time": [
+          3,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 negra; Bb4 negra; A4 negra\ncompas 2\nBb4 mitad puntillo\nvoz alto\ncompas 1\nG4 negra; F4 negra; F4 negra\ncompas 2\nF4 mitad puntillo\nvoz tenor\ncompas 1\nC4 negra; D4 negra; C4 negra\ncompas 2\nD4 mitad puntillo\nvoz bass\ncompas 1\nEb3 negra; F3 negra; F3 negra\ncompas 2\nBb2 mitad puntillo",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "II 6/3",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "I 6/4",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        }
+      ]
+    },
+    "semi-v": {
+      "setup": {
+        "mode": "satb",
+        "title": "Semicadencia a la dominante (Re mayor)",
+        "key": "D",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nD5 mitad; C#5 mitad\nvoz alto\ncompas 1\nB4 mitad; A4 mitad\nvoz tenor\ncompas 1\nG4 mitad; E4 mitad\nvoz bass\ncompas 1\nG2 mitad; A2 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "V",
+          "kind": "roman"
+        }
+      ]
+    },
+    "semi-v64": {
+      "setup": {
+        "mode": "satb",
+        "title": "Semicadencia a la dominante con I 6/4 (Mi♭ mayor)",
+        "key": "Eb",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 mitad; Bb4 mitad\ncompas 2\nBb4 mitad; silencio mitad\nvoz alto\ncompas 1\nAb4 mitad; G4 mitad\ncompas 2\nF4 mitad; silencio mitad\nvoz tenor\ncompas 1\nEb4 mitad; Eb4 mitad\ncompas 2\nD4 mitad; silencio mitad\nvoz bass\ncompas 1\nAb2 mitad; Bb2 mitad\ncompas 2\nBb2 mitad; silencio mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "I 6/4",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        }
+      ]
+    },
+    "semi-iv": {
+      "setup": {
+        "mode": "satb",
+        "title": "Semicadencia a la subdominante (Sol mayor)",
+        "key": "G",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nB4 mitad; C5 mitad\nvoz alto\ncompas 1\nG4 mitad; G4 mitad\nvoz tenor\ncompas 1\nD4 mitad; E4 mitad\nvoz bass\ncompas 1\nG3 mitad; C3 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "IV",
+          "kind": "roman"
+        }
+      ]
+    },
+    "semi-vi": {
+      "setup": {
+        "mode": "satb",
+        "title": "Semicadencia al sexto grado (La mayor)",
+        "key": "A",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nG#4 mitad; A4 mitad\nvoz alto\ncompas 1\nE4 mitad; C#4 mitad\nvoz tenor\ncompas 1\nB3 mitad; A3 mitad\nvoz bass\ncompas 1\nE3 mitad; F#3 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "VI",
+          "kind": "roman"
+        }
+      ]
+    }
+  },
+  "stills": [
+    {
+      "id": "titulo",
+      "kind": "title",
+      "heading": "Cadencias",
+      "caption": "Lección 9 · Curso de Armonía · Storm Studios Learning",
+      "narration": "Hola, bienvenidos de nuevo a Storm Studios Learning. En la lección ocho aprendimos a enlazar dos acordes en el cuarteto vocal."
+    },
+    {
+      "id": "final-frase",
+      "project": "autentica",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "Cómo termina una frase musical",
+      "narration": "Antes de entrar al modo menor, hoy vamos a aprender cómo se termina una frase musical: las cadencias.",
+      "showCiphers": true
+    },
+    {
+      "id": "tres-partes",
+      "kind": "title",
+      "heading": "Tres partes",
+      "caption": "Qué es una cadencia · los cuatro tipos · las semicadencias",
+      "narration": "Esta lección tiene tres partes: qué es una cadencia, los cuatro tipos de cadencia y las semicadencias. Empecemos."
+    },
+    {
+      "id": "que-es",
+      "kind": "title",
+      "heading": "¿Qué es una cadencia?",
+      "caption": "Una sucesión de acordes con intención conclusiva",
+      "narration": "Llamamos cadencia a una sucesión de acordes que tiene una intención conclusiva. Es decir, una cadencia nos dice que la música llegó a su final, o a un punto de reposo."
+    },
+    {
+      "id": "regiones",
+      "kind": "image",
+      "image": "/images/curso/leccion-9/regiones-es.svg",
+      "heading": "Hacia regiones cada vez más importantes",
+      "caption": "Subdominante → dominante → tónica",
+      "narration": "Recordemos las tres regiones tonales: la subdominante, la dominante y la tónica. El sentido natural de una cadencia nos lleva hacia regiones tonales cada vez más importantes. Por eso las cadencias suelen ir de la subdominante a la dominante, y de la dominante a la tónica."
+    },
+    {
+      "id": "dos-ultimos",
+      "project": "completa",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "V fund.",
+          "beat": 3,
+          "endBeat": 5
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "I fund."
+        }
+      ],
+      "heading": "Los dos últimos acordes, en estado fundamental",
+      "caption": "Le dan firmeza al final",
+      "narration": "Y hay una regla que vale para todas: al menos los dos últimos acordes de una cadencia van en estado fundamental. El estado fundamental le da firmeza al final.",
+      "showCiphers": true
+    },
+    {
+      "id": "cuatro-tipos",
+      "kind": "image",
+      "image": "/images/curso/leccion-9/tipos-cadencia-es.svg",
+      "heading": "Los cuatro tipos de cadencia",
+      "narration": "Veamos ahora los cuatro tipos de cadencia."
+    },
+    {
+      "id": "autentica",
+      "project": "autentica",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "V → I"
+        }
+      ],
+      "heading": "1 · Cadencia auténtica",
+      "caption": "Del quinto grado al primero",
+      "narration": "La primera es la cadencia auténtica: del quinto grado al primero. Es el final más claro de la música tonal, porque la dominante resuelve directamente en la tónica.",
+      "showCiphers": true
+    },
+    {
+      "id": "autentica-escucha",
+      "project": "autentica",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "Fa♯ → Sol"
+        }
+      ],
+      "heading": "Auténtica en Sol mayor",
+      "caption": "La sensible sube a la tónica",
+      "narration": "Escuchemos una cadencia auténtica en Sol mayor.",
+      "showCiphers": true
+    },
+    {
+      "id": "plagal",
+      "project": "plagal",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "IV → I"
+        }
+      ],
+      "heading": "2 · Cadencia plagal",
+      "caption": "Del cuarto grado al primero · sin pasar por la dominante",
+      "narration": "La segunda es la cadencia plagal: del cuarto grado al primero. Aquí no pasamos por la dominante: vamos de la subdominante directamente a la tónica. Su color es más suave, y por eso se asocia con el amén de los himnos.",
+      "showCiphers": true
+    },
+    {
+      "id": "plagal-escucha",
+      "project": "plagal",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "tenor",
+          "color": "green",
+          "label": "Si♭ común"
+        }
+      ],
+      "heading": "Plagal en Si♭ mayor",
+      "narration": "Escuchemos una cadencia plagal en Si bemol mayor.",
+      "showCiphers": true
+    },
+    {
+      "id": "completa",
+      "kind": "image",
+      "image": "/images/curso/leccion-9/tipos-cadencia-es.svg",
+      "heading": "3 · Cadencia completa",
+      "caption": "Subdominante → dominante → tónica",
+      "narration": "La tercera es la cadencia completa: recorre las tres regiones, subdominante, dominante y tónica. Empieza con un acorde de la región subdominante: el cuarto grado, el segundo grado o el sexto grado."
+    },
+    {
+      "id": "completa-estados",
+      "project": "completa",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "II 6/3 → V"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "I fund."
+        }
+      ],
+      "heading": "IV o II: fundamental o seis tres",
+      "caption": "V y I en estado fundamental",
+      "narration": "El cuarto y el segundo pueden ir en estado fundamental o en seis tres. Después viene el quinto grado, y al final el primero, los dos en estado fundamental.",
+      "showCiphers": true
+    },
+    {
+      "id": "completa-escucha",
+      "project": "completa",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "measures": [
+        1,
+        2
+      ],
+      "heading": "Completa en Re mayor",
+      "caption": "Con el segundo grado en seis tres",
+      "narration": "Escuchemos una cadencia completa en Re mayor, con el segundo grado en seis tres.",
+      "showCiphers": true
+    },
+    {
+      "id": "ampliada",
+      "project": "ampliada",
+      "heading": "4 · Cadencia ampliada",
+      "caption": "Empieza con IV o II · fundamental o seis tres",
+      "narration": "La cuarta es la cadencia ampliada. También empieza en la región subdominante, con el cuarto o el segundo grado, en estado fundamental o en seis tres.",
+      "showCiphers": true
+    },
+    {
+      "id": "seis-cuatro",
+      "project": "ampliada",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "I 6/4",
+          "beat": 3,
+          "endBeat": 5
+        }
+      ],
+      "heading": "Un acorde nuevo: el I 6/4",
+      "caption": "Primer caso específico del seis cuatro",
+      "narration": "Pero antes del quinto grado aparece un acorde nuevo: el primer grado en segunda inversión, el seis cuatro. En la lección ocho dijimos que el seis cuatro no se usa libremente, sino en casos específicos. Este es el primero de esos casos.",
+      "showCiphers": true
+    },
+    {
+      "id": "mismo-bajo",
+      "project": "ampliada",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endMeasure": 2,
+          "endBeat": 3,
+          "voice": "bass",
+          "color": "amber",
+          "label": "I 6/4 y V: el mismo Si♭"
+        }
+      ],
+      "heading": "El mismo bajo que el V",
+      "caption": "Un adorno que retrasa la dominante",
+      "narration": "El primero en seis cuatro tiene en el bajo la misma nota que el quinto grado. Por eso no suena como una tónica, sino como un adorno que retrasa la llegada de la dominante.",
+      "showCiphers": true
+    },
+    {
+      "id": "pulso-fuerte",
+      "kind": "title",
+      "heading": "El I 6/4 va en pulso fuerte",
+      "narration": "Y la regla más importante: el primero en seis cuatro de la cadencia ampliada se coloca en pulso fuerte."
+    },
+    {
+      "id": "pulso-24",
+      "project": "pulso-24",
+      "highlights": [
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "I 6/4: tiempo 1",
+          "beat": 1,
+          "endBeat": 2
+        }
+      ],
+      "heading": "En 2/4: primer tiempo",
+      "narration": "En un compás de dos cuartos, va en el primer tiempo.",
+      "showCiphers": true
+    },
+    {
+      "id": "pulso-34",
+      "project": "pulso-34",
+      "highlights": [
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "I 6/4: tiempo 1",
+          "beat": 1,
+          "endBeat": 2
+        }
+      ],
+      "heading": "En 3/4: primer tiempo",
+      "narration": "En un compás de tres cuartos, también en el primer tiempo.",
+      "showCiphers": true
+    },
+    {
+      "id": "pulso-44",
+      "project": "pulso-44",
+      "highlights": [
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "I 6/4: tiempo 1",
+          "beat": 1,
+          "endBeat": 3
+        }
+      ],
+      "heading": "En 4/4: primero o tercer tiempo",
+      "caption": "Aquí en el primero; en la tarea, en el tercero",
+      "narration": "Y en un compás de cuatro cuartos, en el primero o en el tercer tiempo.",
+      "showCiphers": true
+    },
+    {
+      "id": "duracion",
+      "project": "pulso-34",
+      "heading": "Después llega el V",
+      "caption": "Siempre antes del I final",
+      "narration": "El seis cuatro puede durar más de un tiempo, y el quinto grado llega después, siempre antes del primero final.",
+      "showCiphers": true
+    },
+    {
+      "id": "excepcion",
+      "project": "excepcion",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "I 6/4 en el tiempo 2",
+          "beat": 2,
+          "endBeat": 3
+        }
+      ],
+      "heading": "La única excepción",
+      "caption": "En 3/4: I 6/4 en el segundo tiempo, V en el tercero",
+      "narration": "Medrano señala una sola excepción: en tres cuartos, el seis cuatro puede ir en el segundo tiempo, con el quinto en el tercero, justo antes del primero final.",
+      "showCiphers": true
+    },
+    {
+      "id": "ampliada-escucha",
+      "project": "ampliada",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "measures": [
+        1,
+        2
+      ],
+      "heading": "Ampliada en Mi♭ mayor",
+      "caption": "IV → I 6/4 (pulso fuerte) → V → I",
+      "narration": "Escuchemos una cadencia ampliada en Mi bemol mayor. Del cuarto grado pasamos al primero en seis cuatro, en pulso fuerte, después al quinto, y terminamos en el primero.",
+      "showCiphers": true
+    },
+    {
+      "id": "resumen",
+      "kind": "image",
+      "image": "/images/curso/leccion-9/tipos-cadencia-es.svg",
+      "heading": "Los cuatro tipos",
+      "narration": "Resumamos los cuatro tipos. La auténtica va del quinto al primero. La plagal va del cuarto al primero. La completa va del cuarto, el segundo o el sexto, al quinto y al primero. Y la ampliada va del cuarto o el segundo, al primero en seis cuatro, al quinto y al primero."
+    },
+    {
+      "id": "semicadencias",
+      "kind": "title",
+      "heading": "Semicadencias",
+      "narration": "Ahora veamos las semicadencias."
+    },
+    {
+      "id": "reposo",
+      "kind": "title",
+      "heading": "Un reposo parcial",
+      "caption": "Como respirar para el coro · al final de una frase del texto",
+      "narration": "Llamamos semicadencia a cualquier reposo parcial dentro de un coral. Estas pausas son tan importantes como respirar para el coro. Normalmente coinciden con el final de una frase del texto, que en el coral casi siempre es religioso."
+    },
+    {
+      "id": "sin-tecnica",
+      "kind": "title",
+      "heading": "Después del reposo, sin técnica de enlace",
+      "caption": "La música vuelve a empezar",
+      "narration": "Después de un reposo semicadencial no aplicamos técnica de enlace: la música vuelve a empezar."
+    },
+    {
+      "id": "semi-v",
+      "project": "semi-v",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "reposo en V"
+        }
+      ],
+      "heading": "Semicadencia a la dominante",
+      "caption": "Desde I, II, IV o VI",
+      "narration": "La semicadencia más común es a la dominante. Llegamos al quinto grado desde el primero, el segundo, el cuarto o el sexto, y ahí nos detenemos.",
+      "showCiphers": true
+    },
+    {
+      "id": "semi-v64",
+      "project": "semi-v64",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "measures": [
+        1,
+        2
+      ],
+      "highlights": [
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "reposo en V"
+        }
+      ],
+      "heading": "También pasando por el I 6/4",
+      "caption": "Desde II o IV",
+      "narration": "También podemos llegar al quinto pasando por el primero en seis cuatro, desde el segundo o el cuarto.",
+      "showCiphers": true
+    },
+    {
+      "id": "semi-iv",
+      "project": "semi-iv",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "reposo en IV"
+        }
+      ],
+      "heading": "Semicadencia a la subdominante",
+      "caption": "Del I al IV",
+      "narration": "La segunda es la semicadencia a la subdominante: del primer grado al cuarto.",
+      "showCiphers": true
+    },
+    {
+      "id": "semi-vi",
+      "project": "semi-vi",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "reposo en VI"
+        }
+      ],
+      "heading": "Semicadencia al sexto grado",
+      "caption": "Desde III, V o VII 6/3",
+      "narration": "Y la tercera es la semicadencia al sexto grado, desde el tercero, el quinto o el séptimo en seis tres.",
+      "showCiphers": true
+    },
+    {
+      "id": "rota",
+      "kind": "title",
+      "heading": "¿«Cadencia rota»?",
+      "caption": "Más preciso: semicadencia al sexto grado",
+      "narration": "Muchas veces se le llama cadencia rota, pero ese nombre no es del todo apropiado. Es mucho más preciso decir: semicadencia al sexto grado."
+    },
+    {
+      "id": "bach",
+      "kind": "title",
+      "heading": "Excepcionalmente: semicadencia al I",
+      "caption": "En algunos corales de Bach",
+      "narration": "Y excepcionalmente, Bach presenta en sus corales alguna semicadencia al primer grado."
+    },
+    {
+      "id": "tarea",
+      "kind": "title",
+      "heading": "Tarea para el Maestro Virtual",
+      "narration": "Ahora, la tarea para el maestro virtual."
+    },
+    {
+      "id": "tarea-tipos",
+      "kind": "title",
+      "heading": "Una cadencia de cada tipo, en el orden que quieras",
+      "caption": "Auténtica · plagal · completa · ampliada · SATB en 4/4",
+      "narration": "En Storm Sequencer, en modo SATB y en compás de cuatro cuartos, escribe en un solo archivo una cadencia de cada tipo: auténtica, plagal, completa y ampliada. Puedes escribirlas en el orden que quieras."
+    },
+    {
+      "id": "tarea-formato",
+      "project": "ampliada",
+      "heading": "Una tonalidad mayor distinta por cadencia",
+      "caption": "Armadura al inicio · compás nuevo · blancas · 11 acordes",
+      "narration": "Escribe cada cadencia en una tonalidad mayor distinta, y pon su armadura al inicio. Cada cadencia empieza en un compás nuevo, y todos los acordes son blancas. El primero final puede ser una blanca o una redonda. En total son once acordes.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea-exporta",
+      "kind": "title",
+      "heading": "Exporta el MIDI y súbelo",
+      "narration": "Exporta el archivo MIDI y súbelo."
+    },
+    {
+      "id": "maestro-revisa",
+      "kind": "title",
+      "heading": "El Maestro Virtual revisa",
+      "caption": "Tonalidad y tipo · acordes · estados · I 6/4 en pulso fuerte · cada voz · 5as y 8as · sensible",
+      "narration": "El maestro virtual reconoce la tonalidad y el tipo de cada cadencia. Revisa la construcción de cada acorde, los estados, el seis cuatro en pulso fuerte, el movimiento de cada voz, las quintas y octavas, y la sensible. Entre una cadencia y la siguiente no revisa nada. Y si encuentra un error, te explica cuál es y en qué cadencia está."
+    },
+    {
+      "id": "recapitulemos",
+      "kind": "title",
+      "heading": "Recapitulemos",
+      "narration": "Recapitulemos."
+    },
+    {
+      "id": "recap-definicion",
+      "kind": "image",
+      "image": "/images/curso/leccion-9/regiones-es.svg",
+      "heading": "Intención conclusiva",
+      "caption": "Los dos últimos acordes, en estado fundamental",
+      "narration": "Una cadencia es una sucesión de acordes con intención conclusiva, que va hacia regiones cada vez más importantes. Sus dos últimos acordes van en estado fundamental."
+    },
+    {
+      "id": "recap-tipos",
+      "kind": "image",
+      "image": "/images/curso/leccion-9/tipos-cadencia-es.svg",
+      "heading": "Cuatro tipos",
+      "caption": "En la ampliada, el I 6/4 en pulso fuerte",
+      "narration": "Hay cuatro tipos: auténtica, plagal, completa y ampliada. En la ampliada, el primero en seis cuatro va en pulso fuerte."
+    },
+    {
+      "id": "recap-semi",
+      "kind": "title",
+      "heading": "Semicadencias",
+      "caption": "A la dominante · a la subdominante · al sexto grado",
+      "narration": "Y las semicadencias son los reposos parciales: a la dominante, a la subdominante y al sexto grado."
+    },
+    {
+      "id": "proxima",
+      "kind": "title",
+      "heading": "Próxima lección",
+      "caption": "El modo menor y sus casos especiales",
+      "narration": "En la próxima lección veremos el modo menor y sus casos especiales."
+    },
+    {
+      "id": "cierre",
+      "kind": "title",
+      "heading": "Gracias",
+      "caption": "Nos vemos en la lección 10",
+      "narration": "Gracias por acompañarme. Nos vemos en la lección diez."
+    }
+  ]
+}
