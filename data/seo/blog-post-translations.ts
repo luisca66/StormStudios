@@ -70,6 +70,13 @@ export const BLOG_POST_TRANSLATIONS: BlogPostTranslation[] = [
     },
   },
   {
+    key: "lesson-9-published",
+    slugs: {
+      en: "2026-10-21-lesson-9-published",
+      es: "2026-10-21-leccion-9-publicada",
+    },
+  },
+  {
     key: "3d-games-renewed-utility-apps",
     slugs: {
       en: "2026-10-20-3d-games-renewed-and-utility-apps",
