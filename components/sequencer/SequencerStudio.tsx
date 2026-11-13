@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useMemo,useRef, useState } from "react";
 import { activeVoices, clefAt, createScore, durationTicks, importScore, locateTick, measureStart, measureTicks,
-  newId, parsePitchList, parseScoreText, pitchToMidi, scoreTicks, transposePitches, validateScore } from "@/lib/sequencer/model";
+  newId, parsePitchList, parseScoreText, pitchToMidi, scoreTicks, transposePitches, validateScore, MAX_TIME_NUMERATOR, TIME_DENOMINATORS } from "@/lib/sequencer/model";
 import { exportMidi, exportMusicXml } from "@/lib/sequencer/export";
+import { mapSelectedPitches, movePitch, normalizeSelection, noteKey, parseKey, removeSelectedPitches, resolveSelection, toggleKey } from "@/lib/sequencer/note-selection";
 import { importMusicXml } from "@/lib/sequencer/import-musicxml";
 import { changeTimeSignature, rebarTimeSignature } from "@/lib/sequencer/operations";
 import {writeWithMouse,moveWithMouse} from "@/lib/sequencer/mouse-editing";
@@ -37,7 +38,7 @@ const barsPerPageFor = (mode:Score["mode"]) => SYSTEM_SIZE*(mode==="satb"?2:5);
 export default function SequencerStudio({ locale }: { locale: string }) {
   const es = locale === "es";
   const t = useCallback((spanish:string, english:string) => es ? spanish : english,[es]);
-  const [score,setScore] = useState<Score>(() => createScore());
+  const [score,setScore] = useState<Score>(() => ({...createScore(),title:es?"Sin título":"Untitled"}));
   const [ready,setReady] = useState(false), [saved,setSaved] = useState(false);
   const [selected,setSelected] = useState<string[]>([]);
   const [draft,setDraft] = useState<Draft>(emptyDraft);
@@ -83,8 +84,10 @@ export default function SequencerStudio({ locale }: { locale: string }) {
     return () => clearTimeout(timer);
   },[score,ready,es]);
 
-  const selection = selected.flatMap(id => score.voices.flatMap(voice =>
-    voice.events.filter(event => event.id===id).map(event => ({voice:voice.id,event}))));
+  // `selected` holds note-level keys (whole events or single chord notes); `selection` carries only the selected pitches.
+  const resolved = useMemo(()=>resolveSelection(score,selected),[score,selected]);
+  const selection:Selection[] = resolved.map(s=>({voice:s.voice,event:s.whole?s.event:{...s.event,pitches:s.pitches}}));
+  const selectedIds = useMemo(()=>resolved.map(s=>s.event.id),[resolved]);
   const voices = activeVoices(score);
   const scene = score.scenes.find(s => s.id===sceneId) ?? score.scenes[0];
   const positionTick = measureStart(score,Math.min(draft.measure,score.measures.length)) + Math.round((draft.beat-1)*PPQ);
@@ -113,7 +116,7 @@ export default function SequencerStudio({ locale }: { locale: string }) {
   const patchDraft =(change:Partial<Draft>) => { setDraft(prev=>({...prev,...change})); setError(""); };
   const eraseMouse=useCallback((id:string)=>{
     const next=clone(score);next.voices.forEach(v=>{v.events=v.events.filter(e=>e.id!==id);});
-    if(commit(next,t("Nota borrada.","Note deleted.")))setSelected(prev=>prev.filter(item=>item!==id));
+    if(commit(next,t("Nota borrada.","Note deleted.")))setSelected(prev=>prev.filter(item=>parseKey(item).id!==id));
   },[score,commit,t]);
   const writeMouse=useCallback((voice:VoiceId,start:number,pitch:string,chord=false)=>{
     try {
@@ -133,21 +136,29 @@ export default function SequencerStudio({ locale }: { locale: string }) {
       setSelected([id]);setDraft(prev=>({...prev,voice:voice.id,measure:at.measure,beat:at.beat,pitches:event.pitches.join(" "),duration:event.duration,dotted:event.dotted,triplet:event.triplet}));
     }}catch(error){setError(error instanceof Error?error.message:"Invalid note");}
   },[score,commit,t]);
-  const previewMouse=useCallback((id:string,pitch:string)=>{
+  const movePitchMouse=useCallback((id:string,from:string,to:string)=>{
+    try{const next=movePitch(score,id,from,to);if(commit(next,t("Nota del acorde editada con el mouse.","Chord note edited with the mouse."))){
+      const voice=next.voices.find(v=>v.events.some(e=>e.id===id))!,event=voice.events.find(e=>e.id===id)!;
+      setSelected(normalizeSelection(next,[noteKey(id,to)]));setDraft(prev=>({...prev,voice:voice.id,pitches:event.pitches.join(" ")}));
+    }}catch(error){setError(error instanceof Error?error.message:"Invalid note");}
+  },[score,commit,t]);
+  const previewMouse=useCallback((id:string,pitch:string,from?:string)=>{
     const voice=score.voices.find(v=>v.events.some(e=>e.id===id)),event=voice?.events.find(e=>e.id===id);
     if(!voice||!event?.pitches.length)return;
-    try{const pitches=event.pitches.length===1?[pitch]:transposePitches(event.pitches,pitchToMidi(pitch)-pitchToMidi(event.pitches[0]));
+    try{const pitches=from?event.pitches.map(p=>p===from?pitch:p):event.pitches.length===1?[pitch]:transposePitches(event.pitches,pitchToMidi(pitch)-pitchToMidi(event.pitches[0]));
       void audio.current?.preview(voice,pitches,score.masterVolume,true).catch(()=>setWarning("audio"));
     }catch{/* A drag can leave the supported pitch range. */}
   },[score]);
   const endMousePreview=useCallback(()=>audio.current?.stopPreview(),[]);
   const positionMouse=useCallback((voice:VoiceId,start:number)=>{const at=locateTick(score,start);setDraft(prev=>({...prev,voice,measure:at.measure,beat:at.beat}));setSelected([]);},[score]);
-  const mouse=useMemo<MouseEditing>(()=>({tool:mouseTool,accidental,step:durationTicks({duration:draft.duration,dotted:draft.dotted,triplet:draft.triplet}),onWrite:writeMouse,onErase:eraseMouse,onMove:moveMouse,onPreview:previewMouse,onPreviewEnd:endMousePreview,onPosition:positionMouse}),[mouseTool,accidental,draft.duration,draft.dotted,draft.triplet,writeMouse,eraseMouse,moveMouse,previewMouse,endMousePreview,positionMouse]);
-  const selectNote = useCallback((id:string,extend=false) => {
+  const mouse=useMemo<MouseEditing>(()=>({tool:mouseTool,accidental,step:durationTicks({duration:draft.duration,dotted:draft.dotted,triplet:draft.triplet}),onWrite:writeMouse,onErase:eraseMouse,onMove:moveMouse,onMovePitch:movePitchMouse,onPreview:previewMouse,onPreviewEnd:endMousePreview,onPosition:positionMouse}),[mouseTool,accidental,draft.duration,draft.dotted,draft.triplet,writeMouse,eraseMouse,moveMouse,movePitchMouse,previewMouse,endMousePreview,positionMouse]);
+  /** `key`: an event id, or one note of a chord ("id@pitch"). */
+  const selectNote = useCallback((key:string,extend=false) => {
+    const {id} = parseKey(key);
     const voice = score.voices.find(v=>v.events.some(e=>e.id===id));
     const event = voice?.events.find(e=>e.id===id);
     if (!voice || !event) return;
-    setSelected(prev => extend ? prev.includes(id) ? prev.filter(i=>i!==id) : [...prev,id] : [id]);
+    setSelected(prev => extend ? toggleKey(score,prev,key) : normalizeSelection(score,[key]));
     const location = locateTick(score,event.start);
     setDraft({voice:voice.id,measure:location.measure,beat:Math.round(location.beat*1e6)/1e6,
       pitches:event.pitches.join(" "),duration:event.duration,dotted:event.dotted,triplet:event.triplet,tie:event.tie});
@@ -174,12 +185,12 @@ export default function SequencerStudio({ locale }: { locale: string }) {
   const updateSelection = () => {
     try {
       const next=clone(score), pitches=parsePitchList(draft.pitches);
-      for(const voice of next.voices) for(const event of voice.events) if(selected.includes(event.id)) {
+      for(const voice of next.voices) for(const event of voice.events) if(selectedIds.includes(event.id)) {
         Object.assign(event,{pitches,duration:draft.duration,dotted:draft.dotted,triplet:draft.triplet,tie:draft.tie});
-        if(selected.length===1) event.start=positionTick;
+        if(selectedIds.length===1) event.start=positionTick;
       }
-      if(selected.length===1 && selection[0].voice!==draft.voice) {
-        const from=next.voices.find(v=>v.id===selection[0].voice)!, event=from.events.find(e=>e.id===selected[0])!;
+      if(selectedIds.length===1 && selection[0].voice!==draft.voice) {
+        const from=next.voices.find(v=>v.id===selection[0].voice)!, event=from.events.find(e=>e.id===selectedIds[0])!;
         from.events=from.events.filter(e=>e.id!==event.id); next.voices.find(v=>v.id===draft.voice)!.events.push(event);
       }
       commit(next,t("Selección actualizada.","Selection updated."));
@@ -187,27 +198,32 @@ export default function SequencerStudio({ locale }: { locale: string }) {
   };
 
   const removeSelection = () => {
-    const next=clone(score);
-    next.voices.forEach(v=>{v.events=v.events.filter(e=>!selected.includes(e.id));});
-    if(commit(next,t("Selección eliminada.","Selection deleted."))) setSelected([]);
+    if(commit(removeSelectedPitches(score,selected),t("Selección eliminada.","Selection deleted."))) setSelected([]);
   };
-  const previewSelection = (next:Score) => { const voice=next.voices.find(v=>v.events.some(e=>selected.includes(e.id))),event=voice?.events.find(e=>selected.includes(e.id));if(voice&&event)void audio.current?.preview(voice,event.pitches,next.masterVolume).catch(()=>setWarning("audio")); };
+  /** Commits a pitch edit of the selection, keeps it selected under its new spelling and lets it be heard. */
+  const commitPitchEdit = (edit:{score:Score;keys:string[]},notice="") => {
+    if(!commit(edit.score,notice))return;
+    setSelected(edit.keys);
+    const first=resolveSelection(edit.score,edit.keys)[0];if(!first)return;
+    patchDraft({pitches:first.event.pitches.join(" ")});
+    const voice=edit.score.voices.find(v=>v.id===first.voice)!;
+    void audio.current?.preview(voice,first.pitches,edit.score.masterVolume).catch(()=>setWarning("audio"));
+  };
   const shiftSelection = (semitones:number) => {
-    try {const next=clone(score);for(const voice of next.voices)for(const event of voice.events)if(selected.includes(event.id))event.pitches=transposePitches(event.pitches,semitones);
-      if(commit(next)){const first=next.voices.flatMap(v=>v.events).find(e=>selected.includes(e.id));if(first)patchDraft({pitches:first.pitches.join(" ")});previewSelection(next);}
-    }catch(error){setError(error instanceof Error?error.message:"Invalid pitch");}
+    try {commitPitchEdit(mapSelectedPitches(score,selected,pitch=>transposePitches([pitch],semitones)[0]));}
+    catch(error){setError(error instanceof Error?error.message:"Invalid pitch");}
   };
   const toggleSelectedFlag = (flag:"tie"|"ornament") => {
     if(!selected.length){if(flag==="tie")patchDraft({tie:!draft.tie});return;}
-    const next=clone(score);for(const voice of next.voices)for(const event of voice.events)if(selected.includes(event.id))event[flag]=!event[flag];
-    if(commit(next)&&flag==="tie")patchDraft({tie:next.voices.flatMap(v=>v.events).find(e=>selected.includes(e.id))?.tie??false});
+    const next=clone(score);for(const voice of next.voices)for(const event of voice.events)if(selectedIds.includes(event.id))event[flag]=!event[flag];
+    if(commit(next)&&flag==="tie")patchDraft({tie:next.voices.flatMap(v=>v.events).find(e=>selectedIds.includes(e.id))?.tie??false});
   };
   const applyAccidental = (value:MouseEditing["accidental"]) => {
     setAccidental(value);if(value==="key"||!selected.length)return;
-    try{const next=clone(score);for(const voice of next.voices)for(const event of voice.events)if(selected.includes(event.id))event.pitches=event.pitches.map(pitch=>{
+    try{commitPitchEdit(mapSelectedPitches(score,selected,pitch=>{
       const match=pitch.match(/^([A-G])([#b]*)(-?\d+)$/)!;const alteration=value==="#"&&match[2]==="#"?"##":value==="b"&&match[2]==="b"?"bb":value;
       const changed=match[1]+alteration+match[3];pitchToMidi(changed);return changed;
-    });if(commit(next)){const first=next.voices.flatMap(v=>v.events).find(e=>selected.includes(e.id));if(first)patchDraft({pitches:first.pitches.join(" ")});previewSelection(next);}}
+    }));}
     catch(error){setError(error instanceof Error?error.message:"Invalid pitch");}
   };
   const undo = () => {
@@ -260,15 +276,13 @@ export default function SequencerStudio({ locale }: { locale: string }) {
     pasteAt(end,selection,t("Selección duplicada.","Selection duplicated."));
   };
   const cut = () => { if(copy())removeSelection(); };
-  const selectMany = useCallback((ids:string[],additive:boolean)=>{
-    setSelected(prev=>additive?[...new Set([...prev,...ids])]:ids);
-    if(ids.length)setMessage(t(ids.length+" eventos seleccionados.",ids.length+" events selected."));
-  },[t]);
+  const selectMany = useCallback((keys:string[],additive:boolean)=>{
+    setSelected(prev=>normalizeSelection(score,additive?[...prev,...keys]:keys));
+    if(keys.length)setMessage(t(keys.length+" notas seleccionadas.",keys.length+" notes selected."));
+  },[score,t]);
   const transposeSelection = () => {
     try {
-      const next=clone(score);
-      next.voices.forEach(v=>v.events.forEach(e=>{if(selected.includes(e.id))e.pitches=transposePitches(e.pitches,transpose);}));
-      commit(next,t("Selección transpuesta.","Selection transposed."));
+      commitPitchEdit(mapSelectedPitches(score,selected,pitch=>transposePitches([pitch],transpose)[0]),t("Selección transpuesta.","Selection transposed."));
     } catch(error) {setError(error instanceof Error?error.message:"Invalid pitch");}
   };
   const duplicateMeasure = () => {
@@ -361,6 +375,15 @@ export default function SequencerStudio({ locale }: { locale: string }) {
       catch(error){setError(error instanceof Error?error.message:"Invalid time signature");}
     }
   };
+  // Empty score in the same mode, default title; undo can bring the old one back.
+  const newProject = () => {
+    if(!window.confirm(t("¿Empezar un proyecto nuevo? Se borra la partitura actual (puedes deshacerlo).","Start a new project? The current score is cleared (you can undo it).")))return;
+    const next=createScore(score.mode);next.title=t("Sin título","Untitled");
+    if(commit(next,t("Proyecto nuevo.","New project."))){setDraft({...emptyDraft,voice:score.mode==="satb"?"soprano":"melody"});setSelected([]);setSceneId(next.scenes[0]?.id??"");}
+  };
+  const meter=score.measures[draft.measure-1]?.time??[4,4];
+  const METER_PRESETS=["4/4","3/4","2/4","6/8","9/8","12/8","5/4","7/8"];
+  const meterOptions=METER_PRESETS.includes(meter.join("/"))?METER_PRESETS:[meter.join("/"),...METER_PRESETS];
   const changeClef = (clef:"treble"|"bass") => {
     const next=clone(score);next.measures[draft.measure-1].clefs={...next.measures[draft.measure-1].clefs,[draft.voice]:clef};commit(next);
   };
@@ -488,6 +511,7 @@ export default function SequencerStudio({ locale }: { locale: string }) {
         {message&&<span className={styles.statusMessage}>{message}</span>}
       </div>
       <div className={styles.fileActions} role="group" aria-label={t("Archivo","File")}>
+        <button onClick={newProject}><Icon name="new"/>{t("Nuevo proyecto","New project")}</button>
         <button onClick={()=>downloadBlob(new Blob([JSON.stringify(score,null,2)],{type:"application/json"}),"storm-project.json")}><Icon name="save"/>{t("Guardar JSON","Save JSON")}</button>
         <button onClick={()=>fileInput.current?.click()}><Icon name="open"/>{t("Abrir proyecto","Open project")}</button>
         <button onClick={()=>{try{const bytes=exportMidi(score);downloadBlob(new Blob([new Uint8Array(bytes)],{type:"audio/midi"}),"storm-score.mid");}catch(e){setError(String(e));}}}>{t("Exportar MIDI","Export MIDI")}</button>
@@ -562,7 +586,7 @@ export default function SequencerStudio({ locale }: { locale: string }) {
             <div ref={graphic}>
               {view==="staff"?<ScoreView score={score} selected={selected} locale={locale} onSelect={selectNote} mouse={mouse} tick={tick} cursorTick={positionTick} focusVoice="all" layout={scoreLayout} systemSize={SYSTEM_SIZE} pageInfo={{index:displayedPage+1,total:pageCount}} showAnnotations={cipherVisible} onAnnotation={inlineAnnotation} onSelectMany={selectMany} onMeasure={n=>{setSelected([]);patchDraft({measure:n,beat:1});}}
                 from={scoreLayout==="page"?displayedPage*barsPerPage+1:1} to={scoreLayout==="page"?Math.min(score.measures.length,(displayedPage+1)*barsPerPage):score.measures.length}/>:
-                <PianoRoll score={score} selected={selected} mouse={mouse} voiceId={draft.voice} onSelect={selectNote} locale={locale} tick={tick} positionTick={positionTick}/>}
+                <PianoRoll score={score} selected={selectedIds} mouse={mouse} voiceId={draft.voice} onSelect={selectNote} locale={locale} tick={tick} positionTick={positionTick}/>}
             </div>
           </div>
           <p className={styles.hint}>{t("Clic para escribir · clic derecho para borrar · arrastra para cambiar altura · Ctrl+clic añade al acorde","Click to write · right-click to delete · drag to change pitch · Ctrl+click adds to chord")}</p>
@@ -597,7 +621,6 @@ export default function SequencerStudio({ locale }: { locale: string }) {
             <textarea aria-label={t("Texto musical","Musical text")} spellCheck={false} value={text} onChange={e=>{setText(e.target.value);setPreview(null);}}/>
             <div className={styles.actions}><button onClick={()=>{setPreview(parseScoreText(text,score));setError("");}}>{t("Validar texto","Validate text")}</button>
               <button className={styles.primary} disabled={!preview?.score||preview.issues.length>0} onClick={()=>{if(preview?.score){commit(preview.score,t("Texto aplicado como una sola edición.","Text applied as one edit."));setSelected([]);}}}>{t("Aplicar texto","Apply text")}</button>
-              <button className={styles.ghost} onClick={()=>{const next=createScore(score.mode);next.title=score.title;if(commit(next,t("Proyecto nuevo.","New project."))){setDraft({...emptyDraft,voice:score.mode==="satb"?"soprano":"melody"});setSelected([]);setSceneId(next.scenes[0]?.id??"");}}}>{t("Nuevo proyecto","New project")}</button>
             </div>
             {preview&&<div role={preview.issues.length?"alert":"status"} data-testid="text-validation" className={styles.validation} data-ok={preview.issues.length===0}>
               <p><strong>{preview.count} {t("eventos","events")}, {preview.issues.length} {t("errores","errors")}</strong></p>
@@ -611,9 +634,9 @@ export default function SequencerStudio({ locale }: { locale: string }) {
             </div>
             <div className={styles.tableWrap}><table className={styles.table}><thead><tr>
               {[t("Seleccionar","Select"),t("Voz","Voice"),t("Compás","Measure"),t("Pulso","Beat"),t("Notas","Notes"),t("Duración","Duration"),t("Editar","Edit")].map(h=><th key={h}>{h}</th>)}
-            </tr></thead><tbody>{events.map(({voice,event})=>{const location=locateTick(score,event.start);return <tr key={event.id} aria-selected={selected.includes(event.id)}>
+            </tr></thead><tbody>{events.map(({voice,event})=>{const location=locateTick(score,event.start);return <tr key={event.id} aria-selected={selectedIds.includes(event.id)}>
               <td><input type="checkbox" aria-label={t("Seleccionar ","Select ")+voice.name+" "+location.measure+" "+location.beat}
-                checked={selected.includes(event.id)} onChange={()=>selectNote(event.id,true)}/></td>
+                checked={selectedIds.includes(event.id)} onChange={()=>selectNote(event.id,true)}/></td>
               <td><span className={styles.voiceTag} data-voice={voice.id}>{voice.name}</span></td><td>{location.measure}</td><td>{Number(location.beat.toFixed(3))}</td>
               <td className={styles.mono}>{event.pitches.join(" ")||t("Silencio","Rest")}</td>
               <td>{DURATIONS.find(d=>d[0]===event.duration)?.[es?1:2]}{event.dotted?" •":""}{event.triplet?" (3)":""}{event.tie?" ⌒":""}</td>
@@ -670,7 +693,7 @@ export default function SequencerStudio({ locale }: { locale: string }) {
           </div>
           <div className={styles.heroMeta}>
             <h2>{selected.length?t("Editar selección","Edit selection"):t("Escribir música","Write music")}</h2>
-            <p>{selected.length?selected.length+" "+t("eventos seleccionados","selected events"):t("Inserta en la posición exacta. El cursor avanza con cada nota.","Insert at an exact position. The cursor advances with each note.")}</p>
+            <p>{selected.length?selected.length+" "+t("seleccionadas","selected"):t("Inserta en la posición exacta. El cursor avanza con cada nota.","Insert at an exact position. The cursor advances with each note.")}</p>
           </div>
         </div>
 
@@ -731,10 +754,16 @@ export default function SequencerStudio({ locale }: { locale: string }) {
             <label className={styles.full}>{t("Clave de esta voz","Clef for this voice")}<select aria-label={t("Clave de esta voz","Clef for this voice")} value={clefAt(score,draft.voice,draft.measure)} onChange={e=>changeClef(e.target.value as "treble"|"bass")}><option value="treble">{t("Clave de Sol","Treble clef")}</option><option value="bass">{t("Clave de Fa","Bass clef")}</option></select></label>
             <label>{t("Armadura","Key")}<select aria-label={t("Armadura","Key")} value={score.measures[draft.measure-1]?.key??"C"} onChange={e=>changeKey(e.target.value)}>
               {KEYS.map(k=><option key={k} value={k}>{k}</option>)}</select></label>
-            <label>{t("Compás rítmico","Time signature")}<select aria-label={t("Compás rítmico","Time signature")} value={score.measures[draft.measure-1]?.time.join("/")??"4/4"} onChange={e=>{
+            <label>{t("Compás rítmico","Time signature")}<select aria-label={t("Compás rítmico","Time signature")} value={meter.join("/")} onChange={e=>{
               changeMeter(e.target.value.split("/").map(Number) as [number,number]);
             }}>
-              {["4/4","3/4","2/4","6/8","9/8","12/8","5/4","7/8"].map(m=><option key={m}>{m}</option>)}</select></label>
+              {meterOptions.map(m=><option key={m}>{m}</option>)}</select></label>
+            {/* Any meter the model accepts: the numerator applies on blur or Enter so typing "12" does not re-bar at "1". */}
+            <label>{t("Numerador","Numerator")}<input type="number" min={1} max={MAX_TIME_NUMERATOR} key={"meter:"+draft.measure+":"+meter.join("/")} defaultValue={meter[0]}
+              onBlur={e=>{const n=Number(e.target.value);if(Number.isInteger(n)&&n>=1&&n<=MAX_TIME_NUMERATOR&&n!==meter[0])changeMeter([n,meter[1]]);else e.target.value=String(meter[0]);}}
+              onKeyDown={e=>{if(e.key==="Enter")e.currentTarget.blur();}}/></label>
+            <label>{t("Denominador","Denominator")}<select aria-label={t("Denominador","Denominator")} value={meter[1]} onChange={e=>changeMeter([meter[0],Number(e.target.value)])}>
+              {TIME_DENOMINATORS.map(d=><option key={d} value={d}>{d}</option>)}</select></label>
           </div>
           <p className={styles.help}>{t("Se aplican desde este compás hasta el siguiente cambio; al modular aparece doble barra.","They apply from this measure until the next change; a double bar marks a modulation.")}</p>
         </section>
@@ -743,7 +772,7 @@ export default function SequencerStudio({ locale }: { locale: string }) {
   </section>;
 }
 
-type IconName="toStart"|"toEnd"|"play"|"pause"|"stop"|"loop"|"metronome"|"volume"|"screen"|"edit"|"save"|"open"|"spark"|"storm";
+type IconName="toStart"|"toEnd"|"play"|"pause"|"stop"|"loop"|"metronome"|"volume"|"screen"|"edit"|"save"|"open"|"new"|"spark"|"storm";
 function Icon({name}:{name:IconName}){
   const paths:Record<IconName,React.ReactNode>={
     play:<path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none"/>,
@@ -757,6 +786,7 @@ function Icon({name}:{name:IconName}){
     screen:<><rect x="3" y="4.5" width="18" height="12" rx="2"/><path d="M8.5 20h7M12 16.5V20"/></>,
     edit:<><path d="M4 20h4L19 9l-4-4L4 16z"/></>,
     save:<><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></>,
+    new:<><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M12 11v6M9 14h6"/></>,
     open:<><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></>,
     spark:<path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/>,
     storm:<><path d="M13 2L5 13.5h6L10 22l9-12.5h-6z" fill="currentColor" stroke="none"/></>,

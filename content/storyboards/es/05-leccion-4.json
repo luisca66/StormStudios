@@ -212,7 +212,7 @@
       "setup": {
         "mode": "single",
         "title": "Do menor natural",
-        "key": "C",
+        "key": "Cm",
         "time": [
           4,
           4
@@ -226,7 +226,7 @@
       "setup": {
         "mode": "single",
         "title": "Acordes de Do menor natural",
-        "key": "C",
+        "key": "Cm",
         "time": [
           4,
           4
@@ -290,7 +290,7 @@
       "setup": {
         "mode": "single",
         "title": "Do menor armónica",
-        "key": "C",
+        "key": "Cm",
         "time": [
           4,
           4
@@ -304,7 +304,7 @@
       "setup": {
         "mode": "single",
         "title": "Acordes de Do menor armónica",
-        "key": "C",
+        "key": "Cm",
         "time": [
           4,
           4
@@ -368,7 +368,7 @@
       "setup": {
         "mode": "single",
         "title": "Do menor melódica ascendente",
-        "key": "C",
+        "key": "Cm",
         "time": [
           4,
           4
@@ -382,7 +382,7 @@
       "setup": {
         "mode": "single",
         "title": "Acordes de Do menor melódica ascendente",
-        "key": "C",
+        "key": "Cm",
         "time": [
           4,
           4
@@ -446,7 +446,7 @@
       "setup": {
         "mode": "single",
         "title": "Do menor melódica descendente",
-        "key": "C",
+        "key": "Cm",
         "time": [
           4,
           4

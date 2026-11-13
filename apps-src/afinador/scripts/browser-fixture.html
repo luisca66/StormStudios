@@ -1,0 +1,33 @@
+<!doctype html>
+<!-- Development-only fixture. Vite's production build includes only index.html. -->
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"></head>
+<body><div id="app"></div>
+<aside style="position:fixed;bottom:0;left:0;z-index:10;background:#111820;padding:5px;font:12px sans-serif"><label>Test signal <select id="test-tone"><option value="440">A4</option><option value="274.316">C♯4 −18 ct</option><option value="0">Silence</option><option value="noise">Noise</option><option value="denied">Denied</option></select></label></aside>
+<script type="module">
+import '../src/main.ts';
+let context, oscillator, gain, source;
+const select = document.querySelector('#test-tone');
+function update() {
+  if (!oscillator) return;
+  const value = select.value;
+  oscillator.frequency.value = Number(value) || 440;
+  gain.gain.value = value === '0' || value === 'noise' ? 0 : 0.5;
+  source.gain.value = value === 'noise' ? 0.5 : 0;
+}
+select.addEventListener('change', update);
+navigator.mediaDevices.getUserMedia = async () => {
+  if (select.value === 'denied') throw new DOMException('Test denial', 'NotAllowedError');
+  context = new AudioContext(); await context.resume();
+  const destination = context.createMediaStreamDestination();
+  oscillator = context.createOscillator(); gain = context.createGain();
+  oscillator.connect(gain).connect(destination); oscillator.start();
+  const noise = context.createBufferSource(), buffer = context.createBuffer(1, 48000, context.sampleRate);
+  const samples = buffer.getChannelData(0); let seed = 123;
+  for (let i = 0; i < samples.length; i++) { seed = (1664525 * seed + 1013904223) >>> 0; samples[i] = seed / 2 ** 32 * 2 - 1; }
+  noise.buffer = buffer; noise.loop = true; source = context.createGain(); noise.connect(source).connect(destination); noise.start(); update();
+  const track = destination.stream.getAudioTracks()[0], original = track.stop.bind(track);
+  track.stop = () => { original(); void context.close(); oscillator = undefined; };
+  return destination.stream;
+};
+</script></body></html>

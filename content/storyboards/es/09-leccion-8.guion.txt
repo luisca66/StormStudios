@@ -1,0 +1,118 @@
+Hola, bienvenidos de nuevo a Storm Studios Learning.
+En la lección seis aprendimos a construir acordes para el cuarteto vocal.
+En la lección siete vimos cómo se mueve cada voz, y qué cuidar cuando dos voces se mueven al mismo tiempo.
+Hoy vamos a juntar las dos cosas: vamos a enlazar dos acordes.
+Es el último paso antes de escribir nuestro primer coral.
+Esta lección tiene tres partes: el material armónico, la tabla general de enlaces y la técnica para enlazar.
+Empecemos con el material armónico.
+Llamamos material armónico a los acordes que usamos, y al estado en que los usamos.
+Nos guiamos por los corales de Bach, y por ahora trabajamos solo con acordes de quinta en el modo mayor.
+El primer grado se usa en estado fundamental y en primera inversión, es decir, en seis tres.
+El segundo grado, también en estado fundamental y en seis tres.
+El tercer grado se usa solo en estado fundamental.
+El cuarto y el quinto grado se usan en estado fundamental y en seis tres.
+El sexto grado, solo en estado fundamental.
+Y el séptimo grado, solo en seis tres.
+Hay tres cosas que conviene entender de esta lista.
+Primero, ningún acorde se usa libremente en segunda inversión, en seis cuatro.
+En el seis cuatro se forma una cuarta con el bajo, y esa cuarta suena como una disonancia.
+Los acordes en seis cuatro los veremos más adelante, en casos específicos.
+Segundo, el tercero y el sexto grado se usan en estado fundamental.
+Estos acordes pertenecen a dos regiones tonales y tienen un color modal, y el estado fundamental les da firmeza.
+Tercero, el séptimo grado es un acorde disminuido, y por eso se usa solo en seis tres.
+Así evitamos que se forme una quinta disminuida con el bajo.
+Ahora veamos la tabla general de enlaces.
+Al menos en el periodo clásico, cada acorde tiene caminos preferidos hacia otros acordes.
+La tabla nos dice a qué acordes puede ir cada uno.
+Cuando decimos que un acorde va en estado fundamental o en seis tres, cualquiera de los dos estados es válido.
+Empecemos con el primer grado.
+Del primer grado podemos ir al segundo, al tercero, al cuarto, al quinto, al sexto, y al séptimo en seis tres.
+Pero cuidado: si vamos del primero al tercero, después el tercero tiene que ir al cuarto.
+Del segundo grado podemos ir al quinto, al séptimo en seis tres o al cuarto.
+Y si vamos del segundo al cuarto, después el cuarto tiene que ir al quinto.
+Del tercer grado podemos ir al cuarto, al quinto, al sexto o al séptimo en seis tres.
+Si vamos del tercero al quinto, después el quinto tiene que ir al sexto.
+Del cuarto grado podemos ir al primero, al segundo, al quinto o al séptimo en seis tres.
+Del quinto grado podemos ir al primero, al sexto o al séptimo en seis tres.
+Si vamos del quinto al séptimo, después el séptimo tiene que ir al primero.
+Y hay un caso especial: el quinto en estado fundamental también puede ir al cuarto en seis tres.
+Del sexto grado podemos ir a casi todos: al primero, al segundo, al tercero, al cuarto, al quinto y al séptimo en seis tres.
+Si vamos del sexto al primero, después el primero tiene que ir al segundo.
+Y del séptimo grado en seis tres podemos ir al primero, al tercero, al sexto o al quinto.
+Estas continuaciones obligatorias son importantes.
+Cuando la tabla dice que después de un enlace hay que seguir a cierto acorde, no es una sugerencia: es una regla.
+Un detalle más: cuando repetimos el mismo acorde, no hay técnica de enlace.
+Las voces pueden moverse libremente dentro del acorde, por ejemplo del primer grado al primer grado en seis tres.
+Ahora sí, veamos cómo se enlazan dos acordes.
+Primero construimos cada acorde como en la lección seis.
+Respetamos las tesituras y las separaciones máximas entre las voces.
+Usamos solo las notas del acorde, siempre presentamos la tercera, no duplicamos la sensible, y el séptimo grado va completo.
+Después revisamos cómo se mueve cada voz, como en la lección siete.
+Cada voz usa solo los intervalos melódicos permitidos.
+Pero ahora hay una novedad: una voz puede quedarse en la misma nota.
+Cuando dos acordes comparten una nota, a esa nota le llamamos nota común.
+Muchas veces conviene dejar la nota común en la misma voz, y mover las demás voces por el camino más corto.
+Luego revisamos los seis pares de voces.
+Soprano y contralto, soprano y tenor, soprano y bajo, contralto y tenor, contralto y bajo, y tenor y bajo.
+En ningún par puede haber quintas ni octavas paralelas, ni quintas u octavas contrarias.
+Recuerda que las quintas contrarias sí se permiten si no están entre la soprano y el bajo.
+Y que no se permiten dos saltos simultáneos en la misma dirección, salvo que los dos sean de cuarta justa.
+Y hay una regla nueva para la sensible.
+Si la sensible está en la soprano, y el acorde siguiente tiene la tónica, la sensible siempre sube a la tónica.
+La única excepción es el enlace del tercero al cuarto grado.
+Veamos ahora los ocho enlaces de la tarea, cada uno en una tonalidad distinta.
+Primero, del primero al cuarto grado, en Sol mayor.
+El Sol es la nota común, y se queda en la contralto.
+La soprano sube de Si a Do, el tenor sube de Re a Mi, y el bajo baja de Sol a Do.
+Segundo, del cuarto al quinto grado, en Re mayor.
+Estos dos acordes no tienen notas comunes.
+Por eso el bajo sube por grado conjunto, de Sol a La, y las otras tres voces bajan a la nota más cercana.
+Así evitamos las quintas y las octavas paralelas.
+Tercero, del quinto al primer grado, en Fa mayor.
+La sensible, el Mi, está en la soprano, y sube a la tónica, el Fa.
+El Do es la nota común y se queda en el tenor, la contralto sube de Sol a La, y el bajo baja de Do a Fa.
+Cuarto, del segundo al quinto grado, en Si bemol mayor.
+El Do es la nota común y se queda en la soprano.
+La contralto sube de Sol a La, el tenor sube de Mi bemol a Fa, y el bajo baja de Do a Fa.
+Quinto, del quinto al sexto grado, en La mayor.
+La sensible, el Sol sostenido, está en la soprano, y como el sexto grado tiene la tónica, sube al La.
+El bajo sube de Mi a Fa sostenido, y la contralto y el tenor bajan.
+En el sexto grado duplicamos la tercera, el La, que además es la tónica.
+Sexto, del sexto al segundo grado, en Mi bemol mayor.
+El Do es la nota común y se queda en el tenor.
+La soprano sube de Sol a La bemol, la contralto sube de Mi bemol a Fa, y el bajo baja de Do a Fa.
+Séptimo, del primer grado al séptimo en seis tres, en Do mayor.
+El bajo sube de Do a Re, que es la tercera del séptimo grado.
+La soprano baja de Do a Si, la contralto baja de Sol a Fa, y el tenor baja de Mi a Re.
+El séptimo grado queda completo, con el Re duplicado, y la sensible aparece una sola vez.
+Octavo, del cuarto grado en seis tres al quinto, en Mi mayor.
+El bajo baja de Do sostenido a Si, por grado conjunto.
+La soprano sube de La a Si, la contralto baja de Mi a Re sostenido, y el tenor baja de La a Fa sostenido.
+Ahora veamos dos errores típicos.
+Aquí enlazamos el cuarto con el quinto grado en Do mayor, moviendo todas las voces hacia arriba.
+Entre la soprano y el bajo hay quintas paralelas, y entre el tenor y el bajo hay octavas paralelas.
+La solución es mover las voces superiores en sentido contrario al bajo.
+Y aquí, del quinto al primer grado, la sensible está en la soprano y baja de Si a Sol.
+Como el primer grado tiene la tónica, la sensible tenía que subir al Do.
+Ahora sí, la tarea para el maestro virtual.
+Escribe cada enlace en una tonalidad mayor distinta; tú escoges cuáles.
+En Storm Sequencer, en modo SATB, escribe los ocho enlaces que acabamos de ver, en el orden que quieras.
+Del primero al cuarto, del cuarto al quinto, del quinto al primero, del segundo al quinto, del quinto al sexto, del sexto al segundo, del primero al séptimo en seis tres, y del cuarto en seis tres al quinto.
+Los acordes que no llevan cifra van en estado fundamental.
+Cada enlace ocupa un compás de cuatro cuartos, con dos blancas en las cuatro voces.
+Al inicio de cada compás, pon la armadura de su tonalidad.
+En total son dieciséis acordes.
+Exporta el archivo MIDI y súbelo.
+El maestro virtual reconoce la tonalidad de cada enlace, y qué enlace es.
+Revisa la construcción de cada acorde, el movimiento de cada voz, las quintas y octavas, los saltos simultáneos y la sensible.
+Entre un enlace y el siguiente no revisa nada: cada compás es un ejercicio aparte.
+Y si encuentra un error, te explica cuál es y en qué enlace está.
+Recapitulemos.
+El material armónico nos dice qué acordes usamos y en qué estado.
+El tercero y el sexto van en estado fundamental, el séptimo en seis tres, y el seis cuatro no se usa libremente.
+La tabla general de enlaces nos dice a dónde puede ir cada acorde, y tiene algunas continuaciones obligatorias.
+Al enlazar, construimos bien cada acorde, cuidamos cada voz y revisamos los seis pares de voces.
+Y la sensible en la soprano sube a la tónica.
+En la próxima lección veremos el modo menor y sus casos especiales.
+Gracias por acompañarme.
+Nos vemos en la lección nueve.

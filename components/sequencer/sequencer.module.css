@@ -376,7 +376,7 @@
 .scoreSurface { position: relative; }
 .marquee { position: absolute; z-index: 5; pointer-events: none; border: 1.5px solid #7c5cff; background: #7c5cff1f; border-radius: 3px; }
 .notation [data-note-id][aria-pressed=true], .marqueeHit { filter: drop-shadow(0 0 3px #7c5cffaa); }
-.marqueeHit path, .marqueeHit rect { fill: #7c5cff; stroke: #7c5cff; }
+.marqueeHit path, .marqueeHit rect, .marqueeHit text { fill: #7c5cff; stroke: #7c5cff; }
 .studio .measureNumber { all: unset; cursor: pointer; font: inherit; color: #5b4bd8; font-weight: 500; border-radius: 4px; padding: 0 3px; }
 .studio .measureNumber:hover { background: #5b4bd81a; }
 .studio .measureNumber:focus-visible { outline: 2px solid #5b4bd8; }

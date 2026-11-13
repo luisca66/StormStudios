@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import type { Still, Storyboard } from "../lib/sequencer/storyboard";
 import example from "../content/storyboards/es/ejemplo-intervalos.json";
+import lessonSix from "../content/storyboards/es/07-leccion-6.json";
 import type { Score } from "../lib/sequencer/types";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -10,6 +11,61 @@ import path from "node:path";
 test.beforeEach(async ({ page }) => {
   await page.goto("/es/sequencer/v4/stage");
   await page.waitForFunction(() => !!window.stormStage);
+});
+
+for (const locale of ["es", "en"] as const) {
+  test(`short SATB systems retain complete ${locale} names, aligned notes and clear marks`, async ({ page }) => {
+    await page.goto(`/${locale}/sequencer/v4/stage`);
+    await page.waitForFunction(() => !!window.stormStage);
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    const prepared = await page.evaluate(board => window.stormStage!.prepare(board), { ...lessonSix, locale });
+    for (const id of ["do-duplica", "solb-duplica", "tesituras", "estados"]) {
+      const still = prepared.storyboard.stills.find(s => s.id === id)!;
+      await page.evaluate(({ still, score }) => window.stormStage!.render(still, score), { still, score: prepared.scores[still.project!] });
+      const result = await page.getByTestId("score-view").evaluate(surface => {
+        const bounds = (e: Element) => { const b = e.getBoundingClientRect(); return { left: b.left, right: b.right, top: b.top, bottom: b.bottom }; };
+        const texts = [...surface.querySelectorAll("svg text")];
+        const notes = [...surface.querySelectorAll(".vf-notehead")].map(bounds);
+        return {
+          names: texts.map(e => e.textContent),
+          labels: [...surface.querySelectorAll("[data-mark-label]")].map(bounds), notes,
+          system: bounds(surface.querySelector("svg")!), paper: bounds(surface.closest("[data-testid=still]")!),
+        };
+      });
+      for (const name of ["Soprano", locale === "es" ? "Contralto" : "Alto", "Tenor", locale === "es" ? "Bajo" : "Bass"]) expect(result.names).toContain(name);
+      expect(result.system.left).toBeGreaterThan(result.paper.left + 80);
+      expect(result.system.right).toBeLessThan(result.paper.right - 80);
+      const overlaps = (a: typeof result.system, b: typeof result.system) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+      for (const [i, label] of result.labels.entries()) {
+        expect(result.notes.some(note => overlaps(label, note))).toBe(false);
+        expect(result.labels.slice(i + 1).some(other => overlaps(label, other))).toBe(false);
+      }
+      if (id.endsWith("duplica")) expect(Math.max(...result.notes.map(n => n.left)) - Math.min(...result.notes.map(n => n.left))).toBeLessThan(3);
+    }
+  });
+}
+
+test("stage exports audible Piano WAV through the local proxy, stopping at reveal", async ({ page }) => {
+  const sample = Buffer.alloc(44 + 4410 * 2);
+  sample.write("RIFF"); sample.writeUInt32LE(sample.length - 8, 4); sample.write("WAVEfmt ", 8);
+  sample.writeUInt32LE(16, 16); sample.writeUInt16LE(1, 20); sample.writeUInt16LE(1, 22);
+  sample.writeUInt32LE(44100, 24); sample.writeUInt32LE(88200, 28); sample.writeUInt16LE(2, 32); sample.writeUInt16LE(16, 34);
+  sample.write("data", 36); sample.writeUInt32LE(sample.length - 44, 40);
+  for (let i = 0; i < 4410; i++) sample.writeInt16LE(Math.round(Math.sin(i * 2 * Math.PI * 261.63 / 44100) * 5000), 44 + i * 2);
+  const requested: string[] = [];
+  await page.route("**/api/audio/**", route => { requested.push(route.request().url()); return route.fulfill({ body: sample, contentType: "audio/wav" }); });
+  const result = await page.evaluate(async () => {
+    const prepared = window.stormStage!.prepare({ version: 1, lesson: "audio-test", locale: "es", title: "Test", projects: { main: { setup: { mode: "single", measures: 1, tempo: 72 }, text: "C4 Mitad; G4 Mitad" } }, stills: [{ id: "partial", project: "main", reveal: { measure: 1, beat: 3 }, audio: true }] });
+    return window.stormStage!.wav(prepared.storyboard.stills[0], prepared.scores.main);
+  });
+  const wav = Buffer.from(result.base64, "base64");
+  expect(wav.toString("ascii", 0, 4)).toBe("RIFF");
+  expect(wav.readUInt32LE(24)).toBe(44100);
+  expect((wav.length - 44) / 4 / 44100).toBeCloseTo(2 * 60 / 72 + .2, 4);
+  expect(requested).toHaveLength(1);
+  expect(requested[0]).toContain("/api/audio/Piano/C4.mp3");
+  expect(result.music.beats.map(b => b.cursor.beat)).toEqual([1, 2]);
+  expect(wav.subarray(44).some(value => value !== 0)).toBe(true);
 });
 
 test("reveal preserves engraving, precise highlight/cursor positions and notehead marks", async ({ page }) => {
@@ -79,3 +135,28 @@ test("CLI embeds relative files, honors only/order, emits exact PNG and manifest
   const png = await readFile(path.join(folder, "02-chosen.png"));
   expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([960, 540]);
 });
+
+for (const aspect of ["16:9", "9:16", "1:1"] as const) {
+  test(`image SVG fits ${aspect}, waits for decode and shows credit only during music`, async ({ page }) => {
+    const still: Still = { id: "image", kind: "image", image: "/images/curso/leccion-5/circulo-quintas-es.svg", heading: "El círculo de quintas", caption: "Quince tonalidades", musicFile: "local.mp3", musicCredit: "Obra — Compositor · Intérpretes" };
+    const render = async (music = false) => page.evaluate(({ still, aspect, music }) => window.stormStage!.render(still, null, { aspect }, undefined, { music }), { still, aspect, music });
+    const width = aspect === "16:9" ? 1920 : 1080, height = aspect === "9:16" ? 1920 : 1080;
+    await page.setViewportSize({ width, height });
+    await render();
+    await expect(page.getByTestId("still-image")).toHaveAttribute("src", still.image!);
+    await expect(page.getByTestId("music-credit")).toHaveCount(0);
+    const bounds = await page.getByTestId("still-image").evaluate(img => {
+      const image = img as HTMLImageElement, box = image.getBoundingClientRect();
+      return { complete: image.complete && image.naturalWidth > 0, left: box.left, top: box.top, right: box.right, bottom: box.bottom, fit: getComputedStyle(image).objectFit };
+    });
+    expect(bounds.complete).toBe(true); expect(bounds.fit).toBe("contain");
+    expect(bounds.left).toBeGreaterThan(0); expect(bounds.top).toBeGreaterThan(0);
+    expect(bounds.right).toBeLessThan(width); expect(bounds.bottom).toBeLessThan(height);
+    await expect(page.getByTestId("score-view")).toHaveCount(0);
+    const png = await page.getByTestId("still").screenshot();
+    expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([width, height]);
+    await render(true); await expect(page.getByTestId("music-credit")).toHaveText(still.musicCredit!);
+    await render(); await expect(page.getByTestId("music-credit")).toHaveCount(0);
+    await expect(page.evaluate(still => window.stormStage!.render({ ...still, image: "/images/missing.svg" }, null), still)).rejects.toThrow(/Still "image".*No se pudo cargar image/);
+  });
+}

@@ -1,4 +1,4 @@
-import type { GuitarSample } from "./catalog";
+import type { NoteSample } from "./catalog";
 
 const DEFAULT_AUDIO_BASE = "https://musica.stormstudios.com.mx";
 const DEFAULT_MUSIC_BASE = "https://samples.stormstudios.com.mx/music/oido-absoluto-multi";
@@ -24,6 +24,8 @@ function assetUrl(path: string) {
   return `${base}/${path.split("/").map(encodeURIComponent).join("/")}`;
 }
 
+const sampleUrl = (sample: NoteSample) => sample.url ?? assetUrl(sample.filePath ?? "");
+
 function musicUrl(path: string) {
   const base = (configuredMusicBase || DEFAULT_MUSIC_BASE).replace(/\/$/, "");
   return `${base}/${path}`;
@@ -42,16 +44,18 @@ export class GuitarAudio {
   private stepLoading = false;
   private lastStep = -1;
 
-  preload(samples: GuitarSample[]) {
-    samples.slice(0, 24).forEach((sample) => {
-      const audio = new Audio(assetUrl(sample.filePath));
+  preload(samples: NoteSample[]) {
+    // Muestras repartidas en todo el grupo (en aleatorio, de todos los timbres), no sólo las primeras.
+    const step = Math.max(1, Math.ceil(samples.length / 24));
+    samples.filter((_, index) => index % step === 0).forEach((sample) => {
+      const audio = new Audio(sampleUrl(sample));
       audio.preload = "metadata";
     });
   }
 
-  async playSample(sample: GuitarSample) {
+  async playSample(sample: NoteSample) {
     this.stopNote();
-    const audio = new Audio(assetUrl(sample.filePath));
+    const audio = new Audio(sampleUrl(sample));
     audio.volume = this.volume;
     this.activeNote = audio;
     audio.addEventListener("ended", () => {

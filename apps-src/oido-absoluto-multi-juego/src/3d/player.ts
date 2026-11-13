@@ -5,6 +5,7 @@ import { buildBlenderFish, preloadBlenderFish } from "./blender-fish";
 import { buildBlenderGlub, isGlubReady } from "./blender-glub";
 import { buildBlenderUnicorn, isUnicornReady } from "./blender-unicorn";
 import { buildRocket, rocketKit } from "./blender-cosmos";
+import { buildBlenderCroc, crocKit } from "./blender-pantano";
 
 export class PlayerController {
   public mesh: THREE.Group;
@@ -401,6 +402,18 @@ export class PlayerController {
     model.rotation.y = Math.PI;
     this.crocModel = model;
     this.mesh.add(model);
+
+    // Cocodrilo de Blender (art/blender/cocodrilo/, Claude): mismas piezas y pivotes que el de cajas.
+    if (crocKit.ready()) {
+      const croc = buildBlenderCroc(model);
+      this.crocBody = croc.body as THREE.Mesh;
+      this.crocHead = croc.head;
+      this.crocBlinkers = croc.blinkers.map((node) => ({ node, base: node.scale.clone() }));
+      this.crocTail = croc.tail;
+      this.crocLegs = croc.legs;
+      return;
+    }
+    // Reserva por si el GLB aún no llegó: el cocodrilo de cajas original.
 
     const skinMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(0.176, 0.353, 0.153), roughness: 0.85, metalness: 0.03 });
     const lomoMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(0.13, 0.25, 0.10), roughness: 0.92 });

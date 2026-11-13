@@ -1,0 +1,1506 @@
+{
+  "version": 1,
+  "lesson": "07-leccion-6",
+  "locale": "es",
+  "title": "Lección 6 — Cuarteto vocal armónico",
+  "source": "content/storyboards/es/07-leccion-6.guion.txt",
+  "format": {
+    "aspect": "16:9",
+    "theme": "storm"
+  },
+  "projects": {
+    "do": {
+      "setup": {
+        "mode": "satb",
+        "title": "Do mayor",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 entera\nvoz alto\ncompas 1\nE4 entera\nvoz tenor\ncompas 1\nG3 entera\nvoz bass\ncompas 1\nC3 entera"
+    },
+    "tesituras": {
+      "setup": {
+        "mode": "satb",
+        "title": "Tesituras",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC4 entera\ncompas 2\nG5 entera\nvoz alto\ncompas 1\nG3 entera\ncompas 2\nD5 entera\nvoz tenor\ncompas 1\nB2 entera\ncompas 2\nG4 entera\nvoz bass\ncompas 1\nF2 entera\ncompas 2\nB3 entera"
+    },
+    "separaciones": {
+      "setup": {
+        "mode": "satb",
+        "title": "Separaciones máximas",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nG5 entera\ncompas 2\nsilencio entera\ncompas 3\nsilencio entera\nvoz alto\ncompas 1\nC4 entera\ncompas 2\nE4 entera\ncompas 3\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nC3 entera\ncompas 3\nF4 entera\nvoz bass\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\ncompas 3\nF2 entera"
+    },
+    "sensible": {
+      "setup": {
+        "mode": "satb",
+        "title": "La sensible en Do mayor",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nB4 entera\ncompas 2\nD4 entera\ncompas 3\nE4 entera\nvoz alto\ncompas 1\nG4 entera\ncompas 2\nB3 entera\ncompas 3\nB3 entera\nvoz tenor\ncompas 1\nD4 entera\ncompas 2\nF3 entera\ncompas 3\nG3 entera\nvoz bass\ncompas 1\nG2 entera\ncompas 2\nD3 entera\ncompas 3\nE3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "VII",
+          "kind": "roman"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "III",
+          "kind": "roman"
+        }
+      ]
+    },
+    "duplicaciones": {
+      "setup": {
+        "mode": "satb",
+        "title": "Duplicaciones en Do mayor",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 entera\ncompas 2\nG4 entera\ncompas 3\nE4 entera\nvoz alto\ncompas 1\nE4 entera\ncompas 2\nE4 entera\ncompas 3\nG3 entera\nvoz tenor\ncompas 1\nG3 entera\ncompas 2\nG3 entera\ncompas 3\nE3 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nC3 entera\ncompas 3\nC3 entera"
+    },
+    "sin-quinta": {
+      "setup": {
+        "mode": "satb",
+        "title": "Do mayor sin quinta",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nE4 entera\ncompas 2\nC5 entera\ncompas 3\nE5 entera\nvoz alto\ncompas 1\nC4 entera\ncompas 2\nE4 entera\ncompas 3\nE4 entera\nvoz tenor\ncompas 1\nE3 entera\ncompas 2\nC4 entera\ncompas 3\nE3 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nC3 entera\ncompas 3\nC3 entera"
+    },
+    "disminuido": {
+      "setup": {
+        "mode": "satb",
+        "title": "VII de Do mayor",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nD4 entera\nvoz alto\ncompas 1\nB3 entera\nvoz tenor\ncompas 1\nF3 entera\nvoz bass\ncompas 1\nD3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "VII",
+          "kind": "roman"
+        }
+      ]
+    },
+    "aumentado": {
+      "setup": {
+        "mode": "satb",
+        "title": "III de La menor armónica",
+        "key": "Am",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nE4 entera\nvoz alto\ncompas 1\nC4 entera\nvoz tenor\ncompas 1\nG#3 entera\nvoz bass\ncompas 1\nC3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "III",
+          "kind": "roman"
+        }
+      ]
+    },
+    "estados": {
+      "setup": {
+        "mode": "satb",
+        "title": "Estados de Do mayor",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 entera\ncompas 2\nC5 entera\ncompas 3\nG4 entera\nvoz alto\ncompas 1\nE4 entera\ncompas 2\nC4 entera\ncompas 3\nC4 entera\nvoz tenor\ncompas 1\nG3 entera\ncompas 2\nG3 entera\ncompas 3\nE3 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nE3 entera\ncompas 3\nG2 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "I 6/3",
+          "kind": "roman"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "I 6/4",
+          "kind": "roman"
+        }
+      ]
+    },
+    "la-63": {
+      "setup": {
+        "mode": "satb",
+        "title": "La mayor",
+        "key": "A",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nA4 entera\nvoz alto\ncompas 1\nE4 entera\nvoz tenor\ncompas 1\nA3 entera\nvoz bass\ncompas 1\nC#3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I 6/3",
+          "kind": "roman"
+        }
+      ]
+    },
+    "solb-64": {
+      "setup": {
+        "mode": "satb",
+        "title": "Sol♭ mayor",
+        "key": "Gb",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nDb4 entera\nvoz alto\ncompas 1\nBb3 entera\nvoz tenor\ncompas 1\nGb3 entera\nvoz bass\ncompas 1\nDb3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I 6/4",
+          "kind": "roman"
+        }
+      ]
+    },
+    "posicion": {
+      "setup": {
+        "mode": "satb",
+        "title": "Posición melódica",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 entera\ncompas 2\nE5 entera\ncompas 3\nG5 entera\nvoz alto\ncompas 1\nE4 entera\ncompas 2\nG4 entera\ncompas 3\nC5 entera\nvoz tenor\ncompas 1\nG3 entera\ncompas 2\nC4 entera\ncompas 3\nE4 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nC3 entera\ncompas 3\nC3 entera"
+    },
+    "disposicion": {
+      "setup": {
+        "mode": "satb",
+        "title": "Disposición interna",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nE4 entera\ncompas 2\nC5 entera\nvoz alto\ncompas 1\nC4 entera\ncompas 2\nE4 entera\nvoz tenor\ncompas 1\nG3 entera\ncompas 2\nG3 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nC3 entera"
+    },
+    "tarea": {
+      "setup": {
+        "mode": "satb",
+        "title": "Tarea: siete grados de Do mayor",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 7,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 entera\ncompas 2\nD5 entera\ncompas 3\nE4 entera\ncompas 4\nF4 entera\ncompas 5\nB4 entera\ncompas 6\nC5 entera\ncompas 7\nD4 entera\nvoz alto\ncompas 1\nE4 entera\ncompas 2\nA4 entera\ncompas 3\nB3 entera\ncompas 4\nA3 entera\ncompas 5\nG4 entera\ncompas 6\nA4 entera\ncompas 7\nB3 entera\nvoz tenor\ncompas 1\nG3 entera\ncompas 2\nD4 entera\ncompas 3\nG3 entera\ncompas 4\nF3 entera\ncompas 5\nD4 entera\ncompas 6\nC4 entera\ncompas 7\nF3 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nF3 entera\ncompas 3\nE3 entera\ncompas 4\nC3 entera\ncompas 5\nG2 entera\ncompas 6\nA2 entera\ncompas 7\nD3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "II 6/3",
+          "kind": "roman"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "III",
+          "kind": "roman"
+        },
+        {
+          "measure": 4,
+          "beat": 1,
+          "text": "IV 6/4",
+          "kind": "roman"
+        },
+        {
+          "measure": 5,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 6,
+          "beat": 1,
+          "text": "VI",
+          "kind": "roman"
+        },
+        {
+          "measure": 7,
+          "beat": 1,
+          "text": "VII 6/3",
+          "kind": "roman"
+        }
+      ]
+    }
+  },
+  "stills": [
+    {
+      "id": "titulo",
+      "kind": "title",
+      "heading": "Cuarteto vocal armónico",
+      "caption": "Lección 6 · Curso de Armonía · Storm Studios Learning",
+      "narration": "Hola, bienvenidos de nuevo a Storm Studios Learning. En la lección anterior completamos las ideas de grados, acordes y tonalidad. Hoy damos un paso muy importante: vamos a escribir acordes para el cuarteto vocal armónico."
+    },
+    {
+      "id": "acordes-sueltos",
+      "kind": "title",
+      "heading": "Acordes sueltos",
+      "caption": "Todavía sin movimiento melódico ni enlaces",
+      "narration": "En esta lección vamos a construir acordes sueltos. Todavía no vamos a ver cómo se mueve cada voz de un acorde al siguiente, ni cómo se enlazan los acordes. Eso lo estudiaremos más adelante."
+    },
+    {
+      "id": "voces",
+      "project": "do",
+      "heading": "Soprano · contralto · tenor · bajo",
+      "caption": "Dos voces femeninas y dos masculinas",
+      "narration": "El cuarteto vocal tiene dos voces femeninas, la soprano y la contralto, y dos voces masculinas, el tenor y el bajo.",
+      "showCiphers": true
+    },
+    {
+      "id": "piano",
+      "kind": "title",
+      "heading": "En el curso original",
+      "caption": "Partitura de piano: dos voces por pentagrama, con plicas opuestas",
+      "narration": "En el curso original escribíamos las cuatro voces en una partitura de piano. La soprano y la contralto compartían el pentagrama en clave de sol, con las plicas en direcciones opuestas. El tenor y el bajo compartían el pentagrama en clave de fa, también con plicas opuestas."
+    },
+    {
+      "id": "secuenciador",
+      "project": "do",
+      "heading": "Cuarteto SATB",
+      "caption": "Un pentagrama por voz en el secuenciador",
+      "narration": "En el secuenciador de Storm Studios, en el modo Cuarteto SATB, cada voz tiene su propio pentagrama. La soprano y la contralto en clave de sol, el tenor y el bajo en clave de fa.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesituras",
+      "project": "tesituras",
+      "heading": "Tesituras",
+      "caption": "Nota más grave y más aguda de cada voz · Do4 = Do central",
+      "narration": "Lo primero que necesitamos saber es la tesitura de cada voz, es decir, su rango. Los rangos cambian mucho según el estilo, el compositor y el coro, pero en este curso vamos a usar rangos fijos. Tomamos el Do cuatro como el Do central del piano.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-soprano",
+      "project": "tesituras",
+      "focusVoice": "soprano",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "Do4 – Sol5"
+        }
+      ],
+      "heading": "Soprano",
+      "caption": "Do4 a Sol5",
+      "narration": "La soprano canta desde el Do cuatro hasta el Sol cinco.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-contralto",
+      "project": "tesituras",
+      "focusVoice": "alto",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "alto",
+          "color": "amber",
+          "label": "Sol3 – Re5"
+        }
+      ],
+      "heading": "Contralto",
+      "caption": "Sol3 a Re5",
+      "narration": "La contralto, desde el Sol tres hasta el Re cinco.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-tenor",
+      "project": "tesituras",
+      "focusVoice": "tenor",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "tenor",
+          "color": "amber",
+          "label": "Si2 – Sol4"
+        }
+      ],
+      "heading": "Tenor",
+      "caption": "Si2 a Sol4",
+      "narration": "El tenor, desde el Si dos hasta el Sol cuatro.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-bajo",
+      "project": "tesituras",
+      "focusVoice": "bass",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "bass",
+          "color": "amber",
+          "label": "Fa2 – Si3"
+        }
+      ],
+      "heading": "Bajo",
+      "caption": "Fa2 a Si3",
+      "narration": "Y el bajo, desde el Fa dos hasta el Si tres.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesituras-limites",
+      "project": "tesituras",
+      "heading": "Respeta estos límites",
+      "narration": "Las notas que escribas para cada voz tienen que respetar estos límites.",
+      "showCiphers": true
+    },
+    {
+      "id": "separaciones",
+      "kind": "title",
+      "heading": "Separación entre voces vecinas",
+      "caption": "Soprano–contralto · contralto–tenor · tenor–bajo",
+      "narration": "Lo segundo es la separación entre las voces."
+    },
+    {
+      "id": "sep-sa",
+      "project": "separaciones",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "12ª"
+        }
+      ],
+      "heading": "Soprano – contralto",
+      "caption": "Máximo una doceava",
+      "narration": "Entre la soprano y la contralto no usamos más de una doceava.",
+      "showCiphers": true
+    },
+    {
+      "id": "sep-at",
+      "project": "separaciones",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "12ª"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "10ª"
+        }
+      ],
+      "heading": "Contralto – tenor",
+      "caption": "Máximo una décima",
+      "narration": "Entre la contralto y el tenor, no más de una décima.",
+      "showCiphers": true
+    },
+    {
+      "id": "sep-tb",
+      "project": "separaciones",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "12ª"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "10ª"
+        },
+        {
+          "measure": 3,
+          "color": "violet",
+          "label": "15ª"
+        }
+      ],
+      "heading": "Tenor – bajo",
+      "caption": "Máximo una quinceava: dos octavas",
+      "narration": "Y entre el tenor y el bajo, no más de una quinceava, es decir, dos octavas.",
+      "showCiphers": true
+    },
+    {
+      "id": "bajo-robusto",
+      "project": "do",
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "bass",
+          "color": "violet",
+          "label": "bajo"
+        }
+      ],
+      "heading": "Voces de arriba compactas",
+      "caption": "Un bajo más separado hace el acorde más robusto",
+      "narration": "Las tres voces de arriba queremos que estén lo más compactas posible. En cambio, mientras más separado está el bajo del resto, más robusto suena el acorde. La nota grave genera más armónicos, y sobre ellos se acomodan las demás notas del acorde.",
+      "showCiphers": true
+    },
+    {
+      "id": "sin-cruces",
+      "project": "do",
+      "heading": "Las voces no se cruzan",
+      "caption": "Soprano arriba de contralto, contralto arriba de tenor, tenor arriba de bajo",
+      "narration": "Además, las voces no se cruzan. La soprano siempre va arriba de la contralto, la contralto arriba del tenor, y el tenor arriba del bajo.",
+      "showCiphers": true
+    },
+    {
+      "id": "tres-notas",
+      "kind": "title",
+      "heading": "Tres notas, cuatro voces",
+      "caption": "Duplicamos una de ellas",
+      "narration": "Ahora, un acorde de quinta tiene tres notas: fundamental, tercera y quinta. Pero el cuarteto tiene cuatro voces. ¿Qué hacemos con tres notas para formar un acorde de cuatro? Duplicamos una de ellas."
+    },
+    {
+      "id": "do-mayor",
+      "project": "do",
+      "heading": "Do mayor",
+      "narration": "Veamos un acorde de Do mayor.",
+      "showCiphers": true
+    },
+    {
+      "id": "do-bajo",
+      "project": "do",
+      "focusVoice": "bass",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "amber",
+          "label": "Do3"
+        }
+      ],
+      "heading": "Bajo: Do3",
+      "narration": "En el bajo ponemos Do tres.",
+      "showCiphers": true
+    },
+    {
+      "id": "do-tenor",
+      "project": "do",
+      "focusVoice": "tenor",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "tenor",
+          "color": "amber",
+          "label": "Sol3"
+        }
+      ],
+      "heading": "Tenor: Sol3",
+      "narration": "En el tenor, Sol tres.",
+      "showCiphers": true
+    },
+    {
+      "id": "do-contralto",
+      "project": "do",
+      "focusVoice": "alto",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "alto",
+          "color": "amber",
+          "label": "Mi4"
+        }
+      ],
+      "heading": "Contralto: Mi4",
+      "narration": "En la contralto, Mi cuatro.",
+      "showCiphers": true
+    },
+    {
+      "id": "do-soprano",
+      "project": "do",
+      "focusVoice": "soprano",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "Do5"
+        }
+      ],
+      "heading": "Soprano: Do5",
+      "narration": "Y en la soprano, otra vez Do, en Do cinco.",
+      "showCiphers": true
+    },
+    {
+      "id": "do-duplica",
+      "project": "do",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "amber",
+          "label": "fundamental"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "fundamental"
+        }
+      ],
+      "heading": "Fundamental duplicada",
+      "narration": "Estamos duplicando la fundamental.",
+      "showCiphers": true
+    },
+    {
+      "id": "do-intervalos",
+      "project": "do",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "tenor",
+          "color": "cyan",
+          "label": "5ª"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "alto",
+          "color": "cyan",
+          "label": "6ª"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "soprano",
+          "color": "cyan",
+          "label": "6ª"
+        }
+      ],
+      "heading": "Tesituras y separaciones correctas",
+      "caption": "Bajo–tenor 5ª · tenor–contralto 6ª · contralto–soprano 6ª",
+      "narration": "Entre el bajo y el tenor hay una quinta, entre el tenor y la contralto una sexta, y entre la contralto y la soprano otra sexta. Las tesituras y las separaciones son correctas.",
+      "showCiphers": true
+    },
+    {
+      "id": "do-escuchar",
+      "project": "do",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "Do mayor",
+      "narration": "Vamos a escucharlo.",
+      "showCiphers": true
+    },
+    {
+      "id": "sensible-excepcion",
+      "kind": "title",
+      "heading": "Duplicamos cualquier nota menos la sensible",
+      "caption": "La única nota que no duplicamos",
+      "narration": "Podemos duplicar cualquier nota del acorde, con una excepción: la sensible. La sensible es la única nota que no duplicamos."
+    },
+    {
+      "id": "sensible-si",
+      "project": "sensible",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "soprano",
+          "color": "rose",
+          "label": "Si"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "voice": "alto",
+          "color": "rose",
+          "label": "Si"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "voice": "alto",
+          "color": "rose",
+          "label": "Si"
+        }
+      ],
+      "heading": "En Do mayor, la sensible es Si",
+      "caption": "El séptimo grado de la escala",
+      "narration": "En la escala mayor, la sensible es el séptimo grado. En Do mayor es Si.",
+      "showCiphers": true
+    },
+    {
+      "id": "sensible-acordes",
+      "project": "sensible",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "Si = 3ª"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "Si = fundamental"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "Si = 5ª"
+        }
+      ],
+      "heading": "V · VII · III",
+      "caption": "Si va en una sola voz",
+      "narration": "La nota Si aparece en tres acordes de Do mayor: es la tercera del quinto grado, la fundamental del séptimo y la quinta del tercero. En esos tres acordes, el Si va en una sola voz.",
+      "showCiphers": true
+    },
+    {
+      "id": "sensible-resuelve",
+      "kind": "title",
+      "heading": "La sensible resuelve a la tónica",
+      "caption": "Duplicada, esa resolución quedaría en dos voces",
+      "narration": "La sensible tiende a resolver a la tónica; si la duplicamos, esa resolución queda en dos voces a la vez."
+    },
+    {
+      "id": "duplicaciones",
+      "project": "duplicaciones",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "fundamental ×2"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "5ª ×2"
+        }
+      ],
+      "heading": "Mayores y menores",
+      "caption": "De preferencia, fundamental o quinta duplicada",
+      "narration": "En los acordes mayores y menores, de preferencia duplicamos la fundamental o la quinta.",
+      "showCiphers": true
+    },
+    {
+      "id": "dup-tercera",
+      "project": "duplicaciones",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "fundamental ×2"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "5ª ×2"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "3ª ×2"
+        }
+      ],
+      "heading": "Tercera duplicada",
+      "caption": "Posible, pero un poco dura",
+      "narration": "Duplicar la tercera es posible, pero suena un poquito duro.",
+      "showCiphers": true
+    },
+    {
+      "id": "sin-quinta",
+      "project": "sin-quinta",
+      "reveal": {
+        "measure": 2
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "cyan",
+          "label": "fund. ×2 · 3ª ×2"
+        }
+      ],
+      "heading": "Sin quinta",
+      "caption": "Fundamental y tercera duplicadas",
+      "narration": "En los acordes mayores y menores también podemos suprimir la quinta. Entonces duplicamos la fundamental y la tercera.",
+      "showCiphers": true
+    },
+    {
+      "id": "triple-fund",
+      "project": "sin-quinta",
+      "reveal": {
+        "measure": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "cyan",
+          "label": "fund. ×2 · 3ª ×2"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "fundamental ×3"
+        }
+      ],
+      "heading": "Fundamental triplicada",
+      "caption": "Y una sola tercera",
+      "narration": "O triplicamos la fundamental y ponemos una sola tercera.",
+      "showCiphers": true
+    },
+    {
+      "id": "triple-tercera",
+      "project": "sin-quinta",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "cyan",
+          "label": "fund. ×2 · 3ª ×2"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "fundamental ×3"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "3ª ×3"
+        }
+      ],
+      "heading": "Tercera triplicada",
+      "caption": "Con menos frecuencia",
+      "narration": "Con menos frecuencia, podemos triplicar la tercera.",
+      "showCiphers": true
+    },
+    {
+      "id": "nunca-suprimir",
+      "kind": "title",
+      "heading": "Nunca suprimimos la fundamental ni la tercera",
+      "caption": "Sin fundamental no se reconoce el acorde · sin tercera no sabemos si es mayor o menor",
+      "narration": "Lo que nunca suprimimos es la fundamental ni la tercera. Sin fundamental no se reconoce el acorde. Y sin tercera no sabemos si el acorde es mayor o menor."
+    },
+    {
+      "id": "completos",
+      "kind": "title",
+      "heading": "Disminuidos y aumentados",
+      "caption": "Siempre completos",
+      "narration": "Los acordes disminuidos y aumentados siempre se presentan completos."
+    },
+    {
+      "id": "disminuido",
+      "project": "disminuido",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "alto",
+          "color": "rose",
+          "label": "sensible"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "amber",
+          "label": "Re ×2"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "Re ×2"
+        }
+      ],
+      "heading": "VII de Do mayor: Si · Re · Fa",
+      "caption": "Si es la sensible: duplicamos Re o Fa",
+      "narration": "En Do mayor, el acorde disminuido es el del séptimo grado: Si, Re y Fa. Su fundamental, Si, es la sensible, así que duplicamos el Re o el Fa.",
+      "showCiphers": true
+    },
+    {
+      "id": "aumentado",
+      "project": "aumentado",
+      "heading": "III de La menor armónica",
+      "caption": "Do · Mi · Sol♯",
+      "narration": "El acorde aumentado aparece en la escala menor armónica, sobre el tercer grado. En La menor armónica es Do, Mi y Sol sostenido.",
+      "showCiphers": true
+    },
+    {
+      "id": "aumentado-sensible",
+      "project": "aumentado",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "tenor",
+          "color": "rose",
+          "label": "sensible"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "amber",
+          "label": "Do ×2"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "alto",
+          "color": "amber",
+          "label": "Do ×2"
+        }
+      ],
+      "heading": "Sol♯ es la sensible",
+      "caption": "Duplicamos Do o Mi",
+      "narration": "Su quinta, Sol sostenido, es la sensible, así que duplicamos el Do o el Mi.",
+      "showCiphers": true
+    },
+    {
+      "id": "estados",
+      "project": "estados",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 3,
+          "voice": "bass",
+          "color": "violet",
+          "label": "bajo"
+        }
+      ],
+      "heading": "Estados del acorde",
+      "caption": "Dependen de la nota del bajo",
+      "narration": "Pasemos a los estados del acorde. El estado depende de la nota que está en el bajo.",
+      "showCiphers": true
+    },
+    {
+      "id": "estado-fund",
+      "project": "estados",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "fundamental",
+          "voice": "bass"
+        }
+      ],
+      "heading": "Estado fundamental",
+      "caption": "Fundamental en el bajo",
+      "narration": "Si el bajo tiene la fundamental, el acorde está en estado fundamental.",
+      "showCiphers": true
+    },
+    {
+      "id": "estado-63",
+      "project": "estados",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "fundamental",
+          "voice": "bass"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "3ª",
+          "voice": "bass"
+        }
+      ],
+      "heading": "Primera inversión",
+      "caption": "Tercera en el bajo",
+      "narration": "Si el bajo tiene la tercera, está en primera inversión.",
+      "showCiphers": true
+    },
+    {
+      "id": "estado-64",
+      "project": "estados",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "fundamental",
+          "voice": "bass"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "3ª",
+          "voice": "bass"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "5ª",
+          "voice": "bass"
+        }
+      ],
+      "heading": "Segunda inversión",
+      "caption": "Quinta en el bajo",
+      "narration": "Y si el bajo tiene la quinta, está en segunda inversión.",
+      "showCiphers": true
+    },
+    {
+      "id": "cifrados",
+      "project": "estados",
+      "heading": "Cifrados 6/3 y 6/4",
+      "caption": "Intervalos de las otras notas sobre el bajo",
+      "narration": "La primera inversión la ciframos seis tres, y la segunda inversión, seis cuatro. Estos cifrados vienen de los intervalos que forman las otras notas del acorde sobre el bajo.",
+      "showCiphers": true
+    },
+    {
+      "id": "la-intro",
+      "project": "la-63",
+      "heading": "La mayor en primera inversión",
+      "caption": "La · Do♯ · Mi",
+      "narration": "Veamos un ejemplo con La mayor en primera inversión. La mayor es La, Do sostenido y Mi.",
+      "showCiphers": true
+    },
+    {
+      "id": "la-bajo",
+      "project": "la-63",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "cyan",
+          "label": "Do♯ · 3ª"
+        }
+      ],
+      "heading": "Do♯ en el bajo",
+      "narration": "Para que esté en primera inversión, ponemos Do sostenido en el bajo.",
+      "showCiphers": true
+    },
+    {
+      "id": "la-fund",
+      "project": "la-63",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "cyan",
+          "label": "Do♯ · 3ª"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "tenor",
+          "color": "amber",
+          "label": "fundamental"
+        }
+      ],
+      "heading": "No suprimimos la fundamental",
+      "narration": "No podemos suprimir la fundamental, así que ponemos La.",
+      "showCiphers": true
+    },
+    {
+      "id": "la-duplica",
+      "project": "la-63",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "cyan",
+          "label": "Do♯ · 3ª"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "tenor",
+          "color": "amber",
+          "label": "fundamental"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "fundamental"
+        }
+      ],
+      "heading": "Fundamental duplicada",
+      "narration": "Y aquí duplicamos la fundamental.",
+      "showCiphers": true
+    },
+    {
+      "id": "solb-intro",
+      "project": "solb-64",
+      "heading": "Sol♭ mayor en segunda inversión",
+      "caption": "Sol♭ · Si♭ · Re♭",
+      "narration": "Ahora Sol bemol mayor en segunda inversión. Sol bemol mayor es Sol bemol, Si bemol y Re bemol.",
+      "showCiphers": true
+    },
+    {
+      "id": "solb-bajo",
+      "project": "solb-64",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "rose",
+          "label": "Re♭ · 5ª"
+        }
+      ],
+      "heading": "Re♭ en el bajo",
+      "narration": "Para la segunda inversión necesitamos Re bemol en el bajo.",
+      "showCiphers": true
+    },
+    {
+      "id": "solb-fund-terc",
+      "project": "solb-64",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "rose",
+          "label": "Re♭ · 5ª"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "tenor",
+          "color": "amber",
+          "label": "fundamental"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "alto",
+          "color": "cyan",
+          "label": "3ª"
+        }
+      ],
+      "heading": "Fundamental y tercera",
+      "narration": "Necesitamos la fundamental y la tercera.",
+      "showCiphers": true
+    },
+    {
+      "id": "solb-duplica",
+      "project": "solb-64",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "bass",
+          "color": "rose",
+          "label": "Re♭ · 5ª"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "tenor",
+          "color": "amber",
+          "label": "fundamental"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "alto",
+          "color": "cyan",
+          "label": "3ª"
+        },
+        {
+          "measure": 1,
+          "beat": 1,
+          "voice": "soprano",
+          "color": "rose",
+          "label": "5ª"
+        }
+      ],
+      "heading": "Quinta duplicada",
+      "narration": "Y ahora duplicamos la quinta.",
+      "showCiphers": true
+    },
+    {
+      "id": "estados-escuchar",
+      "project": "estados",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "Los tres estados",
+      "caption": "Do mayor: fundamental · 6/3 · 6/4",
+      "narration": "Escuchemos los tres estados.",
+      "showCiphers": true
+    },
+    {
+      "id": "posicion",
+      "project": "posicion",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 3,
+          "voice": "soprano",
+          "color": "violet",
+          "label": "soprano"
+        }
+      ],
+      "heading": "Posición melódica",
+      "caption": "Depende de la nota de la soprano",
+      "narration": "Ahora la posición melódica. La posición melódica depende de la nota que canta la soprano.",
+      "showCiphers": true
+    },
+    {
+      "id": "posicion-8",
+      "project": "posicion",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "8ª",
+          "voice": "soprano"
+        }
+      ],
+      "heading": "Posición melódica de octava",
+      "caption": "Fundamental en la soprano",
+      "narration": "Si la soprano tiene la fundamental, decimos que el acorde está en posición melódica de octava.",
+      "showCiphers": true
+    },
+    {
+      "id": "posicion-3",
+      "project": "posicion",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "8ª",
+          "voice": "soprano"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "3ª",
+          "voice": "soprano"
+        }
+      ],
+      "heading": "Posición melódica de tercera",
+      "caption": "Tercera en la soprano",
+      "narration": "Si tiene la tercera, en posición melódica de tercera.",
+      "showCiphers": true
+    },
+    {
+      "id": "posicion-5",
+      "project": "posicion",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "8ª",
+          "voice": "soprano"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "3ª",
+          "voice": "soprano"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "5ª",
+          "voice": "soprano"
+        }
+      ],
+      "heading": "Posición melódica de quinta",
+      "caption": "Quinta en la soprano",
+      "narration": "Y si tiene la quinta, en posición melódica de quinta.",
+      "showCiphers": true
+    },
+    {
+      "id": "posicion-escuchar",
+      "project": "posicion",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "Las tres posiciones melódicas",
+      "narration": "Escuchemos las tres posiciones.",
+      "showCiphers": true
+    },
+    {
+      "id": "disposicion",
+      "project": "disposicion",
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "soprano",
+          "color": "violet"
+        },
+        {
+          "measure": 1,
+          "voice": "alto",
+          "color": "violet"
+        },
+        {
+          "measure": 1,
+          "voice": "tenor",
+          "color": "violet"
+        },
+        {
+          "measure": 2,
+          "voice": "soprano",
+          "color": "violet"
+        },
+        {
+          "measure": 2,
+          "voice": "alto",
+          "color": "violet"
+        },
+        {
+          "measure": 2,
+          "voice": "tenor",
+          "color": "violet"
+        }
+      ],
+      "heading": "Disposición interna",
+      "caption": "Solo las tres voces de arriba",
+      "narration": "Por último, la disposición interna. Aquí solo miramos las tres voces de arriba: soprano, contralto y tenor.",
+      "showCiphers": true
+    },
+    {
+      "id": "disposicion-def",
+      "project": "disposicion",
+      "heading": "Cerrada o abierta",
+      "caption": "¿Cabe otra nota del acorde entre ellas?",
+      "narration": "La disposición es cerrada cuando, entre ellas, no cabe otra nota del mismo acorde. Y es abierta cuando sí cabe.",
+      "showCiphers": true
+    },
+    {
+      "id": "cerrada",
+      "project": "disposicion",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "cerrada"
+        }
+      ],
+      "heading": "Disposición cerrada",
+      "caption": "Sol · Do · Mi: no cabe otra nota de Do mayor",
+      "narration": "En este acorde de Do mayor, entre el tenor y la contralto, y entre la contralto y la soprano, no cabe ninguna otra nota de Do mayor. La disposición es cerrada.",
+      "showCiphers": true
+    },
+    {
+      "id": "abierta",
+      "project": "disposicion",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "cerrada"
+        },
+        {
+          "measure": 2,
+          "color": "cyan",
+          "label": "abierta · cabe Do"
+        }
+      ],
+      "heading": "Disposición abierta",
+      "caption": "Entre Sol y Mi cabe un Do",
+      "narration": "En este otro, entre el tenor y la contralto cabe un Do. La disposición es abierta.",
+      "showCiphers": true
+    },
+    {
+      "id": "disposicion-escuchar",
+      "project": "disposicion",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "Cerrada y abierta",
+      "narration": "Escuchemos la diferencia.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea",
+      "kind": "title",
+      "heading": "Tarea para el Maestro Virtual",
+      "narration": "Ahora la tarea para el maestro virtual."
+    },
+    {
+      "id": "tarea-grados",
+      "project": "tarea",
+      "heading": "Siete acordes, uno por grado",
+      "caption": "Cualquier tonalidad mayor, en cualquier orden",
+      "narration": "Vas a escribir siete acordes, uno sobre cada grado de una escala mayor. Puedes elegir la tonalidad mayor que quieras. Y puedes escribir los siete acordes en el orden que quieras.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea-libre",
+      "project": "tarea",
+      "heading": "Estado, posición y disposición libres",
+      "caption": "Varíalos para practicar todas las combinaciones",
+      "narration": "Cada acorde puede tener el estado, la posición melódica y la disposición que tú elijas. Te recomiendo variarlos, para que practiques todas las combinaciones.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea-enteras",
+      "project": "tarea",
+      "heading": "Una entera por compás",
+      "caption": "Secuenciador en modo Cuarteto SATB · exporta el MIDI",
+      "narration": "Escribe cada acorde como una entera, con las cuatro voces al mismo tiempo, un acorde por compás. Trabaja en el secuenciador en modo Cuarteto SATB y exporta tu tarea como archivo MIDI.",
+      "showCiphers": true
+    },
+    {
+      "id": "maestro-revisa",
+      "kind": "title",
+      "heading": "El Maestro Virtual revisa",
+      "caption": "Tonalidad y grados · tesituras · separaciones y cruces · duplicaciones, supresiones y sensible · grafía",
+      "narration": "El maestro virtual reconoce la tonalidad y el grado de cada acorde, y revisa que estén los siete grados. También revisa las tesituras, las separaciones entre las voces y que no se crucen. Revisa las duplicaciones, las triplicaciones y las supresiones, y que no hayas duplicado la sensible. Y revisa que las notas estén bien escritas en la tonalidad."
+    },
+    {
+      "id": "maestro-describe",
+      "project": "tarea",
+      "heading": "Y describe cada acorde",
+      "caption": "Estado · posición melódica · disposición",
+      "narration": "Además, de cada acorde te dice su estado, su posición melódica y su disposición.",
+      "showCiphers": true
+    },
+    {
+      "id": "recapitulemos",
+      "kind": "title",
+      "heading": "Recapitulemos",
+      "narration": "Recapitulemos."
+    },
+    {
+      "id": "recap-tesituras",
+      "project": "tesituras",
+      "heading": "Tesituras y separaciones",
+      "caption": "Sin cruces de voces",
+      "narration": "El cuarteto vocal tiene cuatro voces, cada una con su tesitura. Las voces respetan sus separaciones y no se cruzan.",
+      "showCiphers": true
+    },
+    {
+      "id": "recap-duplicaciones",
+      "project": "duplicaciones",
+      "heading": "Duplicaciones y supresiones",
+      "caption": "Nunca la sensible · en mayores y menores se puede suprimir la quinta",
+      "narration": "Podemos duplicar cualquier nota menos la sensible, y en los acordes mayores y menores podemos suprimir la quinta.",
+      "showCiphers": true
+    },
+    {
+      "id": "recap-estado",
+      "project": "estados",
+      "heading": "Bajo: estado · soprano: posición melódica",
+      "caption": "Tres voces de arriba: disposición",
+      "narration": "El bajo determina el estado del acorde, la soprano su posición melódica, y las tres voces de arriba su disposición.",
+      "showCiphers": true
+    },
+    {
+      "id": "siguiente",
+      "kind": "title",
+      "heading": "Próximas lecciones",
+      "caption": "El enlace de los acordes",
+      "narration": "En las siguientes lecciones vamos a aprender a enlazar los acordes."
+    },
+    {
+      "id": "cierre",
+      "kind": "title",
+      "heading": "Gracias",
+      "caption": "Nos vemos en la lección 7",
+      "narration": "Gracias por acompañarme. Nos vemos en la lección siete."
+    }
+  ]
+}

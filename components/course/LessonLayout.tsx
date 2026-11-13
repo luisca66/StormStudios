@@ -4,9 +4,10 @@ import LessonSidebar from "./LessonSidebar";
 import RulesReference from "./RulesReference";
 import ProgressTracker from "./ProgressTracker";
 import ExerciseUpload from "./ExerciseUpload";
-import { getCourseConfig } from "@/lib/course";
+import { getCourseConfig, getLessonStatus } from "@/lib/course";
 import { Link } from "@/i18n/navigation";
 import LiteYouTube from "@/components/media/LiteYouTube";
+import { useTranslations } from "next-intl";
 
 type Props = {
   lesson: LessonConfig;
@@ -17,12 +18,13 @@ type Props = {
 };
 
 export default function LessonLayout({ lesson, prev, next, locale, children }: Props) {
+  const t = useTranslations("course.privateLessons");
   const es = locale === "es";
   const course = getCourseConfig();
   const lessonVideos = lesson.videosByLocale?.[locale as "es" | "en"] ?? lesson.videos;
   const lessonTools = lesson.toolsByLocale?.[locale as "es" | "en"] ?? lesson.tools;
   // Solo las lecciones del curso principal tienen número; el resto usa su etiqueta (P01, Intro…).
-  const unitCode = lesson.title.es.match(/^(P\d+)/)?.[1];
+  const unitCode = lesson.title.es.match(/^(P\d+(?:\.\d+)?)/)?.[1];
   const badge = lesson.lessonNumber ?? unitCode ?? (lesson.module === "introduccion" ? "·" : lesson.order);
   const kicker = lesson.lessonNumber
     ? `${es ? "Lección" : "Lesson"} ${lesson.lessonNumber}`
@@ -83,8 +85,8 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
 
           <div className="ss-divider mb-8" />
 
-          {lesson.status === "construction" ? (
-            <ConstructionBanner locale={locale} />
+          {getLessonStatus(lesson, locale) === "construction" ? (
+            <ConstructionBanner locale={locale} translationPending={lesson.status === "published"} />
           ) : (
           <>
           {/* Videos de la lección */}
@@ -223,25 +225,33 @@ export default function LessonLayout({ lesson, prev, next, locale, children }: P
 
           {/* Navegación prev/next */}
           <LessonNav prev={prev} next={next} locale={locale} />
+          <p className="ss-mono text-xs mt-6" style={{ color: "var(--ss-muted)", lineHeight: 1.8 }}>
+            {t("prompt")}{" "}
+            <Link href="/contacto" data-measure="contact_click" data-destination="lesson" style={{ color: "var(--ss-violet-text)", textDecoration: "underline" }}>
+              {t("link")}
+            </Link>
+          </p>
         </article>
       </div>
     </div>
   );
 }
 
-function ConstructionBanner({ locale }: { locale: string }) {
+function ConstructionBanner({ locale, translationPending }: { locale: string; translationPending: boolean }) {
   const es = locale === "es";
   return (
     <div className="ss-glass rounded-2xl p-8 text-center"
       style={{ border: "1px solid rgba(245,158,11,0.25)", background: "rgba(245,158,11,0.05)" }}>
       <div className="text-4xl mb-4">🚧</div>
       <h2 className="ss-serif mb-3" style={{ fontSize: "1.3rem", color: "#f0eeff" }}>
-        {es ? "Lección en construcción" : "Lesson under construction"}
+        {es ? "Lección en construcción" : translationPending ? "Coming soon" : "Lesson under construction"}
       </h2>
       <p className="ss-mono text-sm" style={{ color: "var(--ss-muted)", lineHeight: 1.7, maxWidth: "440px", margin: "0 auto" }}>
         {es
           ? "Estamos preparando esta lección. Muy pronto estará disponible con su video, su teoría y el Maestro Virtual."
-          : "We're preparing this lesson. It will soon be available with its video, theory and the Virtual Teacher."}
+          : translationPending
+            ? "The English version of Lesson 4 is coming soon."
+            : "We're preparing this lesson. It will soon be available with its video, theory and the Virtual Teacher."}
       </p>
     </div>
   );

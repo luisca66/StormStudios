@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
-import { getAllLessons, getCourseConfig, getLessonUrlSlug } from "@/lib/course";
+import { getAllLessons, getCourseConfig, getLessonUrlSlug, getLessonStatus } from "@/lib/course";
 import type { Locale } from "@/i18n/routing";
 import type { LessonConfig } from "@/types/course";
 
@@ -167,7 +167,7 @@ function LessonLink({
       <span className="line-clamp-2">
         {lesson.title[locale as "es" | "en"]}
       </span>
-      {lesson.status === "construction" && (
+      {getLessonStatus(lesson, locale) === "construction" && (
         <span className="ml-auto flex-shrink-0 text-xs" title="En construcción">🚧</span>
       )}
     </Link>

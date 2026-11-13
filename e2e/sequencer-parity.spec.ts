@@ -7,7 +7,14 @@ test.beforeEach(async({page})=>{
   await page.addInitScript(value=>localStorage.setItem("storm-sequencer-studio-v1",JSON.stringify(value)),score);
   await page.route("**/_vercel/**",route=>route.abort());
   await page.goto("/es/sequencer/v4");
-  await expect(page.getByTestId("score-view").locator("[data-note-id]")).toHaveCount(1);
+  // The HTML shell precedes hydration, draft recovery and the lazy VexFlow import.
+  // Check the restored fixture first so a slow renderer cannot hide a recovery bug.
+  await page.waitForFunction(
+    () => window.stormSequencer?.getScore().voices[0].events[0]?.id === "parity-note",
+    undefined,
+    { timeout: 15_000 },
+  );
+  await expect(page.getByTestId("score-view").locator("[data-note-id]")).toHaveCount(1,{timeout:10_000});
 });
 
 test("v3 accidentals edit the selected note immediately and repeat into double accidentals",async({page})=>{

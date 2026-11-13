@@ -565,3 +565,72 @@ body {
     width: calc(100vw - 20px);
   }
 }
+
+/* AP Super progression and dense keyboards. */
+.level-screen { width: min(100%, 1000px); overflow: hidden; }
+.level-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; overflow-y: auto; min-height: 0; padding: 4px; }
+.level-card { display: flex; flex-direction: column; gap: 8px; padding: 14px; text-align: left; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; color: var(--ink); font: inherit; cursor: pointer; }
+.level-card:hover, .level-card:focus-visible { border-color: var(--aqua); }
+.level-card.completed { border-color: var(--mint); }
+.level-notes { font-family: var(--font-mono); font-size: .8rem; color: var(--muted); line-height: 1.5; }
+.keyboard-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(65px, 1fr)); max-height: 42vh; overflow-y: auto; flex-shrink: 0; }
+.answer-panel { width: min(100%, 780px); }
+.answer-grid { grid-template-columns: repeat(auto-fit, minmax(52px, 1fr)); }
+.game-toolbar, .hud-summary { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.game-toolbar { width: 100%; padding-right: 165px; }
+.game-toolbar .secondary-button { padding: 10px 12px; font-size: .85rem; }
+.feedback-toast.show { pointer-events: auto; max-width: min(92vw, 540px); text-align: center; }
+.feedback-toast p { margin: 0; line-height: 1.5; }
+.portal-message, .completion-message { color: var(--mint); background: var(--panel); padding: 12px; border-radius: var(--radius); text-align: center; }
+.portal-message { align-self: center; }
+.victory-screen { text-align: center; max-width: 600px; }
+.trophy { font-size: 4rem; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--aqua); outline-offset: 3px; }
+@media (max-width: 760px) { .game-toolbar { padding-right: 0; } #radar-canvas { top: 110px; bottom: auto; width: 100px; height: 100px; } .answer-grid { grid-template-columns: repeat(6, 1fr); } }
+
+.scenario-selector { margin: 0; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); }
+.scenario-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.scenario-options .chip { display: flex; align-items: center; justify-content: center; gap: 6px; border-radius: 8px; }
+
+/* Consistent HUD contrast in all five scenarios. */
+.game-toolbar .secondary-button, .game-toolbar .chip, .hud-instruction {
+  background: rgba(7, 16, 24, .9); color: var(--ink); border: 1px solid var(--border-strong);
+  backdrop-filter: blur(12px); box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+}
+.game-toolbar .secondary-button:hover, .game-toolbar .chip:hover { background: rgba(20, 39, 53, .96); }
+.hud-instruction { padding: 12px 16px; border-radius: var(--radius); }
+.statistics-screen { width: min(100%, 1000px); }
+.stats-filters { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.stats-filters label { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.stats-filters select { padding: 10px; border: 1px solid var(--border-strong); border-radius: 8px; background: #0b1823; color: var(--ink); font: inherit; }
+.stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.stats-card { min-width: 0; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); background: rgba(7, 16, 24, .85); }
+.stats-wide { grid-column: 1 / -1; }
+.metric-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; position: relative; }
+.metric-heading h2 { margin: 0 0 12px; font-size: 1rem; }
+.metric-value { display: block; font-size: 1.6rem; color: var(--mint); }
+.metric-help { position: relative; flex-shrink: 0; pointer-events: auto; font-size: .9rem; font-weight: 400; text-align: left; }
+.metric-help summary { display: grid; place-items: center; width: 24px; height: 24px; border: 1px solid var(--border-strong); color: var(--aqua); border-radius: 50%; cursor: pointer; list-style: none; }
+.metric-help summary::-webkit-details-marker { display: none; }
+.metric-help p { position: absolute; top: 28px; right: 0; z-index: 220; width: min(290px, 70vw); padding: 14px; margin: 0; background: #0b1823; color: var(--ink); border: 1px solid var(--border-strong); border-radius: 8px; box-shadow: var(--shadow); line-height: 1.5; }
+.hud-summary .hud-card { min-width: 125px; }
+.hud-summary .hud-card:first-child .metric-help p { left: 0; right: auto; }
+.session-figures { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; margin: 8px 0 0; font-variant-numeric: tabular-nums; }
+.session-figures dt { color: var(--muted); font-size: .8rem; line-height: 1.4; }
+.session-figures dd { margin: 6px 0 0; font-weight: 700; }
+.accuracy-row { display: grid; grid-template-columns: minmax(36px, 85px) minmax(30px, 1fr) 100px; gap: 10px; align-items: center; margin-top: 12px; font-variant-numeric: tabular-nums; }
+.accuracy-track { height: 9px; border-radius: 9px; overflow: hidden; background: rgba(234, 244, 255, .12); }
+.accuracy-track > span { display: block; height: 100%; background: var(--mint); border-radius: inherit; }
+.accuracy-value { text-align: right; font-size: .88rem; }
+.accuracy-value small { display: block; color: var(--muted); }
+.session-history { max-height: 320px; overflow: auto; }
+.session-history table { width: 100%; border-collapse: collapse; font-size: .88rem; font-variant-numeric: tabular-nums; }
+.session-history th, .session-history td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.session-history th { position: sticky; top: 0; background: #0b1823; color: var(--muted); }
+.stats-empty { text-align: center; padding: 24px; border: 1px dashed var(--border-strong); border-radius: var(--radius); color: var(--muted); line-height: 1.5; }
+.storage-notice { position: fixed; z-index: 250; top: 8px; left: 50%; transform: translateX(-50%); width: min(90vw, 650px); display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid var(--gold); border-radius: 10px; background: #0b1823; color: var(--ink); font-size: .85rem; line-height: 1.4; pointer-events: auto; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+button:disabled { opacity: .45; cursor: default; transform: none; }
+@media (max-width: 700px) { .stats-grid { grid-template-columns: minmax(0, 1fr); } .hud-summary { gap: 6px; } .hud-summary .hud-card { padding: 10px; min-width: 0; } }
+
+.ui-screen-host { display: contents; }

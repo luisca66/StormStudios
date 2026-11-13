@@ -20,11 +20,16 @@ import { lesson as lP01 } from "@/data/course/lessons/p01-notas";
 import { lesson as lP02 } from "@/data/course/lessons/p02-ritmica";
 import { lesson as lP03 } from "@/data/course/lessons/p03-intervalos";
 import { lesson as lP04 } from "@/data/course/lessons/p04-secuenciador";
+import { lesson as lP041 } from "@/data/course/lessons/p04-1-secuenciador-v4";
 import { lesson as l02 } from "@/data/course/lessons/02-leccion-1";
 import { lesson as l03 } from "@/data/course/lessons/03-leccion-2";
 import { lesson as l04 } from "@/data/course/lessons/04-leccion-3";
 import { lesson as l05 } from "@/data/course/lessons/05-leccion-4";
 import { lesson as l06 } from "@/data/course/lessons/06-leccion-5";
+import { lesson as l07 } from "@/data/course/lessons/07-leccion-6";
+import { lesson as l08 } from "@/data/course/lessons/08-leccion-7";
+import { lesson as l09 } from "@/data/course/lessons/09-leccion-8";
+import { lesson as l10 } from "@/data/course/lessons/10-leccion-9";
 
 // ─── Registro maestro ─────────────────────────────────────────────────────────
 
@@ -33,7 +38,7 @@ import { lesson as l06 } from "@/data/course/lessons/06-leccion-5";
  * Para agregar una lección nueva: importarla arriba y añadirla aquí.
  */
 const ALL_LESSONS: LessonConfig[] = [
-  l00, lP01, lP02, lP03, lP04, l02, l03, l04, l05, l06,
+  l00, lP01, lP02, lP03, lP04, lP041, l02, l03, l04, l05, l06, l07, l08, l09, l10,
 ]
   .filter((l) => l.status !== "hidden") // las ocultas no se publican ni se enlazan
   .sort((a, b) => a.order - b.order);
@@ -46,6 +51,11 @@ const ALL_LESSONS: LessonConfig[] = [
  */
 export function getAllLessons(): LessonConfig[] {
   return ALL_LESSONS;
+}
+
+/** Publication can differ while a translation is being prepared. */
+export function getLessonStatus(lesson: LessonConfig, locale: string) {
+  return lesson.statusByLocale?.[locale as Locale] ?? lesson.status ?? "published";
 }
 
 /**
@@ -100,6 +110,20 @@ export function getLessonNav(
     prev: idx > 0 ? ALL_LESSONS[idx - 1] : null,
     next: idx < ALL_LESSONS.length - 1 ? ALL_LESSONS[idx + 1] : null,
   };
+}
+
+/**
+ * Lecciones publicadas en un idioma donde el Maestro Virtual revisa el MIDI
+ * (tienen ejercicio y número de lección). Fuente única para los textos que
+ * describen su alcance, para que no se queden atrás al publicar lecciones.
+ */
+export function getVirtualTeacherLessons(locale: Locale): LessonConfig[] {
+  return ALL_LESSONS.filter(
+    (lesson) =>
+      lesson.exercise &&
+      lesson.lessonNumber !== undefined &&
+      getLessonStatus(lesson, locale) === "published"
+  );
 }
 
 /**

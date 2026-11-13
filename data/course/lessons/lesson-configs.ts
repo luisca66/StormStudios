@@ -5,14 +5,33 @@
  * (ruteo explícito, no por coincidencia de substring en el id).
  */
 
-export type ValidatorKind = 'major-scales' | 'minor-scales' | 'modes' | 'satb';
+export type ValidatorKind = 'major-scales' | 'minor-scales' | 'modes' | 'triads' | 'satb' | 'satb-chords' | 'melodic-lines' | 'satb-links' | 'cadences';
 
 export interface ValidatorConfig {
   id: string;
   validator: ValidatorKind;
-  voiceCount: number;   // 1 = una voz (Soprano) · 4 = SATB
+  voiceCount: number;   // 1 = una voz · 4 = SATB
   activeRules: string[];
 }
+
+const VALIDATOR_LESSON9_RULES = [
+  "CADENCE_FILE_LIMIT",
+  "CADENCE_NO_CHORDS",
+  "CADENCE_CHORD_COUNT",
+  "CADENCE_AMBIGUOUS_KEY",
+  "CADENCE_UNRECOGNIZED",
+  "CADENCE_DUPLICATE",
+  "CADENCE_FINAL_INVERSION",
+  "CADENCE_SIX_FOUR_WEAK_BEAT",
+  "CADENCE_SIX_FOUR_POSITION",
+  "CADENCE_START_MEASURE",
+  "CADENCE_DURATION",
+  "CADENCE_INFO",
+  "CADENCE_LEADING_TONE_SOPRANO",
+  "CADENCE_KEYS",
+  "CADENCE_REPEATED_KEY",
+  "CADENCE_MISSING"
+];
 
 const VALIDATOR_CONFIGS: Record<string, ValidatorConfig> = {
   // ── Lección 1: Escalas Mayores (1 voz) ───────────────────────────────────
@@ -48,18 +67,70 @@ const VALIDATOR_CONFIGS: Record<string, ValidatorConfig> = {
     ],
   },
 
-  // ── Lecciones SATB (4 voces) ──────────────────────────────────────────────
+  // ── Lección 4: Tríadas en estado fundamental (3 notas simultáneas) ────────
   '05-leccion-4': {
     id: '05-leccion-4',
-    validator: 'satb',
-    voiceCount: 4,
-    activeRules: ['voice-range-satb', 'voice-crossing', 'no-parallel-fifths', 'no-parallel-octaves'],
+    validator: 'triads',
+    voiceCount: 1,
+    activeRules: ['TRIAD_MISSING_SCALE', 'TRIAD_DUPLICATE_SCALE', 'TRIAD_AMBIGUOUS_SCALE', 'TRIAD_UNRECOGNIZED', 'TRIAD_MISSING_CHORD', 'TRIAD_EXTRA_CHORD', 'TRIAD_NOTE_COUNT', 'TRIAD_WRONG_NOTE', 'TRIAD_ENHARMONIC', 'TRIAD_MISSING_SPELLING'],
   },
-  '06-leccion-5': {
-    id: '06-leccion-5',
-    validator: 'satb',
+  // Lección 6: construcción de los siete acordes en cuatro voces.
+  '07-leccion-6': {
+    id: '07-leccion-6',
+    validator: 'satb-chords',
     voiceCount: 4,
-    activeRules: ['voice-range-satb', 'voice-crossing', 'no-parallel-fifths', 'no-parallel-octaves'],
+    activeRules: [
+      'SATB_NO_CHORDS', 'SATB_FILE_LIMIT', 'SATB_KEY',
+      'SATB_VOICE_NOTES', 'SATB_MISSING_VOICE', 'SATB_UNRECOGNIZED',
+      'SATB_FOREIGN_NOTE', 'SATB_ENHARMONIC', 'SATB_MISSING_SPELLING',
+      'SATB_MISSING_ROOT', 'SATB_MISSING_THIRD', 'SATB_INCOMPLETE_DIMINISHED',
+      'SATB_LEADING_TONE_DOUBLED', 'SATB_RANGE', 'SATB_VOICE_CROSSING',
+      'SATB_SPACING', 'SATB_CHORD_INFO', 'SATB_MISSING_DEGREE',
+      'SATB_DUPLICATE_DEGREE', 'SATB_CHORD_COUNT',
+    ],
+  },
+  // Lección 7: una melodía por archivo, en cualquiera de las voces SATB.
+  '08-leccion-7': {
+    id: '08-leccion-7',
+    validator: 'melodic-lines',
+    voiceCount: 1,
+    activeRules: [
+      'MELODY_NO_NOTES', 'MELODY_SEVERAL_VOICES', 'MELODY_FILE_LIMIT',
+      'MELODY_SIMULTANEOUS_NOTES', 'MELODY_KEY', 'MELODY_NOTE_COUNT',
+      'MELODY_FOREIGN_NOTE', 'MELODY_ENHARMONIC', 'MELODY_MISSING_SPELLING',
+      'MELODY_START_TONIC', 'MELODY_END_TONIC', 'MELODY_RANGE', 'MELODY_SUMMARY',
+      'MELODIC_FORBIDDEN_INTERVAL', 'MELODIC_REPEATED_NOTE',
+      'MELODIC_LEADING_TONE_OCTAVE', 'MELODIC_DIMINISHED_UNRESOLVED',
+      'MELODIC_SUCCESSIVE_LEAPS',
+    ],
+  },
+  '09-leccion-8': {
+    id: '09-leccion-8', validator: 'satb-links', voiceCount: 4,
+    activeRules: [
+      'SATB_NO_CHORDS', 'SATB_FILE_LIMIT',
+      'SATB_VOICE_NOTES', 'SATB_MISSING_VOICE', 'SATB_UNRECOGNIZED',
+      'SATB_FOREIGN_NOTE', 'SATB_ENHARMONIC', 'SATB_MISSING_SPELLING',
+      'SATB_MISSING_ROOT', 'SATB_MISSING_THIRD', 'SATB_INCOMPLETE_DIMINISHED',
+      'SATB_LEADING_TONE_DOUBLED', 'SATB_RANGE', 'SATB_VOICE_CROSSING', 'SATB_SPACING',
+      'LINK_KEYS', 'LINK_AMBIGUOUS_KEY', 'LINK_REPEATED_KEY',
+      'LINK_CHORD_COUNT', 'LINK_UNASSIGNED', 'LINK_DUPLICATE', 'LINK_MISSING',
+      'LINK_UNRECOGNIZED', 'LINK_INFO', 'LINK_LEADING_TONE_SOPRANO',
+      'MELODIC_FORBIDDEN_INTERVAL', 'MELODIC_LEADING_TONE_OCTAVE', 'MELODIC_DIMINISHED_UNRESOLVED',
+      'HARMONIC_PARALLEL_OCTAVES', 'HARMONIC_CONTRARY_OCTAVES',
+      'HARMONIC_PARALLEL_FIFTHS', 'HARMONIC_CONTRARY_FIFTHS', 'HARMONIC_SIMULTANEOUS_LEAPS',
+    ],
+  },
+  '10-leccion-9': {
+    id: '10-leccion-9', validator: 'cadences', voiceCount: 4,
+    activeRules: [
+      ...VALIDATOR_LESSON9_RULES,
+      'SATB_VOICE_NOTES', 'SATB_MISSING_VOICE', 'SATB_UNRECOGNIZED',
+      'SATB_FOREIGN_NOTE', 'SATB_ENHARMONIC', 'SATB_MISSING_SPELLING',
+      'SATB_MISSING_ROOT', 'SATB_MISSING_THIRD', 'SATB_INCOMPLETE_DIMINISHED',
+      'SATB_LEADING_TONE_DOUBLED', 'SATB_RANGE', 'SATB_VOICE_CROSSING', 'SATB_SPACING',
+      'MELODIC_FORBIDDEN_INTERVAL', 'MELODIC_LEADING_TONE_OCTAVE', 'MELODIC_DIMINISHED_UNRESOLVED', 'MELODIC_SUCCESSIVE_LEAPS',
+      'HARMONIC_PARALLEL_OCTAVES', 'HARMONIC_CONTRARY_OCTAVES', 'HARMONIC_PARALLEL_FIFTHS', 'HARMONIC_CONTRARY_FIFTHS', 'HARMONIC_SIMULTANEOUS_LEAPS',
+    ],
   },
 };
 

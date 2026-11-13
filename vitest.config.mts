@@ -17,7 +17,7 @@ export default defineConfig({
       ".next/**",
       "archive/**",
       "public/**",
-      "apps-src/!(ap-guitar|ap-multi|intervalos-cantados)/**",
+      "apps-src/!(ap-core|ap-guitar|ap-multi|intervalos-cantados|oido-absoluto-multi-juego)/**",
     ],
   },
   resolve: {

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Diapasón — Entrenador de Notas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+
+<header>
+  <div class="title-row">
+    <div class="deco"></div>
+    <h1>Diapasón</h1>
+    <div class="deco r"></div>
+  </div>
+  <div class="sub">entrenador de notas · guitarra estándar</div>
+</header>
+
+<div class="view-control"><label for="view">Vista</label><select id="view"><option value="flat">Plana</option><option value="pov">Desde el guitarrista</option></select></div>
+<div class="setup-card" id="setup-card">
+  <div class="setup-eye">Elige tu modo</div>
+  <div class="setup-title">¿Cómo quieres jugar?</div>
+  <div class="setup-grid">
+    <button class="setup-option active" data-game-mode="classic" onclick="setGameMode('classic')">
+      <strong>Clásico</strong>
+      <span>El modo actual: sin reloj, sin strikes y a tu propio ritmo.</span>
+    </button>
+    <button class="setup-option" data-game-mode="time" onclick="setGameMode('time')">
+      <strong>Time Attack</strong>
+      <span>Con reloj por pregunta y tercer strike fuera.</span>
+    </button>
+  </div>
+  <div class="timer-config" id="timer-config" hidden>
+    <label class="timer-label" for="time-limit">Cuenta regresiva por pregunta</label>
+    <select class="timer-select" id="time-limit" onchange="setTimeLimit(this.value)"></select>
+  </div>
+  <button class="start-btn" onclick="startSession()">Empezar</button>
+</div>
+
+<div class="session-bar" id="session-bar" hidden>
+  <div class="session-chip">
+    <span class="session-k">Modo</span>
+    <strong class="session-v" id="game-mode-v">Clásico</strong>
+  </div>
+  <div class="session-chip" id="timer-chip" hidden>
+    <span class="session-k">Tiempo</span>
+    <strong class="session-v" id="timer-v">10s</strong>
+  </div>
+  <div class="session-chip" id="strike-chip" hidden>
+    <span class="session-k">Strikes</span>
+    <strong class="session-v" id="strikes-v">0/3</strong>
+  </div>
+  <button class="session-menu-btn" onclick="goToSetup()">Cambiar modo</button>
+</div>
+
+<div class="scorebar" id="scorebar" hidden>
+  <div class="stat"><span class="stat-v" id="s-ok">0</span><span class="stat-l">Correctas</span></div>
+  <div class="sep"></div>
+  <div class="stat"><span class="stat-v" id="s-tot">0</span><span class="stat-l">Total</span></div>
+  <div class="sep"></div>
+  <div class="stat"><span class="stat-v" id="s-pct">—</span><span class="stat-l">Precisión</span></div>
+</div>
+
+<div class="question" id="question-box" hidden>
+  <div class="q-eyebrow">¿Cuál es la nota en...?</div>
+  <div class="q-main">
+    Cuerda <em id="q-str">—</em>&nbsp;·&nbsp;Traste <em id="q-fret">—</em>
+    <button class="play-btn" id="play-btn" onclick="replayNote()" title="Escuchar nota">♪</button>
+  </div>
+</div>
+
+
+
+<div class="fb-scroll" id="fretboard-scroll" hidden>
+  <div class="fb-wrap" id="fb-wrap">
+    <div class="fret-nums-row" id="fret-nums"></div>
+    <div class="neck" id="neck">
+      <div class="inlay-layer" id="inlay-layer"></div>
+    </div>
+  </div>
+</div>
+<div class="fb-hint" id="fretboard-hint" hidden>Desliza el diapasón para ver todos los trastes</div>
+
+<section id="pov" hidden aria-label="Diapasón desde el guitarrista"><div class="pov-scroll"><div class="pov-stage"><canvas id="guitar"></canvas><div id="positions"></div></div></div><p class="pov-caption">Mira hacia el clavijero · toca una posición para escucharla</p></section>
+<div class="ans-area" id="answer-area" hidden>
+  <div class="mode-row">
+    <span class="mode-lbl">Notación:</span>
+    <button class="mbtn active" data-mode="sharp" onclick="setMode('sharp')">♯ Sostenidos</button>
+    <button class="mbtn"        data-mode="flat"  onclick="setMode('flat')" >♭ Bemoles</button>
+  </div>
+  <div class="ans-eye">Selecciona la nota</div>
+  <div class="note-grid" id="note-grid"></div>
+</div>
+
+<div class="fb-zone" id="feedback-zone" hidden>
+  <div class="fb-msg" id="fb-msg" role="status" aria-live="polite"></div>
+  <button class="next-btn" id="next-btn" onclick="handlePrimaryAction()">Siguiente →</button>
+</div>
+
+<div class="streak" id="streak-box" hidden>Racha: <strong id="streak-v">0</strong></div>
+<div class="key-hint" id="key-hint" hidden>Enter o Espacio → siguiente pregunta</div>
+
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>

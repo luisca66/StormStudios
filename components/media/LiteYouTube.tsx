@@ -7,13 +7,15 @@ type Props = {
   src: string;
   title: string;
   playLabel: string;
+  /** Se llama al pulsar play (p. ej. para pausar la música de fondo del sitio). */
+  onPlay?: () => void;
 };
 
 /**
  * Muestra la miniatura del video y solo carga el reproductor de YouTube al
  * pulsar play: evita descargar cientos de KB de terceros en cada lección.
  */
-export default function LiteYouTube({ src, title, playLabel }: Props) {
+export default function LiteYouTube({ src, title, playLabel, onPlay }: Props) {
   const [active, setActive] = useState(false);
   const videoId = src.match(/\/embed\/([\w-]{6,})/)?.[1];
 
@@ -37,7 +39,7 @@ export default function LiteYouTube({ src, title, playLabel }: Props) {
   return (
     <button
       type="button"
-      onClick={() => setActive(true)}
+      onClick={() => { onPlay?.(); setActive(true); }}
       aria-label={`${playLabel}: ${title}`}
       className="group"
       style={{ ...frameStyle, padding: 0, cursor: "pointer", background: "#000" }}

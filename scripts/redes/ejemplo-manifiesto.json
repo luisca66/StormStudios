@@ -1,0 +1,128 @@
+{
+  "version": 1,
+  "batch": "2026-S46",
+  "timeZone": "America/Mexico_City",
+  "notes": "Fechas numéricas heredadas del LOTE original: viernes 13, lunes 16, miércoles 18. Excepción al calendario ISO por ser el primer lote. Revisar madeForKids y containsSyntheticMedia antes de aprobar; no se han publicado piezas.",
+  "pieces": [
+    {
+      "key": "reto-quinta-yt-es",
+      "platform": "youtube",
+      "kind": "short",
+      "language": "es",
+      "file": "./videos/2026-S46-reto-quinta.es.mp4",
+      "title": "¿Qué intervalo es? Reto de oído: la quinta justa",
+      "description": "Escucha dos notas y adivina el intervalo antes de la cuenta. Practica intervalos de oído gratis en la lección P03.\nhttps://www.stormstudios.com.mx/es/curso-armonia/p03-intervalos?utm_source=youtube&utm_medium=social&utm_campaign=lote-2026-S46",
+      "tags": [
+        "Storm Studios",
+        "ear training",
+        "Shorts"
+      ],
+      "publishAt": "2026-11-13T19:00:00-06:00",
+      "width": 1080,
+      "height": 1920,
+      "durationSeconds": 22,
+      "madeForKids": false,
+      "containsSyntheticMedia": false
+    },
+    {
+      "key": "reto-quinta-yt-en",
+      "platform": "youtube",
+      "kind": "short",
+      "language": "en",
+      "file": "./videos/2026-S46-reto-quinta.en.mp4",
+      "title": "What interval is this? Ear challenge: the perfect fifth",
+      "description": "Hear two notes and name the interval before the countdown ends. Practice intervals by ear for free in lesson P03.\nhttps://www.stormstudios.com.mx/en/harmony-course/p03-intervals?utm_source=youtube&utm_medium=social&utm_campaign=lote-2026-S46",
+      "tags": [
+        "Storm Studios",
+        "ear training",
+        "Shorts"
+      ],
+      "publishAt": "2026-11-13T19:30:00-06:00",
+      "width": 1080,
+      "height": 1920,
+      "durationSeconds": 22,
+      "madeForKids": false,
+      "containsSyntheticMedia": false
+    },
+    {
+      "key": "reto-quinta-fb-es",
+      "platform": "facebook",
+      "kind": "reel",
+      "language": "es",
+      "file": "./videos/2026-S46-reto-quinta.es.mp4",
+      "title": "¿Qué intervalo es? Reto de oído: la quinta justa",
+      "description": "¿Lo reconociste antes de la cuenta? 🎹\nEs una quinta justa: el mismo salto con el que empieza «Estrellita».\nPractica intervalos de oído gratis en el curso: https://www.stormstudios.com.mx/es/curso-armonia/p03-intervalos?utm_source=facebook&utm_medium=social&utm_campaign=lote-2026-S46",
+      "tags": [],
+      "publishAt": "2026-11-13T19:00:00-06:00",
+      "width": 1080,
+      "height": 1920,
+      "durationSeconds": 22
+    },
+    {
+      "key": "cometa-yt-es",
+      "platform": "youtube",
+      "kind": "short",
+      "language": "es",
+      "file": "./videos/2026-S46-cometa.es.mp4",
+      "title": "El Cometa: un juego de oído con la escala menor",
+      "description": "Pilotea un cometa reconociendo de oído los grados de la escala menor. Juega gratis en el navegador.\nhttps://www.stormstudios.com.mx/es/apps/grados-menores/juego?utm_source=youtube&utm_medium=social&utm_campaign=lote-2026-S46",
+      "tags": [
+        "Storm Studios",
+        "ear training",
+        "Shorts"
+      ],
+      "publishAt": "2026-11-16T12:00:00-06:00",
+      "width": 1080,
+      "height": 1920,
+      "durationSeconds": 17,
+      "madeForKids": false,
+      "containsSyntheticMedia": false
+    },
+    {
+      "key": "cometa-yt-en",
+      "platform": "youtube",
+      "kind": "short",
+      "language": "en",
+      "file": "./videos/2026-S46-cometa.en.mp4",
+      "title": "The Comet: an ear-training game for the minor scale",
+      "description": "Fly a comet home by recognizing the degrees of the minor scale by ear. Play for free in your browser.\nhttps://www.stormstudios.com.mx/en/apps/grados-menores/game?utm_source=youtube&utm_medium=social&utm_campaign=lote-2026-S46",
+      "tags": [
+        "Storm Studios",
+        "ear training",
+        "Shorts"
+      ],
+      "publishAt": "2026-11-16T12:30:00-06:00",
+      "width": 1080,
+      "height": 1920,
+      "durationSeconds": 17,
+      "madeForKids": false,
+      "containsSyntheticMedia": false
+    },
+    {
+      "key": "cometa-fb-es",
+      "platform": "facebook",
+      "kind": "reel",
+      "language": "es",
+      "file": "./videos/2026-S46-cometa.es.mp4",
+      "title": "El Cometa: un juego de oído con la escala menor",
+      "description": "Hice un videojuego que se juega con el oído ☄️\nCada anillo de la ruta es un grado de la escala menor: si lo reconoces, el cometa vuelve a su estrella.\nGratis en el navegador: https://www.stormstudios.com.mx/es/apps/grados-menores/juego?utm_source=facebook&utm_medium=social&utm_campaign=lote-2026-S46",
+      "tags": [],
+      "publishAt": "2026-11-16T12:00:00-06:00",
+      "width": 1080,
+      "height": 1920,
+      "durationSeconds": 17
+    },
+    {
+      "key": "sitio-gratis-fb-es",
+      "platform": "facebook",
+      "kind": "link",
+      "language": "es",
+      "file": null,
+      "title": "Curso y herramientas gratis de Storm Studios",
+      "description": "Todo lo que hay en stormstudios.com.mx es gratis: el curso de armonía tradicional, el secuenciador, el Maestro Virtual que revisa tus ejercicios y los juegos de oído.\nSi estás empezando, el propedéutico va desde leer notas hasta los intervalos: https://www.stormstudios.com.mx/es/curso-armonia/p01-notas?utm_source=facebook&utm_medium=social&utm_campaign=lote-2026-S46",
+      "link": "https://www.stormstudios.com.mx/es/curso-armonia/p01-notas?utm_source=facebook&utm_medium=social&utm_campaign=lote-2026-S46",
+      "tags": [],
+      "publishAt": "2026-11-18T19:00:00-06:00"
+    }
+  ]
+}

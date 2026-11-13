@@ -1,0 +1,1821 @@
+{
+  "version": 1,
+  "lesson": "08-leccion-7",
+  "locale": "es",
+  "title": "Lección 7 — Movimientos melódicos y armónicos",
+  "source": "content/storyboards/es/08-leccion-7.guion.txt",
+  "format": {
+    "aspect": "16:9",
+    "theme": "storm"
+  },
+  "projects": {
+    "intervalos": {
+      "setup": {
+        "mode": "single",
+        "title": "Intervalos melódicos permitidos",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 9,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nE4 cuarto; F4 cuarto; E4 cuarto; silencio cuarto\ncompas 2\nG4 cuarto; A4 cuarto; G4 cuarto; silencio cuarto\ncompas 3\nD4 cuarto; F4 cuarto; D4 cuarto; silencio cuarto\ncompas 4\nF4 cuarto; A4 cuarto; F4 cuarto; silencio cuarto\ncompas 5\nA4 cuarto; D5 cuarto; A4 cuarto; silencio cuarto\ncompas 6\nG4 cuarto; D5 cuarto; G4 cuarto; silencio cuarto\ncompas 7\nE4 cuarto; C5 cuarto; E4 cuarto; silencio cuarto\ncompas 8\nF4 cuarto; D5 cuarto; F4 cuarto; silencio cuarto\ncompas 9\nD4 cuarto; D5 cuarto; D4 cuarto; silencio cuarto"
+    },
+    "sensible": {
+      "setup": {
+        "mode": "single",
+        "title": "La sensible en Do mayor",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nB4 mitad; C5 mitad\ncompas 2\nB3 mitad; B4 mitad"
+    },
+    "disminuidos": {
+      "setup": {
+        "mode": "single",
+        "title": "Quinta disminuida en Do mayor",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 4,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nB4 cuarto; F5 cuarto; E5 cuarto; silencio cuarto\ncompas 2\nF5 cuarto; B4 cuarto; C5 cuarto; silencio cuarto\ncompas 3\nB4 cuarto; F5 cuarto; G5 cuarto; silencio cuarto\ncompas 4\nF4 cuarto; B4 cuarto; silencio mitad"
+    },
+    "saltos": {
+      "setup": {
+        "mode": "single",
+        "title": "Saltos sucesivos",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 4,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nD4 cuarto; G4 cuarto; D5 cuarto; silencio cuarto\ncompas 2\nG5 cuarto; C5 cuarto; G4 cuarto; silencio cuarto\ncompas 3\nE4 cuarto; A4 cuarto; D5 cuarto; silencio cuarto\ncompas 4\nE4 cuarto; C5 cuarto; F4 cuarto; silencio cuarto"
+    },
+    "octavas-paralelas": {
+      "setup": {
+        "mode": "satb",
+        "title": "Octavas paralelas",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 entera\ncompas 2\nD5 entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nD3 entera"
+    },
+    "quintas-paralelas": {
+      "setup": {
+        "mode": "satb",
+        "title": "Quintas paralelas",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nG4 entera\ncompas 2\nA4 entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nD3 entera"
+    },
+    "octavas-contrarias": {
+      "setup": {
+        "mode": "satb",
+        "title": "Octavas contrarias",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nG4 entera\ncompas 2\nC5 entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz bass\ncompas 1\nG3 entera\ncompas 2\nC3 entera"
+    },
+    "unisono": {
+      "setup": {
+        "mode": "satb",
+        "title": "Unísonos paralelos",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz alto\ncompas 1\nC4 entera\ncompas 2\nD4 entera\nvoz tenor\ncompas 1\nC4 entera\ncompas 2\nD4 entera\nvoz bass\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera"
+    },
+    "quintas-no-justas": {
+      "setup": {
+        "mode": "satb",
+        "title": "Quintas paralelas no justas",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 6,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nG4 entera\ncompas 2\nF4 entera\ncompas 3\nF4 entera\ncompas 4\nG4 entera\ncompas 5\nG4 entera\ncompas 6\nA4 entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\ncompas 3\nsilencio entera\ncompas 4\nsilencio entera\ncompas 5\nsilencio entera\ncompas 6\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\ncompas 3\nsilencio entera\ncompas 4\nsilencio entera\ncompas 5\nsilencio entera\ncompas 6\nsilencio entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nB2 entera\ncompas 3\nB2 entera\ncompas 4\nC3 entera\ncompas 5\nC3 entera\ncompas 6\nD3 entera"
+    },
+    "quintas-contrarias": {
+      "setup": {
+        "mode": "satb",
+        "title": "Quintas contrarias",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 4,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nG4 entera\ncompas 2\nC5 entera\ncompas 3\nsilencio entera\ncompas 4\nsilencio entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\ncompas 3\nsilencio entera\ncompas 4\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\ncompas 3\nG3 entera\ncompas 4\nC4 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nF2 entera\ncompas 3\nC3 entera\ncompas 4\nF2 entera"
+    },
+    "saltos-simultaneos": {
+      "setup": {
+        "mode": "satb",
+        "title": "Saltos simultáneos",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 6,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nE4 entera\ncompas 2\nB4 entera\ncompas 3\nE4 entera\ncompas 4\nA4 entera\ncompas 5\nE4 entera\ncompas 6\nB4 entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\ncompas 3\nsilencio entera\ncompas 4\nsilencio entera\ncompas 5\nsilencio entera\ncompas 6\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\ncompas 3\nsilencio entera\ncompas 4\nsilencio entera\ncompas 5\nsilencio entera\ncompas 6\nsilencio entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nG3 entera\ncompas 3\nC3 entera\ncompas 4\nF3 entera\ncompas 5\nC3 entera\ncompas 6\nG2 entera"
+    },
+    "enlace": {
+      "setup": {
+        "mode": "satb",
+        "title": "Enlace IV – V en Do mayor",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 4,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nA4 entera\ncompas 2\nB4 entera\ncompas 3\nC5 entera\ncompas 4\nB4 entera\nvoz alto\ncompas 1\nF4 entera\ncompas 2\nD4 entera\ncompas 3\nA4 entera\ncompas 4\nG4 entera\nvoz tenor\ncompas 1\nC4 entera\ncompas 2\nD4 entera\ncompas 3\nF4 entera\ncompas 4\nD4 entera\nvoz bass\ncompas 1\nF3 entera\ncompas 2\nG3 entera\ncompas 3\nF3 entera\ncompas 4\nG3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 4,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        }
+      ]
+    },
+    "tarea-soprano": {
+      "setup": {
+        "mode": "satb",
+        "title": "Soprano en Do mayor",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz soprano\ncompas 1\nC5 cuarto; B4 cuarto; A4 cuarto; G4 cuarto\ncompas 2\nE4 cuarto; F4 cuarto; D4 cuarto; C4 cuarto\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz bass\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera"
+    },
+    "tarea-contralto": {
+      "setup": {
+        "mode": "satb",
+        "title": "Contralto en Sol mayor",
+        "key": "G",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz soprano\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz alto\ncompas 1\nG4 cuarto; D4 cuarto; E4 cuarto; C4 cuarto\ncompas 2\nA3 cuarto; B3 cuarto; F#4 cuarto; G4 cuarto\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz bass\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera"
+    },
+    "tarea-tenor": {
+      "setup": {
+        "mode": "satb",
+        "title": "Tenor en Re mayor",
+        "key": "D",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz soprano\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz tenor\ncompas 1\nD4 cuarto; A3 cuarto; B3 cuarto; G3 cuarto\ncompas 2\nC#3 cuarto; E3 cuarto; C#3 cuarto; D3 cuarto\nvoz bass\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera"
+    },
+    "tarea-bajo": {
+      "setup": {
+        "mode": "satb",
+        "title": "Bajo en Si♭ mayor",
+        "key": "Bb",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz soprano\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz bass\ncompas 1\nBb2 cuarto; D3 cuarto; F3 cuarto; Eb3 cuarto\ncompas 2\nC3 cuarto; F2 cuarto; A2 cuarto; Bb2 cuarto"
+    },
+    "tesituras": {
+      "setup": {
+        "mode": "satb",
+        "title": "Tesituras",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC4 entera\ncompas 2\nG5 entera\nvoz alto\ncompas 1\nG3 entera\ncompas 2\nD5 entera\nvoz tenor\ncompas 1\nB2 entera\ncompas 2\nG4 entera\nvoz bass\ncompas 1\nF2 entera\ncompas 2\nB3 entera"
+    }
+  },
+  "stills": [
+    {
+      "id": "titulo",
+      "kind": "title",
+      "heading": "Movimientos melódicos y armónicos",
+      "caption": "Lección 7 · Curso de Armonía · Storm Studios Learning",
+      "narration": "Hola, bienvenidos de nuevo a Storm Studios Learning. En la lección anterior aprendimos a construir acordes para el cuarteto vocal. Hoy vamos a ver cómo se mueven las voces cuando pasamos de un acorde al siguiente."
+    },
+    {
+      "id": "dos-partes",
+      "kind": "title",
+      "heading": "Dos partes",
+      "caption": "Movimientos melódicos · movimientos armónicos",
+      "narration": "Esta lección tiene dos partes: los movimientos melódicos y los movimientos armónicos."
+    },
+    {
+      "id": "una-voz",
+      "project": "tarea-soprano",
+      "voices": [
+        "soprano"
+      ],
+      "heading": "Movimiento melódico",
+      "caption": "Una sola voz, de una nota a la siguiente",
+      "narration": "Los movimientos melódicos tienen que ver con una sola voz, y con los intervalos que canta de una nota a la siguiente.",
+      "showCiphers": true
+    },
+    {
+      "id": "dos-voces",
+      "project": "enlace",
+      "measures": [
+        3,
+        4
+      ],
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "heading": "Movimiento armónico",
+      "caption": "Dos voces que se mueven al mismo tiempo",
+      "narration": "Los movimientos armónicos tienen que ver con dos voces que se mueven al mismo tiempo.",
+      "showCiphers": true
+    },
+    {
+      "id": "cada-voz",
+      "project": "enlace",
+      "measures": [
+        3,
+        4
+      ],
+      "heading": "Cada voz canta su propia melodía",
+      "caption": "Antes del primer coral, practicamos cada voz por separado",
+      "narration": "Cuando enlazamos dos acordes, cada voz canta su propia melodía. Por eso, antes de escribir nuestro primer coral, vamos a practicar cada voz por separado.",
+      "showCiphers": true
+    },
+    {
+      "id": "paso-a-paso",
+      "kind": "title",
+      "heading": "Paso a paso",
+      "caption": "Primero cada voz, después los enlaces, después el coral",
+      "narration": "Me acuerdo muy bien de mi primer coral. Son tantas cosas que hay que cuidar al mismo tiempo, que es muy fácil perderse. Así que vamos paso a paso."
+    },
+    {
+      "id": "melodicos",
+      "kind": "title",
+      "heading": "Movimientos melódicos",
+      "narration": "Empecemos con los movimientos melódicos."
+    },
+    {
+      "id": "intervalos-figura",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/intervalos-melodicos-es.svg",
+      "heading": "Intervalos permitidos",
+      "narration": "Al enlazar un acorde con otro, cada voz puede hacer solamente estos intervalos."
+    },
+    {
+      "id": "iv-segundas",
+      "project": "intervalos",
+      "reveal": {
+        "measure": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "2ª m"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "2ª M"
+        }
+      ],
+      "heading": "Segunda menor y segunda mayor",
+      "narration": "La segunda menor y la segunda mayor.",
+      "showCiphers": true
+    },
+    {
+      "id": "iv-terceras",
+      "project": "intervalos",
+      "reveal": {
+        "measure": 5
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "2ª m"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "2ª M"
+        },
+        {
+          "measure": 3,
+          "color": "amber",
+          "label": "3ª m"
+        },
+        {
+          "measure": 4,
+          "color": "amber",
+          "label": "3ª M"
+        }
+      ],
+      "heading": "Tercera menor y tercera mayor",
+      "narration": "La tercera menor y la tercera mayor.",
+      "showCiphers": true
+    },
+    {
+      "id": "iv-cuarta-quinta",
+      "project": "intervalos",
+      "reveal": {
+        "measure": 7
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "2ª m"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "2ª M"
+        },
+        {
+          "measure": 3,
+          "color": "amber",
+          "label": "3ª m"
+        },
+        {
+          "measure": 4,
+          "color": "amber",
+          "label": "3ª M"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "4ª J"
+        },
+        {
+          "measure": 6,
+          "color": "amber",
+          "label": "5ª J"
+        }
+      ],
+      "heading": "Cuarta justa y quinta justa",
+      "narration": "La cuarta justa y la quinta justa.",
+      "showCiphers": true
+    },
+    {
+      "id": "iv-sextas",
+      "project": "intervalos",
+      "reveal": {
+        "measure": 9
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "2ª m"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "2ª M"
+        },
+        {
+          "measure": 3,
+          "color": "amber",
+          "label": "3ª m"
+        },
+        {
+          "measure": 4,
+          "color": "amber",
+          "label": "3ª M"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "4ª J"
+        },
+        {
+          "measure": 6,
+          "color": "amber",
+          "label": "5ª J"
+        },
+        {
+          "measure": 7,
+          "color": "amber",
+          "label": "6ª m"
+        },
+        {
+          "measure": 8,
+          "color": "amber",
+          "label": "6ª M"
+        }
+      ],
+      "heading": "Sexta menor y sexta mayor",
+      "narration": "La sexta menor y la sexta mayor.",
+      "showCiphers": true
+    },
+    {
+      "id": "iv-octava",
+      "project": "intervalos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "2ª m"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "2ª M"
+        },
+        {
+          "measure": 3,
+          "color": "amber",
+          "label": "3ª m"
+        },
+        {
+          "measure": 4,
+          "color": "amber",
+          "label": "3ª M"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "4ª J"
+        },
+        {
+          "measure": 6,
+          "color": "amber",
+          "label": "5ª J"
+        },
+        {
+          "measure": 7,
+          "color": "amber",
+          "label": "6ª m"
+        },
+        {
+          "measure": 8,
+          "color": "amber",
+          "label": "6ª M"
+        },
+        {
+          "measure": 9,
+          "color": "amber",
+          "label": "8ª J"
+        }
+      ],
+      "heading": "Octava justa",
+      "narration": "Y la octava justa.",
+      "showCiphers": true
+    },
+    {
+      "id": "iv-direccion",
+      "project": "intervalos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "2ª m"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "2ª M"
+        },
+        {
+          "measure": 3,
+          "color": "amber",
+          "label": "3ª m"
+        },
+        {
+          "measure": 4,
+          "color": "amber",
+          "label": "3ª M"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "4ª J"
+        },
+        {
+          "measure": 6,
+          "color": "amber",
+          "label": "5ª J"
+        },
+        {
+          "measure": 7,
+          "color": "amber",
+          "label": "6ª m"
+        },
+        {
+          "measure": 8,
+          "color": "amber",
+          "label": "6ª M"
+        },
+        {
+          "measure": 9,
+          "color": "amber",
+          "label": "8ª J"
+        }
+      ],
+      "heading": "Ascendentes o descendentes",
+      "caption": "Cada intervalo, hacia arriba y hacia abajo",
+      "narration": "Todos se pueden hacer hacia arriba o hacia abajo, es decir, ascendentes o descendentes.",
+      "showCiphers": true
+    },
+    {
+      "id": "sin-aumentados",
+      "kind": "title",
+      "heading": "Sin intervalos aumentados",
+      "caption": "Sin séptimas · nada mayor que la octava",
+      "narration": "En esta lista no hay intervalos aumentados. Tampoco hay séptimas, ni intervalos más grandes que la octava."
+    },
+    {
+      "id": "clasificacion",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/intervalos-melodicos-es.svg",
+      "heading": "Cuatro grupos",
+      "narration": "Estos intervalos se clasifican en cuatro grupos."
+    },
+    {
+      "id": "grado-conjunto",
+      "project": "intervalos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "2ª m"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "2ª M"
+        }
+      ],
+      "heading": "Grado conjunto",
+      "caption": "Las segundas",
+      "narration": "Las segundas se llaman grado conjunto.",
+      "showCiphers": true
+    },
+    {
+      "id": "camino-corto",
+      "project": "intervalos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "2ª m"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "2ª M"
+        },
+        {
+          "measure": 3,
+          "color": "cyan",
+          "label": "3ª m"
+        },
+        {
+          "measure": 4,
+          "color": "cyan",
+          "label": "3ª M"
+        }
+      ],
+      "heading": "Camino corto",
+      "caption": "Las terceras",
+      "narration": "Las terceras se llaman camino corto.",
+      "showCiphers": true
+    },
+    {
+      "id": "salto-corto",
+      "project": "intervalos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "2ª m"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "2ª M"
+        },
+        {
+          "measure": 3,
+          "color": "cyan",
+          "label": "3ª m"
+        },
+        {
+          "measure": 4,
+          "color": "cyan",
+          "label": "3ª M"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "4ª J"
+        }
+      ],
+      "heading": "Salto corto",
+      "caption": "La cuarta justa",
+      "narration": "La cuarta justa es un salto corto.",
+      "showCiphers": true
+    },
+    {
+      "id": "saltos-largos",
+      "project": "intervalos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "2ª m"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "2ª M"
+        },
+        {
+          "measure": 3,
+          "color": "cyan",
+          "label": "3ª m"
+        },
+        {
+          "measure": 4,
+          "color": "cyan",
+          "label": "3ª M"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "4ª J"
+        },
+        {
+          "measure": 6,
+          "color": "violet",
+          "label": "5ª J"
+        },
+        {
+          "measure": 7,
+          "color": "violet",
+          "label": "6ª m"
+        },
+        {
+          "measure": 8,
+          "color": "violet",
+          "label": "6ª M"
+        },
+        {
+          "measure": 9,
+          "color": "violet",
+          "label": "8ª J"
+        }
+      ],
+      "heading": "Saltos largos",
+      "caption": "Quinta justa, sextas y octava",
+      "narration": "Y la quinta justa, las sextas y la octava son saltos largos.",
+      "showCiphers": true
+    },
+    {
+      "id": "intervalos-escuchar",
+      "project": "intervalos",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "2ª m"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "2ª M"
+        },
+        {
+          "measure": 3,
+          "color": "cyan",
+          "label": "3ª m"
+        },
+        {
+          "measure": 4,
+          "color": "cyan",
+          "label": "3ª M"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "4ª J"
+        },
+        {
+          "measure": 6,
+          "color": "violet",
+          "label": "5ª J"
+        },
+        {
+          "measure": 7,
+          "color": "violet",
+          "label": "6ª m"
+        },
+        {
+          "measure": 8,
+          "color": "violet",
+          "label": "6ª M"
+        },
+        {
+          "measure": 9,
+          "color": "violet",
+          "label": "8ª J"
+        }
+      ],
+      "heading": "Los nueve intervalos",
+      "narration": "Escuchemos cada uno, primero subiendo y luego bajando.",
+      "showCiphers": true
+    },
+    {
+      "id": "con-cuidado",
+      "kind": "title",
+      "heading": "El grado conjunto es lo más natural",
+      "caption": "Los saltos dan carácter, con cuidado",
+      "narration": "El grado conjunto es el movimiento más natural para una voz. Los saltos le dan carácter a la melodía, pero hay que usarlos con cuidado."
+    },
+    {
+      "id": "sensible",
+      "project": "sensible",
+      "reveal": {
+        "measure": 2
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "sensible"
+        }
+      ],
+      "heading": "La sensible: Si",
+      "caption": "Quiere subir a Do",
+      "narration": "La primera regla de cuidado tiene que ver con la sensible. En Do mayor, la sensible es el Si, la nota que quiere subir al Do.",
+      "showCiphers": true
+    },
+    {
+      "id": "sensible-octava",
+      "project": "sensible",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "sensible"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "✗ 8ª con la sensible"
+        }
+      ],
+      "heading": "Sin saltos de octava con la sensible",
+      "narration": "No se practica el salto de octava con la sensible.",
+      "showCiphers": true
+    },
+    {
+      "id": "disminuidos-figura",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/disminuidos-es.svg",
+      "heading": "Intervalos disminuidos",
+      "narration": "Ahora veamos los intervalos disminuidos. Dijimos que no se usan intervalos aumentados."
+    },
+    {
+      "id": "compensar",
+      "kind": "title",
+      "heading": "5ª, 4ª y 7ª disminuidas",
+      "caption": "Permitidas si después la voz cambia de dirección: compensar",
+      "narration": "Pero sí se permiten la quinta disminuida, la cuarta disminuida y la séptima disminuida, con una condición. Después del intervalo disminuido, la voz tiene que cambiar de dirección. A esto le llamamos compensar."
+    },
+    {
+      "id": "dis-si-fa",
+      "project": "disminuidos",
+      "reveal": {
+        "measure": 1,
+        "beat": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "5ª dis."
+        }
+      ],
+      "heading": "Si – Fa hacia arriba",
+      "caption": "Quinta disminuida",
+      "narration": "En Do mayor, de Si a Fa hacia arriba hay una quinta disminuida.",
+      "showCiphers": true
+    },
+    {
+      "id": "dis-baja",
+      "project": "disminuidos",
+      "reveal": {
+        "measure": 2
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ baja a Mi"
+        }
+      ],
+      "heading": "Compensada",
+      "caption": "La voz baja",
+      "narration": "Si después la voz baja, por ejemplo a Mi, la quinta disminuida está compensada.",
+      "showCiphers": true
+    },
+    {
+      "id": "dis-fa-si",
+      "project": "disminuidos",
+      "reveal": {
+        "measure": 2,
+        "beat": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ baja a Mi"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "5ª dis."
+        }
+      ],
+      "heading": "Fa – Si hacia abajo",
+      "caption": "También quinta disminuida",
+      "narration": "De Fa a Si hacia abajo también hay una quinta disminuida.",
+      "showCiphers": true
+    },
+    {
+      "id": "dis-sube",
+      "project": "disminuidos",
+      "reveal": {
+        "measure": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ baja a Mi"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "✓ sube a Do"
+        }
+      ],
+      "heading": "Compensada",
+      "caption": "La voz sube",
+      "narration": "Si después la voz sube, por ejemplo a Do, también está compensada.",
+      "showCiphers": true
+    },
+    {
+      "id": "dis-sin-compensar",
+      "project": "disminuidos",
+      "reveal": {
+        "measure": 4
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ baja a Mi"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "✓ sube a Do"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "✗ sigue subiendo"
+        }
+      ],
+      "heading": "Sin compensar",
+      "caption": "Después de Si y Fa sigue a Sol",
+      "narration": "Pero si después de Si y Fa la voz sigue subiendo, a Sol, la quinta disminuida queda sin compensar.",
+      "showCiphers": true
+    },
+    {
+      "id": "cuarta-aumentada",
+      "project": "disminuidos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "✓"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "✗"
+        },
+        {
+          "measure": 4,
+          "color": "rose",
+          "label": "✗ 4ª aum."
+        }
+      ],
+      "heading": "Fa – Si hacia arriba: cuarta aumentada",
+      "caption": "Las cuartas aumentadas no se usan",
+      "narration": "Y cuidado con la dirección. De Fa a Si hacia arriba no hay una quinta disminuida, sino una cuarta aumentada. Y las cuartas aumentadas no se usan.",
+      "showCiphers": true
+    },
+    {
+      "id": "modo-menor",
+      "kind": "title",
+      "heading": "4ª y 7ª disminuidas",
+      "caption": "Aparecen en el modo menor · las veremos más adelante",
+      "narration": "La cuarta disminuida y la séptima disminuida aparecen en el modo menor, y las veremos más adelante."
+    },
+    {
+      "id": "saltos-figura",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/saltos-sucesivos-es.svg",
+      "heading": "Saltos sucesivos",
+      "caption": "Misma dirección: solo 4ª y 5ª, o 5ª y 4ª",
+      "narration": "La última regla melódica es sobre los saltos sucesivos. No se practican dos saltos seguidos en la misma dirección. La excepción es una cuarta seguida de una quinta, o una quinta seguida de una cuarta."
+    },
+    {
+      "id": "saltos-4-5",
+      "project": "saltos",
+      "reveal": {
+        "measure": 2
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ 4ª + 5ª ↑"
+        }
+      ],
+      "heading": "Re – Sol – Re, subiendo",
+      "narration": "Por ejemplo, de Re a Sol y luego a Re, subiendo, está bien.",
+      "showCiphers": true
+    },
+    {
+      "id": "saltos-5-4",
+      "project": "saltos",
+      "reveal": {
+        "measure": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ 4ª + 5ª ↑"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "✓ 5ª + 4ª ↓"
+        }
+      ],
+      "heading": "Sol – Do – Sol, bajando",
+      "narration": "Y bajando, de Sol a Do y luego a Sol, también.",
+      "showCiphers": true
+    },
+    {
+      "id": "saltos-4-4",
+      "project": "saltos",
+      "reveal": {
+        "measure": 4
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ 4ª + 5ª ↑"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "✓ 5ª + 4ª ↓"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "✗ 4ª + 4ª"
+        }
+      ],
+      "heading": "Mi – La – Re",
+      "caption": "Dos cuartas hacia arriba",
+      "narration": "Pero de Mi a La y luego a Re son dos cuartas hacia arriba, y eso no se practica.",
+      "showCiphers": true
+    },
+    {
+      "id": "saltos-direccion",
+      "project": "saltos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ 4ª + 5ª ↑"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "✓ 5ª + 4ª ↓"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "✗ 4ª + 4ª"
+        },
+        {
+          "measure": 4,
+          "color": "green",
+          "label": "✓ cambia de dirección"
+        }
+      ],
+      "heading": "Cambio de dirección",
+      "caption": "Sin problema",
+      "narration": "Si después de un salto la voz cambia de dirección, no hay problema.",
+      "showCiphers": true
+    },
+    {
+      "id": "armonicos",
+      "kind": "title",
+      "heading": "Movimientos armónicos",
+      "caption": "Dos voces que se mueven al mismo tiempo",
+      "narration": "Ahora pasemos a los movimientos armónicos. Aquí ya no vemos una sola voz, sino dos voces que se mueven al mismo tiempo."
+    },
+    {
+      "id": "paralelas-figura",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/paralelas-es.svg",
+      "heading": "Quintas y octavas paralelas",
+      "caption": "La regla más famosa de la armonía",
+      "narration": "La primera regla es la más famosa de toda la armonía. No se practican quintas ni octavas paralelas. Hay quintas u octavas paralelas cuando dos voces forman una quinta o una octava, y luego, moviéndose en la misma dirección, vuelven a formar una quinta o una octava."
+    },
+    {
+      "id": "octavas-paralelas",
+      "project": "octavas-paralelas",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "8ª"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "8ª"
+        }
+      ],
+      "heading": "Octavas paralelas",
+      "caption": "Soprano Do5 – Re5 · bajo Do3 – Re3",
+      "narration": "Por ejemplo, la soprano va de Do cinco a Re cinco, y el bajo va de Do tres a Re tres. Las dos voces están a distancia de octava, y siguen a distancia de octava.",
+      "showCiphers": true
+    },
+    {
+      "id": "octavas-escuchar",
+      "project": "octavas-paralelas",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "heading": "Octavas paralelas",
+      "narration": "Escuchemos.",
+      "showCiphers": true
+    },
+    {
+      "id": "una-sola-voz",
+      "project": "octavas-paralelas",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "heading": "Suenan como una sola voz",
+      "caption": "Perdemos una voz del cuarteto",
+      "narration": "Con las octavas paralelas, las dos voces suenan como si fueran una sola. Perdemos una voz del cuarteto.",
+      "showCiphers": true
+    },
+    {
+      "id": "quintas-paralelas",
+      "project": "quintas-paralelas",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "5ª J"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "5ª J"
+        }
+      ],
+      "heading": "Quintas paralelas",
+      "caption": "Las voces se funden y el sonido se vuelve hueco",
+      "narration": "Con las quintas paralelas pasa algo parecido. La quinta justa es un intervalo tan estable que las dos voces se funden y el sonido se vuelve hueco.",
+      "showCiphers": true
+    },
+    {
+      "id": "contrarias",
+      "project": "octavas-contrarias",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "heading": "Quintas y octavas contrarias",
+      "caption": "Las mismas, en direcciones opuestas",
+      "narration": "Tampoco se practican las quintas ni las octavas contrarias. Son las mismas quintas u octavas, pero con las voces moviéndose en direcciones opuestas.",
+      "showCiphers": true
+    },
+    {
+      "id": "octavas-contrarias",
+      "project": "octavas-contrarias",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "8ª"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "2 × 8ª"
+        }
+      ],
+      "heading": "Octavas contrarias",
+      "caption": "Soprano Sol4 – Do5 · bajo Sol3 – Do3",
+      "narration": "Por ejemplo, la soprano sube de Sol cuatro a Do cinco mientras el bajo baja de Sol tres a Do tres. Pasamos de una octava a dos octavas, y el efecto es el mismo.",
+      "showCiphers": true
+    },
+    {
+      "id": "unisono",
+      "project": "unisono",
+      "voices": [
+        "alto",
+        "tenor"
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "unísono"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "unísono"
+        }
+      ],
+      "heading": "El unísono cuenta como octava",
+      "narration": "El unísono también cuenta como octava.",
+      "showCiphers": true
+    },
+    {
+      "id": "dos-casos",
+      "kind": "title",
+      "heading": "Quintas permitidas",
+      "caption": "Dos casos",
+      "narration": "Ahora, hay dos casos en los que las quintas sí se permiten."
+    },
+    {
+      "id": "no-justas",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/quintas-permitidas-es.svg",
+      "heading": "Quintas paralelas no justas",
+      "narration": "El primero son las quintas paralelas cuando una de las dos, o las dos, no son justas."
+    },
+    {
+      "id": "justa-dis",
+      "project": "quintas-no-justas",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "reveal": {
+        "measure": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "5ª J"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "5ª dis."
+        }
+      ],
+      "heading": "Justa → disminuida",
+      "narration": "Por ejemplo, de una quinta justa a una quinta disminuida.",
+      "showCiphers": true
+    },
+    {
+      "id": "dis-justa",
+      "project": "quintas-no-justas",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "reveal": {
+        "measure": 5
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "5ª J"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "5ª dis."
+        },
+        {
+          "measure": 3,
+          "color": "green",
+          "label": "5ª dis."
+        },
+        {
+          "measure": 4,
+          "color": "green",
+          "label": "5ª J"
+        }
+      ],
+      "heading": "Disminuida → justa",
+      "narration": "O de una quinta disminuida a una quinta justa.",
+      "showCiphers": true
+    },
+    {
+      "id": "justa-justa",
+      "project": "quintas-no-justas",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "5ª J"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "5ª dis."
+        },
+        {
+          "measure": 3,
+          "color": "green",
+          "label": "5ª dis."
+        },
+        {
+          "measure": 4,
+          "color": "green",
+          "label": "5ª J"
+        },
+        {
+          "measure": 5,
+          "color": "rose",
+          "label": "5ª J"
+        },
+        {
+          "measure": 6,
+          "color": "rose",
+          "label": "5ª J"
+        }
+      ],
+      "heading": "Justa → justa: no",
+      "narration": "Lo que no se permite es pasar de una quinta justa a otra quinta justa.",
+      "showCiphers": true
+    },
+    {
+      "id": "extremas",
+      "kind": "title",
+      "heading": "Voces extremas",
+      "caption": "La soprano y el bajo: la de arriba y la de abajo",
+      "narration": "El segundo caso son las quintas contrarias en voces que no son las extremas. Las voces extremas son la soprano y el bajo, la de arriba y la de abajo."
+    },
+    {
+      "id": "contrarias-sb",
+      "project": "quintas-contrarias",
+      "measures": [
+        1,
+        2
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "5ª"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "5ª"
+        }
+      ],
+      "heading": "Soprano y bajo: no",
+      "narration": "Entre la soprano y el bajo, las quintas contrarias no se practican.",
+      "showCiphers": true
+    },
+    {
+      "id": "contrarias-tb",
+      "project": "quintas-contrarias",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "5ª"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "5ª"
+        },
+        {
+          "measure": 3,
+          "color": "green",
+          "label": "5ª"
+        },
+        {
+          "measure": 4,
+          "color": "green",
+          "label": "5ª"
+        }
+      ],
+      "heading": "Tenor y bajo: sí",
+      "narration": "Pero entre el tenor y el bajo, por ejemplo, sí se permiten.",
+      "showCiphers": true
+    },
+    {
+      "id": "simultaneos-figura",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/saltos-simultaneos-es.svg",
+      "heading": "Saltos simultáneos",
+      "narration": "La última regla armónica es sobre los saltos simultáneos."
+    },
+    {
+      "id": "simultaneos-no",
+      "project": "saltos-simultaneos",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "reveal": {
+        "measure": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "✗ dos 5ª",
+          "endMeasure": 2
+        }
+      ],
+      "heading": "Dos saltos en la misma dirección",
+      "narration": "Evitamos que dos voces salten al mismo tiempo en la misma dirección.",
+      "showCiphers": true
+    },
+    {
+      "id": "simultaneos-cuartas",
+      "project": "saltos-simultaneos",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "reveal": {
+        "measure": 5
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "✗ dos 5ª",
+          "endMeasure": 2
+        },
+        {
+          "measure": 3,
+          "color": "green",
+          "label": "✓ dos 4ª J",
+          "endMeasure": 4
+        }
+      ],
+      "heading": "Excepción: dos cuartas justas",
+      "narration": "La excepción es cuando los dos saltos son de cuarta justa.",
+      "showCiphers": true
+    },
+    {
+      "id": "simultaneos-contrarios",
+      "project": "saltos-simultaneos",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "✗ dos 5ª",
+          "endMeasure": 2
+        },
+        {
+          "measure": 3,
+          "color": "green",
+          "label": "✓ dos 4ª J",
+          "endMeasure": 4
+        },
+        {
+          "measure": 5,
+          "color": "green",
+          "label": "✓ contrarios",
+          "endMeasure": 6
+        }
+      ],
+      "heading": "Direcciones contrarias",
+      "caption": "Sin problema",
+      "narration": "Si dos voces saltan al mismo tiempo pero en direcciones contrarias, no hay problema.",
+      "showCiphers": true
+    },
+    {
+      "id": "enlace-mal",
+      "project": "enlace",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "measures": [
+        1,
+        2
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "tenor",
+          "color": "rose"
+        },
+        {
+          "measure": 1,
+          "voice": "bass",
+          "color": "rose"
+        },
+        {
+          "measure": 2,
+          "voice": "tenor",
+          "color": "rose"
+        },
+        {
+          "measure": 2,
+          "voice": "bass",
+          "color": "rose"
+        }
+      ],
+      "heading": "IV – V con quintas paralelas",
+      "caption": "Tenor y bajo: Fa – Do y luego Sol – Re",
+      "narration": "Escuchemos un enlace de dos acordes con quintas paralelas.",
+      "showCiphers": true
+    },
+    {
+      "id": "enlace-bien",
+      "project": "enlace",
+      "audio": true,
+      "cursor": {
+        "measure": 3,
+        "beat": 1
+      },
+      "measures": [
+        3,
+        4
+      ],
+      "heading": "IV – V escrito correctamente",
+      "narration": "Y ahora el mismo enlace, escrito correctamente.",
+      "showCiphers": true
+    },
+    {
+      "id": "proximas",
+      "kind": "title",
+      "heading": "Próximas lecciones",
+      "caption": "Material armónico y enlaces · enlaces de dos acordes · primer coral",
+      "narration": "Las reglas armónicas las vamos a practicar cuando empecemos a enlazar acordes. Primero vamos a ver qué acordes podemos usar y cómo se enlazan. Luego escribirás enlaces de dos acordes. Y después escribirás tu primer coral completo."
+    },
+    {
+      "id": "tarea",
+      "kind": "title",
+      "heading": "Tarea para el Maestro Virtual",
+      "narration": "Ahora la tarea para el maestro virtual."
+    },
+    {
+      "id": "cuatro-ejercicios",
+      "kind": "title",
+      "heading": "Cuatro ejercicios",
+      "caption": "Soprano · contralto · tenor · bajo · cada uno se sube por separado",
+      "narration": "Esta vez son cuatro ejercicios, uno para cada voz: soprano, contralto, tenor y bajo. Cada ejercicio se sube por separado."
+    },
+    {
+      "id": "tarea-soprano",
+      "project": "tarea-soprano",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "I"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "endBeat": 5,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "I"
+        }
+      ],
+      "heading": "Ocho cuartos, dos compases",
+      "caption": "Cualquier tonalidad mayor · empieza y termina en la tónica",
+      "narration": "En cada uno vas a escribir una melodía de ocho notas, en cuartos, es decir, dos compases de cuatro cuartos. Puedes elegir cualquier tonalidad mayor, y puede ser distinta en cada ejercicio. La melodía empieza y termina en el primer grado, en la tónica.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea-tenor",
+      "project": "tarea-tenor",
+      "focusVoice": "tenor",
+      "heading": "Modo Cuarteto SATB",
+      "caption": "Solo el pentagrama de la voz que practicas",
+      "narration": "Trabaja en el secuenciador en modo Cuarteto SATB. Escribe la melodía solamente en el pentagrama de la voz que estás practicando, y deja vacíos los demás. Así el maestro virtual sabe qué voz es.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea-reglas",
+      "project": "tarea-contralto",
+      "focusVoice": "alto",
+      "heading": "Intervalos permitidos",
+      "caption": "Reglas del movimiento melódico · sin notas repetidas",
+      "narration": "Usa solo los intervalos permitidos y respeta las reglas del movimiento melódico. En este ejercicio no se repiten notas. Cuando enlacemos acordes sí podremos repetirlas, pero por ahora cada nota se mueve a otra distinta.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea-tesituras",
+      "project": "tesituras",
+      "heading": "Dentro de la tesitura de cada voz",
+      "narration": "Y mantente dentro de la tesitura de cada voz.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-soprano",
+      "project": "tesituras",
+      "focusVoice": "soprano",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "Do4 – Sol5"
+        }
+      ],
+      "heading": "Soprano",
+      "caption": "Do4 a Sol5",
+      "narration": "La soprano, del Do cuatro al Sol cinco.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-contralto",
+      "project": "tesituras",
+      "focusVoice": "alto",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "alto",
+          "color": "amber",
+          "label": "Sol3 – Re5"
+        }
+      ],
+      "heading": "Contralto",
+      "caption": "Sol3 a Re5",
+      "narration": "La contralto, del Sol tres al Re cinco.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-tenor",
+      "project": "tesituras",
+      "focusVoice": "tenor",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "tenor",
+          "color": "amber",
+          "label": "Si2 – Sol4"
+        }
+      ],
+      "heading": "Tenor",
+      "caption": "Si2 a Sol4",
+      "narration": "El tenor, del Si dos al Sol cuatro.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-bajo",
+      "project": "tesituras",
+      "focusVoice": "bass",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "bass",
+          "color": "amber",
+          "label": "Fa2 – Si3"
+        }
+      ],
+      "heading": "Bajo",
+      "caption": "Fa2 a Si3",
+      "narration": "Y el bajo, del Fa dos al Si tres.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea-exporta",
+      "project": "tarea-bajo",
+      "focusVoice": "bass",
+      "heading": "Exporta cada melodía como MIDI",
+      "caption": "Y súbela al Maestro Virtual",
+      "narration": "Exporta cada melodía como archivo MIDI y súbela.",
+      "showCiphers": true
+    },
+    {
+      "id": "maestro-revisa",
+      "kind": "title",
+      "heading": "El Maestro Virtual revisa",
+      "caption": "Voz y tonalidad · cada intervalo · tesitura · tónica inicial y final",
+      "narration": "El maestro virtual reconoce la voz y la tonalidad. Revisa cada intervalo, la tesitura y que empieces y termines en la tónica. Y si encuentra un error, te explica cuál es y en qué notas está."
+    },
+    {
+      "id": "armonicos-despues",
+      "kind": "title",
+      "heading": "Los movimientos armónicos, en los enlaces",
+      "caption": "Ahí el Maestro Virtual también los revisará",
+      "narration": "Los movimientos armónicos no entran en esta tarea: los vamos a practicar cuando hagamos enlaces de acordes, y ahí el maestro virtual también los va a revisar."
+    },
+    {
+      "id": "recapitulemos",
+      "kind": "title",
+      "heading": "Recapitulemos",
+      "narration": "Recapitulemos."
+    },
+    {
+      "id": "recap-intervalos",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/intervalos-melodicos-es.svg",
+      "heading": "Intervalos permitidos",
+      "narration": "Cada voz se mueve con grados conjuntos, caminos cortos, saltos cortos y saltos largos. No usamos intervalos aumentados, ni séptimas, ni intervalos mayores que la octava."
+    },
+    {
+      "id": "recap-disminuidos",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/disminuidos-es.svg",
+      "heading": "Disminuidos: se compensan",
+      "narration": "Los intervalos disminuidos se compensan cambiando de dirección."
+    },
+    {
+      "id": "recap-saltos",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/saltos-sucesivos-es.svg",
+      "heading": "Sensible y saltos sucesivos",
+      "narration": "No hacemos saltos de octava con la sensible, ni dos saltos seguidos en la misma dirección, salvo cuarta y quinta."
+    },
+    {
+      "id": "recap-armonicos",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/paralelas-es.svg",
+      "heading": "Entre dos voces",
+      "narration": "Entre dos voces, evitamos las quintas y las octavas paralelas y contrarias, y los saltos simultáneos en la misma dirección."
+    },
+    {
+      "id": "cierre",
+      "kind": "title",
+      "heading": "Gracias",
+      "caption": "Nos vemos en la lección 8",
+      "narration": "Gracias por acompañarme. Nos vemos en la lección ocho."
+    }
+  ]
+}

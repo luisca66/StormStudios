@@ -50,7 +50,11 @@ export type NoteMark = { measure: number; beat: number; voice?: VoiceId; color?:
 
 export type Still = {
   id: string; // file name without extension: "01-titulo" → 01-titulo.png. Unique, [a-z0-9-]
-  kind?: "score" | "title"; // "title" = card with heading/caption only (no project needed)
+  kind?: "score" | "title" | "image"; // title/image need no project; score is the default
+  image?: string; // public image path, required for kind image
+  musicFile?: string; // absolute or relative to the storyboard
+  musicTrim?: [number, number]; // seconds [start, end]
+  musicCredit?: string; // visible only during music in the video
   project?: string; // key in Storyboard.projects (required for kind "score")
   heading?: string; // large text drawn on the still
   caption?: string; // one or two lines under the heading
@@ -64,7 +68,7 @@ export type Still = {
   marks?: NoteMark[];
   cursor?: Position; // draws the playhead at this position
   showCiphers?: boolean; // roman numerals / annotations (default true)
-  audio?: boolean; // also export a WAV of the visible range (later step)
+  audio?: boolean; // export Piano WAV of the visible range
 };
 
 export type Storyboard = {
@@ -86,5 +90,5 @@ export type StillsManifest = {
   width: number;
   height: number;
   generatedAt: string;
-  stills: Array<{ id: string; file: string; duration: number; heading?: string; caption?: string; narration?: string; audio?: string }>;
+  stills: Array<{ id: string; file: string; duration: number; heading?: string; caption?: string; narration?: string; audio?: string; music?: { from: number; to: number; tempo: number; beats: Array<{ cursor: Position; time: number }> } }>;
 };

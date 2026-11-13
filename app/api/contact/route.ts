@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHash, randomBytes } from "node:crypto";
-import { isIP } from "node:net";
 import { z } from "zod";
+import { getClientIp } from "@/lib/http/client-ip";
+import { passesEdgeRateLimit } from "@/lib/http/edge-rate-limit";
+import { contextSchema, normalizeEvent } from "@/lib/analytics/events";
+import { writeEvent } from "@/lib/analytics/write";
 
 export const runtime = "nodejs";
 
@@ -13,9 +16,9 @@ const MAX_REQUEST_BODY_BYTES = 8 * 1024;
 const MAX_RATE_LIMIT_ENTRIES = 10_000;
 const RATE_LIMIT_SALT = randomBytes(16).toString("hex");
 
-// Protección local por proceso: reduce abuso contra una instancia, pero no es un
-// rate limit distribuido. En producción debe complementarse con WAF o un store
-// compartido si el volumen o el abuso lo justifican.
+// Dos capas: el binding CONTACT_LIMITER de Cloudflare cuenta entre todas las
+// instancias (ver lib/http/edge-rate-limit.ts) y este contador en memoria, que
+// solo ve su propio isolate, cubre `next dev`/`next start` y ráfagas locales.
 const ipRequestLog = new Map<string, number[]>();
 let lastRateLimitCleanupAt = 0;
 
@@ -39,6 +42,7 @@ const ContactSchema = z.object({
   elapsedMs: z.number().int().min(0).max(MAX_SUBMIT_TIME_MS),
   // Identificador del intento, estable entre reintentos del mismo envío.
   attemptId: z.string().regex(/^[A-Za-z0-9-]{8,64}$/),
+  measurement: contextSchema.optional().catch(undefined),
 }).strict();
 
 // Escapa caracteres HTML para evitar inyección en el cuerpo del correo.
@@ -49,23 +53,6 @@ function escapeHtml(value: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
-}
-
-function getClientIp(request: NextRequest): string {
-  const forwardedFor = request.headers.get("x-vercel-forwarded-for")
-    ?? request.headers.get("x-forwarded-for");
-  const candidates = [
-    forwardedFor?.split(",")[0]?.trim(),
-    request.headers.get("x-real-ip")?.trim(),
-  ];
-
-  for (const candidate of candidates) {
-    if (candidate && isIP(candidate)) {
-      return candidate;
-    }
-  }
-
-  return "unknown";
 }
 
 function getRateLimitKey(ip: string): string {
@@ -219,7 +206,12 @@ export async function POST(request: NextRequest) {
       return errorResponse("invalid_request", 400);
     }
 
-    const ip = getClientIp(request);
+    const ip = getClientIp(request.headers);
+
+    if (!(await passesEdgeRateLimit("CONTACT_LIMITER", ip))) {
+      return errorResponse("rate_limited", 429, true, 60);
+    }
+
     const rateLimit = getRateLimitResult(ip);
 
     if (rateLimit.limited) {
@@ -286,6 +278,13 @@ export async function POST(request: NextRequest) {
     if (error || !data?.id) {
       console.error("[CONTACT API] Email provider rejected the request");
       return errorResponse("temporarily_unavailable", 503, true, 60);
+    }
+
+    // Only after confirmed email delivery; never include the form's contents,
+    // IP, attemptId or provider id in the measurement.
+    if (parsed.data.measurement) {
+      const event = normalizeEvent({ ...parsed.data.measurement, name: "contact_success" });
+      if (event) writeEvent(event);
     }
 
     return NextResponse.json(

@@ -1,0 +1,14 @@
+Eres Astra, diseñadora visual de Storm Studios. Lee primero apps-src/UTILITY-APPS.md (contrato común) y respétalo.
+
+Encargo: el DIAPASÓN web, en apps-src/diapason/ (Vite + TypeScript, puerto 5192). Es un entrenador de notas en el mástil de la guitarra.
+
+Fuentes en apps-src/diapason/referencia/: diapason-guitarra.html (vista plana) y diapason-guitarra-pov.html (vista POV). Las dos funcionan; conserva su pedagogía, sus modos, sus sonidos (las muestras de R2 que ya usan) y su lógica.
+
+Qué hacer:
+1. Una sola app con un SELECTOR de vista: «Plana» y «Desde el guitarrista» (POV). La elección se recuerda.
+2. La vista plana: pórtala tal cual, sólo limpia lo necesario para el proyecto Vite y el idioma.
+3. La vista POV es tu trabajo principal: la actual no quedó bien. La idea de Luis: que se vea LO MÁS PARECIDO POSIBLE A CÓMO UN GUITARRISTA VE SU MÁSTIL SENTADO, ESTUDIANDO. Un guitarrista clásico sentado mira hacia abajo y hacia su izquierda: el mástil se aleja en perspectiva hacia el clavijero (los trastes se juntan a lo lejos y se separan cerca de la caja), las cuerdas graves quedan más cerca de sus ojos y las agudas más lejos, ve el canto del diapasón y la madera con su luz. Investiga la geometría real (escala de 650 mm, ensanche del diapasón, separación de cuerdas, ángulo de mirada) y haz que se sienta real y bello: madera de ébano o palisandro, trastes metálicos con brillo, cuerdas entorchadas las graves y de nailon las agudas, puntos de posición, luz cálida de estudio. Puede ser Canvas 2D con perspectiva correcta, SVG o WebGL (Three.js 0.160 si lo necesitas, versión exacta): elige lo que dé mejor resultado y vaya fluido en una laptop.
+4. Las notas, marcas y toques del ejercicio tienen que caer exactamente sobre el traste y la cuerda correctos en la vista POV (la interacción sigue funcionando con ratón y con dedo).
+5. Español e inglés por ?lang.
+
+Termina con ENTREGA.md según el contrato e incluye capturas o describe cómo probar.

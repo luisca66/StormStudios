@@ -4,13 +4,22 @@ import {
   GUITAR_STRINGS,
   LEVELS,
   PITCHES,
-  type GuitarSample,
+  REGISTERS,
+  TIMBRES,
+  type NoteSample,
   type Pitch,
+  type RegisterId,
+  type SoundSelection,
   type StringId,
+  type TimbreId,
+  type TimbreMode,
   pickSample,
   samplesFor,
+  timbreInfo,
+  usesStrings,
 } from "./catalog";
 import { GuitarWorld } from "./world";
+import { ENVIRONMENTS, type EnvironmentId } from "./environments";
 import { ProgressRepository, type AnswerTally } from "./progress";
 
 type Screen = "menu" | "groups" | "warmup" | "gameplay" | "victory" | "stats";
@@ -24,10 +33,42 @@ const canvas: HTMLCanvasElement = canvasElement;
 
 const audio = new GuitarAudio();
 const selectedStrings = new Set<StringId>(GUITAR_STRINGS.map((string) => string.id));
+const selectedRegisters = new Set<RegisterId>(REGISTERS.map((register) => register.id));
 const QA_MODE = import.meta.env.DEV && new URLSearchParams(window.location.search).get("qa") === "1";
 const TARGET_STREAK = QA_MODE ? 3 : 20;
 const progressRepository = new ProgressRepository(QA_MODE ? "resonancia-guitar-progress-qa-v1" : "resonancia-guitar-progress-v1");
 let progress = progressRepository.get();
+
+const ENV_KEY = "resonancia-entorno-v1";
+const readEnvironment = (): EnvironmentId => {
+  try {
+    const saved = localStorage.getItem(ENV_KEY);
+    if (ENVIRONMENTS.some((e) => e.id === saved)) return saved as EnvironmentId;
+  } catch { /* sin almacenamiento: se usa la guitarra */ }
+  return "guitarra";
+};
+let environment: EnvironmentId = readEnvironment();
+const envInfo = () => ENVIRONMENTS.find((e) => e.id === environment) ?? ENVIRONMENTS[0];
+/** El nombre del nivel depende del mundo; la pedagogía (familias de altura) es la misma en todos. */
+const levelName = (level: { id: number; name: string }) => envInfo().levelNames[level.id - 1] ?? level.name;
+
+// Timbre: «Del entorno» (cada mundo suena con su instrumento) o «Aleatorio» (un timbre al azar por nota).
+const TIMBRE_KEY = "resonancia-timbre-v1";
+const readTimbreMode = (): TimbreMode => {
+  try {
+    if (localStorage.getItem(TIMBRE_KEY) === "aleatorio") return "aleatorio";
+  } catch { /* sin almacenamiento: del entorno */ }
+  return "entorno";
+};
+let timbreMode: TimbreMode = readTimbreMode();
+/** Cada entorno lleva el nombre de su instrumento. */
+const envTimbre = (): TimbreId => environment as TimbreId;
+const selection = (): SoundSelection => ({ mode: timbreMode, timbre: envTimbre(), strings: selectedStrings, registers: selectedRegisters });
+const TIMBRE_ARTICLE: Record<TimbreId, string> = { guitarra: "La cuerda", piano: "El piano", corno: "El corno", fagot: "El fagot", coro: "El coro", cello: "El cello" };
+const soundLabel = () => timbreMode === "aleatorio" ? "Timbre aleatorio" : envTimbre() === "guitarra" ? "Guitarra clásica" : timbreInfo(envTimbre()).label;
+const describe = (sample: NoteSample, withFret: boolean) => sample.timbre === "guitarra"
+  ? `${sample.noteName} · ${sample.stringLabel}${withFret ? ` · traste ${sample.fret}` : ""}`
+  : `${sample.noteName} · ${timbreInfo(sample.timbre).label} · registro ${sample.register}`;
 
 let screen: Screen = "menu";
 let levelIndex = 0;
@@ -36,9 +77,9 @@ let streak = 0;
 let hits = 0;
 let mistakes = 0;
 let resolving = false;
-let queuedSample: GuitarSample | null = null;
-let currentChallenge: GuitarSample | null = null;
-let previousSample: GuitarSample | null = null;
+let queuedSample: NoteSample | null = null;
+let currentChallenge: NoteSample | null = null;
+let previousSample: NoteSample | null = null;
 let feedback: Feedback = null;
 
 const world = new GuitarWorld(canvas, {
@@ -48,6 +89,7 @@ const world = new GuitarWorld(canvas, {
 });
 
 world.setGameplay(false);
+void world.setEnvironment(environment);
 render();
 
 app.addEventListener("click", (event) => {
@@ -58,6 +100,9 @@ app.addEventListener("click", (event) => {
   audio.primeFootsteps();
 
   if (action === "toggle-string") toggleString(target.dataset.string as StringId);
+  if (action === "toggle-register") toggleRegister(target.dataset.register as RegisterId);
+  if (action === "timbre-mode") chooseTimbreMode(target.dataset.mode as TimbreMode);
+  if (action === "choose-env") chooseEnvironment(target.dataset.env as EnvironmentId);
   if (action === "choose-level") openGroups(Number(target.dataset.level));
   if (action === "choose-group") openWarmup(Number(target.dataset.group));
   if (action === "warmup-note") void playWarmup(target.dataset.pitch as Pitch);
@@ -104,6 +149,23 @@ function toggleString(stringId: StringId) {
   } else {
     selectedStrings.add(stringId);
   }
+  render();
+}
+
+function toggleRegister(registerId: RegisterId) {
+  if (selectedRegisters.has(registerId)) {
+    if (selectedRegisters.size === 1) return;
+    selectedRegisters.delete(registerId);
+  } else {
+    selectedRegisters.add(registerId);
+  }
+  render();
+}
+
+function chooseTimbreMode(mode: TimbreMode) {
+  if (mode !== "entorno" && mode !== "aleatorio") return;
+  timbreMode = mode;
+  try { localStorage.setItem(TIMBRE_KEY, mode); } catch { /* no se recuerda, no pasa nada */ }
   render();
 }
 
@@ -165,7 +227,7 @@ function nextNode() {
 async function hearChallenge() {
   if (!queuedSample || screen !== "gameplay" || resolving) return;
   currentChallenge = queuedSample;
-  feedback = { kind: "neutral", title: "La cuerda respondió", detail: "Identifica la altura que acabas de escuchar." };
+  feedback = { kind: "neutral", title: `${TIMBRE_ARTICLE[currentChallenge.timbre]} respondió`, detail: "Identifica la altura que acabas de escuchar." };
   world.setMovement(false);
   render();
   const played = await audio.playSample(currentChallenge);
@@ -197,7 +259,7 @@ async function answer(pitch: Pitch) {
       title: streak >= TARGET_STREAK ? "La roseta está abierta" : `Correcto · ${sample.pitch}`,
       detail: streak >= TARGET_STREAK
         ? "Las seis cuerdas están en resonancia. Entra al portal."
-        : `${sample.noteName} · ${sample.stringLabel} · traste ${sample.fret}`,
+        : describe(sample, true),
     };
     currentChallenge = null;
     render();
@@ -218,7 +280,7 @@ async function answer(pitch: Pitch) {
   feedback = {
     kind: "wrong",
     title: `Era ${sample.pitch}`,
-    detail: `${sample.noteName} · ${sample.stringLabel}. Volverás a encontrar la misma resonancia.`,
+    detail: `${describe(sample, false)}. Volverás a encontrar la misma resonancia.`,
   };
   currentChallenge = null;
   render();
@@ -281,7 +343,7 @@ function selectedPitches() {
 }
 
 function currentPool() {
-  return samplesFor(selectedStrings, selectedPitches());
+  return samplesFor(selection(), selectedPitches());
 }
 
 function updateTelemetry() {
@@ -307,14 +369,22 @@ function render() {
   if (screen === "stats") app.innerHTML = renderStats();
 }
 
+function chooseEnvironment(id: EnvironmentId) {
+  if (!ENVIRONMENTS.some((e) => e.id === id)) return;
+  environment = id;
+  try { localStorage.setItem(ENV_KEY, id); } catch { /* no se recuerda, no pasa nada */ }
+  void world.setEnvironment(id);
+  render();
+}
+
 function renderMenu() {
   return `
     <main class="menu-layout">
       <section class="identity-panel">
         <div class="string-signature" aria-hidden="true">${Array.from({ length: 6 }, (_, i) => `<i style="--i:${i}"></i>`).join("")}</div>
-        <p class="kicker">Oído absoluto · Guitarra clásica</p>
+        <p class="kicker">Oído absoluto · ${soundLabel()}</p>
         <h1>Resonancia</h1>
-        <p class="intro">Resuelve un laberinto nuevo sobre el diapasón. La música borra la referencia anterior; al final, reconoce la nota que emerge sobre ella.</p>
+        <p class="intro">Resuelve un laberinto nuevo ${envInfo().where}. La música borra la referencia anterior; al final, reconoce la nota que emerge sobre ella.</p>
         <div class="rule-copy">
           <span>La misión</span>
           <strong>${TARGET_STREAK} aciertos consecutivos</strong>
@@ -330,18 +400,44 @@ function renderMenu() {
       <section class="setup-panel">
         <header class="section-head">
           <span>01</span>
-          <div><p>Fuente sonora</p><h2>Elige las cuerdas</h2></div>
+          <div><p>Fuente sonora</p><h2>${usesStrings(selection()) ? "Elige las cuerdas" : "Elige el registro"}</h2></div>
         </header>
+        <div class="string-picker timbre-picker">
+          <button class="string-choice ${timbreMode === "entorno" ? "is-on" : ""}" data-action="timbre-mode" data-mode="entorno" aria-pressed="${timbreMode === "entorno"}">
+            <span>Timbre</span><strong>Del entorno · ${timbreInfo(envTimbre()).label}</strong>
+          </button>
+          <button class="string-choice ${timbreMode === "aleatorio" ? "is-on" : ""}" data-action="timbre-mode" data-mode="aleatorio" aria-pressed="${timbreMode === "aleatorio"}">
+            <span>Timbre</span><strong>Aleatorio · avanzado</strong>
+          </button>
+        </div>
         <div class="string-picker">
-          ${GUITAR_STRINGS.map((string) => `
+          ${usesStrings(selection())
+            ? GUITAR_STRINGS.map((string) => `
             <button class="string-choice ${selectedStrings.has(string.id) ? "is-on" : ""}" data-action="toggle-string" data-string="${string.id}" aria-pressed="${selectedStrings.has(string.id)}">
               <span>${string.shortLabel}</span><strong>${string.label}</strong>
+            </button>
+          `).join("")
+            : REGISTERS.map((register) => `
+            <button class="string-choice ${selectedRegisters.has(register.id) ? "is-on" : ""}" data-action="toggle-register" data-register="${register.id}" aria-pressed="${selectedRegisters.has(register.id)}">
+              <span>${register.label}</span><strong>${register.hint}</strong>
             </button>
           `).join("")}
         </div>
 
         <header class="section-head level-head">
           <span>02</span>
+          <div><p>Escenario</p><h2>Elige el entorno</h2></div>
+        </header>
+        <div class="string-picker env-picker">
+          ${ENVIRONMENTS.map((env) => `
+            <button class="string-choice ${environment === env.id ? "is-on" : ""}" data-action="choose-env" data-env="${env.id}" aria-pressed="${environment === env.id}">
+              <span>${env.id[0].toUpperCase() + env.id.slice(1)}</span><strong>${env.name}</strong>
+            </button>
+          `).join("")}
+        </div>
+
+        <header class="section-head level-head">
+          <span>03</span>
           <div><p>Ruta auditiva</p><h2>Entra al instrumento</h2></div>
         </header>
         <div class="level-list">
@@ -356,7 +452,7 @@ function renderMenu() {
               return `
             <button class="level-row" data-action="choose-level" data-level="${index}" style="--level-accent:${level.accent}">
               <span class="level-number">${String(level.id).padStart(2, "0")}</span>
-              <span><strong>${level.name}</strong><small>${progressLabel}</small></span>
+              <span><strong>${levelName(level)}</strong><small>${progressLabel}</small></span>
               ${record?.completions ? `<b class="completion-mark" aria-label="Nivel completado">◆</b>` : `<i>↗</i>`}
             </button>
               `;
@@ -375,11 +471,11 @@ function renderGroups() {
       <button class="text-button" data-action="back-menu">← Volver al inicio</button>
       <div class="chapter-mark" style="--level-accent:${level.accent}"><span>${String(level.id).padStart(2, "0")}</span></div>
       <p class="kicker">${level.place}</p>
-      <h1>${level.name}</h1>
+      <h1>${levelName(level)}</h1>
       <p class="intro narrow">${level.description} Elige una familia para comenzar.</p>
       <div class="group-list">
         ${level.groups.map((group, index) => {
-          const available = samplesFor(selectedStrings, group).length;
+          const available = samplesFor(selection(), group).length;
           return `
             <button class="group-row" data-action="choose-group" data-group="${index}" ${available < 2 ? "disabled" : ""}>
               <span class="pitch-set">${group.join(" · ")}</span>
@@ -410,9 +506,9 @@ function renderWarmup() {
         `).join("")}
       </div>
       <div class="warmup-meta">
-        <span>${pitches.length} alturas</span><span>${selectedStrings.size} cuerdas activas</span><span>${currentPool().length} muestras</span>
+        <span>${pitches.length} alturas</span><span>${usesStrings(selection()) ? `${selectedStrings.size} cuerdas activas` : `${soundLabel()} · ${selectedRegisters.size} ${selectedRegisters.size === 1 ? "registro" : "registros"}`}</span><span>${currentPool().length} muestras</span>
       </div>
-      <button class="primary-action" data-action="start">Entrar al diapasón <span>→</span></button>
+      <button class="primary-action" data-action="start">${envInfo().enter} <span>→</span></button>
     </main>
   `;
 }
@@ -426,7 +522,7 @@ function renderGameplay() {
       <div class="hud-top">
         <section class="mission-strip">
           <button class="exit-button" data-action="back-menu" aria-label="Salir al menú">×</button>
-          <div><span>Nivel ${level.id}</span><strong>${level.name}</strong></div>
+          <div><span>Nivel ${level.id}</span><strong>${levelName(level)}</strong></div>
         </section>
         <section class="streak-meter" style="--progress:${progress}%">
           <div><span>Racha</span><strong>${streak}<small>/${TARGET_STREAK}</small></strong></div>
@@ -488,7 +584,7 @@ function renderVictory() {
     <main class="screen-panel victory-panel">
       <div class="victory-rosette" aria-hidden="true"><i></i><i></i><i></i><span>${TARGET_STREAK}</span></div>
       <p class="kicker">Resonancia completa</p>
-      <h1>${level.name} vuelve a sonar</h1>
+      <h1>${levelName(level)} vuelve a sonar</h1>
       <p class="intro narrow">Reconociste ${TARGET_STREAK === 20 ? "veinte" : TARGET_STREAK} alturas consecutivas y activaste las seis cuerdas.</p>
       <div class="victory-stats"><span><small>Aciertos</small>${hits}</span><span><small>Errores</small>${mistakes}</span><span><small>Racha</small>${TARGET_STREAK}</span></div>
       <p class="record-note">Mejor racha histórica en esta zona: <strong>${levelRecord?.bestStreak ?? TARGET_STREAK}</strong> · Completada <strong>${levelRecord?.completions ?? 1}</strong> ${levelRecord?.completions === 1 ? "vez" : "veces"}</p>
@@ -528,9 +624,23 @@ function renderStats() {
         </section>
 
         <section class="ledger-section">
-          <header><span>Alturas</span><p>Precisión sin importar cuerda u octava</p></header>
+          <header><span>Alturas</span><p>Precisión sin importar timbre, cuerda u octava</p></header>
           <div class="pitch-ledger">
             ${PITCHES.map((pitch) => renderTallyCell(pitch, progress.pitches[pitch])).join("")}
+          </div>
+        </section>
+
+        <section class="ledger-section">
+          <header><span>Timbres</span><p>Tu oído en cada instrumento: la meta es reconocer la nota sin importar quién la toque</p></header>
+          <div class="string-ledger">
+            ${TIMBRES.map((timbre) => renderLedgerRow(timbre.label, timbre.id === "guitarra" ? "Cuerdas" : "Muestras", progress.timbres[timbre.id])).join("")}
+          </div>
+        </section>
+
+        <section class="ledger-section">
+          <header><span>Registros</span><p>Grave, medio y agudo en todos los timbres</p></header>
+          <div class="string-ledger">
+            ${REGISTERS.map((register) => renderLedgerRow(register.label, register.hint, progress.registers[register.id])).join("")}
           </div>
         </section>
 
@@ -553,13 +663,22 @@ function renderStats() {
           <header><span>Recorrido</span><p>Sesiones y mejores rachas por zona</p></header>
           ${levelRecords.map(({ level, record }) => `<article>
             <span>${String(level.id).padStart(2, "0")}</span>
-            <div><strong>${level.name}</strong><small>${record?.sessions ?? 0} ${record?.sessions === 1 ? "sesión" : "sesiones"} · mejor racha ${record?.bestStreak ?? 0}</small></div>
+            <div><strong>${levelName(level)}</strong><small>${record?.sessions ?? 0} ${record?.sessions === 1 ? "sesión" : "sesiones"} · mejor racha ${record?.bestStreak ?? 0}</small></div>
             <b>${record?.completions ? `${record.completions} ◆` : "—"}</b>
           </article>`).join("")}
         </section>
       `}
     </main>
   `;
+}
+
+function renderLedgerRow(label: string, caption: string, tally?: AnswerTally) {
+  const percent = tally ? accuracy(tally) : 0;
+  return `<article style="--accuracy:${percent}%">
+    <div><span>${label}</span><strong>${caption}</strong></div>
+    <i><b></b></i>
+    <small>${tally?.total ? `${percent}% · ${tally.correct}/${tally.total}` : "Sin respuestas"}</small>
+  </article>`;
 }
 
 function renderTallyCell(label: string, tally?: AnswerTally) {

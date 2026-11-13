@@ -1,0 +1,1280 @@
+{
+  "version": 1,
+  "lesson": "09-leccion-8",
+  "locale": "es",
+  "title": "Lección 8 — Material armónico y enlaces",
+  "source": "content/storyboards/es/09-leccion-8.guion.txt",
+  "format": {
+    "aspect": "16:9",
+    "theme": "storm"
+  },
+  "projects": {
+    "material": {
+      "setup": {
+        "mode": "satb",
+        "title": "Material armónico en Do mayor",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 11,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 entera\ncompas 2\nC5 entera\ncompas 3\nD5 entera\ncompas 4\nD5 entera\ncompas 5\nE5 entera\ncompas 6\nC5 entera\ncompas 7\nC5 entera\ncompas 8\nD5 entera\ncompas 9\nD5 entera\ncompas 10\nC5 entera\ncompas 11\nB4 entera\nvoz alto\ncompas 1\nG4 entera\ncompas 2\nG4 entera\ncompas 3\nA4 entera\ncompas 4\nA4 entera\ncompas 5\nB4 entera\ncompas 6\nA4 entera\ncompas 7\nF4 entera\ncompas 8\nB4 entera\ncompas 9\nG4 entera\ncompas 10\nA4 entera\ncompas 11\nF4 entera\nvoz tenor\ncompas 1\nE4 entera\ncompas 2\nC4 entera\ncompas 3\nF4 entera\ncompas 4\nD4 entera\ncompas 5\nG4 entera\ncompas 6\nF4 entera\ncompas 7\nC4 entera\ncompas 8\nG4 entera\ncompas 9\nD4 entera\ncompas 10\nE4 entera\ncompas 11\nD4 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nE3 entera\ncompas 3\nD3 entera\ncompas 4\nF3 entera\ncompas 5\nE3 entera\ncompas 6\nF3 entera\ncompas 7\nA3 entera\ncompas 8\nG3 entera\ncompas 9\nB2 entera\ncompas 10\nA3 entera\ncompas 11\nD3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "I 6/3",
+          "kind": "roman"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "II",
+          "kind": "roman"
+        },
+        {
+          "measure": 4,
+          "beat": 1,
+          "text": "II 6/3",
+          "kind": "roman"
+        },
+        {
+          "measure": 5,
+          "beat": 1,
+          "text": "III",
+          "kind": "roman"
+        },
+        {
+          "measure": 6,
+          "beat": 1,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 7,
+          "beat": 1,
+          "text": "IV 6/3",
+          "kind": "roman"
+        },
+        {
+          "measure": 8,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 9,
+          "beat": 1,
+          "text": "V 6/3",
+          "kind": "roman"
+        },
+        {
+          "measure": 10,
+          "beat": 1,
+          "text": "VI",
+          "kind": "roman"
+        },
+        {
+          "measure": 11,
+          "beat": 1,
+          "text": "VII 6/3",
+          "kind": "roman"
+        }
+      ]
+    },
+    "repetir": {
+      "setup": {
+        "mode": "satb",
+        "title": "Repetir el acorde",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 mitad; G4 mitad\nvoz alto\ncompas 1\nG4 mitad; E4 mitad\nvoz tenor\ncompas 1\nE4 mitad; C4 mitad\nvoz bass\ncompas 1\nC3 mitad; E3 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "I 6/3",
+          "kind": "roman"
+        }
+      ]
+    },
+    "ej1": {
+      "setup": {
+        "mode": "satb",
+        "title": "I – IV en Sol mayor",
+        "key": "G",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nB4 mitad; C5 mitad\nvoz alto\ncompas 1\nG4 mitad; G4 mitad\nvoz tenor\ncompas 1\nD4 mitad; E4 mitad\nvoz bass\ncompas 1\nG3 mitad; C3 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "IV",
+          "kind": "roman"
+        }
+      ]
+    },
+    "ej2": {
+      "setup": {
+        "mode": "satb",
+        "title": "IV – V en Re mayor",
+        "key": "D",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nD5 mitad; C#5 mitad\nvoz alto\ncompas 1\nB4 mitad; A4 mitad\nvoz tenor\ncompas 1\nG4 mitad; E4 mitad\nvoz bass\ncompas 1\nG2 mitad; A2 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "V",
+          "kind": "roman"
+        }
+      ]
+    },
+    "ej3": {
+      "setup": {
+        "mode": "satb",
+        "title": "V – I en Fa mayor",
+        "key": "F",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nE5 mitad; F5 mitad\nvoz alto\ncompas 1\nG4 mitad; A4 mitad\nvoz tenor\ncompas 1\nC4 mitad; C4 mitad\nvoz bass\ncompas 1\nC3 mitad; F2 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "I",
+          "kind": "roman"
+        }
+      ]
+    },
+    "ej4": {
+      "setup": {
+        "mode": "satb",
+        "title": "II – V en Si♭ mayor",
+        "key": "Bb",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 mitad; C5 mitad\nvoz alto\ncompas 1\nG4 mitad; A4 mitad\nvoz tenor\ncompas 1\nEb4 mitad; F4 mitad\nvoz bass\ncompas 1\nC3 mitad; F2 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "II",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "V",
+          "kind": "roman"
+        }
+      ]
+    },
+    "ej5": {
+      "setup": {
+        "mode": "satb",
+        "title": "V – VI en La mayor",
+        "key": "A",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nG#4 mitad; A4 mitad\nvoz alto\ncompas 1\nE4 mitad; C#4 mitad\nvoz tenor\ncompas 1\nB3 mitad; A3 mitad\nvoz bass\ncompas 1\nE3 mitad; F#3 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "VI",
+          "kind": "roman"
+        }
+      ]
+    },
+    "ej6": {
+      "setup": {
+        "mode": "satb",
+        "title": "VI – II en Mi♭ mayor",
+        "key": "Eb",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nG4 mitad; Ab4 mitad\nvoz alto\ncompas 1\nEb4 mitad; F4 mitad\nvoz tenor\ncompas 1\nC4 mitad; C4 mitad\nvoz bass\ncompas 1\nC3 mitad; F2 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "VI",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "II",
+          "kind": "roman"
+        }
+      ]
+    },
+    "ej7": {
+      "setup": {
+        "mode": "satb",
+        "title": "I – VII 6/3 en Do mayor",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 mitad; B4 mitad\nvoz alto\ncompas 1\nG4 mitad; F4 mitad\nvoz tenor\ncompas 1\nE4 mitad; D4 mitad\nvoz bass\ncompas 1\nC3 mitad; D3 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "VII 6/3",
+          "kind": "roman"
+        }
+      ]
+    },
+    "ej8": {
+      "setup": {
+        "mode": "satb",
+        "title": "IV 6/3 – V en Mi mayor",
+        "key": "E",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nA4 mitad; B4 mitad\nvoz alto\ncompas 1\nE4 mitad; D#4 mitad\nvoz tenor\ncompas 1\nA3 mitad; F#3 mitad\nvoz bass\ncompas 1\nC#3 mitad; B2 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "IV 6/3",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "V",
+          "kind": "roman"
+        }
+      ]
+    },
+    "error-paralelas": {
+      "setup": {
+        "mode": "satb",
+        "title": "IV – V: quintas y octavas paralelas",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 mitad; D5 mitad\ncompas 2\nC5 mitad; B4 mitad\nvoz alto\ncompas 1\nA4 mitad; B4 mitad\ncompas 2\nA4 mitad; G4 mitad\nvoz tenor\ncompas 1\nF4 mitad; G4 mitad\ncompas 2\nF4 mitad; D4 mitad\nvoz bass\ncompas 1\nF3 mitad; G3 mitad\ncompas 2\nF3 mitad; G3 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "V",
+          "kind": "roman"
+        }
+      ]
+    },
+    "error-sensible": {
+      "setup": {
+        "mode": "satb",
+        "title": "V – I: la sensible en la soprano",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nB4 mitad; G4 mitad\ncompas 2\nB4 mitad; C5 mitad\nvoz alto\ncompas 1\nG4 mitad; E4 mitad\ncompas 2\nG4 mitad; G4 mitad\nvoz tenor\ncompas 1\nD4 mitad; C4 mitad\ncompas 2\nD4 mitad; E4 mitad\nvoz bass\ncompas 1\nG3 mitad; C3 mitad\ncompas 2\nG3 mitad; C3 mitad",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "I",
+          "kind": "roman"
+        }
+      ]
+    }
+  },
+  "stills": [
+    {
+      "id": "titulo",
+      "kind": "title",
+      "heading": "Material armónico y enlaces",
+      "caption": "Lección 8 · Curso de Armonía · Storm Studios Learning",
+      "narration": "Hola, bienvenidos de nuevo a Storm Studios Learning. En la lección seis aprendimos a construir acordes para el cuarteto vocal. En la lección siete vimos cómo se mueve cada voz, y qué cuidar cuando dos voces se mueven al mismo tiempo."
+    },
+    {
+      "id": "enlazar",
+      "project": "ej1",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "Enlazar dos acordes",
+      "caption": "El último paso antes del primer coral",
+      "narration": "Hoy vamos a juntar las dos cosas: vamos a enlazar dos acordes. Es el último paso antes de escribir nuestro primer coral.",
+      "showCiphers": true
+    },
+    {
+      "id": "tres-partes",
+      "kind": "title",
+      "heading": "Tres partes",
+      "caption": "Material armónico · tabla general de enlaces · técnica de enlace",
+      "narration": "Esta lección tiene tres partes: el material armónico, la tabla general de enlaces y la técnica para enlazar."
+    },
+    {
+      "id": "material",
+      "kind": "title",
+      "heading": "Material armónico",
+      "narration": "Empecemos con el material armónico."
+    },
+    {
+      "id": "material-figura",
+      "kind": "image",
+      "image": "/images/curso/leccion-8/material-armonico-es.svg",
+      "heading": "Los acordes que usamos, y en qué estado",
+      "caption": "Corales de Bach · acordes de quinta · modo mayor",
+      "narration": "Llamamos material armónico a los acordes que usamos, y al estado en que los usamos. Nos guiamos por los corales de Bach, y por ahora trabajamos solo con acordes de quinta en el modo mayor."
+    },
+    {
+      "id": "mat-i",
+      "project": "material",
+      "reveal": {
+        "measure": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "I"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "I 6/3"
+        }
+      ],
+      "heading": "Primer grado",
+      "caption": "Fundamental y seis tres",
+      "narration": "El primer grado se usa en estado fundamental y en primera inversión, es decir, en seis tres.",
+      "showCiphers": true
+    },
+    {
+      "id": "mat-ii",
+      "project": "material",
+      "reveal": {
+        "measure": 5
+      },
+      "highlights": [
+        {
+          "measure": 3,
+          "color": "green",
+          "label": "II"
+        },
+        {
+          "measure": 4,
+          "color": "green",
+          "label": "II 6/3"
+        }
+      ],
+      "heading": "Segundo grado",
+      "caption": "Fundamental y seis tres",
+      "narration": "El segundo grado, también en estado fundamental y en seis tres.",
+      "showCiphers": true
+    },
+    {
+      "id": "mat-iii",
+      "project": "material",
+      "reveal": {
+        "measure": 6
+      },
+      "highlights": [
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "solo fund."
+        }
+      ],
+      "heading": "Tercer grado",
+      "caption": "Solo en estado fundamental",
+      "narration": "El tercer grado se usa solo en estado fundamental.",
+      "showCiphers": true
+    },
+    {
+      "id": "mat-iv-v",
+      "project": "material",
+      "reveal": {
+        "measure": 10
+      },
+      "highlights": [
+        {
+          "measure": 6,
+          "color": "green",
+          "label": "IV"
+        },
+        {
+          "measure": 7,
+          "color": "green",
+          "label": "IV 6/3"
+        },
+        {
+          "measure": 8,
+          "color": "green",
+          "label": "V"
+        },
+        {
+          "measure": 9,
+          "color": "green",
+          "label": "V 6/3"
+        }
+      ],
+      "heading": "Cuarto y quinto grado",
+      "caption": "Fundamental y seis tres",
+      "narration": "El cuarto y el quinto grado se usan en estado fundamental y en seis tres.",
+      "showCiphers": true
+    },
+    {
+      "id": "mat-vi",
+      "project": "material",
+      "reveal": {
+        "measure": 11
+      },
+      "highlights": [
+        {
+          "measure": 10,
+          "color": "amber",
+          "label": "solo fund."
+        }
+      ],
+      "heading": "Sexto grado",
+      "caption": "Solo en estado fundamental",
+      "narration": "El sexto grado, solo en estado fundamental.",
+      "showCiphers": true
+    },
+    {
+      "id": "mat-vii",
+      "project": "material",
+      "highlights": [
+        {
+          "measure": 11,
+          "color": "amber",
+          "label": "solo 6/3"
+        }
+      ],
+      "heading": "Séptimo grado",
+      "caption": "Solo en seis tres",
+      "narration": "Y el séptimo grado, solo en seis tres.",
+      "showCiphers": true
+    },
+    {
+      "id": "tres-cosas",
+      "project": "material",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "Tres cosas de esta lista",
+      "narration": "Hay tres cosas que conviene entender de esta lista.",
+      "showCiphers": true
+    },
+    {
+      "id": "seis-cuatro",
+      "kind": "title",
+      "heading": "Sin seis cuatro libre",
+      "caption": "Se forma una cuarta con el bajo · lo veremos en casos específicos",
+      "narration": "Primero, ningún acorde se usa libremente en segunda inversión, en seis cuatro. En el seis cuatro se forma una cuarta con el bajo, y esa cuarta suena como una disonancia. Los acordes en seis cuatro los veremos más adelante, en casos específicos."
+    },
+    {
+      "id": "iii-vi",
+      "project": "material",
+      "highlights": [
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "III"
+        },
+        {
+          "measure": 10,
+          "color": "amber",
+          "label": "VI"
+        }
+      ],
+      "heading": "III y VI en estado fundamental",
+      "caption": "Dos regiones tonales · color modal",
+      "narration": "Segundo, el tercero y el sexto grado se usan en estado fundamental. Estos acordes pertenecen a dos regiones tonales y tienen un color modal, y el estado fundamental les da firmeza.",
+      "showCiphers": true
+    },
+    {
+      "id": "vii",
+      "project": "material",
+      "highlights": [
+        {
+          "measure": 11,
+          "color": "amber",
+          "label": "disminuido"
+        }
+      ],
+      "heading": "VII solo en seis tres",
+      "caption": "Sin quinta disminuida con el bajo",
+      "narration": "Tercero, el séptimo grado es un acorde disminuido, y por eso se usa solo en seis tres. Así evitamos que se forme una quinta disminuida con el bajo.",
+      "showCiphers": true
+    },
+    {
+      "id": "tabla",
+      "kind": "image",
+      "image": "/images/curso/leccion-8/tabla-enlaces-es.svg",
+      "heading": "Tabla general de enlaces",
+      "caption": "(6/3): fundamental o seis tres",
+      "narration": "Ahora veamos la tabla general de enlaces. Al menos en el periodo clásico, cada acorde tiene caminos preferidos hacia otros acordes. La tabla nos dice a qué acordes puede ir cada uno. Cuando decimos que un acorde va en estado fundamental o en seis tres, cualquiera de los dos estados es válido."
+    },
+    {
+      "id": "tabla-i",
+      "kind": "image",
+      "image": "/images/curso/leccion-8/tabla-enlaces-es.svg",
+      "heading": "Del primer grado",
+      "caption": "I → III obliga a seguir a IV",
+      "narration": "Empecemos con el primer grado. Del primer grado podemos ir al segundo, al tercero, al cuarto, al quinto, al sexto, y al séptimo en seis tres. Pero cuidado: si vamos del primero al tercero, después el tercero tiene que ir al cuarto."
+    },
+    {
+      "id": "tabla-ii",
+      "kind": "image",
+      "image": "/images/curso/leccion-8/tabla-enlaces-es.svg",
+      "heading": "Del segundo grado",
+      "caption": "II → IV obliga a seguir a V",
+      "narration": "Del segundo grado podemos ir al quinto, al séptimo en seis tres o al cuarto. Y si vamos del segundo al cuarto, después el cuarto tiene que ir al quinto."
+    },
+    {
+      "id": "tabla-iii",
+      "kind": "image",
+      "image": "/images/curso/leccion-8/tabla-enlaces-es.svg",
+      "heading": "Del tercer grado",
+      "caption": "III → V obliga a seguir a VI",
+      "narration": "Del tercer grado podemos ir al cuarto, al quinto, al sexto o al séptimo en seis tres. Si vamos del tercero al quinto, después el quinto tiene que ir al sexto."
+    },
+    {
+      "id": "tabla-iv",
+      "kind": "image",
+      "image": "/images/curso/leccion-8/tabla-enlaces-es.svg",
+      "heading": "Del cuarto grado",
+      "narration": "Del cuarto grado podemos ir al primero, al segundo, al quinto o al séptimo en seis tres."
+    },
+    {
+      "id": "tabla-v",
+      "kind": "image",
+      "image": "/images/curso/leccion-8/tabla-enlaces-es.svg",
+      "heading": "Del quinto grado",
+      "caption": "V → VII 6/3 obliga a seguir a I",
+      "narration": "Del quinto grado podemos ir al primero, al sexto o al séptimo en seis tres. Si vamos del quinto al séptimo, después el séptimo tiene que ir al primero."
+    },
+    {
+      "id": "tabla-v-iv",
+      "kind": "image",
+      "image": "/images/curso/leccion-8/tabla-enlaces-es.svg",
+      "heading": "Caso especial",
+      "caption": "V fundamental → IV 6/3",
+      "narration": "Y hay un caso especial: el quinto en estado fundamental también puede ir al cuarto en seis tres."
+    },
+    {
+      "id": "tabla-vi",
+      "kind": "image",
+      "image": "/images/curso/leccion-8/tabla-enlaces-es.svg",
+      "heading": "Del sexto grado",
+      "caption": "VI → I obliga a seguir a II",
+      "narration": "Del sexto grado podemos ir a casi todos: al primero, al segundo, al tercero, al cuarto, al quinto y al séptimo en seis tres. Si vamos del sexto al primero, después el primero tiene que ir al segundo."
+    },
+    {
+      "id": "tabla-vii",
+      "kind": "image",
+      "image": "/images/curso/leccion-8/tabla-enlaces-es.svg",
+      "heading": "Del séptimo grado en seis tres",
+      "narration": "Y del séptimo grado en seis tres podemos ir al primero, al tercero, al sexto o al quinto."
+    },
+    {
+      "id": "obligatorias",
+      "kind": "title",
+      "heading": "Continuaciones obligatorias",
+      "caption": "No son sugerencias: son reglas",
+      "narration": "Estas continuaciones obligatorias son importantes. Cuando la tabla dice que después de un enlace hay que seguir a cierto acorde, no es una sugerencia: es una regla."
+    },
+    {
+      "id": "repetir",
+      "project": "repetir",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "Repetir el acorde",
+      "caption": "Sin técnica de enlace: las voces se mueven libremente",
+      "narration": "Un detalle más: cuando repetimos el mismo acorde, no hay técnica de enlace. Las voces pueden moverse libremente dentro del acorde, por ejemplo del primer grado al primer grado en seis tres.",
+      "showCiphers": true
+    },
+    {
+      "id": "tecnica",
+      "kind": "title",
+      "heading": "Cómo se enlazan dos acordes",
+      "narration": "Ahora sí, veamos cómo se enlazan dos acordes."
+    },
+    {
+      "id": "construir",
+      "kind": "image",
+      "image": "/images/curso/leccion-8/tecnica-enlace-es.svg",
+      "heading": "Primero, cada acorde bien construido",
+      "caption": "Como en la lección 6",
+      "narration": "Primero construimos cada acorde como en la lección seis. Respetamos las tesituras y las separaciones máximas entre las voces. Usamos solo las notas del acorde, siempre presentamos la tercera, no duplicamos la sensible, y el séptimo grado va completo."
+    },
+    {
+      "id": "cada-voz",
+      "project": "ej1",
+      "heading": "Después, cada voz",
+      "caption": "Solo intervalos melódicos permitidos",
+      "narration": "Después revisamos cómo se mueve cada voz, como en la lección siete. Cada voz usa solo los intervalos melódicos permitidos.",
+      "showCiphers": true
+    },
+    {
+      "id": "nota-comun",
+      "project": "ej1",
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "alto",
+          "color": "green",
+          "label": "nota común"
+        }
+      ],
+      "heading": "La nota común",
+      "caption": "Se queda en la misma voz · las demás, por el camino más corto",
+      "narration": "Pero ahora hay una novedad: una voz puede quedarse en la misma nota. Cuando dos acordes comparten una nota, a esa nota le llamamos nota común. Muchas veces conviene dejar la nota común en la misma voz, y mover las demás voces por el camino más corto.",
+      "showCiphers": true
+    },
+    {
+      "id": "seis-pares",
+      "project": "ej2",
+      "heading": "Los seis pares de voces",
+      "caption": "S–A · S–T · S–B · A–T · A–B · T–B",
+      "narration": "Luego revisamos los seis pares de voces. Soprano y contralto, soprano y tenor, soprano y bajo, contralto y tenor, contralto y bajo, y tenor y bajo.",
+      "showCiphers": true
+    },
+    {
+      "id": "paralelas",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/paralelas-es.svg",
+      "heading": "Sin quintas ni octavas paralelas o contrarias",
+      "caption": "Contrarias sí, fuera de soprano y bajo · sin saltos simultáneos",
+      "narration": "En ningún par puede haber quintas ni octavas paralelas, ni quintas u octavas contrarias. Recuerda que las quintas contrarias sí se permiten si no están entre la soprano y el bajo. Y que no se permiten dos saltos simultáneos en la misma dirección, salvo que los dos sean de cuarta justa."
+    },
+    {
+      "id": "sensible",
+      "project": "ej3",
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "sensible → tónica"
+        }
+      ],
+      "heading": "Regla nueva: la sensible en la soprano",
+      "caption": "Sube a la tónica · excepción: III – IV",
+      "narration": "Y hay una regla nueva para la sensible. Si la sensible está en la soprano, y el acorde siguiente tiene la tónica, la sensible siempre sube a la tónica. La única excepción es el enlace del tercero al cuarto grado.",
+      "showCiphers": true
+    },
+    {
+      "id": "ocho",
+      "kind": "title",
+      "heading": "Los ocho enlaces de la tarea",
+      "caption": "Cada uno en una tonalidad distinta",
+      "narration": "Veamos ahora los ocho enlaces de la tarea, cada uno en una tonalidad distinta."
+    },
+    {
+      "id": "ej1",
+      "project": "ej1",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "1 · I – IV en Sol mayor",
+      "narration": "Primero, del primero al cuarto grado, en Sol mayor.",
+      "showCiphers": true
+    },
+    {
+      "id": "ej1-voces",
+      "project": "ej1",
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "alto",
+          "color": "green",
+          "label": "Sol común"
+        },
+        {
+          "measure": 1,
+          "voice": "bass",
+          "color": "amber",
+          "label": "5ª ↓"
+        }
+      ],
+      "heading": "1 · I – IV en Sol mayor",
+      "caption": "Sol se queda en la contralto",
+      "narration": "El Sol es la nota común, y se queda en la contralto. La soprano sube de Si a Do, el tenor sube de Re a Mi, y el bajo baja de Sol a Do.",
+      "showCiphers": true
+    },
+    {
+      "id": "ej2",
+      "project": "ej2",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "2 · IV – V en Re mayor",
+      "narration": "Segundo, del cuarto al quinto grado, en Re mayor.",
+      "showCiphers": true
+    },
+    {
+      "id": "ej2-voces",
+      "project": "ej2",
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "bass",
+          "color": "amber",
+          "label": "sube"
+        },
+        {
+          "measure": 1,
+          "voice": "soprano",
+          "color": "green",
+          "label": "baja"
+        },
+        {
+          "measure": 1,
+          "voice": "alto",
+          "color": "green",
+          "label": "baja"
+        },
+        {
+          "measure": 1,
+          "voice": "tenor",
+          "color": "green",
+          "label": "baja"
+        }
+      ],
+      "heading": "2 · IV – V en Re mayor",
+      "caption": "Sin notas comunes: superiores contra el bajo",
+      "narration": "Estos dos acordes no tienen notas comunes. Por eso el bajo sube por grado conjunto, de Sol a La, y las otras tres voces bajan a la nota más cercana. Así evitamos las quintas y las octavas paralelas.",
+      "showCiphers": true
+    },
+    {
+      "id": "ej3",
+      "project": "ej3",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "3 · V – I en Fa mayor",
+      "narration": "Tercero, del quinto al primer grado, en Fa mayor.",
+      "showCiphers": true
+    },
+    {
+      "id": "ej3-voces",
+      "project": "ej3",
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "Mi → Fa"
+        },
+        {
+          "measure": 1,
+          "voice": "tenor",
+          "color": "green",
+          "label": "Do común"
+        }
+      ],
+      "heading": "3 · V – I en Fa mayor",
+      "caption": "La sensible sube a la tónica",
+      "narration": "La sensible, el Mi, está en la soprano, y sube a la tónica, el Fa. El Do es la nota común y se queda en el tenor, la contralto sube de Sol a La, y el bajo baja de Do a Fa.",
+      "showCiphers": true
+    },
+    {
+      "id": "ej4",
+      "project": "ej4",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "4 · II – V en Si♭ mayor",
+      "narration": "Cuarto, del segundo al quinto grado, en Si bemol mayor.",
+      "showCiphers": true
+    },
+    {
+      "id": "ej4-voces",
+      "project": "ej4",
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "soprano",
+          "color": "green",
+          "label": "Do común"
+        }
+      ],
+      "heading": "4 · II – V en Si♭ mayor",
+      "caption": "Do se queda en la soprano",
+      "narration": "El Do es la nota común y se queda en la soprano. La contralto sube de Sol a La, el tenor sube de Mi bemol a Fa, y el bajo baja de Do a Fa.",
+      "showCiphers": true
+    },
+    {
+      "id": "ej5",
+      "project": "ej5",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "5 · V – VI en La mayor",
+      "narration": "Quinto, del quinto al sexto grado, en La mayor.",
+      "showCiphers": true
+    },
+    {
+      "id": "ej5-voces",
+      "project": "ej5",
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "Sol♯ → La"
+        },
+        {
+          "measure": 1,
+          "voice": "tenor",
+          "color": "green",
+          "label": "La: 3ª doble"
+        }
+      ],
+      "heading": "5 · V – VI en La mayor",
+      "caption": "La sensible sube · en el VI se duplica la tercera",
+      "narration": "La sensible, el Sol sostenido, está en la soprano, y como el sexto grado tiene la tónica, sube al La. El bajo sube de Mi a Fa sostenido, y la contralto y el tenor bajan. En el sexto grado duplicamos la tercera, el La, que además es la tónica.",
+      "showCiphers": true
+    },
+    {
+      "id": "ej6",
+      "project": "ej6",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "6 · VI – II en Mi♭ mayor",
+      "narration": "Sexto, del sexto al segundo grado, en Mi bemol mayor.",
+      "showCiphers": true
+    },
+    {
+      "id": "ej6-voces",
+      "project": "ej6",
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "tenor",
+          "color": "green",
+          "label": "Do común"
+        }
+      ],
+      "heading": "6 · VI – II en Mi♭ mayor",
+      "caption": "Do se queda en el tenor",
+      "narration": "El Do es la nota común y se queda en el tenor. La soprano sube de Sol a La bemol, la contralto sube de Mi bemol a Fa, y el bajo baja de Do a Fa.",
+      "showCiphers": true
+    },
+    {
+      "id": "ej7",
+      "project": "ej7",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "7 · I – VII 6/3 en Do mayor",
+      "narration": "Séptimo, del primer grado al séptimo en seis tres, en Do mayor.",
+      "showCiphers": true
+    },
+    {
+      "id": "ej7-voces",
+      "project": "ej7",
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "bass",
+          "color": "amber",
+          "label": "Re: 3ª en el bajo"
+        }
+      ],
+      "heading": "7 · I – VII 6/3 en Do mayor",
+      "caption": "VII completo · Re duplicado · la sensible una sola vez",
+      "narration": "El bajo sube de Do a Re, que es la tercera del séptimo grado. La soprano baja de Do a Si, la contralto baja de Sol a Fa, y el tenor baja de Mi a Re. El séptimo grado queda completo, con el Re duplicado, y la sensible aparece una sola vez.",
+      "showCiphers": true
+    },
+    {
+      "id": "ej8",
+      "project": "ej8",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "heading": "8 · IV 6/3 – V en Mi mayor",
+      "narration": "Octavo, del cuarto grado en seis tres al quinto, en Mi mayor.",
+      "showCiphers": true
+    },
+    {
+      "id": "ej8-voces",
+      "project": "ej8",
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "bass",
+          "color": "amber",
+          "label": "grado conjunto"
+        }
+      ],
+      "heading": "8 · IV 6/3 – V en Mi mayor",
+      "caption": "El bajo baja por grado conjunto",
+      "narration": "El bajo baja de Do sostenido a Si, por grado conjunto. La soprano sube de La a Si, la contralto baja de Mi a Re sostenido, y el tenor baja de La a Fa sostenido.",
+      "showCiphers": true
+    },
+    {
+      "id": "errores",
+      "kind": "title",
+      "heading": "Dos errores típicos",
+      "narration": "Ahora veamos dos errores típicos."
+    },
+    {
+      "id": "error-paralelas",
+      "project": "error-paralelas",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "measures": [
+        1,
+        1
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "soprano",
+          "color": "rose",
+          "label": "5ª"
+        },
+        {
+          "measure": 1,
+          "voice": "tenor",
+          "color": "rose",
+          "label": "8ª"
+        },
+        {
+          "measure": 1,
+          "voice": "bass",
+          "color": "rose",
+          "label": ""
+        }
+      ],
+      "heading": "IV – V con todas las voces hacia arriba",
+      "caption": "5as paralelas soprano–bajo · 8as paralelas tenor–bajo",
+      "narration": "Aquí enlazamos el cuarto con el quinto grado en Do mayor, moviendo todas las voces hacia arriba. Entre la soprano y el bajo hay quintas paralelas, y entre el tenor y el bajo hay octavas paralelas.",
+      "showCiphers": true
+    },
+    {
+      "id": "error-paralelas-bien",
+      "project": "error-paralelas",
+      "audio": true,
+      "cursor": {
+        "measure": 2,
+        "beat": 1
+      },
+      "measures": [
+        2,
+        2
+      ],
+      "highlights": [
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "✓ contrario al bajo"
+        }
+      ],
+      "heading": "Corregido",
+      "caption": "Voces superiores en sentido contrario al bajo",
+      "narration": "La solución es mover las voces superiores en sentido contrario al bajo.",
+      "showCiphers": true
+    },
+    {
+      "id": "error-sensible",
+      "project": "error-sensible",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "measures": [
+        1,
+        1
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "soprano",
+          "color": "rose",
+          "label": "✗ Si → Sol"
+        }
+      ],
+      "heading": "V – I: la sensible baja",
+      "caption": "Si → Sol en la soprano",
+      "narration": "Y aquí, del quinto al primer grado, la sensible está en la soprano y baja de Si a Sol.",
+      "showCiphers": true
+    },
+    {
+      "id": "error-sensible-bien",
+      "project": "error-sensible",
+      "audio": true,
+      "cursor": {
+        "measure": 2,
+        "beat": 1
+      },
+      "measures": [
+        2,
+        2
+      ],
+      "highlights": [
+        {
+          "measure": 2,
+          "voice": "soprano",
+          "color": "green",
+          "label": "✓ Si → Do"
+        }
+      ],
+      "heading": "Corregido",
+      "caption": "La sensible sube al Do",
+      "narration": "Como el primer grado tiene la tónica, la sensible tenía que subir al Do.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea",
+      "kind": "title",
+      "heading": "Tarea para el Maestro Virtual",
+      "narration": "Ahora sí, la tarea para el maestro virtual."
+    },
+    {
+      "id": "tarea-tonalidades",
+      "kind": "title",
+      "heading": "Una tonalidad mayor distinta por enlace",
+      "caption": "Tú escoges cuáles",
+      "narration": "Escribe cada enlace en una tonalidad mayor distinta; tú escoges cuáles."
+    },
+    {
+      "id": "tarea-enlaces",
+      "kind": "title",
+      "heading": "Ocho enlaces, en el orden que quieras",
+      "caption": "I–IV · IV–V · V–I · II–V · V–VI · VI–II · I–VII 6/3 · IV 6/3–V",
+      "narration": "En Storm Sequencer, en modo SATB, escribe los ocho enlaces que acabamos de ver, en el orden que quieras. Del primero al cuarto, del cuarto al quinto, del quinto al primero, del segundo al quinto, del quinto al sexto, del sexto al segundo, del primero al séptimo en seis tres, y del cuarto en seis tres al quinto. Los acordes que no llevan cifra van en estado fundamental."
+    },
+    {
+      "id": "tarea-compas",
+      "project": "ej5",
+      "heading": "Un compás por enlace",
+      "caption": "Dos mitades · armadura al inicio de cada compás · 16 acordes",
+      "narration": "Cada enlace ocupa un compás de cuatro cuartos, con dos blancas en las cuatro voces. Al inicio de cada compás, pon la armadura de su tonalidad. En total son dieciséis acordes.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea-exporta",
+      "kind": "title",
+      "heading": "Exporta el MIDI y súbelo",
+      "narration": "Exporta el archivo MIDI y súbelo."
+    },
+    {
+      "id": "maestro-revisa",
+      "kind": "title",
+      "heading": "El Maestro Virtual revisa",
+      "caption": "Tonalidad y enlace · acordes · cada voz · 5as y 8as · saltos simultáneos · sensible",
+      "narration": "El maestro virtual reconoce la tonalidad de cada enlace, y qué enlace es. Revisa la construcción de cada acorde, el movimiento de cada voz, las quintas y octavas, los saltos simultáneos y la sensible. Entre un enlace y el siguiente no revisa nada: cada compás es un ejercicio aparte. Y si encuentra un error, te explica cuál es y en qué enlace está."
+    },
+    {
+      "id": "recapitulemos",
+      "kind": "title",
+      "heading": "Recapitulemos",
+      "narration": "Recapitulemos."
+    },
+    {
+      "id": "recap-material",
+      "kind": "image",
+      "image": "/images/curso/leccion-8/material-armonico-es.svg",
+      "heading": "Material armónico",
+      "narration": "El material armónico nos dice qué acordes usamos y en qué estado. El tercero y el sexto van en estado fundamental, el séptimo en seis tres, y el seis cuatro no se usa libremente."
+    },
+    {
+      "id": "recap-tabla",
+      "kind": "image",
+      "image": "/images/curso/leccion-8/tabla-enlaces-es.svg",
+      "heading": "Tabla general de enlaces",
+      "narration": "La tabla general de enlaces nos dice a dónde puede ir cada acorde, y tiene algunas continuaciones obligatorias."
+    },
+    {
+      "id": "recap-tecnica",
+      "kind": "image",
+      "image": "/images/curso/leccion-8/tecnica-enlace-es.svg",
+      "heading": "Al enlazar",
+      "narration": "Al enlazar, construimos bien cada acorde, cuidamos cada voz y revisamos los seis pares de voces. Y la sensible en la soprano sube a la tónica."
+    },
+    {
+      "id": "proxima",
+      "kind": "title",
+      "heading": "Próxima lección",
+      "caption": "El modo menor y sus casos especiales",
+      "narration": "En la próxima lección veremos el modo menor y sus casos especiales."
+    },
+    {
+      "id": "cierre",
+      "kind": "title",
+      "heading": "Gracias",
+      "caption": "Nos vemos en la lección 9",
+      "narration": "Gracias por acompañarme. Nos vemos en la lección nueve."
+    }
+  ]
+}

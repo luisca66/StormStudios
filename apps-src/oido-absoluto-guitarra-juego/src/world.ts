@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import { generateMaze, type MazeLayout } from "./maze";
 import { animateRobot, createRobot, reactRobot, type RobotRig } from "./robot";
+import { type ModelData } from "../../shared-3d/src";
+import { buildEnvironmentPortal, buildMazeWalls, buildWorldDecor, FLOOR_Y, loadEnvironment, type EnvironmentId } from "./environments";
 
 type WorldCallbacks = {
   onNodeReached: () => void;
@@ -21,6 +23,11 @@ export class GuitarWorld {
   private robotRig!: RobotRig;
   private strings: THREE.Mesh[] = [];
   private mazeGroup = new THREE.Group();
+  /** Decorado del entorno elegido (guitarra, corno, piano); se rehace al cambiar de entorno. */
+  private envGroup = new THREE.Group();
+  private envModel: ModelData | undefined;
+  private envId: EnvironmentId | undefined;
+  private portalBaseY = 6.8;
   private mazeWalls: { minX: number; maxX: number; minZ: number; maxZ: number }[] = [];
   private currentMaze: MazeLayout | null = null;
   private target: THREE.Group | null = null;
@@ -51,6 +58,7 @@ export class GuitarWorld {
     this.scene.fog = new THREE.FogExp2(0x080e10, 0.0125);
 
     this.buildLights();
+    this.scene.add(this.envGroup);
     this.buildInstrumentWorld();
     this.buildPlayer();
     this.buildPortal();
@@ -61,6 +69,42 @@ export class GuitarWorld {
     window.addEventListener("keyup", this.keyUp);
     window.addEventListener("blur", this.clearKeys);
     this.animate();
+  }
+
+  /** Cambia el escenario del laberinto. La pedagogía no cambia: solo el mundo que se recorre. */
+  async setEnvironment(id: EnvironmentId) {
+    if (this.envId === id) return;
+    this.envId = id;
+    let model: ModelData | undefined;
+    try {
+      model = await loadEnvironment(id);
+    } catch (error) {
+      console.error(`Mundo ${id} de Blender:`, error);
+    }
+    if (this.envId !== id || this.disposed) return; // se eligió otro mientras cargaba
+    this.envGroup.clear();
+    this.strings = [];
+    this.envModel = model;
+    this.portal.clear();
+    this.portalRings = [];
+    if (model) {
+      this.addVoidFloor();
+      this.envGroup.add(buildWorldDecor(model));
+      const portal = buildEnvironmentPortal(model);
+      portal.root.scale.setScalar(2.2); // hueco de ~2.2 m en el modelo → ~4.8 m, como el portal de antes
+      this.portal.add(portal.root);
+      this.portalRings = portal.rings;
+      this.portalCore = portal.core ?? new THREE.Mesh(new THREE.CircleGeometry(3.55, 48), new THREE.MeshStandardMaterial({ transparent: true, opacity: 0.4 }));
+      if (!portal.core) this.portal.add(this.portalCore);
+      this.portal.add(new THREE.PointLight(0xffd9a0, 14, 32, 2));
+      this.portalBaseY = FLOOR_Y + 2.3 * 2.2;
+      this.portal.position.y = this.portalBaseY;
+      if (this.gateUnlocked) this.unlockPortal(); else this.lockPortal();
+    } else {
+      this.buildInstrumentWorld();
+      this.buildPortal();
+    }
+    if (this.currentMaze) this.buildMaze(this.currentMaze);
   }
 
   setGameplay(enabled: boolean) {
@@ -231,12 +275,7 @@ export class GuitarWorld {
     this.scene.add(edge);
   }
 
-  private buildInstrumentWorld() {
-    const ebony = new THREE.MeshStandardMaterial({ color: 0x191717, roughness: 0.72, metalness: 0.04 });
-    const cedar = new THREE.MeshStandardMaterial({ color: 0x8b4e2e, roughness: 0.76, metalness: 0.02 });
-    const cedarTop = new THREE.MeshStandardMaterial({ color: 0xb97443, roughness: 0.82, metalness: 0.01 });
-    const brass = new THREE.MeshStandardMaterial({ color: 0xb99858, roughness: 0.32, metalness: 0.78 });
-
+  private addVoidFloor() {
     const voidFloor = new THREE.Mesh(
       new THREE.PlaneGeometry(320, 320),
       new THREE.MeshStandardMaterial({ color: 0x060a0b, roughness: 1 }),
@@ -244,32 +283,41 @@ export class GuitarWorld {
     voidFloor.rotation.x = -Math.PI / 2;
     voidFloor.position.y = -1.2;
     voidFloor.receiveShadow = true;
-    this.scene.add(voidFloor);
+    this.envGroup.add(voidFloor);
+  }
+
+  private buildInstrumentWorld() {
+    const ebony = new THREE.MeshStandardMaterial({ color: 0x191717, roughness: 0.72, metalness: 0.04 });
+    const cedar = new THREE.MeshStandardMaterial({ color: 0x8b4e2e, roughness: 0.76, metalness: 0.02 });
+    const cedarTop = new THREE.MeshStandardMaterial({ color: 0xb97443, roughness: 0.82, metalness: 0.01 });
+    const brass = new THREE.MeshStandardMaterial({ color: 0xb99858, roughness: 0.32, metalness: 0.78 });
+
+    this.addVoidFloor();
 
     const soundboard = new THREE.Mesh(new THREE.CylinderGeometry(31, 31, 1.6, 64), cedarTop);
     soundboard.scale.z = 1.22;
     soundboard.position.set(0, -0.25, -62);
     soundboard.receiveShadow = true;
-    this.scene.add(soundboard);
+    this.envGroup.add(soundboard);
 
     const waistLeft = new THREE.Mesh(new THREE.CylinderGeometry(19, 19, 1.7, 48), cedar);
     waistLeft.scale.z = 1.1;
     waistLeft.position.set(-12, -0.3, -42);
-    this.scene.add(waistLeft);
+    this.envGroup.add(waistLeft);
     const waistRight = waistLeft.clone();
     waistRight.position.x = 12;
-    this.scene.add(waistRight);
+    this.envGroup.add(waistRight);
 
     const neck = new THREE.Mesh(new THREE.BoxGeometry(36.8, 1.25, 130), ebony);
     neck.position.set(0, 0, 9);
     neck.receiveShadow = true;
-    this.scene.add(neck);
+    this.envGroup.add(neck);
 
     for (let i = 0; i < 18; i += 1) {
       const z = 55 - i * 6.75;
       const fret = new THREE.Mesh(new THREE.BoxGeometry(37, 0.16, 0.2), brass);
       fret.position.set(0, 0.72, z);
-      this.scene.add(fret);
+      this.envGroup.add(fret);
       if ([3, 5, 7, 9, 12, 15, 17].includes(i)) {
         const dot = new THREE.Mesh(
           new THREE.CylinderGeometry(0.32, 0.32, 0.08, 24),
@@ -279,9 +327,9 @@ export class GuitarWorld {
         if (i === 12) {
           const dot2 = dot.clone();
           dot2.position.x = 1.2;
-          this.scene.add(dot2);
+          this.envGroup.add(dot2);
         }
-        this.scene.add(dot);
+        this.envGroup.add(dot);
       }
     }
 
@@ -297,7 +345,7 @@ export class GuitarWorld {
       const string = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, 152, 8), material);
       string.rotation.x = Math.PI / 2;
       string.position.set(x, 0.97, -2);
-      this.scene.add(string);
+      this.envGroup.add(string);
       this.strings.push(string);
     });
 
@@ -310,7 +358,7 @@ export class GuitarWorld {
     }
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    this.scene.add(new THREE.Points(geometry, new THREE.PointsMaterial({ color: 0xd8bd83, size: 0.1, transparent: true, opacity: 0.42 })));
+    this.envGroup.add(new THREE.Points(geometry, new THREE.PointsMaterial({ color: 0xd8bd83, size: 0.1, transparent: true, opacity: 0.42 })));
   }
 
   private buildMaze(layout: MazeLayout, clearAt?: THREE.Vector3) {
@@ -335,6 +383,7 @@ export class GuitarWorld {
       metalness: 0.64,
     });
 
+    const keptWalls: MazeLayout["walls"] = [];
     layout.walls.forEach((wall) => {
       const clearance = PLAYER_RADIUS + 0.22;
       if (clearAt &&
@@ -344,15 +393,19 @@ export class GuitarWorld {
         clearAt.z - clearance < wall.z + wall.depth / 2
       ) return;
 
-      const panel = new THREE.Mesh(new THREE.BoxGeometry(wall.width, 1.18, wall.depth), wood);
-      panel.position.set(wall.x, 1.16, wall.z);
-      panel.castShadow = true;
-      panel.receiveShadow = true;
-      this.mazeGroup.add(panel);
+      if (this.envModel) {
+        keptWalls.push(wall);
+      } else {
+        const panel = new THREE.Mesh(new THREE.BoxGeometry(wall.width, 1.18, wall.depth), wood);
+        panel.position.set(wall.x, 1.16, wall.z);
+        panel.castShadow = true;
+        panel.receiveShadow = true;
+        this.mazeGroup.add(panel);
 
-      const inlay = new THREE.Mesh(new THREE.BoxGeometry(wall.width + 0.03, 0.07, wall.depth + 0.03), brass);
-      inlay.position.set(wall.x, 1.79, wall.z);
-      this.mazeGroup.add(inlay);
+        const inlay = new THREE.Mesh(new THREE.BoxGeometry(wall.width + 0.03, 0.07, wall.depth + 0.03), brass);
+        inlay.position.set(wall.x, 1.79, wall.z);
+        this.mazeGroup.add(inlay);
+      }
 
       this.mazeWalls.push({
         minX: wall.x - wall.width / 2,
@@ -361,6 +414,8 @@ export class GuitarWorld {
         maxZ: wall.z + wall.depth / 2,
       });
     });
+
+    if (this.envModel) this.mazeGroup.add(buildMazeWalls(this.envModel, keptWalls));
 
     const entrance = new THREE.Mesh(
       new THREE.RingGeometry(0.65, 0.92, 32),
@@ -379,7 +434,7 @@ export class GuitarWorld {
     const materials = new Set<THREE.Material>();
     this.mazeGroup.traverse((child) => {
       if (!(child instanceof THREE.Mesh)) return;
-      geometries.add(child.geometry);
+      if (!child.userData.sharedGeometry) geometries.add(child.geometry);
       const meshMaterials = Array.isArray(child.material) ? child.material : [child.material];
       meshMaterials.forEach((material) => materials.add(material));
     });
@@ -398,6 +453,7 @@ export class GuitarWorld {
   }
 
   private buildPortal() {
+    this.portalBaseY = 6.8;
     this.portal.position.set(0, 6.8, -70);
     const ringColors = [0xd8a64b, 0x74c7c9, 0xcf6d82];
     [5.2, 4.5, 3.8].forEach((radius, index) => {
@@ -558,7 +614,7 @@ export class GuitarWorld {
       const next = Math.min(1, this.portalCore.scale.x + delta * 1.45);
       this.portalCore.scale.setScalar(next);
     }
-    if (!this.reducedMotion) this.portal.position.y = 6.8 + Math.sin(time * 0.85) * 0.18;
+    if (!this.reducedMotion) this.portal.position.y = this.portalBaseY + Math.sin(time * 0.85) * 0.18;
   }
 
   private updateCamera(delta: number) {

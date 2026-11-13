@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
 import { APPS } from "@/data/apps/apps-catalog";
 import { BLOG_POST_TRANSLATIONS } from "@/data/seo/blog-post-translations";
+import { getMasteryPieceUrls, MASTERY_TRANSLATIONS } from "@/data/seo/mastery-translations";
 import { getAllResources, getResourceUrls } from "@/data/resources/resources-catalog";
-import { getBlogPosts, getLessonContent, getPageContent, getBlogPost } from "@/lib/mdx";
-import { getAllLessons, getLessonRouteParams } from "@/lib/course";
+import { getBlogPosts, getLessonContent, getMasteryPiece, getMasteryPieces, getPageContent, getBlogPost } from "@/lib/mdx";
+import { getAllLessons, getLessonRouteParams, getLessonStatus } from "@/lib/course";
 import {
   getLocalizedRouteUrls,
   getLocalizedRouteUrlsByLocaleParams,
@@ -16,6 +17,7 @@ const LOCALES = routing.locales;
 const STATIC_ROUTES = [
   { route: "/", priority: 1.0, changeFrequency: "weekly" },
   { route: "/blog", priority: 0.9, changeFrequency: "weekly" },
+  { route: "/maestria", priority: 0.85, changeFrequency: "weekly" },
   { route: "/resources", priority: 0.88, changeFrequency: "weekly" },
   { route: "/curso-armonia", priority: 0.9, changeFrequency: "monthly" },
   { route: "/herramientas/lectura-musical", priority: 0.78, changeFrequency: "monthly" },
@@ -57,6 +59,11 @@ async function getStaticRouteLastModified(route: KnownStaticRoute) {
   if (route === "/blog") {
     const posts = await Promise.all(LOCALES.map((locale) => getBlogPosts(locale)));
     return getMostRecentDate(posts.flat().map((post) => post.lastModified));
+  }
+
+  if (route === "/maestria") {
+    const pieces = await Promise.all(LOCALES.map((locale) => getMasteryPieces(locale)));
+    return getMostRecentDate(pieces.flat().map((piece) => piece.lastModified));
   }
 
   if (route === "/curso-armonia") {
@@ -106,15 +113,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     );
     const lessonVariants = await Promise.all(LOCALES.map((locale) => getLessonContent(locale, lesson.slug)));
     const lastModified = getMostRecentDate(lessonVariants.map((lesson) => lesson?.lastModified));
+    const publishedLocales = LOCALES.filter((locale) => getLessonStatus(lesson, locale) === "published");
 
-    for (const locale of LOCALES) {
+    for (const locale of publishedLocales) {
       entries.push({
         url: `${BASE_URL}${urls[locale]}`,
         lastModified,
         changeFrequency: "monthly",
         priority: 0.7,
         alternates: {
-          languages: buildLanguageAlternates(urls),
+          languages: Object.fromEntries(publishedLocales.map((language) => [
+            language === "es" ? "es-MX" : "en-US", `${BASE_URL}${urls[language]}`,
+          ])),
         },
       });
     }
@@ -166,7 +176,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // 5. Guías temáticas indexables
+  // 5. Piezas de Maestría con slugs traducidos
+  for (const translation of MASTERY_TRANSLATIONS) {
+    const urls = getMasteryPieceUrls("es", translation.slugs.es) as Record<Locale, string>;
+    const pieces = await Promise.all(LOCALES.map((locale) => getMasteryPiece(locale, translation.slugs[locale])));
+    const lastModified = getMostRecentDate(pieces.map((piece) => piece?.lastModified));
+
+    for (const locale of LOCALES) {
+      entries.push({
+        url: `${BASE_URL}${urls[locale]}`,
+        lastModified,
+        changeFrequency: "monthly",
+        priority: 0.76,
+        alternates: {
+          languages: buildLanguageAlternates(urls),
+        },
+      });
+    }
+  }
+
+  // 6. Guías temáticas indexables
   for (const resource of getAllResources()) {
     const urls = getResourceUrls(resource);
 

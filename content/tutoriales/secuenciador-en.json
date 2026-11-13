@@ -1,0 +1,1293 @@
+{
+  "version": 1,
+  "locale": "en",
+  "startUrl": "/en/harmony-course",
+  "substitutions": [
+    "Time signature changes apply immediately; there is no Apply button.",
+    "Piano Roll: measure 5 is full. Add an empty sixth measure, write an A4 eighth note on beat 1, move it to B4 on beat 2 and extend it to a quarter note.",
+    "Ctrl+X is shown as a badge without executing it, as requested.",
+    "The new project native dialog is accepted automatically; Ctrl+Z restores the project."
+  ],
+  "clips": [
+    {
+      "clip": 1,
+      "actions": []
+    },
+    {
+      "clip": 2,
+      "actions": [
+        {
+          "op": "scroll",
+          "target": {
+            "css": "div.flex.flex-col.gap-3:has(> a[href^=\"/en/harmony-course/\"])"
+          },
+          "block": "end",
+          "ms": 4710,
+          "at": 0.785047
+        }
+      ]
+    },
+    {
+      "clip": 3,
+      "actions": [
+        {
+          "op": "scroll",
+          "target": {
+            "css": "div.ss-glass:has(a[href=\"/en/sequencer/v4\"])"
+          },
+          "block": "center",
+          "ms": 4148,
+          "at": 0.829545
+        }
+      ]
+    },
+    {
+      "clip": 4,
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "div.ss-glass:has(a[href=\"/en/sequencer/v4\"])"
+          },
+          "at": 0,
+          "ms": 6000
+        },
+        {
+          "op": "goto",
+          "target": {
+            "role": "link",
+            "name": "Open v4.0 →"
+          },
+          "at": 7
+        }
+      ]
+    },
+    {
+      "clip": 5,
+      "actions": [],
+      "prepare": [
+        {
+          "op": "warmAudio"
+        }
+      ]
+    },
+    {
+      "clip": 6,
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "role": "group",
+            "name": "Transport"
+          },
+          "at": 0,
+          "ms": 9222
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Play"
+          },
+          "at": 0.838323
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Stop"
+          },
+          "at": 2.263473
+        },
+        {
+          "op": "move",
+          "target": {
+            "label": "Tempo"
+          },
+          "at": 4.191617
+        },
+        {
+          "op": "move",
+          "target": {
+            "css": "[data-testid=\"lcd-position\"]"
+          },
+          "at": 5.868263
+        },
+        {
+          "op": "move",
+          "target": {
+            "css": "[role=\"group\"][aria-label=\"Transport\"] label + div"
+          },
+          "at": 7.54491
+        },
+        {
+          "op": "move",
+          "target": {
+            "label": "Current harmony symbol"
+          },
+          "at": 9.221557
+        }
+      ]
+    },
+    {
+      "clip": 7,
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "label:has(input[aria-label=\"Project title\"])"
+          },
+          "at": 0,
+          "ms": 2683
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "label:has(select[aria-label=\"Mode\"])"
+          },
+          "at": 3.066667,
+          "ms": 2683
+        }
+      ]
+    },
+    {
+      "clip": 8,
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "role": "group",
+            "name": "File"
+          },
+          "at": 0,
+          "ms": 4667
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "New project"
+          },
+          "at": 0
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Save JSON"
+          },
+          "at": 1.166667
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Open project"
+          },
+          "at": 2.333333
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Export MIDI"
+          },
+          "at": 3.5
+        }
+      ]
+    },
+    {
+      "clip": 9,
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"score-view\"]"
+          },
+          "at": 0,
+          "ms": 2407
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "role": "group",
+            "name": "Writing tools"
+          },
+          "at": 3.008547,
+          "ms": 3009
+        }
+      ]
+    },
+    {
+      "clip": 10,
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "label": "Music inspector"
+          },
+          "at": 0,
+          "ms": 7000
+        }
+      ]
+    },
+    {
+      "clip": 11,
+      "actions": [
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Choose Whole"
+          },
+          "at": 0
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Choose Half"
+          },
+          "at": 1.25
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Choose Quarter"
+          },
+          "at": 2.5
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Choose Eighth"
+          },
+          "at": 3.75
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Choose Sixteenth"
+          },
+          "at": 5
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Choose Thirty-second"
+          },
+          "at": 6.25
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Choose Whole"
+          },
+          "at": 8
+        }
+      ]
+    },
+    {
+      "clip": 12,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "✎ Write"
+          },
+          "at": 0
+        },
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "C4"
+            }
+          },
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 13,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 2,
+              "pitch": "D4"
+            }
+          },
+          "at": 0
+        },
+        {
+          "op": "drag",
+          "target": {
+            "staff": {
+              "measure": 2,
+              "pitch": "D4"
+            }
+          },
+          "dy": -14,
+          "at": 3
+        }
+      ]
+    },
+    {
+      "clip": 14,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 2,
+              "pitch": "F4"
+            }
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Accidental #"
+          },
+          "at": 2
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Accidental natural"
+          },
+          "at": 5
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Accidental key signature"
+          },
+          "at": 8
+        }
+      ]
+    },
+    {
+      "clip": 15,
+      "actions": [
+        {
+          "op": "audition",
+          "target": {
+            "staff": {
+              "measure": 2,
+              "pitch": "F4"
+            }
+          }
+        },
+        {
+          "op": "rightClick",
+          "target": {
+            "staff": {
+              "measure": 2,
+              "pitch": "F4"
+            }
+          },
+          "at": 1
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "⌫ Eraser"
+          },
+          "at": 2
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "✎ Write"
+          },
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 16,
+      "actions": [
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 1
+        },
+        {
+          "op": "audition",
+          "target": {
+            "staff": {
+              "measure": 2,
+              "pitch": "F4"
+            }
+          },
+          "at": 2
+        },
+        {
+          "op": "key",
+          "key": "Control+y",
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 17,
+      "actions": [
+        {
+          "op": "ctrlClick",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "E4"
+            }
+          },
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 18,
+      "actions": [
+        {
+          "op": "ctrlClick",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "G4"
+            }
+          },
+          "at": 1
+        },
+        {
+          "op": "play",
+          "at": 0,
+          "listen": 3.5,
+          "stop": "Stop",
+          "afterVoice": true
+        }
+      ],
+      "extraMusic": 5
+    },
+    {
+      "clip": 19,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "E4"
+            }
+          },
+          "at": 1
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Accidental b"
+          },
+          "at": 4
+        },
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 8
+        }
+      ]
+    },
+    {
+      "clip": 20,
+      "actions": [
+        {
+          "op": "play",
+          "at": 2,
+          "listen": 3,
+          "stop": "Space"
+        }
+      ],
+      "prepare": [
+        {
+          "op": "loadProject",
+          "file": "secuenciador-proyecto-1-en.json",
+          "fade": true
+        }
+      ]
+    },
+    {
+      "clip": 21,
+      "actions": [
+        {
+          "op": "play",
+          "at": 0,
+          "listen": 6,
+          "stop": "Space",
+          "key": true
+        }
+      ],
+      "extraMusic": 2
+    },
+    {
+      "clip": 22,
+      "actions": [
+        {
+          "op": "type",
+          "target": {
+            "label": "Tempo"
+          },
+          "text": "60",
+          "at": 1
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Metronome"
+          },
+          "at": 4
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Loop playback"
+          },
+          "at": 6
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Metronome"
+          },
+          "at": 8
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Loop playback"
+          },
+          "at": 10
+        }
+      ]
+    },
+    {
+      "clip": 23,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Go to end"
+          },
+          "at": 1
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Go to start"
+          },
+          "at": 3
+        }
+      ]
+    },
+    {
+      "clip": 24,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Write with keyboard"
+          },
+          "at": 0
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Go to measure 5"
+          },
+          "at": 3
+        }
+      ]
+    },
+    {
+      "clip": 25,
+      "actions": [
+        {
+          "op": "key",
+          "key": "3",
+          "at": 0
+        },
+        {
+          "op": "key",
+          "key": "c",
+          "at": 1.618421
+        },
+        {
+          "op": "key",
+          "key": "d",
+          "at": 3.236842
+        },
+        {
+          "op": "key",
+          "key": "e",
+          "at": 4.855263
+        }
+      ]
+    },
+    {
+      "clip": 26,
+      "actions": [
+        {
+          "op": "audition",
+          "target": {
+            "staff": {
+              "measure": 5,
+              "pitch": "E4"
+            }
+          },
+          "at": 0
+        },
+        {
+          "op": "key",
+          "key": "4",
+          "at": 1
+        },
+        {
+          "op": "key",
+          "key": "3",
+          "at": 2
+        },
+        {
+          "op": "key",
+          "key": "ArrowRight",
+          "at": 3
+        },
+        {
+          "op": "key",
+          "key": "r",
+          "at": 4
+        },
+        {
+          "op": "key",
+          "key": "PageUp",
+          "at": 6
+        },
+        {
+          "op": "key",
+          "key": "PageDown",
+          "at": 8
+        }
+      ]
+    },
+    {
+      "clip": 27,
+      "actions": [
+        {
+          "op": "key",
+          "key": "ArrowLeft",
+          "at": 0
+        },
+        {
+          "op": "key",
+          "key": "ArrowLeft",
+          "at": 1
+        },
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 5,
+              "pitch": "E4"
+            }
+          },
+          "at": 2
+        },
+        {
+          "op": "key",
+          "key": "ArrowUp",
+          "at": 4
+        },
+        {
+          "op": "key",
+          "key": "ArrowUp",
+          "at": 5
+        },
+        {
+          "op": "key",
+          "key": "ArrowDown",
+          "at": 7
+        },
+        {
+          "op": "key",
+          "key": "ArrowDown",
+          "at": 8
+        }
+      ]
+    },
+    {
+      "clip": 28,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "css": "summary:text-is(\"Keyboard shortcuts\")"
+          },
+          "at": 0
+        },
+        {
+          "op": "wait",
+          "ms": 1426
+        },
+        {
+          "op": "click",
+          "target": {
+            "css": "summary:text-is(\"Keyboard shortcuts\")"
+          },
+          "at": 2.376623
+        },
+        {
+          "op": "scroll",
+          "y": 0,
+          "ms": 951,
+          "at": 3.168831
+        }
+      ]
+    },
+    {
+      "clip": 29,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Add measure"
+          },
+          "at": 3
+        }
+      ]
+    },
+    {
+      "clip": 30,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Go to measure 6"
+          },
+          "at": 0
+        },
+        {
+          "op": "setField",
+          "target": {
+            "label": "From measure"
+          },
+          "text": "6",
+          "at": 0.515436
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "section:has(> header > h3:text-is(\"Key, meter or clef change\"))"
+          },
+          "at": 0.85906,
+          "ms": 3866,
+          "align": "bottom"
+        },
+        {
+          "op": "select",
+          "target": {
+            "label": "Time signature"
+          },
+          "value": "3/4",
+          "at": 4.295302
+        },
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 7.731544
+        },
+        {
+          "op": "scroll",
+          "y": 0,
+          "ms": 515,
+          "at": 8.590604
+        }
+      ]
+    },
+    {
+      "clip": 31,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Page view"
+          },
+          "at": 1
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Continuous view"
+          },
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 32,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "↖ Select"
+          },
+          "at": 0
+        },
+        {
+          "op": "drag",
+          "target": {
+            "css": "[data-measure=\"1\"] svg",
+            "fx": 0.3,
+            "fy": 0.2
+          },
+          "to": {
+            "css": "[data-measure=\"2\"] svg",
+            "fx": 0.85,
+            "fy": 0.65
+          },
+          "at": 2
+        }
+      ]
+    },
+    {
+      "clip": 33,
+      "actions": [
+        {
+          "op": "key",
+          "key": "Control+c",
+          "at": 0
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Go to measure 6"
+          },
+          "at": 0.834483
+        },
+        {
+          "op": "key",
+          "key": "Control+v",
+          "at": 2.503448
+        },
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 4.172414
+        },
+        {
+          "op": "drag",
+          "target": {
+            "css": "[data-measure=\"1\"] svg",
+            "fx": 0.3,
+            "fy": 0.2
+          },
+          "to": {
+            "css": "[data-measure=\"2\"] svg",
+            "fx": 0.85,
+            "fy": 0.65
+          },
+          "at": 5.006897
+        },
+        {
+          "op": "key",
+          "key": "Control+d",
+          "at": 6.675862
+        },
+        {
+          "op": "badge",
+          "text": "Ctrl + X",
+          "at": 8.344828
+        }
+      ]
+    },
+    {
+      "clip": 34,
+      "actions": [
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 0
+        },
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 2
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Go to start"
+          },
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 35,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Add measure"
+          },
+          "at": 0
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Piano Roll"
+          },
+          "at": 2
+        }
+      ]
+    },
+    {
+      "clip": 36,
+      "actions": [
+        {
+          "op": "move",
+          "target": {
+            "css": "[data-pitch=\"C4\"]"
+          },
+          "at": 0
+        },
+        {
+          "op": "move",
+          "target": {
+            "css": "[data-testid=\"piano-roll\"] > div > div:first-child"
+          },
+          "at": 4
+        },
+        {
+          "op": "move",
+          "target": {
+            "css": "[data-roll-note]"
+          },
+          "at": 8
+        }
+      ]
+    },
+    {
+      "clip": 37,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "✎ Write"
+          },
+          "at": 0
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Choose Eighth"
+          },
+          "at": 1
+        },
+        {
+          "op": "click",
+          "target": {
+            "roll": {
+              "pitch": "A4",
+              "measure": 6,
+              "beat": 1
+            }
+          },
+          "at": 2
+        }
+      ]
+    },
+    {
+      "clip": 38,
+      "actions": [
+        {
+          "op": "drag",
+          "target": {
+            "css": "[data-pitch=\"A4\"] [data-roll-note][aria-label$=\"measure 6\"]",
+            "fx": 0.15
+          },
+          "dx": 48,
+          "dy": -52,
+          "at": 3
+        }
+      ]
+    },
+    {
+      "clip": 39,
+      "actions": [
+        {
+          "op": "drag",
+          "target": {
+            "css": "[data-pitch=\"B4\"] [data-roll-note][aria-label$=\"measure 6\"]",
+            "fx": 0.98
+          },
+          "dx": 24,
+          "at": 2
+        }
+      ]
+    },
+    {
+      "clip": 40,
+      "actions": [
+        {
+          "op": "rightClick",
+          "target": {
+            "css": "[data-pitch=\"B4\"] [data-roll-note][aria-label$=\"measure 6\"]"
+          }
+        },
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 2
+        },
+        {
+          "op": "audition",
+          "target": {
+            "css": "[data-pitch=\"B4\"] [data-roll-note][aria-label$=\"measure 6\"]"
+          },
+          "at": 3
+        }
+      ]
+    },
+    {
+      "clip": 41,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Staff"
+          },
+          "at": 0
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-measure=\"6\"] [data-note-pitch=\"B4\"]"
+          },
+          "at": 2,
+          "ms": 4200
+        }
+      ]
+    },
+    {
+      "clip": 42,
+      "actions": [
+        {
+          "op": "type",
+          "target": {
+            "label": "Cipher measure 1, beat 1"
+          },
+          "text": "I",
+          "at": 0
+        },
+        {
+          "op": "type",
+          "target": {
+            "label": "Cipher measure 2, beat 1"
+          },
+          "text": "IV",
+          "at": 2.5
+        },
+        {
+          "op": "type",
+          "target": {
+            "label": "Cipher measure 3, beat 1"
+          },
+          "text": "V",
+          "at": 5
+        },
+        {
+          "op": "type",
+          "target": {
+            "label": "Cipher measure 4, beat 1"
+          },
+          "text": "I",
+          "at": 7.5
+        }
+      ]
+    },
+    {
+      "clip": 43,
+      "actions": [
+        {
+          "op": "move",
+          "target": {
+            "label": "Cipher measure 4, beat 1"
+          },
+          "at": 0
+        }
+      ]
+    },
+    {
+      "clip": 44,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Hide harmony symbols"
+          },
+          "at": 0
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Show harmony symbols"
+          },
+          "at": 2
+        },
+        {
+          "op": "play",
+          "at": 0,
+          "listen": 16,
+          "stop": "Stop",
+          "afterVoice": true,
+          "highlight": {
+            "label": "Current harmony symbol"
+          }
+        }
+      ],
+      "extraMusic": 18
+    },
+    {
+      "clip": 45,
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "span:text-is(\"Draft saved in this browser\")"
+          },
+          "at": 0,
+          "ms": 6000
+        }
+      ]
+    },
+    {
+      "clip": 46,
+      "actions": [
+        {
+          "op": "download",
+          "target": {
+            "role": "button",
+            "name": "Save JSON"
+          },
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 47,
+      "actions": [
+        {
+          "op": "open",
+          "target": {
+            "role": "button",
+            "name": "Open project"
+          },
+          "at": 1
+        }
+      ]
+    },
+    {
+      "clip": 48,
+      "actions": [
+        {
+          "op": "download",
+          "target": {
+            "role": "button",
+            "name": "Export MIDI"
+          },
+          "at": 1
+        }
+      ]
+    },
+    {
+      "clip": 49,
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "New project"
+          },
+          "at": 1
+        }
+      ]
+    },
+    {
+      "clip": 50,
+      "actions": [
+        {
+          "op": "play",
+          "at": 2
+        }
+      ],
+      "prepare": [
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 0
+        }
+      ]
+    },
+    {
+      "clip": 51,
+      "actions": [
+        {
+          "op": "wait",
+          "ms": 500
+        }
+      ]
+    },
+    {
+      "clip": 52,
+      "actions": [
+        {
+          "op": "stop",
+          "at": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "latin_vulgar",
+    "displayName": "Latín vulgar",
+    "description": "Palabras heredadas del latín",
+    "order": 0
+  },
+  {
+    "id": "arabismos",
+    "displayName": "Arabismos",
+    "description": "Herencia árabe en el español",
+    "order": 1
+  },
+  {
+    "id": "nahuatlismos",
+    "displayName": "Nahuatlismos",
+    "description": "Voces indígenas americanas",
+    "order": 2
+  },
+  {
+    "id": "helenismos",
+    "displayName": "Helenismos",
+    "description": "Raíces griegas",
+    "order": 3
+  },
+  {
+    "id": "neologismos",
+    "displayName": "Neologismos",
+    "description": "Préstamos modernos",
+    "order": 4
+  }
+]

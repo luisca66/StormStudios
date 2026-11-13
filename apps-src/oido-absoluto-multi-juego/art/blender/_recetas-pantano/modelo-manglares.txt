@@ -22,12 +22,12 @@ def bark(co, n):
 
 def leaves(co, n):
     """Copa: más oscura abajo, más clara arriba."""
-    return mix("24461f", "5f8f40", 0.5 + 0.5 * n.z)
+    return mix("1e3a1b", "4f7f36", 0.5 + 0.5 * n.z)
 
 
 def canopy(center, radius, flat, mat):
     """Copa blanda: icosfera aplastada con bultos."""
-    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2, radius=1, location=(0, 0, 0))
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=3, radius=1, location=(0, 0, 0))
     ob = bpy.context.object
     ob.scale = (radius, radius, radius * flat)
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
@@ -84,12 +84,12 @@ def mangrove(height, trunk_r, roots, crowns, lean=(0.0, 0.0), bark_mat=None, lea
 wood = material("Corteza", roughness=0.9)
 green = material("Hojas", roughness=0.85)
 
-a = join(mangrove(5.0, 0.3, 4, [(0, 0, 0.6, 2.2, 0.6), (0.9, 0.4, 0.2, 1.5, 0.6)], bark_mat=wood, leaf_mat=green, moss=4),
-         "Manglar A", "mangrove_a")
-b = join(mangrove(8.5, 0.28, 5, [(0, 0, 0.5, 2.0, 0.7), (-0.7, 0.3, -1.2, 1.4, 0.6)], lean=(0.6, 0.2), bark_mat=wood,
-                  leaf_mat=green, moss=5), "Manglar B", "mangrove_b")
-c = join(mangrove(6.0, 0.42, 6, [(0, 0, 0.4, 2.8, 0.5), (1.6, 0.6, -0.2, 1.8, 0.5), (-1.4, -0.8, -0.1, 1.7, 0.5)],
-                  lean=(-0.8, 0.0), bark_mat=wood, leaf_mat=green, moss=6), "Manglar C", "mangrove_c")
-w = join(mangrove(10.0, 0.6, 7, [(0, 0, 0.6, 4.2, 0.55), (2.6, 1.0, -0.8, 3.0, 0.55), (-2.4, -1.2, -0.5, 3.2, 0.55),
-                                 (0.4, -2.4, -1.4, 2.6, 0.6)], bark_mat=wood, leaf_mat=green, moss=8),
+a = join(mangrove(5.5, 0.36, 5, [(0, 0, 0.6, 2.8, 0.6), (1.4, 0.6, 0.0, 2.0, 0.6), (-1.2, -0.5, -0.2, 1.8, 0.6)],
+                  bark_mat=wood, leaf_mat=green, moss=7), "Manglar A", "mangrove_a")
+b = join(mangrove(8.5, 0.34, 5, [(0, 0, 0.5, 2.6, 0.7), (-1.1, 0.4, -1.4, 1.9, 0.6), (1.0, -0.6, -0.8, 1.7, 0.6)],
+                  lean=(0.9, 0.3), bark_mat=wood, leaf_mat=green, moss=7), "Manglar B", "mangrove_b")
+c = join(mangrove(6.0, 0.46, 6, [(0, 0, 0.4, 3.4, 0.5), (2.2, 0.8, -0.3, 2.3, 0.5), (-2.0, -1.0, -0.2, 2.2, 0.5)],
+                  lean=(-0.8, 0.0), bark_mat=wood, leaf_mat=green, moss=8), "Manglar C", "mangrove_c")
+w = join(mangrove(10.0, 0.7, 7, [(0, 0, 0.6, 5.0, 0.55), (3.4, 1.2, -0.8, 3.6, 0.55), (-3.2, -1.4, -0.5, 3.8, 0.55),
+                                 (0.4, -3.2, -1.4, 3.2, 0.6), (-0.6, 3.0, -1.0, 3.0, 0.6)], bark_mat=wood, leaf_mat=green, moss=10),
          "Manglar de borde", "mangrove_wall")

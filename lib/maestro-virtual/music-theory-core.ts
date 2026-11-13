@@ -1097,19 +1097,15 @@ export function harmonizeScale(scaleRoot: string, scaleType: string): DiatonicTr
     const degree = i + 1;
     const root   = scaleNote.nameEn;
 
-    // Find triad type that fits within the scale
-    let matchedType: TriadType = 'MAJOR';
-    for (const [ttype, info] of Object.entries(TRIAD_TYPES)) {
-      const thirdPitch = (scaleNote.pitch + info.third) % 12;
-      const fifthPitch  = (scaleNote.pitch + info.fifth)  % 12;
-      // Check if third and fifth are in the scale
-      const thirdInScale = notes.some(n => n.pitch === thirdPitch);
-      const fifthInScale  = notes.some(n => n.pitch === fifthPitch);
-      if (thirdInScale && fifthInScale) {
-        matchedType = ttype as TriadType;
-        break;
-      }
-    }
+    // Una tríada diatónica toma los grados i, i+2 e i+4, no cualquier
+    // conjunto de alturas de la escala (ambiguo en la mayor armónica).
+    const third = (notes[(i + 2) % 7].pitch - scaleNote.pitch + 12) % 12;
+    const fifth = (notes[(i + 4) % 7].pitch - scaleNote.pitch + 12) % 12;
+    const match = Object.entries(TRIAD_TYPES).find(
+      ([, info]) => info.third === third && info.fifth === fifth,
+    );
+    if (!match) throw new Error(`Tríada no soportada en grado ${degree} de ${scaleRoot} ${scaleType}`);
+    const matchedType = match[0] as TriadType;
 
     const triad = buildTriad(root, matchedType);
     triad.degree      = degree;

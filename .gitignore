@@ -5,6 +5,8 @@
 # Sub-proyectos Vite (apps-src): deps y dist locales; el build publicado vive en public/apps/
 apps-src/*/node_modules
 apps-src/*/dist
+# Fuentes de referencia copiadas de D:\ para que los agentes las lean (no se versionan)
+apps-src/*/referencia/
 /.pnp
 .pnp.*
 .yarn/*
@@ -19,6 +21,11 @@ apps-src/*/dist
 # next.js
 /.next/
 /out/
+
+# Cloudflare Workers / OpenNext
+/.open-next/
+/.wrangler/
+.dev.vars*
 
 # production
 /build
@@ -51,3 +58,6 @@ next-env.d.ts
 /.local-work/
 # Lesson video stills (generated)
 stills/
+# Planes de lanzamiento de los agentes (trabajo local)
+apps-src/plan-lanzamiento/
+apps-src/cloudflare-migracion/

@@ -34,6 +34,7 @@ const UPLOAD_TIMEOUT_MS = 20_000;
 export default function ExerciseUpload({ lessonId, locale }: Props) {
   const [state, setState] = useState<UploadState>({ status: "idle" });
   const [isDragging, setIsDragging] = useState(false);
+  const isTriads = lessonId === "05-leccion-4";
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadControllerRef = useRef<AbortController | null>(null);
   const uploadTimeoutRef = useRef<number | null>(null);
@@ -155,6 +156,28 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
       </div>
 
       <div className="p-5">
+        {isTriads && (
+          <div className="mb-4 p-3 bg-gray-50 rounded-xl border border-gray-200 text-sm space-y-2">
+            <p className="text-gray-700 font-semibold">{es ? "La tarea completa en un solo MIDI" : "The complete assignment in one MIDI"}</p>
+            <p className="text-gray-600">C · C♯ · D · E♭ · E · F · F♯ · G · A♭ · A · B♭ · B</p>
+            <p className="text-gray-600">{es
+              ? "Incluye en cada tónica: mayor natural, mayor armónica, menor natural, menor armónica y menor melódica ascendente y descendente. El Maestro reconoce las series aunque las presentes en otro orden, señala cuáles faltan y explica los errores."
+              : "For each tonic include: natural major, harmonic major, natural minor, harmonic minor, and ascending and descending melodic minor. The Teacher recognizes the series in any order, names missing ones and explains errors."}</p>
+            <p className="text-gray-600">{es
+              ? "Cada serie mantiene su recorrido por grados: I–VII–I′; en la bajada melódica, I′–VII–I (puedes omitir la tónica inicial de la bajada). Tres notas simultáneas por acorde, en estado fundamental y posición cerrada, sin duplicaciones ni inversiones."
+              : "Keep the degree sequence within each series: I–VII–I′; descending melodic minor: I′–VII–I (the initial descending tonic may be omitted). Three simultaneous notes per chord in close root position, without doubling or inversions."}</p>
+            <p className="text-gray-600">{es
+              ? "Storm Sequencer: usa un solo pentagrama. Escribe la primera nota del acorde y mantén Ctrl presionado mientras haces clic para añadir la tercera y la quinta en la misma posición. Exporta toda la tarea en un solo MIDI."
+              : "Storm Sequencer: use a single staff. Write the first chord note, then hold Ctrl while clicking to add the third and fifth at the same position. Export the entire assignment in one MIDI."}</p>
+          </div>
+        )}
+        {lessonId === "08-leccion-7" && (
+          <p className="mb-4 text-sm text-gray-600">
+            {es
+              ? "Sube cada voz en un archivo MIDI separado. En Storm Sequencer, usa el modo SATB y escribe solo en el pentagrama de esa voz: ocho cuartos, en cualquier tonalidad mayor, empezando y terminando en el I grado."
+              : "Upload each voice as a separate MIDI file. In Storm Sequencer, use SATB mode and write only on that voice's staff: eight quarter notes in any major key, starting and ending on degree I."}
+          </p>
+        )}
         {/* Referencia visual para lección 1 */}
         {lessonId === "02-leccion-1" && (
           <div className="mb-4 p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs font-mono space-y-1">
@@ -309,6 +332,8 @@ function FeedbackDisplay({
   const unitWord =
     feedback.lessonId === "03-leccion-2" ? (es ? "modo" : "mode")
     : feedback.lessonId === "02-leccion-1" ? (es ? "escala" : "scale")
+    : feedback.lessonId === "08-leccion-7" ? (es ? "nota" : "note")
+    : (feedback.lessonId === "05-leccion-4" || feedback.lessonId === "07-leccion-6" || feedback.lessonId === "09-leccion-8") ? (es ? "acorde" : "chord")
     : (es ? "compás" : "measure");
 
   return (
@@ -360,6 +385,27 @@ function FeedbackDisplay({
               </p>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Análisis informativo de la tonalidad y del ejercicio */}
+      {!!feedback.descriptions?.length && (
+        <div>
+          <h4 className="font-semibold text-gray-700 text-sm mb-2">
+            {feedback.lessonId === "08-leccion-7"
+              ? (es ? "Análisis de la melodía" : "Melody analysis")
+              : (es ? "Análisis de los acordes" : "Chord analysis")}
+          </h4>
+          <ul className="space-y-2 list-none">
+            {feedback.descriptions.map((item, i) => (
+              <li key={i} className="text-sm bg-gray-50 border border-gray-200 rounded-lg p-3">
+                <p className="font-semibold text-gray-700">{item.ruleName[es ? "es" : "en"]}</p>
+                {item.message[es ? "es" : "en"] && (
+                  <p className="text-gray-600 mt-1">{item.message[es ? "es" : "en"]}</p>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 

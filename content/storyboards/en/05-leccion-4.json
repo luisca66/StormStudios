@@ -1,0 +1,1737 @@
+{
+  "version": 1,
+  "lesson": "05-leccion-4",
+  "locale": "en",
+  "title": "Lesson 4 — Fifth Chords",
+  "source": "H:/Website Clases/04 Lección 4/Lesson 4 elevenlabs.docx",
+  "format": {
+    "aspect": "16:9",
+    "width": 1920,
+    "theme": "storm"
+  },
+  "projects": {
+    "ejemplos": {
+      "setup": {
+        "mode": "single",
+        "title": "Examples of chords",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 1,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 G4] negra; [D4 F#4 A4] negra; [E4 G4 B4 D5] negra; [F4 G4 A4] negra"
+    },
+    "fundamental": {
+      "setup": {
+        "mode": "single",
+        "title": "Chord on C",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4] negra; [D4 F4 A4] negra; [E4 G4 B4] negra; [F4 A4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [A4 C5 E5] negra; [B4 D5 F5] negra; [C5 E5 G5] negra"
+    },
+    "tercera": {
+      "setup": {
+        "mode": "single",
+        "title": "Chord on C",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 E4] negra; [D4 F4 A4] negra; [E4 G4 B4] negra; [F4 A4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [A4 C5 E5] negra; [B4 D5 F5] negra; [C5 E5 G5] negra"
+    },
+    "escala-mayor": {
+      "setup": {
+        "mode": "single",
+        "title": "C natural major",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; E4 negra; F4 negra\ncompas 2\nG4 negra; A4 negra; B4 negra; C5 negra"
+    },
+    "mayor": {
+      "setup": {
+        "mode": "single",
+        "title": "Chords of C natural major",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 E4 G4] negra; [D4 F4 A4] negra; [E4 G4 B4] negra; [F4 A4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [A4 C5 E5] negra; [B4 D5 F5] negra; [C5 E5 G5] negra",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "ii",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "iii",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "vi",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "vii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "text": "I",
+          "kind": "roman"
+        }
+      ]
+    },
+    "escala-mayor-arm": {
+      "setup": {
+        "mode": "single",
+        "title": "C harmonic major",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; E4 negra; F4 negra\ncompas 2\nG4 negra; Ab4 negra; B4 negra; C5 negra"
+    },
+    "mayor-arm": {
+      "setup": {
+        "mode": "single",
+        "title": "Chords of C harmonic major",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 E4 G4] negra; [D4 F4 Ab4] negra; [E4 G4 B4] negra; [F4 Ab4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [Ab4 C5 E5] negra; [B4 D5 F5] negra; [C5 E5 G5] negra",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "ii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "iii",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "text": "iv",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "VI+",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "vii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "text": "I",
+          "kind": "roman"
+        }
+      ]
+    },
+    "escala-menor-nat": {
+      "setup": {
+        "mode": "single",
+        "title": "C natural minor",
+        "key": "Cm",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; Eb4 negra; F4 negra\ncompas 2\nG4 negra; Ab4 negra; Bb4 negra; C5 negra"
+    },
+    "menor-nat": {
+      "setup": {
+        "mode": "single",
+        "title": "Chords of C natural minor",
+        "key": "Cm",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 Eb4 G4] negra; [D4 F4 Ab4] negra; [Eb4 G4 Bb4] negra; [F4 Ab4 C5] negra\ncompas 2\n[G4 Bb4 D5] negra; [Ab4 C5 Eb5] negra; [Bb4 D5 F5] negra; [C5 Eb5 G5] negra",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "i",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "ii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "III",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "text": "iv",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "v",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "VI",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "VII",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "text": "i",
+          "kind": "roman"
+        }
+      ]
+    },
+    "escala-menor-arm": {
+      "setup": {
+        "mode": "single",
+        "title": "C harmonic minor",
+        "key": "Cm",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; Eb4 negra; F4 negra\ncompas 2\nG4 negra; Ab4 negra; B4 negra; C5 negra"
+    },
+    "menor-arm": {
+      "setup": {
+        "mode": "single",
+        "title": "Chords of C harmonic minor",
+        "key": "Cm",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 Eb4 G4] negra; [D4 F4 Ab4] negra; [Eb4 G4 B4] negra; [F4 Ab4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [Ab4 C5 Eb5] negra; [B4 D5 F5] negra; [C5 Eb5 G5] negra",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "i",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "ii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "III+",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "text": "iv",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "VI",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "vii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "text": "i",
+          "kind": "roman"
+        }
+      ]
+    },
+    "escala-menor-mel": {
+      "setup": {
+        "mode": "single",
+        "title": "C ascending melodic minor",
+        "key": "Cm",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nC4 negra; D4 negra; Eb4 negra; F4 negra\ncompas 2\nG4 negra; A4 negra; B4 negra; C5 negra"
+    },
+    "menor-mel": {
+      "setup": {
+        "mode": "single",
+        "title": "Chords of C ascending melodic minor",
+        "key": "Cm",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 Eb4 G4] negra; [D4 F4 A4] negra; [Eb4 G4 B4] negra; [F4 A4 C5] negra\ncompas 2\n[G4 B4 D5] negra; [A4 C5 Eb5] negra; [B4 D5 F5] negra; [C5 Eb5 G5] negra",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "i",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "ii",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "III+",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "vi°",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "vii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "text": "i",
+          "kind": "roman"
+        }
+      ]
+    },
+    "menor-mel-desc": {
+      "setup": {
+        "mode": "single",
+        "title": "C descending melodic minor",
+        "key": "Cm",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C5 Eb5 G5] negra; [Bb4 D5 F5] negra; [Ab4 C5 Eb5] negra; [G4 Bb4 D5] negra\ncompas 2\n[F4 Ab4 C5] negra; [Eb4 G4 Bb4] negra; [D4 F4 Ab4] negra; [C4 Eb4 G4] negra",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "i",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 2,
+          "text": "VII",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "text": "VI",
+          "kind": "roman"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "text": "v",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "iv",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "text": "III",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "text": "ii°",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "text": "i",
+          "kind": "roman"
+        }
+      ]
+    },
+    "cuatro-tipos": {
+      "setup": {
+        "mode": "single",
+        "title": "The four types of fifth chords",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 4,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\n[C4 E4 G4] redonda\ncompas 2\n[C4 Eb4 G4] redonda\ncompas 3\n[C4 Eb4 Gb4] redonda\ncompas 4\n[C4 E4 G#4] redonda",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "Mayor",
+          "kind": "text"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "menor",
+          "kind": "text"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "disminuido",
+          "kind": "text"
+        },
+        {
+          "measure": 4,
+          "beat": 1,
+          "text": "aumentado",
+          "kind": "text"
+        }
+      ]
+    }
+  },
+  "stills": [
+    {
+      "duration": 12,
+      "id": "titulo",
+      "kind": "title",
+      "heading": "Fifth chords",
+      "caption": "Lesson 4 · Harmony Course · Storm Studios Learning",
+      "narration": "Hello, and welcome back to Storm Studios Learning. In the previous lessons, we studied scales and intervals. With those tools in place, today we can begin the actual study of harmony—or harmonies."
+    },
+    {
+      "duration": 8,
+      "id": "que-es-acorde",
+      "kind": "title",
+      "heading": "What is a chord?",
+      "caption": "Two or more different notes sounding at the same time.",
+      "narration": "First, we need to define what a chord is. We call any combination of two or more different notes sounding at the same time a chord."
+    },
+    {
+      "duration": 5,
+      "id": "ejemplos",
+      "project": "ejemplos",
+      "heading": "Examples of chords",
+      "caption": "Two, three or more different notes at the same time",
+      "narration": "Here are a few examples of chords."
+    },
+    {
+      "duration": 10,
+      "id": "armonia",
+      "kind": "title",
+      "heading": "Harmony",
+      "caption": "The intervallic structure of chords and how they connect",
+      "narration": "Harmony studies the intervallic structure of chords—that is, how they are built—and the principles that govern how chords connect to one another."
+    },
+    {
+      "duration": 11,
+      "id": "armonias",
+      "kind": "title",
+      "heading": "Harmonies, in the plural",
+      "caption": "Historical period · genre · musical style · composer",
+      "narration": "In this method, we talk about harmonies, in the plural, because those connections and the way they are used depend on the historical period, the genre, the musical style, and even the individual composer we are studying."
+    },
+    {
+      "duration": 15,
+      "id": "construccion",
+      "kind": "title",
+      "heading": "Building chords",
+      "caption": "Root + stacked thirds",
+      "narration": "Let’s begin with how chords are built. Later on, we’ll study how to connect them. To build the chords we’ll be working with here, we start with a generating note, which we call the root, and then stack intervals of a third above it."
+    },
+    {
+      "duration": 13,
+      "id": "plan",
+      "kind": "title",
+      "heading": "Fifth chords",
+      "caption": "Two thirds on each degree of the basic scales in C",
+      "narration": "Today, we’re going to stack two thirds to build what we call fifth chords. We’ll do this on every degree of our basic scales—in this case, using the scales of C—so we can compare how their chords change."
+    },
+    {
+      "duration": 10,
+      "id": "escala-mayor",
+      "project": "escala-mayor",
+      "heading": "C natural major",
+      "caption": "Every note can be the root of a chord",
+      "narration": "Every note of the scale can serve as the root of a chord. To build each chord, we’ll stack two thirds using only notes from that same scale."
+    },
+    {
+      "duration": 3,
+      "id": "do-fundamental",
+      "project": "fundamental",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 2
+      },
+      "heading": "On C",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "color": "amber",
+          "label": "root"
+        }
+      ],
+      "narration": "Let’s start on C."
+    },
+    {
+      "duration": 3,
+      "id": "do-tercera",
+      "project": "tercera",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 2
+      },
+      "heading": "On C",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "cyan",
+          "label": "3rd"
+        }
+      ],
+      "narration": "A third above C is E,"
+    },
+    {
+      "duration": 5,
+      "id": "do-quinta",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 2
+      },
+      "heading": "C · E · G",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "amber",
+          "label": "3rd + 3rd"
+        }
+      ],
+      "narration": "and a third above E is G. So we have C, E, and G."
+    },
+    {
+      "duration": 13,
+      "id": "acorde-de-quinta",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 2
+      },
+      "heading": "Fifth chord or triad",
+      "caption": "E is the third and G is the fifth above C",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "amber",
+          "label": "3rd and 5th"
+        }
+      ],
+      "narration": "In relation to C, E is the third and G is the fifth. That is why we call this structure a fifth chord. It is also known as a triad, because it contains three different notes. Let’s listen to it.",
+      "audio": true
+    },
+    {
+      "duration": 9,
+      "id": "sobre-re",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 3
+      },
+      "heading": "On D",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "D · F · A"
+        }
+      ],
+      "narration": "Now I’m going to do the same thing starting on D. A third above D is F, and a third above F is A. Our chord is D, F, and A."
+    },
+    {
+      "duration": 3,
+      "id": "sobre-mi",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 4
+      },
+      "heading": "On E",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "amber"
+        }
+      ],
+      "narration": "On E, we have G and B."
+    },
+    {
+      "duration": 3,
+      "id": "sobre-fa",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 1
+      },
+      "heading": "On F",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 4,
+          "endBeat": 5,
+          "color": "amber"
+        }
+      ],
+      "narration": "On F, we have A and C."
+    },
+    {
+      "duration": 3,
+      "id": "sobre-sol",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 2
+      },
+      "heading": "On G",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "amber"
+        }
+      ],
+      "narration": "On G, we have B and D."
+    },
+    {
+      "duration": 3,
+      "id": "sobre-la",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 3
+      },
+      "heading": "On A",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "amber"
+        }
+      ],
+      "narration": "On A, we have C and E."
+    },
+    {
+      "duration": 3,
+      "id": "sobre-si",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 4
+      },
+      "heading": "On B",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "amber"
+        }
+      ],
+      "narration": "And on B, we have D and F."
+    },
+    {
+      "duration": 10,
+      "id": "mayor-escuchar",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "Chords of C natural major",
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "narration": "I’m going to play them so we can hear how the sound changes from one degree to the next.",
+      "audio": true
+    },
+    {
+      "duration": 13,
+      "id": "mayor-tipo-mayor",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "Major chord",
+      "caption": "Major third and perfect fifth",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "amber",
+          "label": "M3 + P5"
+        }
+      ],
+      "narration": "Even though all of them are built by stacking thirds, their intervals are not the same. In C, E, and G, we have a major third and a perfect fifth, measured from the root. This is a major chord."
+    },
+    {
+      "duration": 6,
+      "id": "mayor-tipo-menor",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "Minor chord",
+      "caption": "Minor third and perfect fifth",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "cyan",
+          "label": "m3 + P5"
+        }
+      ],
+      "narration": "In D, F, and A, we have a minor third and a perfect fifth. This is a minor chord."
+    },
+    {
+      "duration": 7,
+      "id": "mayor-tipo-disminuido",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "Diminished chord",
+      "caption": "Minor third and diminished fifth",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "rose",
+          "label": "m3 + dim5"
+        }
+      ],
+      "narration": "And in B, D, and F, we have a minor third and a diminished fifth. This is a diminished chord."
+    },
+    {
+      "duration": 11,
+      "id": "grados",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "A chord on each degree",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "amber",
+          "label": "first degree"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "cyan",
+          "label": "sixth degree"
+        }
+      ],
+      "narration": "Remember that every note of the scale is a degree, so each chord is the chord built on its corresponding degree. That means we can also say: the chord of the first degree, or the chord of the sixth degree."
+    },
+    {
+      "duration": 14,
+      "id": "mayor-resumen",
+      "project": "mayor",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "C natural major",
+      "caption": "I major · ii minor · iii minor · IV major · V major · vi minor · vii° diminished",
+      "narration": "So the chord structure of the natural major scale looks like this: First degree: major. Second: minor. Third: minor. Fourth: major. Fifth: major. Sixth: minor. And seventh: diminished. This is the chord structure of the natural major scale."
+    },
+    {
+      "duration": 17,
+      "id": "escala-mayor-arm",
+      "project": "escala-mayor-arm",
+      "heading": "C harmonic major",
+      "caption": "The sixth degree is lowered: A-flat",
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "color": "rose",
+          "label": "A♭"
+        }
+      ],
+      "narration": "Now let’s build the chords of the harmonic major scale. If you have any doubts about what the basic scales are, feel free to review the previous lesson. I’m going to build the chords again, this time following the notes of this scale. Now, every time A appears, it has to become A-flat."
+    },
+    {
+      "duration": 5,
+      "id": "arm-1",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 2
+      },
+      "heading": "I · C E G",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "green",
+          "label": "unchanged"
+        }
+      ],
+      "narration": "The first chord is still C, E, and G. It doesn’t contain A, so nothing changes."
+    },
+    {
+      "duration": 7,
+      "id": "arm-2",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 3
+      },
+      "heading": "ii° · D F A♭",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "rose",
+          "label": "diminished"
+        }
+      ],
+      "narration": "The second chord is now D, F, and A-flat. Its fifth has become diminished, so now we have a diminished chord."
+    },
+    {
+      "duration": 5,
+      "id": "arm-3",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 4
+      },
+      "heading": "iii · E G B",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "green",
+          "label": "minor"
+        }
+      ],
+      "narration": "The third chord, E, G, and B, doesn’t change either. It is still minor."
+    },
+    {
+      "duration": 5,
+      "id": "arm-4",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 1
+      },
+      "heading": "iv · F A♭ C",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 4,
+          "endBeat": 5,
+          "color": "rose",
+          "label": "now minor"
+        }
+      ],
+      "narration": "The fourth chord is now F, A-flat, and C. Before, it was major. Now it is minor."
+    },
+    {
+      "duration": 4,
+      "id": "arm-5",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 2
+      },
+      "heading": "V · G B D",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "green",
+          "label": "major"
+        }
+      ],
+      "narration": "The fifth chord is still G, B, and D: major."
+    },
+    {
+      "duration": 13,
+      "id": "arm-6",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 3
+      },
+      "heading": "VI+ · A♭ C E",
+      "caption": "Major third and augmented fifth",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "violet",
+          "label": "augmented"
+        }
+      ],
+      "narration": "Now look at what happens on the sixth degree: A-flat, C, and E. From A-flat to C, we have a major third, and from A-flat to E, we have an augmented fifth. Here we find the fourth type of chord: the augmented chord."
+    },
+    {
+      "duration": 4,
+      "id": "arm-7",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 4
+      },
+      "heading": "vii° · B D F",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "green",
+          "label": "diminished"
+        }
+      ],
+      "narration": "The seventh is still B, D, and F: diminished."
+    },
+    {
+      "duration": 10,
+      "id": "arm-escuchar",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "Chords of C harmonic major",
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "narration": "Let’s listen to the chords of the harmonic major scale.",
+      "audio": true
+    },
+    {
+      "duration": 6,
+      "id": "arm-cambios",
+      "project": "mayor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "One note changed, three chords changed",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "rose"
+        },
+        {
+          "measure": 1,
+          "beat": 4,
+          "endBeat": 5,
+          "color": "rose"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "rose"
+        }
+      ],
+      "narration": "By changing just one note of the scale, we changed three chords: the three chords that contain that note."
+    },
+    {
+      "duration": 11,
+      "id": "escala-menor-nat",
+      "project": "escala-menor-nat",
+      "heading": "C natural minor",
+      "caption": "C · D · E♭ · F · G · A♭ · B♭ · C",
+      "marks": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "color": "violet"
+        },
+        {
+          "measure": 2,
+          "beat": 2,
+          "color": "violet"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "violet"
+        }
+      ],
+      "narration": "Now let’s continue with the C natural minor scale: C, D, E-flat, F, G, A-flat, B-flat, and C. I’m going to build the chords in exactly the same way."
+    },
+    {
+      "duration": 5,
+      "id": "nat-1",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 2
+      },
+      "heading": "i · C E♭ G",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "cyan",
+          "label": "minor"
+        }
+      ],
+      "narration": "On C, we have E-flat and G. The first chord is minor."
+    },
+    {
+      "duration": 5,
+      "id": "nat-2",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 3
+      },
+      "heading": "ii° · D F A♭",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "rose",
+          "label": "diminished"
+        }
+      ],
+      "narration": "On D, we have F and A-flat. The second is diminished."
+    },
+    {
+      "duration": 5,
+      "id": "nat-3",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 1,
+        "beat": 4
+      },
+      "heading": "III · E♭ G B♭",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "amber",
+          "label": "major"
+        }
+      ],
+      "narration": "On E-flat, we have G and B-flat. The third is major."
+    },
+    {
+      "duration": 5,
+      "id": "nat-4",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 1
+      },
+      "heading": "iv · F A♭ C",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 4,
+          "endBeat": 5,
+          "color": "cyan",
+          "label": "minor"
+        }
+      ],
+      "narration": "On F, we have A-flat and C. The fourth is minor."
+    },
+    {
+      "duration": 5,
+      "id": "nat-5",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 2
+      },
+      "heading": "v · G B♭ D",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "cyan",
+          "label": "minor"
+        }
+      ],
+      "narration": "On G, we have B-flat and D. The fifth is minor."
+    },
+    {
+      "duration": 5,
+      "id": "nat-6",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 3
+      },
+      "heading": "VI · A♭ C E♭",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "major"
+        }
+      ],
+      "narration": "On A-flat, we have C and E-flat. The sixth is major."
+    },
+    {
+      "duration": 5,
+      "id": "nat-7",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "reveal": {
+        "measure": 2,
+        "beat": 4
+      },
+      "heading": "VII · B♭ D F",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "amber",
+          "label": "major"
+        }
+      ],
+      "narration": "And on B-flat, we have D and F. The seventh is major."
+    },
+    {
+      "duration": 10,
+      "id": "nat-escuchar",
+      "project": "menor-nat",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "Chords of C natural minor",
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "narration": "Let’s listen to them.",
+      "audio": true
+    },
+    {
+      "duration": 15,
+      "id": "escala-menor-arm",
+      "project": "escala-menor-arm",
+      "heading": "C harmonic minor",
+      "caption": "The seventh degree is raised: B♭ → B",
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "rose",
+          "label": "B♮"
+        }
+      ],
+      "narration": "To build the harmonic minor scale, we raise the seventh degree. B-flat becomes B-natural. Now we have C, D, E-flat, F, G, A-flat, B, and C. I’m going to make that same change in the chords that contain this note."
+    },
+    {
+      "duration": 9,
+      "id": "marm-3",
+      "project": "menor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "III+ · E♭ G B",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "violet",
+          "label": "augmented"
+        }
+      ],
+      "narration": "The third chord was E-flat, G, and B-flat. Now it is E-flat, G, and B-natural. Its fifth becomes augmented, so the chord is augmented."
+    },
+    {
+      "duration": 8,
+      "id": "marm-5",
+      "project": "menor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "V · G B D",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 2,
+          "color": "amber",
+          "label": "major"
+        }
+      ],
+      "narration": "The fifth chord was G, B-flat, and D. Now it is G, B-natural, and D. Its third becomes major, so now we have a major chord."
+    },
+    {
+      "duration": 7,
+      "id": "marm-7",
+      "project": "menor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "vii° · B D F",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "rose",
+          "label": "diminished"
+        }
+      ],
+      "narration": "And the seventh chord is now B-natural, D, and F: a diminished chord. The other chords keep the same notes."
+    },
+    {
+      "duration": 18,
+      "id": "marm-resumen",
+      "project": "menor-arm",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "C harmonic minor",
+      "caption": "i · ii° · III+ · iv · V · VI · vii°",
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "narration": "So now we have: First degree: minor. Second: diminished. Third: augmented. Fourth: minor. Fifth: major. Sixth: major. And seventh: diminished. Let’s listen.",
+      "audio": true
+    },
+    {
+      "duration": 13,
+      "id": "escala-menor-mel",
+      "project": "escala-menor-mel",
+      "heading": "C ascending melodic minor",
+      "caption": "The sixth degree is also raised: A♭ → A",
+      "marks": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "color": "rose",
+          "label": "A♮"
+        },
+        {
+          "measure": 2,
+          "beat": 3,
+          "color": "rose",
+          "label": "B♮"
+        }
+      ],
+      "narration": "Finally, we’re also going to raise the sixth degree to build the ascending melodic minor scale. A-flat becomes A-natural. The scale is now C, D, E-flat, F, G, A, B, and C."
+    },
+    {
+      "duration": 8,
+      "id": "mel-2",
+      "project": "menor-mel",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "ii · D F A",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "cyan",
+          "label": "minor"
+        }
+      ],
+      "narration": "Let’s look at the chords that change. The second chord is now D, F, and A. Its fifth becomes perfect again, so the chord is minor."
+    },
+    {
+      "duration": 4,
+      "id": "mel-4",
+      "project": "menor-mel",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "IV · F A C",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 4,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "major"
+        }
+      ],
+      "narration": "The fourth chord is F, A, and C. Now it is major."
+    },
+    {
+      "duration": 7,
+      "id": "mel-6",
+      "project": "menor-mel",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": false,
+      "heading": "vi° · A C E♭",
+      "highlights": [
+        {
+          "measure": 2,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "rose",
+          "label": "diminished"
+        }
+      ],
+      "narration": "And the sixth chord is A, C, and E-flat. We have a minor third and a diminished fifth, so this is a diminished chord."
+    },
+    {
+      "duration": 16,
+      "id": "mel-resumen",
+      "project": "menor-mel",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "C ascending melodic minor",
+      "caption": "i · ii · III+ · IV · V · vi° · vii°",
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "narration": "The first chord is still minor; the third is augmented; the fifth is major; and the seventh is diminished. Let’s listen to them.",
+      "audio": true
+    },
+    {
+      "duration": 16,
+      "id": "mel-descenso",
+      "project": "menor-mel-desc",
+      "measures": [
+        1,
+        2
+      ],
+      "showCiphers": true,
+      "heading": "Descending: natural minor",
+      "caption": "Return to B♭ and A♭",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 2,
+          "endBeat": 3,
+          "color": "violet",
+          "label": "B♭"
+        },
+        {
+          "measure": 1,
+          "beat": 3,
+          "endBeat": 4,
+          "color": "violet",
+          "label": "A♭"
+        }
+      ],
+      "narration": "When the melodic minor scale descends, we return to the notes of the natural minor scale: B-flat and A-flat. I’m going to write out the descending scale and build the chords using those notes. So on the way down, we also return to the same chords we already found in C natural minor.",
+      "audio": true
+    },
+    {
+      "duration": 17,
+      "id": "cuatro-tipos",
+      "project": "cuatro-tipos",
+      "heading": "The four types of fifth chords",
+      "showCiphers": true,
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "amber",
+          "label": "M3 + P5"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "cyan",
+          "label": "m3 + P5"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "rose",
+          "label": "m3 + dim5"
+        },
+        {
+          "measure": 4,
+          "beat": 1,
+          "endBeat": 5,
+          "color": "violet",
+          "label": "M3 + aug5"
+        }
+      ],
+      "narration": "Now we can clearly see where the four types of fifth chords come from. The major chord has a major third and a perfect fifth. The minor chord has a minor third and a perfect fifth. The diminished chord has a minor third and a diminished fifth. And the augmented chord has a major third and an augmented fifth.",
+      "audio": true
+    },
+    {
+      "duration": 16,
+      "id": "regla",
+      "kind": "title",
+      "heading": "Each degree becomes a root",
+      "caption": "Stack thirds using the notes of the scale",
+      "narration": "To build these chords on a scale, we take each degree as the root and stack thirds above it while following the notes of that scale. That is why it is so important to write accidentals correctly. If we change one note, we can change both the structure and the type of chord."
+    },
+    {
+      "duration": 17,
+      "id": "tarea",
+      "kind": "title",
+      "heading": "Your assignment",
+      "caption": "Build the chords of each basic scale and upload to the Virtual Teacher",
+      "narration": "Keep these examples in C as a reference. Now take the assignment where you already built all of the basic scales, and build all the chords for each scale. That is your assignment for Lesson 4. Once you have it ready, you can upload it to the Virtual Teacher for review."
+    },
+    {
+      "duration": 6,
+      "id": "despedida",
+      "kind": "title",
+      "heading": "Good luck!",
+      "caption": "See you in the next lesson",
+      "narration": "I hope you enjoyed your first lesson working with chords. I’ll see you in the next one. Good luck!"
+    }
+  ]
+}

@@ -1,0 +1,1821 @@
+{
+  "version": 1,
+  "lesson": "08-leccion-7",
+  "locale": "en",
+  "title": "Lesson 7 — Melodic and Harmonic Motion",
+  "source": "content/storyboards/en/08-leccion-7.guion.txt",
+  "format": {
+    "aspect": "16:9",
+    "theme": "storm"
+  },
+  "projects": {
+    "intervalos": {
+      "setup": {
+        "mode": "single",
+        "title": "Allowed melodic intervals",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 9,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nE4 cuarto; F4 cuarto; E4 cuarto; silencio cuarto\ncompas 2\nG4 cuarto; A4 cuarto; G4 cuarto; silencio cuarto\ncompas 3\nD4 cuarto; F4 cuarto; D4 cuarto; silencio cuarto\ncompas 4\nF4 cuarto; A4 cuarto; F4 cuarto; silencio cuarto\ncompas 5\nA4 cuarto; D5 cuarto; A4 cuarto; silencio cuarto\ncompas 6\nG4 cuarto; D5 cuarto; G4 cuarto; silencio cuarto\ncompas 7\nE4 cuarto; C5 cuarto; E4 cuarto; silencio cuarto\ncompas 8\nF4 cuarto; D5 cuarto; F4 cuarto; silencio cuarto\ncompas 9\nD4 cuarto; D5 cuarto; D4 cuarto; silencio cuarto"
+    },
+    "sensible": {
+      "setup": {
+        "mode": "single",
+        "title": "The leading tone in C major",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nB4 mitad; C5 mitad\ncompas 2\nB3 mitad; B4 mitad"
+    },
+    "disminuidos": {
+      "setup": {
+        "mode": "single",
+        "title": "Diminished fifth in C major",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 4,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nB4 cuarto; F5 cuarto; E5 cuarto; silencio cuarto\ncompas 2\nF5 cuarto; B4 cuarto; C5 cuarto; silencio cuarto\ncompas 3\nB4 cuarto; F5 cuarto; G5 cuarto; silencio cuarto\ncompas 4\nF4 cuarto; B4 cuarto; silencio mitad"
+    },
+    "saltos": {
+      "setup": {
+        "mode": "single",
+        "title": "Successive leaps",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 4,
+        "tempo": 72
+      },
+      "text": "voz melody\ncompas 1\nD4 cuarto; G4 cuarto; D5 cuarto; silencio cuarto\ncompas 2\nG5 cuarto; C5 cuarto; G4 cuarto; silencio cuarto\ncompas 3\nE4 cuarto; A4 cuarto; D5 cuarto; silencio cuarto\ncompas 4\nE4 cuarto; C5 cuarto; F4 cuarto; silencio cuarto"
+    },
+    "octavas-paralelas": {
+      "setup": {
+        "mode": "satb",
+        "title": "Parallel octaves",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 entera\ncompas 2\nD5 entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nD3 entera"
+    },
+    "quintas-paralelas": {
+      "setup": {
+        "mode": "satb",
+        "title": "Parallel fifths",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nG4 entera\ncompas 2\nA4 entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nD3 entera"
+    },
+    "octavas-contrarias": {
+      "setup": {
+        "mode": "satb",
+        "title": "Contrary octaves",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nG4 entera\ncompas 2\nC5 entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz bass\ncompas 1\nG3 entera\ncompas 2\nC3 entera"
+    },
+    "unisono": {
+      "setup": {
+        "mode": "satb",
+        "title": "Parallel unisons",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz alto\ncompas 1\nC4 entera\ncompas 2\nD4 entera\nvoz tenor\ncompas 1\nC4 entera\ncompas 2\nD4 entera\nvoz bass\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera"
+    },
+    "quintas-no-justas": {
+      "setup": {
+        "mode": "satb",
+        "title": "Parallel fifths that are not perfect",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 6,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nG4 entera\ncompas 2\nF4 entera\ncompas 3\nF4 entera\ncompas 4\nG4 entera\ncompas 5\nG4 entera\ncompas 6\nA4 entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\ncompas 3\nsilencio entera\ncompas 4\nsilencio entera\ncompas 5\nsilencio entera\ncompas 6\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\ncompas 3\nsilencio entera\ncompas 4\nsilencio entera\ncompas 5\nsilencio entera\ncompas 6\nsilencio entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nB2 entera\ncompas 3\nB2 entera\ncompas 4\nC3 entera\ncompas 5\nC3 entera\ncompas 6\nD3 entera"
+    },
+    "quintas-contrarias": {
+      "setup": {
+        "mode": "satb",
+        "title": "Contrary fifths",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 4,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nG4 entera\ncompas 2\nC5 entera\ncompas 3\nsilencio entera\ncompas 4\nsilencio entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\ncompas 3\nsilencio entera\ncompas 4\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\ncompas 3\nG3 entera\ncompas 4\nC4 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nF2 entera\ncompas 3\nC3 entera\ncompas 4\nF2 entera"
+    },
+    "saltos-simultaneos": {
+      "setup": {
+        "mode": "satb",
+        "title": "Simultaneous leaps",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 6,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nE4 entera\ncompas 2\nB4 entera\ncompas 3\nE4 entera\ncompas 4\nA4 entera\ncompas 5\nE4 entera\ncompas 6\nB4 entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\ncompas 3\nsilencio entera\ncompas 4\nsilencio entera\ncompas 5\nsilencio entera\ncompas 6\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\ncompas 3\nsilencio entera\ncompas 4\nsilencio entera\ncompas 5\nsilencio entera\ncompas 6\nsilencio entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nG3 entera\ncompas 3\nC3 entera\ncompas 4\nF3 entera\ncompas 5\nC3 entera\ncompas 6\nG2 entera"
+    },
+    "enlace": {
+      "setup": {
+        "mode": "satb",
+        "title": "IV – V connection in C major",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 4,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nA4 entera\ncompas 2\nB4 entera\ncompas 3\nC5 entera\ncompas 4\nB4 entera\nvoz alto\ncompas 1\nF4 entera\ncompas 2\nD4 entera\ncompas 3\nA4 entera\ncompas 4\nG4 entera\nvoz tenor\ncompas 1\nC4 entera\ncompas 2\nD4 entera\ncompas 3\nF4 entera\ncompas 4\nD4 entera\nvoz bass\ncompas 1\nF3 entera\ncompas 2\nG3 entera\ncompas 3\nF3 entera\ncompas 4\nG3 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "IV",
+          "kind": "roman"
+        },
+        {
+          "measure": 4,
+          "beat": 1,
+          "text": "V",
+          "kind": "roman"
+        }
+      ]
+    },
+    "tarea-soprano": {
+      "setup": {
+        "mode": "satb",
+        "title": "Soprano in C major",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz soprano\ncompas 1\nC5 cuarto; B4 cuarto; A4 cuarto; G4 cuarto\ncompas 2\nE4 cuarto; F4 cuarto; D4 cuarto; C4 cuarto\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz bass\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera"
+    },
+    "tarea-contralto": {
+      "setup": {
+        "mode": "satb",
+        "title": "Alto in G major",
+        "key": "G",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz soprano\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz alto\ncompas 1\nG4 cuarto; D4 cuarto; E4 cuarto; C4 cuarto\ncompas 2\nA3 cuarto; B3 cuarto; F#4 cuarto; G4 cuarto\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz bass\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera"
+    },
+    "tarea-tenor": {
+      "setup": {
+        "mode": "satb",
+        "title": "Tenor in D major",
+        "key": "D",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz soprano\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz tenor\ncompas 1\nD4 cuarto; A3 cuarto; B3 cuarto; G3 cuarto\ncompas 2\nC#3 cuarto; E3 cuarto; C#3 cuarto; D3 cuarto\nvoz bass\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera"
+    },
+    "tarea-bajo": {
+      "setup": {
+        "mode": "satb",
+        "title": "Bass in B♭ major",
+        "key": "Bb",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 72
+      },
+      "text": "voz soprano\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz alto\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\nvoz bass\ncompas 1\nBb2 cuarto; D3 cuarto; F3 cuarto; Eb3 cuarto\ncompas 2\nC3 cuarto; F2 cuarto; A2 cuarto; Bb2 cuarto"
+    },
+    "tesituras": {
+      "setup": {
+        "mode": "satb",
+        "title": "Ranges",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC4 entera\ncompas 2\nG5 entera\nvoz alto\ncompas 1\nG3 entera\ncompas 2\nD5 entera\nvoz tenor\ncompas 1\nB2 entera\ncompas 2\nG4 entera\nvoz bass\ncompas 1\nF2 entera\ncompas 2\nB3 entera"
+    }
+  },
+  "stills": [
+    {
+      "id": "titulo",
+      "kind": "title",
+      "heading": "Melodic and Harmonic Motion",
+      "caption": "Lesson 7 · Harmony Course · Storm Studios Learning",
+      "narration": "Hello, and welcome back to Storm Studios Learning. In the previous lesson we learned how to build chords for the vocal quartet. Today we are going to see how the voices move when we go from one chord to the next."
+    },
+    {
+      "id": "dos-partes",
+      "kind": "title",
+      "heading": "Two parts",
+      "caption": "Melodic motion · harmonic motion",
+      "narration": "This lesson has two parts: melodic motion and harmonic motion."
+    },
+    {
+      "id": "una-voz",
+      "project": "tarea-soprano",
+      "voices": [
+        "soprano"
+      ],
+      "heading": "Melodic motion",
+      "caption": "A single voice, from one note to the next",
+      "narration": "Melodic motion is about a single voice, and the intervals it sings from one note to the next.",
+      "showCiphers": true
+    },
+    {
+      "id": "dos-voces",
+      "project": "enlace",
+      "measures": [
+        3,
+        4
+      ],
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "heading": "Harmonic motion",
+      "caption": "Two voices moving at the same time",
+      "narration": "Harmonic motion is about two voices moving at the same time.",
+      "showCiphers": true
+    },
+    {
+      "id": "cada-voz",
+      "project": "enlace",
+      "measures": [
+        3,
+        4
+      ],
+      "heading": "Each voice sings its own melody",
+      "caption": "Before the first chorale, we practice each voice on its own",
+      "narration": "When we connect two chords, each voice sings its own melody. That is why, before we write our first chorale, we are going to practice each voice on its own.",
+      "showCiphers": true
+    },
+    {
+      "id": "paso-a-paso",
+      "kind": "title",
+      "heading": "Step by step",
+      "caption": "First each voice, then connections, then the chorale",
+      "narration": "I remember my first chorale very well. There are so many things to watch at the same time that it is very easy to get lost. So let's go step by step."
+    },
+    {
+      "id": "melodicos",
+      "kind": "title",
+      "heading": "Melodic motion",
+      "narration": "Let's start with melodic motion."
+    },
+    {
+      "id": "intervalos-figura",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/intervalos-melodicos-en.svg",
+      "heading": "Allowed intervals",
+      "narration": "When one chord connects to another, each voice can only use these intervals."
+    },
+    {
+      "id": "iv-segundas",
+      "project": "intervalos",
+      "reveal": {
+        "measure": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "m2"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "M2"
+        }
+      ],
+      "heading": "Minor second and major second",
+      "narration": "The minor second and the major second.",
+      "showCiphers": true
+    },
+    {
+      "id": "iv-terceras",
+      "project": "intervalos",
+      "reveal": {
+        "measure": 5
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "m2"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "M2"
+        },
+        {
+          "measure": 3,
+          "color": "amber",
+          "label": "m3"
+        },
+        {
+          "measure": 4,
+          "color": "amber",
+          "label": "M3"
+        }
+      ],
+      "heading": "Minor third and major third",
+      "narration": "The minor third and the major third.",
+      "showCiphers": true
+    },
+    {
+      "id": "iv-cuarta-quinta",
+      "project": "intervalos",
+      "reveal": {
+        "measure": 7
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "m2"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "M2"
+        },
+        {
+          "measure": 3,
+          "color": "amber",
+          "label": "m3"
+        },
+        {
+          "measure": 4,
+          "color": "amber",
+          "label": "M3"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "P4"
+        },
+        {
+          "measure": 6,
+          "color": "amber",
+          "label": "P5"
+        }
+      ],
+      "heading": "Perfect fourth and perfect fifth",
+      "narration": "The perfect fourth and the perfect fifth.",
+      "showCiphers": true
+    },
+    {
+      "id": "iv-sextas",
+      "project": "intervalos",
+      "reveal": {
+        "measure": 9
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "m2"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "M2"
+        },
+        {
+          "measure": 3,
+          "color": "amber",
+          "label": "m3"
+        },
+        {
+          "measure": 4,
+          "color": "amber",
+          "label": "M3"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "P4"
+        },
+        {
+          "measure": 6,
+          "color": "amber",
+          "label": "P5"
+        },
+        {
+          "measure": 7,
+          "color": "amber",
+          "label": "m6"
+        },
+        {
+          "measure": 8,
+          "color": "amber",
+          "label": "M6"
+        }
+      ],
+      "heading": "Minor sixth and major sixth",
+      "narration": "The minor sixth and the major sixth.",
+      "showCiphers": true
+    },
+    {
+      "id": "iv-octava",
+      "project": "intervalos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "m2"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "M2"
+        },
+        {
+          "measure": 3,
+          "color": "amber",
+          "label": "m3"
+        },
+        {
+          "measure": 4,
+          "color": "amber",
+          "label": "M3"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "P4"
+        },
+        {
+          "measure": 6,
+          "color": "amber",
+          "label": "P5"
+        },
+        {
+          "measure": 7,
+          "color": "amber",
+          "label": "m6"
+        },
+        {
+          "measure": 8,
+          "color": "amber",
+          "label": "M6"
+        },
+        {
+          "measure": 9,
+          "color": "amber",
+          "label": "P8"
+        }
+      ],
+      "heading": "Perfect octave",
+      "narration": "And the perfect octave.",
+      "showCiphers": true
+    },
+    {
+      "id": "iv-direccion",
+      "project": "intervalos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "amber",
+          "label": "m2"
+        },
+        {
+          "measure": 2,
+          "color": "amber",
+          "label": "M2"
+        },
+        {
+          "measure": 3,
+          "color": "amber",
+          "label": "m3"
+        },
+        {
+          "measure": 4,
+          "color": "amber",
+          "label": "M3"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "P4"
+        },
+        {
+          "measure": 6,
+          "color": "amber",
+          "label": "P5"
+        },
+        {
+          "measure": 7,
+          "color": "amber",
+          "label": "m6"
+        },
+        {
+          "measure": 8,
+          "color": "amber",
+          "label": "M6"
+        },
+        {
+          "measure": 9,
+          "color": "amber",
+          "label": "P8"
+        }
+      ],
+      "heading": "Ascending or descending",
+      "caption": "Every interval, up and down",
+      "narration": "They can all go up or down, that is, ascending or descending.",
+      "showCiphers": true
+    },
+    {
+      "id": "sin-aumentados",
+      "kind": "title",
+      "heading": "No augmented intervals",
+      "caption": "No sevenths · nothing larger than an octave",
+      "narration": "There are no augmented intervals in this list. There are no sevenths either, and nothing larger than an octave."
+    },
+    {
+      "id": "clasificacion",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/intervalos-melodicos-en.svg",
+      "heading": "Four groups",
+      "narration": "These intervals are classified into four groups."
+    },
+    {
+      "id": "grado-conjunto",
+      "project": "intervalos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "m2"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "M2"
+        }
+      ],
+      "heading": "Step",
+      "caption": "Seconds",
+      "narration": "Seconds are called steps.",
+      "showCiphers": true
+    },
+    {
+      "id": "camino-corto",
+      "project": "intervalos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "m2"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "M2"
+        },
+        {
+          "measure": 3,
+          "color": "cyan",
+          "label": "m3"
+        },
+        {
+          "measure": 4,
+          "color": "cyan",
+          "label": "M3"
+        }
+      ],
+      "heading": "Short path",
+      "caption": "Thirds",
+      "narration": "Thirds are called short paths.",
+      "showCiphers": true
+    },
+    {
+      "id": "salto-corto",
+      "project": "intervalos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "m2"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "M2"
+        },
+        {
+          "measure": 3,
+          "color": "cyan",
+          "label": "m3"
+        },
+        {
+          "measure": 4,
+          "color": "cyan",
+          "label": "M3"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "P4"
+        }
+      ],
+      "heading": "Short leap",
+      "caption": "The perfect fourth",
+      "narration": "The perfect fourth is a short leap.",
+      "showCiphers": true
+    },
+    {
+      "id": "saltos-largos",
+      "project": "intervalos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "m2"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "M2"
+        },
+        {
+          "measure": 3,
+          "color": "cyan",
+          "label": "m3"
+        },
+        {
+          "measure": 4,
+          "color": "cyan",
+          "label": "M3"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "P4"
+        },
+        {
+          "measure": 6,
+          "color": "violet",
+          "label": "P5"
+        },
+        {
+          "measure": 7,
+          "color": "violet",
+          "label": "m6"
+        },
+        {
+          "measure": 8,
+          "color": "violet",
+          "label": "M6"
+        },
+        {
+          "measure": 9,
+          "color": "violet",
+          "label": "P8"
+        }
+      ],
+      "heading": "Long leaps",
+      "caption": "Perfect fifth, sixths and octave",
+      "narration": "And the perfect fifth, the sixths and the octave are long leaps.",
+      "showCiphers": true
+    },
+    {
+      "id": "intervalos-escuchar",
+      "project": "intervalos",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "m2"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "M2"
+        },
+        {
+          "measure": 3,
+          "color": "cyan",
+          "label": "m3"
+        },
+        {
+          "measure": 4,
+          "color": "cyan",
+          "label": "M3"
+        },
+        {
+          "measure": 5,
+          "color": "amber",
+          "label": "P4"
+        },
+        {
+          "measure": 6,
+          "color": "violet",
+          "label": "P5"
+        },
+        {
+          "measure": 7,
+          "color": "violet",
+          "label": "m6"
+        },
+        {
+          "measure": 8,
+          "color": "violet",
+          "label": "M6"
+        },
+        {
+          "measure": 9,
+          "color": "violet",
+          "label": "P8"
+        }
+      ],
+      "heading": "The nine intervals",
+      "narration": "Let's listen to each one, first going up and then going down.",
+      "showCiphers": true
+    },
+    {
+      "id": "con-cuidado",
+      "kind": "title",
+      "heading": "The step is the most natural",
+      "caption": "Leaps give character, with care",
+      "narration": "The step is the most natural motion for a voice. Leaps give the melody character, but they have to be used with care."
+    },
+    {
+      "id": "sensible",
+      "project": "sensible",
+      "reveal": {
+        "measure": 2
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "leading tone"
+        }
+      ],
+      "heading": "The leading tone: B",
+      "caption": "It wants to rise to C",
+      "narration": "The first rule of care has to do with the leading tone. In C major, the leading tone is B, the note that wants to rise to C.",
+      "showCiphers": true
+    },
+    {
+      "id": "sensible-octava",
+      "project": "sensible",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "leading tone"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "✗ octave on the leading tone"
+        }
+      ],
+      "heading": "No octave leaps on the leading tone",
+      "narration": "The leading tone never leaps an octave.",
+      "showCiphers": true
+    },
+    {
+      "id": "disminuidos-figura",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/disminuidos-en.svg",
+      "heading": "Diminished intervals",
+      "narration": "Now let's look at diminished intervals. We said that augmented intervals are not used."
+    },
+    {
+      "id": "compensar",
+      "kind": "title",
+      "heading": "Diminished 5th, 4th and 7th",
+      "caption": "Allowed if the voice then changes direction: compensating",
+      "narration": "But the diminished fifth, the diminished fourth and the diminished seventh are allowed, on one condition. After the diminished interval, the voice has to change direction. We call this compensating."
+    },
+    {
+      "id": "dis-si-fa",
+      "project": "disminuidos",
+      "reveal": {
+        "measure": 1,
+        "beat": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "dim. 5th"
+        }
+      ],
+      "heading": "B – F upward",
+      "caption": "Diminished fifth",
+      "narration": "In C major, from B up to F there is a diminished fifth.",
+      "showCiphers": true
+    },
+    {
+      "id": "dis-baja",
+      "project": "disminuidos",
+      "reveal": {
+        "measure": 2
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ down to E"
+        }
+      ],
+      "heading": "Compensated",
+      "caption": "The voice moves down",
+      "narration": "If the voice then moves down, for example to E, the diminished fifth is compensated.",
+      "showCiphers": true
+    },
+    {
+      "id": "dis-fa-si",
+      "project": "disminuidos",
+      "reveal": {
+        "measure": 2,
+        "beat": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ down to E"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "endBeat": 3,
+          "color": "amber",
+          "label": "dim. 5th"
+        }
+      ],
+      "heading": "F – B downward",
+      "caption": "Also a diminished fifth",
+      "narration": "From F down to B there is also a diminished fifth.",
+      "showCiphers": true
+    },
+    {
+      "id": "dis-sube",
+      "project": "disminuidos",
+      "reveal": {
+        "measure": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ down to E"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "✓ up to C"
+        }
+      ],
+      "heading": "Compensated",
+      "caption": "The voice moves up",
+      "narration": "If the voice then moves up, for example to C, it is also compensated.",
+      "showCiphers": true
+    },
+    {
+      "id": "dis-sin-compensar",
+      "project": "disminuidos",
+      "reveal": {
+        "measure": 4
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ down to E"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "✓ up to C"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "✗ keeps rising"
+        }
+      ],
+      "heading": "Not compensated",
+      "caption": "After B and F it goes on to G",
+      "narration": "But if after B and F the voice keeps rising, to G, the diminished fifth is left uncompensated.",
+      "showCiphers": true
+    },
+    {
+      "id": "cuarta-aumentada",
+      "project": "disminuidos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "✓"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "✗"
+        },
+        {
+          "measure": 4,
+          "color": "rose",
+          "label": "✗ aug. 4th"
+        }
+      ],
+      "heading": "F – B upward: augmented fourth",
+      "caption": "Augmented fourths are not used",
+      "narration": "And watch the direction. From F up to B there is no diminished fifth, but an augmented fourth. And augmented fourths are not used.",
+      "showCiphers": true
+    },
+    {
+      "id": "modo-menor",
+      "kind": "title",
+      "heading": "Diminished 4th and 7th",
+      "caption": "They appear in the minor mode · we will see them later",
+      "narration": "The diminished fourth and the diminished seventh appear in the minor mode, and we will see them later."
+    },
+    {
+      "id": "saltos-figura",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/saltos-sucesivos-en.svg",
+      "heading": "Successive leaps",
+      "caption": "Same direction: only a 4th and a 5th, or a 5th and a 4th",
+      "narration": "The last melodic rule is about successive leaps. Two leaps in a row in the same direction are not used. The exception is a fourth followed by a fifth, or a fifth followed by a fourth."
+    },
+    {
+      "id": "saltos-4-5",
+      "project": "saltos",
+      "reveal": {
+        "measure": 2
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ 4th + 5th ↑"
+        }
+      ],
+      "heading": "D – G – D, going up",
+      "narration": "For example, from D to G and then to D, going up, is fine.",
+      "showCiphers": true
+    },
+    {
+      "id": "saltos-5-4",
+      "project": "saltos",
+      "reveal": {
+        "measure": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ 4th + 5th ↑"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "✓ 5th + 4th ↓"
+        }
+      ],
+      "heading": "G – C – G, going down",
+      "narration": "And going down, from G to C and then to G, too.",
+      "showCiphers": true
+    },
+    {
+      "id": "saltos-4-4",
+      "project": "saltos",
+      "reveal": {
+        "measure": 4
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ 4th + 5th ↑"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "✓ 5th + 4th ↓"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "✗ 4th + 4th"
+        }
+      ],
+      "heading": "E – A – D",
+      "caption": "Two fourths upward",
+      "narration": "But from E to A and then to D are two fourths going up, and that is not used.",
+      "showCiphers": true
+    },
+    {
+      "id": "saltos-direccion",
+      "project": "saltos",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "✓ 4th + 5th ↑"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "✓ 5th + 4th ↓"
+        },
+        {
+          "measure": 3,
+          "color": "rose",
+          "label": "✗ 4th + 4th"
+        },
+        {
+          "measure": 4,
+          "color": "green",
+          "label": "✓ changes direction"
+        }
+      ],
+      "heading": "Change of direction",
+      "caption": "No problem",
+      "narration": "If the voice changes direction after a leap, there is no problem.",
+      "showCiphers": true
+    },
+    {
+      "id": "armonicos",
+      "kind": "title",
+      "heading": "Harmonic motion",
+      "caption": "Two voices moving at the same time",
+      "narration": "Now let's move on to harmonic motion. Here we no longer look at a single voice, but at two voices moving at the same time."
+    },
+    {
+      "id": "paralelas-figura",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/paralelas-en.svg",
+      "heading": "Parallel fifths and octaves",
+      "caption": "The most famous rule in harmony",
+      "narration": "The first rule is the most famous one in all of harmony. Parallel fifths and parallel octaves are not used. There are parallel fifths or octaves when two voices form a fifth or an octave, and then, moving in the same direction, form a fifth or an octave again."
+    },
+    {
+      "id": "octavas-paralelas",
+      "project": "octavas-paralelas",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "8ve"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "8ve"
+        }
+      ],
+      "heading": "Parallel octaves",
+      "caption": "Soprano C5 – D5 · bass C3 – D3",
+      "narration": "For example, the soprano goes from C five to D five, and the bass goes from C three to D three. The two voices are an octave apart, and they stay an octave apart.",
+      "showCiphers": true
+    },
+    {
+      "id": "octavas-escuchar",
+      "project": "octavas-paralelas",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "heading": "Parallel octaves",
+      "narration": "Let's listen.",
+      "showCiphers": true
+    },
+    {
+      "id": "una-sola-voz",
+      "project": "octavas-paralelas",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "heading": "They sound like a single voice",
+      "caption": "We lose a voice of the quartet",
+      "narration": "With parallel octaves, the two voices sound as if they were only one. We lose a voice of the quartet.",
+      "showCiphers": true
+    },
+    {
+      "id": "quintas-paralelas",
+      "project": "quintas-paralelas",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "P5"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "P5"
+        }
+      ],
+      "heading": "Parallel fifths",
+      "caption": "The voices blend and the sound becomes hollow",
+      "narration": "Something similar happens with parallel fifths. The perfect fifth is such a stable interval that the two voices blend and the sound becomes hollow.",
+      "showCiphers": true
+    },
+    {
+      "id": "contrarias",
+      "project": "octavas-contrarias",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "heading": "Contrary fifths and octaves",
+      "caption": "The same, in opposite directions",
+      "narration": "Contrary fifths and contrary octaves are not used either. They are the same fifths or octaves, but with the voices moving in opposite directions.",
+      "showCiphers": true
+    },
+    {
+      "id": "octavas-contrarias",
+      "project": "octavas-contrarias",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "8ve"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "2 × 8ve"
+        }
+      ],
+      "heading": "Contrary octaves",
+      "caption": "Soprano G4 – C5 · bass G3 – C3",
+      "narration": "For example, the soprano rises from G four to C five while the bass falls from G three to C three. We go from one octave to two octaves, and the effect is the same.",
+      "showCiphers": true
+    },
+    {
+      "id": "unisono",
+      "project": "unisono",
+      "voices": [
+        "alto",
+        "tenor"
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "unison"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "unison"
+        }
+      ],
+      "heading": "The unison counts as an octave",
+      "narration": "The unison also counts as an octave.",
+      "showCiphers": true
+    },
+    {
+      "id": "dos-casos",
+      "kind": "title",
+      "heading": "Allowed fifths",
+      "caption": "Two cases",
+      "narration": "Now, there are two cases in which fifths are allowed."
+    },
+    {
+      "id": "no-justas",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/quintas-permitidas-en.svg",
+      "heading": "Parallel fifths that are not perfect",
+      "narration": "The first is parallel fifths when one of the two, or both, are not perfect."
+    },
+    {
+      "id": "justa-dis",
+      "project": "quintas-no-justas",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "reveal": {
+        "measure": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "P5"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "dim. 5th"
+        }
+      ],
+      "heading": "Perfect → diminished",
+      "narration": "For example, from a perfect fifth to a diminished fifth.",
+      "showCiphers": true
+    },
+    {
+      "id": "dis-justa",
+      "project": "quintas-no-justas",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "reveal": {
+        "measure": 5
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "P5"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "dim. 5th"
+        },
+        {
+          "measure": 3,
+          "color": "green",
+          "label": "dim. 5th"
+        },
+        {
+          "measure": 4,
+          "color": "green",
+          "label": "P5"
+        }
+      ],
+      "heading": "Diminished → perfect",
+      "narration": "Or from a diminished fifth to a perfect fifth.",
+      "showCiphers": true
+    },
+    {
+      "id": "justa-justa",
+      "project": "quintas-no-justas",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "green",
+          "label": "P5"
+        },
+        {
+          "measure": 2,
+          "color": "green",
+          "label": "dim. 5th"
+        },
+        {
+          "measure": 3,
+          "color": "green",
+          "label": "dim. 5th"
+        },
+        {
+          "measure": 4,
+          "color": "green",
+          "label": "P5"
+        },
+        {
+          "measure": 5,
+          "color": "rose",
+          "label": "P5"
+        },
+        {
+          "measure": 6,
+          "color": "rose",
+          "label": "P5"
+        }
+      ],
+      "heading": "Perfect → perfect: no",
+      "narration": "What is not allowed is going from one perfect fifth to another perfect fifth.",
+      "showCiphers": true
+    },
+    {
+      "id": "extremas",
+      "kind": "title",
+      "heading": "Outer voices",
+      "caption": "The soprano and the bass: the top one and the bottom one",
+      "narration": "The second case is contrary fifths in voices that are not the outer voices. The outer voices are the soprano and the bass, the top one and the bottom one."
+    },
+    {
+      "id": "contrarias-sb",
+      "project": "quintas-contrarias",
+      "measures": [
+        1,
+        2
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "5th"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "5th"
+        }
+      ],
+      "heading": "Soprano and bass: no",
+      "narration": "Between the soprano and the bass, contrary fifths are not used.",
+      "showCiphers": true
+    },
+    {
+      "id": "contrarias-tb",
+      "project": "quintas-contrarias",
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "5th"
+        },
+        {
+          "measure": 2,
+          "color": "rose",
+          "label": "5th"
+        },
+        {
+          "measure": 3,
+          "color": "green",
+          "label": "5th"
+        },
+        {
+          "measure": 4,
+          "color": "green",
+          "label": "5th"
+        }
+      ],
+      "heading": "Tenor and bass: yes",
+      "narration": "But between the tenor and the bass, for example, they are allowed.",
+      "showCiphers": true
+    },
+    {
+      "id": "simultaneos-figura",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/saltos-simultaneos-en.svg",
+      "heading": "Simultaneous leaps",
+      "narration": "The last harmonic rule is about simultaneous leaps."
+    },
+    {
+      "id": "simultaneos-no",
+      "project": "saltos-simultaneos",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "reveal": {
+        "measure": 3
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "✗ two 5ths",
+          "endMeasure": 2
+        }
+      ],
+      "heading": "Two leaps in the same direction",
+      "narration": "We avoid two voices leaping at the same time in the same direction.",
+      "showCiphers": true
+    },
+    {
+      "id": "simultaneos-cuartas",
+      "project": "saltos-simultaneos",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "reveal": {
+        "measure": 5
+      },
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "✗ two 5ths",
+          "endMeasure": 2
+        },
+        {
+          "measure": 3,
+          "color": "green",
+          "label": "✓ two P4",
+          "endMeasure": 4
+        }
+      ],
+      "heading": "Exception: two perfect fourths",
+      "narration": "The exception is when both leaps are perfect fourths.",
+      "showCiphers": true
+    },
+    {
+      "id": "simultaneos-contrarios",
+      "project": "saltos-simultaneos",
+      "voices": [
+        "soprano",
+        "bass"
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "color": "rose",
+          "label": "✗ two 5ths",
+          "endMeasure": 2
+        },
+        {
+          "measure": 3,
+          "color": "green",
+          "label": "✓ two P4",
+          "endMeasure": 4
+        },
+        {
+          "measure": 5,
+          "color": "green",
+          "label": "✓ contrary",
+          "endMeasure": 6
+        }
+      ],
+      "heading": "Opposite directions",
+      "caption": "No problem",
+      "narration": "If two voices leap at the same time but in opposite directions, there is no problem.",
+      "showCiphers": true
+    },
+    {
+      "id": "enlace-mal",
+      "project": "enlace",
+      "audio": true,
+      "cursor": {
+        "measure": 1,
+        "beat": 1
+      },
+      "measures": [
+        1,
+        2
+      ],
+      "highlights": [
+        {
+          "measure": 1,
+          "voice": "tenor",
+          "color": "rose"
+        },
+        {
+          "measure": 1,
+          "voice": "bass",
+          "color": "rose"
+        },
+        {
+          "measure": 2,
+          "voice": "tenor",
+          "color": "rose"
+        },
+        {
+          "measure": 2,
+          "voice": "bass",
+          "color": "rose"
+        }
+      ],
+      "heading": "IV – V with parallel fifths",
+      "caption": "Tenor and bass: F – C, then G – D",
+      "narration": "Let's listen to a connection of two chords with parallel fifths.",
+      "showCiphers": true
+    },
+    {
+      "id": "enlace-bien",
+      "project": "enlace",
+      "audio": true,
+      "cursor": {
+        "measure": 3,
+        "beat": 1
+      },
+      "measures": [
+        3,
+        4
+      ],
+      "heading": "IV – V written correctly",
+      "narration": "And now the same connection, written correctly.",
+      "showCiphers": true
+    },
+    {
+      "id": "proximas",
+      "kind": "title",
+      "heading": "Coming lessons",
+      "caption": "Harmonic material and connections · two-chord connections · first chorale",
+      "narration": "We will practice the harmonic rules when we start connecting chords. First we will see which chords we can use and how they connect. Then you will write connections of two chords. And after that you will write your first complete chorale."
+    },
+    {
+      "id": "tarea",
+      "kind": "title",
+      "heading": "Assignment for the Virtual Teacher",
+      "narration": "Now, the assignment for the Virtual Teacher."
+    },
+    {
+      "id": "cuatro-ejercicios",
+      "kind": "title",
+      "heading": "Four exercises",
+      "caption": "Soprano · alto · tenor · bass · each one uploaded separately",
+      "narration": "This time there are four exercises, one for each voice: soprano, alto, tenor and bass. Each exercise is uploaded separately."
+    },
+    {
+      "id": "tarea-soprano",
+      "project": "tarea-soprano",
+      "highlights": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "endBeat": 2,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "I"
+        },
+        {
+          "measure": 2,
+          "beat": 4,
+          "endBeat": 5,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "I"
+        }
+      ],
+      "heading": "Eight quarter notes, two measures",
+      "caption": "Any major key · begins and ends on the tonic",
+      "narration": "In each one you will write a melody of eight notes, in quarter notes, that is, two measures of four four. You can choose any major key, and it can be different in each exercise. The melody begins and ends on the first degree, the tonic.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea-tenor",
+      "project": "tarea-tenor",
+      "focusVoice": "tenor",
+      "heading": "SATB Quartet mode",
+      "caption": "Only the staff of the voice you are practicing",
+      "narration": "Work in the sequencer in SATB Quartet mode. Write the melody only on the staff of the voice you are practicing, and leave the others empty. That way the Virtual Teacher knows which voice it is.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea-reglas",
+      "project": "tarea-contralto",
+      "focusVoice": "alto",
+      "heading": "Allowed intervals",
+      "caption": "Melodic motion rules · no repeated notes",
+      "narration": "Use only the allowed intervals and follow the rules of melodic motion. In this exercise notes are not repeated. When we connect chords we will be able to repeat them, but for now every note moves to a different one.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea-tesituras",
+      "project": "tesituras",
+      "heading": "Within the range of each voice",
+      "narration": "And stay within the range of each voice.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-soprano",
+      "project": "tesituras",
+      "focusVoice": "soprano",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "soprano",
+          "color": "amber",
+          "label": "C4 – G5"
+        }
+      ],
+      "heading": "Soprano",
+      "caption": "C4 to G5",
+      "narration": "The soprano, from C four to G five.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-contralto",
+      "project": "tesituras",
+      "focusVoice": "alto",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "alto",
+          "color": "amber",
+          "label": "G3 – D5"
+        }
+      ],
+      "heading": "Alto",
+      "caption": "G3 to D5",
+      "narration": "The alto, from G three to D five.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-tenor",
+      "project": "tesituras",
+      "focusVoice": "tenor",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "tenor",
+          "color": "amber",
+          "label": "B2 – G4"
+        }
+      ],
+      "heading": "Tenor",
+      "caption": "B2 to G4",
+      "narration": "The tenor, from B two to G four.",
+      "showCiphers": true
+    },
+    {
+      "id": "tesitura-bajo",
+      "project": "tesituras",
+      "focusVoice": "bass",
+      "highlights": [
+        {
+          "measure": 1,
+          "endMeasure": 2,
+          "voice": "bass",
+          "color": "amber",
+          "label": "F2 – B3"
+        }
+      ],
+      "heading": "Bass",
+      "caption": "F2 to B3",
+      "narration": "And the bass, from F two to B three.",
+      "showCiphers": true
+    },
+    {
+      "id": "tarea-exporta",
+      "project": "tarea-bajo",
+      "focusVoice": "bass",
+      "heading": "Export each melody as MIDI",
+      "caption": "And upload it to the Virtual Teacher",
+      "narration": "Export each melody as a MIDI file and upload it.",
+      "showCiphers": true
+    },
+    {
+      "id": "maestro-revisa",
+      "kind": "title",
+      "heading": "The Virtual Teacher checks",
+      "caption": "Voice and key · every interval · range · opening and closing tonic",
+      "narration": "The Virtual Teacher recognizes the voice and the key. It checks every interval, the range, and that you begin and end on the tonic. And if it finds an error, it tells you what it is and on which notes."
+    },
+    {
+      "id": "armonicos-despues",
+      "kind": "title",
+      "heading": "Harmonic motion, in chord connections",
+      "caption": "The Virtual Teacher will check it there too",
+      "narration": "Harmonic motion is not part of this assignment: we will practice it when we connect chords, and the Virtual Teacher will check it then too."
+    },
+    {
+      "id": "recapitulemos",
+      "kind": "title",
+      "heading": "Let's recap",
+      "narration": "Let's recap."
+    },
+    {
+      "id": "recap-intervalos",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/intervalos-melodicos-en.svg",
+      "heading": "Allowed intervals",
+      "narration": "Each voice moves by steps, short paths, short leaps and long leaps. We do not use augmented intervals, sevenths, or intervals larger than an octave."
+    },
+    {
+      "id": "recap-disminuidos",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/disminuidos-en.svg",
+      "heading": "Diminished: compensated",
+      "narration": "Diminished intervals are compensated by changing direction."
+    },
+    {
+      "id": "recap-saltos",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/saltos-sucesivos-en.svg",
+      "heading": "Leading tone and successive leaps",
+      "narration": "We do not leap an octave with the leading tone, or make two leaps in a row in the same direction, except a fourth and a fifth."
+    },
+    {
+      "id": "recap-armonicos",
+      "kind": "image",
+      "image": "/images/curso/leccion-7/paralelas-en.svg",
+      "heading": "Between two voices",
+      "narration": "Between two voices, we avoid parallel and contrary fifths and octaves, and simultaneous leaps in the same direction."
+    },
+    {
+      "id": "cierre",
+      "kind": "title",
+      "heading": "Thank you",
+      "caption": "See you in lesson 8",
+      "narration": "Thank you for joining me. See you in lesson eight."
+    }
+  ]
+}

@@ -34,6 +34,55 @@ export const BLOG_POST_TRANSLATIONS: BlogPostTranslation[] = [
       es: "2026-09-30-storm-sequencer-v4",
     },
   },
+  {
+    key: "lessons-4-and-5-published",
+    slugs: {
+      en: "2026-10-04-lessons-4-and-5-published",
+      es: "2026-10-04-lecciones-4-y-5-publicadas",
+    },
+  },
+  {
+    key: "videos-made-with-ai",
+    slugs: {
+      en: "2026-10-04-videos-made-with-artificial-intelligence",
+      es: "2026-10-04-videos-con-inteligencia-artificial",
+    },
+  },
+  {
+    key: "lesson-6-published",
+    slugs: {
+      en: "2026-10-05-lesson-6-published",
+      es: "2026-10-05-leccion-6-publicada",
+    },
+  },
+  {
+    key: "lesson-7-published",
+    slugs: {
+      en: "2026-10-09-lesson-7-published",
+      es: "2026-10-09-leccion-7-publicada",
+    },
+  },
+  {
+    key: "lesson-8-published",
+    slugs: {
+      en: "2026-10-09-lesson-8-published",
+      es: "2026-10-09-leccion-8-publicada",
+    },
+  },
+  {
+    key: "3d-games-renewed-utility-apps",
+    slugs: {
+      en: "2026-10-20-3d-games-renewed-and-utility-apps",
+      es: "2026-10-20-juegos-3d-renovados-y-utility-apps",
+    },
+  },
+  {
+    key: "mastery-section",
+    slugs: {
+      en: "2026-10-30-new-mastery-section",
+      es: "2026-10-30-nueva-seccion-maestria",
+    },
+  },
 ];
 
 export function findBlogTranslationBySlug(locale: Locale, slug: string) {

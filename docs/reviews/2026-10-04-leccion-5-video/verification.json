@@ -1,0 +1,38 @@
+{
+  "es": {
+    "mp4Seconds": 948.966667,
+    "timelineSeconds": 948.964667,
+    "voiceSeconds": 654.4000000000001,
+    "musicSeconds": 192.71466699999996,
+    "pauseSeconds": 101.85,
+    "stills": 90,
+    "clips": 133,
+    "srtEntries": 133,
+    "bytes": 32532280,
+    "sha256": "36e8dd3dd3d21f7c6b759d2abf095416c5b41a876143b9c57b06bc7a5bbbd3ca",
+    "drive": "https://drive.google.com/file/d/1kS_Q4elkBokxDixqS1OfRckiJ6lAZPJu/view?usp=drivesdk",
+    "drivePrivate": true,
+    "loudnessTargetMet": false,
+    "maximumTruePeak": -1.4,
+    "globalIntegrated": -16,
+    "finalNormalizationMode": "fixed-gain-limiter"
+  },
+  "en": {
+    "mp4Seconds": 895.444,
+    "timelineSeconds": 895.4446669999998,
+    "voiceSeconds": 600.8799999999997,
+    "musicSeconds": 192.71466699999996,
+    "pauseSeconds": 101.85,
+    "stills": 90,
+    "clips": 133,
+    "srtEntries": 133,
+    "bytes": 30531164,
+    "sha256": "22bd2c05fbc96f71120d6af0603c3403a40ca1a4b07feb57daa192cae7ca191b",
+    "drive": "https://drive.google.com/file/d/1rxrfMXI_Vb_ZkB07XFzPcA0pxp7lAHR9/view?usp=drivesdk",
+    "drivePrivate": true,
+    "loudnessTargetMet": true,
+    "maximumTruePeak": -1.4,
+    "globalIntegrated": -16,
+    "finalNormalizationMode": "fixed-gain-limiter"
+  }
+}

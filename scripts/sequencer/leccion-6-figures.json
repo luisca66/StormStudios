@@ -1,0 +1,96 @@
+{
+  "source": "origin/claude/leccion-6-video:content/storyboards/es/07-leccion-6.json",
+  "commit": "93d3e935f3124ffbebaff2ed70f75ec4b0eac428",
+  "projects": {
+    "tesituras": {
+      "setup": {
+        "mode": "satb",
+        "title": "Tesituras",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC4 entera\ncompas 2\nG5 entera\nvoz alto\ncompas 1\nG3 entera\ncompas 2\nD5 entera\nvoz tenor\ncompas 1\nB2 entera\ncompas 2\nG4 entera\nvoz bass\ncompas 1\nF2 entera\ncompas 2\nB3 entera"
+    },
+    "separaciones": {
+      "setup": {
+        "mode": "satb",
+        "title": "Separaciones máximas",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nG5 entera\ncompas 2\nsilencio entera\ncompas 3\nsilencio entera\nvoz alto\ncompas 1\nC4 entera\ncompas 2\nE4 entera\ncompas 3\nsilencio entera\nvoz tenor\ncompas 1\nsilencio entera\ncompas 2\nC3 entera\ncompas 3\nF4 entera\nvoz bass\ncompas 1\nsilencio entera\ncompas 2\nsilencio entera\ncompas 3\nF2 entera"
+    },
+    "estados": {
+      "setup": {
+        "mode": "satb",
+        "title": "Estados de Do mayor",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 entera\ncompas 2\nC5 entera\ncompas 3\nG4 entera\nvoz alto\ncompas 1\nE4 entera\ncompas 2\nC4 entera\ncompas 3\nC4 entera\nvoz tenor\ncompas 1\nG3 entera\ncompas 2\nG3 entera\ncompas 3\nE3 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nE3 entera\ncompas 3\nG2 entera",
+      "annotations": [
+        {
+          "measure": 1,
+          "beat": 1,
+          "text": "I",
+          "kind": "roman"
+        },
+        {
+          "measure": 2,
+          "beat": 1,
+          "text": "I 6/3",
+          "kind": "roman"
+        },
+        {
+          "measure": 3,
+          "beat": 1,
+          "text": "I 6/4",
+          "kind": "roman"
+        }
+      ]
+    },
+    "posicion": {
+      "setup": {
+        "mode": "satb",
+        "title": "Posición melódica",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 3,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nC5 entera\ncompas 2\nE5 entera\ncompas 3\nG5 entera\nvoz alto\ncompas 1\nE4 entera\ncompas 2\nG4 entera\ncompas 3\nC5 entera\nvoz tenor\ncompas 1\nG3 entera\ncompas 2\nC4 entera\ncompas 3\nE4 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nC3 entera\ncompas 3\nC3 entera"
+    },
+    "disposicion": {
+      "setup": {
+        "mode": "satb",
+        "title": "Disposición interna",
+        "key": "C",
+        "time": [
+          4,
+          4
+        ],
+        "measures": 2,
+        "tempo": 60
+      },
+      "text": "voz soprano\ncompas 1\nE4 entera\ncompas 2\nC5 entera\nvoz alto\ncompas 1\nC4 entera\ncompas 2\nE4 entera\nvoz tenor\ncompas 1\nG3 entera\ncompas 2\nG3 entera\nvoz bass\ncompas 1\nC3 entera\ncompas 2\nC3 entera"
+    }
+  }
+}

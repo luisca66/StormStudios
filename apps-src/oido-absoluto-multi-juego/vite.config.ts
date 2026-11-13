@@ -54,5 +54,7 @@ export default defineConfig(({ command }) => ({
     host: "127.0.0.1",
     port: 5173,
     strictPort: true,
+    // El dominio vive en ../ap-core (compartido con la app 2D).
+    fs: { allow: [".", "../ap-core"] },
   },
 }));

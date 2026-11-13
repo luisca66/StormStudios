@@ -53,6 +53,7 @@ test("agent writes four measures, edits exactly, undoes, switches views and reco
 for (const example of SEQUENCER_EXAMPLES) {
   test("example renders without errors: " + example.id, async ({ page }) => {
     await page.goto("/es/sequencer/v4");
+    await page.waitForFunction(() => Boolean(window.stormSequencer));
     await page.getByLabel("Ejemplo", { exact: true }).selectOption(example.id);
     await page.getByRole("button", { name: "Validar texto", exact: true }).click();
     await expect(page.getByTestId("text-validation")).toContainText("0 errores");
@@ -119,7 +120,7 @@ test("MusicXML round trip preserves written chords and time changes keep later n
   await page.getByRole("button", { name: "Exportar MusicXML", exact: true }).click();
   const download = await pending;
   await download.saveAs(".local-work/sequencer-roundtrip.musicxml");
-  await page.getByRole("button", { name: "Entrada por texto", exact: true }).click();
+  page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Nuevo proyecto", exact: true }).click();
   await expect(page.getByTestId("score-view").locator("[data-note-id]")).toHaveCount(0);
   await page.locator('input[type="file"]').setInputFiles(".local-work/sequencer-roundtrip.musicxml");
@@ -272,24 +273,45 @@ test("staff and piano roll audition each moved pitch before releasing the mouse"
     AudioContext.prototype.createBufferSource=function(){const source=original.call(this),start=source.start.bind(source);source.start=(...args:Parameters<typeof source.start>)=>{played.push(source.playbackRate.value);start(...args);};return source;};
   });
   await page.goto("/es/sequencer/v4");
+  await page.waitForFunction(() => Boolean(window.stormSequencer));
   await page.getByLabel("Texto musical").fill("voz melody\ncompas 1\nC4 negra");
   await page.getByRole("button",{name:"Validar texto",exact:true}).click();await page.getByRole("button",{name:"Aplicar texto",exact:true}).click();
-  await page.getByTestId('score-view').locator('[data-note-id]').first().scrollIntoViewIfNeeded();
-  let box=(await page.getByTestId('score-view').locator('[data-note-id]').first().boundingBox())!;
+  const svg=page.getByTestId('score-view').locator('svg').first(),note=svg.locator('[data-note-id]');
+  await expect(note).toHaveCount(1);
+  await expect(note).toHaveAttribute('aria-label',/C4/);
+  // Scroll the whole staff into view: a glyph's tall font box can otherwise
+  // be considered visible while its center is covered by the sticky transport.
+  await svg.evaluate(element=>element.scrollIntoView({block:'center',behavior:'instant'}));
+  const staffBox=(await svg.boundingBox())!,step=Math.max(7,5*staffBox.height/215);
+  let box=(await note.locator('.vf-notehead').boundingBox())!;
   await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();
   await expect.poll(()=>page.evaluate(()=>(window as unknown as {played:number[]}).played.length)).toBeGreaterThan(0);
   const heard=await page.evaluate(()=>(window as unknown as {played:number[]}).played.length);
-  await page.mouse.move(box.x+box.width/2,box.y+box.height/2-12);
+  await page.mouse.move(box.x+box.width/2,box.y+box.height/2-step);
+  await expect(svg.locator('text',{hasText:'D4'})).toBeVisible();
   await expect.poll(()=>page.evaluate(()=>(window as unknown as {played:number[]}).played.length)).toBeGreaterThan(heard);
+  const heardFirstMove=await page.evaluate(()=>(window as unknown as {played:number[]}).played.length);
+  await page.mouse.move(box.x+box.width/2,box.y+box.height/2-2*step);
+  await expect(svg.locator('text',{hasText:'E4'})).toBeVisible();
+  await expect.poll(()=>page.evaluate(()=>(window as unknown as {played:number[]}).played.length)).toBeGreaterThan(heardFirstMove);
+  await expect(note).toHaveAttribute('aria-label',/C4/); // Model commits only on release.
   await page.mouse.up();
+  await expect(note).toHaveAttribute('aria-label',/E4/);
   await page.getByRole('button',{name:'Piano Roll',exact:true}).click();
   await page.locator('[data-roll-note]').first().scrollIntoViewIfNeeded();
   box=(await page.locator('[data-roll-note]').first().boundingBox())!;
+  const beforePress=await page.evaluate(()=>(window as unknown as {played:number[]}).played.length);
   await page.mouse.move(box.x+10,box.y+10);await page.mouse.down();
+  await expect.poll(()=>page.evaluate(()=>(window as unknown as {played:number[]}).played.length)).toBeGreaterThan(beforePress);
   const beforeMove=await page.evaluate(()=>(window as unknown as {played:number[]}).played.length);
   await page.mouse.move(box.x+10,box.y-42);
   await expect.poll(()=>page.evaluate(()=>(window as unknown as {played:number[]}).played.length)).toBeGreaterThan(beforeMove);
+  const heardRollMove=await page.evaluate(()=>(window as unknown as {played:number[]}).played.length);
+  await page.mouse.move(box.x+10,box.y-68);
+  await expect.poll(()=>page.evaluate(()=>(window as unknown as {played:number[]}).played.length)).toBeGreaterThan(heardRollMove);
+  await expect(page.locator('[data-roll-note]').first()).toHaveText(/E4/);
   await page.mouse.up();
+  await expect(page.locator('[data-roll-note]').first()).toHaveText(/G4/);
 });
 
 test("Space plays and stops from anywhere except text fields, and the transport does not move",async({page})=>{
@@ -392,4 +414,56 @@ test("dragging follows the key signature even after an accidental button was use
   await expect(svg.locator("text",{hasText:"B♭4"})).toBeVisible();
   await page.mouse.up();
   await expect.poll(()=>page.evaluate(()=>window.stormSequencer!.getScore().voices[0].events[0].pitches[0])).toBe("Bb4");
+});
+
+test("chord noteheads support partial click, keyboard edits and marquee selection from the staff margin",async({page})=>{
+  const project=createScore();
+  project.voices[0].events=[0,1920].map((start,i)=>({id:`chord-${i+1}`,start,duration:"h",dotted:false,triplet:false,pitches:["C4","E4","G4"],tie:false}));
+  await page.goto("/es/sequencer/v4");
+  await page.waitForFunction(()=>Boolean(window.stormSequencer));
+  await page.evaluate(score=>window.stormSequencer!.loadScore(score),project);
+  await page.getByRole("button",{name:"✎ Escribir",exact:true}).click();
+  const score=page.getByTestId("score-view"),first=score.locator('[data-note-id="chord-1"]'),second=score.locator('[data-note-id="chord-2"]');
+  const pitches=()=>page.evaluate(()=>window.stormSequencer!.getScore().voices[0].events.map(event=>({id:event.id,pitches:event.pitches})));
+  const headCenter=async(id:string,pitch:string)=>{
+    const head=score.locator(`[data-note-id="${id}"] [data-note-pitch="${pitch}"]`);
+    await expect(head).toHaveAttribute("data-note-key",`${id}@${pitch}`);
+    const box=(await head.boundingBox())!,text=(await head.locator("text").boundingBox())!;
+    // SVG text extends beyond the visible head; use its vertical center for a real mouse hit.
+    return {x:box.x+box.width/2,y:text.y+text.height/2};
+  };
+  await first.scrollIntoViewIfNeeded();
+  let middle=await headCenter("chord-1","E4");
+  await page.mouse.click(middle.x,middle.y);
+  await expect(first).toHaveAttribute("aria-pressed","mixed");
+  await expect(second).toHaveAttribute("aria-pressed","false");
+  await page.keyboard.press("ArrowUp");
+  await expect.poll(pitches).toEqual([{id:"chord-1",pitches:["C4","F4","G4"]},{id:"chord-2",pitches:["C4","E4","G4"]}]);
+  await expect(first).toHaveAttribute("aria-pressed","mixed");
+  const upper=await headCenter("chord-1","G4");
+  await page.keyboard.down("Shift");
+  try{await page.mouse.click(upper.x,upper.y);}finally{await page.keyboard.up("Shift");}
+  await expect(first).toHaveAttribute("aria-pressed","mixed");
+  await page.keyboard.press("Delete");
+  await expect.poll(pitches).toEqual([{id:"chord-1",pitches:["C4"]},{id:"chord-2",pitches:["C4","E4","G4"]}]);
+
+  await page.evaluate(score=>window.stormSequencer!.loadScore(score),project);
+  await page.getByRole("button",{name:"↖ Seleccionar",exact:true}).click();
+  await first.scrollIntoViewIfNeeded();
+  const svg=(await score.locator('[data-measure="1"] svg').first().boundingBox())!;
+  const top=await headCenter("chord-1","G4"),last=await headCenter("chord-2","G4");
+  middle=await headCenter("chord-1","E4");
+  const lower=await headCenter("chord-1","C4");
+  // Start in the heading margin outside the SVG; stop between E4 and C4 to take the upper two heads of each chord.
+  await page.mouse.move(top.x-10,svg.y-4);await page.mouse.down();
+  await page.mouse.move(last.x+10,(middle.y+lower.y)/2,{steps:5});
+  await expect(page.getByTestId("marquee")).toBeVisible();
+  await page.mouse.up();
+  await expect(page.getByTestId("marquee")).toHaveCount(0);
+  await expect(first).toHaveAttribute("aria-pressed","mixed");
+  await expect(second).toHaveAttribute("aria-pressed","mixed");
+  await expect(score.locator('[data-note-id][aria-pressed="true"]')).toHaveCount(0);
+  // Deleting the selection proves exactly which heads the box picked, including both untouched lower notes.
+  await page.keyboard.press("Delete");
+  await expect.poll(pitches).toEqual([{id:"chord-1",pitches:["C4"]},{id:"chord-2",pitches:["C4"]}]);
 });

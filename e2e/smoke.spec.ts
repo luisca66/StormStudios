@@ -36,9 +36,27 @@ for (const locale of ["es", "en"] as const) {
 
 test("language switch keeps the lesson", async ({ page }) => {
   await page.goto("/es/curso-armonia/p01-notas");
-  await page.getByRole("button", { name: "Cambiar idioma a English" }).click();
+  const switchLanguage = page.getByRole("button", { name: "Cambiar idioma a English" });
+  await expect(switchLanguage).toBeEnabled({ timeout: 15_000 });
+  await switchLanguage.click();
   await expect(page).toHaveURL(/\/en\/harmony-course\/p01-writing-musical-notes$/);
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
+});
+
+test("the next-lesson link stays on screen on a phone", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/es/curso-armonia/02-leccion-1");
+  const next = page.getByRole("navigation", { name: "Lección anterior y siguiente" }).getByRole("link", { name: /Siguiente/ });
+  await next.scrollIntoViewIfNeeded();
+  const box = await next.boundingBox();
+  expect(box).not.toBeNull();
+  expect(box!.x).toBeGreaterThanOrEqual(0);
+  expect(box!.x + box!.width).toBeLessThanOrEqual(375);
+});
+
+test("blog call to action keeps the reader's language", async ({ page }) => {
+  await page.goto("/en/blog/2026-05-21-welcome");
+  await expect(page.getByRole("link", { name: /Go to Course/ })).toHaveAttribute("href", "/en/harmony-course");
 });
 
 test("unknown slug renders the full 404 page", async ({ page }) => {

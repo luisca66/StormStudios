@@ -13,23 +13,59 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
 
 ## En curso
 
-- **Walking AP Multi, nivel 4 «El Pantano»** (pedido de Luis el 2026-09-26). Plan y tablero:
-  `apps-src/oido-absoluto-multi-juego/PLAN-PANTANO-BLENDER.md`. Pedidos de Luis: **conservar el estilo del
-  cocodrilo, mejorado**; **conservar lo oscuro, turbio y la humedad** (no iluminar); **arreglar los límites**,
-  que «se ven muy falsos» (borde de selva cerrada con manglares instanciados).
-  Hecho: plan escrito; **cocodrilo modelado por Claude** (`art/blender/cocodrilo/`, 14 partes, 5 056 tri,
-  mismos pivotes que `buildCrocodile`; falta integrarlo); **Astra entregó el script del portal**
-  (`art/blender/portal-pantano/`, «Lista para: ejecución de Claude»; falta ejecutarlo, revisar renders e integrar).
-  **Siguiente, en orden:**
-  1. Ejecutar `modelar-portal-pantano.py` con `bpy-run.ps1` y revisar sus renders (reanudar a Astra solo si hace falta).
-  2. Terminar de probar las recetas de Gemini en `art/blender/_recetas-pantano/` (borradores de Claude; `armar.ps1`
-     junta `plantilla-probada.py` + `modelo-<kit>.txt`; ajustar su ruta de plantilla). Manglares: la versión
-     con tronco curvo y raíces en arco está escrita pero **sin probar**. Faltan rocas y tronco caído, plantas de
-     agua y hongos luminosos (diseño en el plan §3). Probar cada una, escribir su `BRIEF-GEMINI.md`, encolar
-     en `COLA-GEMINI.md` y lanzar a Gemini.
-  3. Integrar: cocodrilo en `player.ts` (partes rígidas, cola encadenada), portal en `gate.ts`, kits en
-     `buildSwamp` (manglares también en el borde), luciérnagas y agua en código; niebla y penumbra se conservan.
-  4. Probar jugando (`oido-multi-alt`, puerto 5187) y publicar con OK de Luis.
+- **El Cometa: anillos y perihelio de latón** (2026-10-17, pedido de Luis). Claude modeló en Blender
+  (`apps-src/grados-menores-juego/art/blender/anillos/`, 8 mallas, 10 318 tri, 96 KB): anillo de navegación
+  (limbo de astrolabio con 48 graduaciones y esferas cardinales), baliza (cristal ámbar en un cardán), aro de
+  la espiral del perihelio (doble aro con puentes y tachones), medallón del rosetón (estrella de 12 puntas) y
+  observatorio (montaña nevada, tambor, cúpula con ranura y telescopio hacia el cometa). `src/3d/brass-models.ts`
+  los carga una vez; `rings.ts` y `perihelion.ts` usan las primitivas de antes como reserva. El latón del
+  modelo es menos metálico y con más brillo propio: sin mapa de entorno el metal puro se veía negro.
+  ✅ **Publicado (2026-10-20)** con el OK de Luis. Con esto, los siete juegos 3D quedan renovados.
+
+- **El Cometa: el cometa visto desde fuera** (2026-10-17, pedido de Luis). En el juego el cometa propio sólo se
+  ve desde la carlinga; el único visto desde fuera es el **cometa hermano** que cruza de frente (antes un
+  icosaedro con motas). Claude lo modeló en Blender (`apps-src/grados-menores-juego/art/blender/cometa-hermano/`):
+  núcleo de hielo facetado con rocas pegadas, de la familia de la proa, y 7 cristales cian atrás (972 tri,
+  28 KB). En `scenery.ts`: modelo por JSON con reserva, coma luminosa, cola iónica recta azul y cola de polvo
+  curva dorada; el núcleo gira despacio y tiene brillo propio para no leerse negro a contraluz.
+  ✅ **Publicado (2026-10-17)** con el OK de Luis.
+
+- **Resonancia: un mundo por instrumento** (pedido de Luis el 2026-10-17: «otros instrumentos», para que el
+  juego dure años). Primer mundo nuevo: **«Dentro del piano de cola»**; de paso se rehace en Blender
+  **«La guitarra gigante»** (hoy primitivas en `src/world.ts`). Ambos encargados a **Astra** con el mismo
+  contrato: `world`, `wall_x` (5 m), `wall_z` (5.7 m), `post`, `portal_frame`, `portal_ring` 0…n,
+  `portal_core` (briefs en `apps-src/oido-absoluto-guitarra-juego/art/blender/mundo-piano/` y `mundo-guitarra/`).
+  Se lanzaron encadenados (piano, luego guitarra); registros en `%LOCALAPPDATA%\StormStudiosgentes\`.
+  **Siguiente:**
+  1. ✅ Astra entregó los dos y Claude los ejecutó (2026-10-17): piano 12 partes, 32 640 tri, 287 KB;
+     guitarra 15 mallas, 38 948 tri, 216 KB. Renders v1 buenos; falta que Luis los vea y verlos en el juego.
+     Luis: **«la guitarra está genial»**; el piano lo ve más complicado → **queda en pausa** (archivos guardados)
+     hasta que decida cómo hacerlo. Para las pruebas, **mundo «Dentro del corno»** encargado a Astra
+     (`art/blender/mundo-corno/`, mismo contrato). ✅ Entregado y ejecutado: 11 partes, 47 956 tri, 311 KB
+     (arcos de tubo dorado, válvulas, bombas en U, gran campana). Las muestras de corno ya están en R2.
+  2. ✅ **Integrado (2026-10-17), sin publicar.** Luis: «la pedagogía de todos es la misma, el menú exactamente
+     el mismo, pero ahora puedes escoger entorno». Menú: nueva sección «02 · Elige el entorno» (Guitarra, Corno,
+     Piano; se recuerda en el navegador). `src/environments.ts` carga los GLB con `shared-3d` (dedupe de Three en
+     `vite.config.ts`); `world.ts` usa el decorado `world`, muros instanciados `wall_x`/`wall_z`/`post` y el portal
+     de cada mundo (×2.2), con la guitarra de primitivas como reserva. El sonido sigue siendo la guitarra.
+  3. ✅ Nombres de nivel por mundo (aprobados por Luis): camino del sonido en cada instrumento; la frase del menú y
+     el botón de entrada siguen al mundo. ✅ **Fagot** (15 mallas, 57 752 tri) y **coro** (12 partes, 32 208 tri;
+     Claude aflojó a 5 cm un control de medidas de Astra que fallaba por 2 cm de moldura) entregados e integrados:
+     5 entornos en el selector.
+  4. ✅ **Timbres (2026-10-17, aprobado por Luis):** menú 01 con «Timbre: Del entorno» (cada mundo suena con su
+     instrumento) o «Aleatorio · avanzado» (sortea timbre y luego nota entre guitarra, piano, corno, fagot, coro y
+     cello). Fuera de la guitarra del entorno, las cuerdas se vuelven **registro grave / medio / agudo** según la
+     tesitura real (`TIMBRES` en `catalog.ts`; muestras R2 `samples.stormstudios.com.mx/{Inst}/{nota}{oct}.mp3`,
+     octavas 2–6). Bitácora con secciones **Timbres** y **Registros** (lo anterior cuenta como guitarra).
+  5. ✅ **Mundo «Dentro del cello»** (Astra; 12 partes, 58 120 tri, 316 KB): tapa con efes de luz, alma, barra,
+     puente con cuerdas y arco. Claude aflojó a 1 cm el control del muro (filete de 4 mm). El decorado se dibuja
+     ahora a doble cara (los interiores tenían las normales hacia dentro y se veía el piso negro). Nombres de
+     nivel aprobados por Luis: El arco, Las cuerdas, El puente, El alma, Las efes.
+  6. ✅ **Publicado (2026-10-17)** con el OK de Luis: seis mundos y timbres.
+
+- **Walking AP Multi, nivel 4 «El Pantano»** ✅ **publicado** (2026-10-17) tras jugarlo Luis («¡Hermoso!»).
+  Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-PANTANO-BLENDER.md`. **Walking AP Multi tiene sus 5
+  niveles renovados.** Siguiente: punto 12 de `PLAN-3D-BLENDER.md` (cometa exterior de El Cometa o laberinto de Resonancia). Arañitas nuevas de Astra (jade, ojos grandes), a pedido de Luis.
 
 - **Walking AP Multi, nivel 3 «El Cosmos»** (elegido por Claude con la delegación de Luis; solo se renuevan
   juegos 3D). Plan y tablero: `apps-src/oido-absoluto-multi-juego/PLAN-COSMOS-BLENDER.md`.
@@ -42,6 +78,14 @@ Lo más reciente arriba. Detalle de cada nivel en su plan (`apps-src/<juego>/PLA
     congelado; una captura de pantalla lo despierta.
 
 ## Terminado
+
+### 2026-10-17
+
+- ✅ **El Pantano (nivel 4 de Walking AP Multi) completo y publicado.** Todo hecho por Claude en una sesión,
+  sin encargos a otros agentes: cocodrilo mejorado con los mismos pivotes (patas, cola, cabeza y parpadeo
+  como antes); portal de Astra ejecutado tal cual; kits de manglares (con árbol de borde), rocas con musgo y
+  troncos, plantas de agua y hongos luminosos. Se conservaron la niebla y la penumbra (pedido de Luis); el
+  borde de selva cerrada reemplaza los 56 cilindros. Vista inicial: 354 → 114 draw calls.
 
 ### 2026-09-26
 

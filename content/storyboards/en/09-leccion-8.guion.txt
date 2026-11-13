@@ -1,0 +1,118 @@
+Hello, and welcome back to Storm Studios Learning.
+In lesson six we learned how to build chords for the vocal quartet.
+In lesson seven we saw how each voice moves, and what to watch for when two voices move at the same time.
+Today we will bring both things together: we are going to connect two chords.
+It is the last step before writing our first chorale.
+This lesson has three parts: the harmonic material, the general table of connections, and the technique for connecting chords.
+Let's begin with the harmonic material.
+We call harmonic material the chords we use, and the position in which we use them.
+We follow Bach's chorales, and for now we work only with triads in the major mode.
+The first degree is used in root position and in first inversion, that is, six three.
+The second degree, also in root position and in six three.
+The third degree is used only in root position.
+The fourth and fifth degrees are used in root position and in six three.
+The sixth degree, only in root position.
+And the seventh degree, only in six three.
+There are three things worth understanding about this list.
+First, no chord is used freely in second inversion, six four.
+In six four, a fourth forms above the bass, and that fourth sounds like a dissonance.
+We will see six four chords later, in specific cases.
+Second, the third and sixth degrees are used in root position.
+These chords belong to two tonal regions and have a modal color, and root position gives them stability.
+Third, the seventh degree is a diminished chord, so it is used only in six three.
+That way we avoid a diminished fifth above the bass.
+Now let's look at the general table of connections.
+At least in the classical period, each chord has preferred paths toward other chords.
+The table tells us which chords each one can go to.
+When we say a chord is in root position or six three, either position is valid.
+Let's start with the first degree.
+From the first degree we can go to the second, the third, the fourth, the fifth, the sixth, and the seventh in six three.
+But be careful: if we go from the first to the third, the third must then go to the fourth.
+From the second degree we can go to the fifth, the seventh in six three, or the fourth.
+And if we go from the second to the fourth, the fourth must then go to the fifth.
+From the third degree we can go to the fourth, the fifth, the sixth, or the seventh in six three.
+If we go from the third to the fifth, the fifth must then go to the sixth.
+From the fourth degree we can go to the first, the second, the fifth, or the seventh in six three.
+From the fifth degree we can go to the first, the sixth, or the seventh in six three.
+If we go from the fifth to the seventh, the seventh must then go to the first.
+And there is a special case: the fifth in root position can also go to the fourth in six three.
+From the sixth degree we can go almost anywhere: to the first, the second, the third, the fourth, the fifth, and the seventh in six three.
+If we go from the sixth to the first, the first must then go to the second.
+And from the seventh degree in six three we can go to the first, the third, the sixth, or the fifth.
+These required continuations are important.
+When the table says that after a connection we must go on to a certain chord, it is not a suggestion: it is a rule.
+One more detail: when we repeat the same chord, there is no connection technique.
+The voices can move freely within the chord, for example from the first degree to the first degree in six three.
+Now let's see how two chords are connected.
+First we build each chord as in lesson six.
+We respect the ranges and the maximum spacing between voices.
+We use only the notes of the chord, always include the third, never double the leading tone, and the seventh degree is always complete.
+Then we check how each voice moves, as in lesson seven.
+Each voice uses only the allowed melodic intervals.
+But now there is something new: a voice may stay on the same note.
+When two chords share a note, we call it a common tone.
+It is often best to keep the common tone in the same voice, and move the other voices by the shortest path.
+Then we check the six pairs of voices.
+Soprano and alto, soprano and tenor, soprano and bass, alto and tenor, alto and bass, and tenor and bass.
+No pair may have parallel fifths or octaves, or contrary fifths or octaves.
+Remember that contrary fifths are allowed when they are not between the soprano and the bass.
+And two simultaneous leaps in the same direction are not allowed, unless both are perfect fourths.
+And there is a new rule for the leading tone.
+If the leading tone is in the soprano, and the next chord contains the tonic, the leading tone always rises to the tonic.
+The only exception is the connection from the third to the fourth degree.
+Now let's look at the eight connections in the assignment, each one in a different key.
+First, from the first to the fourth degree, in G major.
+G is the common tone, and it stays in the alto.
+The soprano rises from B to C, the tenor rises from D to E, and the bass goes down from G to C.
+Second, from the fourth to the fifth degree, in D major.
+These two chords have no common tones.
+So the bass rises by step, from G to A, and the other three voices go down to the nearest note.
+That way we avoid parallel fifths and octaves.
+Third, from the fifth to the first degree, in F major.
+The leading tone, E, is in the soprano, and it rises to the tonic, F.
+C is the common tone and stays in the tenor, the alto rises from G to A, and the bass goes down from C to F.
+Fourth, from the second to the fifth degree, in B flat major.
+C is the common tone and stays in the soprano.
+The alto rises from G to A, the tenor rises from E flat to F, and the bass goes down from C to F.
+Fifth, from the fifth to the sixth degree, in A major.
+The leading tone, G sharp, is in the soprano, and since the sixth degree contains the tonic, it rises to A.
+The bass rises from E to F sharp, and the alto and tenor go down.
+In the sixth degree we double the third, A, which is also the tonic.
+Sixth, from the sixth to the second degree, in E flat major.
+C is the common tone and stays in the tenor.
+The soprano rises from G to A flat, the alto rises from E flat to F, and the bass goes down from C to F.
+Seventh, from the first degree to the seventh in six three, in C major.
+The bass rises from C to D, which is the third of the seventh degree.
+The soprano goes down from C to B, the alto goes down from G to F, and the tenor goes down from E to D.
+The seventh degree is complete, with D doubled, and the leading tone appears only once.
+Eighth, from the fourth degree in six three to the fifth, in E major.
+The bass goes down from C sharp to B, by step.
+The soprano rises from A to B, the alto goes down from E to D sharp, and the tenor goes down from A to F sharp.
+Now let's look at two typical mistakes.
+Here we connect the fourth and fifth degrees in C major, moving all the voices up.
+Between the soprano and the bass there are parallel fifths, and between the tenor and the bass there are parallel octaves.
+The solution is to move the upper voices in contrary motion to the bass.
+And here, from the fifth to the first degree, the leading tone is in the soprano and goes down from B to G.
+Since the first degree contains the tonic, the leading tone had to rise to C.
+Now, the assignment for the virtual teacher.
+Write each connection in a different major key; you choose which ones.
+In Storm Sequencer, in SATB mode, write the eight connections we just saw, in any order you like.
+From the first to the fourth, from the fourth to the fifth, from the fifth to the first, from the second to the fifth, from the fifth to the sixth, from the sixth to the second, from the first to the seventh in six three, and from the fourth in six three to the fifth.
+Chords without figures are in root position.
+Each connection takes one measure of four four, with two half notes in all four voices.
+At the start of each measure, write the key signature of its key.
+That makes sixteen chords in total.
+Export the MIDI file and upload it.
+The virtual teacher recognizes the key of each connection, and which connection it is.
+It checks how each chord is built, how each voice moves, the fifths and octaves, the simultaneous leaps, and the leading tone.
+It checks nothing between one connection and the next: each measure is a separate exercise.
+And if it finds a mistake, it explains what it is and in which connection.
+Let's recap.
+The harmonic material tells us which chords we use and in which position.
+The third and sixth go in root position, the seventh in six three, and six four is not used freely.
+The general table of connections tells us where each chord can go, and it has some required continuations.
+When connecting, we build each chord correctly, take care of each voice, and check the six pairs of voices.
+And the leading tone in the soprano rises to the tonic.
+In the next lesson we will look at the minor mode and its special cases.
+Thank you for joining me.
+See you in lesson nine.

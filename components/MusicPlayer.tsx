@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "next-intl";
 
+/** Evento de ventana para pedir que se pause la música de fondo. */
+export const PAUSAR_MUSICA = "storm:pausar-musica";
+
 export function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
@@ -14,6 +17,16 @@ export function MusicPlayer() {
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 1800);
     return () => clearTimeout(t);
+  }, []);
+
+  // Un video del sitio pide silencio: pausar la música (el botón vuelve a «Reproducir demo»).
+  useEffect(() => {
+    const pausar = () => {
+      audioRef.current?.pause();
+      setPlaying(false);
+    };
+    window.addEventListener(PAUSAR_MUSICA, pausar);
+    return () => window.removeEventListener(PAUSAR_MUSICA, pausar);
   }, []);
 
   // El audio se crea en el primer clic: así la portada no descarga el mp3.

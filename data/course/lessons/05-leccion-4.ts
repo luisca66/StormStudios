@@ -6,65 +6,47 @@ export const lesson: LessonConfig = {
   order: 5,
   lessonNumber: 4,
   module: "triadas-satb",
-  status: "construction",
+  status: "published",
 
   title: {
     es: "Lección 4 — Acordes de 5a",
     en: "Lesson 4 — Triads (Fifth Chords)",
   },
   description: {
-    es: "Las tríadas (acordes de 5a): mayor, menor, disminuida y aumentada, en estado fundamental e inversiones.",
-    en: "Triads (fifth chords): major, minor, diminished and augmented, in root position and inversions.",
+    es: "Las tríadas (acordes de 5a): mayor, menor, disminuida y aumentada, sobre cada grado de las escalas básicas.",
+    en: "Triads (fifth chords): major, minor, diminished and augmented, built on each degree of the basic scales.",
   },
   estimatedMinutes: 75,
 
   prerequisites: ["04-leccion-3"],
 
   videos: [
-    // TODO: agregar youtubeId
+    {
+      youtubeId: "omBSeuK90e4",
+      embedUrl: "https://www.youtube.com/embed/omBSeuK90e4?si=tWB-Kv3ctWQF3Gjg",
+      youtubeIdEn: "2RaP6z9cRlE",
+      embedUrlEn: "https://www.youtube.com/embed/2RaP6z9cRlE?si=yZCikMhV8qElFqpj",
+      title: { es: "Acordes de 5a", en: "Triads (Fifth Chords)" },
+    },
   ],
 
-  activeRules: [
-    "voice-range-satb",
-    "voice-crossing",
-    "voice-overlap",
-    "no-parallel-fifths",
-    "no-parallel-octaves",
-    "no-hidden-fifths",
-    "contrary-motion-preferred",
-    "stepwise-motion-preference",
-    "root-position-doubling",
-    "common-tone-retention",
-    "leading-tone-resolution",
-    "first-inversion-doubling", // NUEVA
-    "cadence-satb",             // NUEVA
-  ],
+  // Las reglas se aplican en el validador de tríadas, no en el motor SATB.
+  activeRules: [],
 
   exercise: {
-    type: "four-voice-chorale",
-    voiceCount: 4,
-    voices: ["soprano", "alto", "tenor", "bass"],
-    keySignatures: ["C", "G", "F", "D"],
-    chordTypes: ["major", "minor"],
-    inversions: ["root", "first"],
-    minChords: 4,
-    maxChords: 8,
+    type: "triads",
+    voiceCount: 1,
+    voices: ["soprano"],
+    keySignatures: ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"],
+    chordTypes: ["major", "minor", "diminished", "augmented"],
+    inversions: ["root"],
+    minChords: 564,
+    maxChords: 576,
     description: {
-      es: "Escribe progresiones que incluyan acordes en primera inversión. Termina con cadencia auténtica perfecta.",
-      en: "Write progressions that include first inversion chords. End with a perfect authentic cadence.",
+      es: "Un solo MIDI con las 12 tónicas y las seis variantes. El Maestro reconoce las series en cualquier orden, señala cuáles faltan y explica los errores. Acordes en estado fundamental, sin inversiones, en un solo pentagrama. Mantén Ctrl presionado mientras haces clic para añadir notas simultáneas.",
+      en: "One MIDI with all 12 tonics and six variants. The Teacher recognizes series in any order, names missing ones and explains errors. Root-position chords only, without inversions, on a single staff. Hold Ctrl while clicking to add simultaneous notes.",
     },
   },
 
-  feedback: {
-    "first-inversion-doubling": {
-      es: "En primera inversión evita duplicar la tercera del acorde; no dupliques la sensible. Compás {measure}.",
-      en: "In first inversion, avoid doubling the third of the chord; do not double the leading tone. Measure {measure}.",
-    },
-    "cadence-satb": {
-      es: "La cadencia auténtica perfecta requiere V→I con fundamental en soprano y bajo. Revisa el final.",
-      en: "The perfect authentic cadence requires V→I with the root in soprano and bass. Check the ending.",
-    },
-  },
-
-  tags: ["primera inversión", "acorde de sexta", "cadencia"],
+  tags: ["tríadas", "acordes de quinta", "escalas", "mayor", "menor", "disminuido", "aumentado"],
 };

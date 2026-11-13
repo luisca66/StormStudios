@@ -3,7 +3,7 @@ import type { BilingualText } from "@/types/course";
 export type AppEntry = {
   slug: string;
   name: BilingualText;
-  category: "ear-training" | "cognitive" | "theory" | "sequencer" | "other";
+  category: "ear-training" | "cognitive" | "theory" | "sequencer" | "utility" | "other";
   description: BilingualText;
   longDescription?: BilingualText;
   playStoreUrl?: string;
@@ -19,7 +19,131 @@ export type AppEntry = {
   features?: BilingualText[];
   // Herramienta de apoyo (sección "Herramientas Web"); las demás van en "Web Apps".
   isTool?: boolean;
+  // Utility App (sección propia): útil para el músico pero fuera de la metodología.
+  isUtility?: boolean;
 };
+
+// Utility Apps: sección propia en /apps (útiles para el músico, fuera de la metodología).
+export const UTILITY_APPS: AppEntry[] = [
+  {
+    slug: "metronomo",
+    name: { es: "Metrónomo Pro", en: "Metronome Pro" },
+    category: "utility",
+    description: {
+      es: "Metrónomo preciso con acentos por pulso, subdivisiones, polirritmos y tres temas visuales.",
+      en: "Precise metronome with per-beat accents, subdivisions, polyrhythms and three visual themes.",
+    },
+    longDescription: {
+      es: "Un metrónomo de estudio que no se desfasa: programa cada golpe con el reloj de audio del navegador. Cambia el compás, marca el acento de cada pulso con un toque, divide el pulso hasta en cuatro y suma una segunda voz para practicar polirritmos de 2 a 7. Ajusta el tempo deslizando, con los botones o con TAP. Elige entre tres temas: Vórtice, Péndulo y Señal.",
+      en: "A practice metronome that never drifts: every click is scheduled on the browser's audio clock. Change the meter, set each beat's accent with a tap, subdivide the beat up to four, and add a second voice to practice polyrhythms from 2 to 7. Set the tempo by swiping, with the buttons or with TAP. Choose between three themes: Vortex, Pendulum and Signal.",
+    },
+    webUrl: "/apps/metronomo/jugar",
+    isUtility: true,
+    features: [
+      { es: "Tempo de 20 a 240 BPM con marca de tempo (Largo a Prestissimo)", en: "Tempo from 20 to 240 BPM with tempo marking (Largo to Prestissimo)" },
+      { es: "Acento por pulso y compás ajustable", en: "Per-beat accent and adjustable meter" },
+      { es: "Subdivisiones y polirritmos con una segunda voz", en: "Subdivisions and polyrhythms with a second voice" },
+      { es: "TAP para marcar el tempo con toques", en: "TAP to set the tempo by tapping" },
+      { es: "Tres temas visuales y se recuerda tu configuración", en: "Three visual themes; your settings are remembered" },
+    ],
+    icon: "/images/app-metronomo.webp",
+  },
+  {
+    slug: "afinador",
+    name: { es: "Afinador Cromático", en: "Chromatic Tuner" },
+    category: "utility",
+    description: {
+      es: "Afinador cromático con modos para guitarra, bajo, ukulele, violín, viola y cello, lectura en cents y calibración de La4.",
+      en: "Chromatic tuner with guitar, bass, ukulele, violin, viola and cello modes, cents readout and A4 calibration.",
+    },
+    longDescription: {
+      es: "Afina cualquier instrumento con el micrófono de tu computadora o teléfono. El afinador reconoce las doce notas cromáticas de C2 a C7, muestra la frecuencia, la desviación en cents y un medidor que se pone verde cuando estás afinado. Prefiere no mostrar nada antes que inventar una lectura dudosa, y mantiene la lectura mientras la nota sigue sonando.\n\nTodo el audio se procesa en tu dispositivo: no se graba, no se guarda y no se envía a ningún lado. Elige el modo cromático o tu instrumento —guitarra, bajo, ukulele, violín, viola o cello— y el afinador te dice qué cuerda estás afinando. Calibra La4 entre 430 y 450 Hz y elige sostenidos o bemoles.",
+      en: "Tune any instrument with your computer's or phone's microphone. The tuner recognizes all twelve chromatic notes from C2 to C7, shows the frequency, the deviation in cents and a meter that turns green when you are in tune. It would rather show nothing than invent a doubtful reading, and it keeps the reading while the note keeps ringing.\n\nAll audio is processed on your device: it is never recorded, stored or sent anywhere. Choose chromatic mode or your instrument —guitar, bass, ukulele, violin, viola or cello— and the tuner tells you which string you are tuning. Calibrate A4 between 430 and 450 Hz and choose sharps or flats.",
+    },
+    webUrl: "/apps/afinador/jugar",
+    isUtility: true,
+    features: [
+      { es: "Notas cromáticas de C2 a C7 (desde E1 en modo bajo)", en: "Chromatic notes from C2 to C7 (from E1 in bass mode)" },
+      { es: "Lectura en Hz y en cents, con medidor bajo / afinado / alto", en: "Hz and cents readout with a flat / in tune / sharp meter" },
+      { es: "Rechaza lecturas dudosas en vez de inventarlas", en: "Rejects doubtful readings instead of inventing them" },
+      { es: "Modos de guitarra, bajo, ukulele, violín, viola y cello, con la cuerda que estás afinando", en: "Guitar, bass, ukulele, violin, viola and cello modes, showing the string you are tuning" },
+      { es: "Calibración de La4 de 430 a 450 Hz", en: "A4 calibration from 430 to 450 Hz" },
+      { es: "Sostenidos o bemoles, a tu elección", en: "Sharps or flats, your choice" },
+      { es: "El audio nunca sale de tu dispositivo", en: "Audio never leaves your device" },
+    ],
+    icon: "/images/app-afinador.webp",
+  },
+  {
+    slug: "diapason",
+    name: { es: "Diapasón", en: "Fretboard" },
+    category: "utility",
+    description: {
+      es: "Aprende las notas del mástil de la guitarra con muestras reales, en vista plana o vista desde el guitarrista.",
+      en: "Learn the notes on the guitar fretboard with real samples, in a flat view or from the guitarist's point of view.",
+    },
+    longDescription: {
+      es: "Un entrenador para memorizar las notas del diapasón de la guitarra, de la cuerda al aire al traste 12 en las seis cuerdas. La app te pregunta una cuerda y un traste, tú respondes la nota y escuchas la muestra real de esa posición.\n\nPuedes estudiar en vista plana, como un diagrama, o en la vista desde el guitarrista: el mástil en perspectiva, tal como lo ves sentado al estudiar. Juega en modo Clásico, a tu ritmo, o en Time Attack, con reloj por pregunta y tres errores permitidos. Elige sostenidos o bemoles.",
+      en: "A trainer to memorize the notes on the guitar fretboard, from the open string to the 12th fret on all six strings. The app asks you for a string and a fret, you answer the note and hear the real sample of that position.\n\nYou can study in a flat view, like a diagram, or in the guitarist's view: the neck in perspective, just as you see it sitting down to practice. Play in Classic mode, at your own pace, or in Time Attack, with a clock per question and three strikes. Choose sharps or flats.",
+    },
+    webUrl: "/apps/diapason/jugar",
+    isUtility: true,
+    features: [
+      { es: "Las 78 posiciones de las seis cuerdas, del aire al traste 12", en: "All 78 positions on the six strings, open to 12th fret" },
+      { es: "Vista plana o vista desde el guitarrista, en perspectiva", en: "Flat view or the guitarist's view, in perspective" },
+      { es: "Muestras reales de guitarra para cada posición", en: "Real guitar samples for every position" },
+      { es: "Modos Clásico y Time Attack", en: "Classic and Time Attack modes" },
+      { es: "Sostenidos o bemoles, y se recuerda tu vista", en: "Sharps or flats, and your view is remembered" },
+    ],
+    icon: "/images/app-diapason.webp",
+  },
+  {
+    slug: "etimologica",
+    name: { es: "Etimológica", en: "Etimológica" },
+    category: "utility",
+    description: {
+      es: "Gimnasia cerebral para amantes de las palabras: descubre el significado y el origen de 200 palabras del español.",
+      en: "Brain training for word lovers: discover the meaning and origin of 200 Spanish words.",
+    },
+    longDescription: {
+      es: "Un juego para quienes disfrutan del idioma. Cada palabra llega con sus pistas etimológicas y cuatro definiciones posibles: elige la correcta y descubre su ficha completa, con su raíz, su historia y un dato curioso.\n\nSon 200 palabras en cinco categorías que se desbloquean conforme aciertas: latín vulgar, arabismos, nahuatlismos, helenismos y neologismos. Gana puntos, mantén la racha y completa tu colección.",
+      en: "A game for people who enjoy language. Each word comes with its etymological clues and four possible definitions: pick the right one and unlock its full card, with its root, its history and a fun fact.\n\nThere are 200 words in five categories that unlock as you answer correctly: Vulgar Latin, Arabisms, Nahuatl words, Hellenisms and neologisms. Earn points, keep your streak and complete your collection. The words are in Spanish.",
+    },
+    webUrl: "/apps/etimologica/jugar",
+    isUtility: true,
+    features: [
+      { es: "200 palabras del español con su etimología completa", en: "200 Spanish words with their full etymology" },
+      { es: "Cinco categorías que se desbloquean al acertar", en: "Five categories that unlock as you answer correctly" },
+      { es: "Rachas, puntos y colección de fichas", en: "Streaks, points and a card collection" },
+      { es: "Estadísticas de tu progreso", en: "Statistics of your progress" },
+      { es: "Se juega con el ratón, el dedo o el teclado (1 a 4)", en: "Play with the mouse, your finger or the keyboard (1 to 4)" },
+    ],
+    icon: "/images/app-etimologica.webp",
+  },
+  {
+    slug: "mutacion",
+    name: { es: "Mutación", en: "Mutation" },
+    category: "utility",
+    description: {
+      es: "Entrena tu memoria visual: memoriza la cuadrícula y encuentra las figuras que cambiaron. 48 niveles.",
+      en: "Train your visual memory: memorize the grid and find the shapes that changed. 48 levels.",
+    },
+    longDescription: {
+      es: "Memoriza una cuadrícula de figuras de colores. Cuando se oculta, algunas celdas mutan: cambian de color, de forma, de lugar o de giro, o apenas de tono. Encuentra cuáles cambiaron con los toques que tienes.\n\nSon 48 niveles en ocho mundos, de una cuadrícula de 2×2 hasta el Modo maestro en 6×6. Tienes tres vidas, sumas puntos por cada acierto y un bono por las rondas perfectas, y cada nivel que superas abre el siguiente.",
+      en: "Memorize a grid of colored shapes. When it hides, some cells mutate: they change color, shape, place or rotation, or just their shade. Find which ones changed with the taps you have.\n\nThere are 48 levels in eight worlds, from a 2×2 grid up to Master mode in 6×6. You have three lives, earn points for every hit and a bonus for perfect rounds, and every level you clear opens the next one.",
+    },
+    webUrl: "/apps/mutacion/jugar",
+    isUtility: true,
+    features: [
+      { es: "48 niveles en 8 mundos, de 2×2 a 6×6", en: "48 levels in 8 worlds, from 2×2 to 6×6" },
+      { es: "Cinco tipos de mutación: color, forma, intercambio, giro y tono sutil", en: "Five mutation types: color, shape, swap, rotation and subtle shade" },
+      { es: "Vidas, puntos, bono por ronda perfecta y récord", en: "Lives, points, perfect-round bonus and high score" },
+      { es: "Se juega con el ratón, el dedo o el teclado", en: "Play with the mouse, your finger or the keyboard" },
+      { es: "Tu progreso se guarda en este dispositivo", en: "Your progress is saved on this device" },
+      { es: "Música original de Luis Cárdenas mientras juegas, en orden aleatorio, con volumen y silencio", en: "Original music by Luis Cárdenas while you play, in random order, with volume and mute" },
+    ],
+    icon: "/images/app-mutacion.webp",
+  },
+];
 
 export const APPS: AppEntry[] = [
   {
@@ -90,7 +214,7 @@ export const APPS: AppEntry[] = [
       { es: "Juego cronometrado con progreso bloqueado: supera un nivel para abrir el siguiente", en: "Timed game with locked progression: clear a level to unlock the next one" },
       { es: "Disponible en navegador y como APK para Android", en: "Available in the browser and as an Android APK" },
     ],
-    icon: "/images/app-matematicas-mentales.png",
+    icon: "/images/app-matematicas-mentales.webp",
   },
   {
     slug: "memoria",
@@ -119,7 +243,7 @@ export const APPS: AppEntry[] = [
       { es: "Edita tus propias palabras por rango y guárdalas en la nube", en: "Edit your own words by range and save them to the cloud" },
       { es: "Disponible en navegador y como APK para Android", en: "Available in the browser and as an Android APK" },
     ],
-    icon: "/images/app-memoria.png",
+    icon: "/images/app-memoria.webp",
   },
   {
     slug: "desglose-auditivo",
@@ -138,7 +262,7 @@ export const APPS: AppEntry[] = [
       { es: "Detección de afinación por micrófono (algoritmo YIN)", en: "Microphone pitch detection (YIN algorithm)" },
       { es: "5 timbres: piano, cello, corno, fagot y coro, más modo mixto", en: "5 timbres: piano, cello, horn, bassoon, and choir, plus a mixed mode" },
     ],
-    icon: "/images/app-unlocking.jpeg",
+    icon: "/images/app-unlocking.webp",
   },
   {
     slug: "intervalos-reconocimiento",
@@ -158,7 +282,7 @@ export const APPS: AppEntry[] = [
       { es: "Intervalos armónicos, melódicos y mixtos", en: "Harmonic, melodic, and mixed intervals" },
       { es: "Estadísticas locales por intervalo", en: "Local statistics by interval" },
     ],
-    icon: "/images/app-intervals-listening.jpeg",
+    icon: "/images/app-intervals-listening.webp",
   },
   {
     slug: "intervalos-cantados",
@@ -182,7 +306,7 @@ export const APPS: AppEntry[] = [
       { es: "5 timbres: piano, cello, corno, fagot y coro", en: "5 timbres: piano, cello, horn, bassoon, and choir" },
       { es: "Estadísticas locales por intervalo y dirección", en: "Local statistics by interval and direction" },
     ],
-    icon: "/images/app-intervalos-cantados.png",
+    icon: "/images/app-intervalos-cantados.webp",
   },
   {
     slug: "acordes",
@@ -207,7 +331,7 @@ export const APPS: AppEntry[] = [
       { es: "Estadísticas locales por tipo de acorde", en: "Local statistics by chord type" },
       { es: "Dificultad progresiva hasta acordes con 13ª", en: "Progressive difficulty up to 13th chords" },
     ],
-    icon: "/images/app-acordes.jpeg",
+    icon: "/images/app-acordes.webp",
   },
   {
     slug: "acordes-cantar",
@@ -230,7 +354,7 @@ export const APPS: AppEntry[] = [
       { es: "Multi-tímbrica (5 timbres)", en: "Multi-timbral (5 timbres)" },
       { es: "Dificultad progresiva hasta acordes con 13ª", en: "Progressive difficulty up to 13th chords" },
     ],
-    icon: "/images/app-acordes-cantar.jpeg",
+    icon: "/images/app-acordes-cantar.webp",
   },
   {
     slug: "grados-mayores",
@@ -250,7 +374,7 @@ export const APPS: AppEntry[] = [
       { es: "Grados diatónicos y cromáticos", en: "Diatonic and chromatic degrees" },
       { es: "Centro tonal y estadísticas por grado", en: "Tonal center and per-degree statistics" },
     ],
-    icon: "/images/app-grados-mayores.jpg",
+    icon: "/images/app-grados-mayores.webp",
   },
   {
     slug: "grados-menores",
@@ -274,7 +398,7 @@ export const APPS: AppEntry[] = [
       { es: "Grados diatónicos y cromáticos del modo menor", en: "Minor-mode diatonic and chromatic degrees" },
       { es: "Centro tonal menor y estadísticas por grado", en: "Minor tonal center and per-degree statistics" },
     ],
-    icon: "/images/app-grados-menores.jpeg",
+    icon: "/images/app-grados-menores.webp",
   },
   {
     slug: "oido-absoluto-multi",
@@ -299,7 +423,7 @@ export const APPS: AppEntry[] = [
       { es: "Audio en loop, control de volumen y retroalimentación inmediata", en: "Looping audio, volume control, and immediate feedback" },
       { es: "Estadísticas locales por nota", en: "Local statistics by note" },
     ],
-    icon: "/images/app-ap-multi.png",
+    icon: "/images/app-ap-multi.webp",
   },
   {
     slug: "oido-absoluto-guitarra",
@@ -324,7 +448,7 @@ export const APPS: AppEntry[] = [
       { es: "Audio en loop, control de volumen y retroalimentación inmediata", en: "Looping audio, volume control, and immediate feedback" },
       { es: "Estadísticas locales por nota", en: "Local statistics by note" },
     ],
-    icon: "/images/app-ap-guitar.jpeg",
+    icon: "/images/app-ap-guitar.webp",
   },
   {
     slug: "storm-sequencer",
@@ -340,8 +464,26 @@ export const APPS: AppEntry[] = [
       { es: "Disponible en el navegador, sin descarga", en: "Available in browser, no download needed" },
       { es: "Exporta a MIDI para el Maestro Virtual", en: "Export to MIDI for the Virtual Teacher" },
     ],
-    icon: "/images/secuenciador.png",
+    icon: "/images/secuenciador.webp",
   },
+  {
+    slug: "storm-sequencer-v4",
+    name: { es: "Storm Sequencer v4.0", en: "Storm Sequencer v4.0" },
+    category: "sequencer",
+    description: {
+      es: "Escribe música con mouse, teclado o texto: partitura continua, páginas y cuarteto SATB.",
+      en: "Write music with mouse, keyboard or text: continuous score, pages and SATB quartet.",
+    },
+    webUrl: "/sequencer/v4",
+    isTool: true,
+    features: [
+      { es: "Escritura con mouse, teclado o texto", en: "Write with mouse, keyboard or text" },
+      { es: "Partitura continua o por páginas, con cuarteto SATB", en: "Continuous or paged score, with SATB quartet" },
+      { es: "Exporta MIDI, MusicXML, WAV e imagen (PNG/SVG)", en: "Export MIDI, MusicXML, WAV and image (PNG/SVG)" },
+    ],
+    icon: "/images/secuenciador.webp",
+  },
+  ...UTILITY_APPS,
 ];
 
 export function getAppBySlug(slug: string): AppEntry | undefined {

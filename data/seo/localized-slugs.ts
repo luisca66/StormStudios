@@ -31,6 +31,10 @@ export const LESSON_URL_SLUGS: Record<string, Record<Locale, string>> = {
     es: "p04-secuenciador",
     en: "p04-using-the-sequencer",
   },
+  "p04-1-secuenciador-v4": {
+    es: "p04-1-secuenciador-v4",
+    en: "p04-1-using-the-sequencer-v4",
+  },
   "02-leccion-1": {
     es: "02-leccion-1",
     en: "02-lesson-1-major-scales",
@@ -49,7 +53,23 @@ export const LESSON_URL_SLUGS: Record<string, Record<Locale, string>> = {
   },
   "06-leccion-5": {
     es: "06-leccion-5",
-    en: "06-lesson-5-second-inversion-64-cadence",
+    en: "06-lesson-5-degrees-chords-tonality",
+  },
+  "07-leccion-6": {
+    es: "07-leccion-6",
+    en: "07-lesson-6-harmonic-vocal-quartet",
+  },
+  "08-leccion-7": {
+    es: "08-leccion-7",
+    en: "08-lesson-7-melodic-harmonic-motion",
+  },
+  "09-leccion-8": {
+    es: "09-leccion-8",
+    en: "09-lesson-8-harmonic-material-connections",
+  },
+  "10-leccion-9": {
+    es: "10-leccion-9",
+    en: "10-lesson-9-cadences",
   },
 };
 

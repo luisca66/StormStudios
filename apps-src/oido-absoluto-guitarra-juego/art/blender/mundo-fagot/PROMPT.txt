@@ -1,0 +1,11 @@
+Hola Astra. Te encargo el mundo «dentro del fagot»: el robot luthier camina diminuto por un bosque de madera de arce barnizada, entre el tubo doblado del fagot, las llaves y varillas plateadas como ramas, la caña y el tudel a lo lejos y el pabellón alto como una torre. Cálido, de cuento, un poco misterioso. Es para Resonancia, un juego de oído absoluto con un robot luthier que recorre un laberinto.
+
+MODO AUTOMÁTICO: Claude te lanzó desde la línea de comandos y nadie está mirando. No hagas preguntas: decide tú y anota en ENTREGA.md lo que decidas distinto del brief.
+
+IMPORTANTE: tu sandbox no puede cargar Blender (bpy da "DLL load failed: Access is denied"). No lo intentes: escribe modelar-mundo-fagot.py completo, deja ENTREGA.md como v1 con "Lista para: ejecución de Claude" y detente. Claude lo ejecuta en la PC de Luis y te reanuda con los renders para tu revisión propia.
+
+Proyecto (tu directorio actual): C:\Users\Luis\Documents\Claude Cowork\nuevo_website\storm-studios\StormStudios
+Tu carpeta, la única donde escribes: apps-src\oido-absoluto-guitarra-juego\art\blender\mundo-fagot
+Lee plantillas-blender\INSTRUCCIONES-ASTRA.md y el BRIEF.md de tu carpeta. Respeta el contrato de partes, pivotes, medidas y presupuesto: el juego repite los muros cientos de veces. kit.py está en apps-src\grados-mayores-juego\art\blender\ (tu script lo importa así: ROOT.parents[3] / "grados-mayores-juego" / "art" / "blender"). Para entender el juego de hoy puedes leer apps-src\oido-absoluto-guitarra-juego\src\world.ts y src\maze.ts (solo leer). Un script que ya funciona con este kit, en espacio del juego (Y arriba): apps-src\oido-absoluto-multi-juego\art\blender\cocodrilo\modelar-cocodrilo.py.
+
+Hay otros agentes trabajando a la vez: no escribas fuera de tu carpeta, no toques BRIEF.md ni PROMPT.txt y no uses git ni npm. Al terminar, resume: triángulos por parte y en qué te apartaste del brief.

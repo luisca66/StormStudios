@@ -1,12 +1,18 @@
+import { validateLesson8SatbLinks } from '@/lib/maestro-virtual/satb-links-validator';
+import { validateLesson9Cadences } from '@/lib/maestro-virtual/cadences-validator';
 import { NextRequest, NextResponse } from 'next/server';
 import { createHash, randomBytes } from 'node:crypto';
-import { isIP } from 'node:net';
+import { getClientIp } from '@/lib/http/client-ip';
+import { passesEdgeRateLimit } from '@/lib/http/edge-rate-limit';
 import { parseMidiBuffer } from '@/lib/maestro-virtual/midi-parser';
 import { validateLesson1Scales } from '@/lib/maestro-virtual/scale-validator';
 import { validateMinorScales } from '@/lib/maestro-virtual/minor-scale-validator';
 import { validateLesson2Modes } from '@/lib/maestro-virtual/modes-validator';
+import { validateCompleteLesson4Triads } from '@/lib/maestro-virtual/complete-triads-validator';
+import { validateLesson6SatbChords } from '@/lib/maestro-virtual/satb-chords-validator';
+import { validateLesson7MelodicLine } from '@/lib/maestro-virtual/melodic-lines-validator';
 import { getLessonConfig } from '@/data/course/lessons/lesson-configs';
-import type { FeedbackItem } from '@/types/course';
+import type { FeedbackDescription, FeedbackItem } from '@/types/course';
 
 const MAX_MIDI_FILE_BYTES = 2 * 1024 * 1024;
 // Un multipart añade límites, nombres de campos y separadores al archivo.
@@ -19,8 +25,9 @@ const MAX_RATE_LIMIT_ENTRIES = 10_000;
 const RATE_LIMIT_SALT = randomBytes(16).toString('hex');
 const NO_STORE_HEADERS = { 'Cache-Control': 'no-store' };
 
-// Protección local por instancia. Complementar con rate limiting/WAF distribuido
-// antes de producción, porque las instancias serverless no comparten memoria.
+// Dos capas: el binding MAESTRO_LIMITER de Cloudflare cuenta entre todas las
+// instancias (ver lib/http/edge-rate-limit.ts) y este contador en memoria, que
+// solo ve su propio isolate, cubre `next dev`/`next start` y ráfagas locales.
 const ipRequestLog = new Map<string, number[]>();
 let lastRateLimitCleanupAt = 0;
 
@@ -50,23 +57,6 @@ function invalidRequest(code: MaestroErrorCode, status = 400) {
     { code, error: ERROR_MESSAGES[code] },
     { status, headers: NO_STORE_HEADERS }
   );
-}
-
-function getClientIp(request: NextRequest): string {
-  const forwardedFor = request.headers.get('x-vercel-forwarded-for')
-    ?? request.headers.get('x-forwarded-for');
-  const candidates = [
-    forwardedFor?.split(',')[0]?.trim(),
-    request.headers.get('x-real-ip')?.trim(),
-  ];
-
-  for (const candidate of candidates) {
-    if (candidate && isIP(candidate)) {
-      return candidate;
-    }
-  }
-
-  return 'unknown';
 }
 
 function rateLimitKey(ip: string): string {
@@ -199,13 +189,21 @@ async function readBoundedBody(request: NextRequest): Promise<BoundedBodyResult>
  *   - 'major-scales' → validateLesson1Scales  (escalas mayores)
  *   - 'modes'        → validateLesson2Modes    (modos paralelos)
  *   - 'minor-scales' → validateMinorScales     (escalas menores)
+ *   - 'triads'       → validateCompleteLesson4Triads (ejercicio completo, orden libre)
+ *   - 'satb-chords'  → validateLesson6SatbChords (construcción, sin enlaces)
+ *   - 'melodic-lines' → validateLesson7MelodicLine (una melodía por voz)
  *   - 'satb'         → 501 hasta que su motor de reglas esté listo
  *
  * Devuelve MaestroFeedback compatible con ExerciseUpload.tsx.
  */
 export async function POST(request: NextRequest) {
   try {
-    const rateLimit = getRateLimitResult(getClientIp(request));
+    const ip = getClientIp(request.headers);
+    if (!(await passesEdgeRateLimit('MAESTRO_LIMITER', ip))) {
+      return rateLimitedResponse(60);
+    }
+
+    const rateLimit = getRateLimitResult(ip);
     if (rateLimit.limited) {
       return rateLimitedResponse(rateLimit.retryAfterSeconds);
     }
@@ -289,6 +287,11 @@ export async function POST(request: NextRequest) {
       case 'major-scales': rawErrors = validateLesson1Scales(voiceData); break;
       case 'modes':        rawErrors = validateLesson2Modes(voiceData);  break;
       case 'minor-scales': rawErrors = validateMinorScales(voiceData); break;
+      case 'triads': rawErrors = validateCompleteLesson4Triads(voiceData); break;
+      case 'satb-links': rawErrors = validateLesson8SatbLinks(voiceData); break;
+      case 'cadences': rawErrors = validateLesson9Cadences(voiceData); break;
+      case 'satb-chords': rawErrors = validateLesson6SatbChords(voiceData); break;
+      case 'melodic-lines': rawErrors = validateLesson7MelodicLine(voiceData); break;
       default:
         return invalidRequest('validator_unavailable', 501);
     }
@@ -331,6 +334,38 @@ export async function POST(request: NextRequest) {
         }]
       : [];
 
+    // Errores primero: el mismo límite de 100 se comparte con las descripciones.
+    // El aviso de truncamiento existente sigue siendo un elemento adicional.
+    const information = rawErrors.filter(item => item.severity === 'info');
+    const descriptions: FeedbackDescription[] = information
+      .slice(0, MAX_REPORTED_VIOLATIONS - violations.length)
+      .map(item => ({
+        ruleId: item.rule,
+        ruleName: { es: item.titleEs, en: item.titleEn },
+        severity: 'info',
+        measure: item.position,
+        message: { es: item.detailEs, en: item.detailEn },
+      }));
+    if (information.length > descriptions.length) {
+      const message = {
+        es: `Se muestran ${descriptions.length} de ${information.length} descripciones; se priorizan los errores.`,
+        en: `Showing ${descriptions.length} of ${information.length} descriptions; errors take priority.`,
+      };
+      if (suggestions.length) {
+        // Un único aviso adicional, como en la respuesta anterior a SATB.
+        suggestions[0].message.es += ` ${message.es}`;
+        suggestions[0].message.en += ` ${message.en}`;
+      } else {
+        suggestions.push({
+          ruleId: 'DESCRIPTIONS_TRUNCATED',
+          ruleName: { es: 'Análisis resumido', en: 'Analysis summarized' },
+          severity: 'warning',
+          measure: 0,
+          message,
+        });
+      }
+    }
+
     const score      = Math.max(0, Math.round(100 - errorCount * 15));
     const passed     = errorCount === 0;
 
@@ -351,6 +386,7 @@ export async function POST(request: NextRequest) {
       passed,
       violations,
       suggestions,
+      ...(['satb-chords', 'satb-links', 'melodic-lines', 'cadences'].includes(lessonConfig.validator) ? { descriptions } : {}),
       summary,
     });
 

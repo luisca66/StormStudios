@@ -1,0 +1,1136 @@
+[
+  {
+    "locale": "es",
+    "id": "monodia",
+    "music": {
+      "integrated": -18.1,
+      "truePeak": -4
+    },
+    "voice": {
+      "integrated": -15.4,
+      "truePeak": -1.5
+    },
+    "delta": -2.7,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -20.07,
+      "inputTP": -6.11,
+      "inputLRA": 13.9,
+      "threshold": -31.33,
+      "requestedGain": 1.0700000000000003,
+      "gain": 1.0700000000000003,
+      "expectedI": -19,
+      "peakBeforeLimiter": -5.04,
+      "expectedTP": -5.04,
+      "targetLRA": 13.9,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -6.11,
+        "afterTP": -6.11,
+        "peakReductionDb": 0
+      },
+      "output": {
+        "input_i": "-20.07",
+        "input_tp": "-6.11",
+        "input_lra": "13.90",
+        "input_thresh": "-31.31",
+        "output_i": "-19.00",
+        "output_tp": "-5.04",
+        "output_lra": "14.00",
+        "output_thresh": "-30.24",
+        "normalization_type": "linear",
+        "target_offset": "0.00"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -5
+      }
+    },
+    "voiceInterval": [
+      369.8666669999999,
+      380.6866669999999
+    ],
+    "musicInterval": [
+      380.6866669999999,
+      400.6786669999999
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "es",
+    "id": "organum",
+    "music": {
+      "integrated": -18,
+      "truePeak": -5.8
+    },
+    "voice": {
+      "integrated": -15.6,
+      "truePeak": -1.9
+    },
+    "delta": -2.4,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -20.67,
+      "inputTP": -8.35,
+      "inputLRA": 7.5,
+      "threshold": -31.2,
+      "requestedGain": 1.6700000000000017,
+      "gain": 1.6700000000000017,
+      "expectedI": -19,
+      "peakBeforeLimiter": -6.679999999999998,
+      "expectedTP": -6.679999999999998,
+      "targetLRA": 11,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -8.35,
+        "afterTP": -8.35,
+        "peakReductionDb": 0
+      },
+      "output": {
+        "input_i": "-20.67",
+        "input_tp": "-8.35",
+        "input_lra": "4.20",
+        "input_thresh": "-31.15",
+        "output_i": "-18.99",
+        "output_tp": "-6.68",
+        "output_lra": "4.30",
+        "output_thresh": "-29.48",
+        "normalization_type": "linear",
+        "target_offset": "-0.01"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -6.7
+      }
+    },
+    "voiceInterval": [
+      401.6786669999999,
+      411.2986669999999
+    ],
+    "musicInterval": [
+      411.2986669999999,
+      431.0506669999999
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "es",
+    "id": "ars-nova",
+    "music": {
+      "integrated": -18,
+      "truePeak": -3.9
+    },
+    "voice": {
+      "integrated": -15.5,
+      "truePeak": -1.5
+    },
+    "delta": -2.5,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -20.14,
+      "inputTP": -6,
+      "inputLRA": 12.1,
+      "threshold": -30.78,
+      "requestedGain": 1.1400000000000006,
+      "gain": 1.1400000000000006,
+      "expectedI": -19,
+      "peakBeforeLimiter": -4.859999999999999,
+      "expectedTP": -4.859999999999999,
+      "targetLRA": 12.1,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -4.51,
+        "afterTP": -6,
+        "peakReductionDb": 1.4900000000000002
+      },
+      "output": {
+        "input_i": "-20.14",
+        "input_tp": "-6.00",
+        "input_lra": "12.10",
+        "input_thresh": "-30.76",
+        "output_i": "-18.96",
+        "output_tp": "-4.86",
+        "output_lra": "12.00",
+        "output_thresh": "-29.61",
+        "normalization_type": "linear",
+        "target_offset": "-0.04"
+      },
+      "verified": {
+        "integrated": -18.9,
+        "truePeak": -4.9
+      }
+    },
+    "voiceInterval": [
+      432.0506669999999,
+      444.9506669999999
+    ],
+    "musicInterval": [
+      444.9506669999999,
+      464.2466669999999
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "es",
+    "id": "preclasico",
+    "music": {
+      "integrated": -18.1,
+      "truePeak": -5.6
+    },
+    "voice": {
+      "integrated": -15.5,
+      "truePeak": -1.5
+    },
+    "delta": -2.6,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -18.42,
+      "inputTP": -6,
+      "inputLRA": 6.8,
+      "threshold": -29.15,
+      "requestedGain": -0.5799999999999983,
+      "gain": -0.5799999999999983,
+      "expectedI": -19,
+      "peakBeforeLimiter": -6.579999999999998,
+      "expectedTP": -6.579999999999998,
+      "targetLRA": 11,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -4.62,
+        "afterTP": -6,
+        "peakReductionDb": 1.38
+      },
+      "output": {
+        "input_i": "-18.42",
+        "input_tp": "-6.00",
+        "input_lra": "4.60",
+        "input_thresh": "-29.15",
+        "output_i": "-18.97",
+        "output_tp": "-6.58",
+        "output_lra": "4.60",
+        "output_thresh": "-29.73",
+        "normalization_type": "linear",
+        "target_offset": "-0.03"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -6.6
+      }
+    },
+    "voiceInterval": [
+      465.2466669999999,
+      478.6266669999999
+    ],
+    "musicInterval": [
+      478.6266669999999,
+      498.4746669999999
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "es",
+    "id": "clasico",
+    "music": {
+      "integrated": -18,
+      "truePeak": -2.7
+    },
+    "voice": {
+      "integrated": -15.4,
+      "truePeak": -2
+    },
+    "delta": -2.6,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -24.55,
+      "inputTP": -9.23,
+      "inputLRA": 11.1,
+      "threshold": -35.48,
+      "requestedGain": 5.550000000000001,
+      "gain": 5.550000000000001,
+      "expectedI": -19,
+      "peakBeforeLimiter": -3.6799999999999997,
+      "expectedTP": -3.6799999999999997,
+      "targetLRA": 11.1,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -9.23,
+        "afterTP": -9.23,
+        "peakReductionDb": 0
+      },
+      "output": {
+        "input_i": "-24.55",
+        "input_tp": "-9.23",
+        "input_lra": "7.50",
+        "input_thresh": "-35.46",
+        "output_i": "-18.99",
+        "output_tp": "-3.68",
+        "output_lra": "7.50",
+        "output_thresh": "-29.90",
+        "normalization_type": "linear",
+        "target_offset": "-0.01"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -3.7
+      }
+    },
+    "voiceInterval": [
+      499.4746669999999,
+      512.5346669999999
+    ],
+    "musicInterval": [
+      512.5346669999999,
+      531.950667
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "es",
+    "id": "impresionismo",
+    "music": {
+      "integrated": -18,
+      "truePeak": -4.9
+    },
+    "voice": {
+      "integrated": -16.1,
+      "truePeak": -1.9
+    },
+    "delta": -1.9,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -19.6,
+      "inputTP": -6.44,
+      "inputLRA": 15.4,
+      "threshold": -30.58,
+      "requestedGain": 0.6000000000000014,
+      "gain": 0.6000000000000014,
+      "expectedI": -19,
+      "peakBeforeLimiter": -5.839999999999999,
+      "expectedTP": -5.839999999999999,
+      "targetLRA": 15.4,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -6.44,
+        "afterTP": -6.44,
+        "peakReductionDb": 0
+      },
+      "output": {
+        "input_i": "-19.60",
+        "input_tp": "-6.44",
+        "input_lra": "11.70",
+        "input_thresh": "-30.56",
+        "output_i": "-19.00",
+        "output_tp": "-5.84",
+        "output_lra": "11.70",
+        "output_thresh": "-29.96",
+        "normalization_type": "linear",
+        "target_offset": "-0.00"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -5.8
+      }
+    },
+    "voiceInterval": [
+      539.070667,
+      545.560667
+    ],
+    "musicInterval": [
+      545.560667,
+      565.0246669999999
+    ],
+    "targetMet": false
+  },
+  {
+    "locale": "es",
+    "id": "expresionismo",
+    "music": {
+      "integrated": -18.1,
+      "truePeak": -2.4
+    },
+    "voice": {
+      "integrated": -15.9,
+      "truePeak": -1.5
+    },
+    "delta": -2.2,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -21.58,
+      "inputTP": -6,
+      "inputLRA": 15.1,
+      "threshold": -33.17,
+      "requestedGain": 2.5799999999999983,
+      "gain": 2.5799999999999983,
+      "expectedI": -19,
+      "peakBeforeLimiter": -3.4200000000000017,
+      "expectedTP": -3.4200000000000017,
+      "targetLRA": 15.1,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -5.06,
+        "afterTP": -6,
+        "peakReductionDb": 0.9400000000000004
+      },
+      "output": {
+        "input_i": "-21.58",
+        "input_tp": "-6.00",
+        "input_lra": "14.40",
+        "input_thresh": "-33.15",
+        "output_i": "-18.99",
+        "output_tp": "-3.42",
+        "output_lra": "14.40",
+        "output_thresh": "-30.56",
+        "normalization_type": "linear",
+        "target_offset": "-0.01"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -3.4
+      }
+    },
+    "voiceInterval": [
+      566.0246669999999,
+      573.1546669999999
+    ],
+    "musicInterval": [
+      573.1546669999999,
+      592.618667
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "es",
+    "id": "dodecafonia",
+    "music": {
+      "integrated": -18.1,
+      "truePeak": -6.5
+    },
+    "voice": {
+      "integrated": -15.5,
+      "truePeak": -1.8
+    },
+    "delta": -2.6,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -17.58,
+      "inputTP": -6,
+      "inputLRA": 12.4,
+      "threshold": -29.5,
+      "requestedGain": -1.4200000000000017,
+      "gain": -1.4200000000000017,
+      "expectedI": -19,
+      "peakBeforeLimiter": -7.420000000000002,
+      "expectedTP": -7.420000000000002,
+      "targetLRA": 12.4,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -4.48,
+        "afterTP": -6,
+        "peakReductionDb": 1.5199999999999996
+      },
+      "output": {
+        "input_i": "-17.58",
+        "input_tp": "-6.00",
+        "input_lra": "12.40",
+        "input_thresh": "-29.48",
+        "output_i": "-18.99",
+        "output_tp": "-7.42",
+        "output_lra": "12.40",
+        "output_thresh": "-30.89",
+        "normalization_type": "linear",
+        "target_offset": "-0.01"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -7.4
+      }
+    },
+    "voiceInterval": [
+      593.618667,
+      605.238667
+    ],
+    "musicInterval": [
+      605.238667,
+      624.510667
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "es",
+    "id": "microtonalismo",
+    "music": {
+      "integrated": -18,
+      "truePeak": -7.9
+    },
+    "voice": {
+      "integrated": -16,
+      "truePeak": -1.6
+    },
+    "delta": -2,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -16.01,
+      "inputTP": -6,
+      "inputLRA": 11.3,
+      "threshold": -27.42,
+      "requestedGain": -2.9899999999999984,
+      "gain": -2.9899999999999984,
+      "expectedI": -19,
+      "peakBeforeLimiter": -8.989999999999998,
+      "expectedTP": -8.989999999999998,
+      "targetLRA": 11.3,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -1.86,
+        "afterTP": -6,
+        "peakReductionDb": 4.14
+      },
+      "output": {
+        "input_i": "-16.01",
+        "input_tp": "-6.00",
+        "input_lra": "7.00",
+        "input_thresh": "-27.39",
+        "output_i": "-19.00",
+        "output_tp": "-8.99",
+        "output_lra": "7.00",
+        "output_thresh": "-30.38",
+        "normalization_type": "linear",
+        "target_offset": "0.00"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -9
+      }
+    },
+    "voiceInterval": [
+      625.510667,
+      639.8506669999999
+    ],
+    "musicInterval": [
+      639.8506669999999,
+      659.194667
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "en",
+    "id": "monodia",
+    "music": {
+      "integrated": -18.2,
+      "truePeak": -4.2
+    },
+    "voice": {
+      "integrated": -15.3,
+      "truePeak": -1.5
+    },
+    "delta": -2.9,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -20.07,
+      "inputTP": -6.11,
+      "inputLRA": 13.9,
+      "threshold": -31.33,
+      "requestedGain": 1.0700000000000003,
+      "gain": 1.0700000000000003,
+      "expectedI": -19,
+      "peakBeforeLimiter": -5.04,
+      "expectedTP": -5.04,
+      "targetLRA": 13.9,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -6.11,
+        "afterTP": -6.11,
+        "peakReductionDb": 0
+      },
+      "output": {
+        "input_i": "-20.07",
+        "input_tp": "-6.11",
+        "input_lra": "13.90",
+        "input_thresh": "-31.31",
+        "output_i": "-19.00",
+        "output_tp": "-5.04",
+        "output_lra": "14.00",
+        "output_thresh": "-30.24",
+        "normalization_type": "linear",
+        "target_offset": "0.00"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -5
+      }
+    },
+    "voiceInterval": [
+      344.1066669999999,
+      354.8466669999999
+    ],
+    "musicInterval": [
+      354.8466669999999,
+      374.83866699999993
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "en",
+    "id": "organum",
+    "music": {
+      "integrated": -18.2,
+      "truePeak": -5.9
+    },
+    "voice": {
+      "integrated": -15.7,
+      "truePeak": -1.5
+    },
+    "delta": -2.5,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -20.67,
+      "inputTP": -8.35,
+      "inputLRA": 7.5,
+      "threshold": -31.2,
+      "requestedGain": 1.6700000000000017,
+      "gain": 1.6700000000000017,
+      "expectedI": -19,
+      "peakBeforeLimiter": -6.679999999999998,
+      "expectedTP": -6.679999999999998,
+      "targetLRA": 11,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -8.35,
+        "afterTP": -8.35,
+        "peakReductionDb": 0
+      },
+      "output": {
+        "input_i": "-20.67",
+        "input_tp": "-8.35",
+        "input_lra": "4.20",
+        "input_thresh": "-31.15",
+        "output_i": "-18.99",
+        "output_tp": "-6.68",
+        "output_lra": "4.30",
+        "output_thresh": "-29.48",
+        "normalization_type": "linear",
+        "target_offset": "-0.01"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -6.7
+      }
+    },
+    "voiceInterval": [
+      375.83866699999993,
+      385.2986669999999
+    ],
+    "musicInterval": [
+      385.2986669999999,
+      405.0506669999999
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "en",
+    "id": "ars-nova",
+    "music": {
+      "integrated": -18.2,
+      "truePeak": -3.9
+    },
+    "voice": {
+      "integrated": -15.3,
+      "truePeak": -1.5
+    },
+    "delta": -2.9,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -20.14,
+      "inputTP": -6,
+      "inputLRA": 12.1,
+      "threshold": -30.78,
+      "requestedGain": 1.1400000000000006,
+      "gain": 1.1400000000000006,
+      "expectedI": -19,
+      "peakBeforeLimiter": -4.859999999999999,
+      "expectedTP": -4.859999999999999,
+      "targetLRA": 12.1,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -4.51,
+        "afterTP": -6,
+        "peakReductionDb": 1.4900000000000002
+      },
+      "output": {
+        "input_i": "-20.14",
+        "input_tp": "-6.00",
+        "input_lra": "12.10",
+        "input_thresh": "-30.76",
+        "output_i": "-18.96",
+        "output_tp": "-4.86",
+        "output_lra": "12.00",
+        "output_thresh": "-29.61",
+        "normalization_type": "linear",
+        "target_offset": "-0.04"
+      },
+      "verified": {
+        "integrated": -18.9,
+        "truePeak": -4.9
+      }
+    },
+    "voiceInterval": [
+      406.0506669999999,
+      418.8706669999999
+    ],
+    "musicInterval": [
+      418.8706669999999,
+      438.1666669999999
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "en",
+    "id": "preclasico",
+    "music": {
+      "integrated": -18.2,
+      "truePeak": -5.7
+    },
+    "voice": {
+      "integrated": -15.6,
+      "truePeak": -1.4
+    },
+    "delta": -2.6,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -18.42,
+      "inputTP": -6,
+      "inputLRA": 6.8,
+      "threshold": -29.15,
+      "requestedGain": -0.5799999999999983,
+      "gain": -0.5799999999999983,
+      "expectedI": -19,
+      "peakBeforeLimiter": -6.579999999999998,
+      "expectedTP": -6.579999999999998,
+      "targetLRA": 11,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -4.62,
+        "afterTP": -6,
+        "peakReductionDb": 1.38
+      },
+      "output": {
+        "input_i": "-18.42",
+        "input_tp": "-6.00",
+        "input_lra": "4.60",
+        "input_thresh": "-29.15",
+        "output_i": "-18.97",
+        "output_tp": "-6.58",
+        "output_lra": "4.60",
+        "output_thresh": "-29.73",
+        "normalization_type": "linear",
+        "target_offset": "-0.03"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -6.6
+      }
+    },
+    "voiceInterval": [
+      439.1666669999999,
+      452.78666699999997
+    ],
+    "musicInterval": [
+      452.78666699999997,
+      472.634667
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "en",
+    "id": "clasico",
+    "music": {
+      "integrated": -18.1,
+      "truePeak": -2.9
+    },
+    "voice": {
+      "integrated": -15.7,
+      "truePeak": -1.5
+    },
+    "delta": -2.4,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -24.55,
+      "inputTP": -9.23,
+      "inputLRA": 11.1,
+      "threshold": -35.48,
+      "requestedGain": 5.550000000000001,
+      "gain": 5.550000000000001,
+      "expectedI": -19,
+      "peakBeforeLimiter": -3.6799999999999997,
+      "expectedTP": -3.6799999999999997,
+      "targetLRA": 11.1,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -9.23,
+        "afterTP": -9.23,
+        "peakReductionDb": 0
+      },
+      "output": {
+        "input_i": "-24.55",
+        "input_tp": "-9.23",
+        "input_lra": "7.50",
+        "input_thresh": "-35.46",
+        "output_i": "-18.99",
+        "output_tp": "-3.68",
+        "output_lra": "7.50",
+        "output_thresh": "-29.90",
+        "normalization_type": "linear",
+        "target_offset": "-0.01"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -3.7
+      }
+    },
+    "voiceInterval": [
+      473.634667,
+      485.814667
+    ],
+    "musicInterval": [
+      485.814667,
+      505.230667
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "en",
+    "id": "impresionismo",
+    "music": {
+      "integrated": -18.2,
+      "truePeak": -5
+    },
+    "voice": {
+      "integrated": -15.9,
+      "truePeak": -1.5
+    },
+    "delta": -2.3,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -19.6,
+      "inputTP": -6.44,
+      "inputLRA": 15.4,
+      "threshold": -30.58,
+      "requestedGain": 0.6000000000000014,
+      "gain": 0.6000000000000014,
+      "expectedI": -19,
+      "peakBeforeLimiter": -5.839999999999999,
+      "expectedTP": -5.839999999999999,
+      "targetLRA": 15.4,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -6.44,
+        "afterTP": -6.44,
+        "peakReductionDb": 0
+      },
+      "output": {
+        "input_i": "-19.60",
+        "input_tp": "-6.44",
+        "input_lra": "11.70",
+        "input_thresh": "-30.56",
+        "output_i": "-19.00",
+        "output_tp": "-5.84",
+        "output_lra": "11.70",
+        "output_thresh": "-29.96",
+        "normalization_type": "linear",
+        "target_offset": "-0.00"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -5.8
+      }
+    },
+    "voiceInterval": [
+      512.5906669999999,
+      519.160667
+    ],
+    "musicInterval": [
+      519.160667,
+      538.624667
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "en",
+    "id": "expresionismo",
+    "music": {
+      "integrated": -18.2,
+      "truePeak": -2.7
+    },
+    "voice": {
+      "integrated": -15.8,
+      "truePeak": -1.5
+    },
+    "delta": -2.4,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -21.58,
+      "inputTP": -6,
+      "inputLRA": 15.1,
+      "threshold": -33.17,
+      "requestedGain": 2.5799999999999983,
+      "gain": 2.5799999999999983,
+      "expectedI": -19,
+      "peakBeforeLimiter": -3.4200000000000017,
+      "expectedTP": -3.4200000000000017,
+      "targetLRA": 15.1,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -5.06,
+        "afterTP": -6,
+        "peakReductionDb": 0.9400000000000004
+      },
+      "output": {
+        "input_i": "-21.58",
+        "input_tp": "-6.00",
+        "input_lra": "14.40",
+        "input_thresh": "-33.15",
+        "output_i": "-18.99",
+        "output_tp": "-3.42",
+        "output_lra": "14.40",
+        "output_thresh": "-30.56",
+        "normalization_type": "linear",
+        "target_offset": "-0.01"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -3.4
+      }
+    },
+    "voiceInterval": [
+      539.624667,
+      546.434667
+    ],
+    "musicInterval": [
+      546.434667,
+      565.8986669999999
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "en",
+    "id": "dodecafonia",
+    "music": {
+      "integrated": -18.2,
+      "truePeak": -6.6
+    },
+    "voice": {
+      "integrated": -15.6,
+      "truePeak": -1.5
+    },
+    "delta": -2.6,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -17.58,
+      "inputTP": -6,
+      "inputLRA": 12.4,
+      "threshold": -29.5,
+      "requestedGain": -1.4200000000000017,
+      "gain": -1.4200000000000017,
+      "expectedI": -19,
+      "peakBeforeLimiter": -7.420000000000002,
+      "expectedTP": -7.420000000000002,
+      "targetLRA": 12.4,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -4.48,
+        "afterTP": -6,
+        "peakReductionDb": 1.5199999999999996
+      },
+      "output": {
+        "input_i": "-17.58",
+        "input_tp": "-6.00",
+        "input_lra": "12.40",
+        "input_thresh": "-29.48",
+        "output_i": "-18.99",
+        "output_tp": "-7.42",
+        "output_lra": "12.40",
+        "output_thresh": "-30.89",
+        "normalization_type": "linear",
+        "target_offset": "-0.01"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -7.4
+      }
+    },
+    "voiceInterval": [
+      566.8986669999999,
+      579.0786669999999
+    ],
+    "musicInterval": [
+      579.0786669999999,
+      598.3506669999999
+    ],
+    "targetMet": true
+  },
+  {
+    "locale": "en",
+    "id": "microtonalismo",
+    "music": {
+      "integrated": -18.2,
+      "truePeak": -8.1
+    },
+    "voice": {
+      "integrated": -15.9,
+      "truePeak": -1.5
+    },
+    "delta": -2.3,
+    "normalization": {
+      "mode": "linear",
+      "targetI": -19,
+      "targetTP": -1.5,
+      "inputI": -16.01,
+      "inputTP": -6,
+      "inputLRA": 11.3,
+      "threshold": -27.42,
+      "requestedGain": -2.9899999999999984,
+      "gain": -2.9899999999999984,
+      "expectedI": -19,
+      "peakBeforeLimiter": -8.989999999999998,
+      "expectedTP": -8.989999999999998,
+      "targetLRA": 11.3,
+      "limiter": {
+        "ceiling": -6,
+        "attackMs": 5,
+        "releaseMs": 50,
+        "autoLevel": false,
+        "latencyCompensated": true,
+        "beforeTP": -1.86,
+        "afterTP": -6,
+        "peakReductionDb": 4.14
+      },
+      "output": {
+        "input_i": "-16.01",
+        "input_tp": "-6.00",
+        "input_lra": "7.00",
+        "input_thresh": "-27.39",
+        "output_i": "-19.00",
+        "output_tp": "-8.99",
+        "output_lra": "7.00",
+        "output_thresh": "-30.38",
+        "normalization_type": "linear",
+        "target_offset": "0.00"
+      },
+      "verified": {
+        "integrated": -19,
+        "truePeak": -9
+      }
+    },
+    "voiceInterval": [
+      599.3506669999999,
+      613.2906669999999
+    ],
+    "musicInterval": [
+      613.2906669999999,
+      632.6346669999999
+    ],
+    "targetMet": true
+  }
+]

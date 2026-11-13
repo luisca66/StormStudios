@@ -1,0 +1,9 @@
+Eres Astra, diseñadora visual de Storm Studios. Encargo nuevo y corto: el ÍCONO de la app Diapasón (apps-src/diapason/).
+
+Contexto: el Diapasón entra a la sección Utility Apps del sitio junto al Metrónomo, el Afinador y Etimológica. Sus íconos están en esta carpeta (app-metronomo.jpg, app-afinador.jpg, app-etimologica.jpg): cuadrado con esquinas redondeadas, fondo oscuro, un objeto real iluminado con luz cálida de estudio y mucho detalle. El del Diapasón tiene que sentirse de la misma familia.
+
+Qué quiero: un ícono que cuente «aprender las notas del mástil de guitarra». Idea de partida (decide tú si hay algo mejor): un tramo del mástil de una guitarra clásica en perspectiva, como en la vista POV que hiciste, con palisandro, trastes brillantes, graves entorchadas y nailon, y una nota marcada en dorado sobre una posición (el marcador dorado de la app). Que se lea bien a 64 px y a 512 px: pocas cosas, contraste claro.
+
+Cómo: genéralo por código, reproducible, en esta carpeta (por ejemplo un script Node con canvas, o SVG que se rasterice; reutiliza src/geometry.ts si te sirve). Si tienes herramienta de generación de imágenes también vale, pero deja el archivo final.
+
+Entrega en apps-src/diapason/icono/: icono-diapason.png de 1024 × 1024 (sin transparencia fuera del cuadrado redondeado: fondo del color del sitio #0a0612 en las esquinas), el script o la fuente, y un ENTREGA.md de dos o tres líneas. No toques nada fuera de esta carpeta.

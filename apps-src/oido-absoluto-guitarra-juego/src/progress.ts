@@ -1,4 +1,4 @@
-import type { GuitarSample, Pitch, StringId } from "./catalog";
+import type { NoteSample, Pitch, RegisterId, StringId, TimbreId } from "./catalog";
 
 export interface AnswerTally {
   correct: number;
@@ -19,6 +19,8 @@ export interface TrainingProgress extends AnswerTally {
   levels: Record<string, LevelRecord>;
   pitches: Partial<Record<Pitch, AnswerTally>>;
   strings: Partial<Record<StringId, AnswerTally>>;
+  timbres: Partial<Record<TimbreId, AnswerTally>>;
+  registers: Partial<Record<RegisterId, AnswerTally>>;
 }
 
 const emptyTally = (): AnswerTally => ({ correct: 0, total: 0 });
@@ -33,6 +35,8 @@ export function createEmptyProgress(): TrainingProgress {
     levels: {},
     pitches: {},
     strings: {},
+    timbres: {},
+    registers: {},
   };
 }
 
@@ -55,17 +59,25 @@ export class ProgressRepository {
     return this.data;
   }
 
-  recordAnswer(sample: GuitarSample, correct: boolean, levelId: number, currentStreak: number) {
+  recordAnswer(sample: NoteSample, correct: boolean, levelId: number, currentStreak: number) {
     const level = this.level(levelId);
     const pitch = this.data.pitches[sample.pitch] ?? emptyTally();
-    const string = this.data.strings[sample.stringId] ?? emptyTally();
+    const timbre = this.data.timbres[sample.timbre] ?? emptyTally();
+    const register = this.data.registers[sample.register] ?? emptyTally();
 
     this.increment(this.data, correct);
     this.increment(level, correct);
     this.increment(pitch, correct);
-    this.increment(string, correct);
+    this.increment(timbre, correct);
+    this.increment(register, correct);
     this.data.pitches[sample.pitch] = pitch;
-    this.data.strings[sample.stringId] = string;
+    this.data.timbres[sample.timbre] = timbre;
+    this.data.registers[sample.register] = register;
+    if (sample.stringId) {
+      const string = this.data.strings[sample.stringId] ?? emptyTally();
+      this.increment(string, correct);
+      this.data.strings[sample.stringId] = string;
+    }
 
     this.data.bestStreak = Math.max(this.data.bestStreak, currentStreak);
     level.bestStreak = Math.max(level.bestStreak, currentStreak);
@@ -104,6 +116,9 @@ export class ProgressRepository {
         levels: parsed.levels ?? {},
         pitches: parsed.pitches ?? {},
         strings: parsed.strings ?? {},
+        // Las bitácoras anteriores a los timbres sólo tenían guitarra.
+        timbres: parsed.timbres ?? (parsed.total ? { guitarra: { correct: parsed.correct ?? 0, total: parsed.total } } : {}),
+        registers: parsed.registers ?? {},
       };
     } catch {
       return createEmptyProgress();

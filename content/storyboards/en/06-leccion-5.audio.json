@@ -1,0 +1,1002 @@
+{
+  "lesson": "06-leccion-5",
+  "source": {
+    "script": "content/storyboards/en/06-leccion-5.guion.docx",
+    "durations": "content/storyboards/en/06-leccion-5.durations.txt",
+    "clipPattern": "{n}_Chapter_1.mp3",
+    "clips": 133
+  },
+  "note": "Una frase del guion por clip; cada still cubre clips completos.",
+  "stills": [
+    {
+      "id": "titulo",
+      "start": {
+        "clip": 1,
+        "at": 0
+      },
+      "end": {
+        "clip": 3,
+        "at": 1
+      }
+    },
+    {
+      "id": "explicativa",
+      "start": {
+        "clip": 4,
+        "at": 0
+      },
+      "end": {
+        "clip": 5,
+        "at": 1
+      }
+    },
+    {
+      "id": "grados",
+      "start": {
+        "clip": 6,
+        "at": 0
+      },
+      "end": {
+        "clip": 8,
+        "at": 1
+      }
+    },
+    {
+      "id": "tonica",
+      "start": {
+        "clip": 9,
+        "at": 0
+      },
+      "end": {
+        "clip": 10,
+        "at": 1
+      }
+    },
+    {
+      "id": "dominante",
+      "start": {
+        "clip": 11,
+        "at": 0
+      },
+      "end": {
+        "clip": 11,
+        "at": 1
+      }
+    },
+    {
+      "id": "subdominante",
+      "start": {
+        "clip": 12,
+        "at": 0
+      },
+      "end": {
+        "clip": 12,
+        "at": 1
+      }
+    },
+    {
+      "id": "mediante",
+      "start": {
+        "clip": 13,
+        "at": 0
+      },
+      "end": {
+        "clip": 13,
+        "at": 1
+      }
+    },
+    {
+      "id": "submediante",
+      "start": {
+        "clip": 14,
+        "at": 0
+      },
+      "end": {
+        "clip": 14,
+        "at": 1
+      }
+    },
+    {
+      "id": "supertonica",
+      "start": {
+        "clip": 15,
+        "at": 0
+      },
+      "end": {
+        "clip": 15,
+        "at": 1
+      }
+    },
+    {
+      "id": "espejo",
+      "start": {
+        "clip": 16,
+        "at": 0
+      },
+      "end": {
+        "clip": 16,
+        "at": 1
+      }
+    },
+    {
+      "id": "sensible",
+      "start": {
+        "clip": 17,
+        "at": 0
+      },
+      "end": {
+        "clip": 18,
+        "at": 1
+      }
+    },
+    {
+      "id": "subtonica",
+      "start": {
+        "clip": 19,
+        "at": 0
+      },
+      "end": {
+        "clip": 20,
+        "at": 1
+      }
+    },
+    {
+      "id": "la-subtonica",
+      "start": {
+        "clip": 21,
+        "at": 0
+      },
+      "end": {
+        "clip": 21,
+        "at": 1
+      }
+    },
+    {
+      "id": "la-sensible",
+      "start": {
+        "clip": 22,
+        "at": 0
+      },
+      "end": {
+        "clip": 22,
+        "at": 1
+      }
+    },
+    {
+      "id": "funciones",
+      "start": {
+        "clip": 23,
+        "at": 0
+      },
+      "end": {
+        "clip": 23,
+        "at": 1
+      }
+    },
+    {
+      "id": "tonales",
+      "start": {
+        "clip": 24,
+        "at": 0
+      },
+      "end": {
+        "clip": 25,
+        "at": 1
+      }
+    },
+    {
+      "id": "modales",
+      "start": {
+        "clip": 26,
+        "at": 0
+      },
+      "end": {
+        "clip": 26,
+        "at": 1
+      }
+    },
+    {
+      "id": "secundarios",
+      "start": {
+        "clip": 27,
+        "at": 0
+      },
+      "end": {
+        "clip": 27,
+        "at": 1
+      }
+    },
+    {
+      "id": "atractivos",
+      "start": {
+        "clip": 28,
+        "at": 0
+      },
+      "end": {
+        "clip": 29,
+        "at": 1
+      }
+    },
+    {
+      "id": "sensible-atractiva",
+      "start": {
+        "clip": 30,
+        "at": 0
+      },
+      "end": {
+        "clip": 30,
+        "at": 1
+      }
+    },
+    {
+      "id": "con-sensible",
+      "start": {
+        "clip": 31,
+        "at": 0
+      },
+      "end": {
+        "clip": 31,
+        "at": 1
+      }
+    },
+    {
+      "id": "modales-alterados",
+      "start": {
+        "clip": 32,
+        "at": 0
+      },
+      "end": {
+        "clip": 32,
+        "at": 1
+      }
+    },
+    {
+      "id": "frigio",
+      "start": {
+        "clip": 33,
+        "at": 0
+      },
+      "end": {
+        "clip": 34,
+        "at": 1
+      }
+    },
+    {
+      "id": "lidio",
+      "start": {
+        "clip": 35,
+        "at": 0
+      },
+      "end": {
+        "clip": 36,
+        "at": 1
+      }
+    },
+    {
+      "id": "mixolidio",
+      "start": {
+        "clip": 37,
+        "at": 0
+      },
+      "end": {
+        "clip": 38,
+        "at": 1
+      }
+    },
+    {
+      "id": "repaso-modos",
+      "start": {
+        "clip": 39,
+        "at": 0
+      },
+      "end": {
+        "clip": 39,
+        "at": 1
+      }
+    },
+    {
+      "id": "acorde",
+      "start": {
+        "clip": 40,
+        "at": 0
+      },
+      "end": {
+        "clip": 41,
+        "at": 1
+      }
+    },
+    {
+      "id": "terceras",
+      "start": {
+        "clip": 42,
+        "at": 0
+      },
+      "end": {
+        "clip": 42,
+        "at": 1
+      }
+    },
+    {
+      "id": "quinta",
+      "start": {
+        "clip": 43,
+        "at": 0
+      },
+      "end": {
+        "clip": 43,
+        "at": 1
+      }
+    },
+    {
+      "id": "septima",
+      "start": {
+        "clip": 44,
+        "at": 0
+      },
+      "end": {
+        "clip": 44,
+        "at": 1
+      }
+    },
+    {
+      "id": "novena",
+      "start": {
+        "clip": 45,
+        "at": 0
+      },
+      "end": {
+        "clip": 45,
+        "at": 1
+      }
+    },
+    {
+      "id": "onceava",
+      "start": {
+        "clip": 46,
+        "at": 0
+      },
+      "end": {
+        "clip": 46,
+        "at": 1
+      }
+    },
+    {
+      "id": "treceava",
+      "start": {
+        "clip": 47,
+        "at": 0
+      },
+      "end": {
+        "clip": 47,
+        "at": 1
+      }
+    },
+    {
+      "id": "nombre",
+      "start": {
+        "clip": 48,
+        "at": 0
+      },
+      "end": {
+        "clip": 48,
+        "at": 1
+      }
+    },
+    {
+      "id": "terceras-escuchar",
+      "start": {
+        "clip": 49,
+        "at": 0
+      },
+      "end": {
+        "clip": 49,
+        "at": 1
+      }
+    },
+    {
+      "id": "armonia",
+      "start": {
+        "clip": 50,
+        "at": 0
+      },
+      "end": {
+        "clip": 50,
+        "at": 1
+      }
+    },
+    {
+      "id": "armonias",
+      "start": {
+        "clip": 51,
+        "at": 0
+      },
+      "end": {
+        "clip": 51,
+        "at": 1
+      }
+    },
+    {
+      "id": "serie-intro",
+      "start": {
+        "clip": 52,
+        "at": 0
+      },
+      "end": {
+        "clip": 53,
+        "at": 1
+      }
+    },
+    {
+      "id": "serie",
+      "start": {
+        "clip": 54,
+        "at": 0
+      },
+      "end": {
+        "clip": 54,
+        "at": 1
+      }
+    },
+    {
+      "id": "serie-octava",
+      "start": {
+        "clip": 55,
+        "at": 0
+      },
+      "end": {
+        "clip": 55,
+        "at": 1
+      }
+    },
+    {
+      "id": "serie-quinta",
+      "start": {
+        "clip": 56,
+        "at": 0
+      },
+      "end": {
+        "clip": 56,
+        "at": 1
+      }
+    },
+    {
+      "id": "serie-octava-2",
+      "start": {
+        "clip": 57,
+        "at": 0
+      },
+      "end": {
+        "clip": 57,
+        "at": 1
+      }
+    },
+    {
+      "id": "serie-tercera",
+      "start": {
+        "clip": 58,
+        "at": 0
+      },
+      "end": {
+        "clip": 58,
+        "at": 1
+      }
+    },
+    {
+      "id": "serie-acorde",
+      "start": {
+        "clip": 59,
+        "at": 0
+      },
+      "end": {
+        "clip": 59,
+        "at": 1
+      }
+    },
+    {
+      "id": "serie-septima",
+      "start": {
+        "clip": 60,
+        "at": 0
+      },
+      "end": {
+        "clip": 61,
+        "at": 1
+      }
+    },
+    {
+      "id": "serie-flechas",
+      "start": {
+        "clip": 62,
+        "at": 0
+      },
+      "end": {
+        "clip": 63,
+        "at": 1
+      }
+    },
+    {
+      "id": "serie-historia",
+      "start": {
+        "clip": 64,
+        "at": 0
+      },
+      "end": {
+        "clip": 65,
+        "at": 1
+      }
+    },
+    {
+      "id": "monodia",
+      "start": {
+        "clip": 66,
+        "at": 0
+      },
+      "end": {
+        "clip": 68,
+        "at": 1
+      }
+    },
+    {
+      "id": "organum",
+      "start": {
+        "clip": 69,
+        "at": 0
+      },
+      "end": {
+        "clip": 71,
+        "at": 1
+      }
+    },
+    {
+      "id": "ars-nova",
+      "start": {
+        "clip": 72,
+        "at": 0
+      },
+      "end": {
+        "clip": 74,
+        "at": 1
+      }
+    },
+    {
+      "id": "preclasico",
+      "start": {
+        "clip": 75,
+        "at": 0
+      },
+      "end": {
+        "clip": 77,
+        "at": 1
+      }
+    },
+    {
+      "id": "clasico",
+      "start": {
+        "clip": 78,
+        "at": 0
+      },
+      "end": {
+        "clip": 80,
+        "at": 1
+      }
+    },
+    {
+      "id": "siglo-xx",
+      "start": {
+        "clip": 81,
+        "at": 0
+      },
+      "end": {
+        "clip": 81,
+        "at": 1
+      }
+    },
+    {
+      "id": "impresionismo",
+      "start": {
+        "clip": 82,
+        "at": 0
+      },
+      "end": {
+        "clip": 83,
+        "at": 1
+      }
+    },
+    {
+      "id": "expresionismo",
+      "start": {
+        "clip": 84,
+        "at": 0
+      },
+      "end": {
+        "clip": 85,
+        "at": 1
+      }
+    },
+    {
+      "id": "dodecafonia",
+      "start": {
+        "clip": 86,
+        "at": 0
+      },
+      "end": {
+        "clip": 88,
+        "at": 1
+      }
+    },
+    {
+      "id": "microtonalismo",
+      "start": {
+        "clip": 89,
+        "at": 0
+      },
+      "end": {
+        "clip": 91,
+        "at": 1
+      }
+    },
+    {
+      "id": "cuatro-tipos",
+      "start": {
+        "clip": 92,
+        "at": 0
+      },
+      "end": {
+        "clip": 94,
+        "at": 1
+      }
+    },
+    {
+      "id": "regiones-intro",
+      "start": {
+        "clip": 95,
+        "at": 0
+      },
+      "end": {
+        "clip": 95,
+        "at": 1
+      }
+    },
+    {
+      "id": "regiones-principal",
+      "start": {
+        "clip": 96,
+        "at": 0
+      },
+      "end": {
+        "clip": 96,
+        "at": 1
+      }
+    },
+    {
+      "id": "regiones-terceras",
+      "start": {
+        "clip": 97,
+        "at": 0
+      },
+      "end": {
+        "clip": 97,
+        "at": 1
+      }
+    },
+    {
+      "id": "region-sd",
+      "start": {
+        "clip": 98,
+        "at": 0
+      },
+      "end": {
+        "clip": 98,
+        "at": 1
+      }
+    },
+    {
+      "id": "region-t",
+      "start": {
+        "clip": 99,
+        "at": 0
+      },
+      "end": {
+        "clip": 99,
+        "at": 1
+      }
+    },
+    {
+      "id": "region-d",
+      "start": {
+        "clip": 100,
+        "at": 0
+      },
+      "end": {
+        "clip": 100,
+        "at": 1
+      }
+    },
+    {
+      "id": "regiones-modales",
+      "start": {
+        "clip": 101,
+        "at": 0
+      },
+      "end": {
+        "clip": 101,
+        "at": 1
+      }
+    },
+    {
+      "id": "sustitucion",
+      "start": {
+        "clip": 102,
+        "at": 0
+      },
+      "end": {
+        "clip": 102,
+        "at": 1
+      }
+    },
+    {
+      "id": "tonalidad",
+      "start": {
+        "clip": 103,
+        "at": 0
+      },
+      "end": {
+        "clip": 104,
+        "at": 1
+      }
+    },
+    {
+      "id": "modular",
+      "start": {
+        "clip": 105,
+        "at": 0
+      },
+      "end": {
+        "clip": 106,
+        "at": 1
+      }
+    },
+    {
+      "id": "alteraciones",
+      "start": {
+        "clip": 107,
+        "at": 0
+      },
+      "end": {
+        "clip": 108,
+        "at": 1
+      }
+    },
+    {
+      "id": "sostenidos",
+      "start": {
+        "clip": 109,
+        "at": 0
+      },
+      "end": {
+        "clip": 109,
+        "at": 1
+      }
+    },
+    {
+      "id": "sostenidos-quintas",
+      "start": {
+        "clip": 110,
+        "at": 0
+      },
+      "end": {
+        "clip": 110,
+        "at": 1
+      }
+    },
+    {
+      "id": "bemoles",
+      "start": {
+        "clip": 111,
+        "at": 0
+      },
+      "end": {
+        "clip": 111,
+        "at": 1
+      }
+    },
+    {
+      "id": "bemoles-quintas",
+      "start": {
+        "clip": 112,
+        "at": 0
+      },
+      "end": {
+        "clip": 112,
+        "at": 1
+      }
+    },
+    {
+      "id": "circulo",
+      "start": {
+        "clip": 113,
+        "at": 0
+      },
+      "end": {
+        "clip": 113,
+        "at": 1
+      }
+    },
+    {
+      "id": "circulo-do",
+      "start": {
+        "clip": 114,
+        "at": 0
+      },
+      "end": {
+        "clip": 114,
+        "at": 1
+      }
+    },
+    {
+      "id": "circulo-sostenidos",
+      "start": {
+        "clip": 115,
+        "at": 0
+      },
+      "end": {
+        "clip": 115,
+        "at": 1
+      }
+    },
+    {
+      "id": "circulo-bemoles",
+      "start": {
+        "clip": 116,
+        "at": 0
+      },
+      "end": {
+        "clip": 116,
+        "at": 1
+      }
+    },
+    {
+      "id": "circulo-enarmonicas",
+      "start": {
+        "clip": 117,
+        "at": 0
+      },
+      "end": {
+        "clip": 118,
+        "at": 1
+      }
+    },
+    {
+      "id": "circulo-mayores",
+      "start": {
+        "clip": 119,
+        "at": 0
+      },
+      "end": {
+        "clip": 119,
+        "at": 1
+      }
+    },
+    {
+      "id": "circulo-menores",
+      "start": {
+        "clip": 120,
+        "at": 0
+      },
+      "end": {
+        "clip": 120,
+        "at": 1
+      }
+    },
+    {
+      "id": "circulo-relativas",
+      "start": {
+        "clip": 121,
+        "at": 0
+      },
+      "end": {
+        "clip": 123,
+        "at": 1
+      }
+    },
+    {
+      "id": "circulo-30",
+      "start": {
+        "clip": 124,
+        "at": 0
+      },
+      "end": {
+        "clip": 124,
+        "at": 1
+      }
+    },
+    {
+      "id": "recapitulemos",
+      "start": {
+        "clip": 125,
+        "at": 0
+      },
+      "end": {
+        "clip": 125,
+        "at": 1
+      }
+    },
+    {
+      "id": "recap-grados",
+      "start": {
+        "clip": 126,
+        "at": 0
+      },
+      "end": {
+        "clip": 126,
+        "at": 1
+      }
+    },
+    {
+      "id": "recap-terceras",
+      "start": {
+        "clip": 127,
+        "at": 0
+      },
+      "end": {
+        "clip": 127,
+        "at": 1
+      }
+    },
+    {
+      "id": "recap-serie",
+      "start": {
+        "clip": 128,
+        "at": 0
+      },
+      "end": {
+        "clip": 128,
+        "at": 1
+      }
+    },
+    {
+      "id": "recap-regiones",
+      "start": {
+        "clip": 129,
+        "at": 0
+      },
+      "end": {
+        "clip": 129,
+        "at": 1
+      }
+    },
+    {
+      "id": "recap-circulo",
+      "start": {
+        "clip": 130,
+        "at": 0
+      },
+      "end": {
+        "clip": 130,
+        "at": 1
+      }
+    },
+    {
+      "id": "siguiente",
+      "start": {
+        "clip": 131,
+        "at": 0
+      },
+      "end": {
+        "clip": 131,
+        "at": 1
+      }
+    },
+    {
+      "id": "cierre",
+      "start": {
+        "clip": 132,
+        "at": 0
+      },
+      "end": {
+        "clip": 133,
+        "at": 1
+      }
+    }
+  ]
+}

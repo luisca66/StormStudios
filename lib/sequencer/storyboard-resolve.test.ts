@@ -2,10 +2,20 @@ import { describe, expect, it } from "vitest";
 import { resolveProject, stillDimensions, validateStoryboard } from "./storyboard-resolve";
 import type { Storyboard } from "./storyboard";
 import { captureX } from "./capture-decoration";
+import spanishLesson from "../../content/storyboards/es/06-leccion-5.json";
+import englishLesson from "../../content/storyboards/en/06-leccion-5.json";
 import example from "../../content/storyboards/es/ejemplo-intervalos.json";
 
 const board = (): Storyboard => ({ version: 1, lesson: "test", locale: "es", title: "Test", projects: { main: { setup: { mode: "single", measures: 2 }, text: "C4 negra; D4 negra" } }, stills: [{ id: "one", project: "main" }] });
 describe("storyboard resolver", () => {
+  it("validates both supplied Lesson 5 storyboards, including images and external music", () => {
+    for (const lesson of [spanishLesson, englishLesson]) {
+      const checked = validateStoryboard(lesson);
+      expect(checked.stills).toHaveLength(90);
+      expect(checked.stills.filter(s => s.musicFile)).toHaveLength(9);
+      expect(checked.stills.find(s => s.id === "circulo")).toMatchObject({ kind: "image" });
+    }
+  });
   it("constructs before parsing, preserves setup and annotations", () => {
     const score = resolveProject({ setup: { mode: "single", measures: 1, time: [3, 4], key: "G", tempo: 72, clef: "bass", title: "Test" }, text: "G2 blanca; A2 negra", annotations: [{ measure: 1, beat: 1, kind: "roman", text: "I" }] });
     expect(score.measures).toHaveLength(1);
@@ -45,6 +55,22 @@ describe("storyboard resolver", () => {
     const b = board(); b.stills[0].reveal = { measure: 2, beat: 5 };
     b.stills.push({ id: "title", kind: "title", heading: "Hola" });
     expect(validateStoryboard(b).stills).toHaveLength(2);
+  });
+  it("accepts public image stills and external music without a project", () => {
+    const b = board(); b.projects = {}; b.stills = [{ id: "svg", kind: "image", image: "/images/test.svg", musicFile: "sample.mp3", musicTrim: [1, 3], musicCredit: "Composer · Players" }];
+    expect(validateStoryboard(b).stills[0]).toEqual(b.stills[0]);
+    delete b.stills[0].image;
+    expect(() => validateStoryboard(b)).toThrow(/Still "svg".*falta image/);
+  });
+  it.each([
+    { musicFile: "sample.mp3", audio: true },
+    { musicFile: "sample.mp3", musicTrim: [3, 2] },
+    { musicTrim: [0, 2] },
+    { musicFile: "sample.mp3", cursor: { measure: 1 } },
+    { musicCredit: "No music" },
+  ])("rejects incompatible music fields with still context: %j", fields => {
+    const b = board(); Object.assign(b.stills[0], fields);
+    expect(() => validateStoryboard(b)).toThrow(/Still "one"/);
   });
   it("computes exact output dimensions and scales width", () => {
     expect(stillDimensions()).toEqual({ width: 1920, height: 1080 });

@@ -33,8 +33,9 @@ export default async function AppsPage({ params }: Props) {
   setRequestLocale(locale);
   const es = locale === "es";
 
-  const webApps = APPS.filter((a) => !a.isTool);
+  const webApps = APPS.filter((a) => !a.isTool && !a.isUtility);
   const webTools = APPS.filter((a) => a.isTool);
+  const utilityApps = APPS.filter((a) => a.isUtility);
 
   return (
     <div className="ss-root" style={{ minHeight: "100vh" }}>
@@ -91,6 +92,27 @@ export default async function AppsPage({ params }: Props) {
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {webTools.map((app) => (
+                <AppCard key={app.slug} app={app} locale={locale} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Utility Apps: útiles para el músico, fuera de la metodología */}
+        {utilityApps.length > 0 && (
+          <section className="mb-14">
+            <h2 className="ss-serif mb-2 flex items-center gap-3"
+              style={{ fontSize: "1.4rem", color: "#f0eeff" }}>
+              <span>🧰</span>
+              Utility Apps
+            </h2>
+            <p className="ss-mono text-sm mb-8" style={{ color: "var(--ss-muted)", lineHeight: 1.7 }}>
+              {es
+                ? "Herramientas útiles para el día a día del músico. No forman parte del método, pero te acompañan al estudiar."
+                : "Handy tools for a musician's everyday practice. They are not part of the method, but they come along while you study."}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {utilityApps.map((app) => (
                 <AppCard key={app.slug} app={app} locale={locale} />
               ))}
             </div>

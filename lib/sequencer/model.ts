@@ -13,6 +13,7 @@ export const MAX_MEASURES = 128;
 export const MAX_EVENTS = 4096;
 export const MAX_SCENES = 32;
 export const MAX_CHORD_PITCHES = 12;
+export const MAX_ANNOTATIONS = 1024;
 /** Upper bound for importScore input; a full 4096-event score is far below it. */
 export const MAX_IMPORT_CHARS = 4_000_000;
 
@@ -20,8 +21,8 @@ const DURATIONS: readonly Duration[] = ["w", "h", "q", "8", "16", "32"];
 const BASE_TICKS: Record<Duration, number> = {
   w: PPQ * 4, h: PPQ * 2, q: PPQ, "8": PPQ / 2, "16": PPQ / 4, "32": PPQ / 8,
 };
-const TIME_DENOMINATORS = [1, 2, 4, 8, 16, 32];
-const MAX_TIME_NUMERATOR = 32;
+export const TIME_DENOMINATORS = [1, 2, 4, 8, 16, 32];
+export const MAX_TIME_NUMERATOR = 32;
 
 const VOICE_DEFAULTS: Record<VoiceId, { name: string; clef: Voice["clef"] }> = {
   melody: { name: "Melodía", clef: "treble" },
@@ -471,7 +472,7 @@ export function validateScore(value: unknown): Score {
   });
 
   const annotationIds=new Set([...measureIds,...eventIds,...sceneIds]);
-  const annotations=asArray(root.annotations??[],"annotations",0,512).map((item,index)=>{
+  const annotations=asArray(root.annotations??[],"annotations",0,MAX_ANNOTATIONS).map((item,index)=>{
     const path=`annotations[${index}]`, annotation=asRecord(item,path,["id","measure","beat","text","kind"]);
     const measure=asInteger(annotation.measure,`${path}.measure`,1,measures.length);
     const beat=asNumber(annotation.beat,`${path}.beat`,1,1+measureTicks(measures[measure-1])/PPQ);

@@ -1,0 +1,119 @@
+Hola, bienvenidos de nuevo a Storm Studios Learning.
+En la lección anterior aprendimos a construir acordes para el cuarteto vocal.
+Hoy vamos a ver cómo se mueven las voces cuando pasamos de un acorde al siguiente.
+Esta lección tiene dos partes: los movimientos melódicos y los movimientos armónicos.
+Los movimientos melódicos tienen que ver con una sola voz, y con los intervalos que canta de una nota a la siguiente.
+Los movimientos armónicos tienen que ver con dos voces que se mueven al mismo tiempo.
+Cuando enlazamos dos acordes, cada voz canta su propia melodía.
+Por eso, antes de escribir nuestro primer coral, vamos a practicar cada voz por separado.
+Me acuerdo muy bien de mi primer coral.
+Son tantas cosas que hay que cuidar al mismo tiempo, que es muy fácil perderse.
+Así que vamos paso a paso.
+Empecemos con los movimientos melódicos.
+Al enlazar un acorde con otro, cada voz puede hacer solamente estos intervalos.
+La segunda menor y la segunda mayor.
+La tercera menor y la tercera mayor.
+La cuarta justa y la quinta justa.
+La sexta menor y la sexta mayor.
+Y la octava justa.
+Todos se pueden hacer hacia arriba o hacia abajo, es decir, ascendentes o descendentes.
+En esta lista no hay intervalos aumentados.
+Tampoco hay séptimas, ni intervalos más grandes que la octava.
+Estos intervalos se clasifican en cuatro grupos.
+Las segundas se llaman grado conjunto.
+Las terceras se llaman camino corto.
+La cuarta justa es un salto corto.
+Y la quinta justa, las sextas y la octava son saltos largos.
+Escuchemos cada uno, primero subiendo y luego bajando.
+El grado conjunto es el movimiento más natural para una voz.
+Los saltos le dan carácter a la melodía, pero hay que usarlos con cuidado.
+La primera regla de cuidado tiene que ver con la sensible.
+En Do mayor, la sensible es el Si, la nota que quiere subir al Do.
+No se practica el salto de octava con la sensible.
+Ahora veamos los intervalos disminuidos.
+Dijimos que no se usan intervalos aumentados.
+Pero sí se permiten la quinta disminuida, la cuarta disminuida y la séptima disminuida, con una condición.
+Después del intervalo disminuido, la voz tiene que cambiar de dirección.
+A esto le llamamos compensar.
+En Do mayor, de Si a Fa hacia arriba hay una quinta disminuida.
+Si después la voz baja, por ejemplo a Mi, la quinta disminuida está compensada.
+De Fa a Si hacia abajo también hay una quinta disminuida.
+Si después la voz sube, por ejemplo a Do, también está compensada.
+Pero si después de Si y Fa la voz sigue subiendo, a Sol, la quinta disminuida queda sin compensar.
+Y cuidado con la dirección.
+De Fa a Si hacia arriba no hay una quinta disminuida, sino una cuarta aumentada.
+Y las cuartas aumentadas no se usan.
+La cuarta disminuida y la séptima disminuida aparecen en el modo menor, y las veremos más adelante.
+La última regla melódica es sobre los saltos sucesivos.
+No se practican dos saltos seguidos en la misma dirección.
+La excepción es una cuarta seguida de una quinta, o una quinta seguida de una cuarta.
+Por ejemplo, de Re a Sol y luego a Re, subiendo, está bien.
+Y bajando, de Sol a Do y luego a Sol, también.
+Pero de Mi a La y luego a Re son dos cuartas hacia arriba, y eso no se practica.
+Si después de un salto la voz cambia de dirección, no hay problema.
+Ahora pasemos a los movimientos armónicos.
+Aquí ya no vemos una sola voz, sino dos voces que se mueven al mismo tiempo.
+La primera regla es la más famosa de toda la armonía.
+No se practican quintas ni octavas paralelas.
+Hay quintas u octavas paralelas cuando dos voces forman una quinta o una octava, y luego, moviéndose en la misma dirección, vuelven a formar una quinta o una octava.
+Por ejemplo, la soprano va de Do cinco a Re cinco, y el bajo va de Do tres a Re tres.
+Las dos voces están a distancia de octava, y siguen a distancia de octava.
+Escuchemos.
+Con las octavas paralelas, las dos voces suenan como si fueran una sola.
+Perdemos una voz del cuarteto.
+Con las quintas paralelas pasa algo parecido.
+La quinta justa es un intervalo tan estable que las dos voces se funden y el sonido se vuelve hueco.
+Tampoco se practican las quintas ni las octavas contrarias.
+Son las mismas quintas u octavas, pero con las voces moviéndose en direcciones opuestas.
+Por ejemplo, la soprano sube de Sol cuatro a Do cinco mientras el bajo baja de Sol tres a Do tres.
+Pasamos de una octava a dos octavas, y el efecto es el mismo.
+El unísono también cuenta como octava.
+Ahora, hay dos casos en los que las quintas sí se permiten.
+El primero son las quintas paralelas cuando una de las dos, o las dos, no son justas.
+Por ejemplo, de una quinta justa a una quinta disminuida.
+O de una quinta disminuida a una quinta justa.
+Lo que no se permite es pasar de una quinta justa a otra quinta justa.
+El segundo caso son las quintas contrarias en voces que no son las extremas.
+Las voces extremas son la soprano y el bajo, la de arriba y la de abajo.
+Entre la soprano y el bajo, las quintas contrarias no se practican.
+Pero entre el tenor y el bajo, por ejemplo, sí se permiten.
+La última regla armónica es sobre los saltos simultáneos.
+Evitamos que dos voces salten al mismo tiempo en la misma dirección.
+La excepción es cuando los dos saltos son de cuarta justa.
+Si dos voces saltan al mismo tiempo pero en direcciones contrarias, no hay problema.
+Escuchemos un enlace de dos acordes con quintas paralelas.
+Y ahora el mismo enlace, escrito correctamente.
+Las reglas armónicas las vamos a practicar cuando empecemos a enlazar acordes.
+Primero vamos a ver qué acordes podemos usar y cómo se enlazan.
+Luego escribirás enlaces de dos acordes.
+Y después escribirás tu primer coral completo.
+Ahora la tarea para el maestro virtual.
+Esta vez son cuatro ejercicios, uno para cada voz: soprano, contralto, tenor y bajo.
+Cada ejercicio se sube por separado.
+En cada uno vas a escribir una melodía de ocho notas, en cuartos, es decir, dos compases de cuatro cuartos.
+Puedes elegir cualquier tonalidad mayor, y puede ser distinta en cada ejercicio.
+La melodía empieza y termina en el primer grado, en la tónica.
+Trabaja en el secuenciador en modo Cuarteto SATB.
+Escribe la melodía solamente en el pentagrama de la voz que estás practicando, y deja vacíos los demás.
+Así el maestro virtual sabe qué voz es.
+Usa solo los intervalos permitidos y respeta las reglas del movimiento melódico.
+En este ejercicio no se repiten notas.
+Cuando enlacemos acordes sí podremos repetirlas, pero por ahora cada nota se mueve a otra distinta.
+Y mantente dentro de la tesitura de cada voz.
+La soprano, del Do cuatro al Sol cinco.
+La contralto, del Sol tres al Re cinco.
+El tenor, del Si dos al Sol cuatro.
+Y el bajo, del Fa dos al Si tres.
+Exporta cada melodía como archivo MIDI y súbela.
+El maestro virtual reconoce la voz y la tonalidad.
+Revisa cada intervalo, la tesitura y que empieces y termines en la tónica.
+Y si encuentra un error, te explica cuál es y en qué notas está.
+Los movimientos armónicos no entran en esta tarea: los vamos a practicar cuando hagamos enlaces de acordes, y ahí el maestro virtual también los va a revisar.
+Recapitulemos.
+Cada voz se mueve con grados conjuntos, caminos cortos, saltos cortos y saltos largos.
+No usamos intervalos aumentados, ni séptimas, ni intervalos mayores que la octava.
+Los intervalos disminuidos se compensan cambiando de dirección.
+No hacemos saltos de octava con la sensible, ni dos saltos seguidos en la misma dirección, salvo cuarta y quinta.
+Entre dos voces, evitamos las quintas y las octavas paralelas y contrarias, y los saltos simultáneos en la misma dirección.
+Gracias por acompañarme.
+Nos vemos en la lección ocho.

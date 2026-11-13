@@ -3,35 +3,48 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "images": "node scripts/optimize-images.mjs",
     "stills": "node scripts/sequencer/stills.mjs",
+    "video": "node scripts/sequencer/video.mjs",
+    "mapa-audio": "node scripts/sequencer/mapa-audio.mjs",
     "dev": "next dev",
     "build": "next build",
+    "cf:build": "opennextjs-cloudflare build",
+    "cf:preview": "npm run cf:build && opennextjs-cloudflare preview",
+    "cf:deploy": "npm run cf:build && opennextjs-cloudflare deploy -- --keep-vars",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:rules": "node scripts/test-firestore-rules.mjs",
+    "test:microphones": "vitest run --config apps-src/acordes-cantar-juego/vitest.config.ts && npm --prefix apps-src/intervalos-cantados test",
     "apps:install": "node scripts/apps-maintenance.mjs install",
     "apps:build": "node scripts/apps-maintenance.mjs build",
     "apps:check": "node scripts/apps-maintenance.mjs check",
     "apps:audit": "node scripts/apps-maintenance.mjs audit",
     "legacy:css": "node scripts/build-legacy-css.mjs",
-    "check": "npm run lint && npm test && npm run build"
+    "check": "npm run lint && npm test && npm run build",
+    "tutorial": "node scripts/sequencer/grabar-tutorial.mjs",
+    "analytics:catalog": "node scripts/analytics-catalog.mjs",
+    "analytics:monthly": "node scripts/analytics-monthly.mjs",
+    "analytics:prepare": "npm run analytics:catalog && node scripts/instrument-standalone.mjs",
+    "prebuild": "npm run analytics:prepare",
+    "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
-    "@next/mdx": "^16.2.6",
+    "@next/mdx": "16.4.5",
     "@tailwindcss/typography": "^0.5.19",
-    "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "firebase": "^12.13.0",
     "gray-matter": "^4.0.3",
-    "next": "^16.3.3",
+    "next": "16.4.5",
     "next-intl": "^4.13.0",
     "next-mdx-remote": "^6.0.0",
-    "react": "19.2.7",
-    "react-dom": "19.2.7",
+    "react": "19.2.9",
+    "react-dom": "19.2.9",
     "resend": "^6.12.4",
     "tailwind-merge": "^3.5.0",
     "vexflow": "^5.0.0",
@@ -39,24 +52,51 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "5.0.2",
+    "@opennextjs/cloudflare": "1.20.15",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@vitest/ui": "^4.1.11",
+    "@vitest/ui": "^4.1.12",
     "eslint": "^9",
-    "eslint-config-next": "^16.2.6",
+    "eslint-config-next": "16.4.5",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.12",
+    "wrangler": "4.156.0"
   },
   "overrides": {
+    "@tailwindcss/typography": {
+      "postcss-selector-parser": "6.1.5"
+    },
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "11.0.1"
+    },
+    "@firebase/firestore": {
+      "@grpc/grpc-js": "1.13.6"
+    },
+    "@next/eslint-plugin-next": {
+      "fast-glob": "npm:tinyglobby@0.2.17"
+    },
     "next": {
       "postcss": "8.5.28"
+    },
+    "sharp": ">=0.35.5",
+    "@node-minify/core": {
+      "glob": "14.0.3"
+    },
+    "@opennextjs/cloudflare": {
+      "glob": "14.0.3"
     }
   },
   "engines": {
     "node": ">=24 <25"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "esbuild@0.28.1": true,
+    "workerd@1.20261023.1": true
   }
 }

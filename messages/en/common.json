@@ -3,12 +3,13 @@
     "home": "Home",
     "about": "About Me",
     "method": "My Method",
-    "classes": "Classes / Workshop",
+    "classes": "Classes",
     "course": "Harmony Course",
     "apps": "Apps",
     "resources": "Study Guides",
     "book": "The Book",
     "blog": "Blog",
+    "mastery": "Mastery",
     "contact": "Contact",
     "ariaLabel": "Main navigation",
     "openMenu": "Open menu",
@@ -28,7 +29,18 @@
     "legal": "Blog & Legal",
     "explore": "Explore"
   },
+  "course": {
+    "privateLessons": {
+      "prompt": "Want to study this with me?",
+      "link": "Get in touch"
+    }
+  },
   "home": {
+    "privateLessons": {
+      "title": "Private lessons",
+      "description": "I teach private lessons in instrument, composition, counterpoint and analysis. If you would like to study with me, write to me and we will talk.",
+      "button": "Get in touch"
+    },
     "hero": {
       "badge": "Shostakovich · Medrano · Cárdenas Lineage",
       "titlePrefix": "Learn",
@@ -65,7 +77,7 @@
         "virtualTeacher": {
           "tag": "Guided practice",
           "title": "Virtual Teacher",
-          "description": "Check MIDI exercises for major scales, modes and minor scales. Explore the Virtual Teacher’s criteria and limitations."
+          "description": "Check your course MIDI exercises: scales, modes, chords and four-part writing. Explore the Virtual Teacher’s criteria and limitations."
         },
         "book": {
           "tag": "Digital Book",
