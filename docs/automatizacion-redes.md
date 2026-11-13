@@ -1,6 +1,14 @@
 # Automatización de redes de Storm Studios
 
-Node 24, módulos nativos, sin instalaciones adicionales. Código en `scripts/redes/`. Cada semana Luis revisa el lote y sus fechas y da un «sí» explícito para ese lote; la skill ejecuta después `publicar-lote --confirmar`. Este documento no constituye aprobación para publicar. Durante la implementación no se autorizaron cuentas ni se llamaron APIs reales.
+Node 24, módulos nativos, sin instalaciones adicionales. Código en `scripts/redes/`. Cada semana Luis revisa el lote y sus fechas y da un «sí» explícito para ese lote; la skill ejecuta después `publicar-lote --confirmar`. Este documento no constituye aprobación para publicar.
+
+## Estado actual (12 de noviembre de 2026)
+
+- YouTube: canal «Storm Studios Learning» (@StormStudiosLearning), propiedad de la cuenta de Google `stormstudioslearning@gmail.com`; no de `luisca66`, que solo tiene el canal de concertista.
+- Google Cloud: proyecto `storm-studios-redes` en esa cuenta; YouTube Data API v3 y YouTube Analytics API activas. Consentimiento externo en producción, sin verificar (uso propio); cliente OAuth de escritorio «Storm redes local». El refresh token ya no vence a los 7 días.
+- Facebook: página «Storm Studios Learning», administrada desde el perfil personal de Luis. App «Storm Studios Redes» (ID 1129838529633070), en modo desarrollo, caso de uso «Administrar todos los aspectos de tu página», Graph v27.0; permisos `pages_show_list`, `pages_read_engagement`, `pages_manage_posts` y `read_insights`. El token de página no vence; deja de servir si Luis cambia su contraseña de Facebook o quita la app.
+- Primer lote programado y verificado: `2026-S46`, con 4 Shorts en YouTube, 2 Reels y 1 publicación con enlace en Facebook, del 13 al 18 de noviembre.
+- Pendiente: configurar el reporte semanal en el Programador de tareas de Windows. Los lotes no se preparan solos: alguien debe pedirlo.
 
 ## Flujo semanal
 
@@ -17,7 +25,7 @@ node scripts/redes/publicar-lote.mjs apps-src/plan-lanzamiento/redes/lotes/2026-
 node scripts/redes/publicar-lote.mjs apps-src/plan-lanzamiento/redes/lotes/2026-S46/manifiesto.json --confirmar
 # Simulación del reporte, sin credenciales ni red:
 node scripts/redes/reporte-semanal.mjs apps-src/plan-lanzamiento/redes/lotes/2026-S46/manifiesto.json
-# Consulta real de lectura, cuando se autorice operar las cuentas:
+# Consulta real de lectura con las cuentas ya configuradas:
 node scripts/redes/reporte-semanal.mjs apps-src/plan-lanzamiento/redes/lotes/2026-S46/manifiesto.json --consultar
 ```
 
@@ -48,6 +56,8 @@ No hay parámetro API «Shorts»: YouTube clasifica el video por su formato y du
 
 ## Credenciales: preparación local
 
+Hecho: credenciales en `C:\Users\Luis\.storm-redes\credenciales.json` y variable de usuario `REDES_CREDENTIALS_FILE` configurada; los pasos siguientes quedan como referencia de configuración inicial.
+
 1. Cree una carpeta **fuera del repositorio**, por ejemplo `C:\Users\Luis\.storm-redes`. No usar `.env` del sitio, archivos dentro del repo ni carpetas públicas/sincronizadas.
 2. Con el Bloc de notas cree allí `config-inicial.json` con los campos de la tabla siguiente. Empiece con Google; puede añadir Meta después. Los valores de ejemplo son marcadores, nunca credenciales reales.
 3. Limite el acceso de esa carpeta a su cuenta de Windows con Propiedades → Seguridad. El script crea tokens con modo `0600`, pero Windows requiere ACL para controlar acceso efectivo. El JSON no está cifrado: protéjalo como una contraseña.
@@ -68,6 +78,8 @@ Todos estos nombres también se admiten como variables de entorno y prevalecen s
 
 ## Google Cloud: una sola configuración
 
+Hecho: proyecto, APIs, cliente de escritorio y autorización en producción configurados; los pasos siguientes quedan como referencia, sin repetir OAuth en cada lote.
+
 1. Entre en [Google Cloud Console](https://console.cloud.google.com/) con la cuenta que administra el canal. Cree un proyecto llamado, por ejemplo, `Storm Studios Redes` y selecciónelo.
 2. En **APIs y servicios → Biblioteca**, habilite **YouTube Data API v3** y **YouTube Analytics API**. No necesita cuenta de servicio ni clave API para estos scripts.
 3. En **Google Auth Platform → Branding**, configure nombre, correo de soporte y contacto del desarrollador. En **Audience**, use External si es una cuenta personal. Para la primera prueba añada su correo como usuario de prueba.
@@ -86,6 +98,8 @@ El refresh token puede revocarse, expirar por inactividad o invalidarse al cambi
 Fuentes de Google: [OAuth de escritorio y PKCE](https://developers.google.com/identity/protocols/oauth2/native-app), [caducidad de refresh tokens](https://developers.google.com/identity/protocols/oauth2), [métricas de Analytics](https://developers.google.com/youtube/analytics/metrics).
 
 ## Meta for Developers: camino para una página propia
+
+Hecho: app, permisos y token de página configurados en Graph v27.0; primer lote programado y verificado. Los pasos siguientes quedan como referencia de configuración inicial.
 
 El camino más corto es **Luis como administrador/desarrollador de la app y con control total de su propia página**, token de esa página y acceso estándar en modo Development si el panel lo permite. No incorpora páginas de clientes ni usuarios ajenos. No necesita automatizar el perfil personal, Instagram, grupos o WhatsApp.
 
@@ -126,7 +140,7 @@ Abra ese JSON externo con Bloc de notas y copie `access_token` al selector de to
 
 **Revisión de Meta.** Para administrar páginas de personas que no tienen rol en la app normalmente se necesita Live, acceso avanzado y App Review para `pages_manage_posts`, `pages_read_engagement`, `pages_show_list` y `read_insights`; puede exigir verificación del negocio, política de privacidad, instrucciones y grabación del flujo. Live por sí solo no concede esos permisos. Para una sola página propia, pruebe primero acceso estándar con Luis en ambos roles; si el panel exige revisión o verificación incluso para su configuración, cumpla ese requisito. Los scripts no la evitan. No se solicita Page Public Content Access para recoger páginas ajenas.
 
-**Límite de verificación de esta entrega:** Meta devolvió HTTP 429 al consultar su documentación pública. Las llamadas están implementadas y probadas con simulaciones, pero no se ha validado su comportamiento en una cuenta real ni una versión Graph elegida por Luis. Las capacidades exactas de programación de Reels, permisos adicionales y nombres/unidades de métricas deben confirmarse con el panel y la prueba autorizada. Los errores se muestran como N/D o subida incierta, no como éxito inventado.
+**Verificación actual:** programación del primer lote comprobada en la cuenta real con Graph v27.0; las métricas se comprobarán en los reportes. Los errores se muestran como N/D o subida incierta, no como éxito inventado.
 
 Referencias oficiales para esa comprobación: [publicación de Reels](https://developers.facebook.com/docs/video-api/guides/reels-publishing/), [posts de página](https://developers.facebook.com/docs/pages-api/posts/), [videos de página](https://developers.facebook.com/docs/graph-api/reference/page/videos/), [video insights](https://developers.facebook.com/docs/graph-api/reference/video/video_insights/), [permisos](https://developers.facebook.com/docs/permissions/), [modos de app](https://developers.facebook.com/docs/development/build-and-test/app-modes/), [tokens de página](https://developers.facebook.com/docs/pages-api/getting-started/).
 
@@ -154,13 +168,13 @@ YouTube: vistas acumuladas de Data API, duración media y porcentaje medio visto
 
 Los clics externos de Shorts y Reels no se infieren de vistas, likes o clics en tarjetas. Los enlaces de las descripciones de Shorts no son clicables; use los UTM y la analítica del sitio para visitas, consultas y conversiones. Este alcance no consulta GA4 ni inventa esa atribución. El reporte es una instantánea acumulada por pieza, **no las vistas ganadas solo esa semana**. No compare directamente cifras de vistas entre plataformas.
 
-Configuración opcional única en Windows, después de probar credenciales y autorizar las consultas:
+Pendiente: configurar la tarea semanal en Windows; las credenciales ya están configuradas. Pasos de referencia:
 
-1. En Variables de entorno de **su usuario** cree `REDES_CREDENTIALS_FILE` con la ruta externa final, sin tokens en los argumentos. Cierre y vuelva a abrir las sesiones para cargarla.
+1. Hecho: variable de usuario `REDES_CREDENTIALS_FILE` con la ruta externa final, sin tokens en los argumentos. Cierre y vuelva a abrir las sesiones para cargarla.
 2. Abra Programador de tareas → Crear tarea, usuario Luis, sin privilegios elevados, desencadenador semanal lunes 10:00 (hora CDMX). Use «Ejecutar lo antes posible si se omitió el inicio».
 3. En Acciones → Iniciar programa, seleccione el `node.exe` de Node 24 (obtenga la ruta con `(Get-Command node).Source`). Argumentos: `scripts/redes/reportar-todos.mjs --consultar`. Iniciar en: `C:\Users\Luis\Documents\Claude Cowork\nuevo_website\storm-studios\StormStudios`.
 4. Configure «No iniciar una instancia nueva» si ya está en ejecución. La PC debe estar encendida y tener internet a esa hora; si desea ejecutarlo con sesión cerrada, configure las credenciales de Windows en el Programador. La tarea solo consulta: no publica ni necesita `--confirmar`.
-5. Ejecute manualmente la tarea una vez **cuando se autoricen consultas reales** y compruebe los Markdown y el historial de la tarea. Sin piezas con IDs no hay nada que medir. `node scripts/redes/reportar-todos.mjs` permite simular el recorrido sin red.
+5. Ejecute manualmente la tarea una vez y compruebe los Markdown y el historial de la tarea. El lote `2026-S46` ya tiene destinos programados y verificados; las métricas estarán disponibles después de publicarse, según cada plataforma. `node scripts/redes/reportar-todos.mjs` permite simular el recorrido sin red.
 
 ## Pruebas locales
 

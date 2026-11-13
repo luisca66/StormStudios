@@ -6,6 +6,14 @@ Ayúdame a priorizar y organizar qué hacemos para avanzar en orden
 
 Para producir el video de una lección (español e inglés), sigue `.claude/skills/video-leccion/SKILL.md`: guion y audio de ElevenLabs → storyboard → stills → mapa de audio → video → revisión → entrega. Al terminar un video, añade lo aprendido en su sección «Lecciones aprendidas».
 
+## Redes sociales (lote semanal)
+
+Para preparar el lote semanal, sigue `.claude/skills/lote-redes/SKILL.md`.
+La automatización y su configuración están en `docs/automatizacion-redes.md`.
+Nunca publiques ni ejecutes `publicar-lote --confirmar` sin el «sí» explícito de Luis para ese lote.
+Las credenciales viven fuera del repo en `C:\Users\Luis\.storm-redes\credenciales.json` (variable de usuario `REDES_CREDENTIALS_FILE`); jamás se copian, imprimen ni suben.
+Los lotes, la estrategia y la bitácora están en `apps-src/plan-lanzamiento/redes/` (ignorado por git; solo existe en la PC de Luis).
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
