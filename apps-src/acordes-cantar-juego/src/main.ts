@@ -261,7 +261,7 @@ function buildMenu(): void {
     showScreen("atlas-screen");
   });
   $("atlas-back").addEventListener("click", () => showScreen("menu-screen"));
-  $("mic-denied-back").addEventListener("click", () => showScreen("menu-screen"));
+  $("mic-denied-back").addEventListener("click", () => endGame());
 }
 
 // ---------------------------------------------------------------------------
@@ -320,6 +320,11 @@ function sharedAudioContext(): AudioContext {
 }
 
 let pitchDetector: PitchDetectorLike | null = null;
+let microphoneAction = 0;
+function releaseMicrophone(): void {
+  microphoneAction += 1;
+  pitchDetector?.dispose();
+}
 function getPitchDetector(): PitchDetectorLike {
   if (!pitchDetector) {
     pitchDetector = isFakeMicRequested()
@@ -746,6 +751,7 @@ function finishRun(reasonKey: string): void {
   stopMusic();
   clearGhostTimers();
   undockCleanup();
+  releaseMicrophone();
   game.stopAscent();
   synth?.setBurner(0);
   saveBestScore(state.mode, state.score);
@@ -916,22 +922,31 @@ function ensureSynth(): void {
 
 // ── INICIAR ASCENSO: gesto de unlock (audio + mic §10) y arranque real ──
 async function startGame(): Promise<void> {
+  const action = ++microphoneAction;
   samplePlayer.unlock();
   void samplePlayer.preloadEffects();
   const detector = getPitchDetector();
   try {
+    if (audioCtx?.state === "suspended") await audioCtx.resume();
+    if (action !== microphoneAction) return;
+    if (document.hidden) { releaseMicrophone(); return; }
     await detector.ensureReady();
+    if (action !== microphoneAction) return;
+    if (document.hidden) { releaseMicrophone(); return; }
+    ensureSynth();
   } catch (err) {
+    if (action !== microphoneAction) return;
+    releaseMicrophone();
     if (err instanceof MicDeniedError) {
       showScreen("mic-denied-screen");
     } else if (err instanceof MicUnsupportedError) {
       showToast("Micrófono no soportado (se requiere HTTPS o localhost)");
     } else {
-      throw err;
+      console.warn("[Mic] No se pudo preparar el audio", err);
+      showScreen("mic-denied-screen");
     }
     return;
   }
-  ensureSynth();
   samplePlayer.setVolume(settings.volume);
 
   clearGhostTimers();
@@ -967,6 +982,7 @@ async function startGame(): Promise<void> {
 }
 
 function endGame(): void {
+  releaseMicrophone();
   playing = false;
   stopMusic();
   stopFlybySfx();
@@ -996,22 +1012,39 @@ function startFreeFlight(): void {
 }
 
 // Esc: pausa (congela temporizador, gas y MIC §16) — o salir del vuelo libre.
-game.player.onEscape = () => {
+function pauseGame(): void {
   if (freeFlying) {
     freeFlying = false;
     endGame();
     return;
   }
+  releaseMicrophone();
   if (!playing || pausedGame) return;
   pausedGame = true;
   state.setPaused(true);
-  pitchDetector?.stopListening(); // no dejar el hold corriendo en pausa
   game.stopAscent();
   showScreen("pause-screen");
-};
+}
+game.player.onEscape = pauseGame;
 
-$("pause-resume").addEventListener("click", () => {
+$("pause-resume").addEventListener("click", () => void resumeGame());
+async function resumeGame(): Promise<void> {
   if (!pausedGame) return;
+  const action = ++microphoneAction;
+  try {
+    if (audioCtx?.state === "suspended") await audioCtx.resume();
+    if (action !== microphoneAction) return;
+    if (document.hidden) { releaseMicrophone(); return; }
+    await getPitchDetector().ensureReady();
+    if (action !== microphoneAction) return;
+    if (!pausedGame || !playing || document.hidden) { releaseMicrophone(); return; }
+  } catch (err) {
+    if (action !== microphoneAction) return;
+    releaseMicrophone();
+    console.warn("[Mic] No se pudo reanudar el micrófono", err);
+    showToast(t("micdenied.body"));
+    return;
+  }
   pausedGame = false;
   state.setPaused(false);
   game.player.setEnabled(true);
@@ -1019,7 +1052,14 @@ $("pause-resume").addEventListener("click", () => {
     getPitchDetector().startListening(midiToFrequency(currentTargetMidi));
   }
   showScreen("hud");
+}
+
+// Al volver a la pestaña se conserva la pausa: el botón reabre el micrófono.
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) pauseGame();
 });
+window.addEventListener("pagehide", pauseGame);
+window.addEventListener("beforeunload", releaseMicrophone);
 
 $("pause-quit").addEventListener("click", () => endGame());
 
@@ -1031,6 +1071,7 @@ window.addEventListener("message", (e) => {
   if ((e.data as { type?: string } | null)?.type !== "storm:back") return;
   const atMenu = !$("menu-screen").classList.contains("hidden");
   if (atMenu) {
+    releaseMicrophone();
     window.parent.postMessage({ type: "storm:back-exit" }, window.location.origin);
   } else {
     freeFlying = false;

@@ -2,7 +2,8 @@ import { validateLesson8SatbLinks } from '@/lib/maestro-virtual/satb-links-valid
 import { validateLesson9Cadences } from '@/lib/maestro-virtual/cadences-validator';
 import { NextRequest, NextResponse } from 'next/server';
 import { createHash, randomBytes } from 'node:crypto';
-import { isIP } from 'node:net';
+import { getClientIp } from '@/lib/http/client-ip';
+import { passesEdgeRateLimit } from '@/lib/http/edge-rate-limit';
 import { parseMidiBuffer } from '@/lib/maestro-virtual/midi-parser';
 import { validateLesson1Scales } from '@/lib/maestro-virtual/scale-validator';
 import { validateMinorScales } from '@/lib/maestro-virtual/minor-scale-validator';
@@ -24,8 +25,9 @@ const MAX_RATE_LIMIT_ENTRIES = 10_000;
 const RATE_LIMIT_SALT = randomBytes(16).toString('hex');
 const NO_STORE_HEADERS = { 'Cache-Control': 'no-store' };
 
-// Protección local por instancia. Complementar con rate limiting/WAF distribuido
-// antes de producción, porque las instancias serverless no comparten memoria.
+// Dos capas: el binding MAESTRO_LIMITER de Cloudflare cuenta entre todas las
+// instancias (ver lib/http/edge-rate-limit.ts) y este contador en memoria, que
+// solo ve su propio isolate, cubre `next dev`/`next start` y ráfagas locales.
 const ipRequestLog = new Map<string, number[]>();
 let lastRateLimitCleanupAt = 0;
 
@@ -55,23 +57,6 @@ function invalidRequest(code: MaestroErrorCode, status = 400) {
     { code, error: ERROR_MESSAGES[code] },
     { status, headers: NO_STORE_HEADERS }
   );
-}
-
-function getClientIp(request: NextRequest): string {
-  const forwardedFor = request.headers.get('x-vercel-forwarded-for')
-    ?? request.headers.get('x-forwarded-for');
-  const candidates = [
-    forwardedFor?.split(',')[0]?.trim(),
-    request.headers.get('x-real-ip')?.trim(),
-  ];
-
-  for (const candidate of candidates) {
-    if (candidate && isIP(candidate)) {
-      return candidate;
-    }
-  }
-
-  return 'unknown';
 }
 
 function rateLimitKey(ip: string): string {
@@ -213,7 +198,12 @@ async function readBoundedBody(request: NextRequest): Promise<BoundedBodyResult>
  */
 export async function POST(request: NextRequest) {
   try {
-    const rateLimit = getRateLimitResult(getClientIp(request));
+    const ip = getClientIp(request.headers);
+    if (!(await passesEdgeRateLimit('MAESTRO_LIMITER', ip))) {
+      return rateLimitedResponse(60);
+    }
+
+    const rateLimit = getRateLimitResult(ip);
     if (rateLimit.limited) {
       return rateLimitedResponse(rateLimit.retryAfterSeconds);
     }

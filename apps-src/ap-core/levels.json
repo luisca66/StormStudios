@@ -1,0 +1,6970 @@
+{
+ "Hombre": [
+  {
+   "number": 1,
+   "pitches": [
+    "E3",
+    "D#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Preparatorio: 7ª mayor",
+   "commentEnglish": "Warm-up: major 7th"
+  },
+  {
+   "number": 2,
+   "pitches": [
+    "E3",
+    "D4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Preparatorio: 7ª menor",
+   "commentEnglish": "Warm-up: minor 7th"
+  },
+  {
+   "number": 3,
+   "pitches": [
+    "E3",
+    "C#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Preparatorio: 6ª mayor",
+   "commentEnglish": "Warm-up: major 6th"
+  },
+  {
+   "number": 4,
+   "pitches": [
+    "E3",
+    "C4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Preparatorio: 6ª menor",
+   "commentEnglish": "Warm-up: minor 6th"
+  },
+  {
+   "number": 5,
+   "pitches": [
+    "E3",
+    "B3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Preparatorio: 5ª justa",
+   "commentEnglish": "Warm-up: perfect 5th"
+  },
+  {
+   "number": 6,
+   "pitches": [
+    "E3",
+    "A#3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: par base",
+   "commentEnglish": "Tritone: base pair"
+  },
+  {
+   "number": 7,
+   "pitches": [
+    "F3",
+    "B3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: par base",
+   "commentEnglish": "Tritone: base pair"
+  },
+  {
+   "number": 8,
+   "pitches": [
+    "F#3",
+    "C4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: par base",
+   "commentEnglish": "Tritone: base pair"
+  },
+  {
+   "number": 9,
+   "pitches": [
+    "G3",
+    "C#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: par base",
+   "commentEnglish": "Tritone: base pair"
+  },
+  {
+   "number": 10,
+   "pitches": [
+    "G#3",
+    "D4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: par base",
+   "commentEnglish": "Tritone: base pair"
+  },
+  {
+   "number": 11,
+   "pitches": [
+    "A3",
+    "D#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: par base",
+   "commentEnglish": "Tritone: base pair"
+  },
+  {
+   "number": 12,
+   "pitches": [
+    "E3",
+    "A#3",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E4",
+   "commentEnglish": "Tritone: + E4"
+  },
+  {
+   "number": 13,
+   "pitches": [
+    "F3",
+    "B3",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E4",
+   "commentEnglish": "Tritone: + E4"
+  },
+  {
+   "number": 14,
+   "pitches": [
+    "F#3",
+    "C4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E4",
+   "commentEnglish": "Tritone: + E4"
+  },
+  {
+   "number": 15,
+   "pitches": [
+    "G3",
+    "C#4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E4",
+   "commentEnglish": "Tritone: + E4"
+  },
+  {
+   "number": 16,
+   "pitches": [
+    "G#3",
+    "D4",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E4",
+   "commentEnglish": "Tritone: + E4"
+  },
+  {
+   "number": 17,
+   "pitches": [
+    "A3",
+    "D#4",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E4",
+   "commentEnglish": "Tritone: + E4"
+  },
+  {
+   "number": 18,
+   "pitches": [
+    "A#2",
+    "E3",
+    "A#3",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#2",
+   "commentEnglish": "Tritone: + A#2"
+  },
+  {
+   "number": 19,
+   "pitches": [
+    "B2",
+    "F3",
+    "B3",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#2",
+   "commentEnglish": "Tritone: + A#2"
+  },
+  {
+   "number": 20,
+   "pitches": [
+    "C3",
+    "F#3",
+    "C4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#2",
+   "commentEnglish": "Tritone: + A#2"
+  },
+  {
+   "number": 21,
+   "pitches": [
+    "C#3",
+    "G3",
+    "C#4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#2",
+   "commentEnglish": "Tritone: + A#2"
+  },
+  {
+   "number": 22,
+   "pitches": [
+    "D3",
+    "G#3",
+    "D4",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#2",
+   "commentEnglish": "Tritone: + A#2"
+  },
+  {
+   "number": 23,
+   "pitches": [
+    "D#3",
+    "A3",
+    "D#4",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#2",
+   "commentEnglish": "Tritone: + A#2"
+  },
+  {
+   "number": 24,
+   "pitches": [
+    "A#2",
+    "E3",
+    "A#3",
+    "E4",
+    "A#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#4",
+   "commentEnglish": "Tritone: + A#4"
+  },
+  {
+   "number": 25,
+   "pitches": [
+    "B2",
+    "F3",
+    "B3",
+    "F4",
+    "B4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#4",
+   "commentEnglish": "Tritone: + A#4"
+  },
+  {
+   "number": 26,
+   "pitches": [
+    "C3",
+    "F#3",
+    "C4",
+    "F#4",
+    "C5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#4",
+   "commentEnglish": "Tritone: + A#4"
+  },
+  {
+   "number": 27,
+   "pitches": [
+    "C#3",
+    "G3",
+    "C#4",
+    "G4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#4",
+   "commentEnglish": "Tritone: + A#4"
+  },
+  {
+   "number": 28,
+   "pitches": [
+    "D3",
+    "G#3",
+    "D4",
+    "G#4",
+    "D5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#4",
+   "commentEnglish": "Tritone: + A#4"
+  },
+  {
+   "number": 29,
+   "pitches": [
+    "D#3",
+    "A3",
+    "D#4",
+    "A4",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#4",
+   "commentEnglish": "Tritone: + A#4"
+  },
+  {
+   "number": 30,
+   "pitches": [
+    "E2",
+    "A#2",
+    "E3",
+    "A#3",
+    "E4",
+    "A#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E2",
+   "commentEnglish": "Tritone: + E2"
+  },
+  {
+   "number": 31,
+   "pitches": [
+    "F2",
+    "B2",
+    "F3",
+    "B3",
+    "F4",
+    "B4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E2",
+   "commentEnglish": "Tritone: + E2"
+  },
+  {
+   "number": 32,
+   "pitches": [
+    "F#2",
+    "C3",
+    "F#3",
+    "C4",
+    "F#4",
+    "C5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E2",
+   "commentEnglish": "Tritone: + E2"
+  },
+  {
+   "number": 33,
+   "pitches": [
+    "G2",
+    "C#3",
+    "G3",
+    "C#4",
+    "G4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E2",
+   "commentEnglish": "Tritone: + E2"
+  },
+  {
+   "number": 34,
+   "pitches": [
+    "G#2",
+    "D3",
+    "G#3",
+    "D4",
+    "G#4",
+    "D5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E2",
+   "commentEnglish": "Tritone: + E2"
+  },
+  {
+   "number": 35,
+   "pitches": [
+    "A2",
+    "D#3",
+    "A3",
+    "D#4",
+    "A4",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E2",
+   "commentEnglish": "Tritone: + E2"
+  },
+  {
+   "number": 36,
+   "pitches": [
+    "E2",
+    "A#2",
+    "E3",
+    "A#3",
+    "E4",
+    "A#4",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E5 (rango completo)",
+   "commentEnglish": "Tritone: + E5 (full range)"
+  },
+  {
+   "number": 37,
+   "pitches": [
+    "E3",
+    "G#3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: par base",
+   "commentEnglish": "Major thirds: base pair"
+  },
+  {
+   "number": 38,
+   "pitches": [
+    "F3",
+    "A3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: par base",
+   "commentEnglish": "Major thirds: base pair"
+  },
+  {
+   "number": 39,
+   "pitches": [
+    "F#3",
+    "A#3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: par base",
+   "commentEnglish": "Major thirds: base pair"
+  },
+  {
+   "number": 40,
+   "pitches": [
+    "G3",
+    "B3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: par base",
+   "commentEnglish": "Major thirds: base pair"
+  },
+  {
+   "number": 41,
+   "pitches": [
+    "E3",
+    "G#3",
+    "C4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + C4 (arriba)",
+   "commentEnglish": "Major thirds: + C4 (up)"
+  },
+  {
+   "number": 42,
+   "pitches": [
+    "F3",
+    "A3",
+    "C#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + C#4 (arriba)",
+   "commentEnglish": "Major thirds: + C#4 (up)"
+  },
+  {
+   "number": 43,
+   "pitches": [
+    "F#3",
+    "A#3",
+    "D4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + D4 (arriba)",
+   "commentEnglish": "Major thirds: + D4 (up)"
+  },
+  {
+   "number": 44,
+   "pitches": [
+    "G3",
+    "B3",
+    "D#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + D#4 (arriba)",
+   "commentEnglish": "Major thirds: + D#4 (up)"
+  },
+  {
+   "number": 45,
+   "pitches": [
+    "C3",
+    "E3",
+    "G#3",
+    "C4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + C3 (abajo)",
+   "commentEnglish": "Major thirds: + C3 (down)"
+  },
+  {
+   "number": 46,
+   "pitches": [
+    "C#3",
+    "F3",
+    "A3",
+    "C#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + C#3 (abajo)",
+   "commentEnglish": "Major thirds: + C#3 (down)"
+  },
+  {
+   "number": 47,
+   "pitches": [
+    "D3",
+    "F#3",
+    "A#3",
+    "D4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + D3 (abajo)",
+   "commentEnglish": "Major thirds: + D3 (down)"
+  },
+  {
+   "number": 48,
+   "pitches": [
+    "D#3",
+    "G3",
+    "B3",
+    "D#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + D#3 (abajo)",
+   "commentEnglish": "Major thirds: + D#3 (down)"
+  },
+  {
+   "number": 49,
+   "pitches": [
+    "C3",
+    "E3",
+    "G#3",
+    "C4",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + E4 (arriba)",
+   "commentEnglish": "Major thirds: + E4 (up)"
+  },
+  {
+   "number": 50,
+   "pitches": [
+    "C#3",
+    "F3",
+    "A3",
+    "C#4",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + F4 (arriba)",
+   "commentEnglish": "Major thirds: + F4 (up)"
+  },
+  {
+   "number": 51,
+   "pitches": [
+    "D3",
+    "F#3",
+    "A#3",
+    "D4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + F#4 (arriba)",
+   "commentEnglish": "Major thirds: + F#4 (up)"
+  },
+  {
+   "number": 52,
+   "pitches": [
+    "D#3",
+    "G3",
+    "B3",
+    "D#4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + G4 (arriba)",
+   "commentEnglish": "Major thirds: + G4 (up)"
+  },
+  {
+   "number": 53,
+   "pitches": [
+    "G#2",
+    "C3",
+    "E3",
+    "G#3",
+    "C4",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + G#2 (abajo)",
+   "commentEnglish": "Major thirds: + G#2 (down)"
+  },
+  {
+   "number": 54,
+   "pitches": [
+    "A2",
+    "C#3",
+    "F3",
+    "A3",
+    "C#4",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + A2 (abajo)",
+   "commentEnglish": "Major thirds: + A2 (down)"
+  },
+  {
+   "number": 55,
+   "pitches": [
+    "A#2",
+    "D3",
+    "F#3",
+    "A#3",
+    "D4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + A#2 (abajo)",
+   "commentEnglish": "Major thirds: + A#2 (down)"
+  },
+  {
+   "number": 56,
+   "pitches": [
+    "B2",
+    "D#3",
+    "G3",
+    "B3",
+    "D#4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + B2 (abajo)",
+   "commentEnglish": "Major thirds: + B2 (down)"
+  },
+  {
+   "number": 57,
+   "pitches": [
+    "G#2",
+    "C3",
+    "E3",
+    "G#3",
+    "C4",
+    "E4",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + G#4 (arriba)",
+   "commentEnglish": "Major thirds: + G#4 (up)"
+  },
+  {
+   "number": 58,
+   "pitches": [
+    "A2",
+    "C#3",
+    "F3",
+    "A3",
+    "C#4",
+    "F4",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + A4 (arriba)",
+   "commentEnglish": "Major thirds: + A4 (up)"
+  },
+  {
+   "number": 59,
+   "pitches": [
+    "A#2",
+    "D3",
+    "F#3",
+    "A#3",
+    "D4",
+    "F#4",
+    "A#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + A#4 (arriba)",
+   "commentEnglish": "Major thirds: + A#4 (up)"
+  },
+  {
+   "number": 60,
+   "pitches": [
+    "B2",
+    "D#3",
+    "G3",
+    "B3",
+    "D#4",
+    "G4",
+    "B4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + B4 (arriba)",
+   "commentEnglish": "Major thirds: + B4 (up)"
+  },
+  {
+   "number": 61,
+   "pitches": [
+    "E2",
+    "G#2",
+    "C3",
+    "E3",
+    "G#3",
+    "C4",
+    "E4",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + E2 (abajo)",
+   "commentEnglish": "Major thirds: + E2 (down)"
+  },
+  {
+   "number": 62,
+   "pitches": [
+    "F2",
+    "A2",
+    "C#3",
+    "F3",
+    "A3",
+    "C#4",
+    "F4",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + F2 (abajo)",
+   "commentEnglish": "Major thirds: + F2 (down)"
+  },
+  {
+   "number": 63,
+   "pitches": [
+    "F#2",
+    "A#2",
+    "D3",
+    "F#3",
+    "A#3",
+    "D4",
+    "F#4",
+    "A#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + F#2 (abajo)",
+   "commentEnglish": "Major thirds: + F#2 (down)"
+  },
+  {
+   "number": 64,
+   "pitches": [
+    "G2",
+    "B2",
+    "D#3",
+    "G3",
+    "B3",
+    "D#4",
+    "G4",
+    "B4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + G2 (abajo)",
+   "commentEnglish": "Major thirds: + G2 (down)"
+  },
+  {
+   "number": 65,
+   "pitches": [
+    "E2",
+    "G#2",
+    "C3",
+    "E3",
+    "G#3",
+    "C4",
+    "E4",
+    "G#4",
+    "C5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + C5 (arriba)",
+   "commentEnglish": "Major thirds: + C5 (up)"
+  },
+  {
+   "number": 66,
+   "pitches": [
+    "F2",
+    "A2",
+    "C#3",
+    "F3",
+    "A3",
+    "C#4",
+    "F4",
+    "A4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + C#5 (arriba)",
+   "commentEnglish": "Major thirds: + C#5 (up)"
+  },
+  {
+   "number": 67,
+   "pitches": [
+    "F#2",
+    "A#2",
+    "D3",
+    "F#3",
+    "A#3",
+    "D4",
+    "F#4",
+    "A#4",
+    "D5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + D5 (arriba)",
+   "commentEnglish": "Major thirds: + D5 (up)"
+  },
+  {
+   "number": 68,
+   "pitches": [
+    "G2",
+    "B2",
+    "D#3",
+    "G3",
+    "B3",
+    "D#4",
+    "G4",
+    "B4",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + D#5 (arriba)",
+   "commentEnglish": "Major thirds: + D#5 (up)"
+  },
+  {
+   "number": 69,
+   "pitches": [
+    "E2",
+    "G#2",
+    "C3",
+    "E3",
+    "G#3",
+    "C4",
+    "E4",
+    "G#4",
+    "C5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + E5 (arriba), rango completo",
+   "commentEnglish": "Major thirds: + E5 (up), full range"
+  },
+  {
+   "number": 70,
+   "pitches": [
+    "E3",
+    "G3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: par base",
+   "commentEnglish": "Minor thirds: base pair"
+  },
+  {
+   "number": 71,
+   "pitches": [
+    "F3",
+    "G#3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: par base",
+   "commentEnglish": "Minor thirds: base pair"
+  },
+  {
+   "number": 72,
+   "pitches": [
+    "F#3",
+    "A3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: par base",
+   "commentEnglish": "Minor thirds: base pair"
+  },
+  {
+   "number": 73,
+   "pitches": [
+    "E3",
+    "G3",
+    "A#3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + A#3 (arriba)",
+   "commentEnglish": "Minor thirds: + A#3 (up)"
+  },
+  {
+   "number": 74,
+   "pitches": [
+    "F3",
+    "G#3",
+    "B3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + B3 (arriba)",
+   "commentEnglish": "Minor thirds: + B3 (up)"
+  },
+  {
+   "number": 75,
+   "pitches": [
+    "F#3",
+    "A3",
+    "C4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + C4 (arriba)",
+   "commentEnglish": "Minor thirds: + C4 (up)"
+  },
+  {
+   "number": 76,
+   "pitches": [
+    "C#3",
+    "E3",
+    "G3",
+    "A#3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + C#3 (abajo)",
+   "commentEnglish": "Minor thirds: + C#3 (down)"
+  },
+  {
+   "number": 77,
+   "pitches": [
+    "D3",
+    "F3",
+    "G#3",
+    "B3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + D3 (abajo)",
+   "commentEnglish": "Minor thirds: + D3 (down)"
+  },
+  {
+   "number": 78,
+   "pitches": [
+    "D#3",
+    "F#3",
+    "A3",
+    "C4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + D#3 (abajo)",
+   "commentEnglish": "Minor thirds: + D#3 (down)"
+  },
+  {
+   "number": 79,
+   "pitches": [
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + C#4 (arriba)",
+   "commentEnglish": "Minor thirds: + C#4 (up)"
+  },
+  {
+   "number": 80,
+   "pitches": [
+    "D3",
+    "F3",
+    "G#3",
+    "B3",
+    "D4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + D4 (arriba)",
+   "commentEnglish": "Minor thirds: + D4 (up)"
+  },
+  {
+   "number": 81,
+   "pitches": [
+    "D#3",
+    "F#3",
+    "A3",
+    "C4",
+    "D#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + D#4 (arriba)",
+   "commentEnglish": "Minor thirds: + D#4 (up)"
+  },
+  {
+   "number": 82,
+   "pitches": [
+    "A#2",
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + A#2 (abajo)",
+   "commentEnglish": "Minor thirds: + A#2 (down)"
+  },
+  {
+   "number": 83,
+   "pitches": [
+    "B2",
+    "D3",
+    "F3",
+    "G#3",
+    "B3",
+    "D4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + B2 (abajo)",
+   "commentEnglish": "Minor thirds: + B2 (down)"
+  },
+  {
+   "number": 84,
+   "pitches": [
+    "C3",
+    "D#3",
+    "F#3",
+    "A3",
+    "C4",
+    "D#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + C3 (abajo)",
+   "commentEnglish": "Minor thirds: + C3 (down)"
+  },
+  {
+   "number": 85,
+   "pitches": [
+    "A#2",
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + E4 (arriba)",
+   "commentEnglish": "Minor thirds: + E4 (up)"
+  },
+  {
+   "number": 86,
+   "pitches": [
+    "B2",
+    "D3",
+    "F3",
+    "G#3",
+    "B3",
+    "D4",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + F4 (arriba)",
+   "commentEnglish": "Minor thirds: + F4 (up)"
+  },
+  {
+   "number": 87,
+   "pitches": [
+    "C3",
+    "D#3",
+    "F#3",
+    "A3",
+    "C4",
+    "D#4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + F#4 (arriba)",
+   "commentEnglish": "Minor thirds: + F#4 (up)"
+  },
+  {
+   "number": 88,
+   "pitches": [
+    "G2",
+    "A#2",
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + G2 (abajo)",
+   "commentEnglish": "Minor thirds: + G2 (down)"
+  },
+  {
+   "number": 89,
+   "pitches": [
+    "G#2",
+    "B2",
+    "D3",
+    "F3",
+    "G#3",
+    "B3",
+    "D4",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + G#2 (abajo)",
+   "commentEnglish": "Minor thirds: + G#2 (down)"
+  },
+  {
+   "number": 90,
+   "pitches": [
+    "A2",
+    "C3",
+    "D#3",
+    "F#3",
+    "A3",
+    "C4",
+    "D#4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + A2 (abajo)",
+   "commentEnglish": "Minor thirds: + A2 (down)"
+  },
+  {
+   "number": 91,
+   "pitches": [
+    "G2",
+    "A#2",
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + G4 (arriba)",
+   "commentEnglish": "Minor thirds: + G4 (up)"
+  },
+  {
+   "number": 92,
+   "pitches": [
+    "G#2",
+    "B2",
+    "D3",
+    "F3",
+    "G#3",
+    "B3",
+    "D4",
+    "F4",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + G#4 (arriba)",
+   "commentEnglish": "Minor thirds: + G#4 (up)"
+  },
+  {
+   "number": 93,
+   "pitches": [
+    "A2",
+    "C3",
+    "D#3",
+    "F#3",
+    "A3",
+    "C4",
+    "D#4",
+    "F#4",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + A4 (arriba)",
+   "commentEnglish": "Minor thirds: + A4 (up)"
+  },
+  {
+   "number": 94,
+   "pitches": [
+    "E2",
+    "G2",
+    "A#2",
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + E2 (abajo)",
+   "commentEnglish": "Minor thirds: + E2 (down)"
+  },
+  {
+   "number": 95,
+   "pitches": [
+    "F2",
+    "G#2",
+    "B2",
+    "D3",
+    "F3",
+    "G#3",
+    "B3",
+    "D4",
+    "F4",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + F2 (abajo)",
+   "commentEnglish": "Minor thirds: + F2 (down)"
+  },
+  {
+   "number": 96,
+   "pitches": [
+    "F#2",
+    "A2",
+    "C3",
+    "D#3",
+    "F#3",
+    "A3",
+    "C4",
+    "D#4",
+    "F#4",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + F#2 (abajo)",
+   "commentEnglish": "Minor thirds: + F#2 (down)"
+  },
+  {
+   "number": 97,
+   "pitches": [
+    "E2",
+    "G2",
+    "A#2",
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4",
+    "G4",
+    "A#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + A#4 (arriba)",
+   "commentEnglish": "Minor thirds: + A#4 (up)"
+  },
+  {
+   "number": 98,
+   "pitches": [
+    "F2",
+    "G#2",
+    "B2",
+    "D3",
+    "F3",
+    "G#3",
+    "B3",
+    "D4",
+    "F4",
+    "G#4",
+    "B4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + B4 (arriba)",
+   "commentEnglish": "Minor thirds: + B4 (up)"
+  },
+  {
+   "number": 99,
+   "pitches": [
+    "F#2",
+    "A2",
+    "C3",
+    "D#3",
+    "F#3",
+    "A3",
+    "C4",
+    "D#4",
+    "F#4",
+    "A4",
+    "C5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + C5 (arriba)",
+   "commentEnglish": "Minor thirds: + C5 (up)"
+  },
+  {
+   "number": 100,
+   "pitches": [
+    "E2",
+    "G2",
+    "A#2",
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4",
+    "G4",
+    "A#4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + C#5 (arriba)",
+   "commentEnglish": "Minor thirds: + C#5 (up)"
+  },
+  {
+   "number": 101,
+   "pitches": [
+    "F2",
+    "G#2",
+    "B2",
+    "D3",
+    "F3",
+    "G#3",
+    "B3",
+    "D4",
+    "F4",
+    "G#4",
+    "B4",
+    "D5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + D5 (arriba)",
+   "commentEnglish": "Minor thirds: + D5 (up)"
+  },
+  {
+   "number": 102,
+   "pitches": [
+    "F#2",
+    "A2",
+    "C3",
+    "D#3",
+    "F#3",
+    "A3",
+    "C4",
+    "D#4",
+    "F#4",
+    "A4",
+    "C5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + D#5 (arriba)",
+   "commentEnglish": "Minor thirds: + D#5 (up)"
+  },
+  {
+   "number": 103,
+   "pitches": [
+    "E2",
+    "G2",
+    "A#2",
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4",
+    "G4",
+    "A#4",
+    "C#5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + E5 (arriba), rango completo",
+   "commentEnglish": "Minor thirds: + E5 (up), full range"
+  },
+  {
+   "number": 104,
+   "pitches": [
+    "E3",
+    "F#3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: par base",
+   "commentEnglish": "Major seconds: base pair"
+  },
+  {
+   "number": 105,
+   "pitches": [
+    "F3",
+    "G3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: par base",
+   "commentEnglish": "Major seconds: base pair"
+  },
+  {
+   "number": 106,
+   "pitches": [
+    "E3",
+    "F#3",
+    "G#3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + G#3 (arriba)",
+   "commentEnglish": "Major seconds: + G#3 (up)"
+  },
+  {
+   "number": 107,
+   "pitches": [
+    "F3",
+    "G3",
+    "A3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + A3 (arriba)",
+   "commentEnglish": "Major seconds: + A3 (up)"
+  },
+  {
+   "number": 108,
+   "pitches": [
+    "D3",
+    "E3",
+    "F#3",
+    "G#3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + D3 (abajo)",
+   "commentEnglish": "Major seconds: + D3 (down)"
+  },
+  {
+   "number": 109,
+   "pitches": [
+    "D#3",
+    "F3",
+    "G3",
+    "A3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + D#3 (abajo)",
+   "commentEnglish": "Major seconds: + D#3 (down)"
+  },
+  {
+   "number": 110,
+   "pitches": [
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + A#3 (arriba)",
+   "commentEnglish": "Major seconds: + A#3 (up)"
+  },
+  {
+   "number": 111,
+   "pitches": [
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + B3 (arriba)",
+   "commentEnglish": "Major seconds: + B3 (up)"
+  },
+  {
+   "number": 112,
+   "pitches": [
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + C3 (abajo)",
+   "commentEnglish": "Major seconds: + C3 (down)"
+  },
+  {
+   "number": 113,
+   "pitches": [
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + C#3 (abajo)",
+   "commentEnglish": "Major seconds: + C#3 (down)"
+  },
+  {
+   "number": 114,
+   "pitches": [
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + C4 (arriba)",
+   "commentEnglish": "Major seconds: + C4 (up)"
+  },
+  {
+   "number": 115,
+   "pitches": [
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + C#4 (arriba)",
+   "commentEnglish": "Major seconds: + C#4 (up)"
+  },
+  {
+   "number": 116,
+   "pitches": [
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + A#2 (abajo)",
+   "commentEnglish": "Major seconds: + A#2 (down)"
+  },
+  {
+   "number": 117,
+   "pitches": [
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + B2 (abajo)",
+   "commentEnglish": "Major seconds: + B2 (down)"
+  },
+  {
+   "number": 118,
+   "pitches": [
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + D4 (arriba)",
+   "commentEnglish": "Major seconds: + D4 (up)"
+  },
+  {
+   "number": 119,
+   "pitches": [
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + D#4 (arriba)",
+   "commentEnglish": "Major seconds: + D#4 (up)"
+  },
+  {
+   "number": 120,
+   "pitches": [
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + G#2 (abajo)",
+   "commentEnglish": "Major seconds: + G#2 (down)"
+  },
+  {
+   "number": 121,
+   "pitches": [
+    "A2",
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + A2 (abajo)",
+   "commentEnglish": "Major seconds: + A2 (down)"
+  },
+  {
+   "number": 122,
+   "pitches": [
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + E4 (arriba)",
+   "commentEnglish": "Major seconds: + E4 (up)"
+  },
+  {
+   "number": 123,
+   "pitches": [
+    "A2",
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + F4 (arriba)",
+   "commentEnglish": "Major seconds: + F4 (up)"
+  },
+  {
+   "number": 124,
+   "pitches": [
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + F#2 (abajo)",
+   "commentEnglish": "Major seconds: + F#2 (down)"
+  },
+  {
+   "number": 125,
+   "pitches": [
+    "G2",
+    "A2",
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + G2 (abajo)",
+   "commentEnglish": "Major seconds: + G2 (down)"
+  },
+  {
+   "number": 126,
+   "pitches": [
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + F#4 (arriba)",
+   "commentEnglish": "Major seconds: + F#4 (up)"
+  },
+  {
+   "number": 127,
+   "pitches": [
+    "G2",
+    "A2",
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + G4 (arriba)",
+   "commentEnglish": "Major seconds: + G4 (up)"
+  },
+  {
+   "number": 128,
+   "pitches": [
+    "E2",
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + E2 (abajo)",
+   "commentEnglish": "Major seconds: + E2 (down)"
+  },
+  {
+   "number": 129,
+   "pitches": [
+    "F2",
+    "G2",
+    "A2",
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + F2 (abajo)",
+   "commentEnglish": "Major seconds: + F2 (down)"
+  },
+  {
+   "number": 130,
+   "pitches": [
+    "E2",
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + G#4 (arriba)",
+   "commentEnglish": "Major seconds: + G#4 (up)"
+  },
+  {
+   "number": 131,
+   "pitches": [
+    "F2",
+    "G2",
+    "A2",
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + A4 (arriba)",
+   "commentEnglish": "Major seconds: + A4 (up)"
+  },
+  {
+   "number": 132,
+   "pitches": [
+    "E2",
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + A#4 (arriba)",
+   "commentEnglish": "Major seconds: + A#4 (up)"
+  },
+  {
+   "number": 133,
+   "pitches": [
+    "F2",
+    "G2",
+    "A2",
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4",
+    "A4",
+    "B4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + B4 (arriba)",
+   "commentEnglish": "Major seconds: + B4 (up)"
+  },
+  {
+   "number": 134,
+   "pitches": [
+    "E2",
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A#4",
+    "C5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + C5 (arriba)",
+   "commentEnglish": "Major seconds: + C5 (up)"
+  },
+  {
+   "number": 135,
+   "pitches": [
+    "F2",
+    "G2",
+    "A2",
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4",
+    "A4",
+    "B4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + C#5 (arriba)",
+   "commentEnglish": "Major seconds: + C#5 (up)"
+  },
+  {
+   "number": 136,
+   "pitches": [
+    "E2",
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A#4",
+    "C5",
+    "D5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + D5 (arriba)",
+   "commentEnglish": "Major seconds: + D5 (up)"
+  },
+  {
+   "number": 137,
+   "pitches": [
+    "F2",
+    "G2",
+    "A2",
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4",
+    "A4",
+    "B4",
+    "C#5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + D#5 (arriba)",
+   "commentEnglish": "Major seconds: + D#5 (up)"
+  },
+  {
+   "number": 138,
+   "pitches": [
+    "E2",
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A#4",
+    "C5",
+    "D5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + E5 (arriba), rango completo",
+   "commentEnglish": "Major seconds: + E5 (up), full range"
+  },
+  {
+   "number": 139,
+   "pitches": [
+    "E2",
+    "F2",
+    "G2",
+    "A2",
+    "B2",
+    "C#3",
+    "D#3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F4",
+    "G4",
+    "A4",
+    "B4",
+    "C#5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: tonos enteros alternados por registro, desde E2",
+   "commentEnglish": "Semitones: whole tones alternating by register, from E2"
+  },
+  {
+   "number": 140,
+   "pitches": [
+    "F2",
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "F#4",
+    "G#4",
+    "A#4",
+    "C5",
+    "D5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: tonos enteros alternados por registro, desde F2",
+   "commentEnglish": "Semitones: whole tones alternating by register, from F2"
+  },
+  {
+   "number": 141,
+   "pitches": [
+    "E2",
+    "F2",
+    "G2",
+    "A2",
+    "B2",
+    "C#3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4",
+    "G#4",
+    "A#4",
+    "C5",
+    "D5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: costura cada 4 tonos, desde E2",
+   "commentEnglish": "Semitones: seam every 4 whole tones, from E2"
+  },
+  {
+   "number": 142,
+   "pitches": [
+    "F2",
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A4",
+    "B4",
+    "C#5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: costura cada 4 tonos, desde F2",
+   "commentEnglish": "Semitones: seam every 4 whole tones, from F2"
+  },
+  {
+   "number": 143,
+   "pitches": [
+    "E2",
+    "F2",
+    "G2",
+    "A2",
+    "B2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A4",
+    "B4",
+    "C#5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: costura cada 3 tonos, desde E2",
+   "commentEnglish": "Semitones: seam every 3 whole tones, from E2"
+  },
+  {
+   "number": 144,
+   "pitches": [
+    "F2",
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "D#4",
+    "F4",
+    "G4",
+    "A4",
+    "A#4",
+    "C5",
+    "D5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: costura cada 3 tonos, desde F2",
+   "commentEnglish": "Semitones: seam every 3 whole tones, from F2"
+  },
+  {
+   "number": 145,
+   "pitches": [
+    "E2",
+    "F2",
+    "G2",
+    "A2",
+    "A#2",
+    "C3",
+    "D3",
+    "D#3",
+    "F3",
+    "G3",
+    "G#3",
+    "A#3",
+    "C4",
+    "C#4",
+    "D#4",
+    "F4",
+    "F#4",
+    "G#4",
+    "A#4",
+    "B4",
+    "C#5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: costura cada 2 tonos, desde E2",
+   "commentEnglish": "Semitones: seam every 2 whole tones, from E2"
+  },
+  {
+   "number": 146,
+   "pitches": [
+    "F2",
+    "F#2",
+    "G#2",
+    "A#2",
+    "B2",
+    "C#3",
+    "D#3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A3",
+    "B3",
+    "C#4",
+    "D4",
+    "E4",
+    "F#4",
+    "G4",
+    "A4",
+    "B4",
+    "C5",
+    "D5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: costura cada 2 tonos, desde F2",
+   "commentEnglish": "Semitones: seam every 2 whole tones, from F2"
+  },
+  {
+   "number": 147,
+   "pitches": [
+    "E2",
+    "F2",
+    "F#2",
+    "G2",
+    "G#2",
+    "A2",
+    "A#2",
+    "B2",
+    "C3",
+    "C#3",
+    "D3",
+    "D#3",
+    "E3",
+    "F3",
+    "F#3",
+    "G3",
+    "G#3",
+    "A3",
+    "A#3",
+    "B3",
+    "C4",
+    "C#4",
+    "D4",
+    "D#4",
+    "E4",
+    "F4",
+    "F#4",
+    "G4",
+    "G#4",
+    "A4",
+    "A#4",
+    "B4",
+    "C5",
+    "C#5",
+    "D5",
+    "D#5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: escala cromática completa (E2–E5)",
+   "commentEnglish": "Semitones: full chromatic scale (E2–E5)"
+  }
+ ],
+ "Mujer": [
+  {
+   "number": 1,
+   "pitches": [
+    "A#3",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Preparatorio: 7ª mayor",
+   "commentEnglish": "Warm-up: major 7th"
+  },
+  {
+   "number": 2,
+   "pitches": [
+    "A#3",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Preparatorio: 7ª menor",
+   "commentEnglish": "Warm-up: minor 7th"
+  },
+  {
+   "number": 3,
+   "pitches": [
+    "A#3",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Preparatorio: 6ª mayor",
+   "commentEnglish": "Warm-up: major 6th"
+  },
+  {
+   "number": 4,
+   "pitches": [
+    "A#3",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Preparatorio: 6ª menor",
+   "commentEnglish": "Warm-up: minor 6th"
+  },
+  {
+   "number": 5,
+   "pitches": [
+    "A#3",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Preparatorio: 5ª justa",
+   "commentEnglish": "Warm-up: perfect 5th"
+  },
+  {
+   "number": 6,
+   "pitches": [
+    "A#3",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: par base",
+   "commentEnglish": "Tritone: base pair"
+  },
+  {
+   "number": 7,
+   "pitches": [
+    "B3",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: par base",
+   "commentEnglish": "Tritone: base pair"
+  },
+  {
+   "number": 8,
+   "pitches": [
+    "C4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: par base",
+   "commentEnglish": "Tritone: base pair"
+  },
+  {
+   "number": 9,
+   "pitches": [
+    "C#4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: par base",
+   "commentEnglish": "Tritone: base pair"
+  },
+  {
+   "number": 10,
+   "pitches": [
+    "D4",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: par base",
+   "commentEnglish": "Tritone: base pair"
+  },
+  {
+   "number": 11,
+   "pitches": [
+    "D#4",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: par base",
+   "commentEnglish": "Tritone: base pair"
+  },
+  {
+   "number": 12,
+   "pitches": [
+    "E3",
+    "A#3",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E3 (abajo)",
+   "commentEnglish": "Tritone: + E3 (below)"
+  },
+  {
+   "number": 13,
+   "pitches": [
+    "F3",
+    "B3",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E3 (abajo)",
+   "commentEnglish": "Tritone: + E3 (below)"
+  },
+  {
+   "number": 14,
+   "pitches": [
+    "F#3",
+    "C4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E3 (abajo)",
+   "commentEnglish": "Tritone: + E3 (below)"
+  },
+  {
+   "number": 15,
+   "pitches": [
+    "G3",
+    "C#4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E3 (abajo)",
+   "commentEnglish": "Tritone: + E3 (below)"
+  },
+  {
+   "number": 16,
+   "pitches": [
+    "G#3",
+    "D4",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E3 (abajo)",
+   "commentEnglish": "Tritone: + E3 (below)"
+  },
+  {
+   "number": 17,
+   "pitches": [
+    "A3",
+    "D#4",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E3 (abajo)",
+   "commentEnglish": "Tritone: + E3 (below)"
+  },
+  {
+   "number": 18,
+   "pitches": [
+    "E3",
+    "A#3",
+    "E4",
+    "A#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#4 (arriba)",
+   "commentEnglish": "Tritone: + A#4 (above)"
+  },
+  {
+   "number": 19,
+   "pitches": [
+    "F3",
+    "B3",
+    "F4",
+    "B4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#4 (arriba)",
+   "commentEnglish": "Tritone: + A#4 (above)"
+  },
+  {
+   "number": 20,
+   "pitches": [
+    "F#3",
+    "C4",
+    "F#4",
+    "C5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#4 (arriba)",
+   "commentEnglish": "Tritone: + A#4 (above)"
+  },
+  {
+   "number": 21,
+   "pitches": [
+    "G3",
+    "C#4",
+    "G4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#4 (arriba)",
+   "commentEnglish": "Tritone: + A#4 (above)"
+  },
+  {
+   "number": 22,
+   "pitches": [
+    "G#3",
+    "D4",
+    "G#4",
+    "D5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#4 (arriba)",
+   "commentEnglish": "Tritone: + A#4 (above)"
+  },
+  {
+   "number": 23,
+   "pitches": [
+    "A3",
+    "D#4",
+    "A4",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#4 (arriba)",
+   "commentEnglish": "Tritone: + A#4 (above)"
+  },
+  {
+   "number": 24,
+   "pitches": [
+    "A#2",
+    "E3",
+    "A#3",
+    "E4",
+    "A#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#2 (abajo)",
+   "commentEnglish": "Tritone: + A#2 (below)"
+  },
+  {
+   "number": 25,
+   "pitches": [
+    "B2",
+    "F3",
+    "B3",
+    "F4",
+    "B4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#2 (abajo)",
+   "commentEnglish": "Tritone: + A#2 (below)"
+  },
+  {
+   "number": 26,
+   "pitches": [
+    "C3",
+    "F#3",
+    "C4",
+    "F#4",
+    "C5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#2 (abajo)",
+   "commentEnglish": "Tritone: + A#2 (below)"
+  },
+  {
+   "number": 27,
+   "pitches": [
+    "C#3",
+    "G3",
+    "C#4",
+    "G4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#2 (abajo)",
+   "commentEnglish": "Tritone: + A#2 (below)"
+  },
+  {
+   "number": 28,
+   "pitches": [
+    "D3",
+    "G#3",
+    "D4",
+    "G#4",
+    "D5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#2 (abajo)",
+   "commentEnglish": "Tritone: + A#2 (below)"
+  },
+  {
+   "number": 29,
+   "pitches": [
+    "D#3",
+    "A3",
+    "D#4",
+    "A4",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + A#2 (abajo)",
+   "commentEnglish": "Tritone: + A#2 (below)"
+  },
+  {
+   "number": 30,
+   "pitches": [
+    "A#2",
+    "E3",
+    "A#3",
+    "E4",
+    "A#4",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E5 (arriba)",
+   "commentEnglish": "Tritone: + E5 (above)"
+  },
+  {
+   "number": 31,
+   "pitches": [
+    "E2",
+    "A#2",
+    "E3",
+    "A#3",
+    "E4",
+    "A#4",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E2 (rango completo)",
+   "commentEnglish": "Tritone: + E2 (full range)"
+  },
+  {
+   "number": 32,
+   "pitches": [
+    "F2",
+    "B2",
+    "F3",
+    "B3",
+    "F4",
+    "B4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E2 (rango completo)",
+   "commentEnglish": "Tritone: + E2 (full range)"
+  },
+  {
+   "number": 33,
+   "pitches": [
+    "F#2",
+    "C3",
+    "F#3",
+    "C4",
+    "F#4",
+    "C5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E2 (rango completo)",
+   "commentEnglish": "Tritone: + E2 (full range)"
+  },
+  {
+   "number": 34,
+   "pitches": [
+    "G2",
+    "C#3",
+    "G3",
+    "C#4",
+    "G4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E2 (rango completo)",
+   "commentEnglish": "Tritone: + E2 (full range)"
+  },
+  {
+   "number": 35,
+   "pitches": [
+    "G#2",
+    "D3",
+    "G#3",
+    "D4",
+    "G#4",
+    "D5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E2 (rango completo)",
+   "commentEnglish": "Tritone: + E2 (full range)"
+  },
+  {
+   "number": 36,
+   "pitches": [
+    "A2",
+    "D#3",
+    "A3",
+    "D#4",
+    "A4",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Tritono: + E2 (rango completo)",
+   "commentEnglish": "Tritone: + E2 (full range)"
+  },
+  {
+   "number": 37,
+   "pitches": [
+    "A#3",
+    "D4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: par base",
+   "commentEnglish": "Major thirds: base pair"
+  },
+  {
+   "number": 38,
+   "pitches": [
+    "B3",
+    "D#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: par base",
+   "commentEnglish": "Major thirds: base pair"
+  },
+  {
+   "number": 39,
+   "pitches": [
+    "C4",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: par base",
+   "commentEnglish": "Major thirds: base pair"
+  },
+  {
+   "number": 40,
+   "pitches": [
+    "C#4",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: par base",
+   "commentEnglish": "Major thirds: base pair"
+  },
+  {
+   "number": 41,
+   "pitches": [
+    "F#3",
+    "A#3",
+    "D4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + F#3 (abajo)",
+   "commentEnglish": "Major thirds: + F#3 (down)"
+  },
+  {
+   "number": 42,
+   "pitches": [
+    "G3",
+    "B3",
+    "D#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + G3 (abajo)",
+   "commentEnglish": "Major thirds: + G3 (down)"
+  },
+  {
+   "number": 43,
+   "pitches": [
+    "G#3",
+    "C4",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + G#3 (abajo)",
+   "commentEnglish": "Major thirds: + G#3 (down)"
+  },
+  {
+   "number": 44,
+   "pitches": [
+    "A3",
+    "C#4",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + A3 (abajo)",
+   "commentEnglish": "Major thirds: + A3 (down)"
+  },
+  {
+   "number": 45,
+   "pitches": [
+    "F#3",
+    "A#3",
+    "D4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + F#4 (arriba)",
+   "commentEnglish": "Major thirds: + F#4 (up)"
+  },
+  {
+   "number": 46,
+   "pitches": [
+    "G3",
+    "B3",
+    "D#4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + G4 (arriba)",
+   "commentEnglish": "Major thirds: + G4 (up)"
+  },
+  {
+   "number": 47,
+   "pitches": [
+    "G#3",
+    "C4",
+    "E4",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + G#4 (arriba)",
+   "commentEnglish": "Major thirds: + G#4 (up)"
+  },
+  {
+   "number": 48,
+   "pitches": [
+    "A3",
+    "C#4",
+    "F4",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + A4 (arriba)",
+   "commentEnglish": "Major thirds: + A4 (up)"
+  },
+  {
+   "number": 49,
+   "pitches": [
+    "D3",
+    "F#3",
+    "A#3",
+    "D4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + D3 (abajo)",
+   "commentEnglish": "Major thirds: + D3 (down)"
+  },
+  {
+   "number": 50,
+   "pitches": [
+    "D#3",
+    "G3",
+    "B3",
+    "D#4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + D#3 (abajo)",
+   "commentEnglish": "Major thirds: + D#3 (down)"
+  },
+  {
+   "number": 51,
+   "pitches": [
+    "E3",
+    "G#3",
+    "C4",
+    "E4",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + E3 (abajo)",
+   "commentEnglish": "Major thirds: + E3 (down)"
+  },
+  {
+   "number": 52,
+   "pitches": [
+    "F3",
+    "A3",
+    "C#4",
+    "F4",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + F3 (abajo)",
+   "commentEnglish": "Major thirds: + F3 (down)"
+  },
+  {
+   "number": 53,
+   "pitches": [
+    "D3",
+    "F#3",
+    "A#3",
+    "D4",
+    "F#4",
+    "A#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + A#4 (arriba)",
+   "commentEnglish": "Major thirds: + A#4 (up)"
+  },
+  {
+   "number": 54,
+   "pitches": [
+    "D#3",
+    "G3",
+    "B3",
+    "D#4",
+    "G4",
+    "B4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + B4 (arriba)",
+   "commentEnglish": "Major thirds: + B4 (up)"
+  },
+  {
+   "number": 55,
+   "pitches": [
+    "E3",
+    "G#3",
+    "C4",
+    "E4",
+    "G#4",
+    "C5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + C5 (arriba)",
+   "commentEnglish": "Major thirds: + C5 (up)"
+  },
+  {
+   "number": 56,
+   "pitches": [
+    "F3",
+    "A3",
+    "C#4",
+    "F4",
+    "A4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + C#5 (arriba)",
+   "commentEnglish": "Major thirds: + C#5 (up)"
+  },
+  {
+   "number": 57,
+   "pitches": [
+    "A#2",
+    "D3",
+    "F#3",
+    "A#3",
+    "D4",
+    "F#4",
+    "A#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + A#2 (abajo)",
+   "commentEnglish": "Major thirds: + A#2 (down)"
+  },
+  {
+   "number": 58,
+   "pitches": [
+    "B2",
+    "D#3",
+    "G3",
+    "B3",
+    "D#4",
+    "G4",
+    "B4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + B2 (abajo)",
+   "commentEnglish": "Major thirds: + B2 (down)"
+  },
+  {
+   "number": 59,
+   "pitches": [
+    "C3",
+    "E3",
+    "G#3",
+    "C4",
+    "E4",
+    "G#4",
+    "C5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + C3 (abajo)",
+   "commentEnglish": "Major thirds: + C3 (down)"
+  },
+  {
+   "number": 60,
+   "pitches": [
+    "C#3",
+    "F3",
+    "A3",
+    "C#4",
+    "F4",
+    "A4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + C#3 (abajo)",
+   "commentEnglish": "Major thirds: + C#3 (down)"
+  },
+  {
+   "number": 61,
+   "pitches": [
+    "A#2",
+    "D3",
+    "F#3",
+    "A#3",
+    "D4",
+    "F#4",
+    "A#4",
+    "D5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + D5 (arriba)",
+   "commentEnglish": "Major thirds: + D5 (up)"
+  },
+  {
+   "number": 62,
+   "pitches": [
+    "B2",
+    "D#3",
+    "G3",
+    "B3",
+    "D#4",
+    "G4",
+    "B4",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + D#5 (arriba)",
+   "commentEnglish": "Major thirds: + D#5 (up)"
+  },
+  {
+   "number": 63,
+   "pitches": [
+    "C3",
+    "E3",
+    "G#3",
+    "C4",
+    "E4",
+    "G#4",
+    "C5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + E5 (arriba)",
+   "commentEnglish": "Major thirds: + E5 (up)"
+  },
+  {
+   "number": 64,
+   "pitches": [
+    "F#2",
+    "A#2",
+    "D3",
+    "F#3",
+    "A#3",
+    "D4",
+    "F#4",
+    "A#4",
+    "D5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + F#2 (abajo)",
+   "commentEnglish": "Major thirds: + F#2 (down)"
+  },
+  {
+   "number": 65,
+   "pitches": [
+    "G2",
+    "B2",
+    "D#3",
+    "G3",
+    "B3",
+    "D#4",
+    "G4",
+    "B4",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + G2 (abajo)",
+   "commentEnglish": "Major thirds: + G2 (down)"
+  },
+  {
+   "number": 66,
+   "pitches": [
+    "G#2",
+    "C3",
+    "E3",
+    "G#3",
+    "C4",
+    "E4",
+    "G#4",
+    "C5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + G#2 (abajo)",
+   "commentEnglish": "Major thirds: + G#2 (down)"
+  },
+  {
+   "number": 67,
+   "pitches": [
+    "A2",
+    "C#3",
+    "F3",
+    "A3",
+    "C#4",
+    "F4",
+    "A4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + A2 (abajo)",
+   "commentEnglish": "Major thirds: + A2 (down)"
+  },
+  {
+   "number": 68,
+   "pitches": [
+    "E2",
+    "G#2",
+    "C3",
+    "E3",
+    "G#3",
+    "C4",
+    "E4",
+    "G#4",
+    "C5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + E2 (abajo)",
+   "commentEnglish": "Major thirds: + E2 (down)"
+  },
+  {
+   "number": 69,
+   "pitches": [
+    "F2",
+    "A2",
+    "C#3",
+    "F3",
+    "A3",
+    "C#4",
+    "F4",
+    "A4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras mayores: + F2 (abajo), rango completo",
+   "commentEnglish": "Major thirds: + F2 (down), full range"
+  },
+  {
+   "number": 70,
+   "pitches": [
+    "A#3",
+    "C#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: par base",
+   "commentEnglish": "Minor thirds: base pair"
+  },
+  {
+   "number": 71,
+   "pitches": [
+    "B3",
+    "D4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: par base",
+   "commentEnglish": "Minor thirds: base pair"
+  },
+  {
+   "number": 72,
+   "pitches": [
+    "C4",
+    "D#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: par base",
+   "commentEnglish": "Minor thirds: base pair"
+  },
+  {
+   "number": 73,
+   "pitches": [
+    "G3",
+    "A#3",
+    "C#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + G3 (abajo)",
+   "commentEnglish": "Minor thirds: + G3 (down)"
+  },
+  {
+   "number": 74,
+   "pitches": [
+    "G#3",
+    "B3",
+    "D4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + G#3 (abajo)",
+   "commentEnglish": "Minor thirds: + G#3 (down)"
+  },
+  {
+   "number": 75,
+   "pitches": [
+    "A3",
+    "C4",
+    "D#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + A3 (abajo)",
+   "commentEnglish": "Minor thirds: + A3 (down)"
+  },
+  {
+   "number": 76,
+   "pitches": [
+    "G3",
+    "A#3",
+    "C#4",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + E4 (arriba)",
+   "commentEnglish": "Minor thirds: + E4 (up)"
+  },
+  {
+   "number": 77,
+   "pitches": [
+    "G#3",
+    "B3",
+    "D4",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + F4 (arriba)",
+   "commentEnglish": "Minor thirds: + F4 (up)"
+  },
+  {
+   "number": 78,
+   "pitches": [
+    "A3",
+    "C4",
+    "D#4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + F#4 (arriba)",
+   "commentEnglish": "Minor thirds: + F#4 (up)"
+  },
+  {
+   "number": 79,
+   "pitches": [
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + E3 (abajo)",
+   "commentEnglish": "Minor thirds: + E3 (down)"
+  },
+  {
+   "number": 80,
+   "pitches": [
+    "F3",
+    "G#3",
+    "B3",
+    "D4",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + F3 (abajo)",
+   "commentEnglish": "Minor thirds: + F3 (down)"
+  },
+  {
+   "number": 81,
+   "pitches": [
+    "F#3",
+    "A3",
+    "C4",
+    "D#4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + F#3 (abajo)",
+   "commentEnglish": "Minor thirds: + F#3 (down)"
+  },
+  {
+   "number": 82,
+   "pitches": [
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + G4 (arriba)",
+   "commentEnglish": "Minor thirds: + G4 (up)"
+  },
+  {
+   "number": 83,
+   "pitches": [
+    "F3",
+    "G#3",
+    "B3",
+    "D4",
+    "F4",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + G#4 (arriba)",
+   "commentEnglish": "Minor thirds: + G#4 (up)"
+  },
+  {
+   "number": 84,
+   "pitches": [
+    "F#3",
+    "A3",
+    "C4",
+    "D#4",
+    "F#4",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + A4 (arriba)",
+   "commentEnglish": "Minor thirds: + A4 (up)"
+  },
+  {
+   "number": 85,
+   "pitches": [
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + C#3 (abajo)",
+   "commentEnglish": "Minor thirds: + C#3 (down)"
+  },
+  {
+   "number": 86,
+   "pitches": [
+    "D3",
+    "F3",
+    "G#3",
+    "B3",
+    "D4",
+    "F4",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + D3 (abajo)",
+   "commentEnglish": "Minor thirds: + D3 (down)"
+  },
+  {
+   "number": 87,
+   "pitches": [
+    "D#3",
+    "F#3",
+    "A3",
+    "C4",
+    "D#4",
+    "F#4",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + D#3 (abajo)",
+   "commentEnglish": "Minor thirds: + D#3 (down)"
+  },
+  {
+   "number": 88,
+   "pitches": [
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4",
+    "G4",
+    "A#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + A#4 (arriba)",
+   "commentEnglish": "Minor thirds: + A#4 (up)"
+  },
+  {
+   "number": 89,
+   "pitches": [
+    "D3",
+    "F3",
+    "G#3",
+    "B3",
+    "D4",
+    "F4",
+    "G#4",
+    "B4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + B4 (arriba)",
+   "commentEnglish": "Minor thirds: + B4 (up)"
+  },
+  {
+   "number": 90,
+   "pitches": [
+    "D#3",
+    "F#3",
+    "A3",
+    "C4",
+    "D#4",
+    "F#4",
+    "A4",
+    "C5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + C5 (arriba)",
+   "commentEnglish": "Minor thirds: + C5 (up)"
+  },
+  {
+   "number": 91,
+   "pitches": [
+    "A#2",
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4",
+    "G4",
+    "A#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + A#2 (abajo)",
+   "commentEnglish": "Minor thirds: + A#2 (down)"
+  },
+  {
+   "number": 92,
+   "pitches": [
+    "B2",
+    "D3",
+    "F3",
+    "G#3",
+    "B3",
+    "D4",
+    "F4",
+    "G#4",
+    "B4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + B2 (abajo)",
+   "commentEnglish": "Minor thirds: + B2 (down)"
+  },
+  {
+   "number": 93,
+   "pitches": [
+    "C3",
+    "D#3",
+    "F#3",
+    "A3",
+    "C4",
+    "D#4",
+    "F#4",
+    "A4",
+    "C5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + C3 (abajo)",
+   "commentEnglish": "Minor thirds: + C3 (down)"
+  },
+  {
+   "number": 94,
+   "pitches": [
+    "A#2",
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4",
+    "G4",
+    "A#4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + C#5 (arriba)",
+   "commentEnglish": "Minor thirds: + C#5 (up)"
+  },
+  {
+   "number": 95,
+   "pitches": [
+    "B2",
+    "D3",
+    "F3",
+    "G#3",
+    "B3",
+    "D4",
+    "F4",
+    "G#4",
+    "B4",
+    "D5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + D5 (arriba)",
+   "commentEnglish": "Minor thirds: + D5 (up)"
+  },
+  {
+   "number": 96,
+   "pitches": [
+    "C3",
+    "D#3",
+    "F#3",
+    "A3",
+    "C4",
+    "D#4",
+    "F#4",
+    "A4",
+    "C5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + D#5 (arriba)",
+   "commentEnglish": "Minor thirds: + D#5 (up)"
+  },
+  {
+   "number": 97,
+   "pitches": [
+    "G2",
+    "A#2",
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4",
+    "G4",
+    "A#4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + G2 (abajo)",
+   "commentEnglish": "Minor thirds: + G2 (down)"
+  },
+  {
+   "number": 98,
+   "pitches": [
+    "G#2",
+    "B2",
+    "D3",
+    "F3",
+    "G#3",
+    "B3",
+    "D4",
+    "F4",
+    "G#4",
+    "B4",
+    "D5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + G#2 (abajo)",
+   "commentEnglish": "Minor thirds: + G#2 (down)"
+  },
+  {
+   "number": 99,
+   "pitches": [
+    "A2",
+    "C3",
+    "D#3",
+    "F#3",
+    "A3",
+    "C4",
+    "D#4",
+    "F#4",
+    "A4",
+    "C5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + A2 (abajo)",
+   "commentEnglish": "Minor thirds: + A2 (down)"
+  },
+  {
+   "number": 100,
+   "pitches": [
+    "G2",
+    "A#2",
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4",
+    "G4",
+    "A#4",
+    "C#5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + E5 (arriba)",
+   "commentEnglish": "Minor thirds: + E5 (up)"
+  },
+  {
+   "number": 101,
+   "pitches": [
+    "E2",
+    "G2",
+    "A#2",
+    "C#3",
+    "E3",
+    "G3",
+    "A#3",
+    "C#4",
+    "E4",
+    "G4",
+    "A#4",
+    "C#5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + E2 (abajo)",
+   "commentEnglish": "Minor thirds: + E2 (down)"
+  },
+  {
+   "number": 102,
+   "pitches": [
+    "F2",
+    "G#2",
+    "B2",
+    "D3",
+    "F3",
+    "G#3",
+    "B3",
+    "D4",
+    "F4",
+    "G#4",
+    "B4",
+    "D5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + F2 (abajo)",
+   "commentEnglish": "Minor thirds: + F2 (down)"
+  },
+  {
+   "number": 103,
+   "pitches": [
+    "F#2",
+    "A2",
+    "C3",
+    "D#3",
+    "F#3",
+    "A3",
+    "C4",
+    "D#4",
+    "F#4",
+    "A4",
+    "C5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Terceras menores: + F#2 (abajo), rango completo",
+   "commentEnglish": "Minor thirds: + F#2 (down), full range"
+  },
+  {
+   "number": 104,
+   "pitches": [
+    "A#3",
+    "C4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: par base",
+   "commentEnglish": "Major seconds: base pair"
+  },
+  {
+   "number": 105,
+   "pitches": [
+    "B3",
+    "C#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: par base",
+   "commentEnglish": "Major seconds: base pair"
+  },
+  {
+   "number": 106,
+   "pitches": [
+    "G#3",
+    "A#3",
+    "C4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + G#3 (abajo)",
+   "commentEnglish": "Major seconds: + G#3 (down)"
+  },
+  {
+   "number": 107,
+   "pitches": [
+    "A3",
+    "B3",
+    "C#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + A3 (abajo)",
+   "commentEnglish": "Major seconds: + A3 (down)"
+  },
+  {
+   "number": 108,
+   "pitches": [
+    "G#3",
+    "A#3",
+    "C4",
+    "D4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + D4 (arriba)",
+   "commentEnglish": "Major seconds: + D4 (up)"
+  },
+  {
+   "number": 109,
+   "pitches": [
+    "A3",
+    "B3",
+    "C#4",
+    "D#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + D#4 (arriba)",
+   "commentEnglish": "Major seconds: + D#4 (up)"
+  },
+  {
+   "number": 110,
+   "pitches": [
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + F#3 (abajo)",
+   "commentEnglish": "Major seconds: + F#3 (down)"
+  },
+  {
+   "number": 111,
+   "pitches": [
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + G3 (abajo)",
+   "commentEnglish": "Major seconds: + G3 (down)"
+  },
+  {
+   "number": 112,
+   "pitches": [
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + E4 (arriba)",
+   "commentEnglish": "Major seconds: + E4 (up)"
+  },
+  {
+   "number": 113,
+   "pitches": [
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + F4 (arriba)",
+   "commentEnglish": "Major seconds: + F4 (up)"
+  },
+  {
+   "number": 114,
+   "pitches": [
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + E3 (abajo)",
+   "commentEnglish": "Major seconds: + E3 (down)"
+  },
+  {
+   "number": 115,
+   "pitches": [
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + F3 (abajo)",
+   "commentEnglish": "Major seconds: + F3 (down)"
+  },
+  {
+   "number": 116,
+   "pitches": [
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + F#4 (arriba)",
+   "commentEnglish": "Major seconds: + F#4 (up)"
+  },
+  {
+   "number": 117,
+   "pitches": [
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + G4 (arriba)",
+   "commentEnglish": "Major seconds: + G4 (up)"
+  },
+  {
+   "number": 118,
+   "pitches": [
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + D3 (abajo)",
+   "commentEnglish": "Major seconds: + D3 (down)"
+  },
+  {
+   "number": 119,
+   "pitches": [
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + D#3 (abajo)",
+   "commentEnglish": "Major seconds: + D#3 (down)"
+  },
+  {
+   "number": 120,
+   "pitches": [
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + G#4 (arriba)",
+   "commentEnglish": "Major seconds: + G#4 (up)"
+  },
+  {
+   "number": 121,
+   "pitches": [
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + A4 (arriba)",
+   "commentEnglish": "Major seconds: + A4 (up)"
+  },
+  {
+   "number": 122,
+   "pitches": [
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + C3 (abajo)",
+   "commentEnglish": "Major seconds: + C3 (down)"
+  },
+  {
+   "number": 123,
+   "pitches": [
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4",
+    "A4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + C#3 (abajo)",
+   "commentEnglish": "Major seconds: + C#3 (down)"
+  },
+  {
+   "number": 124,
+   "pitches": [
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + A#4 (arriba)",
+   "commentEnglish": "Major seconds: + A#4 (up)"
+  },
+  {
+   "number": 125,
+   "pitches": [
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4",
+    "A4",
+    "B4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + B4 (arriba)",
+   "commentEnglish": "Major seconds: + B4 (up)"
+  },
+  {
+   "number": 126,
+   "pitches": [
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A#4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + A#2 (abajo)",
+   "commentEnglish": "Major seconds: + A#2 (down)"
+  },
+  {
+   "number": 127,
+   "pitches": [
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4",
+    "A4",
+    "B4"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + B2 (abajo)",
+   "commentEnglish": "Major seconds: + B2 (down)"
+  },
+  {
+   "number": 128,
+   "pitches": [
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A#4",
+    "C5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + C5 (arriba)",
+   "commentEnglish": "Major seconds: + C5 (up)"
+  },
+  {
+   "number": 129,
+   "pitches": [
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4",
+    "A4",
+    "B4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + C#5 (arriba)",
+   "commentEnglish": "Major seconds: + C#5 (up)"
+  },
+  {
+   "number": 130,
+   "pitches": [
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A#4",
+    "C5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + G#2 (abajo)",
+   "commentEnglish": "Major seconds: + G#2 (down)"
+  },
+  {
+   "number": 131,
+   "pitches": [
+    "A2",
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4",
+    "A4",
+    "B4",
+    "C#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + A2 (abajo)",
+   "commentEnglish": "Major seconds: + A2 (down)"
+  },
+  {
+   "number": 132,
+   "pitches": [
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A#4",
+    "C5",
+    "D5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + D5 (arriba)",
+   "commentEnglish": "Major seconds: + D5 (up)"
+  },
+  {
+   "number": 133,
+   "pitches": [
+    "A2",
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4",
+    "A4",
+    "B4",
+    "C#5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + D#5 (arriba)",
+   "commentEnglish": "Major seconds: + D#5 (up)"
+  },
+  {
+   "number": 134,
+   "pitches": [
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A#4",
+    "C5",
+    "D5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + F#2 (abajo)",
+   "commentEnglish": "Major seconds: + F#2 (down)"
+  },
+  {
+   "number": 135,
+   "pitches": [
+    "G2",
+    "A2",
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4",
+    "A4",
+    "B4",
+    "C#5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + G2 (abajo)",
+   "commentEnglish": "Major seconds: + G2 (down)"
+  },
+  {
+   "number": 136,
+   "pitches": [
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A#4",
+    "C5",
+    "D5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + E5 (arriba)",
+   "commentEnglish": "Major seconds: + E5 (up)"
+  },
+  {
+   "number": 137,
+   "pitches": [
+    "E2",
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A#4",
+    "C5",
+    "D5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + E2 (abajo)",
+   "commentEnglish": "Major seconds: + E2 (down)"
+  },
+  {
+   "number": 138,
+   "pitches": [
+    "F2",
+    "G2",
+    "A2",
+    "B2",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4",
+    "A4",
+    "B4",
+    "C#5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Segundas mayores: + F2 (abajo), rango completo",
+   "commentEnglish": "Major seconds: + F2 (down), full range"
+  },
+  {
+   "number": 139,
+   "pitches": [
+    "E2",
+    "F2",
+    "G2",
+    "A2",
+    "B2",
+    "C#3",
+    "D#3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "E4",
+    "F4",
+    "G4",
+    "A4",
+    "B4",
+    "C#5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: tonos enteros alternados por registro, desde E2",
+   "commentEnglish": "Semitones: whole tones alternating by register, from E2"
+  },
+  {
+   "number": 140,
+   "pitches": [
+    "F2",
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "F#4",
+    "G#4",
+    "A#4",
+    "C5",
+    "D5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: tonos enteros alternados por registro, desde F2",
+   "commentEnglish": "Semitones: whole tones alternating by register, from F2"
+  },
+  {
+   "number": 141,
+   "pitches": [
+    "E2",
+    "F2",
+    "G2",
+    "A2",
+    "B2",
+    "C#3",
+    "D3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A#3",
+    "B3",
+    "C#4",
+    "D#4",
+    "F4",
+    "G4",
+    "G#4",
+    "A#4",
+    "C5",
+    "D5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: costura cada 4 tonos, desde E2",
+   "commentEnglish": "Semitones: seam every 4 whole tones, from E2"
+  },
+  {
+   "number": 142,
+   "pitches": [
+    "F2",
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "D3",
+    "D#3",
+    "F3",
+    "G3",
+    "A3",
+    "B3",
+    "C4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A4",
+    "B4",
+    "C#5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: costura cada 4 tonos, desde F2",
+   "commentEnglish": "Semitones: seam every 4 whole tones, from F2"
+  },
+  {
+   "number": 143,
+   "pitches": [
+    "E2",
+    "F2",
+    "G2",
+    "A2",
+    "B2",
+    "C3",
+    "D3",
+    "E3",
+    "F#3",
+    "G3",
+    "A3",
+    "B3",
+    "C#4",
+    "D4",
+    "E4",
+    "F#4",
+    "G#4",
+    "A4",
+    "B4",
+    "C#5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: costura cada 3 tonos, desde E2",
+   "commentEnglish": "Semitones: seam every 3 whole tones, from E2"
+  },
+  {
+   "number": 144,
+   "pitches": [
+    "F2",
+    "F#2",
+    "G#2",
+    "A#2",
+    "C3",
+    "C#3",
+    "D#3",
+    "F3",
+    "G3",
+    "G#3",
+    "A#3",
+    "C4",
+    "D4",
+    "D#4",
+    "F4",
+    "G4",
+    "A4",
+    "A#4",
+    "C5",
+    "D5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: costura cada 3 tonos, desde F2",
+   "commentEnglish": "Semitones: seam every 3 whole tones, from F2"
+  },
+  {
+   "number": 145,
+   "pitches": [
+    "E2",
+    "F2",
+    "G2",
+    "A2",
+    "A#2",
+    "C3",
+    "D3",
+    "D#3",
+    "F3",
+    "G3",
+    "G#3",
+    "A#3",
+    "C4",
+    "C#4",
+    "D#4",
+    "F4",
+    "F#4",
+    "G#4",
+    "A#4",
+    "B4",
+    "C#5",
+    "D#5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: costura cada 2 tonos, desde E2",
+   "commentEnglish": "Semitones: seam every 2 whole tones, from E2"
+  },
+  {
+   "number": 146,
+   "pitches": [
+    "F2",
+    "F#2",
+    "G#2",
+    "A#2",
+    "B2",
+    "C#3",
+    "D#3",
+    "E3",
+    "F#3",
+    "G#3",
+    "A3",
+    "B3",
+    "C#4",
+    "D4",
+    "E4",
+    "F#4",
+    "G4",
+    "A4",
+    "B4",
+    "C5",
+    "D5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: costura cada 2 tonos, desde F2",
+   "commentEnglish": "Semitones: seam every 2 whole tones, from F2"
+  },
+  {
+   "number": 147,
+   "pitches": [
+    "E2",
+    "F2",
+    "F#2",
+    "G2",
+    "G#2",
+    "A2",
+    "A#2",
+    "B2",
+    "C3",
+    "C#3",
+    "D3",
+    "D#3",
+    "E3",
+    "F3",
+    "F#3",
+    "G3",
+    "G#3",
+    "A3",
+    "A#3",
+    "B3",
+    "C4",
+    "C#4",
+    "D4",
+    "D#4",
+    "E4",
+    "F4",
+    "F#4",
+    "G4",
+    "G#4",
+    "A4",
+    "A#4",
+    "B4",
+    "C5",
+    "C#5",
+    "D5",
+    "D#5",
+    "E5"
+   ],
+   "instruments": [
+    "Piano",
+    "Cello",
+    "Corno",
+    "Coro",
+    "Fagot",
+    "Guitarra"
+   ],
+   "requiredStreak": 20,
+   "comment": "Semitonos: escala cromática completa (E2–E5)",
+   "commentEnglish": "Semitones: full chromatic scale (E2–E5)"
+  }
+ ]
+}

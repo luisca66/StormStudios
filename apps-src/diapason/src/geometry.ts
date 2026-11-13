@@ -112,11 +112,12 @@ export function draw(canvas:HTMLCanvasElement,active:[number,number]|null,previe
     }
   }
   // A separate label rail with leaders avoids the crowded slotted headstock.
+  // Solo el número: las notas al aire son justo lo que el alumno debe saber (Luis, 2026-11-01).
   for(const {s,label,anchor} of stringLabels(w)){
     line({x:label.x+12,y:label.y-4},{x:anchor.x-12,y:anchor.y},'#decba573',.8);
     line({x:anchor.x-12,y:anchor.y},anchor,'#decba5aa',1);
     c.fillStyle='#f1e6d0';c.font=`${14*1100/w}px Arial`;c.textAlign='right';
-    c.fillText(['1 · E','2 · B','3 · G','4 · D','5 · A','6 · E'][s],label.x,label.y);
+    c.fillText(String(s+1),label.x,label.y);
   }
   for(const [pos,color] of [[preview,'#f1e3c6'],[active,'#f3c94f']] as const){if(!pos)continue;const p=position(...pos);c.beginPath();c.arc(p.x,p.y,9,0,Math.PI*2);c.fillStyle='#17110f';c.fill();c.strokeStyle=color;c.lineWidth=2;c.stroke();c.beginPath();c.arc(p.x,p.y,3,0,Math.PI*2);c.fillStyle=color;c.fill();}
 }

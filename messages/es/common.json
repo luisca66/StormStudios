@@ -9,6 +9,7 @@
     "resources": "Guías",
     "book": "El Libro",
     "blog": "Blog",
+    "mastery": "Maestría",
     "contact": "Contacto",
     "ariaLabel": "Navegación principal",
     "openMenu": "Abrir menú",
@@ -28,7 +29,18 @@
     "legal": "Blog y Legal",
     "explore": "Explorar"
   },
+  "course": {
+    "privateLessons": {
+      "prompt": "¿Quieres estudiar esto conmigo?",
+      "link": "Escríbeme"
+    }
+  },
   "home": {
+    "privateLessons": {
+      "title": "Clases particulares",
+      "description": "Doy clases particulares de instrumento, composición, contrapunto y análisis. Si quieres estudiar conmigo, escríbeme y lo platicamos.",
+      "button": "Escríbeme"
+    },
     "hero": {
       "badge": "Linaje Shostakovich · Medrano · Cárdenas",
       "titlePrefix": "Aprende",
@@ -65,7 +77,7 @@
         "virtualTeacher": {
           "tag": "Práctica guiada",
           "title": "Maestro Virtual",
-          "description": "Revisa ejercicios MIDI de escalas mayores, modos y escalas menores. Consulta los criterios y los límites del Maestro Virtual."
+          "description": "Revisa tus ejercicios MIDI del curso: escalas, modos, acordes y escritura a cuatro voces. Consulta los criterios y los límites del Maestro Virtual."
         },
         "book": {
           "tag": "Libro Digital",

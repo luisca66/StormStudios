@@ -4,7 +4,8 @@ import { t, english } from "./i18n";
 //  GUITAR DATA
 // ══════════════════════════════════════════════════════════════════════════════
 
-const BASE = 'https://pub-905d3540e35b4c49bb36ccc2d2d99752.r2.dev/';
+// Dominio propio del bucket de guitarra (CDN y caché de un año); r2.dev es solo para desarrollo.
+const BASE = 'https://musica.stormstudios.com.mx/';
 
 // Chromatic scale — canonical names always use sharps internally
 const NOTES_SHARP = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
@@ -17,8 +18,8 @@ const OPEN_MIDI = [64, 59, 55, 50, 45, 40];
 // Open-string note indices into NOTES_SHARP (same data, used for noteAt())
 const OPEN_IDX = [4, 11, 7, 2, 9, 4]; // E B G D A E
 
-// Display labels (high e → low E)
-const SNAMES = ['e','B','G','D','A','E'];
+// Display labels (string number only: the open notes are what the student must learn)
+const SNAMES = ['1','2','3','4','5','6'];
 
 // Server folder names per string (same order)
 const SFOLDER = [

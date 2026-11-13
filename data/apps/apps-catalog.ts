@@ -46,7 +46,7 @@ export const UTILITY_APPS: AppEntry[] = [
       { es: "TAP para marcar el tempo con toques", en: "TAP to set the tempo by tapping" },
       { es: "Tres temas visuales y se recuerda tu configuración", en: "Three visual themes; your settings are remembered" },
     ],
-    icon: "/images/app-metronomo.jpg",
+    icon: "/images/app-metronomo.webp",
   },
   {
     slug: "afinador",
@@ -71,7 +71,7 @@ export const UTILITY_APPS: AppEntry[] = [
       { es: "Sostenidos o bemoles, a tu elección", en: "Sharps or flats, your choice" },
       { es: "El audio nunca sale de tu dispositivo", en: "Audio never leaves your device" },
     ],
-    icon: "/images/app-afinador.jpg",
+    icon: "/images/app-afinador.webp",
   },
   {
     slug: "diapason",
@@ -94,7 +94,7 @@ export const UTILITY_APPS: AppEntry[] = [
       { es: "Modos Clásico y Time Attack", en: "Classic and Time Attack modes" },
       { es: "Sostenidos o bemoles, y se recuerda tu vista", en: "Sharps or flats, and your view is remembered" },
     ],
-    icon: "/images/app-diapason.jpg",
+    icon: "/images/app-diapason.webp",
   },
   {
     slug: "etimologica",
@@ -117,7 +117,7 @@ export const UTILITY_APPS: AppEntry[] = [
       { es: "Estadísticas de tu progreso", en: "Statistics of your progress" },
       { es: "Se juega con el ratón, el dedo o el teclado (1 a 4)", en: "Play with the mouse, your finger or the keyboard (1 to 4)" },
     ],
-    icon: "/images/app-etimologica.jpg",
+    icon: "/images/app-etimologica.webp",
   },
   {
     slug: "mutacion",
@@ -141,7 +141,7 @@ export const UTILITY_APPS: AppEntry[] = [
       { es: "Tu progreso se guarda en este dispositivo", en: "Your progress is saved on this device" },
       { es: "Música original de Luis Cárdenas mientras juegas, en orden aleatorio, con volumen y silencio", en: "Original music by Luis Cárdenas while you play, in random order, with volume and mute" },
     ],
-    icon: "/images/app-mutacion.jpg",
+    icon: "/images/app-mutacion.webp",
   },
 ];
 
@@ -214,7 +214,7 @@ export const APPS: AppEntry[] = [
       { es: "Juego cronometrado con progreso bloqueado: supera un nivel para abrir el siguiente", en: "Timed game with locked progression: clear a level to unlock the next one" },
       { es: "Disponible en navegador y como APK para Android", en: "Available in the browser and as an Android APK" },
     ],
-    icon: "/images/app-matematicas-mentales.png",
+    icon: "/images/app-matematicas-mentales.webp",
   },
   {
     slug: "memoria",
@@ -243,7 +243,7 @@ export const APPS: AppEntry[] = [
       { es: "Edita tus propias palabras por rango y guárdalas en la nube", en: "Edit your own words by range and save them to the cloud" },
       { es: "Disponible en navegador y como APK para Android", en: "Available in the browser and as an Android APK" },
     ],
-    icon: "/images/app-memoria.png",
+    icon: "/images/app-memoria.webp",
   },
   {
     slug: "desglose-auditivo",
@@ -262,7 +262,7 @@ export const APPS: AppEntry[] = [
       { es: "Detección de afinación por micrófono (algoritmo YIN)", en: "Microphone pitch detection (YIN algorithm)" },
       { es: "5 timbres: piano, cello, corno, fagot y coro, más modo mixto", en: "5 timbres: piano, cello, horn, bassoon, and choir, plus a mixed mode" },
     ],
-    icon: "/images/app-unlocking.jpeg",
+    icon: "/images/app-unlocking.webp",
   },
   {
     slug: "intervalos-reconocimiento",
@@ -282,7 +282,7 @@ export const APPS: AppEntry[] = [
       { es: "Intervalos armónicos, melódicos y mixtos", en: "Harmonic, melodic, and mixed intervals" },
       { es: "Estadísticas locales por intervalo", en: "Local statistics by interval" },
     ],
-    icon: "/images/app-intervals-listening.jpeg",
+    icon: "/images/app-intervals-listening.webp",
   },
   {
     slug: "intervalos-cantados",
@@ -306,7 +306,7 @@ export const APPS: AppEntry[] = [
       { es: "5 timbres: piano, cello, corno, fagot y coro", en: "5 timbres: piano, cello, horn, bassoon, and choir" },
       { es: "Estadísticas locales por intervalo y dirección", en: "Local statistics by interval and direction" },
     ],
-    icon: "/images/app-intervalos-cantados.png",
+    icon: "/images/app-intervalos-cantados.webp",
   },
   {
     slug: "acordes",
@@ -331,7 +331,7 @@ export const APPS: AppEntry[] = [
       { es: "Estadísticas locales por tipo de acorde", en: "Local statistics by chord type" },
       { es: "Dificultad progresiva hasta acordes con 13ª", en: "Progressive difficulty up to 13th chords" },
     ],
-    icon: "/images/app-acordes.jpeg",
+    icon: "/images/app-acordes.webp",
   },
   {
     slug: "acordes-cantar",
@@ -354,7 +354,7 @@ export const APPS: AppEntry[] = [
       { es: "Multi-tímbrica (5 timbres)", en: "Multi-timbral (5 timbres)" },
       { es: "Dificultad progresiva hasta acordes con 13ª", en: "Progressive difficulty up to 13th chords" },
     ],
-    icon: "/images/app-acordes-cantar.jpeg",
+    icon: "/images/app-acordes-cantar.webp",
   },
   {
     slug: "grados-mayores",
@@ -374,7 +374,7 @@ export const APPS: AppEntry[] = [
       { es: "Grados diatónicos y cromáticos", en: "Diatonic and chromatic degrees" },
       { es: "Centro tonal y estadísticas por grado", en: "Tonal center and per-degree statistics" },
     ],
-    icon: "/images/app-grados-mayores.jpg",
+    icon: "/images/app-grados-mayores.webp",
   },
   {
     slug: "grados-menores",
@@ -398,7 +398,7 @@ export const APPS: AppEntry[] = [
       { es: "Grados diatónicos y cromáticos del modo menor", en: "Minor-mode diatonic and chromatic degrees" },
       { es: "Centro tonal menor y estadísticas por grado", en: "Minor tonal center and per-degree statistics" },
     ],
-    icon: "/images/app-grados-menores.jpeg",
+    icon: "/images/app-grados-menores.webp",
   },
   {
     slug: "oido-absoluto-multi",
@@ -423,7 +423,7 @@ export const APPS: AppEntry[] = [
       { es: "Audio en loop, control de volumen y retroalimentación inmediata", en: "Looping audio, volume control, and immediate feedback" },
       { es: "Estadísticas locales por nota", en: "Local statistics by note" },
     ],
-    icon: "/images/app-ap-multi.png",
+    icon: "/images/app-ap-multi.webp",
   },
   {
     slug: "oido-absoluto-guitarra",
@@ -448,7 +448,7 @@ export const APPS: AppEntry[] = [
       { es: "Audio en loop, control de volumen y retroalimentación inmediata", en: "Looping audio, volume control, and immediate feedback" },
       { es: "Estadísticas locales por nota", en: "Local statistics by note" },
     ],
-    icon: "/images/app-ap-guitar.jpeg",
+    icon: "/images/app-ap-guitar.webp",
   },
   {
     slug: "storm-sequencer",
@@ -464,7 +464,24 @@ export const APPS: AppEntry[] = [
       { es: "Disponible en el navegador, sin descarga", en: "Available in browser, no download needed" },
       { es: "Exporta a MIDI para el Maestro Virtual", en: "Export to MIDI for the Virtual Teacher" },
     ],
-    icon: "/images/secuenciador.png",
+    icon: "/images/secuenciador.webp",
+  },
+  {
+    slug: "storm-sequencer-v4",
+    name: { es: "Storm Sequencer v4.0", en: "Storm Sequencer v4.0" },
+    category: "sequencer",
+    description: {
+      es: "Escribe música con mouse, teclado o texto: partitura continua, páginas y cuarteto SATB.",
+      en: "Write music with mouse, keyboard or text: continuous score, pages and SATB quartet.",
+    },
+    webUrl: "/sequencer/v4",
+    isTool: true,
+    features: [
+      { es: "Escritura con mouse, teclado o texto", en: "Write with mouse, keyboard or text" },
+      { es: "Partitura continua o por páginas, con cuarteto SATB", en: "Continuous or paged score, with SATB quartet" },
+      { es: "Exporta MIDI, MusicXML, WAV e imagen (PNG/SVG)", en: "Export MIDI, MusicXML, WAV and image (PNG/SVG)" },
+    ],
+    icon: "/images/secuenciador.webp",
   },
   ...UTILITY_APPS,
 ];

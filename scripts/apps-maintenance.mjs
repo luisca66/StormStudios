@@ -2,6 +2,7 @@ import { readdir, readFile, cp, access } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { instrumentHtml, instrumentStandalone } from "./instrument-standalone.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const mode = process.argv[2] || "build";
@@ -13,25 +14,38 @@ const folders = (await readdir(path.join(root, "apps-src"), { withFileTypes: tru
 
 function run(args, cwd) {
   const result = spawnSync(process.execPath, [npmCli, ...args], { cwd, stdio: "inherit" });
-  if (result.error || result.status !== 0) throw new Error(`npm ${args.join(" ")} failed in ${cwd}`);
+  if (result.error) throw result.error;
+  return result.status === 0;
+}
+function requireRun(args, cwd) {
+  if (!run(args, cwd)) throw new Error(`npm ${args.join(" ")} failed in ${cwd}`);
 }
 async function checkFiles(source, target) {
   for (const entry of await readdir(source, { withFileTypes: true })) {
     const from = path.join(source, entry.name);
     const to = path.join(target, entry.name);
     if (entry.isDirectory()) await checkFiles(from, to);
-    else if (!(await readFile(from)).equals(await readFile(to))) throw new Error(`Published bundle differs: ${to}`);
+    else {
+      const source = await readFile(from);
+      const published = await readFile(to);
+      const expected = entry.name.endsWith(".html") ? Buffer.from(instrumentHtml(source.toString("utf8"))) : source;
+      if (!expected.equals(published)) throw new Error(`Published bundle differs: ${to}`);
+    }
   }
 }
+const failedAudits = [];
 for (const folder of folders) {
   const cwd = path.join(root, "apps-src", folder);
   try { await access(path.join(cwd, "package.json")); } catch { continue; }
   console.log(`\n${mode}: ${folder}`);
-  if (mode === "install") { run(["ci", "--ignore-scripts"], cwd); continue; }
-  if (mode === "audit") { run(["audit", "--audit-level=low"], cwd); continue; }
+  if (mode === "install") { requireRun(["ci", "--ignore-scripts"], cwd); continue; }
+  if (mode === "audit") {
+    if (!run(["audit", "--audit-level=low"], cwd)) failedAudits.push(folder);
+    continue;
+  }
   // Librería común de los juegos 3D: no se publica, solo se comprueba (tipos y pruebas).
-  if (folder === "shared-3d") { run(["run", "check"], cwd); continue; }
-  run(["run", "build"], cwd);
+  if (folder === "shared-3d") { requireRun(["run", "check"], cwd); continue; }
+  requireRun(["run", "build"], cwd);
   const destinationName = folder === "oido-absoluto-multi-juego" ? "oido-absoluto-multi" : folder;
   const dist = path.join(cwd, "dist");
   const publicRoot = path.join(root, "public", "apps");
@@ -40,4 +54,6 @@ for (const folder of folders) {
   if (mode === "build") await cp(dist, target, { recursive: true });
   else await checkFiles(dist, target);
 }
+if (failedAudits.length) throw new Error(`Dependency audits failed: ${failedAudits.join(", ")}`);
+if (mode === "build") await instrumentStandalone(root);
 console.log(`All apps: ${mode} passed.`);

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script defer src="/site-measurement.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1976,14 +1977,57 @@ function serializeState() {
   };
 }
 
-function deserializeState(json) {
-  // Basic validation
-  if (!json || json.format !== 'storm-bateria-v1') throw new Error('Unrecognized format.');
-  if (!json.timeSignature || !json.slots) throw new Error('Incomplete data structure.');
+const MAX_EXERCISE_JSON_SIZE = 64 * 1024;
 
+// Validate before changing the active score. Never delete or rewrite rejected drafts.
+function validateExercise(json) {
+  const invalid = () => { throw new Error('Invalid exercise data. Use 1–8 bars, 30–200 BPM and a name of up to 60 characters.'); };
+  const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
+  if (!record(json) || json.format !== 'storm-bateria-v1' || !record(json.timeSignature)) invalid();
   const { num, den } = json.timeSignature;
-  const validSigs = ['2/4','3/4','4/4','3/8','6/8','9/8','12/8'];
-  if (!validSigs.includes(`${num}/${den}`)) throw new Error(`Time signature ${num}/${den} not supported.`);
+  if (!Number.isInteger(num) || !Number.isInteger(den) ||
+      !['2/4','3/4','4/4','3/8','6/8','9/8','12/8'].includes(`${num}/${den}`)) invalid();
+  const tempo = json.tempo ?? 90;
+  const bars = json.bars ?? 1;
+  const name = json.name ?? '';
+  if (!Number.isFinite(tempo) || tempo < 30 || tempo > 200 ||
+      !Number.isInteger(bars) || bars < 1 || bars > 8 ||
+      typeof name !== 'string' || name.length > 60) invalid();
+  if (json.savedAt !== undefined && (typeof json.savedAt !== 'string' ||
+      json.savedAt.length > 64 || !Number.isFinite(Date.parse(json.savedAt)))) invalid();
+  const slotsPerBar = num * 16 / den;
+  if (!Array.isArray(json.slots) || json.slots.length !== bars) invalid();
+  const slots = json.slots.map(bar => {
+    if (!Array.isArray(bar) || bar.length !== slotsPerBar) invalid();
+    return bar.map(slot => {
+      if (!record(slot)) invalid();
+      const pieces = slot.pieces ?? [];
+      const open = slot.hhOpenByPiece ?? {};
+      if (!Array.isArray(pieces) || pieces.length > Object.keys(DRUM_MAP).length ||
+          pieces.some(piece => typeof piece !== 'string' || !Object.hasOwn(DRUM_MAP, piece)) ||
+          !record(open) || Object.keys(open).length > Object.keys(DRUM_MAP).length) invalid();
+      const hhOpenByPiece = {};
+      for (const [piece, enabled] of Object.entries(open)) {
+        if (!Object.hasOwn(DRUM_MAP, piece) || typeof enabled !== 'boolean') invalid();
+        hhOpenByPiece[piece] = enabled;
+      }
+      return { pieces: [...new Set(pieces)], hhOpenByPiece };
+    });
+  });
+  return { format: 'storm-bateria-v1', savedAt: json.savedAt, tempo,
+    timeSignature: { num, den }, bars, name, slots };
+}
+
+function parseExercise(raw) {
+  if (typeof raw !== 'string' || raw.length > MAX_EXERCISE_JSON_SIZE) {
+    throw new Error('The exercise file is too large (maximum 64 KB).');
+  }
+  return validateExercise(JSON.parse(raw));
+}
+
+function deserializeState(json) {
+  json = validateExercise(json);
+  const { num, den } = json.timeSignature;
 
   if (state.isPlaying) stopPlayback();
 
@@ -2020,31 +2064,34 @@ function deserializeState(json) {
 }
 
 function saveToLocalStorage(name, data) {
-  localStorage.setItem(STORAGE_PREFIX + name, JSON.stringify({ ...data, name }));
+  if (typeof name !== 'string' || !name.trim()) throw new Error('Invalid exercise data. Use 1–8 bars, 30–200 BPM and a name of up to 60 characters.');
+  const exercise = validateExercise({ ...data, name });
+  localStorage.setItem(STORAGE_PREFIX + name, JSON.stringify(exercise));
 }
 
 function loadFromLocalStorage(name) {
   const raw = localStorage.getItem(STORAGE_PREFIX + name);
   if (!raw) throw new Error('Exercise not found.');
-  return JSON.parse(raw);
+  return parseExercise(raw);
 }
 
 function listSavedExercises() {
   const list = [];
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
-    if (!key.startsWith(STORAGE_PREFIX)) continue;
-    try {
-      const data = JSON.parse(localStorage.getItem(key));
-      list.push(data);
-    } catch (e) {}
+    if (!key || !key.startsWith(STORAGE_PREFIX)) continue;
+    // Keep malformed records visible and untouched so a bad record cannot hide good work.
+    let data = null;
+    try { data = parseExercise(localStorage.getItem(key)); } catch (e) {}
+    const name = data?.name || key.slice(STORAGE_PREFIX.length, STORAGE_PREFIX.length + 60);
+    list.push({ key, name, data });
   }
-  list.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'es'));
+  list.sort((a, b) => a.name.localeCompare(b.name, 'en'));
   return list;
 }
 
-function deleteExercise(name) {
-  localStorage.removeItem(STORAGE_PREFIX + name);
+function deleteExercise(storageKey) {
+  localStorage.removeItem(storageKey);
 }
 
 function safeName(name) {
@@ -2073,10 +2120,11 @@ function exportJSONFile(name, data) {
 }
 
 function importJSONFile(file) {
+  if (file.size > MAX_EXERCISE_JSON_SIZE) { alert('The exercise file is too large (maximum 64 KB).'); return; }
   const reader = new FileReader();
   reader.onload = (e) => {
     try {
-      const json = JSON.parse(e.target.result);
+      const json = parseExercise(e.target.result);
       deserializeState(json);
     } catch (err) {
       alert(`Import error: ${err.message}`);
@@ -2256,49 +2304,62 @@ function hideOpenModal() {
 function renderExerciseList() {
   const container = document.getElementById('exercise-list');
   const exercises = listSavedExercises();
-
+  container.replaceChildren();
   if (exercises.length === 0) {
-    container.innerHTML = '<div class="exercise-empty">No saved exercises.</div>';
+    const empty = document.createElement('div');
+    empty.className = 'exercise-empty';
+    empty.textContent = 'No saved exercises.';
+    container.appendChild(empty);
     return;
   }
 
-  container.innerHTML = '';
   exercises.forEach(ex => {
     const item = document.createElement('div');
     item.className = 'exercise-item';
+    const info = document.createElement('div');
+    info.className = 'exercise-info';
+    const name = document.createElement('div');
+    name.className = 'exercise-name';
+    name.textContent = ex.name;
+    const meta = document.createElement('div');
+    meta.className = 'exercise-meta';
+    if (ex.data) {
+      const savedDate = ex.data.savedAt
+        ? new Date(ex.data.savedAt).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })
+        : '—';
+      const { num, den } = ex.data.timeSignature;
+      const bars = ex.data.bars;
+      meta.textContent = `${savedDate} · ${num}/${den} · ${bars} bar${bars !== 1 ? 's' : ''}`;
+    } else {
+      meta.textContent = 'Invalid data; the original is still saved.';
+    }
+    info.append(name, meta);
 
-    const savedDate = ex.savedAt
-      ? new Date(ex.savedAt).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' })
-      : '—';
-    const sig = ex.timeSignature ? `${ex.timeSignature.num}/${ex.timeSignature.den}` : '?/?';
-    const bars = ex.bars || '?';
-
-    item.innerHTML = `
-      <div class="exercise-info">
-        <div class="exercise-name">${ex.name}</div>
-        <div class="exercise-meta">${savedDate} · ${sig} · ${bars} bar${bars !== 1 ? 's' : ''}</div>
-      </div>
-      <button class="exercise-load-btn">Load</button>
-      <button class="exercise-del-btn" title="Delete">✕</button>
-    `;
-
-    item.querySelector('.exercise-load-btn').addEventListener('click', () => {
+    const load = document.createElement('button');
+    load.className = 'exercise-load-btn';
+    load.textContent = 'Load';
+    load.disabled = !ex.data;
+    load.addEventListener('click', () => {
       try {
-        deserializeState(ex);
+        deserializeState(ex.data);
         hideOpenModal();
       } catch (err) {
-        alert(`Load error: ${err.message}`);
+        alert(`Error loading: ${err.message}`);
       }
     });
 
-    item.querySelector('.exercise-del-btn').addEventListener('click', (e) => {
+    const remove = document.createElement('button');
+    remove.className = 'exercise-del-btn';
+    remove.title = 'Delete';
+    remove.textContent = '✕';
+    remove.addEventListener('click', e => {
       e.stopPropagation();
-      if (confirm(`Delete "${ex.name}"? This action cannot be undone.`)) {
-        deleteExercise(ex.name);
+      if (confirm(`Delete "${ex.name}"? This cannot be undone.`)) {
+        deleteExercise(ex.key);
         renderExerciseList();
       }
     });
-
+    item.append(info, load, remove);
     container.appendChild(item);
   });
 }
@@ -2312,8 +2373,9 @@ function setupModalWiring() {
     const existing = localStorage.getItem(STORAGE_PREFIX + name);
     if (existing && !confirm(`An exercise named "${name}" already exists. Overwrite?`)) return;
     const data = serializeState();
+    try { saveToLocalStorage(name, data); }
+    catch (err) { alert(err.message); return; }
     state.exerciseName = name;
-    saveToLocalStorage(name, data);
     exportJSONFile(name, { ...data, name }); // descarga el JSON con el nombre del ejercicio
     hideSaveModal();
   });

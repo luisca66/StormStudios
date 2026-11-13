@@ -17,7 +17,7 @@ const logoSource = path.resolve(
 const websiteRoot =
   process.env.STORM_WEBSITE_ROOT ??
   "C:\\Users\\Luis\\Documents\\Claude Cowork\\nuevo_website\\storm-studios\\StormStudios";
-const appImageSource = path.resolve(websiteRoot, "public", "images", "app-ap-multi.png");
+const appImageSource = path.resolve(websiteRoot, "archive", "public-unused", "images", "app-ap-multi.png");
 
 const here = import.meta.dirname;
 const publicRoot = path.resolve(here, "..", "public");

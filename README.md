@@ -19,13 +19,15 @@ El sitio usa Next.js 16, React, TypeScript y next-intl. Antes de modificar APIs 
 ```sh
 npm run check
 npm run apps:check
-npm audit --audit-level=high
+npm run test:microphones
+npm run test:rules
+npm audit --audit-level=moderate
 npm run apps:audit
 ```
 
 `check` ejecuta lint, pruebas unitarias y build de Next. Después del build, `npm run test:e2e` corre las pruebas de humo con Playwright contra `next start` (la primera vez, `npx playwright install chromium`). `apps:check` compila las 15 apps Vite y compara cada archivo generado con la copia servida desde `public/apps`. Si modificas fuentes de apps, ejecuta primero `npm run apps:build` y revisa el diff de fuentes y bundles. Este comando sincroniza archivos locales; no despliega a internet. Conserva assets antiguos para no romper clientes que aún cargan una versión anterior. Un bundle que ya no referencia ningún `index.html` puede retirarse 90 días después de su reemplazo; anota la fecha en el commit que lo reemplaza. Las herramientas HTML heredadas (secuenciador y juegos `*-gemini.html`) y Cosmic Ear usan CSS de Tailwind precompilado: si cambias sus clases, ejecuta `npm run legacy:css` (y después `npm run apps:build` para Cosmic Ear). `grados-mayores` e `intervalos-reconocimiento` son JavaScript escrito a mano sin compilación: su fuente son los archivos de `public/apps/<app>/` y se editan ahí. Solo `acordes-cantar` es un bundle sin fuente: sus cambios se hacen publicando una copia del bundle con nombre nuevo, como documenta `docs/cloudflare-audio.md`.
 
-El proyecto de Vercel está conectado con el repositorio GitHub. Publicar en su rama de producción puede activar un despliegue. Primero revisar cambios y pruebas, y acordar la publicación. El workflow `.github/workflows/quality.yml` ejecuta controles en push y pull request; debe comprobarse su primer resultado en GitHub.
+El proyecto de Vercel está conectado con el repositorio GitHub. Publicar en su rama de producción puede activar un despliegue. Primero revisar cambios y pruebas, y acordar la publicación. El workflow `.github/workflows/quality.yml` separa `verify`, `security` y `firestore` para que una compilación fallida no omita las auditorías. Los tres trabajos deben aprobar antes de publicar. `test:rules` descarga la CLI oficial fijada en una carpeta local ignorada y ejecuta únicamente un proyecto demo; requiere Java 21 o posterior. Nunca sustituir ese ID por el proyecto real en las pruebas.
 
 ## Mapa del proyecto
 
@@ -34,7 +36,7 @@ El proyecto de Vercel está conectado con el repositorio GitHub. Publicar en su 
 - `data/course` y `lib/course.ts`: lecciones, reglas y disponibilidad. `construction` muestra aviso; `hidden` no se publica.
 - `data/apps/apps-catalog.ts`: catálogo público de apps, compartido por fichas y `/catalog.json`.
 - `apps-src`: fuentes Vite; `public/apps`: archivos servidos en iframes y herramientas HTML heredadas.
-- `lib/maestro-virtual`: validadores musicales deterministas. La revisión operativa cubre las lecciones 1–3; no usa un modelo generativo por ejercicio.
+- `lib/maestro-virtual`: validadores musicales deterministas. La revisión publicada cubre las lecciones 1–4 y 6–8; no usa un modelo generativo por ejercicio. La lección 9 tiene validador de cadencias, pero sigue en construcción.
 - `lib/course-progress.ts`: validación y almacenamiento local de progreso. El curso permite respaldo JSON de marcas de completado.
 - `app/api/contact`: formulario vía Resend; `app/api/audio`: proxy de audio con rangos y caché controlada.
 - `firestore.rules`: aislamiento por UID para App Memoria. Un archivo local no demuestra que estas reglas estén desplegadas.

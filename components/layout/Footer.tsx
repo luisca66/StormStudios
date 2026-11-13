@@ -40,6 +40,7 @@ export default function Footer() {
               <Link href="/apps" className="hover:text-white transition-colors">{nav("apps")}</Link>
               <Link href="/resources" className="hover:text-white transition-colors">{nav("resources")}</Link>
               <Link href="/el-libro" className="hover:text-white transition-colors">{nav("book")}</Link>
+              <Link href="/maestria" className="hover:text-white transition-colors">{nav("mastery")}</Link>
             </nav>
           </div>
 

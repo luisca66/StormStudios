@@ -179,58 +179,75 @@ export class MicPitchDetector extends PitchTracker {
   private source: MediaStreamAudioSourceNode | null = null;
   private worklet: AudioWorkletNode | null = null;
   private sink: GainNode | null = null;
+  private generation = 0;
+  private initializing: Promise<void> | null = null;
 
   constructor(private readonly ctx: AudioContext) {
     super();
   }
 
-  async ensureReady(): Promise<void> {
-    if (this.worklet) return;
+  ensureReady(): Promise<void> {
+    if (this.worklet) return Promise.resolve();
+    if (this.initializing) return this.initializing;
+    const generation = this.generation;
+    const pending = this.initialize(generation).finally(() => {
+      if (this.initializing === pending) this.initializing = null;
+    });
+    this.initializing = pending;
+    return pending;
+  }
 
+  private async initialize(generation: number): Promise<void> {
     if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
       throw new MicUnsupportedError();
     }
 
+    let stream: MediaStream;
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia({
+      stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true, // evita retroalimentación en navegador
           noiseSuppression: true,
           autoGainControl: true,
         },
       });
-    } catch (err) {
-      console.error("[Mic] Permiso denegado", err);
+    } catch {
       throw new MicDeniedError();
     }
-
-    // Carga del worklet. El ?v= revienta el cache HTTP para que un worklet
-    // viejo nunca se empareje con un tracker más nuevo (PLAN §16).
-    await this.ctx.audioWorklet.addModule("./pitch-processor.js?v=2");
-    console.info("[Mic] Afinador estándar v2 activo — hold 1.5s, gracia 0.25s, mediana 5 frames");
-
-    this.source = this.ctx.createMediaStreamSource(this.stream);
-    this.worklet = new AudioWorkletNode(this.ctx, "pitch-processor");
-
-    this.worklet.port.onmessage = (event: MessageEvent<PitchFrame>) => {
-      this.handleFrame(event.data);
-    };
-
-    this.sink = this.ctx.createGain();
-    this.sink.gain.value = 0.0; // silencia el feed del mic (no oír tu voz con delay)
-
-    this.source.connect(this.worklet);
-    this.worklet.connect(this.sink).connect(this.ctx.destination);
+    // Una autorización tardía nunca debe reabrir el mic tras salir o pausar.
+    if (generation !== this.generation) {
+      stream.getTracks().forEach((track) => track.stop());
+      throw new DOMException("Microphone initialization cancelled", "AbortError");
+    }
+    this.stream = stream;
+    try {
+      // Se conserva el worklet y toda la calibración del afinador estándar.
+      await this.ctx.audioWorklet.addModule("./pitch-processor.js?v=2");
+      if (generation !== this.generation) {
+        throw new DOMException("Microphone initialization cancelled", "AbortError");
+      }
+      this.source = this.ctx.createMediaStreamSource(stream);
+      this.worklet = new AudioWorkletNode(this.ctx, "pitch-processor");
+      this.worklet.port.onmessage = (event: MessageEvent<PitchFrame>) => {
+        this.handleFrame(event.data);
+      };
+      this.sink = this.ctx.createGain();
+      this.sink.gain.value = 0.0;
+      this.source.connect(this.worklet);
+      this.worklet.connect(this.sink).connect(this.ctx.destination);
+    } catch (error) {
+      if (generation === this.generation) this.dispose();
+      throw error;
+    }
   }
 
   dispose(): void {
-    this.isListening = false;
-    try {
-      this.source?.disconnect();
-      this.worklet?.disconnect();
-      this.sink?.disconnect();
-    } catch (err) {
-      console.warn("[Mic] Error desmontando el grafo del mic", err);
+    this.generation += 1;
+    this.initializing = null;
+    this.stopListening();
+    if (this.worklet) this.worklet.port.onmessage = null;
+    for (const node of [this.source, this.worklet, this.sink]) {
+      try { node?.disconnect(); } catch { /* El nodo ya puede estar desconectado. */ }
     }
 
     if (this.stream) {

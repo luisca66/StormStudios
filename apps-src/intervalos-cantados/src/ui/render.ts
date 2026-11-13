@@ -32,6 +32,10 @@ export function mountUI(root: HTMLElement, controller: GameController): void {
   });
 
   window.addEventListener("beforeunload", () => controller.dispose());
+  window.addEventListener("pagehide", () => controller.suspend());
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) controller.suspend();
+  });
 
   if (!window.isSecureContext) {
     console.info(t.micUnsupported);

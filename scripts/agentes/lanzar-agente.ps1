@@ -4,8 +4,8 @@
 
 .DESCRIPTION
   Modo automático de plantillas-blender/REPARTO-AGENTES.md §5. Claude lo ejecuta en segundo plano y
-  recibe aviso cuando el agente termina. Registros, sesiones y últimos mensajes quedan fuera del
-  repositorio, en %LOCALAPPDATA%\StormStudios\agentes\.
+  recibe aviso cuando el agente termina. Registros, sesiones y últimos mensajes quedan en
+  .local-work\agentes\ del repo (ignorado por git; antes %LOCALAPPDATA%\StormStudios\agentes\).
 
   Modelos fijos (decididos por Luis el 2026-09-26):
     Codex (decidido por Luis el 2026-10-20), ambos con razonamiento "medium":
@@ -26,6 +26,7 @@ param(
   [Parameter(Mandatory)] [ValidateSet("astra", "gemini")] [string] $Agente,
   [Parameter(Mandatory)] [string] $Carpeta,
   [ValidateSet("astra", "sol")] [string] $Modelo = "sol",  # Codex: astra = gpt-6-astra (visual); sol = gpt-6.1-sol (código); ambos medium
+  [ValidateSet("low", "medium", "high")] [string] $Esfuerzo = "medium",  # razonamiento de Codex y de Gemini
   [switch] $Reanudar,        # solo Astra: sigue su última sesión de este modelo
   [string] $Mensaje          # archivo con el mensaje (por defecto PROMPT.txt de la carpeta).
                              # Para la cola de Gemini: -Carpeta plantillas-blender -Mensaje plantillas-blender\PROMPT-COLA-GEMINI.txt
@@ -39,7 +40,9 @@ $pieza = Split-Path $dir -Leaf
 $promptFile = if ($Mensaje) { $Mensaje } else { Join-Path $dir "PROMPT.txt" }
 if (-not (Test-Path $promptFile)) { throw "Falta $promptFile (lo escribe Claude)." }
 
-$logDir = Join-Path $env:LOCALAPPDATA "StormStudios\agentes"
+# Desde Codex 26.1106 (2026-11-12), `codex exec -o` rechaza rutas bajo %LOCALAPPDATA%
+# ("path contains a reparse point"); los registros viven en .local-work/ (ignorado por git).
+$logDir = Join-Path $repo ".local-work\agentes"
 New-Item -ItemType Directory -Force $logDir | Out-Null
 $stamp = Get-Date -Format "yyyyMMdd-HHmm"
 $log = Join-Path $logDir "$pieza-$Agente-$stamp.log"
@@ -53,7 +56,7 @@ Set-Location $repo
 if ($Agente -eq "astra") {
   $codex = Join-Path (Get-AppxPackage OpenAI.Codex).InstallLocation "app\resources\codex.exe"
   $model = if ($Modelo -eq "astra") { "gpt-6-astra" } else { "gpt-6.1-sol" }
-  $common = @("-m", $model, "-c", 'model_reasoning_effort="medium"', "-c", 'windows.sandbox="unelevated"', "-o", $last)
+  $common = @("-m", $model, "-c", "model_reasoning_effort=`"$Esfuerzo`"", "-c", 'windows.sandbox="unelevated"', "-o", $last)
   if ($Reanudar) {
     if (-not (Test-Path $sessionFile)) { throw "No hay sesión guardada de Astra para $pieza." }
     $session = (Get-Content $sessionFile -Raw).Trim()
@@ -73,7 +76,7 @@ if ($Agente -eq "astra") {
   # comando de terminal permitido es el lanzador de Blender; lo demás se niega en modo headless.
   Remove-Item Env:GEMINI_API_KEY -ErrorAction SilentlyContinue
   $agy = Join-Path $env:LOCALAPPDATA "agy\bin\agy.exe"
-  & $agy -p $prompt --model gemini-4-argon-medium --print-timeout 60m *>> $log
+  & $agy -p $prompt --model "gemini-4-argon-$Esfuerzo" --print-timeout 60m *>> $log
   $code = $LASTEXITCODE
   Get-Content $log -Tail 40 | Set-Content $last -Encoding UTF8
 }

@@ -9,6 +9,9 @@ const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE;
 export default defineConfig({
   testDir: "e2e",
   fullyParallel: true,
+  // Los tests de notación cargan VexFlow/fuentes y audio. Acotar procesos evita
+  // saturar CPU en portátiles y runners sin ocultar errores con reintentos.
+  workers: process.env.CI ? 2 : 4,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [["list"], ["github"]] : "list",

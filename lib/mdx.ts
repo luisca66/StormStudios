@@ -12,6 +12,10 @@ export type MDXFrontmatter = {
   updatedAt?: string;
   author?: string;
   tags?: string[];
+  /** ID del video de YouTube de una pieza de Maestría. */
+  youtubeId?: string;
+  /** Duración ISO 8601 del video, p. ej. PT18M39S. */
+  duration?: string;
   [key: string]: unknown;
 };
 
@@ -95,6 +99,34 @@ export async function getBlogPost(
   slug: string
 ): Promise<MDXContent | null> {
   const filePath = path.join(CONTENT_DIR, "blog", locale, `${slug}.mdx`);
+  if (!fs.existsSync(filePath)) return null;
+  return readMDXFile(filePath, slug);
+}
+
+/**
+ * Lee las piezas de Maestría de content/maestria/{locale}/, más recientes primero.
+ */
+export async function getMasteryPieces(locale: string): Promise<MDXContent[]> {
+  const dir = path.join(CONTENT_DIR, "maestria", locale);
+
+  if (!fs.existsSync(dir)) return [];
+
+  return fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith(".mdx"))
+    .map((file) => readMDXFile(path.join(dir, file), file.replace(/\.mdx$/, "")))
+    .filter((p): p is MDXContent => p !== null)
+    .sort((a, b) => String(b.frontmatter.date).localeCompare(String(a.frontmatter.date)));
+}
+
+/**
+ * Lee una pieza individual de Maestría
+ */
+export async function getMasteryPiece(
+  locale: string,
+  slug: string
+): Promise<MDXContent | null> {
+  const filePath = path.join(CONTENT_DIR, "maestria", locale, `${slug}.mdx`);
   if (!fs.existsSync(filePath)) return null;
   return readMDXFile(filePath, slug);
 }

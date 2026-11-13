@@ -14,8 +14,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: locale === "es" ? "Oido Absoluto Multi-timbrico" : "Perfect Pitch Multi-timbral",
     description:
       locale === "es"
-        ? "Entrena reconocimiento de notas absolutas con piano, cello, corno, coro, fagot, modos de juego y estadisticas locales."
-        : "Train absolute-note recognition with piano, cello, horn, choir, bassoon, game modes, and local statistics.",
+        ? "El método AP Super en la web: 147 niveles de oído absoluto con seis timbres y estadísticas."
+        : "The AP Super method on the web: 147 perfect-pitch levels with six timbres and statistics.",
     noIndex: true,
   });
 }

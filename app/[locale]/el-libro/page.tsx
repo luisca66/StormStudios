@@ -48,19 +48,19 @@ export default async function ElLibroPage({ params }: Props) {
       <JsonLd data={{
         "@context": "https://schema.org",
         "@type": "Book",
-        name: locale === "es" ? "Los Seres Musicales: Una Historia de Transformación" : "The Musical Beings",
+        name: locale === "es" ? "Los Seres Musicales: Liberando tu potencial musical oculto" : "The Musical Beings: Unleash your hidden Musical Potential",
         author: { "@type": "Person", "@id": "https://www.stormstudios.com.mx/#luis-cardenas", name: "Luis Cárdenas" },
         inLanguage: locale === "es" ? "es" : "en",
         image: "https://www.stormstudios.com.mx/images/portada-libro.jpg",
         url: `https://www.stormstudios.com.mx${locale === "es" ? "/es/el-libro" : "/en/the-book"}`,
         sameAs: locale === "es"
-          ? ["https://www.amazon.com/dp/B0DK4B9892", "https://www.amazon.com.mx/dp/B0DK4B9892"]
-          : ["https://www.amazon.com/dp/B0DK63ZD8K", "https://www.amazon.com/dp/B0DK65FZDD"],
+          ? ["https://www.amazon.com.mx/dp/B0DK4B9892", "https://www.amazon.com.mx/dp/B0DK4CRG7M", "https://www.amazon.com.mx/dp/B0DKC96CM2"]
+          : ["https://www.amazon.com/dp/B0DK63ZD8K", "https://www.amazon.com/dp/B0DK65FZDD", "https://www.amazon.com/dp/B0DKCB2YW8"],
       }} />
       <div className="grid md:grid-cols-[260px_1fr] gap-12 items-start">
         {/* Portada */}
         <div className="flex justify-center ss-reveal">
-          <Image src="/images/portada-libro.jpg"
+          <Image src="/images/portada-libro.webp"
             alt={locale === "es" ? "Portada — Los Seres Musicales" : "Cover — The Musical Beings"}
             width={260} height={350} priority
             className="rounded-xl object-cover"

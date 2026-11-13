@@ -1,6 +1,10 @@
 import { ASSET_BASE, NOTES_BASE } from "@/config";
+import { Pitch, Timbre, TIMBRES, sampleName } from "@/game/progression";
 
 export class AudioEngine {
+  private repeatTimer: ReturnType<typeof setTimeout> | undefined;
+  private playbackGeneration = 0;
+  private preloadGeneration = 0;
   private activeNotes: HTMLAudioElement[] = [];
   private audioCache = new Map<string, HTMLAudioElement>();
   
@@ -20,6 +24,7 @@ export class AudioEngine {
 
   setVolume(vol: number) {
     this.globalVolume = Math.max(0, Math.min(1, vol));
+    for (const note of this.activeNotes) note.volume = this.globalVolume;
     if (this.bgPlayer) {
       this.bgPlayer.volume = this.globalVolume * 0.4; // BG music is softer
     }
@@ -33,6 +38,8 @@ export class AudioEngine {
   }
 
   stopAllNotes(): void {
+    this.playbackGeneration++;
+    clearTimeout(this.repeatTimer);
     for (const player of this.activeNotes) {
       try {
         player.pause();
@@ -44,49 +51,65 @@ export class AudioEngine {
     this.activeNotes = [];
   }
 
-  // Preload a set of notes to avoid delays during gameplay
-  preloadNotes(notes: { note_index: number; octave: number }[], instrument: string): void {
-    const noteNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-    for (const note of notes) {
-      const noteName = noteNames[note.note_index];
-      const url = `${NOTES_BASE}/${instrument}/${encodeURIComponent(noteName)}${note.octave}.mp3`;
-      if (!this.audioCache.has(url)) {
+  private noteURL(timbre: Timbre, pitch: Pitch): string {
+    return `${NOTES_BASE}/${timbre}/${encodeURIComponent(sampleName(pitch))}.mp3`;
+  }
+
+  // At most four loads at once; changing level cancels the remaining old queue.
+  preloadNotes(pitches: Pitch[]): void {
+    const generation = ++this.preloadGeneration;
+    const queue = pitches.flatMap(pitch => TIMBRES.map(timbre => this.noteURL(timbre, pitch)));
+    const worker = async () => {
+      while (queue.length && generation === this.preloadGeneration) {
+        const url = queue.shift()!;
+        if (this.audioCache.has(url)) continue;
         const audio = new Audio(url);
         audio.preload = "auto";
         this.audioCache.set(url, audio);
+        await new Promise<void>(resolve => {
+          const finish = () => {
+            clearTimeout(timeout);
+            audio.removeEventListener("canplaythrough", finish);
+            audio.removeEventListener("error", finish);
+            resolve();
+          };
+          const timeout = setTimeout(finish, 5000);
+          audio.addEventListener("canplaythrough", finish, { once: true });
+          audio.addEventListener("error", finish, { once: true });
+          audio.load();
+        });
+        await new Promise(resolve => setTimeout(resolve, 60));
       }
-    }
+    };
+    for (let i = 0; i < 4; i++) void worker();
   }
 
-  playNote(instrument: string, noteIndex: number, octave: number): void {
+  playNote(timbre: Timbre, pitch: Pitch, loop = false): void {
     this.stopAllNotes();
-
-    const noteNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-    const noteName = noteNames[noteIndex];
-    if (instrument === "Aleatorio") {
-      const insts = ["Piano", "Cello", "Corno", "Coro", "Fagot"];
-      instrument = insts[Math.floor(Math.random() * insts.length)];
-    }
-    
-    const url = `${NOTES_BASE}/${instrument}/${encodeURIComponent(noteName)}${octave}.mp3`;
-
+    const generation = this.playbackGeneration;
+    const url = this.noteURL(timbre, pitch);
     let template = this.audioCache.get(url);
     if (!template) {
       template = new Audio(url);
       template.preload = "auto";
       this.audioCache.set(url, template);
     }
-
-    const player = template.cloneNode(true) as HTMLAudioElement;
-    player.volume = this.globalVolume;
-    player.currentTime = 0;
-    
-    player.addEventListener("ended", () => {
-      this.activeNotes = this.activeNotes.filter(item => item !== player);
-    }, { once: true });
-    
-    this.activeNotes.push(player);
-    player.play().catch(err => console.warn("Audio play blocked", err));
+    const play = () => {
+      if (generation !== this.playbackGeneration) return;
+      const player = template!.cloneNode(true) as HTMLAudioElement;
+      player.volume = this.globalVolume;
+      player.addEventListener("ended", () => {
+        this.activeNotes = this.activeNotes.filter(item => item !== player);
+        if (loop && generation === this.playbackGeneration)
+          this.repeatTimer = setTimeout(play, 450);
+      }, { once: true });
+      player.addEventListener("error", () => {
+        this.activeNotes = this.activeNotes.filter(item => item !== player);
+      }, { once: true });
+      this.activeNotes.push(player);
+      player.play().catch(err => console.warn("Audio play blocked", err));
+    };
+    play();
   }
 
   playCorrect(): void {
@@ -162,6 +185,7 @@ export class AudioEngine {
   }
 
   nextTrack(): void {
+    if (!this.currentPlaylist.length) return;
     if (this.bgPlayer) {
       this.bgPlayer.pause();
     }

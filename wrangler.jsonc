@@ -1,0 +1,36 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "storm-studios",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-07",
+  "compatibility_flags": ["nodejs_compat"],
+  // El sitio vive solo en stormstudios.com.mx; sin copias en workers.dev.
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "www.stormstudios.com.mx", "custom_domain": true },
+    { "pattern": "stormstudios.com.mx", "custom_domain": true }
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+    // Todo pasa por el Worker para conservar headers, redirects y rewrites de
+    // Next, salvo /_next/static: archivos con hash que se sirven directo desde
+    // la capa de assets con la caché de public/_headers.
+    "run_worker_first": ["/*", "!/_next/static/*"],
+    "html_handling": "none",
+    "not_found_handling": "none"
+  },
+  // Datos propios y anónimos; sin cookies, IP ni identificadores de visitante.
+  "analytics_engine_datasets": [
+    { "binding": "SITE_ANALYTICS", "dataset": "storm_site_events", "remote": false }
+  ],
+  // Límites compartidos entre instancias para las API públicas
+  // (lib/http/edge-rate-limit.ts). El periodo solo admite 10 o 60 segundos.
+  "ratelimits": [
+    { "name": "CONTACT_LIMITER", "namespace_id": "1001", "simple": { "limit": 3, "period": 60 } },
+    { "name": "MAESTRO_LIMITER", "namespace_id": "1002", "simple": { "limit": 10, "period": 60 } }
+  ],
+  // Logs de las API (console.error) visibles en el panel de Cloudflare.
+  "observability": { "enabled": true }
+}

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
+import { measurementContext } from "@/lib/analytics/client";
 
 type Props = { locale: string };
 type ContactErrorCode =
@@ -82,6 +83,7 @@ export default function ContactForm({ locale }: Props) {
       website: (form.elements.namedItem("website") as HTMLInputElement).value,
       elapsedMs: Math.round(performance.now() - startedAtRef.current),
       attemptId: attemptIdRef.current,
+      measurement: measurementContext(),
     };
     requestControllerRef.current?.abort();
     const controller = new AbortController();
