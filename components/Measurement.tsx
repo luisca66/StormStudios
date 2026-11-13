@@ -26,6 +26,7 @@ export default function Measurement() {
       if (!link) return;
       const destination = link.dataset.destination ?? "";
       if (link.dataset.measure === "amazon_click") track("amazon_click", destination);
+      if (link.dataset.measure === "store_click") track("store_click", destination);
       if (link.dataset.measure === "contact_click") track("contact_click", destination);
     };
     // Capture sees next-intl links before client navigation handles the click.

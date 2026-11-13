@@ -50,3 +50,26 @@ describe("anonymous measurement", () => {
     }
   });
 });
+
+describe("store and notification measurement", () => {
+  it("accepts only known store destinations, without personal fields", () => {
+    for (const destination of ["play:apsuper", "appstore:apsuper"]) {
+      expect(normalizeEvent({ ...base, name: "store_click", destination })).not.toBeNull();
+    }
+    for (const destination of ["", "play:other", "reader@example.com", "https://play.google.com"]) {
+      expect(normalizeEvent({ ...base, name: "store_click", destination })).toBeNull();
+    }
+    expect(normalizeEvent({ ...base, name: "store_click", destination: "play:apsuper", email: "x@example.com" })).toBeNull();
+  });
+  it("validates notification placement in both languages", () => {
+    for (const [language, paths] of [["es", ["/es/el-libro", "/es/apps", "/es/curso-armonia/02-leccion-1"]],
+      ["en", ["/en/the-book", "/en/apps", "/en/harmony-course/02-lesson-1-major-scales"]]] as const) {
+      for (const [i, destination] of ["libro", "catalogo", "leccion"].entries()) {
+        expect(normalizeEvent({ name: "notify_success", language, path: paths[i], destination })).not.toBeNull();
+        expect(normalizeEvent({ name: "notify_success", language, path: paths[i], destination: "reader@example.com" })).toBeNull();
+      }
+    }
+    expect(normalizeEvent({ ...base, name: "notify_success", destination: "libro" })).toBeNull();
+    expect(normalizeEvent({ ...base, path: "/es/apps", name: "notify_success", destination: "libro" })).toBeNull();
+  });
+});

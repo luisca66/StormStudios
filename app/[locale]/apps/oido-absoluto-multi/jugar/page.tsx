@@ -1,3 +1,4 @@
+import StoreInvitation from "@/components/StoreInvitation";
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
@@ -26,6 +27,7 @@ export default async function OidoAbsolutoMultiPage({ params }: Props) {
   const es = locale === "es";
 
   return (
+    <>
     <GameShell
       locale={locale}
       background="#10110f"
@@ -52,5 +54,7 @@ export default async function OidoAbsolutoMultiPage({ params }: Props) {
         style={{ flex: 1, width: "100%", border: "none", display: "block" }}
       />
     </GameShell>
+    <StoreInvitation locale={locale} />
+    </>
   );
 }

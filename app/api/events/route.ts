@@ -30,8 +30,8 @@ export async function POST(request: Request) {
   } catch { return reply(400); }
   finally { reader.releaseLock(); }
   const event = normalizeEvent(input);
-  // Successful contact is recorded exclusively by the mail endpoint.
-  if (!event || event.name === "contact_success") return reply(400);
+  // Successful mail submissions are recorded exclusively by their mail endpoints.
+  if (!event || (event.name === "contact_success" || event.name === "notify_success")) return reply(400);
   if (!writeEvent(event)) return reply(503);
   if (event.name === "page_view" && appDestination(event.path)) {
     writeEvent({ ...event, name: "app_open", destination: appDestination(event.path)! });

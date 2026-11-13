@@ -14,6 +14,9 @@ describe("monthly analytics report", () => {
       expect(sql).toContain("SUM(_sample_interval)");
       expect(sql).toContain("timestamp < toDateTime('2026-12-01 00:00:00')");
     }
+    expect(queries.stores).toContain("blob1 = 'store_click'");
+    expect(queries.notifications).toContain("blob1 = 'notify_success'");
+    expect(queries.notifications).toContain("GROUP BY destination, language");
     expect(queries.sources).toContain("AND blob1 = 'page_view'");
     expect(queries.amazon).toContain("GROUP BY destination, language");
   });
@@ -24,6 +27,13 @@ describe("monthly analytics report", () => {
     expect(report).toContain("source\\|name");
     expect(report).toContain("\\<script\\>");
     expect(report).toContain("hello world");
+  });
+  it("renders store and notification counts by destination and language", () => {
+    const report = renderReport("2026-11", { events: [], pages: [], amazon: [], contacts: [], apps: [], sources: [],
+      stores: [{ destination: "play:apsuper", language: "es", total: 7 }],
+      notifications: [{ destination: "libro", language: "en", total: 2 }] });
+    expect(report).toContain("| play:apsuper | es | 7 |");
+    expect(report).toContain("| libro | en | 2 |");
   });
   it("requires environment credentials and never reflects API error bodies", async () => {
     const fetcher = vi.fn();
