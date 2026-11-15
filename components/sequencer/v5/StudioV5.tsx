@@ -30,13 +30,14 @@ import { useMidiInput, type MidiStatus } from "./useMidiInput";
 import { useMicInput, type MicStatus } from "./useMicInput";
 import { useStudio, type Studio } from "./useStudio";
 import styles from "./studio.module.css";
+import DurationIcon from "./DurationIcon";
 
 const AUTHOR = process.env.NEXT_PUBLIC_SEQUENCER_AUTHOR === "1";
 const AuthorPanel = AUTHOR ? dynamic(() => import("./AuthorPanel"), { ssr: false }) : null;
 
-const DURATIONS: Array<[Duration, string, string, string]> = [
-  ["w", "Redonda", "Whole", "𝅝"], ["h", "Blanca", "Half", "𝅗𝅥"], ["q", "Negra", "Quarter", "♩"],
-  ["8", "Corchea", "Eighth", "♪"], ["16", "Semicorchea", "Sixteenth", "𝅘𝅥𝅯"], ["32", "Fusa", "Thirty-second", "𝅘𝅥𝅰"],
+const DURATIONS: Array<[Duration, string, string]> = [
+  ["w", "Redonda", "Whole"], ["h", "Blanca", "Half"], ["q", "Negra", "Quarter"],
+  ["8", "Corchea", "Eighth"], ["16", "Semicorchea", "Sixteenth"], ["32", "Fusa", "Thirty-second"],
 ];
 const ACCIDENTALS: Array<[MouseEditing["accidental"], string, string, string]> = [
   ["key", "Según la armadura", "Follow the key signature", "𝄞"], ["#", "Sostenido", "Sharp", "♯"], ["b", "Bemol", "Flat", "♭"], ["", "Becuadro", "Natural", "♮"], ["##", "Doble sostenido", "Double sharp", "𝄪"], ["bb", "Doble bemol", "Double flat", "𝄫"],
@@ -243,8 +244,8 @@ export default function StudioV5({ locale }: { locale: string }) {
             <button key={value} aria-pressed={s.tool === value} onClick={() => s.setTool(value)} aria-label={t(es, en)} title={t(es, en)}><Icon name={icon} /></button>)}
         </div>
         <div className={styles.group}>
-          {DURATIONS.map(([value, es, en, glyph], index) =>
-            <button key={value} className={styles.glyph} aria-pressed={draft.duration === value} onClick={() => s.applyNoteValue({ duration: value })} aria-label={t(es, en)} title={t(es, en) + " (" + (index + 1) + ")"}>{glyph}</button>)}
+          {DURATIONS.map(([value, es, en], index) =>
+            <button key={value} className={styles.glyph} aria-pressed={draft.duration === value} onClick={() => s.applyNoteValue({ duration: value })} aria-label={t(es, en)} title={t(es, en) + " (" + (index + 1) + ")"}><DurationIcon value={value} /></button>)}
           <button aria-pressed={draft.dotted} onClick={() => s.applyNoteValue({ dotted: !draft.dotted })} aria-label={t("Puntillo", "Dotted")} title={t("Puntillo (.)", "Dotted (.)")}>•</button>
           <button aria-pressed={draft.triplet} onClick={() => s.applyNoteValue({ triplet: !draft.triplet })} aria-label={t("Tresillo", "Triplet")} title={t("Tresillo", "Triplet")}>3</button>
           <button aria-pressed={draft.tie} onClick={() => s.applyNoteValue({ tie: !draft.tie })} aria-label={t("Ligadura", "Tie")} title={t("Ligadura (T)", "Tie (T)")}>⌒</button>
@@ -279,7 +280,7 @@ export default function StudioV5({ locale }: { locale: string }) {
       </div>
       <div className={styles.editor} data-view={view}>
         {view === "staff"
-          ? <div ref={paper}><ScoreView score={score} selected={s.selected} locale={locale} onSelect={s.selectNote} mouse={s.mouse} tick={s.tick} cursorTick={s.positionTick} focusVoice="all" layout={layout}
+          ? <div ref={paper}><ScoreView pitchStems score={score} selected={s.selected} locale={locale} onSelect={s.selectNote} mouse={s.mouse} tick={s.tick} cursorTick={s.positionTick} focusVoice="all" layout={layout}
               systemSize={SYSTEM_SIZE} pageInfo={{ index: shownPage + 1, total: pageCount }}
               from={layout === "page" ? shownPage * barsPerPage + 1 : 1} to={layout === "page" ? Math.min(score.measures.length, (shownPage + 1) * barsPerPage) : score.measures.length}
               showAnnotations={s.cipherVisible} onAnnotation={(measure, beat, text) => s.attempt(() => s.commit(setChordAt(score, measure, beat, text)))}

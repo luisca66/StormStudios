@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import type { SequencerAgentApi } from "../lib/sequencer/agent-api";
 
 // Valid tiny PCM WAV: exercise Web Audio decoding without a network dependency.
 function sampleWav() {
@@ -21,6 +22,35 @@ async function open(page: Page) {
   await page.waitForFunction(() => Boolean((window as unknown as { stormSequencer?: unknown }).stormSequencer));
   await expect(page.getByTestId("studio-v5")).not.toHaveAttribute("inert", "");
 }
+
+test("SATB stems follow the middle staff line in both editor layouts", async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => {
+    const agent = (window as unknown as { stormSequencer: SequencerAgentApi }).stormSequencer;
+    const score = agent.getScore();
+    score.mode = "satb";
+    for (const voice of score.voices) {
+      const pitches = voice.clef === "bass" ? ["B2", "D3", "F3"] : ["G4", "B4", "D5"];
+      voice.events = voice.id === "melody" ? [] : pitches.map((pitch, i) => ({
+        id: `stem-${voice.id}-${i}`, start: i * 960, pitches: [pitch],
+        duration: "q", dotted: false, triplet: false, tie: false,
+      }));
+    }
+    agent.loadScore(score);
+  });
+  for (const layout of ["Continua", "Páginas"]) {
+    await page.getByRole("button", { name: layout, exact: true }).click();
+    for (const voice of ["soprano", "alto", "tenor", "bass"]) {
+      for (let i = 0; i < 3; i++) {
+        const stem = page.locator(`[data-note-id="stem-${voice}-${i}"] .vf-stem path`);
+        await expect(stem).toHaveCount(1);
+        // VexFlow's path runs from the notehead to the stem tip.
+        const coordinates = (await stem.getAttribute("d"))!.match(/-?\d+(?:\.\d+)?/g)!.map(Number);
+        expect(Math.sign(coordinates[3] - coordinates[1])).toBe(i === 0 ? -1 : 1);
+      }
+    }
+  }
+});
 
 test("the studio fits one screen and never ships author mode", async ({ page }) => {
   const errors: string[] = [];

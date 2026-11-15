@@ -59,9 +59,11 @@ type MeasureProps = {
   /** Optional stage decorations. Editor behavior is unchanged when omitted. */
   capture?: Still;
   captureLayout?: CaptureLayout;
+  /** V5: each voice has its own staff, so stems follow pitch rather than SATB voice. */
+  pitchStems?: boolean;
 };
 
-const MeasureView = memo(function MeasureView({ score, measure, selected, locale, focusVoice, onSelect,mouse,continuous=false,systemStart:startsSystem,renderWidth,showAnnotations=true,capture,captureLayout }: MeasureProps) {
+const MeasureView = memo(function MeasureView({ score, measure, selected, locale, focusVoice, onSelect,mouse,continuous=false,systemStart:startsSystem,renderWidth,showAnnotations=true,capture,captureLayout,pitchStems=false }: MeasureProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [error, setError] = useState("");
   useEffect(() => {
@@ -120,8 +122,8 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
               keys: event.pitches.length ? sortedPitches(event).map(pitchToVex)
                 : [voice.clef === "bass" ? "d/3" : "b/4"],
               clef: voice.clef, duration: event.duration + (event.pitches.length ? "" : "r"),
-              dots: event.dotted ? 1 : 0, autoStem: score.mode!=="satb",
-              ...(score.mode==="satb"?{stemDirection:voice.id==="soprano"||voice.id==="tenor"?V.Stem.UP:V.Stem.DOWN}:{}),
+              dots: event.dotted ? 1 : 0, autoStem: pitchStems || score.mode!=="satb",
+              ...(score.mode==="satb" && !pitchStems?{stemDirection:voice.id==="soprano"||voice.id==="tenor"?V.Stem.UP:V.Stem.DOWN}:{}),
               ...(gap ? { durationOverride: new V.Fraction(Number(event.id.slice(4)), PPQ * 4) } : {}),
             });
             if (event.dotted) V.Dot.buildAndAttach([note], { all: true });
@@ -177,7 +179,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
           new V.StaveConnector(prepared[0].stave,prepared.at(-1)!.stave).setType(type).setContext(context).draw();
         }
         prepared.forEach(({voice,row,stave,events,notes,tuplets,vexVoice})=>{
-          const beams = V.Beam.generateBeams(notes,{maintainStemDirections:score.mode==="satb"});
+          const beams = V.Beam.generateBeams(notes,{maintainStemDirections:score.mode==="satb" && !pitchStems});
           // draw attaches the stave to every note; absolute X is only final afterwards.
           if (capture) {
             notes.forEach((note, i) => {
@@ -401,7 +403,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
       }
     })();
     return () => { cancelled = true;cleanups.forEach(clean=>clean()); };
-  }, [score, measure, selected, locale, focusVoice, onSelect,mouse,continuous,startsSystem,renderWidth,showAnnotations,capture,captureLayout]);
+  }, [score, measure, selected, locale, focusVoice, onSelect,mouse,continuous,startsSystem,renderWidth,showAnnotations,capture,captureLayout,pitchStems]);
   return <><div ref={ref} className={styles.notation} />{error && <p role="alert" className={styles.renderError}>{error}</p>}</>;
 });
 
@@ -417,7 +419,7 @@ function headBox(element: Element) {
 
 const PAGE_FIRST_WIDTH = 540, PAGE_WIDTH = 420; // SVG units; equal scale keeps staves aligned across a system
 
-export default function ScoreView({ score, selected, locale, onSelect, mouse,tick,cursorTick, focusVoice = "all", from = 1, to = score.measures.length,layout="scene",showAnnotations=true,onAnnotation,capture,captureLayout,systemSize=3,pageInfo,onSelectMany,onMeasure }: Omit<MeasureProps, "measure"> & {
+export default function ScoreView({ score, selected, locale, onSelect, mouse,tick,cursorTick, focusVoice = "all", from = 1, to = score.measures.length,layout="scene",showAnnotations=true,onAnnotation,capture,captureLayout,systemSize=3,pageInfo,onSelectMany,onMeasure,pitchStems=false }: Omit<MeasureProps, "measure"> & {
   tick: number | null; from?: number; to?: number;layout?:"line"|"page"|"scene";
   cursorTick?:number;
   onAnnotation?:(measure:number,beat:number,text:string)=>void;
@@ -492,7 +494,7 @@ export default function ScoreView({ score, selected, locale, onSelect, mouse,tic
         ? <div className={styles.measureHeading}>{page.systemStart ? (onMeasure ? <button type="button" className={styles.measureNumber} onClick={()=>onMeasure(n)} aria-label={(es?"Ir al compás ":"Go to measure ")+n}>{n}</button> : <span>{n}</span>) : <span/>}</div>
         : <div className={styles.measureHeading}>{onMeasure?<button type="button" className={styles.measureNumber} onClick={()=>onMeasure(n)} aria-label={(es?"Ir al compás ":"Go to measure ")+n}>{String(n).padStart(2, "0")}</button>:<span>{String(n).padStart(2, "0")}</span>}{(layout!=="line" || signatureChanged) && <span>{measure.key} / {measure.time.join("/")}</span>}</div>)}
       <MeasureView score={score} measure={n} selected={selected} locale={locale} focusVoice={focusVoice} onSelect={onSelect} mouse={editing} continuous={layout==="line" || layout==="page" || !!captureLayout}
-        systemStart={page?.systemStart} renderWidth={page?.width} showAnnotations={showAnnotations} capture={capture} captureLayout={captureLayout} />
+        systemStart={page?.systemStart} renderWidth={page?.width} showAnnotations={showAnnotations} capture={capture} captureLayout={captureLayout} pitchStems={pitchStems} />
       {showAnnotations&&onAnnotation&&<div className={styles.inlineCiphers} style={{gridTemplateColumns:`repeat(${Math.ceil(length/PPQ)},minmax(0,1fr))`}}>
         {Array.from({length:Math.ceil(length/PPQ)},(_,i)=>{const annotation=score.annotations?.find(a=>a.kind==="roman"&&a.measure===n&&a.beat===i+1);return <input key={annotation?.id+":"+(annotation?.text??"")+":"+i} defaultValue={annotation?.text??""} aria-label={(es?"Cifrado compás ":"Cipher measure ")+n+(es?", pulso ":", beat ")+(i+1)} placeholder="—" maxLength={200} onBlur={e=>{if(e.target.value!==(annotation?.text??""))onAnnotation(n,i+1,e.target.value);}} onKeyDown={e=>{if(e.key==="Enter")e.currentTarget.blur();}}/>;})}
       </div>}

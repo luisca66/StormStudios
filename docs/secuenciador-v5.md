@@ -14,7 +14,7 @@ La v3 (`/sequencer`) y la v4 (`/sequencer/v4`) **no se tocan**: tienen videos he
 2. **Nada de «Maestro en vivo».** El secuenciador no corrige ni marca errores mientras el alumno escribe: «porque no van a pensar». La corrección sigue siendo entregar el ejercicio al Maestro Virtual.
 3. **La magia es solo para Luis (modo autor).** Repartir voces, armonizar, revisar con las reglas y transportar existen, pero el alumno no los ve ni los recibe. Ver «Modo autor».
 4. Referencia de diseño: Cubase (Luis usa Cubase 16).
-5. **Se publica cuando Luis la pruebe** (15 de noviembre de 2026). No hacer merge del PR antes de su visto bueno.
+5. **Publicación autorizada por Luis el 15 de noviembre de 2026**, conservando las versiones 3 y 4 y sus rutas. La v5 se publica en su ruta propia.
 
 ## Qué ya funciona (verificado en navegador el 2026-11-15)
 
@@ -103,7 +103,7 @@ La paridad con la v4 quedó completa el 2026-11-15 (inventario original en `docs
 
 ### Para publicar y enlazar
 
-1. **Que Luis la pruebe** y dé el visto bueno.
+1. **Visto bueno recibido** de Luis el 15 de noviembre de 2026 para publicar conservando la v3 y la v4.
 2. **Video y lección «P04.2 – Uso del Secuenciador v5»**, con el patrón de `content/course/*/p04-1-secuenciador-v4.mdx` (las lecciones P04.x acompañan a un video de Luis). Después: entrada de blog y enlaces desde `app/[locale]/curso-armonia/page.tsx` y `app/[locale]/sequencer/page.tsx`. Hasta entonces la v5 es `noIndex` y no tiene enlaces.
 
 ### Por probar con equipo real

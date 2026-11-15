@@ -35,7 +35,7 @@ export default function Stage({ s, locale }: { s: Studio; locale: string }) {
     <div className={styles.stage} data-aspect={scene.aspect} ref={stage} data-testid="presentation-stage">
       <header><span>Storm Studios Learning</span><h2>{scene.title || score.title}</h2>{scene.caption && <p>{scene.caption}</p>}</header>
       <div className={styles.stagePaper} ref={paper}>
-        <ScoreView score={score} selected={[]} locale={locale} onSelect={noop} tick={s.tick} showAnnotations={s.cipherVisible}
+        <ScoreView pitchStems score={score} selected={[]} locale={locale} onSelect={noop} tick={s.tick} showAnnotations={s.cipherVisible}
           from={scene.startMeasure} to={scene.endMeasure} focusVoice={scene.highlightVoice} />
       </div>
       <footer><span>Storm Sequencer</span><span>{score.tempo} BPM</span></footer>
