@@ -1,0 +1,66 @@
+"use client";
+/**
+ * Modo autor — SOLO para Luis. Genera voces y armoniza con las reglas del curso.
+ *
+ * Este archivo (y `lib/sequencer/harmony/score-bridge.ts`, `realize.ts`,
+ * `harmonize.ts`) no debe llegar al alumno: StudioV5 lo carga únicamente cuando
+ * NEXT_PUBLIC_SEQUENCER_AUTHOR=1, que existe solo en el `.env.local` de la PC
+ * de Luis. En producción la variable no existe y este panel no se incluye.
+ */
+import { useState } from "react";
+import { chordName } from "@/lib/sequencer/harmony/chords";
+import type { Harmonization } from "@/lib/sequencer/harmony/harmonize";
+import { reviewScore, type Review } from "@/lib/sequencer/harmony/review";
+import { transposeToKey } from "@/lib/sequencer/harmony/transpose";
+import { applyHarmonization, harmonizeOptions, HarmonyError, realizeChordTrack } from "@/lib/sequencer/harmony/score-bridge";
+import type { Studio } from "./useStudio";
+import styles from "./studio.module.css";
+
+const KEYS = ["C", "G", "D", "A", "E", "B", "F#", "C#", "F", "Bb", "Eb", "Ab", "Db", "Gb", "Cb"];
+
+export default function AuthorPanel({ s }: { s: Studio }) {
+  const { t, es, score } = s;
+  const [options, setOptions] = useState<Harmonization[]>([]), [review, setReview] = useState<Review | null>(null);
+  const run = (action: () => void) => { try { action(); } catch (error) { s.setError(error instanceof HarmonyError ? (es ? error.es : error.en) : error instanceof Error ? error.message : "Error"); } };
+  const voice = () => run(() => { const result = realizeChordTrack(score); if (s.commit(result.score, es ? result.message.es : result.message.en)) { s.setSelected([]); s.patchDraft({ voice: "soprano" }); } });
+  const harmonize = () => run(() => { setOptions([]); setOptions(harmonizeOptions(score, 4)); s.setMessage(t("Elige una armonización.", "Choose a harmonization.")); });
+  const choose = (option: Harmonization) => run(() => { const result = applyHarmonization(score, option); if (s.commit(result.score, es ? result.message.es : result.message.en)) setOptions([]); });
+  const [key, setKey] = useState("G");
+  const transpose = () => run(() => {
+    const result = transposeToKey(score, key);
+    const note = result.outside ? t(` ${result.outside} notas quedaron fuera de tesitura: usa «Repartir» para repartir de nuevo en esta tonalidad.`, ` ${result.outside} notes are out of range: use "Voice" to voice it again in this key.`) : "";
+    if (s.commit(result.score, t(`Transportado de ${result.from} a ${result.to}.`, `Transposed from ${result.from} to ${result.to}.`) + note)) { s.setSelected([]); setReview(null); }
+  });
+  const check = () => run(() => { const result = reviewScore(score); setReview(result); s.setMessage(result.findings.length ? t(result.findings.length + " observaciones.", result.findings.length + " findings.") : t("Sin observaciones.", "No findings.")); });
+  return <div className={styles.author} data-testid="author-panel">
+    <p className={styles.authorBadge}>{t("Modo autor · solo en esta computadora · el alumno no lo ve", "Author mode · this computer only · students never see it")}</p>
+    <div className={styles.authorActions}>
+      <div>
+        <button className={styles.primary} onClick={voice} data-testid="author-voice">{t("Repartir la pista de acordes a 4 voces", "Voice the chord track in 4 parts")}</button>
+        <p className={styles.muted}>{t("Lee el cifrado de la pista y escribe soprano, contralto, tenor y bajo con la conducción del curso. Reemplaza lo que hubiera en ese tramo (se puede deshacer).", "Reads the chord track and writes soprano, alto, tenor and bass with the course's voice leading. Replaces that span (undoable).")}</p>
+      </div>
+      <div>
+        <button className={styles.primary} onClick={harmonize} data-testid="author-harmonize">{t("Armonizar la soprano escrita", "Harmonize the written soprano")}</button>
+        <p className={styles.muted}>{t("Propone progresiones del material del curso para la melodía de la soprano y escribe las otras tres voces.", "Proposes progressions from the course material for the soprano melody and writes the other three voices.")}</p>
+        <div className={styles.row} style={{ marginTop: 10 }}>
+          <label>{t("Pasar todo a", "Move everything to")}<select value={key} onChange={event => setKey(event.target.value)} data-testid="author-key">{KEYS.map(name => <option key={name}>{name}</option>)}</select></label>
+          <button onClick={transpose} data-testid="author-transpose">{t("Transportar", "Transpose")}</button>
+        </div>
+        {options.length > 0 && <ol className={styles.options} data-testid="author-options">
+          {options.map((option, index) => <li key={index}><span>{option.chords.map(chordName).join(" – ")}</span><button onClick={() => choose(option)}>{t("Escribir", "Write")}</button></li>)}
+        </ol>}
+      </div>
+      <div>
+        <button className={styles.primary} onClick={check} data-testid="author-review">{t("Revisar con las reglas del curso", "Review with the course rules")}</button>
+        <p className={styles.muted}>{t("Antes de grabar: construcción de acordes, 5as y 8as, movimientos melódicos y tabla de enlaces, sobre lo que está escrito en las cuatro voces.", "Before recording: chord construction, fifths and octaves, melodic motion and the table of links, on what is written in the four voices.")}</p>
+        {review && <div data-testid="author-findings">
+          <p className={review.findings.length ? styles.warn : styles.ok}>{review.chords} {t("acordes revisados", "chords reviewed")} · {review.findings.length ? review.findings.length + t(" observaciones", " findings") : t("sin observaciones", "no findings")}</p>
+          {review.progression && <p className={styles.muted}>{review.progression}</p>}
+          <ol className={styles.options}>{review.findings.map((finding, index) => <li key={index}>
+            <button onClick={() => { s.setSelected([]); s.patchDraft({ measure: finding.measure, beat: finding.beat }); }}>{finding.measure}.{finding.beat}</button>
+            <span className={styles.finding}>{es ? finding.es : finding.en}</span></li>)}</ol>
+        </div>}
+      </div>
+    </div>
+  </div>;
+}
