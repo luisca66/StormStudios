@@ -13,6 +13,8 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { downloadBlob, exportGraphic } from "@/lib/sequencer/graphics";
+import { MAX_TIME_NUMERATOR, TIME_DENOMINATORS } from "@/lib/sequencer/model";
 import { clefAt, keySignature, parsePitchList, pitchToMidi, transposePitches } from "@/lib/sequencer/model";
 import { setChordAt } from "@/lib/sequencer/harmony/chord-track";
 import { INSTRUMENTS, PPQ, type Duration, type VoiceId } from "@/lib/sequencer/types";
@@ -20,6 +22,10 @@ import ScoreView, { type MouseEditing } from "../ScoreView";
 import PianoRoll from "../PianoRoll";
 import ChordPanel from "./ChordPanel";
 import TextPanel from "./TextPanel";
+import EventsPanel from "./EventsPanel";
+import ScenesPanel from "./ScenesPanel";
+import Stage from "./Stage";
+import { useMidiInput, type MidiStatus } from "./useMidiInput";
 import { useStudio, type Studio } from "./useStudio";
 import styles from "./studio.module.css";
 
@@ -31,13 +37,21 @@ const DURATIONS: Array<[Duration, string, string, string]> = [
   ["8", "Corchea", "Eighth", "♪"], ["16", "Semicorchea", "Sixteenth", "𝅘𝅥𝅯"], ["32", "Fusa", "Thirty-second", "𝅘𝅥𝅰"],
 ];
 const ACCIDENTALS: Array<[MouseEditing["accidental"], string, string, string]> = [
-  ["key", "Armadura", "Key", "𝄞"], ["#", "Sostenido", "Sharp", "♯"], ["b", "Bemol", "Flat", "♭"], ["", "Becuadro", "Natural", "♮"], ["##", "Doble sostenido", "Double sharp", "𝄪"], ["bb", "Doble bemol", "Double flat", "𝄫"],
+  ["key", "Según la armadura", "Follow the key signature", "𝄞"], ["#", "Sostenido", "Sharp", "♯"], ["b", "Bemol", "Flat", "♭"], ["", "Becuadro", "Natural", "♮"], ["##", "Doble sostenido", "Double sharp", "𝄪"], ["bb", "Doble bemol", "Double flat", "𝄫"],
 ];
 const KEYS = ["C", "G", "D", "A", "E", "B", "F#", "C#", "F", "Bb", "Eb", "Ab", "Db", "Gb", "Cb"];
 const METERS = ["4/4", "3/4", "2/4", "6/8", "9/8", "12/8", "5/4", "7/8"];
 const VOICE_LABEL: Record<VoiceId, [string, string]> = { melody: ["Melodía", "Melody"], soprano: ["Soprano", "Soprano"], alto: ["Contralto", "Alto"], tenor: ["Tenor", "Tenor"], bass: ["Bajo", "Bass"] };
 const INSTRUMENT_LABEL: Record<string, [string, string]> = { Piano: ["Piano", "Piano"], Cello: ["Cello", "Cello"], Corno: ["Corno", "Horn"], Coro: ["Coro", "Choir"], Fagot: ["Fagot", "Bassoon"], Synth: ["Sintetizador", "Synth"] };
-type Zone = "chords" | "text" | "author";
+type Zone = "chords" | "scenes" | "events" | "text" | "author";
+const ZONE_KEY = "storm-sequencer-v5-zone";
+// Vista por páginas: sistemas de 3 compases; 5 sistemas por página a una voz, 2 en SATB (igual que la v4).
+const SYSTEM_SIZE = 3;
+const MIDI_LABEL: Record<MidiStatus, [string, string]> = {
+  off: ["Teclado MIDI apagado", "MIDI keyboard off"], unsupported: ["Este navegador no admite MIDI (usa Chrome o Edge)", "This browser has no MIDI support (use Chrome or Edge)"],
+  connecting: ["Pidiendo permiso MIDI…", "Asking for MIDI permission…"], waiting: ["MIDI listo: conecta un teclado", "MIDI ready: connect a keyboard"],
+  ready: ["Teclado MIDI conectado", "MIDI keyboard connected"], denied: ["El navegador no dio permiso para MIDI", "The browser denied MIDI access"],
+};
 
 const ICONS = {
   play: <path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none" />,
@@ -71,7 +85,27 @@ export default function StudioV5({ locale }: { locale: string }) {
   const [view, setView] = useState<"staff" | "roll">("staff");
   const [zone, setZone] = useState<Zone>("chords"), [zoneOpen, setZoneOpen] = useState(true);
   const [tempoDraft, setTempoDraft] = useState<string | null>(null);
-  const fileInput = useRef<HTMLInputElement>(null);
+  const [layout, setLayout] = useState<"line" | "page">("line"), [page, setPage] = useState(0);
+  const [zoneHeight, setZoneHeight] = useState(196);
+  const [midiOn, setMidiOn] = useState(false), [semitones, setSemitones] = useState(2), [copyTo, setCopyTo] = useState(2);
+  const fileInput = useRef<HTMLInputElement>(null), paper = useRef<HTMLDivElement>(null);
+  const midi = useMidiInput(midiOn, notes => s.insertMidi(notes));
+  useEffect(() => { queueMicrotask(() => { try { const stored = Number(localStorage.getItem(ZONE_KEY)); if (stored >= 96 && stored <= 640) setZoneHeight(stored); } catch { /* sin almacenamiento */ } }); }, []);
+  const resizeZone = (down: React.PointerEvent) => {
+    down.preventDefault();
+    const startY = down.clientY, startHeight = zoneHeight; let latest = startHeight;
+    const move = (event: PointerEvent) => { latest = Math.max(96, Math.min(window.innerHeight - 260, startHeight + startY - event.clientY)); setZoneHeight(latest); };
+    const up = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); try { localStorage.setItem(ZONE_KEY, String(Math.round(latest))); } catch { /* sin almacenamiento */ } };
+    window.addEventListener("pointermove", move); window.addEventListener("pointerup", up);
+  };
+  const saveGraphic = async (png: boolean) => {
+    try {
+      if (!paper.current) return;
+      const blob = await exportGraphic(paper.current, { title: score.title, caption: "", aspect: "16:9", png });
+      downloadBlob(blob, (score.title.trim().replace(/[\\/:*?"<>|]+/g, "-") || "storm-sequencer") + (png ? ".png" : ".svg"));
+      s.setMessage(t("Imagen exportada.", "Image exported."));
+    } catch (error) { s.setError(error instanceof Error ? error.message : "Export failed"); }
+  };
   const playing = s.audioState === "playing" || s.audioState === "loading";
 
   // Atajos de teclado en toda la pantalla, salvo al escribir en un campo.
@@ -97,7 +131,8 @@ export default function StudioV5({ locale }: { locale: string }) {
       if (event.altKey) return;
       if (key === "Home") { done(); s.goToStart(); }
       else if (key === "End") { done(); s.goToEnd(); }
-      else if (key === "Escape") s.setSelected([]);
+      else if (key === "Escape") { s.setSelected([]); if (s.presentation) { s.stop(); s.setPresentation(false); } }
+      else if (s.presentation) return; // en presentación solo valen Espacio y Escape
       else if ((key === "Delete" || key === "Backspace") && s.selected.length) { done(); s.removeSelection(); }
       else if (key === "ArrowUp" || key === "ArrowDown") { if (s.selected.length) { done(); s.shiftSelection((key === "ArrowUp" ? 1 : -1) * (event.shiftKey ? 12 : 1)); } }
       else if (key === "ArrowLeft" || key === "ArrowRight") { done(); s.stepCursor(key === "ArrowRight" ? 1 : -1); }
@@ -124,7 +159,11 @@ export default function StudioV5({ locale }: { locale: string }) {
   const meter = s.measure.time.join("/");
   const phase = { stopped: s.saved ? t("Guardado en este navegador", "Saved in this browser") : t("Guardando…", "Saving…"), loading: t("Cargando sonidos…", "Loading sounds…"), playing: t("Reproduciendo", "Playing"), exporting: t("Exportando audio…", "Exporting audio…") }[s.audioState];
   const applyTempo = () => { if (tempoDraft === null) return; const value = Math.round(Number(tempoDraft)); setTempoDraft(null); if (value >= 30 && value <= 240 && value !== score.tempo) s.setTempo(value); };
-  const zones: Array<[Zone, string]> = [["chords", t("Pista de acordes", "Chord track")], ["text", t("Entrada por texto", "Text entry")], ...(AUTHOR ? [["author", t("Modo autor", "Author mode")] as [Zone, string]] : [])];
+  const barsPerPage = SYSTEM_SIZE * (score.mode === "satb" ? 2 : 5), pageCount = Math.max(1, Math.ceil(score.measures.length / barsPerPage));
+  // Al reproducir, la página sigue al cursor; detenido, manda la página elegida.
+  const shownPage = s.tick === null ? Math.min(page, pageCount - 1) : Math.floor((s.cursor.measure - 1) / barsPerPage);
+  const single = s.selection.length === 1 ? s.selection[0].event : null;
+  const zones: Array<[Zone, string]> = [["chords", t("Pista de acordes", "Chord track")], ["scenes", t("Marcadores", "Markers")], ["events", t("Lista de notas", "Note list")], ["text", t("Entrada por texto", "Text entry")], ...(AUTHOR ? [["author", t("Modo autor", "Author mode")] as [Zone, string]] : [])];
 
   return <main className={styles.studio} data-testid="studio-v5" data-audio={s.audioState} data-zone={zoneOpen ? "open" : "closed"} inert={!s.ready}>
     <header className={styles.top}>
@@ -152,6 +191,7 @@ export default function StudioV5({ locale }: { locale: string }) {
       <div className={styles.topRight}>
         <label className={styles.master}><Icon name="volume" /><input type="range" min="0" max="1" step="0.01" value={score.masterVolume} aria-label={t("Volumen general", "Master volume")}
           onChange={event => s.setMasterVolume(Number(event.target.value))} style={{ "--fill": score.masterVolume * 100 + "%" } as React.CSSProperties} /></label>
+        <button onClick={() => { s.stop(); s.setPresentation(true); }} data-testid="present">{t("Presentar", "Present")}</button>
         <details className={styles.menu}>
           <summary>{t("Archivo", "File")}</summary>
           <div role="menu">
@@ -162,6 +202,8 @@ export default function StudioV5({ locale }: { locale: string }) {
             <button role="menuitem" onClick={s.saveMidi}>{t("Exportar MIDI", "Export MIDI")}</button>
             <button role="menuitem" onClick={s.saveMusicXml}>{t("Exportar MusicXML", "Export MusicXML")}</button>
             <button role="menuitem" onClick={() => void s.saveWav()}>{t("Exportar audio WAV", "Export WAV audio")}</button>
+            <button role="menuitem" onClick={() => void saveGraphic(true)} disabled={view !== "staff"}>{t("Exportar imagen PNG", "Export PNG image")}</button>
+            <button role="menuitem" onClick={() => void saveGraphic(false)} disabled={view !== "staff"}>{t("Exportar imagen SVG", "Export SVG image")}</button>
             <hr />
             <Link role="menuitem" href={"/" + locale + "/sequencer/v4"}>{t("Abrir en Sequencer v4", "Open in Sequencer v4")}</Link>
           </div>
@@ -179,8 +221,7 @@ export default function StudioV5({ locale }: { locale: string }) {
       {s.voices.map(voice => <Track key={voice.id} s={s} id={voice.id} />)}
       <div className={styles.measureTools}>
         <span>{score.measures.length} {t("compases", "measures")}</span>
-        <button onClick={s.removeLastMeasure} aria-label={t("Quitar el último compás", "Remove last measure")}>−</button>
-        <button onClick={s.addMeasure} aria-label={t("Añadir compás", "Add measure")}>+</button>
+        <button onClick={s.addMeasure} aria-label={t("Añadir compás al final", "Add measure at the end")} title={t("Añadir compás al final", "Add measure at the end")}>+</button>
       </div>
     </aside>
 
@@ -196,6 +237,7 @@ export default function StudioV5({ locale }: { locale: string }) {
           <button aria-pressed={draft.dotted} onClick={() => s.applyNoteValue({ dotted: !draft.dotted })} aria-label={t("Puntillo", "Dotted")} title={t("Puntillo (.)", "Dotted (.)")}>•</button>
           <button aria-pressed={draft.triplet} onClick={() => s.applyNoteValue({ triplet: !draft.triplet })} aria-label={t("Tresillo", "Triplet")} title={t("Tresillo", "Triplet")}>3</button>
           <button aria-pressed={draft.tie} onClick={() => s.applyNoteValue({ tie: !draft.tie })} aria-label={t("Ligadura", "Tie")} title={t("Ligadura (T)", "Tie (T)")}>⌒</button>
+          <button className={styles.ornament} disabled={!s.selected.length} aria-pressed={s.selection.length > 0 && s.selection.every(item => item.event.ornament)} onClick={s.toggleOrnament} aria-label={t("Ornamento (nota roja)", "Ornament (red note)")} title={t("Ornamento (nota roja)", "Ornament (red note)")}>●</button>
         </div>
         <div className={styles.group}>
           {ACCIDENTALS.map(([value, es, en, glyph]) =>
@@ -205,6 +247,19 @@ export default function StudioV5({ locale }: { locale: string }) {
           <button onClick={s.undo} disabled={!s.availability.undo} aria-label={t("Deshacer", "Undo")} title="Ctrl Z"><Icon name="undo" /></button>
           <button onClick={s.redo} disabled={!s.availability.redo} aria-label={t("Rehacer", "Redo")} title="Ctrl Y"><Icon name="redo" /></button>
         </div>
+        <div className={styles.group}>
+          <button aria-pressed={s.cipherVisible} onClick={() => s.setCipherVisible(!s.cipherVisible)} title={t("Mostrar u ocultar el cifrado", "Show or hide chord symbols")}>{t("Cifrado", "Chords")}</button>
+          <button aria-pressed={midiOn} data-midi={midi.status} onClick={() => setMidiOn(!midiOn)} title={t(...MIDI_LABEL[midi.status]) + (midi.device ? ": " + midi.device : "")} data-testid="midi-toggle">MIDI</button>
+        </div>
+        {view === "staff" && <div className={styles.group + " " + styles.layoutSwitch}>
+          <button aria-pressed={layout === "line"} onClick={() => setLayout("line")}>{t("Continua", "Continuous")}</button>
+          <button aria-pressed={layout === "page"} onClick={() => { setLayout("page"); setPage(Math.floor((draft.measure - 1) / barsPerPage)); }}>{t("Páginas", "Pages")}</button>
+          {layout === "page" && <span className={styles.pager}>
+            <button disabled={shownPage === 0} onClick={() => { s.stop(); setPage(shownPage - 1); }} aria-label={t("Página anterior", "Previous page")}>‹</button>
+            <span role="status">{shownPage + 1} / {pageCount}</span>
+            <button disabled={shownPage + 1 >= pageCount} onClick={() => { s.stop(); setPage(shownPage + 1); }} aria-label={t("Página siguiente", "Next page")}>›</button>
+          </span>}
+        </div>}
         <div className={styles.group + " " + styles.viewSwitch}>
           <button aria-pressed={view === "staff"} onClick={() => setView("staff")}>{t("Partitura", "Score")}</button>
           <button aria-pressed={view === "roll"} onClick={() => setView("roll")}>{t("Teclas", "Keys")}</button>
@@ -212,19 +267,24 @@ export default function StudioV5({ locale }: { locale: string }) {
       </div>
       <div className={styles.editor} data-view={view}>
         {view === "staff"
-          ? <ScoreView score={score} selected={s.selected} locale={locale} onSelect={s.selectNote} mouse={s.mouse} tick={s.tick} cursorTick={s.positionTick} focusVoice="all" layout="line"
-              showAnnotations onAnnotation={(measure, beat, text) => s.attempt(() => s.commit(setChordAt(score, measure, beat, text)))}
-              onSelectMany={s.selectMany} onMeasure={n => { s.setSelected([]); s.patchDraft({ measure: n, beat: 1 }); }} />
+          ? <div ref={paper}><ScoreView score={score} selected={s.selected} locale={locale} onSelect={s.selectNote} mouse={s.mouse} tick={s.tick} cursorTick={s.positionTick} focusVoice="all" layout={layout}
+              systemSize={SYSTEM_SIZE} pageInfo={{ index: shownPage + 1, total: pageCount }}
+              from={layout === "page" ? shownPage * barsPerPage + 1 : 1} to={layout === "page" ? Math.min(score.measures.length, (shownPage + 1) * barsPerPage) : score.measures.length}
+              showAnnotations={s.cipherVisible} onAnnotation={(measure, beat, text) => s.attempt(() => s.commit(setChordAt(score, measure, beat, text)))}
+              onSelectMany={s.selectMany} onMeasure={n => { s.setSelected([]); s.patchDraft({ measure: n, beat: 1 }); }} /></div>
           : <PianoRoll score={score} selected={s.selectedIds} mouse={s.mouse} voiceId={draft.voice} onSelect={s.selectNote} locale={locale} tick={s.tick} positionTick={s.positionTick} />}
       </div>
       <div className={styles.zone}>
+        {zoneOpen && <div className={styles.zoneGrip} onPointerDown={resizeZone} role="separator" aria-orientation="horizontal" aria-label={t("Cambiar el alto de la zona inferior", "Resize the lower zone")} />}
         <div className={styles.zoneTabs} role="tablist">
           {zones.map(([value, label]) => <button key={value} role="tab" aria-selected={zoneOpen && zone === value} data-author={value === "author" || undefined}
             onClick={() => { if (zoneOpen && zone === value) setZoneOpen(false); else { setZone(value); setZoneOpen(true); } }}>{label}</button>)}
           <button className={styles.zoneToggle} onClick={() => setZoneOpen(!zoneOpen)} aria-label={zoneOpen ? t("Ocultar zona inferior", "Hide lower zone") : t("Mostrar zona inferior", "Show lower zone")}>{zoneOpen ? "▾" : "▴"}</button>
         </div>
-        {zoneOpen && <div className={styles.zoneBody} role="tabpanel">
+        {zoneOpen && <div className={styles.zoneBody} role="tabpanel" style={{ height: zoneHeight }}>
           {zone === "chords" && <ChordPanel s={s} />}
+          {zone === "scenes" && <ScenesPanel s={s} />}
+          {zone === "events" && <EventsPanel s={s} />}
           {zone === "text" && <TextPanel s={s} />}
           {zone === "author" && AuthorPanel && <AuthorPanel s={s} />}
         </div>}
@@ -249,9 +309,23 @@ export default function StudioV5({ locale }: { locale: string }) {
         <label>{t("Compás", "Meter")}<select value={meter} onChange={event => { const [n, d] = event.target.value.split("/").map(Number); s.changeMeter([n, d]); }}>
           {(METERS.includes(meter) ? METERS : [meter, ...METERS]).map(value => <option key={value}>{value}</option>)}</select></label>
       </div>
+      <div className={styles.row}>
+        <label>{t("Numerador", "Numerator")}<input type="number" min={1} max={MAX_TIME_NUMERATOR} key={"n:" + draft.measure + ":" + meter} defaultValue={s.measure.time[0]}
+          onBlur={event => { const n = Number(event.target.value); if (Number.isInteger(n) && n >= 1 && n <= MAX_TIME_NUMERATOR && n !== s.measure.time[0]) s.changeMeter([n, s.measure.time[1]]); else event.target.value = String(s.measure.time[0]); }}
+          onKeyDown={event => { if (event.key === "Enter") event.currentTarget.blur(); }} /></label>
+        <label>{t("Denominador", "Denominator")}<select value={s.measure.time[1]} onChange={event => s.changeMeter([s.measure.time[0], Number(event.target.value)])}>{TIME_DENOMINATORS.map(d => <option key={d} value={d}>{d}</option>)}</select></label>
+      </div>
       <label>{t("Clave de", "Clef of")} {t(...VOICE_LABEL[draft.voice])}
         <select value={clefAt(score, draft.voice, Math.min(draft.measure, score.measures.length))} onChange={event => s.changeClef(event.target.value as "treble" | "bass")}>
           <option value="treble">{t("Clave de Sol", "Treble clef")}</option><option value="bass">{t("Clave de Fa", "Bass clef")}</option></select></label>
+      <div className={styles.row}>
+        <button onClick={s.insertMeasure} title={t("Inserta un compás vacío después de este", "Insert an empty measure after this one")}>{t("+ Compás", "+ Measure")}</button>
+        <button onClick={s.removeMeasureAt} disabled={score.measures.length < 2} title={t("Quita este compás y recorre lo que sigue", "Remove this measure and shift what follows")}>{t("− Compás", "− Measure")}</button>
+      </div>
+      <div className={styles.row}>
+        <label>{t("Copiar al compás", "Copy to measure")}<input type="number" min={1} max={score.measures.length} value={copyTo} onChange={event => setCopyTo(Number(event.target.value))} /></label>
+        <button onClick={() => s.duplicateMeasureTo(copyTo)} disabled={!(copyTo >= 1 && copyTo <= score.measures.length) || copyTo === draft.measure}>{t("Copiar", "Copy")}</button>
+      </div>
       <h2>{t("Selección", "Selection")}</h2>
       <p className={styles.muted}>{s.selected.length ? t(s.selected.length + " notas", s.selected.length + " notes") : t("Nada seleccionado", "Nothing selected")}</p>
       <div className={styles.row}>
@@ -259,6 +333,12 @@ export default function StudioV5({ locale }: { locale: string }) {
         <button onClick={() => s.shiftSelection(-12)} disabled={!s.selected.length}>{t("−8ª", "−8ve")}</button>
         <button onClick={s.duplicateSelection} disabled={!s.selected.length} title="Ctrl D">{t("Duplicar", "Duplicate")}</button>
       </div>
+      <div className={styles.row}>
+        <label>{t("Semitonos", "Semitones")}<input type="number" min={-36} max={36} value={semitones} onChange={event => setSemitones(Number(event.target.value))} /></label>
+        <button onClick={() => s.shiftSelection(semitones)} disabled={!s.selected.length || !Number.isInteger(semitones) || !semitones}>{t("Transponer", "Transpose")}</button>
+      </div>
+      <button onClick={s.updateSelection} disabled={!s.selected.length} title={t("Cambia las notas seleccionadas por las escritas arriba", "Replace the selected notes with the ones typed above")}>{t("Aplicar notas a la selección", "Apply notes to selection")}</button>
+      {single && <label>{t("Texto de la nota", "Note text")}<input key={single.id} defaultValue={single.text ?? ""} maxLength={200} onBlur={event => { if (event.target.value !== (single.text ?? "")) s.setNoteText(event.target.value); }} onKeyDown={event => { if (event.key === "Enter") event.currentTarget.blur(); }} /></label>}
       <details className={styles.shortcuts}>
         <summary>{t("Atajos de teclado", "Keyboard shortcuts")}</summary>
         <dl>
@@ -268,6 +348,7 @@ export default function StudioV5({ locale }: { locale: string }) {
           <dt>← →</dt><dd>{t("Mover el cursor", "Move the cursor")}</dd>
           <dt>↑ ↓</dt><dd>{t("Subir o bajar la selección (Mayús: octava)", "Move selection (Shift: octave)")}</dd>
           <dt>Ctrl C/X/V/D</dt><dd>{t("Copiar, cortar, pegar, duplicar", "Copy, cut, paste, duplicate")}</dd>
+          <dt>Esc</dt><dd>{t("Quitar selección · salir de presentación", "Clear selection · leave presentation")}</dd>
           <dt>Ctrl Z / Y</dt><dd>{t("Deshacer / rehacer", "Undo / redo")}</dd>
         </dl>
       </details>
@@ -278,6 +359,7 @@ export default function StudioV5({ locale }: { locale: string }) {
       {s.warning && <span className={styles.warn}>{t("Algunos sonidos no cargaron; se usa un sonido de reserva.", "Some sounds failed to load; a fallback sound is used.")}</span>}
       <span className={styles.phase}>{phase}</span>
     </footer>
+    {s.presentation && <Stage s={s} locale={locale} />}
   </main>;
 }
 

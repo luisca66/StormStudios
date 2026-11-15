@@ -114,7 +114,8 @@
 /* La partitura de la v4 trae sus propios estilos; aquí solo se ajusta el cifrado en línea, que hace de pista de acordes. */
 .editor [class*="inlineCiphers"] input { min-width: 0; width: 100%; min-height: 28px; padding: 2px; text-align: center; background: transparent; color: #3a2f86; border: 1px dashed transparent; border-radius: 5px; font-family: var(--font-dm-serif), Georgia, serif; font-size: 15px; box-shadow: none; }
 .editor [class*="measure"]:hover [class*="inlineCiphers"] input { border-color: #d8d3c4; }
-.editor [class*="inlineCiphers"] input:not(:placeholder-shown) { background: #efeafc; border: 1px solid #cfc6f4; }
+/* La partitura ya dibuja el cifrado; la casilla llena queda como eco editable, sin competir. */
+.editor [class*="inlineCiphers"] input:not(:placeholder-shown):not(:focus) { background: transparent; color: #a79fd8; font-size: 12px; }
 .editor [class*="inlineCiphers"] input:focus { background: #fff; border: 1px solid var(--accent); }
 .editor [class*="inlineCiphers"] input::placeholder { color: transparent; }
 
@@ -131,7 +132,10 @@
 .studio .zoneTabs button[data-author] { color: var(--author); }
 .studio .zoneTabs button[data-author][aria-selected=true] { border-bottom-color: var(--author); }
 .studio .zoneTabs .zoneToggle { margin-left: auto; color: var(--text-3); }
-.zoneBody { height: 188px; overflow: auto; padding: 12px 14px; }
+.zoneBody { height: 196px; overflow: auto; padding: 12px 14px; }
+.zone { position: relative; }
+.zoneGrip { position: absolute; left: 0; right: 0; top: -4px; height: 8px; cursor: ns-resize; z-index: 5; touch-action: none; }
+.zoneGrip:hover, .zoneGrip:active { background: linear-gradient(180deg, transparent 2px, var(--accent) 2px 5px, transparent 5px); }
 
 .chords { display: flex; flex-direction: column; gap: 12px; }
 .chordForm { display: flex; flex-wrap: wrap; align-items: end; gap: 8px; }
@@ -155,6 +159,66 @@
 .options { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
 .options li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 4px 4px 4px 10px; border: 1px solid var(--line-2); border-radius: var(--radius-sm); background: var(--bg-2); }
 .options span { font-family: var(--font-dm-serif), Georgia, serif; font-size: 15px; }
+
+/* Vista por páginas (hoja de la v4) */
+.editor [class*="scoreSurface"][data-layout=page] { background: #71899f; border-radius: 6px; padding: 22px; box-shadow: inset 0 3px 10px #18344733; }
+.editor [class*="pageSheet"] { background: #fffefa; border-radius: 0; box-shadow: 0 18px 26px #2a425b55; }
+.editor [class*="pageTitle"] h3 { color: #203753; }
+.layoutSwitch { align-items: center; }
+.pager { display: inline-flex; align-items: center; gap: 4px; margin-left: 6px; color: var(--text-2); font-size: 12px; font-family: var(--font-dm-mono), ui-monospace, monospace; }
+.studio .pager button { min-width: 26px; padding: 0; font-size: 16px; }
+.studio .ornament { color: #ff5d7a; }
+.studio button[data-midi=ready] { border-color: var(--play); color: var(--play); background: #0f2a1f; }
+.studio button[data-midi=waiting], .studio button[data-midi=connecting] { border-color: var(--author); color: var(--author); background: #2a210a; }
+.studio button[data-midi=denied], .studio button[data-midi=unsupported] { border-color: var(--stop); color: #ff8fa3; background: #2a1018; }
+.fixed { flex: 0 0 auto !important; }
+
+/* Lista de notas y textos */
+.events { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 16px; height: 100%; }
+.eventList { overflow: auto; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.events table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.events caption { caption-side: top; text-align: left; padding: 5px 8px; color: var(--text-3); font-size: 11px; }
+.events th { position: sticky; top: 0; background: var(--surface-2); text-align: left; padding: 5px 8px; color: var(--text-2); font-weight: 600; }
+.events td { padding: 2px 8px; border-top: 1px solid var(--line); color: var(--text-2); }
+.events tr[aria-selected=true] td { background: #2a2466; color: #fff; }
+.events tbody tr { cursor: pointer; }
+.studio .events td button { min-height: 22px; padding: 0 6px; border: 0; background: transparent; font-family: var(--font-dm-mono), ui-monospace, monospace; color: var(--text); }
+.textNotes { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+.textNotes ul { list-style: none; margin: 0; padding: 0; overflow: auto; display: flex; flex-direction: column; gap: 4px; }
+.textNotes li { display: flex; gap: 2px; }
+.studio .textNotes li button:first-child { flex: 1; justify-content: flex-start; text-align: left; }
+.textNotes small { color: var(--text-3); font-family: var(--font-dm-mono), ui-monospace, monospace; }
+
+/* Pista de marcadores (escenas) */
+.scenes { display: flex; flex-direction: column; gap: 12px; }
+.markerLane { display: grid; grid-auto-rows: 26px; gap: 3px 0; padding: 6px; background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius-sm); overflow-x: auto; }
+.studio .ruler { min-height: 22px; padding: 0; border: 0; border-left: 1px solid var(--line-2); border-radius: 0; background: transparent; color: var(--text-3); font-size: 11px; font-family: var(--font-dm-mono), ui-monospace, monospace; justify-content: flex-start; padding-left: 5px; }
+.studio .ruler[aria-pressed=true] { background: #1c2a44; color: var(--accent-2); border-color: var(--accent-2); }
+.studio .marker { min-height: 24px; padding: 0 8px; margin: 0 1px; justify-content: flex-start; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; background: #2b2360; border-color: #5a4bd0; font-size: 12px; }
+.studio .marker[aria-pressed=true] { background: linear-gradient(135deg, #a497ff, #6fc6ff); color: var(--accent-ink); border-color: transparent; font-weight: 650; }
+.sceneForm { display: grid; grid-template-columns: minmax(160px, 2fr) 70px 70px 90px 120px; gap: 8px; align-items: end; }
+.sceneForm .wide { grid-column: 1 / 4; }
+.sceneButtons { grid-column: 4 / -1; display: flex; gap: 6px; justify-content: flex-end; align-items: end; }
+.studio .sceneButtons button { white-space: nowrap; flex: 0 0 auto; }
+
+/* Presentación */
+.present { position: fixed; inset: 0; z-index: 300; display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 14px 20px 20px; overflow: auto;
+  background: radial-gradient(1200px 600px at 20% -10%, #3b2a8a55, transparent 60%), radial-gradient(900px 500px at 100% 0%, #0f5d8a44, transparent 60%), #070a13; }
+.presentBar { display: flex; flex-wrap: wrap; align-items: end; gap: 8px; width: 100%; max-width: 1280px; }
+.presentBar label { flex-direction: row; align-items: center; gap: 8px; }
+.presentBar .primary { margin-left: auto; }
+.stage { display: flex; flex-direction: column; gap: 18px; width: 100%; max-width: 1280px; padding: 36px 44px; border-radius: 18px; border: 1px solid #2c3a57;
+  background: linear-gradient(160deg, #141c33, #0b1020); box-shadow: 0 40px 90px -40px #000; }
+.stage[data-aspect="16:9"] { aspect-ratio: 16 / 9; }
+.stage[data-aspect="9:16"] { aspect-ratio: 9 / 16; max-width: 560px; }
+.stage[data-aspect="9:16"] [class*="measures"] { grid-template-columns: 1fr; }
+.stage header { display: flex; flex-direction: column; gap: 8px; }
+.stage header span { font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #9d90ff; }
+.stage h2 { margin: 0; text-transform: none; letter-spacing: -.01em; font-family: var(--font-dm-serif), Georgia, serif; font-weight: 400; font-size: clamp(26px, 3.2vw, 50px); line-height: 1.05; color: #fff; }
+.stage p { margin: 0; color: #d4dfff; font-size: clamp(15px, 1.4vw, 20px); line-height: 1.5; max-width: 60ch; }
+.stagePaper { background: var(--paper); border-radius: 14px; padding: 14px; box-shadow: 0 30px 60px -30px #000; overflow: auto; }
+.stage footer { margin-top: auto; display: flex; justify-content: space-between; color: #9fb0d4; font-size: 13px; font-family: var(--font-dm-mono), ui-monospace, monospace; }
+.stage:fullscreen { max-width: none; border-radius: 0; width: 100%; height: 100%; padding: 5vh 6vw; }
 
 /* ── Inspector y estado ─────────────────────────────────────────── */
 .inspector { grid-area: inspector; display: flex; flex-direction: column; gap: 8px; padding: 12px; background: var(--bg-2); border-left: 1px solid var(--line); overflow-y: auto; }

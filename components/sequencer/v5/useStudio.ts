@@ -15,10 +15,12 @@ import { mapSelectedPitches, movePitch, normalizeSelection, noteKey, parseKey, r
 import { importMusicXml } from "@/lib/sequencer/import-musicxml";
 import { changeTimeSignature, rebarTimeSignature } from "@/lib/sequencer/operations";
 import { moveWithMouse, writeWithMouse } from "@/lib/sequencer/mouse-editing";
+import { duplicateMeasure, insertMeasureAfter, removeMeasure } from "@/lib/sequencer/measure-edit";
+import { spellMidi } from "@/lib/sequencer/midi-input";
 import { SequencerAudio, type AudioState } from "@/lib/sequencer/audio-engine";
 import { downloadBlob } from "@/lib/sequencer/graphics";
 import { installAgentApi } from "@/lib/sequencer/agent-api";
-import { PPQ, type Duration, type NoteEvent, type Score, type Voice, type VoiceId } from "@/lib/sequencer/types";
+import { PPQ, type Duration, type NoteEvent, type Scene, type Score, type ScoreAnnotation, type Voice, type VoiceId } from "@/lib/sequencer/types";
 import type { MouseEditing } from "../ScoreView";
 
 export const STORAGE_KEY = "storm-sequencer-studio-v5";
@@ -43,6 +45,8 @@ export function useStudio(locale: string) {
   const [audioState, setAudioState] = useState<AudioState>("stopped"), [tick, setTick] = useState<number | null>(null);
   const [metronome, setMetronome] = useState(false), [loop, setLoop] = useState(false);
   const [tool, setTool] = useState<MouseEditing["tool"]>("write"), [accidental, setAccidental] = useState<MouseEditing["accidental"]>("key");
+  const [cipherVisible, setCipherVisible] = useState(true);
+  const [sceneId, setSceneId] = useState(""), [presentation, setPresentation] = useState(false);
   const [availability, setAvailability] = useState({ undo: 0, redo: 0, clipboard: 0 });
   const history = useRef<Score[]>([]), future = useRef<Score[]>([]), clipboard = useRef<Clip[]>([]);
   const audio = useRef<SequencerAudio | null>(null);
@@ -72,6 +76,7 @@ export function useStudio(locale: string) {
   const selection: Clip[] = resolved.map(s => ({ voice: s.voice, event: s.whole ? s.event : { ...s.event, pitches: s.pitches } }));
   const selectedIds = useMemo(() => resolved.map(s => s.event.id), [resolved]);
   const voices = activeVoices(score);
+  const scene = score.scenes.find(item => item.id === sceneId) ?? score.scenes[0];
   const positionTick = measureStart(score, Math.min(draft.measure, score.measures.length)) + Math.round((draft.beat - 1) * PPQ);
 
   const commit = useCallback((next: Score, notice = "") => {
@@ -238,9 +243,11 @@ export function useStudio(locale: string) {
 
   // ── Transporte ──────────────────────────────────────────────────────────
   const play = () => {
-    const to = scoreTicks(score);
-    if (positionTick >= to) { setError(t("Elige una posición dentro de la partitura.", "Choose a position within the score.")); return; }
-    void audio.current?.play(score, positionTick, to, metronome, loop);
+    const staged = presentation && scene;
+    const from = staged ? measureStart(score, scene.startMeasure) : positionTick;
+    const to = staged ? measureStart(score, scene.endMeasure) + measureTicks(score.measures[scene.endMeasure - 1]) : scoreTicks(score);
+    if (from >= to) { setError(t("Elige una posición dentro de la partitura.", "Choose a position within the score.")); return; }
+    void audio.current?.play(score, from, to, metronome, loop);
   };
   const stop = () => { audio.current?.stop(); setTick(null); };
   const moveCursor = (target: number) => {
@@ -283,17 +290,46 @@ export function useStudio(locale: string) {
   };
   const changeClef = (clef: "treble" | "bass") => patchScore(next => { next.measures[draft.measure - 1].clefs = { ...next.measures[draft.measure - 1].clefs, [draft.voice]: clef }; });
   const addMeasure = () => patchScore(next => { const last = next.measures.at(-1)!; next.measures.push({ id: newId(), key: last.key, time: [...last.time] }); });
-  const removeLastMeasure = () => {
-    if (score.measures.length <= 1) return;
-    const start = measureStart(score, score.measures.length);
-    if (voices.some(v => v.events.some(e => e.start + durationTicks(e) > start))) { setError(t("El último compás tiene música. Bórrala antes de quitarlo.", "The last measure has music. Delete it before removing the measure.")); return; }
-    patchScore(next => {
-      next.measures.pop();
-      next.annotations = (next.annotations ?? []).filter(a => a.measure <= next.measures.length);
-      next.scenes.forEach(s => { s.endMeasure = Math.min(s.endMeasure, next.measures.length); s.startMeasure = Math.min(s.startMeasure, s.endMeasure); });
-    });
-    patchDraft({ measure: Math.min(draft.measure, score.measures.length - 1), beat: 1 });
+  const insertMeasure = () => attempt(() => { commit(insertMeasureAfter(score, draft.measure), t(`Compás nuevo después del ${draft.measure}.`, `New measure after ${draft.measure}.`)); });
+  const removeMeasureAt = () => attempt(() => {
+    const start = measureStart(score, draft.measure), end = start + measureTicks(score.measures[draft.measure - 1]);
+    const busy = score.voices.some(v => v.events.some(e => e.pitches.length && e.start >= start && e.start < end));
+    if (busy && !window.confirm(t(`El compás ${draft.measure} tiene música. ¿Quitarlo? (se puede deshacer)`, `Measure ${draft.measure} has music. Remove it? (undoable)`))) return;
+    if (commit(removeMeasure(score, draft.measure), t("Compás quitado.", "Measure removed."))) { setSelected([]); patchDraft({ beat: 1 }); }
+  });
+  const duplicateMeasureTo = (to: number) => attempt(() => { commit(duplicateMeasure(score, draft.measure, to), t(`Compás ${draft.measure} copiado al ${to}.`, `Measure ${draft.measure} copied to ${to}.`)); });
+
+  // ── Selección: cambios finos ────────────────────────────────────────────
+  const toggleOrnament = () => {
+    if (!selectedIds.length) return;
+    const on = !selection.every(item => item.event.ornament);
+    patchScore(next => { for (const voice of next.voices) for (const event of voice.events) if (selectedIds.includes(event.id)) { if (on) event.ornament = true; else delete event.ornament; } });
   };
+  /** Aplica a la selección las notas escritas en el inspector. */
+  const updateSelection = () => attempt(() => {
+    const pitches = parsePitchList(draft.pitches);
+    patchScore(next => { for (const voice of next.voices) for (const event of voice.events) if (selectedIds.includes(event.id)) event.pitches = [...pitches]; }, t("Selección actualizada.", "Selection updated."));
+  });
+  const setNoteText = (text: string) => {
+    if (selection.length !== 1) return;
+    patchScore(next => { const event = next.voices.find(v => v.id === selection[0].voice)!.events.find(e => e.id === selection[0].event.id)!; if (text) event.text = text; else delete event.text; });
+  };
+  /** Teclado MIDI: un acorde de teclas → evento en el cursor, con la grafía de la armadura. */
+  const insertMidi = (notes: number[]) => attempt(() => insert(notes.map(note => spellMidi(note, score.measures[Math.min(draft.measure, score.measures.length) - 1].key))));
+
+  // ── Anotaciones de texto y escenas (marcadores) ─────────────────────────
+  const setAnnotation = (kind: ScoreAnnotation["kind"], text: string, id?: string) => patchScore(next => {
+    const rest = (next.annotations ?? []).filter(a => a.id !== id && !(a.kind === kind && a.measure === draft.measure && Math.abs(a.beat - draft.beat) < 1e-6));
+    if (text.trim()) rest.push({ id: id ?? newId(), measure: draft.measure, beat: draft.beat, text: text.trim(), kind });
+    next.annotations = rest;
+  });
+  const removeAnnotation = (id: string) => patchScore(next => { next.annotations = (next.annotations ?? []).filter(a => a.id !== id); });
+  const addScene = () => {
+    const id = newId();
+    if (patchScore(next => { next.scenes.push({ id, title: t("Escena ", "Scene ") + (next.scenes.length + 1), caption: "", startMeasure: draft.measure, endMeasure: Math.min(draft.measure + 1, next.measures.length), aspect: "16:9", highlightVoice: "all" }); })) setSceneId(id);
+  };
+  const patchScene = (change: Partial<Scene>) => { if (scene) patchScore(next => { Object.assign(next.scenes.find(item => item.id === scene.id)!, change); }); };
+  const removeScene = () => { if (scene && score.scenes.length > 1 && patchScore(next => { next.scenes = next.scenes.filter(item => item.id !== scene.id); })) setSceneId(""); };
   const newProject = () => {
     if (!window.confirm(t("¿Empezar un proyecto nuevo? Se borra la partitura actual (puedes deshacerlo).", "Start a new project? The current score is cleared (you can undo it)."))) return;
     const next = createScore(score.mode); next.title = t("Sin título", "Untitled");
@@ -322,7 +358,9 @@ export function useStudio(locale: string) {
     selectNote, selectMany, selectAll, setSelected,
     insert, shiftSelection, removeSelection, applyNoteValue, applyAccidental, undo, redo, copy, cut, paste, duplicateSelection,
     play, stop, goToStart, goToEnd, stepCursor, moveCursor,
-    setTitle, setTempo, setMasterVolume, patchVoice, changeMode, changeKey, changeMeter, changeClef, addMeasure, removeLastMeasure,
+    setTitle, setTempo, setMasterVolume, patchVoice, changeMode, changeKey, changeMeter, changeClef, addMeasure, insertMeasure, removeMeasureAt, duplicateMeasureTo,
+    toggleOrnament, updateSelection, setNoteText, insertMidi, setAnnotation, removeAnnotation,
+    scene, setSceneId, addScene, patchScene, removeScene, presentation, setPresentation, cipherVisible, setCipherVisible,
     newProject, loadFile, saveJson, saveMidi, saveMusicXml, saveWav,
     measureLength: measure ? measureTicks(measure) : 0,
   };
