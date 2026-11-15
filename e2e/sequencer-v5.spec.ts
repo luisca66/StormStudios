@@ -105,6 +105,37 @@ test("page view, markers and presentation", async ({ page }) => {
   await expect(page.getByTestId("presentation")).toHaveCount(0);
 });
 
+test("the key editor selects notes with a rubber band, like the staff", async ({ page }) => {
+  await open(page);
+  await page.getByRole("tab", { name: "Entrada por texto", exact: true }).click();
+  await page.getByTestId("text-input").fill("voz melody\ncompas 1\nC4 negra; E4 negra; G4 negra; C5 negra\ncompas 2\nD4 redonda");
+  await page.getByTestId("text-apply").click();
+  await page.getByRole("button", { name: "Teclas", exact: true }).click();
+  await page.getByRole("button", { name: "Seleccionar", exact: true }).click();
+  // Bring the octave being edited into view before using screen coordinates.
+  await page.locator('[data-pitch="F#4"]').evaluate(row => row.scrollIntoView({ block: "center" }));
+  const box = async (pitch: string) => (await page.locator(`[data-pitch="${pitch}"] [data-roll-note]`).first().boundingBox())!;
+  const low = await box("C4"), high = await box("G4");
+  // From the empty row above G4 down past C4: takes C4, E4 and G4 but not C5 or D4.
+  await page.mouse.move(low.x + 3, high.y - 30);
+  await page.mouse.down();
+  await page.mouse.move(high.x + high.width - 4, low.y + low.height + 4, { steps: 6 });
+  await page.mouse.up();
+  await expect(page.locator("[data-roll-note][aria-pressed=true]")).toHaveCount(3);
+  // Shift adds: a second band over D4 keeps the first three.
+  const next = await box("D4");
+  await page.keyboard.down("Shift");
+  await page.mouse.move(next.x + 20, next.y - 30);
+  await page.mouse.down();
+  await page.mouse.move(next.x + 60, next.y + next.height + 4, { steps: 6 });
+  await page.mouse.up();
+  await page.keyboard.up("Shift");
+  await expect(page.locator("[data-roll-note][aria-pressed=true]")).toHaveCount(4);
+  // The selection behaves like any other: one arrow moves all four.
+  await page.keyboard.press("ArrowUp");
+  expect(await melody(page)).toEqual(["C#4", "F4", "G#4", "C5", "D#4"]);
+});
+
 test("a MIDI keyboard writes notes and chords spelled by the key", async ({ page }) => {
   // Fake Web MIDI: one input whose handler the test can call.
   await page.addInitScript(() => {

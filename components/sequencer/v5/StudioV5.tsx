@@ -25,6 +25,7 @@ import TextPanel from "./TextPanel";
 import EventsPanel from "./EventsPanel";
 import ScenesPanel from "./ScenesPanel";
 import Stage from "./Stage";
+import RollMarquee from "./RollMarquee";
 import { useMidiInput, type MidiStatus } from "./useMidiInput";
 import { useMicInput, type MicStatus } from "./useMicInput";
 import { useStudio, type Studio } from "./useStudio";
@@ -283,7 +284,9 @@ export default function StudioV5({ locale }: { locale: string }) {
               from={layout === "page" ? shownPage * barsPerPage + 1 : 1} to={layout === "page" ? Math.min(score.measures.length, (shownPage + 1) * barsPerPage) : score.measures.length}
               showAnnotations={s.cipherVisible} onAnnotation={(measure, beat, text) => s.attempt(() => s.commit(setChordAt(score, measure, beat, text)))}
               onSelectMany={s.selectMany} onMeasure={n => { s.setSelected([]); s.patchDraft({ measure: n, beat: 1 }); }} /></div>
-          : <PianoRoll score={score} selected={s.selectedIds} mouse={s.mouse} voiceId={draft.voice} onSelect={s.selectNote} locale={locale} tick={s.tick} positionTick={s.positionTick} />}
+          : <RollMarquee active={s.tool === "select"} selected={s.selectedIds} onSelect={ids => s.selectMany(ids, false)}>
+              <PianoRoll score={score} selected={s.selectedIds} mouse={s.mouse} voiceId={draft.voice} onSelect={s.selectNote} locale={locale} tick={s.tick} positionTick={s.positionTick} />
+            </RollMarquee>}
       </div>
       <div className={styles.zone}>
         {zoneOpen && <div className={styles.zoneGrip} onPointerDown={resizeZone} role="separator" aria-orientation="horizontal" aria-label={t("Cambiar el alto de la zona inferior", "Resize the lower zone")} />}
@@ -366,7 +369,9 @@ export default function StudioV5({ locale }: { locale: string }) {
     </aside>
 
     <footer className={styles.status} role="status">
-      {s.error ? <span className={styles.error} data-testid="status-error">{s.error}</span> : <span data-testid="status-message">{s.message || t("Clic para escribir · clic derecho para borrar · arrastra para cambiar altura · Ctrl+clic añade al acorde", "Click to write · right-click to delete · drag to change pitch · Ctrl+click adds to chord")}</span>}
+      {s.error ? <span className={styles.error} data-testid="status-error">{s.error}</span> : <span data-testid="status-message">{s.message || (s.tool === "select"
+        ? t("Arrastra un rectángulo para seleccionar varias notas · Mayús o Ctrl suma a la selección · Ctrl+A selecciona todo", "Drag a rectangle to select several notes · Shift or Ctrl adds to the selection · Ctrl+A selects all")
+        : t("Clic para escribir · clic derecho para borrar · arrastra para cambiar altura · Ctrl+clic añade al acorde", "Click to write · right-click to delete · drag to change pitch · Ctrl+click adds to chord"))}</span>}
       {s.warning && <span className={styles.warn}>{t("Algunos sonidos no cargaron; se usa un sonido de reserva.", "Some sounds failed to load; a fallback sound is used.")}</span>}
       <span className={styles.phase}>{phase}</span>
     </footer>

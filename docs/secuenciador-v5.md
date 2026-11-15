@@ -23,7 +23,7 @@ Público (lo que recibe el alumno):
 - Estudio de una pantalla, sin scroll de página; en pantallas más angostas oculta inspector y pistas.
 - Transporte: inicio, detener, reproducir, final, repetir, metrónomo; pantalla con posición, tempo editable, tono · compás y acorde vigente; volumen general.
 - Pistas con mezclador integrado: voz activa, M / S, instrumento y volumen por voz. Modo Melodía / SATB.
-- Editor: partitura continua o **por páginas** (`ScoreView` de la v4) y editor de teclas (`PianoRoll` de la v4), con escritura, arrastre, borrado y selección por rectángulo con el mouse.
+- Editor: partitura continua o **por páginas** (`ScoreView` de la v4) y editor de teclas (`PianoRoll` de la v4), con escritura, arrastre, borrado y **selección por rectángulo con el mouse en las dos vistas** (en teclas la añade `RollMarquee.tsx`, que envuelve a `PianoRoll` sin tocarlo y además centra la vista en la música escrita).
 - Herramientas: escribir / seleccionar / borrar, figuras, puntillo, tresillo, ligadura, ornamento (nota roja), alteraciones, deshacer / rehacer, mostrar u ocultar cifrado.
 - Teclado de computadora (en toda la pantalla): Espacio, A–G (con la armadura y la octava más cercana a la nota anterior), R, 1–6, punto, T, flechas, Inicio / Fin, Re Pág / Av Pág, Supr, Esc, Ctrl+Z / Y / C / X / V / D / A / S, M, L.
 - **Teclado MIDI** (botón MIDI; Web MIDI en Chrome y Edge): cada tecla escribe la nota en el cursor con la figura elegida y la grafía de la armadura; las teclas simultáneas forman un acorde.
@@ -53,6 +53,7 @@ components/sequencer/v5/
   useStudio.ts        estado y acciones (partitura, historial, selección, cursor, audio, archivos)
   ChordPanel.tsx      pista de acordes
   ScenesPanel.tsx     pista de marcadores (escenas)
+  RollMarquee.tsx     selección por rectángulo y centrado inicial del editor de teclas
   Stage.tsx           presentación de una escena y exportación de imagen
   EventsPanel.tsx     lista de notas y anotaciones de texto
   TextPanel.tsx       entrada por texto
@@ -73,7 +74,7 @@ lib/sequencer/harmony/
   score-bridge.ts     escribe el resultado en la partitura (autor)
   review.ts           revisión de la partitura con las reglas del curso (autor)
   transpose.ts        transporte a otra tonalidad por intervalo escrito (autor)
-e2e/sequencer-v5.spec.ts   7 pruebas de la pantalla contra el build de producción
+e2e/sequencer-v5.spec.ts   8 pruebas de la pantalla contra el build de producción
 ```
 
 Reglas de la casa:

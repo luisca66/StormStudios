@@ -110,7 +110,10 @@
 .studio .viewSwitch button { padding: 4px 14px; }
 .editor { min-height: 0; overflow: auto; padding: 14px; background:
   radial-gradient(900px 380px at 20% 0%, #3b2a8a22, transparent 65%), var(--bg); }
-.editor[data-view=roll] > div { max-height: none; height: 100%; }
+.editor[data-view=roll] > .rollHost, .editor[data-view=roll] > .rollHost > div { max-height: none; height: 100%; }
+/* La v4 pinta la selección del mismo naranja que la contralto; el contorno la distingue. */
+.editor [class*="rollNote"][aria-pressed=true] { outline: 2px solid #1b1340; outline-offset: -1px; box-shadow: 0 0 0 3px #7c5cff; z-index: 2; }
+.rollMarquee { position: absolute; z-index: 4; pointer-events: none; border: 1px solid #5b4bd8; background: #7c5cff2e; border-radius: 2px; }
 /* La partitura de la v4 trae sus propios estilos; aquí solo se ajusta el cifrado en línea, que hace de pista de acordes. */
 .editor [class*="inlineCiphers"] input { min-width: 0; width: 100%; min-height: 28px; padding: 2px; text-align: center; background: transparent; color: #3a2f86; border: 1px dashed transparent; border-radius: 5px; font-family: var(--font-dm-serif), Georgia, serif; font-size: 15px; box-shadow: none; }
 .editor [class*="measure"]:hover [class*="inlineCiphers"] input { border-color: #d8d3c4; }
