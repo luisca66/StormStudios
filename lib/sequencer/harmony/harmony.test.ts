@@ -9,6 +9,7 @@ import { harmonize } from "./harmonize";
 import { realize } from "./realize";
 import { chordTrack, setChordAt, writeProgression } from "./chord-track";
 import { applyHarmonization, harmonizeOptions, HarmonyError, realizeChordTrack } from "./score-bridge";
+import { reviewScore } from "./review";
 import { enumerateVoicings, pitchName, type Voicing } from "./voicing";
 
 const token = (v: Voicing[keyof Voicing]) => v.spelling.letter + (v.spelling.alter > 0 ? "#".repeat(v.spelling.alter) : "b".repeat(-v.spelling.alter));
@@ -164,5 +165,38 @@ describe("puente con la partitura", () => {
     for (const id of ["alto", "tenor", "bass"]) expect(score.voices.find(v => v.id === id)!.events).toHaveLength(4);
     expect(chordTrack(score).map(s => s.chord?.degree)).toEqual(first.chords.map(c => c.degree));
     expect(pitchName(first.voicings[0].SOPRANO)).toBe("E5");
+  });
+});
+
+describe("revisión para el autor", () => {
+  const satb = (lines: Record<string, string[]>) => {
+    const score = createScore("satb");
+    for (const [id, notes] of Object.entries(lines)) score.voices.find(v => v.id === id)!.events = notes.map((pitch, i) => ({ id: `${id}${i}`, start: i * 1920, duration: "h" as const, dotted: false, triplet: false, pitches: pitch ? [pitch] : [], tie: false }));
+    return score;
+  };
+  it("no encuentra nada en lo que reparte el motor y nombra la progresión", () => {
+    let score = createScore("satb");
+    "I VI IV II V6 I IV V".split(" ").forEach((text, i) => { score = setChordAt(score, 1 + Math.floor(i / 2), 1 + (i % 2) * 2, text); });
+    const review = reviewScore(realizeChordTrack(score).score);
+    expect(review.findings).toEqual([]);
+    expect(review.chords).toBe(8);
+    expect(review.progression).toBe("I – VI – IV – II – V6/3 – I – IV – V");
+  });
+  it("señala quintas y octavas paralelas con su compás y pulso", () => {
+    // I–II con todas las voces subiendo un grado: 5as y 8as paralelas.
+    const review = reviewScore(satb({ soprano: ["G4", "A4"], alto: ["E4", "F4"], tenor: ["C4", "D4"], bass: ["C3", "D3"] }));
+    const text = review.findings.map(f => f.es).join(" | ");
+    expect(text).toMatch(/5as paralelas/);
+    expect(text).toMatch(/8as paralelas/);
+    expect(review.findings.every(f => f.measure === 1 && f.beat === 3)).toBe(true);
+  });
+  it("señala construcción, enlaces fuera de la tabla y voces que faltan", () => {
+    // Sensible duplicada en V; V–IV (fundamental) no está en la tabla.
+    const review = reviewScore(satb({ soprano: ["B4", "C5", "C5"], alto: ["D4", "F4", "E4"], tenor: ["B3", "A3", ""], bass: ["G2", "F2", "C3"] }));
+    const text = review.findings.map(f => f.es).join(" | ");
+    expect(text).toMatch(/[Ss]ensible duplicada/);
+    expect(text).toMatch(/V–IV no está en la tabla/);
+    expect(text).toMatch(/Falta una sola nota en tenor/);
+    expect(review.chords).toBe(2);
   });
 });

@@ -168,14 +168,14 @@ export function useStudio(locale: string) {
   const selectAll = () => selectMany(voices.flatMap(v => v.events.map(e => e.id)), false);
 
   // ── Edición ─────────────────────────────────────────────────────────────
-  const insert = (pitches?: string[]) => attempt(() => {
+  const insert = (pitches?: string[], quiet = false) => attempt(() => {
     const event: NoteEvent = { id: newId(), start: positionTick, duration: draft.duration, dotted: draft.dotted, triplet: draft.triplet, tie: draft.tie, pitches: pitches ?? parsePitchList(draft.pitches) };
     const next = writeWithMouse(score, draft.voice, event);
     if (commit(next)) {
       setSelected([]);
       const end = event.start + durationTicks(event);
       if (end < scoreTicks(next)) { const at = locateTick(next, end); patchDraft({ measure: at.measure, beat: round(at.beat) }); }
-      hear(next, draft.voice, event.pitches);
+      if (!quiet) hear(next, draft.voice, event.pitches);
     }
   });
   const commitPitchEdit = (edit: { score: Score; keys: string[] }, notice = "") => {
@@ -315,7 +315,7 @@ export function useStudio(locale: string) {
     patchScore(next => { const event = next.voices.find(v => v.id === selection[0].voice)!.events.find(e => e.id === selection[0].event.id)!; if (text) event.text = text; else delete event.text; });
   };
   /** Teclado MIDI: un acorde de teclas → evento en el cursor, con la grafía de la armadura. */
-  const insertMidi = (notes: number[]) => attempt(() => insert(notes.map(note => spellMidi(note, score.measures[Math.min(draft.measure, score.measures.length) - 1].key))));
+  const insertMidi = (notes: number[], quiet = false) => attempt(() => insert(notes.map(note => spellMidi(note, score.measures[Math.min(draft.measure, score.measures.length) - 1].key)), quiet));
 
   // ── Anotaciones de texto y escenas (marcadores) ─────────────────────────
   const setAnnotation = (kind: ScoreAnnotation["kind"], text: string, id?: string) => patchScore(next => {

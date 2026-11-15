@@ -10,17 +10,19 @@
 import { useState } from "react";
 import { chordName } from "@/lib/sequencer/harmony/chords";
 import type { Harmonization } from "@/lib/sequencer/harmony/harmonize";
+import { reviewScore, type Review } from "@/lib/sequencer/harmony/review";
 import { applyHarmonization, harmonizeOptions, HarmonyError, realizeChordTrack } from "@/lib/sequencer/harmony/score-bridge";
 import type { Studio } from "./useStudio";
 import styles from "./studio.module.css";
 
 export default function AuthorPanel({ s }: { s: Studio }) {
   const { t, es, score } = s;
-  const [options, setOptions] = useState<Harmonization[]>([]);
+  const [options, setOptions] = useState<Harmonization[]>([]), [review, setReview] = useState<Review | null>(null);
   const run = (action: () => void) => { try { action(); } catch (error) { s.setError(error instanceof HarmonyError ? (es ? error.es : error.en) : error instanceof Error ? error.message : "Error"); } };
   const voice = () => run(() => { const result = realizeChordTrack(score); if (s.commit(result.score, es ? result.message.es : result.message.en)) { s.setSelected([]); s.patchDraft({ voice: "soprano" }); } });
   const harmonize = () => run(() => { setOptions([]); setOptions(harmonizeOptions(score, 4)); s.setMessage(t("Elige una armonización.", "Choose a harmonization.")); });
   const choose = (option: Harmonization) => run(() => { const result = applyHarmonization(score, option); if (s.commit(result.score, es ? result.message.es : result.message.en)) setOptions([]); });
+  const check = () => run(() => { const result = reviewScore(score); setReview(result); s.setMessage(result.findings.length ? t(result.findings.length + " observaciones.", result.findings.length + " findings.") : t("Sin observaciones.", "No findings.")); });
   return <div className={styles.author} data-testid="author-panel">
     <p className={styles.authorBadge}>{t("Modo autor · solo en esta computadora · el alumno no lo ve", "Author mode · this computer only · students never see it")}</p>
     <div className={styles.authorActions}>
@@ -34,6 +36,17 @@ export default function AuthorPanel({ s }: { s: Studio }) {
         {options.length > 0 && <ol className={styles.options} data-testid="author-options">
           {options.map((option, index) => <li key={index}><span>{option.chords.map(chordName).join(" – ")}</span><button onClick={() => choose(option)}>{t("Escribir", "Write")}</button></li>)}
         </ol>}
+      </div>
+      <div>
+        <button className={styles.primary} onClick={check} data-testid="author-review">{t("Revisar con las reglas del curso", "Review with the course rules")}</button>
+        <p className={styles.muted}>{t("Antes de grabar: construcción de acordes, 5as y 8as, movimientos melódicos y tabla de enlaces, sobre lo que está escrito en las cuatro voces.", "Before recording: chord construction, fifths and octaves, melodic motion and the table of links, on what is written in the four voices.")}</p>
+        {review && <div data-testid="author-findings">
+          <p className={review.findings.length ? styles.warn : styles.ok}>{review.chords} {t("acordes revisados", "chords reviewed")} · {review.findings.length ? review.findings.length + t(" observaciones", " findings") : t("sin observaciones", "no findings")}</p>
+          {review.progression && <p className={styles.muted}>{review.progression}</p>}
+          <ol className={styles.options}>{review.findings.map((finding, index) => <li key={index}>
+            <button onClick={() => { s.setSelected([]); s.patchDraft({ measure: finding.measure, beat: finding.beat }); }}>{finding.measure}.{finding.beat}</button>
+            <span className={styles.finding}>{es ? finding.es : finding.en}</span></li>)}</ol>
+        </div>}
       </div>
     </div>
   </div>;

@@ -155,7 +155,10 @@
 
 .author { display: flex; flex-direction: column; gap: 10px; }
 .authorBadge { align-self: flex-start; margin: 0; padding: 3px 10px; border-radius: 99px; border: 1px solid #6b5416; background: #2a210a; color: var(--author); font-size: 11px; font-weight: 600; letter-spacing: .02em; }
-.authorActions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.authorActions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.studio .options .finding { flex: 1; font-family: inherit; font-size: 12px; line-height: 1.4; }
+.options li:has(.finding) { justify-content: flex-start; padding: 4px; align-items: flex-start; }
+.studio .options li:has(.finding) button { min-height: 22px; padding: 0 6px; font-family: var(--font-dm-mono), ui-monospace, monospace; font-size: 11px; }
 .options { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
 .options li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 4px 4px 4px 10px; border: 1px solid var(--line-2); border-radius: var(--radius-sm); background: var(--bg-2); }
 .options span { font-family: var(--font-dm-serif), Georgia, serif; font-size: 15px; }
@@ -171,6 +174,10 @@
 .studio button[data-midi=ready] { border-color: var(--play); color: var(--play); background: #0f2a1f; }
 .studio button[data-midi=waiting], .studio button[data-midi=connecting] { border-color: var(--author); color: var(--author); background: #2a210a; }
 .studio button[data-midi=denied], .studio button[data-midi=unsupported] { border-color: var(--stop); color: #ff8fa3; background: #2a1018; }
+.studio button[data-mic=listening] { border-color: var(--play); color: var(--play); background: #0f2a1f; }
+.studio button[data-mic=asking] { border-color: var(--author); color: var(--author); background: #2a210a; }
+.studio button[data-mic=denied], .studio button[data-mic=unsupported] { border-color: var(--stop); color: #ff8fa3; background: #2a1018; }
+.heard { min-width: 26px; font-family: var(--font-dm-mono), ui-monospace, monospace; font-size: 11px; text-align: left; }
 .fixed { flex: 0 0 auto !important; }
 
 /* Lista de notas y textos */

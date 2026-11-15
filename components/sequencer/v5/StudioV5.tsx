@@ -26,6 +26,7 @@ import EventsPanel from "./EventsPanel";
 import ScenesPanel from "./ScenesPanel";
 import Stage from "./Stage";
 import { useMidiInput, type MidiStatus } from "./useMidiInput";
+import { useMicInput, type MicStatus } from "./useMicInput";
 import { useStudio, type Studio } from "./useStudio";
 import styles from "./studio.module.css";
 
@@ -43,6 +44,12 @@ const KEYS = ["C", "G", "D", "A", "E", "B", "F#", "C#", "F", "Bb", "Eb", "Ab", "
 const METERS = ["4/4", "3/4", "2/4", "6/8", "9/8", "12/8", "5/4", "7/8"];
 const VOICE_LABEL: Record<VoiceId, [string, string]> = { melody: ["Melodía", "Melody"], soprano: ["Soprano", "Soprano"], alto: ["Contralto", "Alto"], tenor: ["Tenor", "Tenor"], bass: ["Bajo", "Bass"] };
 const INSTRUMENT_LABEL: Record<string, [string, string]> = { Piano: ["Piano", "Piano"], Cello: ["Cello", "Cello"], Corno: ["Corno", "Horn"], Coro: ["Coro", "Choir"], Fagot: ["Fagot", "Bassoon"], Synth: ["Sintetizador", "Synth"] };
+const MIC_LABEL: Record<MicStatus, [string, string]> = {
+  off: ["Micrófono apagado: canta o toca para escribir", "Microphone off: sing or play to write"], unsupported: ["Este navegador no da acceso al micrófono", "This browser gives no microphone access"],
+  asking: ["Pidiendo permiso para el micrófono…", "Asking for microphone permission…"], listening: ["Escuchando: sostén cada nota un momento", "Listening: hold each note for a moment"],
+  denied: ["El navegador no dio permiso para el micrófono", "The browser denied microphone access"],
+};
+const NOTE_NAMES = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
 type Zone = "chords" | "scenes" | "events" | "text" | "author";
 const ZONE_KEY = "storm-sequencer-v5-zone";
 // Vista por páginas: sistemas de 3 compases; 5 sistemas por página a una voz, 2 en SATB (igual que la v4).
@@ -90,6 +97,9 @@ export default function StudioV5({ locale }: { locale: string }) {
   const [midiOn, setMidiOn] = useState(false), [semitones, setSemitones] = useState(2), [copyTo, setCopyTo] = useState(2);
   const fileInput = useRef<HTMLInputElement>(null), paper = useRef<HTMLDivElement>(null);
   const midi = useMidiInput(midiOn, notes => s.insertMidi(notes));
+  const [micOn, setMicOn] = useState(false);
+  // Sin sonido de confirmación y en pausa al reproducir: el micrófono oiría al propio secuenciador.
+  const mic = useMicInput(micOn, s.audioState !== "stopped", note => s.insertMidi([note], true));
   useEffect(() => { queueMicrotask(() => { try { const stored = Number(localStorage.getItem(ZONE_KEY)); if (stored >= 96 && stored <= 640) setZoneHeight(stored); } catch { /* sin almacenamiento */ } }); }, []);
   const resizeZone = (down: React.PointerEvent) => {
     down.preventDefault();
@@ -250,6 +260,7 @@ export default function StudioV5({ locale }: { locale: string }) {
         <div className={styles.group}>
           <button aria-pressed={s.cipherVisible} onClick={() => s.setCipherVisible(!s.cipherVisible)} title={t("Mostrar u ocultar el cifrado", "Show or hide chord symbols")}>{t("Cifrado", "Chords")}</button>
           <button aria-pressed={midiOn} data-midi={midi.status} onClick={() => setMidiOn(!midiOn)} title={t(...MIDI_LABEL[midi.status]) + (midi.device ? ": " + midi.device : "")} data-testid="midi-toggle">MIDI</button>
+          <button aria-pressed={micOn} data-mic={mic.status} onClick={() => setMicOn(!micOn)} title={t(...MIC_LABEL[mic.status])} data-testid="mic-toggle">{t("Mic", "Mic")}{mic.status === "listening" && <span className={styles.heard}>{mic.heard === null ? "·" : NOTE_NAMES[mic.heard % 12] + (Math.floor(mic.heard / 12) - 1)}</span>}</button>
         </div>
         {view === "staff" && <div className={styles.group + " " + styles.layoutSwitch}>
           <button aria-pressed={layout === "line"} onClick={() => setLayout("line")}>{t("Continua", "Continuous")}</button>

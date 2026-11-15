@@ -122,3 +122,27 @@ test("a MIDI keyboard writes notes and chords spelled by the key", async ({ page
   await send([60, 64, 67]);
   await expect.poll(() => melody(page)).toEqual(["Bb4", "C4+E4+G4"]);
 });
+
+test("singing or playing into the microphone writes the held note once", async ({ page }) => {
+  // Fake microphone: a real 440 Hz tone with harmonics, routed through Web Audio.
+  await page.addInitScript(() => {
+    navigator.mediaDevices.getUserMedia = async () => {
+      const context = new AudioContext(), output = context.createMediaStreamDestination();
+      for (const [multiple, level] of [[1, 0.3], [2, 0.18], [3, 0.1]]) {
+        const oscillator = context.createOscillator(), gain = context.createGain();
+        oscillator.frequency.value = 440 * multiple; gain.gain.value = level;
+        oscillator.connect(gain).connect(output); oscillator.start();
+      }
+      return output.stream;
+    };
+  });
+  await open(page);
+  await page.getByTestId("mic-toggle").click();
+  await expect(page.getByTestId("mic-toggle")).toHaveAttribute("data-mic", "listening");
+  await expect.poll(() => melody(page), { timeout: 8000 }).toEqual(["A4"]);
+  // The note keeps sounding: it must not be written again.
+  await page.waitForTimeout(700);
+  expect(await melody(page)).toEqual(["A4"]);
+  await page.getByTestId("mic-toggle").click();
+  await expect(page.getByTestId("mic-toggle")).toHaveAttribute("data-mic", "off");
+});
