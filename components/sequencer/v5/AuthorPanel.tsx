@@ -11,9 +11,12 @@ import { useState } from "react";
 import { chordName } from "@/lib/sequencer/harmony/chords";
 import type { Harmonization } from "@/lib/sequencer/harmony/harmonize";
 import { reviewScore, type Review } from "@/lib/sequencer/harmony/review";
+import { transposeToKey } from "@/lib/sequencer/harmony/transpose";
 import { applyHarmonization, harmonizeOptions, HarmonyError, realizeChordTrack } from "@/lib/sequencer/harmony/score-bridge";
 import type { Studio } from "./useStudio";
 import styles from "./studio.module.css";
+
+const KEYS = ["C", "G", "D", "A", "E", "B", "F#", "C#", "F", "Bb", "Eb", "Ab", "Db", "Gb", "Cb"];
 
 export default function AuthorPanel({ s }: { s: Studio }) {
   const { t, es, score } = s;
@@ -22,6 +25,12 @@ export default function AuthorPanel({ s }: { s: Studio }) {
   const voice = () => run(() => { const result = realizeChordTrack(score); if (s.commit(result.score, es ? result.message.es : result.message.en)) { s.setSelected([]); s.patchDraft({ voice: "soprano" }); } });
   const harmonize = () => run(() => { setOptions([]); setOptions(harmonizeOptions(score, 4)); s.setMessage(t("Elige una armonización.", "Choose a harmonization.")); });
   const choose = (option: Harmonization) => run(() => { const result = applyHarmonization(score, option); if (s.commit(result.score, es ? result.message.es : result.message.en)) setOptions([]); });
+  const [key, setKey] = useState("G");
+  const transpose = () => run(() => {
+    const result = transposeToKey(score, key);
+    const note = result.outside ? t(` ${result.outside} notas quedaron fuera de tesitura: usa «Repartir» para repartir de nuevo en esta tonalidad.`, ` ${result.outside} notes are out of range: use "Voice" to voice it again in this key.`) : "";
+    if (s.commit(result.score, t(`Transportado de ${result.from} a ${result.to}.`, `Transposed from ${result.from} to ${result.to}.`) + note)) { s.setSelected([]); setReview(null); }
+  });
   const check = () => run(() => { const result = reviewScore(score); setReview(result); s.setMessage(result.findings.length ? t(result.findings.length + " observaciones.", result.findings.length + " findings.") : t("Sin observaciones.", "No findings.")); });
   return <div className={styles.author} data-testid="author-panel">
     <p className={styles.authorBadge}>{t("Modo autor · solo en esta computadora · el alumno no lo ve", "Author mode · this computer only · students never see it")}</p>
@@ -33,6 +42,10 @@ export default function AuthorPanel({ s }: { s: Studio }) {
       <div>
         <button className={styles.primary} onClick={harmonize} data-testid="author-harmonize">{t("Armonizar la soprano escrita", "Harmonize the written soprano")}</button>
         <p className={styles.muted}>{t("Propone progresiones del material del curso para la melodía de la soprano y escribe las otras tres voces.", "Proposes progressions from the course material for the soprano melody and writes the other three voices.")}</p>
+        <div className={styles.row} style={{ marginTop: 10 }}>
+          <label>{t("Pasar todo a", "Move everything to")}<select value={key} onChange={event => setKey(event.target.value)} data-testid="author-key">{KEYS.map(name => <option key={name}>{name}</option>)}</select></label>
+          <button onClick={transpose} data-testid="author-transpose">{t("Transportar", "Transpose")}</button>
+        </div>
         {options.length > 0 && <ol className={styles.options} data-testid="author-options">
           {options.map((option, index) => <li key={index}><span>{option.chords.map(chordName).join(" – ")}</span><button onClick={() => choose(option)}>{t("Escribir", "Write")}</button></li>)}
         </ol>}

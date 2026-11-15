@@ -10,6 +10,7 @@ import { realize } from "./realize";
 import { chordTrack, setChordAt, writeProgression } from "./chord-track";
 import { applyHarmonization, harmonizeOptions, HarmonyError, realizeChordTrack } from "./score-bridge";
 import { reviewScore } from "./review";
+import { transposeToKey } from "./transpose";
 import { enumerateVoicings, pitchName, type Voicing } from "./voicing";
 
 const token = (v: Voicing[keyof Voicing]) => v.spelling.letter + (v.spelling.alter > 0 ? "#".repeat(v.spelling.alter) : "b".repeat(-v.spelling.alter));
@@ -198,5 +199,45 @@ describe("revisión para el autor", () => {
     expect(text).toMatch(/V–IV no está en la tabla/);
     expect(text).toMatch(/Falta una sola nota en tenor/);
     expect(review.chords).toBe(2);
+  });
+});
+
+describe("pasar a otra tonalidad (autor)", () => {
+  const voiced = () => {
+    let score = createScore("satb");
+    "I VI IV II V6 I IV V".split(" ").forEach((text, i) => { score = setChordAt(score, 1 + Math.floor(i / 2), 1 + (i % 2) * 2, text); });
+    return realizeChordTrack(score).score;
+  };
+  it("conserva la progresión y sigue sin observaciones en las 15 tonalidades", () => {
+    const source = voiced(), expected = reviewScore(source).progression;
+    for (const key of MAJOR_KEYS) {
+      const { score } = transposeToKey(source, key);
+      expect(score.measures.every(m => m.key === key), key).toBe(true);
+      const review = reviewScore(score);
+      expect(review.progression, key).toBe(expected);
+      expect(review.findings.filter(f => !/tesitura/.test(f.es)), key).toEqual([]);
+    }
+  });
+  it("transporta por intervalo escrito: conserva la grafía de cada grado", () => {
+    const score = createScore("single");
+    score.measures.forEach(m => { m.key = "G"; });
+    score.voices[0].events = ["G4", "F#4", "Bb4", "C#5"].map((pitch, i) => ({ id: `n${i}`, start: i * 960, duration: "q" as const, dotted: false, triplet: false, pitches: [pitch], tie: false }));
+    const pitches = (key: string) => transposeToKey(score, key).score.voices[0].events.map(e => e.pitches[0]);
+    expect(pitches("D")).toEqual(["D4", "C#4", "F4", "G#4"]);   // baja una 4a: queda más cerca
+    expect(pitches("A")).toEqual(["A4", "G#4", "C5", "D#5"]);
+    expect(pitches("Gb")).toEqual(["Gb4", "F4", "Bbb4", "C5"]);
+    expect(pitches("G")).toEqual(["G4", "F#4", "Bb4", "C#5"]);
+  });
+  it("elige la octava con menos notas fuera de tesitura, lo avisa y rechaza partituras con modulación", () => {
+    const source = voiced();
+    const near = transposeToKey(source, "D");
+    expect(near.outside).toBe(0);
+    expect(reviewScore(near.score).findings).toEqual([]);
+    // Un transporte parejo y lejano no siempre cabe: se cuenta, no se oculta.
+    const far = transposeToKey(source, "G");
+    expect(far.outside).toBeGreaterThan(0);
+    expect(reviewScore(far.score).findings.filter(f => /tesitura/.test(f.es)).length).toBeGreaterThan(0);
+    const modulating = voiced(); modulating.measures[2].key = "G";
+    expect(() => transposeToKey(modulating, "D")).toThrow(/cambia de tonalidad/);
   });
 });
