@@ -16,6 +16,12 @@ Los lotes, la estrategia y la bitácora están en `apps-src/plan-lanzamiento/red
 
 <!-- BEGIN:nextjs-agent-rules -->
 
+## Sequencer v5
+
+Para continuar el Storm Sequencer v5 (`/sequencer/v5`), lee primero `docs/secuenciador-v5.md`: estado, arquitectura, pendientes y reparto.
+Tres reglas de Luis que no se reabren: tiene que servir para hacer el curso; el secuenciador no corrige al alumno mientras escribe; generar voces y armonizar son solo del modo autor (`NEXT_PUBLIC_SEQUENCER_AUTHOR`, nunca en producción ni importado desde código público).
+La v3 y la v4 no se modifican.
+
 # This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
