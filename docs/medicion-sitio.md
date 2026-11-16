@@ -168,9 +168,9 @@ Analytics Engine retiene los datos tres meses.
 ## Tienda y avisos de novedades (F1.3 / F2.2)
 
 `lib/store-links.ts` controla todas las invitaciones AP Super: `apSuper.enabled`
-es `false` y no se renderiza nada. Cambiarlo a `true` muestra el bloque en la
+es `true` desde el lanzamiento en App Store (15 de noviembre de 2026). Muestra el bloque en la
 ficha de oído absoluto, debajo de su juego (sin reducir el iframe) y en el libro.
-Los enlaces usan `store_click` con `play:apsuper` o `appstore:apsuper`.
+La App Store verificada es `https://apps.apple.com/app/id6833285825`. Google Play queda sin enlace mientras su ficha no sea pública. Los enlaces usan `store_click` con `play:apsuper` o `appstore:apsuper`.
 
 `NotifyForm` aparece debajo de la invitación a clases, al final del catálogo y
 en el libro, en ambos idiomas. `/api/notify` comparte con contacto las defensas

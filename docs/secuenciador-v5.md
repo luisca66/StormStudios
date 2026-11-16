@@ -104,7 +104,7 @@ La paridad con la v4 quedó completa el 2026-11-15 (inventario original en `docs
 ### Para publicar y enlazar
 
 1. **Visto bueno recibido** de Luis el 15 de noviembre de 2026 para publicar conservando la v3 y la v4.
-2. **Video y lección «P04.2 – Uso del Secuenciador v5»**, con el patrón de `content/course/*/p04-1-secuenciador-v4.mdx` (las lecciones P04.x acompañan a un video de Luis). Después: entrada de blog. Luis pidió enlazarla desde `app/[locale]/curso-armonia/page.tsx` el 15 de noviembre: la tarjeta v5 aparece antes de las de v3 y v4, que se conservan. Sigue siendo `noIndex`.
+2. **Video y lección «P04.2 – Uso del Secuenciador v5»**, con el patrón de `content/course/*/p04-1-secuenciador-v4.mdx` (las lecciones P04.x acompañan a un video de Luis). Entrada de blog publicada en ES/EN: `2026-11-15-storm-sequencer-v5`. Luis pidió enlazarla desde `app/[locale]/curso-armonia/page.tsx` el 15 de noviembre: las tarjetas aparecen en orden v3, v4 y v5, como pidió Luis. Sigue siendo `noIndex`.
 
 ### Por probar con equipo real
 
