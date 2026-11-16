@@ -57,6 +57,7 @@ export default async function AppDetailPage({ params }: Props) {
     ? longDescription.split(/\n\s*\n/).filter(Boolean)
     : [];
   const apkUrl = app.apkUrls?.[locale as "es" | "en"] || app.apkUrl;
+  const appStoreUrl = app.appStoreUrls?.[locale as "es" | "en"] || app.appStoreUrl;
   const gameLabel = app.gameLabel?.[locale as "es" | "en"] || (locale === "es" ? "Modo juego" : "Game mode");
 
   return (
@@ -114,9 +115,9 @@ export default async function AppDetailPage({ params }: Props) {
                 🚀 {gameLabel}
               </Link>
             )}
-            {app.appStoreUrl && (
+            {appStoreUrl && (
               <a
-                href={app.appStoreUrl}
+                href={appStoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 data-measure="store_click"
