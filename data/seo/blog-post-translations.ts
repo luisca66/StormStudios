@@ -7,6 +7,14 @@ type BlogPostTranslation = {
 
 export const BLOG_POST_TRANSLATIONS: BlogPostTranslation[] = [
   {
+    key: "storm-sequencer-v5",
+    slugs: { es: "2026-11-15-storm-sequencer-v5", en: "2026-11-15-storm-sequencer-v5" },
+  },
+  {
+    key: "ap-super-app-store",
+    slugs: { es: "2026-11-15-ap-super-app-store", en: "2026-11-15-ap-super-app-store" },
+  },
+  {
     key: "welcome",
     slugs: {
       en: "2026-05-21-welcome",
