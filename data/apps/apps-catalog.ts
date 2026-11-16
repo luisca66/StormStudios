@@ -492,6 +492,29 @@ export const APPS: AppEntry[] = [
     ],
     icon: "/images/secuenciador.webp",
   },
+  {
+    slug: "storm-sequencer-v5",
+    name: { es: "Storm Sequencer v5.0", en: "Storm Sequencer v5.0" },
+    category: "sequencer",
+    description: {
+      es: "Estudio de armonía en una pantalla: partitura, editor de teclas, cuatro voces SATB y escritura cantando al micrófono.",
+      en: "Single-screen harmony studio: score, piano roll, four SATB voices and microphone pitch entry.",
+    },
+    longDescription: {
+      es: "Storm Sequencer v5 reúne la partitura, el editor de teclas y las cuatro voces del cuarteto SATB en una sola pantalla. Puedes escribir con mouse, teclado de computadora, texto musical, teclado MIDI o cantando al micrófono con selector de octava para cantar en tu registro cómodo. Incluye pista de acordes, selección múltiple, copiar y pegar, instrumentos y volumen por voz, y exportación a MIDI (para el Maestro Virtual), MusicXML, WAV e imagen.",
+      en: "Storm Sequencer v5 brings the score, piano roll and all four SATB voices together on a single screen. Write with the mouse, computer keyboard, musical text, a MIDI keyboard or by singing into the microphone with an octave selector to sing in your comfortable range. It includes a chord track, multi-note selection, copy and paste, per-voice instruments and volume, and export to MIDI (for the Virtual Teacher), MusicXML, WAV and image.",
+    },
+    webUrl: "/sequencer/v5",
+    isTool: true,
+    features: [
+      { es: "Partitura, editor de teclas y cuarteto SATB en una sola pantalla", en: "Score, piano roll and SATB quartet on a single screen" },
+      { es: "Entrada por micrófono con transposición de octava para cantar en tu registro", en: "Microphone entry with octave shift to sing in your comfortable range" },
+      { es: "Escritura con mouse, teclado, texto musical o teclado MIDI", en: "Write with mouse, keyboard, musical text or MIDI keyboard" },
+      { es: "Pista de cifrados de acordes y marcadores de escena", en: "Chord symbol track and scene markers" },
+      { es: "Exporta MIDI, MusicXML, WAV e imagen (PNG/SVG)", en: "Export MIDI, MusicXML, WAV and image (PNG/SVG)" },
+    ],
+    icon: "/images/secuenciador.webp",
+  },
   ...UTILITY_APPS,
 ];
 
