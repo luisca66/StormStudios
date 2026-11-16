@@ -52,6 +52,7 @@ const MIC_LABEL: Record<MicStatus, [string, string]> = {
   denied: ["El navegador no dio permiso para el micrófono", "The browser denied microphone access"],
 };
 const NOTE_NAMES = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
+const SOLFEGE_NAMES = ["Do", "Do♯", "Re", "Re♯", "Mi", "Fa", "Fa♯", "Sol", "Sol♯", "La", "La♯", "Si"];
 type Zone = "chords" | "scenes" | "events" | "text" | "author";
 const ZONE_KEY = "storm-sequencer-v5-zone";
 // Vista por páginas: sistemas de 3 compases; 5 sistemas por página a una voz, 2 en SATB (igual que la v4).
@@ -100,8 +101,17 @@ export default function StudioV5({ locale }: { locale: string }) {
   const fileInput = useRef<HTMLInputElement>(null), paper = useRef<HTMLDivElement>(null);
   const midi = useMidiInput(midiOn, notes => s.insertMidi(notes));
   const [micOn, setMicOn] = useState(false);
+  const [micTranspose, setMicTranspose] = useState(0);
   // Sin sonido de confirmación y en pausa al reproducir: el micrófono oiría al propio secuenciador.
-  const mic = useMicInput(micOn, s.audioState !== "stopped", note => s.insertMidi([note], true));
+  const mic = useMicInput(micOn, s.audioState !== "stopped", note => {
+    const written = note + micTranspose;
+    if (written < 0 || written > 127) {
+      s.setError(t("La nota transpuesta queda fuera del registro MIDI. Cambia «Escribir a».", "The transposed note is outside the MIDI range. Change ‘Write at’."));
+      return;
+    }
+    s.insertMidi([written], true);
+  });
+  const micNoteName = (note: number) => (locale === "es" ? SOLFEGE_NAMES : NOTE_NAMES)[note % 12] + (Math.floor(note / 12) - 1);
   useEffect(() => { queueMicrotask(() => { try { const stored = Number(localStorage.getItem(ZONE_KEY)); if (stored >= 96 && stored <= 640) setZoneHeight(stored); } catch { /* sin almacenamiento */ } }); }, []);
   const resizeZone = (down: React.PointerEvent) => {
     down.preventDefault();
@@ -262,7 +272,21 @@ export default function StudioV5({ locale }: { locale: string }) {
         <div className={styles.group}>
           <button aria-pressed={s.cipherVisible} onClick={() => s.setCipherVisible(!s.cipherVisible)} title={t("Mostrar u ocultar el cifrado", "Show or hide chord symbols")}>{t("Cifrado", "Chords")}</button>
           <button aria-pressed={midiOn} data-midi={midi.status} onClick={() => setMidiOn(!midiOn)} title={t(...MIDI_LABEL[midi.status]) + (midi.device ? ": " + midi.device : "")} data-testid="midi-toggle">MIDI</button>
-          <button aria-pressed={micOn} data-mic={mic.status} onClick={() => setMicOn(!micOn)} title={t(...MIC_LABEL[mic.status])} data-testid="mic-toggle">{t("Mic", "Mic")}{mic.status === "listening" && <span className={styles.heard}>{mic.heard === null ? "·" : NOTE_NAMES[mic.heard % 12] + (Math.floor(mic.heard / 12) - 1)}</span>}</button>
+          <button aria-pressed={micOn} data-mic={mic.status} onClick={() => setMicOn(!micOn)} title={t(...MIC_LABEL[mic.status])} data-testid="mic-toggle">Mic</button>
+          <label className={styles.micTranspose}>{t("Escribir a", "Write at")}
+            <select value={micTranspose} onChange={event => setMicTranspose(Number(event.target.value))}>
+              <option value={-24}>{t("2 octavas abajo (−24)", "2 octaves down (−24)")}</option>
+              <option value={-12}>{t("1 octava abajo (−12)", "1 octave down (−12)")}</option>
+              <option value={0}>{t("Como canto (0)", "As sung (0)")}</option>
+              <option value={12}>{t("1 octava arriba (+12)", "1 octave up (+12)")}</option>
+              <option value={24}>{t("2 octavas arriba (+24)", "2 octaves up (+24)")}</option>
+            </select>
+          </label>
+          {mic.status === "listening" && <span className={styles.heard} data-testid="mic-pitch">
+            {s.audioState !== "stopped" ? t("Mic en pausa al reproducir", "Mic paused during playback") : mic.heard === null ? t("Canta una nota…", "Sing a note…")
+              : t("Escucho ", "Hearing ") + micNoteName(mic.heard) + t(" → escribo ", " → writing ")
+                + (mic.heard + micTranspose >= 0 && mic.heard + micTranspose <= 127 ? micNoteName(mic.heard + micTranspose) : t("fuera de registro", "out of range"))}
+          </span>}
         </div>
         {view === "staff" && <div className={styles.group + " " + styles.layoutSwitch}>
           <button aria-pressed={layout === "line"} onClick={() => setLayout("line")}>{t("Continua", "Continuous")}</button>

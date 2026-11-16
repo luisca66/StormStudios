@@ -175,6 +175,26 @@ export default async function CursoArmoniaPage({ params }: Props) {
 
         {/* CTA Secuenciador */}
         <div className="ss-glass rounded-2xl p-8 mt-12 flex flex-col sm:flex-row items-center gap-6"
+          style={{ border: "1px solid rgba(139,92,246,0.5)", background: "rgba(139,92,246,0.1)" }}>
+          <div className="text-4xl flex-shrink-0" aria-hidden="true">🎼</div>
+          <div className="flex-1 text-center sm:text-left">
+            <h2 className="ss-serif mb-1" style={{ fontSize: "1.2rem", color: "#f0eeff" }}>Storm Sequencer v5.0</h2>
+            <p className="ss-mono text-sm" style={{ color: "var(--ss-muted)", lineHeight: 1.6 }}>
+              {es
+                ? "Tu estudio de armonía en una pantalla: partitura, editor de teclas y cuatro voces. Escribe con mouse, teclado MIDI o cantando al micrófono; elige la octava para cantar en tu registro cómodo. Exporta MIDI para entregar tus ejercicios al Maestro Virtual."
+                : "Your harmony studio on one screen: score, piano roll and four voices. Write with the mouse, a MIDI keyboard or by singing into the microphone; choose the octave to sing in your comfortable range. Export MIDI to submit your exercises to the Virtual Teacher."}
+            </p>
+            <p className="ss-mono text-xs mt-2" style={{ color: "var(--ss-muted)" }}>
+              {es ? "Las versiones 3 y 4 siguen disponibles abajo para acompañar sus videos." : "Versions 3 and 4 remain available below to follow their videos."}
+            </p>
+          </div>
+          <Link href="/sequencer/v5"
+            className="ss-mono text-sm px-6 py-3 rounded-xl flex-shrink-0 transition-all duration-300"
+            style={{ background: "rgba(139,92,246,0.3)", border: "1px solid rgba(139,92,246,0.6)", color: "#ede9fe" }}>
+            {es ? "Abrir v5.0 →" : "Open v5.0 →"}
+          </Link>
+        </div>
+        <div className="ss-glass rounded-2xl p-8 mt-12 flex flex-col sm:flex-row items-center gap-6"
           style={{ border: "1px solid rgba(16,185,129,0.2)", background: "rgba(16,185,129,0.04)" }}>
           <div className="text-4xl flex-shrink-0">🎹</div>
           <div className="flex-1 text-center sm:text-left">

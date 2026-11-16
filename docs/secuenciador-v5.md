@@ -4,7 +4,7 @@ Arranque: 14 de noviembre de 2026. Última actualización: 15 de noviembre de 20
 
 ## Qué es
 
-Un estudio de armonía de **una sola pantalla**, con Cubase como referencia: transporte arriba, pistas a la izquierda, editor al centro (partitura o editor de teclas), inspector a la derecha y una zona inferior con pestañas. Vive en `/es/sequencer/v5` y `/en/sequencer/v5` (`noIndex`, todavía sin enlaces desde el sitio).
+Un estudio de armonía de **una sola pantalla**, con Cubase como referencia: transporte arriba, pistas a la izquierda, editor al centro (partitura o editor de teclas), inspector a la derecha y una zona inferior con pestañas. Vive en `/es/sequencer/v5` y `/en/sequencer/v5` (`noIndex`, enlazada desde la página del curso).
 
 La v3 (`/sequencer`) y la v4 (`/sequencer/v4`) **no se tocan**: tienen videos hechos. La v5 reutiliza el modelo, el audio y las vistas de la v4, no los modifica.
 
@@ -27,7 +27,7 @@ Público (lo que recibe el alumno):
 - Herramientas: escribir / seleccionar / borrar, figuras, puntillo, tresillo, ligadura, ornamento (nota roja), alteraciones, deshacer / rehacer, mostrar u ocultar cifrado.
 - Teclado de computadora (en toda la pantalla): Espacio, A–G (con la armadura y la octava más cercana a la nota anterior), R, 1–6, punto, T, flechas, Inicio / Fin, Re Pág / Av Pág, Supr, Esc, Ctrl+Z / Y / C / X / V / D / A / S, M, L.
 - **Teclado MIDI** (botón MIDI; Web MIDI en Chrome y Edge): cada tecla escribe la nota en el cursor con la figura elegida y la grafía de la armadura; las teclas simultáneas forman un acorde.
-- **Micrófono** (botón Mic): cantar o tocar escribe cada nota sostenida, una sola vez. Se pausa al reproducir y no suena al escribir, para no transcribirse a sí mismo. El audio no sale de la computadora.
+- **Micrófono** (botón Mic): cantar o tocar escribe cada nota sostenida, una sola vez. Se pausa al reproducir y no suena al escribir, para no transcribirse a sí mismo. El audio no sale de la computadora. «Escribir a» permite transponer solo la entrada del micrófono −24, −12, 0, +12 o +24 semitonos; muestra la nota escuchada y la escrita y no cambia las notas existentes ni la entrada MIDI.
 - Inspector: cursor, notas o acordes por texto, armadura, compás (lista, numerador y denominador libres, con re-barrado), clave por voz, **insertar / quitar / copiar compases**, transponer por semitonos u octavas, duplicar selección, aplicar notas a la selección, texto de la nota.
 - **Pista de acordes**: el cifrado se escribe bajo cada pulso de la partitura o como progresión de texto («I IV V I», «C F G/B C») cada 1, 2, 3 o 4 pulsos. Romano y americano diatónico. No genera notas ni corrige.
 - **Pista de marcadores**: las escenas sobre una regla de compases (título, rango, formato 16:9 o 9:16, explicación, voz resaltada). «Presentar» muestra la escena sola, con pantalla completa y exportación PNG / SVG.
@@ -104,7 +104,7 @@ La paridad con la v4 quedó completa el 2026-11-15 (inventario original en `docs
 ### Para publicar y enlazar
 
 1. **Visto bueno recibido** de Luis el 15 de noviembre de 2026 para publicar conservando la v3 y la v4.
-2. **Video y lección «P04.2 – Uso del Secuenciador v5»**, con el patrón de `content/course/*/p04-1-secuenciador-v4.mdx` (las lecciones P04.x acompañan a un video de Luis). Después: entrada de blog y enlaces desde `app/[locale]/curso-armonia/page.tsx` y `app/[locale]/sequencer/page.tsx`. Hasta entonces la v5 es `noIndex` y no tiene enlaces.
+2. **Video y lección «P04.2 – Uso del Secuenciador v5»**, con el patrón de `content/course/*/p04-1-secuenciador-v4.mdx` (las lecciones P04.x acompañan a un video de Luis). Después: entrada de blog. Luis pidió enlazarla desde `app/[locale]/curso-armonia/page.tsx` el 15 de noviembre: la tarjeta v5 aparece antes de las de v3 y v4, que se conservan. Sigue siendo `noIndex`.
 
 ### Por probar con equipo real
 
