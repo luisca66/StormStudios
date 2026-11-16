@@ -184,7 +184,7 @@ test("a MIDI keyboard writes notes and chords spelled by the key", async ({ page
   await expect.poll(() => melody(page)).toEqual(["Bb4", "C4+E4+G4"]);
 });
 
-test("singing or playing into the microphone writes the held note once", async ({ page }) => {
+for (const transpose of [-24, -12, 0, 12, 24]) test(`microphone octave shift ${transpose} writes the held note once`, async ({ page }) => {
   // Fake microphone: a real 440 Hz tone with harmonics, routed through Web Audio.
   await page.addInitScript(() => {
     navigator.mediaDevices.getUserMedia = async () => {
@@ -198,12 +198,16 @@ test("singing or playing into the microphone writes the held note once", async (
     };
   });
   await open(page);
+  await page.getByRole("combobox", { name: "Escribir a", exact: true }).selectOption(String(transpose));
   await page.getByTestId("mic-toggle").click();
   await expect(page.getByTestId("mic-toggle")).toHaveAttribute("data-mic", "listening");
-  await expect.poll(() => melody(page), { timeout: 8000 }).toEqual(["A4"]);
+  await expect.poll(() => melody(page), { timeout: 8000 }).toEqual([`A${4 + transpose / 12}`]);
+  await expect(page.getByTestId("mic-pitch")).toHaveText(`Escucho La4 → escribo La${4 + transpose / 12}`);
+  // Changing the shift while a note is held must not rewrite it or insert it again.
+  await page.getByRole("combobox", { name: "Escribir a", exact: true }).selectOption(String(transpose === 0 ? 12 : 0));
   // The note keeps sounding: it must not be written again.
   await page.waitForTimeout(700);
-  expect(await melody(page)).toEqual(["A4"]);
+  expect(await melody(page)).toEqual([`A${4 + transpose / 12}`]);
   await page.getByTestId("mic-toggle").click();
   await expect(page.getByTestId("mic-toggle")).toHaveAttribute("data-mic", "off");
 });

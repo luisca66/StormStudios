@@ -103,7 +103,7 @@
 /* ── Centro: herramientas, editor y zona inferior ───────────────── */
 .center { grid-area: center; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-width: 0; min-height: 0; }
 .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 7px 12px; background: var(--surface); border-bottom: 1px solid var(--line); }
-.group { display: flex; gap: 3px; }
+.group { display: flex; flex-wrap: wrap; gap: 3px; }
 .studio .toolbar button { min-width: 32px; padding: 4px 7px; }
 .studio .glyph { font-size: 19px; line-height: 1; font-family: "Noto Music", "Bravura Text", "Segoe UI Symbol", serif; }
 .viewSwitch { margin-left: auto; }
@@ -180,7 +180,9 @@
 .studio button[data-mic=listening] { border-color: var(--play); color: var(--play); background: #0f2a1f; }
 .studio button[data-mic=asking] { border-color: var(--author); color: var(--author); background: #2a210a; }
 .studio button[data-mic=denied], .studio button[data-mic=unsupported] { border-color: var(--stop); color: #ff8fa3; background: #2a1018; }
-.heard { min-width: 26px; font-family: var(--font-dm-mono), ui-monospace, monospace; font-size: 11px; text-align: left; }
+.micTranspose { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-2); }
+.micTranspose select { max-width: 185px; padding: 4px; }
+.heard { align-self: center; font-family: var(--font-dm-mono), ui-monospace, monospace; font-size: 11px; text-align: left; }
 .fixed { flex: 0 0 auto !important; }
 
 /* Lista de notas y textos */
