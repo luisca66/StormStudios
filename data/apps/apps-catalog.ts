@@ -1,4 +1,5 @@
 import type { BilingualText } from "@/types/course";
+import { storeLinks } from "@/lib/store-links";
 
 export type AppEntry = {
   slug: string;
@@ -6,6 +7,7 @@ export type AppEntry = {
   category: "ear-training" | "cognitive" | "theory" | "sequencer" | "utility" | "other";
   description: BilingualText;
   longDescription?: BilingualText;
+  appStoreUrl?: string;
   playStoreUrl?: string;
   apkUrl?: string;
   apkUrls?: BilingualText;
@@ -415,6 +417,7 @@ export const APPS: AppEntry[] = [
     webUrl: "/apps/oido-absoluto-multi/jugar",
     gameUrl: "/apps/oido-absoluto-multi/juego",
     gameLabel: { es: "Modo juego 3D", en: "3D game mode" },
+    appStoreUrl: storeLinks.apSuper.enabled && storeLinks.apSuper.appStoreUrl ? storeLinks.apSuper.appStoreUrl : undefined,
     features: [
       { es: "Modo juego 3D: Walking AP Multi, explora cinco mundos y abre compuertas reconociendo notas", en: "3D game mode: Walking AP Multi, explore five worlds and unlock gates by recognizing notes" },
       { es: "6 timbres: piano, cello, corno, coro, fagot y guitarra", en: "6 timbres: piano, cello, horn, choir, bassoon and guitar" },
