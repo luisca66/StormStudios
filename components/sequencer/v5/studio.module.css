@@ -180,7 +180,7 @@
 .studio button[data-mic=listening] { border-color: var(--play); color: var(--play); background: #0f2a1f; }
 .studio button[data-mic=asking] { border-color: var(--author); color: var(--author); background: #2a210a; }
 .studio button[data-mic=denied], .studio button[data-mic=unsupported] { border-color: var(--stop); color: #ff8fa3; background: #2a1018; }
-.micTranspose { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-2); }
+.studio .micTranspose { flex-direction: row; align-items: center; gap: 5px; align-self: center; }
 .micTranspose select { max-width: 185px; padding: 4px; }
 .heard { align-self: center; font-family: var(--font-dm-mono), ui-monospace, monospace; font-size: 11px; text-align: left; }
 .fixed { flex: 0 0 auto !important; }
