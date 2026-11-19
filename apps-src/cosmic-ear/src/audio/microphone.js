@@ -1,6 +1,8 @@
 // Micrófono → AudioWorklet `pitch-processor` → un callback por cuadro de análisis.
 // Extraído de main.jsx en la fase 1b paso 2 (PLAN-COSMIC-EAR.md); la cadena de audio no cambió.
 
+const loadedWorklets = new WeakSet();
+
 export class Microphone {
     constructor() {
         this.stream = null;
@@ -22,7 +24,10 @@ export class Microphone {
                     autoGainControl: true
                 }
             });
-            await ctx.audioWorklet.addModule('/apps/cosmic-ear/pitch-processor.js?v=2');
+            if (!loadedWorklets.has(ctx)) {
+                await ctx.audioWorklet.addModule('/apps/cosmic-ear/pitch-processor.js?v=2');
+                loadedWorklets.add(ctx);
+            }
 
             this.source = ctx.createMediaStreamSource(this.stream);
             this.worklet = new AudioWorkletNode(ctx, 'pitch-processor');

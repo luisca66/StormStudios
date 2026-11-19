@@ -1,7 +1,7 @@
 import { createReadStream } from 'node:fs';
 import { stat } from 'node:fs/promises';
 import path from 'node:path';
-import { check } from './core.mjs';
+import { batchFile, check } from './core.mjs';
 
 // Never expose response bodies, URLs or headers in exceptions (may contain tokens).
 export async function request(url, init = {}, fetcher = fetch) {
@@ -65,7 +65,7 @@ export class APIs {
       // Streaming multipart, without loading the MP4 into RAM.
       const boundary = `storm-${crypto.randomUUID()}`;
       const fields = { title: p.title, description: p.description, published: 'false', scheduled_publish_time: when };
-      const file = path.resolve(this.base, p.file);
+      const file = await batchFile(this.base, p.file);
       const prefix = Object.entries(fields).map(([k, v]) => `--${boundary}\r\nContent-Disposition: form-data; name="${k}"\r\n\r\n${v}\r\n`).join('') + `--${boundary}\r\nContent-Disposition: form-data; name="source"; filename="video.mp4"\r\nContent-Type: video/mp4\r\n\r\n`;
       const suffix = `\r\n--${boundary}--\r\n`;
       async function* body() { yield Buffer.from(prefix); yield* createReadStream(file); yield Buffer.from(suffix); }
@@ -76,7 +76,7 @@ export class APIs {
     await checkpoint(start.video_id); // Preserve the ID before transfer/processing/finish.
     const upload = new URL(start.upload_url);
     check(upload.protocol === 'https:' && upload.hostname === 'rupload.facebook.com' && !upload.username && !upload.password, 'Host de subida inesperado.');
-    const file = path.resolve(this.base, p.file); const size = (await stat(file)).size;
+    const file = await batchFile(this.base, p.file); const size = (await stat(file)).size;
     const transferred = await data(upload, { method: 'POST', headers: { Authorization: `OAuth ${this.c.FB_PAGE_ACCESS_TOKEN}`, offset: '0', file_size: String(size), 'Content-Type': 'application/octet-stream', 'Content-Length': String(size) }, body: createReadStream(file), duplex: 'half' }, this.fetcher);
     check(transferred.success === true, 'Transferencia Reel no confirmada.');
     const finish = await this.graph(`${page}/video_reels`, { upload_phase: 'finish', video_id: start.video_id, video_state: 'SCHEDULED', scheduled_publish_time: when, title: p.title, description: p.description }, 'POST');
@@ -84,7 +84,7 @@ export class APIs {
     return start.video_id;
   }
   async youtubeUpload(p, checkpoint) {
-    const file = path.resolve(this.base, p.file); const size = (await stat(file)).size;
+    const file = await batchFile(this.base, p.file); const size = (await stat(file)).size;
     const headers = await this.yt();
     const session = await request('https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', {
       method: 'POST', headers: { ...headers, 'Content-Type': 'application/json', 'X-Upload-Content-Type': 'video/mp4', 'X-Upload-Content-Length': String(size) },

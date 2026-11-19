@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
   try {
     if (!hasAllowedOrigin(request)) return errorResponse("invalid_request", 400);
     const ip = getClientIp(request.headers);
-    if (!(await passesEdgeRateLimit("CONTACT_LIMITER", ip))) {
+    if (!(await passesEdgeRateLimit("NOTIFY_LIMITER", ip)) || !(await passesEdgeRateLimit("CONTACT_LIMITER", ip))) {
       return errorResponse("rate_limited", 429, true, 60);
     }
     const limit = getRateLimitResult(ip);
@@ -32,7 +32,10 @@ export async function POST(request: NextRequest) {
     const { email, source, language, website, elapsedMs, attemptId, measurement } = parsed.data;
     if (website) return NextResponse.json({ success: true }, { headers: { "Cache-Control": "no-store" } });
     if (elapsedMs < MIN_SUBMIT_TIME_MS) return errorResponse("invalid_request", 400);
-    if (!process.env.RESEND_API_KEY) return errorResponse("temporarily_unavailable", 503, true, 60);
+    if (!process.env.RESEND_API_KEY) {
+      console.error("[NOTIFY API] RESEND_API_KEY is not configured");
+      return errorResponse("temporarily_unavailable", 503, true, 60);
+    }
     const { Resend } = await import("resend");
     const resend = new Resend(process.env.RESEND_API_KEY);
     const { data, error } = await resend.emails.send({
@@ -44,7 +47,10 @@ export async function POST(request: NextRequest) {
     }, {
       idempotencyKey: `notify-${createHash("sha256").update(JSON.stringify({ email, source, language, attemptId })).digest("hex")}`,
     });
-    if (error || !data?.id) return errorResponse("temporarily_unavailable", 503, true, 60);
+    if (error || !data?.id) {
+      console.error("[NOTIFY API] Email provider rejected the request");
+      return errorResponse("temporarily_unavailable", 503, true, 60);
+    }
     if (measurement && measurement.language === language) {
       const event = normalizeEvent({ ...measurement, name: "notify_success", destination: source });
       if (event) writeEvent(event);
@@ -52,6 +58,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true }, { headers: { "Cache-Control": "no-store" } });
   } catch {
     // Do not log provider errors or form contents: they may contain personal data.
+    console.error("[NOTIFY API] Unexpected notify delivery failure");
     return errorResponse("temporarily_unavailable", 503, true, 60);
   }
 }

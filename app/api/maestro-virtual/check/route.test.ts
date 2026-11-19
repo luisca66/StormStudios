@@ -14,9 +14,10 @@ it('routes Lesson 9 to cadence review and returns its descriptions', async () =>
   form.append('midi', new Blob([bytes]), 'connections.mid');
   form.append('lessonId', '10-leccion-9');
   const response = await POST(new NextRequest('http://localhost/api/maestro-virtual/check', {
-    method: 'POST', body: form, headers: { 'x-forwarded-for': '198.51.100.79' },
+    method: 'POST', body: form, headers: { origin: 'http://localhost', 'x-forwarded-for': '198.51.100.79' },
   }));
   expect(response.status).toBe(200);
+  expect(response.headers.get('cache-control')).toBe('no-store');
   const feedback: MaestroFeedback = await response.json();
   expect(feedback.violations.some(f => f.ruleId === 'CADENCE_MISSING')).toBe(true);
   expect(feedback.descriptions!.some(f => f.ruleId === 'CADENCE_INFO')).toBe(true);
@@ -37,7 +38,7 @@ describe('Lesson 8 SATB link review', () => {
     form.append('midi', new Blob([bytes]), fixture);
     form.append('lessonId', '09-leccion-8');
     form.append('locale', locale);
-    return new NextRequest('http://localhost/api/maestro-virtual/check', { method: 'POST', body: form, headers: { 'x-forwarded-for': '198.51.100.78' } });
+    return new NextRequest('http://localhost/api/maestro-virtual/check', { method: 'POST', body: form, headers: { origin: 'http://localhost', 'x-forwarded-for': '198.51.100.78' } });
   }
   it.each([
     ['Leccion_8_Do_mayor_correcta.mid', 'es', 'Tonalidades usadas: Do mayor.'],
@@ -78,15 +79,24 @@ describe('Lesson 8 SATB link review', () => {
   });
 });
 
-function midiRequest(lessonId: string, locale = 'es', ip?: string) {
+function midiRequest(lessonId: string, locale = 'es', ip?: string, extraHeaders: Record<string, string | null> = {}) {
   const formData = new FormData();
   formData.append('midi', new Blob([new Uint8Array([0])]), 'exercise.mid');
   formData.append('lessonId', lessonId);
   formData.append('locale', locale);
 
+  const headers: Record<string, string> = {
+    origin: 'http://localhost',
+    ...(ip ? { 'x-forwarded-for': ip } : {}),
+  };
+  for (const [k, v] of Object.entries(extraHeaders)) {
+    if (v === null) delete headers[k];
+    else headers[k] = v;
+  }
+
   return new NextRequest('http://localhost/api/maestro-virtual/check', {
     method: 'POST',
-    headers: ip ? { 'x-forwarded-for': ip } : undefined,
+    headers,
     body: formData,
   });
 }
@@ -98,8 +108,13 @@ describe('POST /api/maestro-virtual/check', () => {
     const form = new FormData();
     form.append('midi', new Blob([bytes]), 'triads.mid');
     form.append('lessonId', '05-leccion-4');
-    return new NextRequest('http://localhost/api/maestro-virtual/check', { method: 'POST', body: form });
+    return new NextRequest('http://localhost/api/maestro-virtual/check', { method: 'POST', body: form, headers: { origin: 'http://localhost' } });
   }
+  it('rejects missing Origin, cross-origin and cross-site multipart submissions', async () => {
+    expect((await POST(midiRequest('02-leccion-1', 'es', '198.51.100.90', { origin: null }))).status).toBe(403);
+    expect((await POST(midiRequest('02-leccion-1', 'es', '198.51.100.91', { origin: 'https://evil.example' }))).status).toBe(403);
+    expect((await POST(midiRequest('02-leccion-1', 'es', '198.51.100.92', { 'sec-fetch-site': 'cross-site' }))).status).toBe(403);
+  });
   it('evaluates Lesson 4 through the real MIDI parser and triad validator', async () => {
     const response = await POST(triadRequest());
     expect(response.status).toBe(200);
@@ -118,7 +133,7 @@ describe('POST /api/maestro-virtual/check', () => {
     const form = new FormData();
     form.append('midi', new Blob([bytes]), 'empty.mid');
     form.append('lessonId', '05-leccion-4');
-    const response = await POST(new NextRequest('http://localhost/api/maestro-virtual/check', { method:'POST', body:form }));
+    const response = await POST(new NextRequest('http://localhost/api/maestro-virtual/check', { method:'POST', body:form, headers: { origin: 'http://localhost' } }));
     expect(response.status).toBe(200);
     const feedback = await response.json();
     expect(feedback.passed).toBe(false);
@@ -179,7 +194,7 @@ describe('Lesson 7 melodic line review', () => {
     form.append('lessonId', '08-leccion-7');
     form.append('locale', locale);
     return new NextRequest('http://localhost/api/maestro-virtual/check', {
-      method: 'POST', body: form, headers: { 'x-forwarded-for': '198.51.100.77' },
+      method: 'POST', body: form, headers: { origin: 'http://localhost', 'x-forwarded-for': '198.51.100.77' },
     });
   }
 
@@ -225,7 +240,7 @@ describe('Lesson 6 SATB chord review', () => {
     form.append('lessonId', '07-leccion-6');
     form.append('locale', locale);
     return new NextRequest('http://localhost/api/maestro-virtual/check', {
-      method: 'POST', body: form, headers: { 'x-forwarded-for': '198.51.100.76' },
+      method: 'POST', body: form, headers: { origin: 'http://localhost', 'x-forwarded-for': '198.51.100.76' },
     });
   }
 

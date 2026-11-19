@@ -36,6 +36,7 @@ export class MicPitchDetector {
   private source: MediaStreamAudioSourceNode | null = null;
   private worklet: AudioWorkletNode | null = null;
   private sink: GainNode | null = null;
+  private workletLoaded = false;
 
   private isListening = false;
   private targetFrequency = 0;
@@ -83,9 +84,11 @@ export class MicPitchDetector {
       throw new MicDeniedError();
     }
 
-    // Load the worklet module. The ?v= query busts any HTTP cache so a stale
-    // worklet can never pair with a newer tracker.
-    await this.ctx.audioWorklet.addModule("./pitch-processor.js?v=2");
+    // Load the worklet module once per AudioContext. The ?v= query busts any HTTP cache.
+    if (!this.workletLoaded) {
+      await this.ctx.audioWorklet.addModule("./pitch-processor.js?v=2");
+      this.workletLoaded = true;
+    }
     console.info("[Mic] Afinador estándar v2 activo — hold 1.5s, gracia 0.25s, mediana 5 frames");
 
     this.source = this.ctx.createMediaStreamSource(this.stream);

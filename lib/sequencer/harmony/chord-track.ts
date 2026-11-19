@@ -51,12 +51,24 @@ export function setChordAt(score: Score, measure: number, beat: number, text: st
  * compás, un acorde cada `beats` pulsos de negra. Reemplaza el cifrado que
  * hubiera en ese tramo y añade los compases que falten.
  */
+const MAX_PROGRESSION_TOKENS = 512;
+const MAX_SCORE_MEASURES = 128;
+
 export function writeProgression(score: Score, text: string, startMeasure: number, beats: number): { score: Score; written: number } {
+  if (text.length > 8192) throw new Error("La progresión es demasiado larga.");
   const tokens = text.split(/[\s,;|]+|\s*[–—]\s*|\s+-\s+/).map(token => token.trim()).filter(Boolean);
+  if (tokens.length > MAX_PROGRESSION_TOKENS) throw new Error(`La progresión admite como máximo ${MAX_PROGRESSION_TOKENS} acordes.`);
   const next = structuredClone(score);
   if (!tokens.length) return { score: next, written: 0 };
   const start = measureStart(next, startMeasure), step = Math.round(beats * PPQ), end = start + step * tokens.length;
-  while (scoreTicks(next) < end) { const last = next.measures.at(-1)!; next.measures.push({ id: newId(), key: last.key, time: [...last.time] }); }
+  let totalTicks = scoreTicks(next);
+  while (totalTicks < end) {
+    if (next.measures.length >= MAX_SCORE_MEASURES) throw new Error(`La progresión supera el máximo de ${MAX_SCORE_MEASURES} compases.`);
+    const last = next.measures.at(-1)!;
+    const added = { id: newId(), key: last.key, time: [...last.time] as [number, number] };
+    next.measures.push(added);
+    totalTicks += measureTicks(added);
+  }
   next.annotations = (next.annotations ?? []).filter(a => {
     if (a.kind !== "roman") return true;
     const tick = annotationTick(next, a.measure, a.beat);

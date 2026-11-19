@@ -16,13 +16,23 @@ import { POST } from "./route";
 const originalResendApiKey = process.env.RESEND_API_KEY;
 let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
 
-function contactRequest(ip: string, overrides: Record<string, unknown> = {}) {
+function contactRequest(
+  ip: string,
+  overrides: Record<string, unknown> = {},
+  extraHeaders: Record<string, string | null> = {}
+) {
+  const headers: Record<string, string> = {
+    "content-type": "application/json",
+    origin: "http://localhost",
+    "x-forwarded-for": ip,
+  };
+  for (const [k, v] of Object.entries(extraHeaders)) {
+    if (v === null) delete headers[k];
+    else headers[k] = v;
+  }
   return new NextRequest("http://localhost/api/contact", {
     method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "x-forwarded-for": ip,
-    },
+    headers,
     body: JSON.stringify({
       name: "Nombre de prueba",
       email: "persona@example.com",
@@ -173,6 +183,15 @@ describe("POST /api/contact", () => {
     sendEmail.mockResolvedValue({ data: { id: "accepted" }, error: null });
     expect((await POST(contactRequest("198.51.100.53", { measurement: { email: "private@example.com" } }))).status).toBe(200);
     expect(writeMeasurement).not.toHaveBeenCalled();
+  });
+
+  it("rejects missing Origin, cross-origin, cross-site and overly long emails", async () => {
+    process.env.RESEND_API_KEY = "re_test";
+    expect((await POST(contactRequest("198.51.100.60", {}, { origin: null }))).status).toBe(400);
+    expect((await POST(contactRequest("198.51.100.61", {}, { origin: "https://evil.example" }))).status).toBe(400);
+    expect((await POST(contactRequest("198.51.100.62", {}, { "sec-fetch-site": "cross-site" }))).status).toBe(400);
+    expect((await POST(contactRequest("198.51.100.63", { email: `${"a".repeat(245)}@example.com` }))).status).toBe(400);
+    expect(sendEmail).not.toHaveBeenCalled();
   });
 
   it("still delivers the message when analytics is unavailable", async () => {

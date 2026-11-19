@@ -14,6 +14,8 @@ describe("edgeRateLimitKey", () => {
     const key = edgeRateLimitKey("CONTACT_LIMITER", "203.0.113.7");
     expect(edgeRateLimitKey("CONTACT_LIMITER", "203.0.113.8")).not.toBe(key);
     expect(edgeRateLimitKey("MAESTRO_LIMITER", "203.0.113.7")).not.toBe(key);
+    expect(edgeRateLimitKey("NOTIFY_LIMITER", "203.0.113.7")).not.toBe(key);
+    expect(edgeRateLimitKey("EVENTS_LIMITER", "203.0.113.7")).not.toBe(key);
     expect(key).not.toContain("203.0.113.7");
   });
 });

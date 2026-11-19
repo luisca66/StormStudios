@@ -255,8 +255,7 @@ export default function MemoriaGame({ locale, wordsData, onSaveWords }: MemoriaG
   });
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 md:p-8 bg-slate-100 rounded-2xl shadow-xl font-sans" 
-         style={{ backgroundImage: "url('https://www.stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Fondo%20app%20memoria.png')", backgroundSize: "cover", backgroundPosition: "center" }}>
+    <div className="w-full max-w-4xl mx-auto p-4 md:p-8 bg-slate-100 rounded-2xl shadow-xl font-sans">
       
       {!currentRange ? (
         <div className="bg-white/95 p-8 rounded-xl shadow-lg text-center max-w-3xl mx-auto backdrop-blur-sm">

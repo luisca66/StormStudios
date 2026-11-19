@@ -559,3 +559,8 @@ function getIntervalDisplay(key: string): string {
 
 // Start app
 window.addEventListener("DOMContentLoaded", init);
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && controller) controller.releaseMicrophone();
+});
+window.addEventListener("pagehide", () => controller?.releaseMicrophone());
+window.addEventListener("beforeunload", () => pitchDetector?.dispose());

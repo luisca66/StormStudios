@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
-import { createPageMetadata, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
+import { createPageMetadata, getLocalizedPathname, getLocalizedRouteUrls } from "@/lib/seo/page-alternates";
 import GameShell from "@/components/apps/GameShell";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -33,7 +33,7 @@ export default async function IntervalosPage({ params }: Props) {
       dividerColor="#334155"
       backColor="rgba(148,163,184,0.7)"
       taglineColor="rgba(148,163,184,0.75)"
-      backHref={`/${locale}/curso-armonia`}
+      backHref={getLocalizedPathname("/curso-armonia", locale as Locale)}
       backLabel={es ? "Curso de Armonía" : "Harmony Course"}
       title={es ? "Piano de Intervalos" : "Interval Piano"}
       titleColor="#f0eeff"
@@ -48,7 +48,7 @@ export default async function IntervalosPage({ params }: Props) {
       <iframe
         src={`/apps/intervalos.html?lang=${locale}`}
         title={es ? "Piano de Intervalos" : "Interval Piano"}
-        allow="autoplay; microphone"
+        allow="autoplay"
         style={{ flex: 1, width: "100%", border: "none", display: "block" }}
       />
     </GameShell>

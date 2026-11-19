@@ -116,12 +116,12 @@ export function errorResponse(
   );
 }
 
-export function hasAllowedOrigin(request: NextRequest): boolean {
+export function hasAllowedOrigin(request: Request): boolean {
   const origin = request.headers.get("origin");
+  const secFetchSite = request.headers.get("sec-fetch-site");
 
-  // Las integraciones que no envían Origin siguen siendo posibles, pero una
-  // petición de navegador con Origin cruzado no debe usar este endpoint.
-  return !origin || origin === request.nextUrl.origin;
+  // Los formularios del sitio siempre envían Origin en peticiones POST desde el navegador.
+  return origin === new URL(request.url).origin && secFetchSite !== "cross-site";
 }
 
 export async function readRequestBody(request: NextRequest): Promise<unknown | null> {

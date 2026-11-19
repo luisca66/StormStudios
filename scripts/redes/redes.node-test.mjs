@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { calendar, validate, localTime, publish, locked, json, atomic, writeReport, external, ROOT, preflight } from './core.mjs';
+import { calendar, validate, localTime, publish, locked, json, atomic, writeReport, external, batchFile, ROOT, preflight } from './core.mjs';
 import { APIs, request } from './apis.mjs';
 
 const now = new Date('2026-11-09T12:00:00Z');
@@ -146,4 +146,10 @@ test('reporte y bitácora son repetibles, sin duplicar entrada', () => temporary
   const f = await writeReport(manifest(), rows, options);
   assert.equal((await readFile(log, 'utf8')).split('<!-- reporte:').length, 2);
   assert.match(await readFile(f, 'utf8'), /4 \| N\/D \| N\/D/);
+}));
+test('batchFile rechaza rutas fuera de la carpeta del lote', () => temporary(async dir => {
+  await writeFile(path.join(dir, 'clip.mp4'), 'ok');
+  assert.ok((await batchFile(dir, './clip.mp4')).endsWith('clip.mp4'));
+  await assert.rejects(batchFile(dir, '../outside.mp4'));
+  await assert.rejects(batchFile(dir, path.join(dir, 'clip.mp4')), /inválido/);
 }));

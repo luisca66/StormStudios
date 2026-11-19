@@ -79,11 +79,30 @@ function App() {
         }
     };
 
+    const exitGameRef = useRef(null);
+    const releaseMicrophone = () => {
+        if (pitchPollRef.current) {
+            clearInterval(pitchPollRef.current);
+            pitchPollRef.current = null;
+        }
+        pitchTrackerRef.current.stop();
+        micRef.current.close();
+        setMicReady(false);
+    };
+
     useEffect(() => {
+        const handleVisibility = () => {
+            if (document.hidden) exitGameRef.current?.();
+        };
+        const handleLeave = () => releaseMicrophone();
+        document.addEventListener('visibilitychange', handleVisibility);
+        window.addEventListener('pagehide', handleLeave);
+        window.addEventListener('beforeunload', handleLeave);
         return () => {
-            if (pitchPollRef.current) clearInterval(pitchPollRef.current);
-            pitchTrackerRef.current.stop();
-            micRef.current.close();
+            document.removeEventListener('visibilitychange', handleVisibility);
+            window.removeEventListener('pagehide', handleLeave);
+            window.removeEventListener('beforeunload', handleLeave);
+            releaseMicrophone();
         };
     }, []);
 
@@ -243,7 +262,7 @@ function App() {
         }
         soundsRef.current.stopEngines();
         soundsRef.current.stopMusic();
-        pitchTrackerRef.current.stop();
+        releaseMicrophone();
         setHoldProgress(0);
         setIsMatching(false);
         setGameState('intro');
@@ -255,6 +274,7 @@ function App() {
         setGameTimeLeft(gameDuration * 60);
         setScorePopup(null);
     };
+    exitGameRef.current = exitGame;
 
     // Escena 3D de la misión (scene/cosmic-scene.js): React la crea al empezar y la destruye al salir.
     useEffect(() => {
@@ -373,7 +393,7 @@ function App() {
                             <IconPlay /> {canStart ? t.startMission : t.enableMicShort}
                         </button>
 
-                        <p className="text-gray-500 text-xs mt-6">{t.developedBy} Luis Cárdenas {t.forLabel} <a href="https://stormstudios.com.mx" target="_blank" className="text-cyan-400 hover:underline">Storm Studios Learning</a></p>
+                        <p className="text-gray-500 text-xs mt-6">{t.developedBy} Luis Cárdenas {t.forLabel} <a href="https://www.stormstudios.com.mx" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">Storm Studios Learning</a></p>
                     </div>
                 </div>
             )}

@@ -51,6 +51,8 @@ export class MicPitchDetector {
   private source: MediaStreamAudioSourceNode | null = null;
   private worklet: AudioWorkletNode | null = null;
   private sink: GainNode | null = null;
+  private workletLoaded = false;
+  private abortListen: (() => void) | null = null;
 
   private isListening = false;
   private targetFrequency = 0;
@@ -96,9 +98,12 @@ export class MicPitchDetector {
       throw new MicDeniedError();
     }
 
-    await this.ctx.audioWorklet.addModule(
-      "/apps/desglose/pitch-processor.js?v=2",
-    );
+    if (!this.workletLoaded) {
+      await this.ctx.audioWorklet.addModule(
+        "/apps/desglose/pitch-processor.js?v=2",
+      );
+      this.workletLoaded = true;
+    }
     console.info(
       "[Mic] Afinador v2 activo — hold 1.5s, gracia 0.25s, mediana 5 frames",
     );
@@ -130,14 +135,22 @@ export class MicPitchDetector {
     const startedAt = performance.now();
 
     return new Promise((resolve) => {
+      let timer: number | null = null;
+      let finished = false;
       const finish = (matched: boolean) => {
+        if (finished) return;
+        finished = true;
+        if (timer !== null) window.clearTimeout(timer);
+        this.abortListen = null;
         const state = this.getCurrentState();
         const heardVoice = this.heardVoice;
         this.stopListening();
         resolve({ matched, heardVoice, state });
       };
+      this.abortListen = () => finish(false);
 
       const poll = () => {
+        if (finished) return;
         const state = this.getCurrentState();
         onProgress?.(state);
         if (state.holdProgress >= 1) {
@@ -148,7 +161,7 @@ export class MicPitchDetector {
           finish(false);
           return;
         }
-        window.setTimeout(poll, 50);
+        timer = window.setTimeout(poll, 50);
       };
 
       poll();
@@ -239,6 +252,7 @@ export class MicPitchDetector {
   }
 
   dispose(): void {
+    this.abortListen?.();
     this.isListening = false;
     try {
       this.source?.disconnect();

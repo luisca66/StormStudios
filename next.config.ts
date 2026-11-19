@@ -71,8 +71,9 @@ const baseSecurityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  // No restringimos microphone ni autoplay: el secuenciador y los audios los usan.
-  { key: "Permissions-Policy", value: "camera=(), geolocation=(), browsing-topics=()" },
+  // microphone y midi quedan restringidos al propio origen (`self` e iframes propios),
+  // bloqueándolos en iframes externos (YouTube, Vimeo, reCAPTCHA).
+  { key: "Permissions-Policy", value: "camera=(), geolocation=(), browsing-topics=(), microphone=(self), midi=(self), usb=(), payment=(), display-capture=()" },
 ];
 
 const nextConfig: NextConfig = {

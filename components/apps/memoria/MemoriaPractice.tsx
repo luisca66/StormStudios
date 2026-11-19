@@ -295,8 +295,7 @@ export default function MemoriaPractice({ locale, practiceWords, onSaveWords }: 
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-4 md:p-8 bg-[#121212] rounded-2xl shadow-xl font-sans"
-         style={{ backgroundImage: "url('https://www.stormstudios.com.mx/wp-content/themes/Apps%20video%20juegos/Fondo%20app%20memoria.png')", backgroundSize: "cover", backgroundPosition: "center" }}>
+    <div className="w-full max-w-3xl mx-auto p-4 md:p-8 bg-[#121212] rounded-2xl shadow-xl font-sans">
       
       <h2 className="text-center text-gray-800 text-3xl font-bold mt-0 mb-6 bg-white/95 py-4 rounded-xl shadow-md">{T.title}</h2>
 

@@ -337,6 +337,10 @@ export function useStudio(locale: string) {
   };
   const loadFile = async (file: File) => {
     try {
+      if (file.size > 4_000_000) {
+        setError(t("El archivo es demasiado grande (máx. 4 MB).", "The file is too large (max 4 MB)."));
+        return;
+      }
       const text = await file.text(), xml = text.trimStart().startsWith("<");
       const next = xml ? importMusicXml(text) : importScore(text);
       if (commit(next, t("Proyecto abierto.", "Project opened."))) { setSelected([]); setDraft({ ...emptyDraft, voice: next.mode === "satb" ? "soprano" : "melody" }); }

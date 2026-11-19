@@ -1,5 +1,13 @@
 import { ImageResponse } from "next/og";
-import { getAppBySlug } from "@/data/apps/apps-catalog";
+import { APPS, getAppBySlug } from "@/data/apps/apps-catalog";
+import { routing } from "@/i18n/routing";
+
+export const dynamic = "force-static";
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return routing.locales.flatMap((locale) => APPS.map((app) => ({ locale, slug: app.slug })));
+}
 
 function truncate(text: string, max: number) {
   if (text.length <= max) return text;
@@ -10,7 +18,9 @@ function truncate(text: string, max: number) {
 export async function GET(_request: Request, { params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
   const app = getAppBySlug(slug);
-  if (!app || (locale !== "es" && locale !== "en")) return new Response("Not found", { status: 404 });
+  if (!app || (locale !== "es" && locale !== "en")) {
+    return new Response("Not found", { status: 404, headers: { "Cache-Control": "no-store" } });
+  }
   return new ImageResponse(
     <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", width: "100%", height: "100%", background: "#0b0917", color: "#f0eeff", padding: "70px", borderLeft: "18px solid #a78bfa" }}>
       <div style={{ display: "flex", fontSize: 25, color: "#ddd6fe", marginBottom: 30 }}>STORM STUDIOS LEARNING · LUIS CÁRDENAS</div>

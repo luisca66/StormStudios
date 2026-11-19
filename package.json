@@ -9,7 +9,7 @@
     "mapa-audio": "node scripts/sequencer/mapa-audio.mjs",
     "dev": "next dev",
     "build": "next build",
-    "cf:build": "opennextjs-cloudflare build",
+    "cf:build": "opennextjs-cloudflare build && node scripts/verify-no-author-bundle.mjs --open-next",
     "cf:preview": "npm run cf:build && opennextjs-cloudflare preview",
     "cf:deploy": "npm run cf:build && opennextjs-cloudflare deploy -- --keep-vars",
     "start": "next start",
@@ -30,6 +30,7 @@
     "analytics:monthly": "node scripts/analytics-monthly.mjs",
     "analytics:prepare": "npm run analytics:catalog && node scripts/instrument-standalone.mjs",
     "prebuild": "npm run analytics:prepare",
+    "postbuild": "node scripts/verify-no-author-bundle.mjs",
     "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {

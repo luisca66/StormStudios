@@ -109,13 +109,15 @@ export default function GameShell({
     if (!backAsksGame) return;
     const onMsg = (e: MessageEvent) => {
       if (e.origin !== window.location.origin) return;
+      const iframeWin = containerRef.current?.querySelector("iframe")?.contentWindow;
+      if (iframeWin && e.source !== iframeWin) return;
       if ((e.data as { type?: string } | null)?.type === "storm:back-exit") {
         window.location.assign(backHref);
       }
     };
     window.addEventListener("message", onMsg);
     return () => window.removeEventListener("message", onMsg);
-  }, [backAsksGame, backHref]);
+  }, [backAsksGame, backHref, containerRef]);
 
   const fsLabel = isFullscreen
     ? es

@@ -1,12 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { writeDataPoint, context } = vi.hoisted(() => ({ writeDataPoint: vi.fn(), context: vi.fn() }));
+const { writeDataPoint, context, limit } = vi.hoisted(() => ({ writeDataPoint: vi.fn(), context: vi.fn(), limit: vi.fn() }));
 vi.mock("@opennextjs/cloudflare", () => ({ getCloudflareContext: context }));
 import { POST } from "./route";
 
-function request(body: unknown, origin: string | null = "https://www.stormstudios.com.mx", type = "application/json") {
+let ipCounter = 1;
+function request(body: unknown, origin: string | null = "https://www.stormstudios.com.mx", type = "application/json", ip?: string) {
   return new Request("https://www.stormstudios.com.mx/api/events", {
-    method: "POST", headers: { ...(origin ? { origin } : {}), "content-type": type },
+    method: "POST",
+    headers: {
+      ...(origin ? { origin } : {}),
+      "content-type": type,
+      "cf-connecting-ip": ip ?? `198.51.100.${ipCounter++}`,
+    },
     body: typeof body === "string" ? body : JSON.stringify(body),
   });
 }
@@ -15,7 +21,8 @@ const event = { name: "page_view", path: "/es", language: "es" };
 describe("POST /api/events", () => {
   beforeEach(() => {
     writeDataPoint.mockReset();
-    context.mockReset().mockReturnValue({ env: { SITE_ANALYTICS: { writeDataPoint } } });
+    limit.mockReset().mockResolvedValue({ success: true });
+    context.mockReset().mockReturnValue({ env: { SITE_ANALYTICS: { writeDataPoint }, EVENTS_LIMITER: { limit } } });
   });
   it("writes through the real writer contract, with no cookies or cache", async () => {
     const response = await POST(request(event));
@@ -43,12 +50,28 @@ describe("POST /api/events", () => {
     expect((await POST(request(event, undefined, "text/plain"))).status).toBe(415);
     expect(writeDataPoint).not.toHaveBeenCalled();
   });
+  it("enforces edge and local rate limits without writing events", async () => {
+    limit.mockResolvedValueOnce({ success: false });
+    const edgeLimited = await POST(request(event));
+    expect(edgeLimited.status).toBe(429);
+    expect(edgeLimited.headers.get("retry-after")).toBe("60");
+    expect(edgeLimited.headers.get("cache-control")).toBe("no-store");
+    expect(writeDataPoint).not.toHaveBeenCalled();
+
+    const floodedIp = "203.0.113.99";
+    for (let i = 0; i < 60; i++) {
+      expect((await POST(request(event, "https://www.stormstudios.com.mx", "application/json", floodedIp))).status).toBe(204);
+    }
+    const localLimited = await POST(request(event, "https://www.stormstudios.com.mx", "application/json", floodedIp));
+    expect(localLimited.status).toBe(429);
+  });
+
   it("returns an observable failure for a missing or failing binding", async () => {
-    context.mockReturnValue({ env: {} });
+    context.mockReturnValue({ env: { EVENTS_LIMITER: { limit } } });
     expect((await POST(request(event))).status).toBe(503);
     context.mockImplementation(() => { throw new Error("context unavailable"); });
     expect((await POST(request(event))).status).toBe(503);
-    context.mockReturnValue({ env: { SITE_ANALYTICS: { writeDataPoint } } });
+    context.mockReturnValue({ env: { SITE_ANALYTICS: { writeDataPoint }, EVENTS_LIMITER: { limit } } });
     writeDataPoint.mockImplementation(() => { throw new Error("write failure"); });
     expect((await POST(request(event))).status).toBe(503);
   });

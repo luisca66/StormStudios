@@ -6,7 +6,7 @@ type RateLimitBinding = {
   limit(options: { key: string }): Promise<{ success: boolean }>;
 };
 
-export type EdgeLimiterName = "CONTACT_LIMITER" | "MAESTRO_LIMITER";
+export type EdgeLimiterName = "CONTACT_LIMITER" | "MAESTRO_LIMITER" | "NOTIFY_LIMITER" | "EVENTS_LIMITER";
 
 /**
  * Límite compartido entre todas las instancias del Worker.

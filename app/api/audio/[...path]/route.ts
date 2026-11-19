@@ -43,7 +43,20 @@ function buildResponseHeaders(upstream: Response) {
   return headers;
 }
 
+const LOCAL_PROXY_HOSTS = new Set(["localhost", "127.0.0.1", "::1", "[::1]"]);
+
+function isLocalProxyRequest(request: NextRequest): boolean {
+  // Este proxy solo existe para vista previa local y generación de stills (`localhost`).
+  // En producción el cliente carga directo desde `samples.stormstudios.com.mx` con CORS.
+  if (request.headers.has("cf-ray")) return false;
+  return LOCAL_PROXY_HOSTS.has(request.nextUrl.hostname);
+}
+
 async function proxyAudio(request: NextRequest, context: Context) {
+  if (!isLocalProxyRequest(request)) {
+    return new Response("Not found", { status: 404, headers: { "Cache-Control": "no-store" } });
+  }
+
   const { path } = await context.params;
   const audioUrl = buildAudioUrl(path);
 

@@ -207,7 +207,7 @@ export default function MemoriaChallenge({ locale }: MemoriaChallengeProps) {
       {phase === "blind" && (
         <div className="flex flex-col items-center h-[720px] relative">
           <div className="absolute top-4 right-6 bg-slate-800/90 border border-rose-500/50 px-6 py-2 rounded-full z-10 shadow-lg backdrop-blur-sm">
-            <span className="text-rose-400 font-bold tracking-widest uppercase text-sm">Tiempo A Ciegas: </span>
+            <span className="text-rose-400 font-bold tracking-widest uppercase text-sm">{isEN ? "Blind Time: " : "Tiempo A Ciegas: "}</span>
             <span className="text-white font-mono text-xl ml-2">{formatTime(timeLeft)}</span>
           </div>
           

@@ -98,3 +98,20 @@ test("an embedded app loads without errors", async ({ page }) => {
   await expect(frame.locator("#app")).not.toBeEmpty();
   expect(errors).toEqual([]);
 });
+
+test("security headers restrict microphone/midi to self and .well-known is served directly", async ({ page, request }) => {
+  const home = await page.goto("/es");
+  expect(home?.status()).toBe(200);
+  const policy = home?.headers()["permissions-policy"] ?? "";
+  expect(policy).toContain("microphone=(self)");
+  expect(policy).toContain("midi=(self)");
+
+  const securityTxt = await request.get("/.well-known/security.txt", { maxRedirects: 0 });
+  expect(securityTxt.status()).toBe(200);
+  expect(await securityTxt.text()).toContain("mailto:info@stormstudios.com.mx");
+});
+
+test("English Sequencer v5 links back to the English harmony course", async ({ page }) => {
+  await page.goto("/en/sequencer/v5");
+  await expect(page.getByRole("link", { name: "Back to the harmony course" })).toHaveAttribute("href", "/en/harmony-course");
+});

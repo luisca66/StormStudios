@@ -93,11 +93,21 @@ export class GameController {
     if (screen === "menu") {
       this.gameEpoch++;
       this.stopPitchMonitoring();
-      this.mic.stopListening();
+      this.mic.dispose();
       this.audio.stopAllSFX();
       this.audio.stopNote();
     }
     this.patch({ screen });
+  }
+
+  /** Releases the microphone when the tab is hidden or unloaded. */
+  releaseMicrophone(): void {
+    this.gameEpoch++;
+    this.stopPitchMonitoring();
+    this.mic.dispose();
+    this.audio.stopAllSFX();
+    this.audio.stopNote();
+    this.patch({ screen: "menu" });
   }
 
   selectLevel(level: number): void {
