@@ -165,7 +165,7 @@ try {
         // Encabezados (categoría), rótulos y marcas.
         let x = left;
         const spans = [];
-        groups.forEach((g, gi) => {
+        groups.forEach((g) => {
           const w = g.cols.length * COL, cx = x + w / 2;
           if (g.header && (!spans.length || spans[spans.length - 1].header !== L(g.header))) spans.push({ header: L(g.header), x0: x, x1: x + w });
           else if (g.header) spans[spans.length - 1].x1 = x + w;

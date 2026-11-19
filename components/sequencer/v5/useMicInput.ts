@@ -10,25 +10,42 @@ import { detectPitch, NoteSegmenter } from "@/lib/sequencer/mic-input";
 
 export type MicStatus = "off" | "unsupported" | "asking" | "listening" | "denied";
 
-export function useMicInput(enabled: boolean, paused: boolean, onNote: (midi: number) => void) {
+export function useMicInput(enabled: boolean, paused: boolean, onNote: (midi: number) => void, onAutoOff?: () => void) {
   const [state, setState] = useState<{ status: MicStatus; heard: number | null }>({ status: "off", heard: null });
-  const handler = useRef(onNote), hold = useRef(paused);
-  useEffect(() => { handler.current = onNote; hold.current = paused; });
+  const handler = useRef(onNote), hold = useRef(paused), autoOff = useRef(onAutoOff);
+  useEffect(() => { handler.current = onNote; hold.current = paused; autoOff.current = onAutoOff; });
   useEffect(() => {
     if (!enabled) return;
     if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) { queueMicrotask(() => setState({ status: "unsupported", heard: null })); return; }
     let cancelled = false, frame = 0, stream: MediaStream | null = null, context: AudioContext | null = null, lastHeard: number | null = null;
     const segmenter = new NoteSegmenter(note => handler.current(note));
+    const release = (notifyParent: boolean) => {
+      if (cancelled) return;
+      cancelled = true;
+      cancelAnimationFrame(frame);
+      stream?.getTracks().forEach(track => { track.onended = null; track.stop(); });
+      stream = null;
+      void context?.close();
+      context = null;
+      setState({ status: "off", heard: null });
+      if (notifyParent) autoOff.current?.();
+    };
+    const onHide = () => { if (document.hidden) release(true); };
+    const onPageHide = () => release(true);
+    document.addEventListener("visibilitychange", onHide);
+    window.addEventListener("pagehide", onPageHide);
     queueMicrotask(() => { if (!cancelled) setState({ status: "asking", heard: null }); });
     // Sin cancelación de eco ni reducción de ruido: alteran la altura de voces e instrumentos.
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } }).then(granted => {
-      if (cancelled) { granted.getTracks().forEach(track => track.stop()); return; }
+      if (cancelled || document.hidden) { granted.getTracks().forEach(track => track.stop()); if (document.hidden) release(true); return; }
       stream = granted; context = new AudioContext();
+      for (const track of stream.getTracks()) track.onended = () => release(true);
       const analyser = context.createAnalyser(); analyser.fftSize = 4096;
       context.createMediaStreamSource(stream).connect(analyser);
       const samples = new Float32Array(analyser.fftSize);
       setState({ status: "listening", heard: null });
       const tick = () => {
+        if (cancelled) return;
         frame = requestAnimationFrame(tick);
         if (hold.current) { segmenter.reset(); return; }
         analyser.getFloatTimeDomainData(samples);
@@ -40,9 +57,9 @@ export function useMicInput(enabled: boolean, paused: boolean, onNote: (midi: nu
       tick();
     }).catch(() => { if (!cancelled) setState({ status: "denied", heard: null }); });
     return () => {
-      cancelled = true; cancelAnimationFrame(frame);
-      stream?.getTracks().forEach(track => track.stop()); void context?.close();
-      setState({ status: "off", heard: null });
+      document.removeEventListener("visibilitychange", onHide);
+      window.removeEventListener("pagehide", onPageHide);
+      release(false);
     };
   }, [enabled]);
   return state;

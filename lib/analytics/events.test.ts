@@ -1,3 +1,5 @@
+import { readdirSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { appDestination, dataPoint, normalizeEvent, publicPath } from "./events";
 import { campaignLabel, referrerDomain } from "./privacy";
@@ -71,5 +73,17 @@ describe("store and notification measurement", () => {
     }
     expect(normalizeEvent({ ...base, name: "notify_success", destination: "libro" })).toBeNull();
     expect(normalizeEvent({ ...base, path: "/es/apps", name: "notify_success", destination: "libro" })).toBeNull();
+  });
+
+  it("keeps public-paths.json synchronized with every published blog and mastery article", () => {
+    for (const locale of ["es", "en"] as const) {
+      for (const [folder, route] of [["blog", "blog"], ["maestria", locale === "es" ? "maestria" : "mastery"]] as const) {
+        const files = readdirSync(path.join(process.cwd(), "content", folder, locale)).filter((f) => /\.mdx?$/.test(f));
+        for (const file of files) {
+          const expected = `/${locale}/${route}/${file.replace(/\.mdx?$/, "")}`;
+          expect(publicPath(expected), `Missing in public-paths.json (run npm run analytics:catalog): ${expected}`).toBe(expected);
+        }
+      }
+    }
   });
 });

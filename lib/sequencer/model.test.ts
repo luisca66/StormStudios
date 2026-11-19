@@ -289,11 +289,16 @@ describe("validateScore", () => {
     expect(() => validateScore(big)).toThrow(/4096/);
   });
 
-  it("requires unique ids per kind", () => {
+  it("requires unique ids per kind and rejects reserved delimiters or prefixes", () => {
     rejects(s => { s.measures[1].id = s.measures[0].id; }, /id repetido/);
     rejects(s => { s.scenes.push({ ...s.scenes[0] }); }, /id repetido/);
     rejects(s => { s.voices[1].events = [{ ...note(0, ["C4"]), id: s.voices[0].events[0].id }]; }, /id repetido/);
     rejects(s => { s.voices[0].events[0].id = ""; });
+    rejects(s => { s.voices[0].events[0].id = "n1@C4"; }, /reservado/);
+    rejects(s => { s.voices[0].events[0].id = "gap:abc"; }, /reservado/);
+    const oversized = parseScoreText("C4 negra\n".repeat(500_000), createScore());
+    expect(oversized.score).toBeNull();
+    expect(oversized.issues[0].message).toContain("tamaño máximo");
   });
 
   it("checks events: value, position, bar crossing, overlap and pitches", () => {

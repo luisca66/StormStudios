@@ -26,6 +26,88 @@ const eslintConfig = defineConfig([
       // Cosmética: apóstrofos/comillas en texto JSX se renderizan bien sin escapar.
       // Desactivar evita ruido en todo el contenido bilingüe del sitio.
       "react/no-unescaped-entities": "off",
+      // Regla de Luis: los módulos de modo autor jamás se importan desde código público.
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: [
+                "@/lib/sequencer/harmony/score-bridge",
+                "@/lib/sequencer/harmony/realize",
+                "@/lib/sequencer/harmony/harmonize",
+                "@/lib/sequencer/harmony/voicing",
+                "@/lib/sequencer/harmony/review",
+                "@/lib/sequencer/harmony/transpose",
+                "**/lib/sequencer/harmony/score-bridge*",
+                "**/lib/sequencer/harmony/realize*",
+                "**/lib/sequencer/harmony/harmonize*",
+                "**/lib/sequencer/harmony/voicing*",
+                "**/lib/sequencer/harmony/review*",
+                "**/lib/sequencer/harmony/transpose*",
+              ],
+              message:
+                "Los módulos de modo autor (generar voces, armonizar, revisar, transportar) solo pueden importarse desde AuthorPanel, lib/sequencer/harmony o pruebas.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: [
+      "components/sequencer/v5/AuthorPanel.tsx",
+      "lib/sequencer/harmony/**/*.ts",
+      "**/*.test.ts",
+      "**/*.test.tsx",
+    ],
+    rules: {
+      "no-restricted-imports": "off",
+    },
+  },
+  {
+    // Usar `@/i18n/navigation` para enlaces internos localizados y evitar rutas /en/curso-armonia.
+    files: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"],
+    ignores: [
+      "app/not-found.tsx",
+      "components/blog/BlogCard.tsx",
+      "components/blog/BlogLayout.tsx",
+      "components/sequencer/v5/AuthorPanel.tsx",
+      "**/*.test.ts",
+      "**/*.test.tsx",
+    ],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "next/link",
+              message: "Usa `Link` de `@/i18n/navigation` para mantener las rutas localizadas.",
+            },
+          ],
+          patterns: [
+            {
+              group: [
+                "@/lib/sequencer/harmony/score-bridge",
+                "@/lib/sequencer/harmony/realize",
+                "@/lib/sequencer/harmony/harmonize",
+                "@/lib/sequencer/harmony/voicing",
+                "@/lib/sequencer/harmony/review",
+                "@/lib/sequencer/harmony/transpose",
+                "**/lib/sequencer/harmony/score-bridge*",
+                "**/lib/sequencer/harmony/realize*",
+                "**/lib/sequencer/harmony/harmonize*",
+                "**/lib/sequencer/harmony/voicing*",
+                "**/lib/sequencer/harmony/review*",
+                "**/lib/sequencer/harmony/transpose*",
+              ],
+              message:
+                "Los módulos de modo autor solo pueden importarse desde AuthorPanel, lib/sequencer/harmony o pruebas.",
+            },
+          ],
+        },
+      ],
     },
   },
   {

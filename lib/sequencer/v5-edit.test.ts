@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createScore, pitchToMidi } from "./model";
 import { duplicateMeasure, insertMeasureAfter, removeMeasure } from "./measure-edit";
 import { ChordCollector, parseMidiMessage, spellMidi } from "./midi-input";
+import { writeProgression } from "./harmony/chord-track";
 import type { NoteEvent, Score } from "./types";
 
 const note = (id: string, start: number, pitch: string, extra: Partial<NoteEvent> = {}): NoteEvent =>
@@ -94,5 +95,12 @@ describe("teclado MIDI", () => {
     pending!();
     collector.press(62); collector.flush();
     expect(chords).toEqual([[60, 64, 67], [62]]);
+  });
+});
+
+describe("pista de acordes: límites", () => {
+  it("rechaza progresiones excesivas antes de expandir compases", () => {
+    expect(() => writeProgression(createScore(), "I ".repeat(600), 1, 1)).toThrow(/512/);
+    expect(() => writeProgression(createScore(), "I ".repeat(200), 1, 4)).toThrow(/128/);
   });
 });

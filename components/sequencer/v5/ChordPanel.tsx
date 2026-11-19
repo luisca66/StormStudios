@@ -22,7 +22,7 @@ export default function ChordPanel({ s }: { s: Studio }) {
   return <div className={styles.chords}>
     <form className={styles.chordForm} onSubmit={event => { event.preventDefault(); write(); }}>
       <label className={styles.grow}>{t("Progresión (romano o americano)", "Progression (roman or letter chords)")}
-        <input value={text} onChange={event => setText(event.target.value)} placeholder="I  IV  V  I   ·   C  F  G/B  C" spellCheck={false} data-testid="progression-input" /></label>
+        <input value={text} maxLength={2048} onChange={event => setText(event.target.value)} placeholder="I  IV  V  I   ·   C  F  G/B  C" spellCheck={false} data-testid="progression-input" /></label>
       <label>{t("Un acorde cada", "One chord every")}
         <select value={beats} onChange={event => setBeats(Number(event.target.value))}>
           <option value={4}>{t("4 pulsos", "4 beats")}</option><option value={3}>{t("3 pulsos", "3 beats")}</option>

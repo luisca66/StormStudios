@@ -9,7 +9,6 @@
 import { readFileSync, writeFileSync } from "node:fs";
 
 const LESSON = "09-leccion-8";
-const IMG = "/images/curso/leccion-8";
 
 // ── Music ────────────────────────────────────────────────────────────────────────────────────────
 const VOICES = ["soprano", "alto", "tenor", "bass"];

@@ -340,6 +340,7 @@ function asOneOf<T extends string>(value: unknown, path: string, options: readon
 
 function uniqueId(value: unknown, path: string, seen: Set<string>): string {
   const id = asString(value, path, 64, false);
+  if (id.includes("@") || id.startsWith("gap:")) fail(path, `id reservado o no válido "${id}"`);
   if (seen.has(id)) fail(path, `id repetido "${id}"`);
   seen.add(id);
   return id;
@@ -746,6 +747,9 @@ function textDuration(token: string): { duration: Duration; dotted: boolean } | 
  * is the number of notes and rests that were placed successfully.
  */
 export function parseScoreText(text: string, base: Score): ParseResult {
+  if (typeof text !== "string" || text.length > MAX_IMPORT_CHARS) {
+    return { score: null, issues: [{ line: 0, message: "El texto supera el tamaño máximo permitido." }], count: 0 };
+  }
   const issues: TextIssue[] = [];
   let count = 0;
   const bounds = measureBounds(base.measures);

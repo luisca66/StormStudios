@@ -29,7 +29,9 @@
   // (lib/http/edge-rate-limit.ts). El periodo solo admite 10 o 60 segundos.
   "ratelimits": [
     { "name": "CONTACT_LIMITER", "namespace_id": "1001", "simple": { "limit": 3, "period": 60 } },
-    { "name": "MAESTRO_LIMITER", "namespace_id": "1002", "simple": { "limit": 10, "period": 60 } }
+    { "name": "MAESTRO_LIMITER", "namespace_id": "1002", "simple": { "limit": 10, "period": 60 } },
+    { "name": "NOTIFY_LIMITER", "namespace_id": "1003", "simple": { "limit": 2, "period": 60 } },
+    { "name": "EVENTS_LIMITER", "namespace_id": "1004", "simple": { "limit": 60, "period": 60 } }
   ],
   // Logs de las API (console.error) visibles en el panel de Cloudflare.
   "observability": { "enabled": true }

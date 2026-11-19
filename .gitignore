@@ -58,6 +58,10 @@ next-env.d.ts
 /.local-work/
 # Lesson video stills (generated)
 stills/
+# Generated local reports, temporary tutorial assets and test MIDI fixtures
+/reports/
+/public/vendor/tutorial-pcm-*.js
+/test-midis/
 # Planes de lanzamiento de los agentes (trabajo local)
 apps-src/plan-lanzamiento/
 apps-src/cloudflare-migracion/

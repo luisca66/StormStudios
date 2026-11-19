@@ -198,6 +198,12 @@ async function readBoundedBody(request: NextRequest): Promise<BoundedBodyResult>
  */
 export async function POST(request: NextRequest) {
   try {
+    const origin = request.headers.get('origin');
+    const secFetchSite = request.headers.get('sec-fetch-site');
+    if (origin !== new URL(request.url).origin || secFetchSite === 'cross-site') {
+      return invalidRequest('invalid_request', 403);
+    }
+
     const ip = getClientIp(request.headers);
     if (!(await passesEdgeRateLimit('MAESTRO_LIMITER', ip))) {
       return rateLimitedResponse(60);
@@ -388,7 +394,7 @@ export async function POST(request: NextRequest) {
       suggestions,
       ...(['satb-chords', 'satb-links', 'melodic-lines', 'cadences'].includes(lessonConfig.validator) ? { descriptions } : {}),
       summary,
-    });
+    }, { headers: NO_STORE_HEADERS });
 
   } catch {
     console.error('[Maestro Virtual] Unexpected exercise review failure');

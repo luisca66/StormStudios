@@ -4,6 +4,8 @@ import { BASE_URL, getLocalizedPathname } from "@/lib/seo/page-alternates";
 import { routing, type Pathnames } from "@/i18n/routing";
 
 /** Public catalog only. Never imports the private knowledge base or learner data. */
+export const dynamic = "force-static";
+
 export function GET() {
   return Response.json({
     version: 1,

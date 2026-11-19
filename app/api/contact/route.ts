@@ -17,7 +17,7 @@ const ContactSchema = z.object({
     .min(1)
     .max(100)
     .refine((value) => !/[\r\n]/.test(value)),
-  email: z.email(),
+  email: z.email().max(254),
   message: z.string().trim().min(10).max(2000),
   website: z.string().max(200).optional().default(""),
   // Tiempo en el formulario medido con el reloj monótono del navegador: no

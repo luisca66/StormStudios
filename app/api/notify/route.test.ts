@@ -9,10 +9,19 @@ import { POST } from "./route";
 import { POST as contact } from "../contact/route";
 
 let ip = 0;
-function request(overrides: Record<string, unknown> = {}, headers = {}, raw?: string) {
+function request(overrides: Record<string, unknown> = {}, headers: Record<string, string | null> = {}, raw?: string) {
+  const merged: Record<string, string> = {
+    "content-type": "application/json",
+    origin: "https://storm.test",
+    "x-forwarded-for": `192.0.2.${++ip}`,
+  };
+  for (const [k, v] of Object.entries(headers)) {
+    if (v === null) delete merged[k];
+    else merged[k] = v;
+  }
   return new NextRequest("https://storm.test/api/notify", {
     method: "POST",
-    headers: { "content-type": "application/json", "x-forwarded-for": `192.0.2.${++ip}`, ...headers },
+    headers: merged,
     body: raw ?? JSON.stringify({ email: "reader@example.com", source: "libro", language: "es",
       website: "", elapsedMs: 5000, attemptId: "notify-attempt-123", ...overrides }),
   });
@@ -38,6 +47,7 @@ describe("POST /api/notify", () => {
     expect(write).toHaveBeenCalledExactlyOnceWith({ name: "notify_success", path, language,
       destination: source, referrer: "", utm_source: "", utm_campaign: "" });
     expect(JSON.stringify(write.mock.calls)).not.toMatch(/reader@|192\.0|attempt|accepted/);
+    expect(edge).toHaveBeenCalledWith("NOTIFY_LIMITER", expect.any(String));
     expect(edge).toHaveBeenCalledWith("CONTACT_LIMITER", expect.any(String));
   });
 
@@ -48,9 +58,16 @@ describe("POST /api/notify", () => {
     expect(write).not.toHaveBeenCalled();
   });
 
-  it("rejects cross origin, wrong type, malformed and oversized bodies, including streams without length", async () => {
-    for (const req of [request({}, { origin: "https://other.test" }), request({}, { "content-type": "text/plain" }),
-      request({}, {}, "{"), request({}, { "content-length": "9000" }), request({}, {}, " ".repeat(8193))]) {
+  it("rejects missing origin, cross-origin, cross-site, wrong type, malformed and oversized bodies, including streams without length", async () => {
+    for (const req of [
+      request({}, { origin: null }),
+      request({}, { origin: "https://other.test" }),
+      request({}, { "sec-fetch-site": "cross-site" }),
+      request({}, { "content-type": "text/plain" }),
+      request({}, {}, "{"),
+      request({}, { "content-length": "9000" }),
+      request({}, {}, " ".repeat(8193)),
+    ]) {
       expect((await POST(req)).status).toBe(400);
     }
     expect(send).not.toHaveBeenCalled();
@@ -75,7 +92,9 @@ describe("POST /api/notify", () => {
       }
       send.mockRejectedValue(new Error("reader@example.com"));
       expect((await POST(request({ measurement }))).status).toBe(503);
-      expect(write).not.toHaveBeenCalled(); expect(log).not.toHaveBeenCalled();
+      expect(write).not.toHaveBeenCalled();
+      expect(log).toHaveBeenCalled();
+      expect(JSON.stringify(log.mock.calls)).not.toContain("reader@example.com");
     } finally { log.mockRestore(); }
   });
 

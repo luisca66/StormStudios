@@ -87,11 +87,11 @@ Reglas de la casa:
 
 ## Modo autor (lo que el alumno nunca debe recibir)
 
-- Se activa solo si `NEXT_PUBLIC_SEQUENCER_AUTHOR=1`. Esa línea está en el `.env.local` de la PC de Luis (ignorado por git). En producción la variable no existe: la pestaña no aparece y `AuthorPanel` no se importa.
-- Para usarlo: `preview_start` con la configuración `sequencer` (puerto 3100) y abrir `http://localhost:3100/es/sequencer/v5`.
-- **Nunca** importar `score-bridge.ts`, `realize.ts`, `harmonize.ts`, `voicing.ts`, `review.ts` ni `transpose.ts` desde un archivo público. `StudioV5` solo importa `chord-track.ts` y `chords.ts`.
+- Se activa solo si `NODE_ENV === "development"` y `NEXT_PUBLIC_SEQUENCER_AUTHOR=1` (preferentemente en `.env.development.local`, ignorado por git y nunca cargado en `next build`). En cualquier build de producción (`next build` / `cf:build` / `cf:deploy`), la pestaña no aparece y `AuthorPanel` ni sus módulos de armonización entran al bundle.
+- Para usarlo: `preview_start` con la configuración `sequencer` (puerto 3100, `next dev`) y abrir `http://localhost:3100/es/sequencer/v5`.
+- **Nunca** importar `score-bridge.ts`, `realize.ts`, `harmonize.ts`, `voicing.ts`, `review.ts` ni `transpose.ts` desde un archivo público (protegido por `no-restricted-imports` en `eslint.config.mjs`). `StudioV5` solo importa `chord-track.ts` y `chords.ts`.
 - **Nunca** poner la variable en Cloudflare ni en `.env.example`.
-- Verificación tras cada cambio que toque esto: compilar sin la variable y buscar en `.next/static` las cadenas `author-voice` y `Repartir la pista`; no deben aparecer. La primera prueba de `e2e/sequencer-v5.spec.ts` también lo comprueba en CI.
+- Verificación automática: `postbuild` (`scripts/verify-no-author-bundle.mjs`) escanea `.next/static` y falla el build si aparece cualquier símbolo del modo autor en los chunks públicos. La primera prueba de `e2e/sequencer-v5.spec.ts` también lo comprueba en CI.
 
 ### Alcance actual del motor
 

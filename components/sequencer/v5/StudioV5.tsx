@@ -11,7 +11,7 @@
  * (generar voces) se carga únicamente con NEXT_PUBLIC_SEQUENCER_AUTHOR=1.
  */
 import dynamic from "next/dynamic";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useEffect, useRef, useState } from "react";
 import { downloadBlob, exportGraphic } from "@/lib/sequencer/graphics";
 import { MAX_TIME_NUMERATOR, TIME_DENOMINATORS } from "@/lib/sequencer/model";
@@ -32,7 +32,8 @@ import { useStudio, type Studio } from "./useStudio";
 import styles from "./studio.module.css";
 import DurationIcon from "./DurationIcon";
 
-const AUTHOR = process.env.NEXT_PUBLIC_SEQUENCER_AUTHOR === "1";
+// El modo autor solo existe en desarrollo local (`next dev`), nunca en builds de producción.
+const AUTHOR = process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_SEQUENCER_AUTHOR === "1";
 const AuthorPanel = AUTHOR ? dynamic(() => import("./AuthorPanel"), { ssr: false }) : null;
 
 const DURATIONS: Array<[Duration, string, string]> = [
@@ -110,7 +111,7 @@ export default function StudioV5({ locale }: { locale: string }) {
       return;
     }
     s.insertMidi([written], true);
-  });
+  }, () => setMicOn(false));
   const micNoteName = (note: number) => (locale === "es" ? SOLFEGE_NAMES : NOTE_NAMES)[note % 12] + (Math.floor(note / 12) - 1);
   useEffect(() => { queueMicrotask(() => { try { const stored = Number(localStorage.getItem(ZONE_KEY)); if (stored >= 96 && stored <= 640) setZoneHeight(stored); } catch { /* sin almacenamiento */ } }); }, []);
   const resizeZone = (down: React.PointerEvent) => {
@@ -190,7 +191,7 @@ export default function StudioV5({ locale }: { locale: string }) {
   return <main className={styles.studio} data-testid="studio-v5" data-audio={s.audioState} data-zone={zoneOpen ? "open" : "closed"} inert={!s.ready}>
     <header className={styles.top}>
       <div className={styles.brand}>
-        <Link href={"/" + locale + "/curso-armonia"} className={styles.back} aria-label={t("Volver al curso de armonía", "Back to the harmony course")}>←</Link>
+        <Link href="/curso-armonia" className={styles.back} aria-label={t("Volver al curso de armonía", "Back to the harmony course")}>←</Link>
         <strong>Storm Sequencer</strong><span className={styles.version}>5</span>
         <input className={styles.title} aria-label={t("Título del proyecto", "Project title")} defaultValue={score.title} key={score.title} maxLength={80}
           onBlur={event => { if (event.target.value !== score.title) s.setTitle(event.target.value); }} onKeyDown={event => { if (event.key === "Enter") event.currentTarget.blur(); }} />
@@ -227,7 +228,7 @@ export default function StudioV5({ locale }: { locale: string }) {
             <button role="menuitem" onClick={() => void saveGraphic(true)} disabled={view !== "staff"}>{t("Exportar imagen PNG", "Export PNG image")}</button>
             <button role="menuitem" onClick={() => void saveGraphic(false)} disabled={view !== "staff"}>{t("Exportar imagen SVG", "Export SVG image")}</button>
             <hr />
-            <Link role="menuitem" href={"/" + locale + "/sequencer/v4"}>{t("Abrir en Sequencer v4", "Open in Sequencer v4")}</Link>
+            <Link role="menuitem" href="/sequencer/v4">{t("Abrir en Sequencer v4", "Open in Sequencer v4")}</Link>
           </div>
         </details>
         <input ref={fileInput} type="file" hidden accept=".json,.xml,.musicxml,application/json" aria-label={t("Archivo de proyecto", "Project file")}

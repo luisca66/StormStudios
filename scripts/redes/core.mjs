@@ -74,10 +74,19 @@ export function validate(m, { now = new Date(), scheduling = false } = {}) {
   }
   return m;
 }
+export async function batchFile(base, relFile) {
+  check(typeof relFile === 'string' && !path.isAbsolute(relFile), 'Archivo de pieza inválido.');
+  const baseReal = await realpath(base);
+  const resolved = await realpath(path.resolve(baseReal, relFile));
+  const rel = path.relative(baseReal, resolved);
+  check(rel && !rel.startsWith(`..${path.sep}`) && rel !== '..' && !path.isAbsolute(rel), 'El archivo debe permanecer dentro de la carpeta del lote.');
+  return resolved;
+}
 export async function preflight(m, manifest) {
   validate(m, { scheduling: true });
+  const base = path.dirname(manifest);
   for (const p of m.pieces.filter(p => !p.remote && p.kind !== 'link')) {
-    const s = await stat(path.resolve(path.dirname(manifest), p.file));
+    const s = await stat(await batchFile(base, p.file));
     check(s.isFile() && s.size > 0, 'Falta un MP4 o está vacío.');
   }
   check(!m.pieces.some(p => p.remote && p.remote.state !== 'scheduled'), 'Hay una subida incierta. Reconcilie antes de reintentar.');

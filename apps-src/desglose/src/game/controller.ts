@@ -96,6 +96,11 @@ export class GameController {
     for (const listener of this.listeners) listener(this.state);
   }
 
+  /** Libera el micrófono al ocultar la pestaña o salir (se reabre al cantar). */
+  releaseMicrophone(): void {
+    this.detector.dispose();
+  }
+
   /** Desbloquea el audio y prepara el micrófono (desde el gesto de inicio). */
   async start(): Promise<void> {
     await this.engine.unlock();

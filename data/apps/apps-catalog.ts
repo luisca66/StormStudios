@@ -418,12 +418,7 @@ export const APPS: AppEntry[] = [
     webUrl: "/apps/oido-absoluto-multi/jugar",
     gameUrl: "/apps/oido-absoluto-multi/juego",
     gameLabel: { es: "Modo juego 3D", en: "3D game mode" },
-    appStoreUrls: storeLinks.apSuper.enabled
-      ? {
-          es: "https://apps.apple.com/mx/app/ap-super-o%C3%ADdo-absoluto/id6833285825",
-          en: "https://apps.apple.com/us/app/ap-super-perfect-pitch/id6833285825",
-        }
-      : undefined,
+    appStoreUrls: storeLinks.apSuper.enabled ? storeLinks.apSuper.appStoreUrls : undefined,
     features: [
       { es: "Modo juego 3D: Walking AP Multi, explora cinco mundos y abre compuertas reconociendo notas", en: "3D game mode: Walking AP Multi, explore five worlds and unlock gates by recognizing notes" },
       { es: "6 timbres: piano, cello, corno, coro, fagot y guitarra", en: "6 timbres: piano, cello, horn, choir, bassoon and guitar" },
