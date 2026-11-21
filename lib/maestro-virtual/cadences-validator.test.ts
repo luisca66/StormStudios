@@ -136,7 +136,7 @@ describe('Lesson 9 cadences', () => {
   it('registers the lesson, exercise and all emitted rules', () => {
     const config = getLessonConfig(lesson.id)!;
     expect(config).toMatchObject({ validator: 'cadences', voiceCount: 4 });
-    expect(lesson.status).toBe('construction');
+    expect(lesson.status).toBe('published');
     expect(lesson.exercise).toMatchObject({ type: 'four-voice-chorale', voiceCount: 4, minChords: 11, maxChords: 11 });
     for (const f of validateLesson9Cadences(fixture())) expect(config.activeRules).toContain(f.rule);
   });

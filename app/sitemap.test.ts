@@ -12,7 +12,7 @@ it("lists the Mastery section and its pieces with translated URLs", async () => 
   });
 });
 
-it("lists the published lessons in both languages and excludes Lesson 9 in construction", async () => {
+it("lists the published lessons in both languages and excludes Lesson 10 in construction", async () => {
   const entries = await sitemap();
   const spanish = entries.find((entry) => entry.url.endsWith("/es/curso-armonia/05-leccion-4"));
   expect(spanish).toBeDefined();
@@ -30,5 +30,7 @@ it("lists the published lessons in both languages and excludes Lesson 9 in const
   expect(entries.some((entry) => entry.url.endsWith("/en/harmony-course/08-lesson-7-melodic-harmonic-motion"))).toBe(true);
   expect(entries.some((entry) => entry.url.endsWith("/es/curso-armonia/09-leccion-8"))).toBe(true);
   expect(entries.some((entry) => entry.url.endsWith("/en/harmony-course/09-lesson-8-harmonic-material-connections"))).toBe(true);
-  expect(entries.some((entry) => /10-(leccion|lesson)-9/.test(entry.url))).toBe(false);
+  expect(entries.some((entry) => entry.url.endsWith("/es/curso-armonia/10-leccion-9"))).toBe(true);
+  expect(entries.some((entry) => entry.url.endsWith("/en/harmony-course/10-lesson-9-cadences"))).toBe(true);
+  expect(entries.some((entry) => /11-(leccion|lesson)-10/.test(entry.url))).toBe(false);
 });
