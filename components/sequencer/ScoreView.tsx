@@ -20,7 +20,10 @@ export type MouseEditing={tool:"write"|"select"|"erase";step:number;accidental:"
   onMovePitch?:(id:string,from:string,to:string)=>void;
   onPosition:(voice:VoiceId,start:number)=>void;
   /** Select tool on empty space: rubber-band selection across measures. `click` runs if the pointer barely moved. */
-  beginMarquee?:(e:PointerEvent,click?:()=>void)=>void};
+  beginMarquee?:(e:PointerEvent,click?:()=>void)=>void;
+  /** v5: with the select tool, dragging an already selected note moves it (and the rest of the selection).
+   *  Off in v4, whose select tool only selects. */
+  dragWithSelect?:boolean};
 const SELECTED = "#7c5cff";
 /** VexFlow receives the keys low to high, so notehead i (DOM and setKeyStyle) is pitch i of this list. */
 const sortedPitches = (event: NoteEvent) => [...event.pitches].sort((a, b) => pitchToMidi(a) - pitchToMidi(b));
@@ -330,8 +333,11 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
             if(mouse.tool==="select"){
               // Pressing on a notehead selects that note; anywhere else (even between notes) a drag draws the selection box.
               const key=head?.getAttribute("data-note-key")??onNote?.getAttribute("data-note-id")??null;
-              const click=()=>{if(key)onSelect(key,extend);else mouse.onPosition(voice.id,positionAt());};
-              if(mouse.beginMarquee)mouse.beginMarquee(e,click);else click();return;
+              const chosen=!!key&&!!hit&&(selected.includes(hit.id)||selected.includes(key));
+              if(!(mouse.dragWithSelect&&chosen&&!extend)){
+                const click=()=>{if(key)onSelect(key,extend);else mouse.onPosition(voice.id,positionAt());};
+                if(mouse.beginMarquee)mouse.beginMarquee(e,click);else click();return;
+              }
             }
             if(hit?.id&&!hit.id.startsWith("gap:")&&hit.pitches.length&&!(e.shiftKey&&!onNote)) {
               if(e.ctrlKey||e.metaKey){mouse.onWrite(voice.id,hit.start,pitchAt(voice,p.y,stave.getYForLine(0)),true);return;}
@@ -353,6 +359,10 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
               const label=document.createElementNS("http://www.w3.org/2000/svg","text");
               label.setAttribute("class",styles.dragLabel);label.setAttribute("text-anchor","middle");
               const noteX=notes[index].getAbsoluteX()+6,noteY=stave.getYForLine(0)+(top-anchor)*5;
+              // The rest of the selection (other notes, other measures) follows the drag on screen.
+              const together=selected.length>1&&(selected.includes(hit.id)||selected.includes(noteKey(hit.id,grabbed)));
+              const companions=()=>together?[...(svg.closest("[data-testid=score-view]")??svg).querySelectorAll<SVGGElement>("[data-note-id]")]
+                .filter(el=>{const id=el.getAttribute("data-note-id")!;return id!==hit.id&&selected.some(k=>k===id||k.startsWith(id+"@"));}):[];
               let heardPitch=lowest,steps=0,moved=false;mouse.onPreview(hit.id,heardPitch,single?grabbed:undefined);
               const move=(event:PointerEvent)=>{
                 if(!moved&&Math.abs(event.clientY-e.clientY)<3)return;
@@ -360,6 +370,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
                 let pitch:string;try{pitch=pitchFor(next);}catch{return;/* Outside MIDI range: stay on the last valid step. */}
                 steps=next;moved=true;
                 group?.setAttribute("transform","translate(0 "+(-steps*5)+")");
+                if(mouse.dragWithSelect)companions().forEach(el=>el.setAttribute("transform","translate(0 "+(-steps*5)+")"));
                 if(!label.isConnected)svg.appendChild(label);
                 label.setAttribute("x",String(noteX));label.setAttribute("y",String(noteY-steps*5-16));
                 label.textContent=pitch.replace(/##/,"𝄪").replace(/bb(?=-?\d)/,"𝄫").replace(/#/,"♯").replace(/(?<=[A-G])b/,"♭");
@@ -369,6 +380,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
                 window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",finish);window.removeEventListener("pointercancel",abort);
                 mouse.onPreviewEnd();label.remove();
                 if(group){if(original)group.setAttribute("transform",original);else group.removeAttribute("transform");}
+                if(mouse.dragWithSelect)companions().forEach(el=>el.removeAttribute("transform"));
               };
               const finish=()=>{
                 cleanup();
