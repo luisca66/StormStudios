@@ -372,23 +372,28 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const score      = Math.max(0, Math.round(100 - errorCount * 15));
+    // Sin puntuación numérica: con tantas variables no hay una ponderación
+    // honesta. Se informa cuántas cosas hay por corregir y la lista detallada.
     const passed     = errorCount === 0;
 
     const summary = {
       es: passed
-        ? `¡Excelente! Tu ejercicio está correcto (${score}/100).`
-        : `Se encontraron ${errorCount} error${errorCount !== 1 ? 'es' : ''}. Puntuación: ${score}/100.`,
+        ? '¡Excelente! Tu ejercicio está correcto.'
+        : errorCount === 1
+          ? 'Hay 1 cosa por corregir.'
+          : `Hay ${errorCount} cosas por corregir.`,
       en: passed
-        ? `Excellent! Your exercise is correct (${score}/100).`
-        : `Found ${errorCount} error${errorCount !== 1 ? 's' : ''}. Score: ${score}/100.`,
+        ? 'Excellent! Your exercise is correct.'
+        : errorCount === 1
+          ? 'There is 1 thing to correct.'
+          : `There are ${errorCount} things to correct.`,
     };
 
-    console.log(`[Maestro Virtual] lessonId=${lessonId} locale=${locale} errors=${errorCount} score=${score}`);
+    console.log(`[Maestro Virtual] lessonId=${lessonId} locale=${locale} errors=${errorCount}`);
 
     return NextResponse.json({
       lessonId,
-      score,
+      errorCount,
       passed,
       violations,
       suggestions,

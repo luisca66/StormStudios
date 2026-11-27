@@ -13,7 +13,7 @@ for (const locale of ["es", "en"] as const) {
     await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0);
     await expect(page.locator(`img[src*="${videoId}"], iframe[src*="${videoId}"]`).first()).toBeAttached();
     await page.locator('input[type="file"]').setInputFiles(join(process.cwd(), "lib/maestro-virtual/__fixtures__/Leccion_6_Do_mayor_correcta.mid"));
-    await expect(page.getByText(es ? "Puntuación: 100/100" : "Score: 100/100", { exact: true })).toBeVisible();
+    await expect(page.getByText(es ? "¡Excelente! Tu ejercicio está correcto." : "Excellent! Your exercise is correct.", { exact: true })).toBeVisible();
     const heading = page.getByRole("heading", { name: es ? "Análisis de los acordes" : "Chord analysis", exact: true });
     await expect(heading).toBeVisible();
     const analysis = heading.locator("..");
@@ -24,7 +24,7 @@ for (const locale of ["es", "en"] as const) {
 
     await page.getByRole("button", { name: es ? "Subir otro archivo" : "Upload another file" }).click();
     await page.locator('input[type="file"]').setInputFiles(join(process.cwd(), "lib/maestro-virtual/__fixtures__/Leccion_6_Do_mayor_errores.mid"));
-    await expect(page.getByText(es ? "Puntuación: 0/100" : "Score: 0/100", { exact: true })).toBeVisible();
+    await expect(page.getByText(es ? "Hay 8 cosas por corregir." : "There are 8 things to correct.", { exact: true })).toBeVisible();
     const errors = page.getByRole("heading", { name: es ? "Errores a corregir" : "Errors to correct" });
     await expect(errors).toBeVisible();
     await expect(heading).toBeVisible();
