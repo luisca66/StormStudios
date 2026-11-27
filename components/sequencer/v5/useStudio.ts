@@ -17,6 +17,7 @@ import { changeTimeSignature, rebarTimeSignature } from "@/lib/sequencer/operati
 import { moveWithMouse, writeWithMouse } from "@/lib/sequencer/mouse-editing";
 import { duplicateMeasure, insertMeasureAfter, removeMeasure } from "@/lib/sequencer/measure-edit";
 import { spellMidi } from "@/lib/sequencer/midi-input";
+import { moveSelection, movesAsGroup, staffSteps } from "@/lib/sequencer/group-move";
 import { SequencerAudio, type AudioState } from "@/lib/sequencer/audio-engine";
 import { downloadBlob } from "@/lib/sequencer/graphics";
 import { installAgentApi } from "@/lib/sequencer/agent-api";
@@ -125,17 +126,29 @@ export function useStudio(locale: string) {
     const next = clone(score); next.voices.forEach(v => { v.events = v.events.filter(e => e.id !== id); });
     if (commit(next)) setSelected(prev => prev.filter(item => parseKey(item).id !== id));
   }, [score, commit]);
+  /** Arrastre de una nota que es parte de una selección: se mueve todo el grupo. */
+  const moveGroup = useCallback((id: string, from: string, pitch: string, start?: number) => {
+    const event = score.voices.flatMap(v => v.events).find(e => e.id === id)!;
+    // Sin `start` el arrastre vino de la partitura (por grados); con `start`, del editor de teclas.
+    const result = start === undefined
+      ? moveSelection(score, selected, { kind: "steps", steps: staffSteps(from, pitch) })
+      : moveSelection(score, selected, { kind: "keys", semitones: pitchToMidi(pitch) - pitchToMidi(from), ticks: start - event.start });
+    if (commit(result.score, t(`${result.keys.length} notas movidas juntas.`, `${result.keys.length} notes moved together.`))) setSelected(result.keys);
+  }, [score, selected, commit, t]);
   const moveMouse = useCallback((id: string, pitch: string, start?: number, ticks?: number) => attempt(() => {
+    const event = score.voices.flatMap(v => v.events).find(e => e.id === id);
+    if (ticks === undefined && event?.pitches.length && movesAsGroup(score, selected, id)) { moveGroup(id, event.pitches[0], pitch, start); return; }
     const next = moveWithMouse(score, id, pitch, start, ticks);
     if (commit(next)) {
       const voice = next.voices.find(v => v.events.some(e => e.id === id))!, event = voice.events.find(e => e.id === id)!, at = locateTick(next, event.start);
       setSelected([id]); setDraft(prev => ({ ...prev, voice: voice.id, measure: at.measure, beat: at.beat, pitches: event.pitches.join(" "), duration: event.duration, dotted: event.dotted, triplet: event.triplet }));
     }
-  }), [score, commit, attempt]);
+  }), [score, selected, commit, attempt, moveGroup]);
   const movePitchMouse = useCallback((id: string, from: string, to: string) => attempt(() => {
+    if (movesAsGroup(score, selected, id)) { moveGroup(id, from, to); return; }
     const next = movePitch(score, id, from, to);
     if (commit(next)) setSelected(normalizeSelection(next, [noteKey(id, to)]));
-  }), [score, commit, attempt]);
+  }), [score, selected, commit, attempt, moveGroup]);
   const previewMouse = useCallback((id: string, pitch: string, from?: string) => {
     const voice = score.voices.find(v => v.events.some(e => e.id === id)), event = voice?.events.find(e => e.id === id);
     if (!voice || !event?.pitches.length) return;
@@ -148,7 +161,7 @@ export function useStudio(locale: string) {
     const at = locateTick(score, start); setDraft(prev => ({ ...prev, voice, measure: at.measure, beat: at.beat })); setSelected([]);
   }, [score]);
   const mouse = useMemo<MouseEditing>(() => ({ tool, accidental, step: durationTicks(draft), onWrite: writeMouse, onErase: eraseMouse, onMove: moveMouse,
-    onMovePitch: movePitchMouse, onPreview: previewMouse, onPreviewEnd: () => audio.current?.stopPreview(), onPosition: positionMouse }),
+    onMovePitch: movePitchMouse, onPreview: previewMouse, onPreviewEnd: () => audio.current?.stopPreview(), onPosition: positionMouse, dragWithSelect: true }),
   // eslint-disable-next-line react-hooks/exhaustive-deps -- `draft` solo aporta la figura
   [tool, accidental, draft.duration, draft.dotted, draft.triplet, writeMouse, eraseMouse, moveMouse, movePitchMouse, previewMouse, positionMouse]);
 

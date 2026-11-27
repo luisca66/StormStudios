@@ -166,6 +166,71 @@ test("the key editor selects notes with a rubber band, like the staff", async ({
   expect(await melody(page)).toEqual(["C#4", "F4", "G#4", "C5", "D#4"]);
 });
 
+test("right-click opens the tool menu at the pointer", async ({ page }) => {
+  await open(page);
+  await page.getByRole("tab", { name: "Entrada por texto", exact: true }).click();
+  await page.getByTestId("text-input").fill("voz melody\ncompas 1\nC4 negra; E4 negra");
+  await page.getByTestId("text-apply").click();
+  const staff = page.getByTestId("score-view");
+  await staff.click({ button: "right", position: { x: 400, y: 60 } });
+  const menu = page.getByTestId("tool-menu");
+  await expect(menu).toBeVisible();
+  // Right-click no longer deletes: both notes are still there.
+  expect(await melody(page)).toEqual(["C4", "E4"]);
+  await menu.getByRole("menuitemradio", { name: /Seleccionar/ }).click();
+  await expect(menu).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Seleccionar", exact: true })).toHaveAttribute("aria-pressed", "true");
+  // Keys inside the menu: E writes, Esc closes.
+  await staff.click({ button: "right", position: { x: 400, y: 60 } });
+  await page.keyboard.press("e");
+  await expect(page.getByRole("button", { name: "Escribir", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await staff.click({ button: "right", position: { x: 400, y: 60 } });
+  await page.keyboard.press("Escape");
+  await expect(menu).toHaveCount(0);
+  // On a note the menu also offers to delete it.
+  await page.locator("[data-note-id]").first().click({ button: "right" });
+  await menu.getByRole("menuitem", { name: /Borrar esta nota/ }).click();
+  expect(await melody(page)).toEqual(["E4"]);
+});
+
+test("dragging one selected note moves the whole selection", async ({ page }) => {
+  await open(page);
+  await page.getByRole("tab", { name: "Entrada por texto", exact: true }).click();
+  await page.getByTestId("text-input").fill("voz melody\ncompas 1\nC4 negra; E4 negra; G4 negra; C5 negra");
+  await page.getByTestId("text-apply").click();
+  // Key editor: select three notes, drag one up a whole tone and a quarter to the right.
+  await page.getByRole("button", { name: "Teclas", exact: true }).click();
+  await page.locator('[data-pitch="F#4"]').evaluate(row => row.scrollIntoView({ block: "center" }));
+  await page.getByRole("button", { name: "Seleccionar", exact: true }).click();
+  await page.keyboard.press("Control+a");
+  const target = page.locator('[data-pitch="E4"] [data-roll-note]').first();
+  await page.locator('[data-pitch="C5"] [data-roll-note]').first().click({ modifiers: ["Shift"] }); // C5 fuera
+  await expect(page.locator("[data-roll-note][aria-pressed=true]")).toHaveCount(3);
+  const box = (await target.boundingBox())!;
+  await page.mouse.move(box.x + 20, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 20 + 48, box.y + box.height / 2 - 52, { steps: 8 }); // 48 px = negra, 26 px = semitono
+  await page.mouse.up();
+  const events = (await api(page)).voices.find(v => v.id === "melody")!.events.map(e => `${e.start}:${e.pitches.join("+")}`);
+  // C4 E4 G4 suben un tono y se corren una negra; G4→A4 cae sobre C5 (que no estaba seleccionada) y la reemplaza.
+  expect(events).toEqual(["960:D4", "1920:F#4", "2880:A4"]);
+  await expect(page.locator("[data-roll-note][aria-pressed=true]")).toHaveCount(3);
+  // Score: drag one selected note down; the others follow by the same staff steps (key of C: naturals).
+  await page.getByRole("button", { name: "Partitura", exact: true }).click();
+  await expect(page.locator("[data-note-id] .vf-notehead").first()).toBeVisible();
+  const heads = await page.locator("[data-note-id] .vf-notehead").evaluateAll(els => els.map(el => { const b = el.getBoundingClientRect(); return { x: b.x + b.width / 2, y: b.y + b.height / 2 }; }));
+  await page.mouse.move(heads[1].x, heads[1].y);
+  await page.mouse.down();
+  await page.mouse.move(heads[1].x, heads[1].y + 24, { steps: 8 });
+  await page.mouse.up();
+  const after = (await api(page)).voices.find(v => v.id === "melody")!.events.filter(e => e.pitches.length).map(e => e.pitches[0]);
+  const steps = (pitch: string) => { const m = /^([A-G])\D*(\d)$/.exec(pitch)!; return Number(m[2]) * 7 + "CDEFGAB".indexOf(m[1]); };
+  const moved = after.map((pitch, i) => steps(pitch) - steps(["D4", "F#4", "A4"][i]));
+  expect(moved[0]).toBeLessThan(0);
+  expect(new Set(moved).size).toBe(1);
+  expect(after.some(pitch => pitch.includes("#"))).toBe(false); // Do mayor: el Fa# baja a una nota natural
+});
+
 test("a MIDI keyboard writes notes and chords spelled by the key", async ({ page }) => {
   // Fake Web MIDI: one input whose handler the test can call.
   await page.addInitScript(() => {
