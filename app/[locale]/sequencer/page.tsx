@@ -45,9 +45,12 @@ export default async function SequencerPage({ params }: Props) {
       }}
       tagline={es ? "Compón · Experimenta · Exporta MIDI" : "Compose · Experiment · Export MIDI"}
     >
-      <a href={`/${locale}/sequencer/v4`} style={{display:"block",padding:"10px 20px",background:"#4c1d95",color:"#ede9fe",fontWeight:700,textAlign:"center"}}>
-        {es?"Probar Storm Sequencer v4.0 · la versión v3 de tus videos sigue aquí":"Try Storm Sequencer v4.0 · your videos’ v3 remains here"}
-      </a>
+      <p style={{margin:0,padding:"6px 20px",fontSize:12,color:"rgba(203,213,225,0.75)",textAlign:"center",borderBottom:"1px solid rgba(255,255,255,0.06)"}}>
+        {es ? "Esta es la v3, la versión de los videos de las lecciones 1–3. " : "This is v3, the version used in the videos for lessons 1–3. "}
+        <a href={`/${locale}/sequencer/v5`} style={{color:"rgba(52,211,153,0.9)",textDecoration:"underline"}}>
+          {es ? "La versión actual es la v5 →" : "The current version is v5 →"}
+        </a>
+      </p>
       <iframe
         src={es ? "/tools/secuenciador.html" : "/tools/sequencer.html"}
         title="Storm Sequencer v3.0"
