@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Link } from "@/i18n/navigation";
 import type { MaestroFeedback } from "@/types/course";
 
 type Props = {
@@ -30,6 +31,20 @@ const ERROR_TEXT: Record<string, { es: string; en: string }> = {
   internal: { es: "Error interno del servidor. Intenta de nuevo.", en: "Internal server error. Please try again." },
 };
 const UPLOAD_TIMEOUT_MS = 20_000;
+
+// Versión del secuenciador que aparece en el video de cada lección. El botón
+// principal abre siempre la versión actual (v5); si el video muestra otra, se
+// ofrece también esa. Lección 9 aún no tiene video.
+const SEQUENCER_ROUTES = { v3: "/sequencer", v4: "/sequencer/v4", v5: "/sequencer/v5" } as const;
+const VIDEO_SEQUENCER: Record<string, "v3" | "v4"> = {
+  "02-leccion-1": "v3",
+  "03-leccion-2": "v3",
+  "04-leccion-3": "v3",
+  "05-leccion-4": "v4",
+  "07-leccion-6": "v4",
+  "08-leccion-7": "v4",
+  "09-leccion-8": "v4",
+};
 
 export default function ExerciseUpload({ lessonId, locale }: Props) {
   const [state, setState] = useState<UploadState>({ status: "idle" });
@@ -156,6 +171,36 @@ export default function ExerciseUpload({ lessonId, locale }: Props) {
       </div>
 
       <div className="p-5">
+        <div className="mb-4 p-3 rounded-xl border border-emerald-200 bg-emerald-50 flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex-1 text-sm text-gray-700">
+            <p>
+              {es
+                ? "Escribe tu tarea en el secuenciador, exporta el MIDI y súbelo aquí."
+                : "Write your assignment in the sequencer, export the MIDI and upload it here."}
+            </p>
+            {VIDEO_SEQUENCER[lessonId] && (
+              <p className="mt-1 text-xs text-gray-500">
+                {es ? "¿Prefieres la versión que aparece en el video? " : "Prefer the version shown in the video? "}
+                <Link
+                  href={SEQUENCER_ROUTES[VIDEO_SEQUENCER[lessonId]]}
+                  target="_blank"
+                  rel="noopener"
+                  className="underline text-emerald-800 hover:text-emerald-900"
+                >
+                  {es ? `Abrir ${VIDEO_SEQUENCER[lessonId]}` : `Open ${VIDEO_SEQUENCER[lessonId]}`}
+                </Link>
+              </p>
+            )}
+          </div>
+          <Link
+            href={SEQUENCER_ROUTES.v5}
+            target="_blank"
+            rel="noopener"
+            className="text-sm font-semibold px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 text-center flex-shrink-0"
+          >
+            {es ? "Abrir secuenciador ↗" : "Open sequencer ↗"}
+          </Link>
+        </div>
         {isTriads && (
           <div className="mb-4 p-3 bg-gray-50 rounded-xl border border-gray-200 text-sm space-y-2">
             <p className="text-gray-700 font-semibold">{es ? "La tarea completa en un solo MIDI" : "The complete assignment in one MIDI"}</p>
