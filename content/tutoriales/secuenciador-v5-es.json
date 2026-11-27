@@ -1,0 +1,1418 @@
+{
+  "version": 1,
+  "locale": "es",
+  "startUrl": "/es/curso-armonia",
+  "requiredAudio": [
+    10,
+    11,
+    12,
+    14,
+    15,
+    17,
+    20,
+    22,
+    24,
+    27,
+    28,
+    37
+  ],
+  "continuousPlayback": [],
+  "finalFade": 1,
+  "outputs": {
+    "mp4": "tutorial-secuenciador-v5.mp4",
+    "srt": "tutorial-secuenciador-v5.srt"
+  },
+  "substitutions": [
+    "MIDI y micrófono simulados: entradas reales de la aplicación; el tono del micrófono no se mezcla con la salida.",
+    "Los clips 23 y 37 preparan ejemplos limpios fuera de la voz.",
+    "No se ejecutan exportaciones largas durante su enumeración: el menú muestra las opciones reales."
+  ],
+  "clips": [
+    {
+      "clip": 1,
+      "text": "Hola, bienvenidos de nuevo a Storm Studios Learning.",
+      "actions": []
+    },
+    {
+      "clip": 2,
+      "text": "Esta es la versión cinco del secuenciador. Sirve para lo mismo que las anteriores: escribir y escuchar los ejercicios del curso. Pero ahora todo está en una sola pantalla, como en un estudio de grabación, y puedes escribir con el mouse, con el teclado de la computadora, con un teclado MIDI o cantando.",
+      "actions": [
+        {
+          "op": "scroll",
+          "target": {
+            "css": "div.ss-glass:has(a[href=\"/es/sequencer/v5\"])"
+          },
+          "at": 12,
+          "ms": 2500
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "div.ss-glass:has(a[href=\"/es/sequencer/v5\"])"
+          },
+          "at": 15,
+          "ms": 4000
+        }
+      ]
+    },
+    {
+      "clip": 3,
+      "text": "Para abrirlo, entra a la página del Curso de Armonía y baja hasta los recuadros del secuenciador. Las versiones tres y cuatro siguen ahí, para acompañar sus videos. Haz clic en «Abrir v5.0».",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "div.ss-glass:has(a[href=\"/es/sequencer/v5\"])"
+          },
+          "at": 1,
+          "ms": 4500
+        },
+        {
+          "op": "goto",
+          "target": {
+            "role": "link",
+            "name": "Abrir v5.0 →"
+          },
+          "at": 11.7
+        }
+      ]
+    },
+    {
+      "clip": 4,
+      "text": "Veamos cómo está organizada la pantalla.",
+      "actions": [],
+      "prepare": [
+        {
+          "op": "loadProject",
+          "file": "secuenciador-v5-inicio.json"
+        },
+        {
+          "op": "warmAudio"
+        }
+      ]
+    },
+    {
+      "clip": 5,
+      "text": "Arriba está la barra de transporte: reproducir, detener, ir al inicio y al final, repetir y metrónomo. A su lado, la pantalla verde te dice dónde está el cursor, el tempo, la tonalidad, la métrica y el acorde que está sonando.",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "role": "group",
+            "name": "Transporte"
+          },
+          "at": 0,
+          "ms": 4500
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Reproducir"
+          },
+          "at": 1.2
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Detener"
+          },
+          "at": 2.4
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"lcd-position\"]"
+          },
+          "at": 6.2,
+          "ms": 2500
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "label": "Tempo"
+          },
+          "at": 9,
+          "ms": 2500
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"lcd-chord\"]"
+          },
+          "at": 13.8,
+          "ms": 2500
+        }
+      ]
+    },
+    {
+      "clip": 6,
+      "text": "A la izquierda están las pistas. Arriba eliges si trabajas con una melodía o con las cuatro voces: soprano, contralto, tenor y bajo. Cada pista tiene su instrumento, su volumen, y los botones M para silenciarla y S para escucharla sola.",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "role": "complementary",
+            "name": "Pistas"
+          },
+          "at": 0,
+          "ms": 12000
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "SATB"
+          },
+          "at": 5
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Melodía"
+          },
+          "at": 11
+        }
+      ]
+    },
+    {
+      "clip": 7,
+      "text": "En el centro está la partitura, con la barra de herramientas encima. Ahí eliges la herramienta, la figura y las alteraciones.",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"score-view\"]"
+          },
+          "at": 0,
+          "ms": 3500
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "role": "toolbar",
+            "name": "Herramientas de escritura"
+          },
+          "at": 4,
+          "ms": 4000
+        }
+      ]
+    },
+    {
+      "clip": 8,
+      "text": "A la derecha está el inspector: el compás y el pulso donde vas a escribir, la armadura, la métrica, y lo que puedes hacer con las notas seleccionadas.",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "role": "complementary",
+            "name": "Inspector"
+          },
+          "at": 0,
+          "ms": 6500
+        }
+      ]
+    },
+    {
+      "clip": 9,
+      "text": "Y abajo hay una zona con pestañas: la pista de acordes, los marcadores, la lista de notas y la entrada por texto. Si necesitas más espacio para la partitura, arrastra su borde hacia abajo.",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "role": "tablist"
+          },
+          "at": 0,
+          "ms": 3000
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "tab",
+            "name": "Marcadores"
+          },
+          "at": 3
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "tab",
+            "name": "Lista de notas"
+          },
+          "at": 4.5
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "tab",
+            "name": "Entrada por texto"
+          },
+          "at": 6
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "tab",
+            "name": "Pista de acordes"
+          },
+          "at": 7.5
+        },
+        {
+          "op": "drag",
+          "target": {
+            "role": "separator",
+            "name": "Cambiar el alto de la zona inferior"
+          },
+          "at": 10,
+          "dy": 90
+        }
+      ]
+    },
+    {
+      "clip": 10,
+      "text": "Con la herramienta Escribir, el lápiz, eliges la figura y haces clic en el pentagrama, en la línea o el espacio de la nota que quieres. Cada nota suena al escribirla.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Escribir"
+          },
+          "at": 0
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Negra"
+          },
+          "at": 2
+        },
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "C4",
+              "beat": 1
+            }
+          },
+          "at": 5
+        },
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "E4",
+              "beat": 2
+            }
+          },
+          "at": 7
+        },
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "G4",
+              "beat": 3
+            }
+          },
+          "at": 9
+        },
+        {
+          "op": "assert",
+          "pitches": [
+            "C4",
+            "E4",
+            "G4"
+          ],
+          "at": 10
+        }
+      ]
+    },
+    {
+      "clip": 11,
+      "text": "Si una nota no quedó en su lugar, arrástrala hacia arriba o hacia abajo. Mientras la mueves, ves y escuchas a qué nota va.",
+      "actions": [
+        {
+          "op": "drag",
+          "target": {
+            "note": {
+              "index": 1,
+              "view": "staff"
+            }
+          },
+          "at": 3,
+          "dy": -10
+        }
+      ]
+    },
+    {
+      "clip": 12,
+      "text": "Para escribir un acorde, mantén presionada la tecla Control y haz clic sobre las notas que quieres agregar.",
+      "actions": [
+        {
+          "op": "ctrlClick",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "E4",
+              "beat": 1
+            }
+          },
+          "at": 3.3
+        },
+        {
+          "op": "ctrlClick",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "G4",
+              "beat": 1
+            }
+          },
+          "at": 5
+        }
+      ]
+    },
+    {
+      "clip": 13,
+      "text": "Y aquí hay algo nuevo: no tienes que subir a la barra para cambiar de herramienta. Haz clic derecho en la partitura y aparece un menú justo donde está el mouse, con Escribir, Seleccionar y Borrar. También puedes elegir con las letras E, S y B.",
+      "actions": [
+        {
+          "op": "rightClick",
+          "target": {
+            "css": "[data-testid=\"score-view\"]"
+          },
+          "at": 6.5
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"tool-menu\"]"
+          },
+          "at": 7.3,
+          "ms": 2500
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "menuitemradio",
+            "name": "Seleccionar S"
+          },
+          "at": 12
+        }
+      ]
+    },
+    {
+      "clip": 14,
+      "text": "Si haces clic derecho sobre una nota, el menú te ofrece además borrarla. Y si te equivocas, Control Z deshace y Control Y rehace.",
+      "actions": [
+        {
+          "op": "rightClick",
+          "target": {
+            "note": {
+              "index": 2,
+              "view": "staff"
+            }
+          },
+          "at": 0.8
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "menuitem",
+            "name": "Borrar esta nota"
+          },
+          "at": 2.5
+        },
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 5.5
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Escribir"
+          },
+          "at": 5.8
+        },
+        {
+          "op": "audition",
+          "target": {
+            "note": {
+              "index": 2,
+              "view": "staff"
+            }
+          },
+          "at": 6.4
+        },
+        {
+          "op": "key",
+          "key": "Control+y",
+          "at": 8
+        },
+        {
+          "op": "key",
+          "key": "Control+z",
+          "at": 8.7
+        }
+      ]
+    },
+    {
+      "clip": 15,
+      "text": "Para escuchar, presiona la barra espaciadora. Con la misma tecla detienes.",
+      "actions": [
+        {
+          "op": "play",
+          "key": true,
+          "at": 0,
+          "afterVoice": true,
+          "listen": 5,
+          "stop": "Space"
+        }
+      ],
+      "extraMusic": 7
+    },
+    {
+      "clip": 16,
+      "text": "En la pantalla verde puedes escribir otro tempo, y con los botones de repetir y metrónomo oyes la música en bucle o con el pulso marcado.",
+      "actions": [
+        {
+          "op": "setField",
+          "target": {
+            "label": "Tempo"
+          },
+          "at": 1,
+          "text": "84"
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Repetir"
+          },
+          "at": 4.3
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Metrónomo"
+          },
+          "at": 5.4
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Repetir"
+          },
+          "at": 6.5
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Metrónomo"
+          },
+          "at": 7.2
+        },
+        {
+          "op": "setField",
+          "target": {
+            "label": "Tempo"
+          },
+          "at": 7.9,
+          "text": "72"
+        }
+      ]
+    },
+    {
+      "clip": 17,
+      "text": "El teclado de la computadora es la forma más rápida de escribir. Las letras de la A a la G escriben las notas con su nombre en inglés: C es Do, D es Re, E es Mi. El secuenciador respeta la armadura y elige la octava más cercana a la nota anterior.",
+      "actions": [
+        {
+          "op": "key",
+          "key": "Home",
+          "at": 3
+        },
+        {
+          "op": "key",
+          "key": "3",
+          "at": 4
+        },
+        {
+          "op": "key",
+          "key": "c",
+          "at": 6
+        },
+        {
+          "op": "key",
+          "key": "d",
+          "at": 7.5
+        },
+        {
+          "op": "key",
+          "key": "e",
+          "at": 9
+        }
+      ]
+    },
+    {
+      "clip": 18,
+      "text": "Los números del uno al seis cambian la figura, el punto agrega puntillo, la T liga, y la R escribe un silencio. Las flechas izquierda y derecha mueven el cursor.",
+      "actions": [
+        {
+          "op": "key",
+          "key": "1",
+          "at": 0.3
+        },
+        {
+          "op": "key",
+          "key": "2",
+          "at": 0.8
+        },
+        {
+          "op": "key",
+          "key": "3",
+          "at": 1.3
+        },
+        {
+          "op": "key",
+          "key": "4",
+          "at": 1.8
+        },
+        {
+          "op": "key",
+          "key": "5",
+          "at": 2.3
+        },
+        {
+          "op": "key",
+          "key": "6",
+          "at": 2.8
+        },
+        {
+          "op": "key",
+          "key": "3",
+          "at": 3.5
+        },
+        {
+          "op": "key",
+          "key": ".",
+          "at": 4.5
+        },
+        {
+          "op": "key",
+          "key": "t",
+          "at": 6
+        },
+        {
+          "op": "key",
+          "key": "r",
+          "at": 7.5
+        },
+        {
+          "op": "key",
+          "key": "ArrowLeft",
+          "at": 9.6
+        },
+        {
+          "op": "key",
+          "key": "ArrowRight",
+          "at": 10.3
+        },
+        {
+          "op": "key",
+          "key": ".",
+          "at": 11
+        },
+        {
+          "op": "key",
+          "key": "t",
+          "at": 11.6
+        }
+      ]
+    },
+    {
+      "clip": 19,
+      "text": "En «Atajos de teclado», abajo del inspector, tienes la lista completa.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "css": "aside details summary"
+          },
+          "at": 0.3
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "aside details[open]"
+          },
+          "at": 1,
+          "ms": 3000
+        },
+        {
+          "op": "click",
+          "target": {
+            "css": "aside details summary"
+          },
+          "at": 3.8
+        }
+      ]
+    },
+    {
+      "clip": 20,
+      "text": "Si tienes un teclado MIDI conectado a la computadora, presiona el botón MIDI. Cada tecla que tocas se escribe en el cursor, ya con la alteración que corresponde a la armadura. Si tocas varias teclas a la vez, se escriben como acorde.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"midi-toggle\"]"
+          },
+          "at": 2.5
+        },
+        {
+          "op": "midi",
+          "notes": [
+            60
+          ],
+          "at": 5
+        },
+        {
+          "op": "midi",
+          "notes": [
+            64
+          ],
+          "at": 7
+        },
+        {
+          "op": "midi",
+          "notes": [
+            60,
+            64,
+            67
+          ],
+          "at": 11.6
+        },
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"midi-toggle\"]"
+          },
+          "at": 13.3
+        }
+      ]
+    },
+    {
+      "clip": 21,
+      "text": "Y si no tienes teclado, puedes cantar. Presiona Mic, el navegador te pide permiso para usar el micrófono, y canta cada nota sostenida un momento. El secuenciador la reconoce y la escribe.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"mic-toggle\"]"
+          },
+          "at": 3
+        },
+        {
+          "op": "micTone",
+          "frequency": 261.625565,
+          "seconds": 1.8,
+          "at": 8
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"mic-pitch\"]"
+          },
+          "at": 10,
+          "ms": 2500
+        }
+      ]
+    },
+    {
+      "clip": 22,
+      "text": "Como cada voz canta en su registro, el selector «Escribir a» te permite cantar cómodo y escribir una o dos octavas arriba o abajo. Mientras suena la música, el micrófono se pausa solo, para no escribir lo que sale de tus bocinas.",
+      "actions": [
+        {
+          "op": "select",
+          "target": {
+            "role": "combobox",
+            "nameRegex": "^Escribir a"
+          },
+          "at": 1.5,
+          "value": "12"
+        },
+        {
+          "op": "micTone",
+          "frequency": 220,
+          "seconds": 1.8,
+          "at": 3
+        },
+        {
+          "op": "select",
+          "target": {
+            "role": "combobox",
+            "nameRegex": "^Escribir a"
+          },
+          "at": 6,
+          "value": "-12"
+        },
+        {
+          "op": "micTone",
+          "frequency": 440,
+          "seconds": 1.8,
+          "at": 7.2
+        },
+        {
+          "op": "select",
+          "target": {
+            "role": "combobox",
+            "nameRegex": "^Escribir a"
+          },
+          "at": 9.6,
+          "value": "0"
+        },
+        {
+          "op": "play",
+          "at": 10.3,
+          "listen": 1.5,
+          "stop": "Space"
+        },
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"mic-toggle\"]"
+          },
+          "at": 14.6
+        }
+      ]
+    },
+    {
+      "clip": 23,
+      "text": "Con la herramienta Seleccionar, arrastra un rectángulo sobre varias notas para elegirlas todas. Con Mayúsculas o Control agregas más notas a la selección.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Seleccionar"
+          },
+          "at": 1
+        },
+        {
+          "op": "marquee",
+          "view": "staff",
+          "at": 4
+        }
+      ],
+      "prepare": [
+        {
+          "op": "loadProject",
+          "file": "secuenciador-v5-seleccion.json"
+        },
+        {
+          "op": "key",
+          "key": "Home",
+          "at": 0
+        }
+      ]
+    },
+    {
+      "clip": 24,
+      "text": "Ahora toma cualquiera de las notas seleccionadas y arrástrala: todas se mueven juntas, la misma distancia, y cada una con la alteración que pide la armadura.",
+      "actions": [
+        {
+          "op": "drag",
+          "target": {
+            "note": {
+              "index": 1,
+              "view": "staff"
+            }
+          },
+          "at": 3,
+          "dy": -10,
+          "group": true
+        }
+      ]
+    },
+    {
+      "clip": 25,
+      "text": "Con Control C copias, con Control V pegas donde está el cursor, y con Control D duplicas justo después. Las flechas arriba y abajo suben o bajan la selección un semitono; con Mayúsculas, una octava.",
+      "actions": [
+        {
+          "op": "key",
+          "key": "Control+c",
+          "at": 0.8
+        },
+        {
+          "op": "key",
+          "key": "End",
+          "at": 2.5
+        },
+        {
+          "op": "key",
+          "key": "Control+v",
+          "at": 3.3
+        },
+        {
+          "op": "key",
+          "key": "Control+d",
+          "at": 5.4
+        },
+        {
+          "op": "key",
+          "key": "ArrowUp",
+          "at": 8
+        },
+        {
+          "op": "key",
+          "key": "ArrowDown",
+          "at": 9
+        },
+        {
+          "op": "key",
+          "key": "Shift+ArrowUp",
+          "at": 10.5
+        },
+        {
+          "op": "key",
+          "key": "Shift+ArrowDown",
+          "at": 11.7
+        },
+        {
+          "op": "key",
+          "key": "Escape",
+          "at": 13.4
+        }
+      ]
+    },
+    {
+      "clip": 26,
+      "text": "Además de la partitura, puedes ver tu música en el editor de teclas. Presiona «Teclas».",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Teclas"
+          },
+          "at": 4
+        }
+      ]
+    },
+    {
+      "clip": 27,
+      "text": "Cada nota es una barra: su altura dice qué nota es, y su largo, cuánto dura. Haz clic en una fila para escribir, arrastra una barra para moverla, y estira su borde derecho para cambiar su duración.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Escribir"
+          },
+          "at": 1
+        },
+        {
+          "op": "click",
+          "target": {
+            "roll": {
+              "pitch": "D4",
+              "measure": 4,
+              "beat": 1
+            }
+          },
+          "at": 4
+        },
+        {
+          "op": "drag",
+          "target": {
+            "css": "[data-pitch=\"D4\"] [data-roll-note]:last-child"
+          },
+          "at": 7,
+          "dx": 48,
+          "dy": -52
+        },
+        {
+          "op": "drag",
+          "target": {
+            "css": "[data-pitch=\"E4\"] [data-roll-note] span"
+          },
+          "at": 10,
+          "dx": 48
+        }
+      ]
+    },
+    {
+      "clip": 28,
+      "text": "Aquí también seleccionas con un rectángulo y mueves todo el grupo, en altura y en el tiempo.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Seleccionar"
+          },
+          "at": 0
+        },
+        {
+          "op": "marquee",
+          "view": "roll",
+          "at": 1.5
+        },
+        {
+          "op": "drag",
+          "target": {
+            "css": "[data-roll-note][aria-pressed=true]",
+            "fx": 0.35
+          },
+          "at": 4,
+          "dx": 48,
+          "dy": -26,
+          "group": true
+        }
+      ]
+    },
+    {
+      "clip": 29,
+      "text": "Todo lo que cambias aquí se ve en la partitura, y al revés. Son dos maneras de ver la misma música.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Partitura"
+          },
+          "at": 3
+        }
+      ]
+    },
+    {
+      "clip": 30,
+      "text": "En el inspector cambias la armadura y la métrica desde el compás donde está el cursor. Con «más compás» insertas un compás vacío después de ese, y con «menos compás» lo quitas; lo que sigue se recorre solo.",
+      "actions": [
+        {
+          "op": "key",
+          "key": "Home",
+          "at": 0
+        },
+        {
+          "op": "select",
+          "target": {
+            "role": "combobox",
+            "nameRegex": "^Armadura"
+          },
+          "at": 1.5,
+          "value": "G"
+        },
+        {
+          "op": "select",
+          "target": {
+            "role": "combobox",
+            "nameRegex": "^Compás"
+          },
+          "at": 3.6,
+          "value": "3/4"
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "+ Compás"
+          },
+          "at": 6.2
+        },
+        {
+          "op": "setField",
+          "target": {
+            "role": "spinbutton",
+            "name": "Compás"
+          },
+          "text": "2",
+          "at": 7.6
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "− Compás"
+          },
+          "at": 9.2
+        },
+        {
+          "op": "key",
+          "key": "Home",
+          "at": 10.2
+        },
+        {
+          "op": "select",
+          "target": {
+            "role": "combobox",
+            "nameRegex": "^Armadura"
+          },
+          "at": 11.1,
+          "value": "C"
+        },
+        {
+          "op": "select",
+          "target": {
+            "role": "combobox",
+            "nameRegex": "^Compás"
+          },
+          "at": 12,
+          "value": "4/4"
+        }
+      ]
+    },
+    {
+      "clip": 31,
+      "text": "Puedes ver la partitura en una línea continua o por páginas, como una partitura impresa.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Páginas"
+          },
+          "at": 1.5
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Continua"
+          },
+          "at": 4.6
+        }
+      ],
+      "prepare": [
+        {
+          "op": "loadProject",
+          "file": "secuenciador-v5-seleccion.json"
+        },
+        {
+          "op": "key",
+          "key": "Home"
+        }
+      ]
+    },
+    {
+      "clip": 32,
+      "text": "Abajo, en la pista de acordes, escribes el cifrado de tu ejercicio. Puedes escribir toda la progresión de una vez, en números romanos como en el curso, o con letras, y elegir cada cuántos pulsos cambia el acorde.",
+      "actions": [
+        {
+          "op": "key",
+          "key": "Home",
+          "at": 0
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "tab",
+            "name": "Pista de acordes"
+          },
+          "at": 1
+        },
+        {
+          "op": "setField",
+          "target": {
+            "css": "[data-testid=\"progression-input\"]"
+          },
+          "at": 4,
+          "text": "I IV V I"
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "role": "combobox",
+            "nameRegex": "^Un acorde cada"
+          },
+          "at": 8,
+          "ms": 2500
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Escribir desde el compás 1"
+          },
+          "at": 10
+        }
+      ]
+    },
+    {
+      "clip": 33,
+      "text": "El cifrado aparece debajo de la partitura, y también puedes escribirlo directamente bajo cada pulso. La pista no escribe notas por ti: las voces las escribes tú. Su trabajo es ayudarte a pensar la armonía mientras escribes.",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-measure=\"1\"]"
+          },
+          "at": 0,
+          "ms": 3000
+        },
+        {
+          "op": "type",
+          "target": {
+            "label": "Cifrado compás 1, pulso 2"
+          },
+          "at": 5,
+          "text": "V6"
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"chord-lane\"]"
+          },
+          "at": 8,
+          "ms": 4000
+        }
+      ]
+    },
+    {
+      "clip": 34,
+      "text": "El secuenciador guarda tu trabajo automáticamente en este navegador. Pero ese borrador solo vive aquí: para conservarlo de verdad, abre el menú Archivo y elige «Guardar proyecto».",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"status-message\"]"
+          },
+          "at": 1,
+          "ms": 3000
+        },
+        {
+          "op": "click",
+          "target": {
+            "css": "summary:has-text(\"Archivo\")"
+          },
+          "at": 6
+        },
+        {
+          "op": "download",
+          "target": {
+            "role": "menuitem",
+            "name": "Guardar proyecto Ctrl S"
+          },
+          "at": 9
+        }
+      ]
+    },
+    {
+      "clip": 35,
+      "text": "Desde el mismo menú abres tus proyectos, y exportas a MIDI, a MusicXML para otros programas de partituras, a audio WAV, o como imagen.",
+      "actions": [
+        {
+          "op": "move",
+          "target": {
+            "role": "menuitem",
+            "name": "Abrir… (JSON, MusicXML)"
+          },
+          "at": 0.6
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "menuitem",
+            "name": "Exportar MIDI"
+          },
+          "at": 2.2
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "menuitem",
+            "name": "Exportar MusicXML"
+          },
+          "at": 4
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "menuitem",
+            "name": "Exportar audio WAV"
+          },
+          "at": 5.7
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "menuitem",
+            "name": "Exportar imagen PNG"
+          },
+          "at": 7.5
+        },
+        {
+          "op": "click",
+          "target": {
+            "css": "summary:has-text(\"Archivo\")"
+          },
+          "at": 9.3
+        }
+      ]
+    },
+    {
+      "clip": 36,
+      "text": "Y con «Presentar» muestras tu partitura sola, en pantalla completa, sin herramientas alrededor. Es ideal para explicar un ejercicio en clase.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"present\"]"
+          },
+          "at": 2
+        },
+        {
+          "op": "key",
+          "key": "Escape",
+          "at": 8
+        }
+      ]
+    },
+    {
+      "clip": 37,
+      "text": "Eso es lo esencial de la versión cinco. Te recomiendo empezar por algo sencillo: escribe una escala con el teclado, cántala con el micrófono y escúchala.",
+      "actions": [
+        {
+          "op": "key",
+          "key": "c",
+          "at": 4
+        },
+        {
+          "op": "key",
+          "key": "d",
+          "at": 4.22
+        },
+        {
+          "op": "key",
+          "key": "e",
+          "at": 4.44
+        },
+        {
+          "op": "key",
+          "key": "f",
+          "at": 4.66
+        },
+        {
+          "op": "key",
+          "key": "g",
+          "at": 4.88
+        },
+        {
+          "op": "key",
+          "key": "a",
+          "at": 5.1
+        },
+        {
+          "op": "key",
+          "key": "b",
+          "at": 5.32
+        },
+        {
+          "op": "key",
+          "key": "c",
+          "at": 5.54
+        },
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"mic-toggle\"]"
+          },
+          "at": 6.1
+        },
+        {
+          "op": "micTone",
+          "frequency": 261.625565,
+          "seconds": 0.6,
+          "at": 7
+        },
+        {
+          "op": "micTone",
+          "frequency": 293.664768,
+          "seconds": 0.6,
+          "at": 8.05
+        },
+        {
+          "op": "micTone",
+          "frequency": 329.627557,
+          "seconds": 0.6,
+          "at": 9.1
+        },
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"mic-toggle\"]"
+          },
+          "at": 10.2
+        },
+        {
+          "op": "play",
+          "afterVoice": true,
+          "listen": 6,
+          "stop": "Space",
+          "at": 1.2
+        }
+      ],
+      "prepare": [
+        {
+          "op": "loadProject",
+          "file": "secuenciador-v5-inicio.json"
+        },
+        {
+          "op": "key",
+          "key": "Home",
+          "at": 0
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Escribir"
+          },
+          "at": 0
+        },
+        {
+          "op": "key",
+          "key": "3",
+          "at": 0
+        }
+      ],
+      "extraMusic": 10
+    },
+    {
+      "clip": 38,
+      "text": "Si estás siguiendo un video hecho con una versión anterior, puedes seguir usándola: las tres siguen disponibles en la página del curso.",
+      "actions": [
+        {
+          "op": "badge",
+          "at": 1,
+          "text": "Versiones 3 · 4 · 5 disponibles en el Curso de Armonía"
+        }
+      ]
+    },
+    {
+      "clip": 39,
+      "text": "Nos vemos en la siguiente lección.",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"studio-v5\"]"
+          },
+          "at": 0,
+          "ms": 1500
+        }
+      ]
+    }
+  ]
+}

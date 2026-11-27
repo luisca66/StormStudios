@@ -27,6 +27,7 @@ param(
   [Parameter(Mandatory)] [string] $Carpeta,
   [ValidateSet("astra", "sol")] [string] $Modelo = "sol",  # Codex: astra = gpt-6-astra (visual); sol = gpt-6.1-sol (código); ambos medium
   [ValidateSet("low", "medium", "high")] [string] $Esfuerzo = "medium",  # razonamiento de Codex y de Gemini
+  [ValidateSet("neon", "argon", "carbon")] [string] $Gemini = "neon",     # familia de Gemini 4 (Luis, 2026-11-27: Neon)
   [switch] $Reanudar,        # solo Astra: sigue su última sesión de este modelo
   [string] $Mensaje          # archivo con el mensaje (por defecto PROMPT.txt de la carpeta).
                              # Para la cola de Gemini: -Carpeta plantillas-blender -Mensaje plantillas-blender\PROMPT-COLA-GEMINI.txt
@@ -76,7 +77,7 @@ if ($Agente -eq "astra") {
   # comando de terminal permitido es el lanzador de Blender; lo demás se niega en modo headless.
   Remove-Item Env:GEMINI_API_KEY -ErrorAction SilentlyContinue
   $agy = Join-Path $env:LOCALAPPDATA "agy\bin\agy.exe"
-  & $agy -p $prompt --model "gemini-4-argon-$Esfuerzo" --print-timeout 60m *>> $log
+  & $agy -p $prompt --model "gemini-4-$Gemini-$Esfuerzo" --print-timeout 60m *>> $log
   $code = $LASTEXITCODE
   Get-Content $log -Tail 40 | Set-Content $last -Encoding UTF8
 }
