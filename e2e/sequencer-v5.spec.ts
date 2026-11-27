@@ -99,15 +99,20 @@ test("the chord track stores plain chord symbols and writes no notes", async ({ 
   await expect(page.getByTestId("lcd-chord")).toHaveText("I");
 });
 
-test("measures can be inserted, copied and removed around the cursor", async ({ page }) => {
+test("measures are added at the end, inserted, copied and removed around the cursor", async ({ page }) => {
   await open(page);
   await page.getByRole("tab", { name: "Entrada por texto", exact: true }).click();
   await page.getByTestId("text-input").fill("voz melody\ncompas 1\nC4 redonda\ncompas 2\nD4 redonda");
   await page.getByTestId("text-apply").click();
   expect(await melody(page)).toEqual(["C4", "D4"]);
+  // "+ Compás" always appends: nothing moves, wherever the cursor is.
   await page.getByRole("button", { name: "+ Compás", exact: true }).click();
   let score = await api(page);
   expect(score.measures).toHaveLength(5);
+  expect(score.voices.find(v => v.id === "melody")!.events.map(e => e.start)).toEqual([0, 3840]);
+  await page.getByRole("button", { name: "Insertar aquí", exact: true }).click();
+  score = await api(page);
+  expect(score.measures).toHaveLength(6);
   expect(score.voices.find(v => v.id === "melody")!.events.map(e => e.start)).toEqual([0, 7680]);
   await page.getByLabel("Copiar al compás").fill("2");
   await page.getByRole("button", { name: "Copiar", exact: true }).click();
@@ -115,7 +120,7 @@ test("measures can be inserted, copied and removed around the cursor", async ({ 
   page.once("dialog", dialog => void dialog.accept());
   await page.getByRole("button", { name: "− Compás", exact: true }).click();
   score = await api(page);
-  expect(score.measures).toHaveLength(4);
+  expect(score.measures).toHaveLength(5);
   expect(await melody(page)).toEqual(["C4", "D4"]);
 });
 
@@ -229,6 +234,40 @@ test("dragging one selected note moves the whole selection", async ({ page }) =>
   expect(moved[0]).toBeLessThan(0);
   expect(new Set(moved).size).toBe(1);
   expect(after.some(pitch => pitch.includes("#"))).toBe(false); // Do mayor: el Fa# baja a una nota natural
+});
+
+test("notes move in time on the staff and every edit follows the snap", async ({ page }) => {
+  await open(page);
+  await page.getByRole("tab", { name: "Entrada por texto", exact: true }).click();
+  await page.getByTestId("text-input").fill("voz melody\ncompas 1\nC4 negra; E4 negra");
+  await page.getByTestId("text-apply").click();
+  await page.getByTestId("snap").selectOption("960");
+  await expect(page.locator("[data-note-id] .vf-notehead").first()).toBeVisible();
+  const head = await page.locator("[data-note-id] .vf-notehead").first().evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x + b.width / 2, y: b.y + b.height / 2 }; });
+  const second = await page.locator("section[data-measure='2'] svg").first().boundingBox();
+  // Write tool: drag C4 to the right, into the middle of measure 2; the pitch stays.
+  await page.mouse.move(head.x, head.y);
+  await page.mouse.down();
+  await page.mouse.move(second!.x + second!.width * 0.55, head.y, { steps: 12 });
+  await expect(page.getByTestId("drop-line")).toBeAttached(); // a vertical line has no width, so it never counts as "visible"
+  await page.mouse.up();
+  await expect(page.getByTestId("drop-line")).toHaveCount(0);
+  const events = (await api(page)).voices.find(v => v.id === "melody")!.events.filter(e => e.pitches.length);
+  const moved = events.find(e => e.pitches[0] === "C4")!;
+  expect(moved.start).toBeGreaterThanOrEqual(3840);
+  expect(moved.start).toBeLessThan(7680);
+  expect(moved.start % 960).toBe(0);
+  expect(events.find(e => e.pitches[0] === "E4")!.start).toBe(960);
+  // Key editor: with a half-note snap, 70 px (≈1.5 quarters) lands on beat 3, not on a 32nd.
+  await page.getByRole("button", { name: "Teclas", exact: true }).click();
+  await page.getByTestId("snap").selectOption("1920");
+  await page.locator('[data-pitch="E4"]').evaluate(row => row.scrollIntoView({ block: "center" }));
+  const note = (await page.locator('[data-pitch="E4"] [data-roll-note]').first().boundingBox())!;
+  await page.mouse.move(note.x + 10, note.y + note.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(note.x + 10 + 70, note.y + note.height / 2, { steps: 8 });
+  await page.mouse.up();
+  expect((await api(page)).voices.find(v => v.id === "melody")!.events.find(e => e.pitches[0] === "E4")!.start).toBe(1920);
 });
 
 test("a MIDI keyboard writes notes and chords spelled by the key", async ({ page }) => {

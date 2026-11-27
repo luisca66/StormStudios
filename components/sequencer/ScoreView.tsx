@@ -4,7 +4,7 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { activeVoices, clefAt, durationTicks, locateTick, measureStart, measureTicks, pitchToMidi, pitchToVex, scoreTicks } from "@/lib/sequencer/model";
 import { PPQ, type NoteEvent, type Score, type VoiceId } from "@/lib/sequencer/types";
 import styles from "./sequencer.module.css";
-import {staffPitch} from "@/lib/sequencer/mouse-editing";
+import {rollTick,staffPitch} from "@/lib/sequencer/mouse-editing";
 import type { Still } from "@/lib/sequencer/storyboard";
 import { STILL_COLORS } from "@/lib/sequencer/storyboard-resolve";
 import { captureX, decorateCapture, type CaptureRow } from "@/lib/sequencer/capture-decoration";
@@ -23,7 +23,14 @@ export type MouseEditing={tool:"write"|"select"|"erase";step:number;accidental:"
   beginMarquee?:(e:PointerEvent,click?:()=>void)=>void;
   /** v5: with the select tool, dragging an already selected note moves it (and the rest of the selection).
    *  Off in v4, whose select tool only selects. */
-  dragWithSelect?:boolean};
+  dragWithSelect?:boolean;
+  /** v5: snap grid in ticks for writing and moving. When set, dragging a note on the staff also moves it in time. */
+  snap?:number;
+  /** v5: staff drag that changes time: `steps` staff steps and `ticks` of time (whole selection when the note is part of it). */
+  onMoveStaff?:(id:string,grabbed:string,steps:number,ticks:number,single:boolean)=>void};
+/** One entry per drawn measure: lets a drag that leaves its measure find the time under the pointer in another one. */
+type StaffMap={tickAt:(clientX:number)=>number;xAt:(tick:number)=>number;rowTop:(voice:VoiceId)=>number|undefined};
+const staffMaps=new WeakMap<Element,StaffMap>();
 const SELECTED = "#7c5cff";
 /** VexFlow receives the keys low to high, so notehead i (DOM and setKeyStyle) is pitch i of this list. */
 const sortedPitches = (event: NoteEvent) => [...event.pitches].sort((a, b) => pitchToMidi(a) - pitchToMidi(b));
@@ -306,6 +313,25 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
           svg.setAttribute("pointer-events","all");
           svg.setAttribute("data-mouse-staff","true");
           const point=(e:PointerEvent|MouseEvent)=>{const rect=svg.getBoundingClientRect();return {x:(e.clientX-rect.left)*width/rect.width,y:(e.clientY-rect.top)*height/rect.height};};
+          {
+            // Time <-> x for this measure: the noteheads of every voice share the formatter's columns.
+            const points=prepared.flatMap(({events,notes})=>events.map((event,i)=>({tick:event.start,x:notes[i].getAbsoluteX()})))
+              .concat({tick:start,x:prepared[0].stave.getNoteStartX()},{tick:end,x:prepared[0].stave.getNoteEndX()})
+              .sort((a,b)=>a.tick-b.tick||a.x-b.x);
+            const columns:typeof points=[];
+            for(const point of points)if(!columns.length||(point.tick>columns.at(-1)!.tick&&point.x>columns.at(-1)!.x))columns.push(point);
+            const lerp=(value:number,from:"x"|"tick",to:"x"|"tick")=>{
+              const right=columns.findIndex(c=>c[from]>value);
+              if(right<=0)return columns[right<0?columns.length-1:0][to];
+              const a=columns[right-1],b=columns[right];
+              return a[to]+(b[to]-a[to])*(value-a[from])/Math.max(1,b[from]-a[from]);
+            };
+            staffMaps.set(svg,{
+              tickAt:clientX=>{const rect=svg.getBoundingClientRect();return lerp((clientX-rect.left)*width/rect.width,"x","tick");},
+              xAt:tick=>lerp(tick,"tick","x"),
+              rowTop:id=>prepared.find(p=>p.voice.id===id)?.stave.getYForLine(0),
+            });
+          }
           const pitchAt=(voice:typeof voices[number],y:number,top:number)=>{
             const pitch=staffPitch(voice.clef,y-top,meta.key);
             return mouse.accidental==="key"?pitch:pitch.replace(/(##|bb|#|b)?(-?\d+)$/,mouse.accidental+"$2");
@@ -326,7 +352,8 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
               const left=[...anchors].reverse().find(a=>a.x<=p.x)??{x:stave.getNoteStartX(),tick:start};
               const right=anchors.find(a=>a.x>p.x)??anchors.at(-1)!;
               const raw=left.tick+(right.tick-left.tick)*Math.max(0,Math.min(1,(p.x-left.x)/Math.max(1,right.x-left.x)));
-              return start+Math.min(end-start-PPQ/8,Math.max(0,Math.round((raw-start)/mouse.step)*mouse.step));
+              const grid=mouse.snap??mouse.step;
+              return start+Math.min(end-start-PPQ/8,Math.max(0,Math.round((raw-start)/grid)*grid));
             };
             const extend=e.shiftKey||e.ctrlKey||e.metaKey;
             const head=(e.target as Element).closest("[data-note-key]"),onNote=(e.target as Element).closest("[data-note-id]");
@@ -363,28 +390,58 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
               const together=selected.length>1&&(selected.includes(hit.id)||selected.includes(noteKey(hit.id,grabbed)));
               const companions=()=>together?[...(svg.closest("[data-testid=score-view]")??svg).querySelectorAll<SVGGElement>("[data-note-id]")]
                 .filter(el=>{const id=el.getAttribute("data-note-id")!;return id!==hit.id&&selected.some(k=>k===id||k.startsWith(id+"@"));}):[];
-              let heardPitch=lowest,steps=0,moved=false;mouse.onPreview(hit.id,heardPitch,single?grabbed:undefined);
+              let heardPitch=lowest,steps=0,moved=false,ticks=0;mouse.onPreview(hit.id,heardPitch,single?grabbed:undefined);
+              // v5: a horizontal drag also moves the note in time, on the snap grid; a dashed line marks where it lands (in any measure).
+              const inTime=mouse.snap!==undefined&&!!mouse.onMoveStaff;
+              const pressOffset=inTime?staffMaps.get(svg)!.tickAt(e.clientX)-hit.start:0;
+              const drop=document.createElementNS("http://www.w3.org/2000/svg","line");
+              drop.setAttribute("stroke","#7c5cff");drop.setAttribute("stroke-width","2");drop.setAttribute("stroke-dasharray","4 3");
+              drop.setAttribute("data-testid","drop-line");
+              let host:Element=svg;
+              const timeFor=(event:PointerEvent):{ticks:number;target:Element}|"keep"|null=>{
+                if(!inTime||Math.abs(event.clientX-e.clientX)<8)return null;
+                // Time is read on the row where the drag began, so moving up or down only changes the pitch.
+                const target=document.elementsFromPoint(event.clientX,e.clientY).map(el=>el.closest("svg[data-mouse-staff]")).find(el=>!!el&&staffMaps.has(el));
+                if(!target)return "keep";
+                return {ticks:rollTick(score,staffMaps.get(target)!.tickAt(event.clientX)-pressOffset,mouse.snap!)-hit.start,target};
+              };
+              const pretty=(pitch:string)=>pitch.replace(/##/,"𝄪").replace(/bb(?=-?\d)/,"𝄫").replace(/#/,"♯").replace(/(?<=[A-G])b/,"♭");
               const move=(event:PointerEvent)=>{
-                if(!moved&&Math.abs(event.clientY-e.clientY)<3)return;
-                const next=stepsFor(event);if(next===steps&&moved)return;
+                if(!moved&&Math.abs(event.clientY-e.clientY)<3&&Math.abs(event.clientX-e.clientX)<8)return;
+                const next=stepsFor(event);
                 let pitch:string;try{pitch=pitchFor(next);}catch{return;/* Outside MIDI range: stay on the last valid step. */}
+                const time=timeFor(event);
+                if(time===null){ticks=0;host=svg;}
+                else if(time!=="keep"){ticks=time.ticks;host=ticks?time.target:svg;}
                 steps=next;moved=true;
                 group?.setAttribute("transform","translate(0 "+(-steps*5)+")");
+                if(group){if(ticks)group.setAttribute("opacity","0.35");else group.removeAttribute("opacity");}
                 if(mouse.dragWithSelect)companions().forEach(el=>el.setAttribute("transform","translate(0 "+(-steps*5)+")"));
-                if(!label.isConnected)svg.appendChild(label);
-                label.setAttribute("x",String(noteX));label.setAttribute("y",String(noteY-steps*5-16));
-                label.textContent=pitch.replace(/##/,"𝄪").replace(/bb(?=-?\d)/,"𝄫").replace(/#/,"♯").replace(/(?<=[A-G])b/,"♭");
+                const map=staffMaps.get(host)!;
+                const rowTop=map.rowTop(voice.id)??stave.getYForLine(0);
+                const x=ticks?map.xAt(hit.start+ticks)+6:noteX;
+                const y=ticks?rowTop+(top-anchor-steps)*5:noteY-steps*5;
+                if(label.ownerSVGElement!==host)host.appendChild(label);
+                label.setAttribute("x",String(x));label.setAttribute("y",String(y-16));
+                const at=locateTick(score,hit.start+ticks);
+                label.textContent=pretty(pitch)+(ticks?" · "+at.measure+":"+Math.round(at.beat*100)/100:"");
+                if(ticks){
+                  if(drop.ownerSVGElement!==host)host.appendChild(drop);
+                  drop.setAttribute("x1",String(x-6));drop.setAttribute("x2",String(x-6));
+                  drop.setAttribute("y1",String(rowTop-10));drop.setAttribute("y2",String(rowTop+50));
+                }else drop.remove();
                 if(pitch!==heardPitch){heardPitch=pitch;mouse.onPreview(hit.id,pitch,single?grabbed:undefined);}
               };
               const cleanup=()=>{
                 window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",finish);window.removeEventListener("pointercancel",abort);
-                mouse.onPreviewEnd();label.remove();
-                if(group){if(original)group.setAttribute("transform",original);else group.removeAttribute("transform");}
+                mouse.onPreviewEnd();label.remove();drop.remove();
+                if(group){if(original)group.setAttribute("transform",original);else group.removeAttribute("transform");group.removeAttribute("opacity");}
                 if(mouse.dragWithSelect)companions().forEach(el=>el.removeAttribute("transform"));
               };
               const finish=()=>{
                 cleanup();
-                if(moved&&steps!==0){if(single)mouse.onMovePitch!(hit.id,grabbed,pitchFor(steps));else mouse.onMove(hit.id,pitchFor(steps));}
+                if(moved&&ticks!==0&&mouse.onMoveStaff)mouse.onMoveStaff(hit.id,grabbed,steps,ticks,single);
+                else if(moved&&steps!==0){if(single)mouse.onMovePitch!(hit.id,grabbed,pitchFor(steps));else mouse.onMove(hit.id,pitchFor(steps));}
                 else onSelect(single?noteKey(hit.id,grabbed):hit.id,e.shiftKey);
               };
               const abort=()=>cleanup();

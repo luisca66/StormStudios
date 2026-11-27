@@ -47,6 +47,8 @@ export function useStudio(locale: string) {
   const [metronome, setMetronome] = useState(false), [loop, setLoop] = useState(false);
   const [tool, setTool] = useState<MouseEditing["tool"]>("write"), [accidental, setAccidental] = useState<MouseEditing["accidental"]>("key");
   const [cipherVisible, setCipherVisible] = useState(true);
+  /** Snap (como en Cubase): la rejilla a la que caen las notas al escribir y al moverlas. "note" = la figura activa. */
+  const [snap, setSnap] = useState<"note" | number>("note");
   const [sceneId, setSceneId] = useState(""), [presentation, setPresentation] = useState(false);
   const [availability, setAvailability] = useState({ undo: 0, redo: 0, clipboard: 0 });
   const history = useRef<Score[]>([]), future = useRef<Score[]>([]), clipboard = useRef<Clip[]>([]);
@@ -144,6 +146,16 @@ export function useStudio(locale: string) {
       setSelected([id]); setDraft(prev => ({ ...prev, voice: voice.id, measure: at.measure, beat: at.beat, pitches: event.pitches.join(" "), duration: event.duration, dotted: event.dotted, triplet: event.triplet }));
     }
   }), [score, selected, commit, attempt, moveGroup]);
+  /** Arrastre en la partitura que también cambia el tiempo: grados del pentagrama + distancia en ticks. */
+  const moveStaffMouse = useCallback((id: string, grabbed: string, steps: number, ticks: number, single: boolean) => attempt(() => {
+    const keys = movesAsGroup(score, selected, id) ? selected : [single ? noteKey(id, grabbed) : id];
+    const result = moveSelection(score, keys, { kind: "steps", steps, ticks });
+    if (commit(result.score, keys.length > 1 ? t(`${result.keys.length} notas movidas juntas.`, `${result.keys.length} notes moved together.`) : undefined)) {
+      setSelected(result.keys);
+      const moved = result.score.voices.flatMap(v => v.events.map(event => ({ voice: v.id, event }))).find(({ event }) => result.keys.some(k => parseKey(k).id === event.id));
+      if (moved) { const at = locateTick(result.score, moved.event.start); setDraft(prev => ({ ...prev, voice: moved.voice, measure: at.measure, beat: at.beat })); }
+    }
+  }), [score, selected, commit, attempt, t]);
   const movePitchMouse = useCallback((id: string, from: string, to: string) => attempt(() => {
     if (movesAsGroup(score, selected, id)) { moveGroup(id, from, to); return; }
     const next = movePitch(score, id, from, to);
@@ -160,10 +172,11 @@ export function useStudio(locale: string) {
   const positionMouse = useCallback((voice: VoiceId, start: number) => {
     const at = locateTick(score, start); setDraft(prev => ({ ...prev, voice, measure: at.measure, beat: at.beat })); setSelected([]);
   }, [score]);
-  const mouse = useMemo<MouseEditing>(() => ({ tool, accidental, step: durationTicks(draft), onWrite: writeMouse, onErase: eraseMouse, onMove: moveMouse,
-    onMovePitch: movePitchMouse, onPreview: previewMouse, onPreviewEnd: () => audio.current?.stopPreview(), onPosition: positionMouse, dragWithSelect: true }),
+  const snapTicks = snap === "note" ? durationTicks(draft) : snap;
+  const mouse = useMemo<MouseEditing>(() => ({ tool, accidental, step: durationTicks(draft), snap: snapTicks, onWrite: writeMouse, onErase: eraseMouse, onMove: moveMouse,
+    onMovePitch: movePitchMouse, onMoveStaff: moveStaffMouse, onPreview: previewMouse, onPreviewEnd: () => audio.current?.stopPreview(), onPosition: positionMouse, dragWithSelect: true }),
   // eslint-disable-next-line react-hooks/exhaustive-deps -- `draft` solo aporta la figura
-  [tool, accidental, draft.duration, draft.dotted, draft.triplet, writeMouse, eraseMouse, moveMouse, movePitchMouse, previewMouse, positionMouse]);
+  [tool, accidental, snapTicks, draft.duration, draft.dotted, draft.triplet, writeMouse, eraseMouse, moveMouse, movePitchMouse, moveStaffMouse, previewMouse, positionMouse]);
 
   // ── Selección ───────────────────────────────────────────────────────────
   const selectNote = useCallback((key: string, extend = false) => {
@@ -302,6 +315,7 @@ export function useStudio(locale: string) {
     }
   };
   const changeClef = (clef: "treble" | "bass") => patchScore(next => { next.measures[draft.measure - 1].clefs = { ...next.measures[draft.measure - 1].clefs, [draft.voice]: clef }; });
+  /** Siempre al final, sin importar dónde esté el cursor: no recorre ninguna nota. */
   const addMeasure = () => patchScore(next => { const last = next.measures.at(-1)!; next.measures.push({ id: newId(), key: last.key, time: [...last.time] }); });
   const insertMeasure = () => attempt(() => { commit(insertMeasureAfter(score, draft.measure), t(`Compás nuevo después del ${draft.measure}.`, `New measure after ${draft.measure}.`)); });
   const removeMeasureAt = () => attempt(() => {
@@ -370,7 +384,7 @@ export function useStudio(locale: string) {
 
   return {
     es, t, score, ready, saved, selected, selectedIds, selection, draft, voices, positionTick, cursor, measure,
-    message, error, warning, audioState, tick, metronome, loop, tool, accidental, availability, mouse,
+    message, error, warning, audioState, tick, metronome, loop, tool, accidental, availability, mouse, snap, setSnap,
     setMessage, setError, setMetronome, setLoop, setTool, patchDraft, commit, attempt,
     selectNote, selectMany, selectAll, setSelected,
     insert, shiftSelection, removeSelection, applyNoteValue, applyAccidental, undo, redo, copy, cut, paste, duplicateSelection,

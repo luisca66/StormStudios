@@ -37,6 +37,13 @@ import DurationIcon from "./DurationIcon";
 const AUTHOR = process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_SEQUENCER_AUTHOR === "1";
 const AuthorPanel = AUTHOR ? dynamic(() => import("./AuthorPanel"), { ssr: false }) : null;
 
+/** Valores de snap, como en Cubase. Los tresillos dividen la figura en tres. */
+const SNAPS: ReadonlyArray<readonly ["note" | number, string, string]> = [
+  ["note", "Figura activa", "Active value"],
+  [3840, "Redonda", "Whole"], [1920, "Blanca", "Half"], [960, "Negra", "Quarter"], [480, "Corchea", "Eighth"],
+  [240, "Semicorchea", "Sixteenth"], [120, "Fusa (libre)", "32nd (free)"],
+  [640, "Negra de tresillo", "Quarter triplet"], [320, "Corchea de tresillo", "Eighth triplet"], [160, "Semicorchea de tresillo", "Sixteenth triplet"],
+];
 const DURATIONS: Array<[Duration, string, string]> = [
   ["w", "Redonda", "Whole"], ["h", "Blanca", "Half"], ["q", "Negra", "Quarter"],
   ["8", "Corchea", "Eighth"], ["16", "Semicorchea", "Sixteenth"], ["32", "Fusa", "Thirty-second"],
@@ -267,6 +274,12 @@ export default function StudioV5({ locale }: { locale: string }) {
           {ACCIDENTALS.map(([value, es, en, glyph]) =>
             <button key={value || "natural"} className={styles.glyph} aria-pressed={s.accidental === value} onClick={() => s.applyAccidental(value)} aria-label={t(es, en)} title={t(es, en)}>{glyph}</button>)}
         </div>
+        <label className={styles.group} title={t("Snap: la rejilla a la que caen las notas al escribir y al moverlas", "Snap: the grid notes land on when you write or move them")}>
+          {t("Snap", "Snap")}
+          <select data-testid="snap" value={String(s.snap)} onChange={event => s.setSnap(event.target.value === "note" ? "note" : Number(event.target.value))}>
+            {SNAPS.map(([value, es, en]) => <option key={value} value={String(value)}>{t(es, en)}</option>)}
+          </select>
+        </label>
         <div className={styles.group}>
           <button onClick={s.undo} disabled={!s.availability.undo} aria-label={t("Deshacer", "Undo")} title="Ctrl Z"><Icon name="undo" /></button>
           <button onClick={s.redo} disabled={!s.availability.redo} aria-label={t("Rehacer", "Redo")} title="Ctrl Y"><Icon name="redo" /></button>
@@ -363,7 +376,8 @@ export default function StudioV5({ locale }: { locale: string }) {
         <select value={clefAt(score, draft.voice, Math.min(draft.measure, score.measures.length))} onChange={event => s.changeClef(event.target.value as "treble" | "bass")}>
           <option value="treble">{t("Clave de Sol", "Treble clef")}</option><option value="bass">{t("Clave de Fa", "Bass clef")}</option></select></label>
       <div className={styles.row}>
-        <button onClick={s.insertMeasure} title={t("Inserta un compás vacío después de este", "Insert an empty measure after this one")}>{t("+ Compás", "+ Measure")}</button>
+        <button onClick={s.addMeasure} title={t("Añade un compás vacío al final de la partitura", "Add an empty measure at the end of the score")}>{t("+ Compás", "+ Measure")}</button>
+        <button onClick={s.insertMeasure} title={t("Inserta un compás vacío después de este y recorre lo que sigue", "Insert an empty measure after this one and shift what follows")}>{t("Insertar aquí", "Insert here")}</button>
         <button onClick={s.removeMeasureAt} disabled={score.measures.length < 2} title={t("Quita este compás y recorre lo que sigue", "Remove this measure and shift what follows")}>{t("− Compás", "− Measure")}</button>
       </div>
       <div className={styles.row}>
