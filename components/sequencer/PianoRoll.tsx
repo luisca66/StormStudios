@@ -23,23 +23,29 @@ export default function PianoRoll({score,selected,mouse,voiceId,onSelect,locale,
     const x=e.clientX,y=e.clientY;
     let heardPitch=event.pitches[0];mouse.onPreview(event.id,heardPitch);
     const movedPitch=(delta:number)=>midiToPitch(Math.max(0,Math.min(127,pitchToMidi(event.pitches[0])-Math.round(delta/26))));
+    const moves=mouse.tool==="write"||(!!mouse.dragWithSelect&&mouse.tool==="select");
+    // v5: the other selected notes follow the drag on screen.
+    const companions=mouse.dragWithSelect&&selected.length>1&&selected.includes(event.id)&&surface.current
+      ?[...surface.current.querySelectorAll<HTMLElement>("[data-roll-note]")].filter(el=>el!==button&&selected.includes(el.dataset.rollNote!)):[];
     const move=(ev:PointerEvent)=>{button.style.transform="translate("+(resize?0:ev.clientX-x)+"px,"+(resize?0:ev.clientY-y)+"px)";if(resize)button.style.width=Math.max(12,bounds.width+ev.clientX-x)+"px";
-      else if(mouse.tool==="write"){const pitch=movedPitch(ev.clientY-y);if(pitch!==heardPitch){heardPitch=pitch;mouse.onPreview(event.id,pitch);}}
+      else{companions.forEach(el=>{el.style.transform=button.style.transform;});}
+      if(!resize&&moves){const pitch=movedPitch(ev.clientY-y);if(pitch!==heardPitch){heardPitch=pitch;mouse.onPreview(event.id,pitch);}}
     };
     const finish=(ev:PointerEvent)=>{
       window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",finish);window.removeEventListener("pointercancel",cancel);
       mouse.onPreviewEnd();
       cancelDrag.current=null;
       button.style.transform="";button.style.width=Math.max(12,durationTicks(event)/PPQ*48-2)+"px";
+      companions.forEach(el=>{el.style.transform="";});
       if(Math.abs(ev.clientX-x)<4&&Math.abs(ev.clientY-y)<4){onSelect(event.id,e.shiftKey);return;}
       if(resize)mouse.onMove(event.id,event.pitches[0],undefined,Math.max(PPQ/8,durationTicks(event)+(ev.clientX-x)/48*PPQ));
-      else if(mouse.tool==="write"){
+      else if(moves){
         const pitch=movedPitch(ev.clientY-y);
         const start=rollTick(score,event.start+(ev.clientX-x)/48*PPQ,PPQ/8);
         mouse.onMove(event.id,pitch,start);
       }
     };
-    const cancel=()=>{cancelDrag.current=null;mouse.onPreviewEnd();window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",finish);window.removeEventListener("pointercancel",cancel);button.style.transform="";button.style.width=Math.max(12,durationTicks(event)/PPQ*48-2)+"px";};
+    const cancel=()=>{cancelDrag.current=null;companions.forEach(el=>{el.style.transform="";});mouse.onPreviewEnd();window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",finish);window.removeEventListener("pointercancel",cancel);button.style.transform="";button.style.width=Math.max(12,durationTicks(event)/PPQ*48-2)+"px";};
     cancelDrag.current=cancel;
     window.addEventListener("pointermove",move);window.addEventListener("pointerup",finish,{once:true});window.addEventListener("pointercancel",cancel,{once:true});
   };
