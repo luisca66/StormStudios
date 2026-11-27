@@ -678,7 +678,8 @@ export default function SequencerStudio({ locale }: { locale: string }) {
           <summary>{t("Atajos de teclado","Keyboard shortcuts")}</summary>
           <p>{t("Teclado: enfoca «Escribir con teclado». A–G insertan notas; R silencio; 1–6 duración; PageUp/PageDown octava; ←/→ mueven el cursor. Con selección: ↑/↓ cambian semitono y suenan; T liga; Supr/Backspace borra. Espacio reproduce/detiene; Inicio/Fin van al principio o al final. Ctrl/Cmd+Z deshace. Herramienta Seleccionar: arrastra un rectángulo para elegir varias notas; Shift/Ctrl+clic suma a la selección; Ctrl+A todo. Ctrl+C copia, Ctrl+X corta, Ctrl+V pega en el cursor, Ctrl+D duplica tras la selección.","Keyboard: focus “Write with keyboard”. A–G insert notes; R rest; 1–6 duration; PageUp/PageDown octave; ←/→ move the cursor. With a selection: ↑/↓ transpose one semitone and sound; T ties; Delete/Backspace deletes. Space plays/stops; Home/End jump to start or end. Ctrl/Cmd+Z undoes. Select tool: drag a rectangle to pick several notes; Shift/Ctrl+click adds; Ctrl+A selects all. Ctrl+C copies, Ctrl+X cuts, Ctrl+V pastes at the cursor, Ctrl+D duplicates after the selection.")}</p>
         </details>
-        <a className={styles.legacyLink} href={es?"/tools/secuenciador.html":"/tools/sequencer.html"}>{t("Abrir Workstation v3 · versión de los videos","Open Workstation v3 · version used in the videos")}</a>
+        <a className={styles.legacyLink} href={es?"/tools/secuenciador.html":"/tools/sequencer.html"}>{t("Abrir Workstation v3 · versión de los videos de las lecciones 1–3","Open Workstation v3 · version used in the lesson 1–3 videos")}</a>
+        <a className={styles.legacyLink} href={`/${es?"es":"en"}/sequencer/v5`}>{t("La versión actual es la v5 →","The current version is v5 →")}</a>
       </div>
 
       <aside className={styles.inspector} aria-label={t("Inspector musical","Music inspector")}>
