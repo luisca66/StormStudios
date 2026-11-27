@@ -350,13 +350,15 @@ function FeedbackDisplay({
           <span className="text-2xl">{passed ? "✅" : "🔧"}</span>
           <div>
             <p className="font-bold text-gray-900">
-              {es
-                ? `Puntuación: ${feedback.score}/100`
-                : `Score: ${feedback.score}/100`}
-            </p>
-            <p className="text-sm text-gray-600">
               {feedback.summary[locale as "es" | "en"]}
             </p>
+            {!passed && (
+              <p className="text-sm text-gray-600">
+                {es
+                  ? "Corrige tu archivo y vuelve a subirlo para comprobarlo."
+                  : "Fix your file and upload it again to check it."}
+              </p>
+            )}
           </div>
         </div>
       </div>
