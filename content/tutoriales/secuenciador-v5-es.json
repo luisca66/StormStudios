@@ -1,0 +1,2082 @@
+{
+  "version": 1,
+  "locale": "es",
+  "startUrl": "/es/curso-armonia",
+  "requiredAudio": [
+    10,
+    11,
+    12,
+    15,
+    17,
+    20,
+    22,
+    24,
+    27,
+    28,
+    37
+  ],
+  "continuousPlayback": [],
+  "finalFade": 1,
+  "outputs": {
+    "mp4": "tutorial-secuenciador-v5.mp4",
+    "srt": "tutorial-secuenciador-v5.srt"
+  },
+  "substitutions": [
+    "MIDI y micrófono simulados: entradas reales de la aplicación; el tono del micrófono no se mezcla con la salida.",
+    "Los clips 23 y 37 preparan ejemplos limpios fuera de la voz.",
+    "No se ejecutan exportaciones largas durante su enumeración: el menú muestra las opciones reales.",
+    "Borrar/deshacer/rehacer no generan sonido: el clip 14 no exige una audición artificial.",
+    "El ensayo sin video conserva los tiempos por palabra para auditar los gestos con el mismo reloj que la voz."
+  ],
+  "clips": [
+    {
+      "clip": 1,
+      "text": "Hola, bienvenidos de nuevo a Storm Studios Learning.",
+      "actions": []
+    },
+    {
+      "clip": 2,
+      "text": "Esta es la versión cinco del secuenciador. Sirve para lo mismo que las anteriores: escribir y escuchar los ejercicios del curso. Pero ahora todo está en una sola pantalla, como en un estudio de grabación, y puedes escribir con el mouse, con el teclado de la computadora, con un teclado MIDI o cantando.",
+      "actions": [
+        {
+          "op": "scroll",
+          "target": {
+            "css": "div.ss-glass:has(a[href=\"/es/sequencer/v5\"])"
+          },
+          "atWord": {
+            "word": "grabacion",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1200
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "div.ss-glass:has(a[href=\"/es/sequencer/v5\"])"
+          },
+          "atWord": {
+            "word": "midi",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1800
+        }
+      ]
+    },
+    {
+      "clip": 3,
+      "text": "Para abrirlo, entra a la página del Curso de Armonía y baja hasta los recuadros del secuenciador. Las versiones tres y cuatro siguen ahí, para acompañar sus videos. Haz clic en «Abrir v5.0».",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "div.ss-glass:has(a[href=\"/es/sequencer/v5\"])"
+          },
+          "atWord": {
+            "word": "recuadros",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 4200
+        },
+        {
+          "op": "goto",
+          "target": {
+            "role": "link",
+            "name": "Abrir v5.0 →"
+          },
+          "atWord": {
+            "word": "abrir",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        }
+      ]
+    },
+    {
+      "clip": 4,
+      "text": "Veamos cómo está organizada la pantalla.",
+      "actions": [],
+      "prepare": [
+        {
+          "op": "loadProject",
+          "file": "secuenciador-v5-inicio.json"
+        },
+        {
+          "op": "warmAudio"
+        }
+      ]
+    },
+    {
+      "clip": 5,
+      "text": "Arriba está la barra de transporte: reproducir, detener, ir al inicio y al final, repetir y metrónomo. A su lado, la pantalla verde te dice dónde está el cursor, el tempo, la tonalidad, la métrica y el acorde que está sonando.",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "role": "group",
+            "name": "Transporte"
+          },
+          "atWord": {
+            "word": "transporte",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 5000
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Reproducir"
+          },
+          "atWord": {
+            "word": "reproducir",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Detener"
+          },
+          "atWord": {
+            "word": "detener",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"lcd-position\"]"
+          },
+          "atWord": {
+            "word": "cursor",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 900
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "label": "Tempo"
+          },
+          "atWord": {
+            "word": "tempo",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1000
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"lcd-chord\"]"
+          },
+          "atWord": {
+            "word": "acorde",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1100
+        }
+      ]
+    },
+    {
+      "clip": 6,
+      "text": "A la izquierda están las pistas. Arriba eliges si trabajas con una melodía o con las cuatro voces: soprano, contralto, tenor y bajo. Cada pista tiene su instrumento, su volumen, y los botones M para silenciarla y S para escucharla sola.",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "role": "complementary",
+            "name": "Pistas"
+          },
+          "atWord": {
+            "word": "pistas",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 6500
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Melodía"
+          },
+          "atWord": {
+            "word": "melodia",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "SATB"
+          },
+          "atWord": {
+            "word": "cuatro",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "label": "Instrumento de Soprano"
+          },
+          "atWord": {
+            "word": "instrumento",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 800
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "label": "Volumen de Soprano"
+          },
+          "atWord": {
+            "word": "volumen",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 800
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Silenciar Soprano"
+          },
+          "atWord": {
+            "word": "m",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Solo de Soprano"
+          },
+          "atWord": {
+            "word": "s",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        }
+      ],
+      "cleanup": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Melodía"
+          }
+        }
+      ]
+    },
+    {
+      "clip": 7,
+      "text": "En el centro está la partitura, con la barra de herramientas encima. Ahí eliges la herramienta, la figura y las alteraciones.",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"score-view\"]"
+          },
+          "atWord": {
+            "word": "partitura",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1800
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "role": "toolbar",
+            "name": "Herramientas de escritura"
+          },
+          "atWord": {
+            "word": "herramientas",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 5000
+        }
+      ]
+    },
+    {
+      "clip": 8,
+      "text": "A la derecha está el inspector: el compás y el pulso donde vas a escribir, la armadura, la métrica, y lo que puedes hacer con las notas seleccionadas.",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "role": "complementary",
+            "name": "Inspector"
+          },
+          "atWord": {
+            "word": "inspector",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 8000
+        }
+      ]
+    },
+    {
+      "clip": 9,
+      "text": "Y abajo hay una zona con pestañas: la pista de acordes, los marcadores, la lista de notas y la entrada por texto. Si necesitas más espacio para la partitura, arrastra su borde hacia abajo.",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "role": "tablist"
+          },
+          "atWord": {
+            "word": "pestanas",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 900
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "tab",
+            "name": "Pista de acordes"
+          },
+          "atWord": {
+            "word": "acordes",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "tab",
+            "name": "Marcadores"
+          },
+          "atWord": {
+            "word": "marcadores",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "tab",
+            "name": "Lista de notas"
+          },
+          "atWord": {
+            "word": "lista",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "tab",
+            "name": "Entrada por texto"
+          },
+          "atWord": {
+            "word": "entrada",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "drag",
+          "target": {
+            "role": "separator",
+            "name": "Cambiar el alto de la zona inferior"
+          },
+          "atWord": {
+            "word": "arrastra",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "dy": 60,
+          "durationMs": 650
+        }
+      ],
+      "cleanup": [
+        {
+          "op": "click",
+          "target": {
+            "role": "tab",
+            "name": "Pista de acordes"
+          }
+        }
+      ]
+    },
+    {
+      "clip": 10,
+      "text": "Con la herramienta Escribir, el lápiz, eliges la figura y haces clic en el pentagrama, en la línea o el espacio de la nota que quieres. Cada nota suena al escribirla.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Escribir"
+          },
+          "atWord": {
+            "word": "escribir",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Cuarto"
+          },
+          "atWord": {
+            "word": "figura",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "C4",
+              "beat": 1
+            }
+          },
+          "atWord": {
+            "word": "pentagrama",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "E4",
+              "beat": 2
+            }
+          },
+          "atWord": {
+            "word": "espacio",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "G4",
+              "beat": 3
+            }
+          },
+          "atWord": {
+            "word": "suena",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "assert",
+          "pitches": [
+            "C4",
+            "E4",
+            "G4"
+          ],
+          "at": 10.6
+        }
+      ]
+    },
+    {
+      "clip": 11,
+      "text": "Si una nota no quedó en su lugar, arrástrala hacia arriba o hacia abajo. Mientras la mueves, ves y escuchas a qué nota va. Y si la arrastras hacia los lados, la cambias de lugar en el tiempo. El Snap, arriba en la barra, decide en qué puntos puede caer.",
+      "actions": [
+        {
+          "op": "drag",
+          "target": {
+            "note": {
+              "index": 1,
+              "view": "staff"
+            }
+          },
+          "atWord": {
+            "word": "arrastrala",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "dy": -10,
+          "durationMs": 700
+        },
+        {
+          "op": "drag",
+          "target": {
+            "note": {
+              "index": 2,
+              "view": "staff"
+            }
+          },
+          "atWord": {
+            "word": "lados",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "to": {
+            "staff": {
+              "measure": 2,
+              "pitch": "G4",
+              "beat": 1
+            }
+          },
+          "dropLine": true,
+          "holdMs": 350,
+          "durationMs": 750
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"snap\"]"
+          },
+          "atWord": {
+            "word": "snap",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 2600,
+          "capture": "clip-11-snap.png"
+        }
+      ]
+    },
+    {
+      "clip": 12,
+      "text": "Para escribir un acorde, mantén presionada la tecla Control y haz clic sobre las notas que quieres agregar.",
+      "actions": [
+        {
+          "op": "ctrlClick",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "E4",
+              "beat": 1
+            }
+          },
+          "atWord": {
+            "word": "clic",
+            "occurrence": 1,
+            "offset": -0.65
+          }
+        },
+        {
+          "op": "ctrlClick",
+          "target": {
+            "staff": {
+              "measure": 1,
+              "pitch": "G4",
+              "beat": 1
+            }
+          },
+          "atWord": {
+            "word": "agregar",
+            "occurrence": 1,
+            "offset": -0.65
+          }
+        }
+      ]
+    },
+    {
+      "clip": 13,
+      "text": "Y aquí hay algo nuevo: no tienes que subir a la barra para cambiar de herramienta. Haz clic derecho en la partitura y aparece un menú justo donde está el mouse, con Escribir, Seleccionar y Borrar. También puedes elegir con las letras E, S y B.",
+      "actions": [
+        {
+          "op": "rightClick",
+          "target": {
+            "css": "[data-testid=\"score-view\"]"
+          },
+          "atWord": {
+            "word": "derecho",
+            "occurrence": 1,
+            "offset": -0.65
+          }
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"tool-menu\"]"
+          },
+          "atWord": {
+            "word": "menu",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 2100
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "menuitemradio",
+            "name": "Seleccionar S"
+          },
+          "atWord": {
+            "word": "seleccionar",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "badge",
+          "atWord": {
+            "word": "letras",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "text": "E · S · B"
+        }
+      ]
+    },
+    {
+      "clip": 14,
+      "text": "Si haces clic derecho sobre una nota, el menú te ofrece además borrarla. Y si te equivocas, Control Z deshace y Control Y rehace.",
+      "actions": [
+        {
+          "op": "rightClick",
+          "target": {
+            "note": {
+              "index": 2,
+              "view": "staff"
+            }
+          },
+          "atWord": {
+            "word": "derecho",
+            "occurrence": 1,
+            "offset": -0.65
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "menuitem",
+            "name": "Borrar esta nota"
+          },
+          "atWord": {
+            "word": "borrarla",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "z",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "Control+z"
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "rehace",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "Control+y"
+        }
+      ],
+      "cleanup": [
+        {
+          "op": "key",
+          "key": "Control+z"
+        }
+      ]
+    },
+    {
+      "clip": 15,
+      "text": "Para escuchar, presiona la barra espaciadora. Con la misma tecla detienes.",
+      "actions": [
+        {
+          "op": "play",
+          "atWord": {
+            "word": "espaciadora",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": true
+        },
+        {
+          "op": "stop",
+          "atWord": {
+            "word": "detienes",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": true
+        }
+      ],
+      "extraMusic": 0,
+      "prepare": [
+        {
+          "op": "key",
+          "key": "Home"
+        }
+      ]
+    },
+    {
+      "clip": 16,
+      "text": "En la pantalla verde puedes escribir otro tempo, y con los botones de repetir y metrónomo oyes la música en bucle o con el pulso marcado.",
+      "actions": [
+        {
+          "op": "setField",
+          "target": {
+            "label": "Tempo"
+          },
+          "atWord": {
+            "word": "tempo",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "text": "84"
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Repetir"
+          },
+          "atWord": {
+            "word": "repetir",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Metrónomo"
+          },
+          "atWord": {
+            "word": "metronomo",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        }
+      ],
+      "cleanup": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Repetir"
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Metrónomo"
+          }
+        },
+        {
+          "op": "setField",
+          "target": {
+            "label": "Tempo"
+          },
+          "text": "72"
+        }
+      ]
+    },
+    {
+      "clip": 17,
+      "text": "El teclado de la computadora es la forma más rápida de escribir. Las letras de la A a la G escriben las notas con su nombre en inglés: C es Do, D es Re, E es Mi. El secuenciador respeta la armadura y elige la octava más cercana a la nota anterior.",
+      "actions": [
+        {
+          "op": "key",
+          "atWord": {
+            "word": "c",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "c"
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "d",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "d"
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "e",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "e"
+        }
+      ],
+      "prepare": [
+        {
+          "op": "key",
+          "key": "Home"
+        },
+        {
+          "op": "key",
+          "key": "3"
+        }
+      ]
+    },
+    {
+      "clip": 18,
+      "text": "Los números del uno al seis cambian la figura, el punto agrega puntillo, la T liga, y la R escribe un silencio. Las flechas izquierda y derecha mueven el cursor.",
+      "actions": [
+        {
+          "op": "keys",
+          "atWord": {
+            "word": "uno",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "keys": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "intervalMs": 180
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "figura",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "3"
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "punto",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "."
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "t",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "t"
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "r",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "r"
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "izquierda",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "ArrowLeft"
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "derecha",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "ArrowRight"
+        }
+      ],
+      "cleanup": [
+        {
+          "op": "key",
+          "key": "."
+        },
+        {
+          "op": "key",
+          "key": "t"
+        },
+        {
+          "op": "key",
+          "key": "3"
+        }
+      ]
+    },
+    {
+      "clip": 19,
+      "text": "En «Atajos de teclado», abajo del inspector, tienes la lista completa.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "css": "aside details summary"
+          },
+          "atWord": {
+            "word": "atajos",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "aside details[open]"
+          },
+          "atWord": {
+            "word": "lista",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1000
+        }
+      ],
+      "cleanup": [
+        {
+          "op": "click",
+          "target": {
+            "css": "aside details summary"
+          }
+        }
+      ]
+    },
+    {
+      "clip": 20,
+      "text": "Si tienes un teclado MIDI conectado a la computadora, presiona el botón MIDI. Cada tecla que tocas se escribe en el cursor, ya con la alteración que corresponde a la armadura. Si tocas varias teclas a la vez, se escriben como acorde.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"midi-toggle\"]"
+          },
+          "atWord": {
+            "word": "midi",
+            "occurrence": 2,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "midi",
+          "atWord": {
+            "word": "tocas",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "notes": [
+            60
+          ],
+          "seconds": 0.3
+        },
+        {
+          "op": "midi",
+          "atWord": {
+            "word": "cursor",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "notes": [
+            64
+          ],
+          "seconds": 0.3
+        },
+        {
+          "op": "midi",
+          "atWord": {
+            "word": "vez",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "notes": [
+            60,
+            64,
+            67
+          ],
+          "seconds": 0.4
+        }
+      ],
+      "cleanup": [
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"midi-toggle\"]"
+          }
+        }
+      ]
+    },
+    {
+      "clip": 21,
+      "text": "Y si no tienes teclado, puedes cantar. Presiona Mic, el navegador te pide permiso para usar el micrófono, y canta cada nota sostenida un momento. El secuenciador la reconoce y la escribe.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"mic-toggle\"]"
+          },
+          "atWord": {
+            "word": "mic",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "micStart",
+          "atWord": {
+            "word": "canta",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "frequency": 261.625565
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"mic-pitch\"]"
+          },
+          "atWord": {
+            "word": "reconoce",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 900
+        },
+        {
+          "op": "micStop",
+          "atWord": {
+            "word": "escribe",
+            "occurrence": 1,
+            "offset": -0.08
+          }
+        }
+      ]
+    },
+    {
+      "clip": 22,
+      "text": "Como cada voz canta en su registro, el selector «Escribir a» te permite cantar cómodo y escribir una o dos octavas arriba o abajo. Mientras suena la música, el micrófono se pausa solo, para no escribir lo que sale de tus bocinas.",
+      "actions": [
+        {
+          "op": "select",
+          "target": {
+            "role": "combobox",
+            "nameRegex": "^Escribir a"
+          },
+          "atWord": {
+            "word": "escribir",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "value": "12"
+        },
+        {
+          "op": "micTone",
+          "atWord": {
+            "word": "cantar",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "frequency": 220,
+          "seconds": 0.6,
+          "releaseMs": 120
+        },
+        {
+          "op": "select",
+          "target": {
+            "role": "combobox",
+            "nameRegex": "^Escribir a"
+          },
+          "atWord": {
+            "word": "abajo",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "value": "-12"
+        },
+        {
+          "op": "micTone",
+          "atWord": {
+            "word": "abajo",
+            "occurrence": 1,
+            "offset": 0.3
+          },
+          "frequency": 440,
+          "seconds": 0.6,
+          "releaseMs": 120
+        },
+        {
+          "op": "play",
+          "atWord": {
+            "word": "musica",
+            "occurrence": 1,
+            "offset": -0.65
+          }
+        }
+      ],
+      "cleanup": [
+        {
+          "op": "stop",
+          "key": true
+        },
+        {
+          "op": "select",
+          "target": {
+            "role": "combobox",
+            "nameRegex": "^Escribir a"
+          },
+          "value": "0"
+        },
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"mic-toggle\"]"
+          }
+        }
+      ]
+    },
+    {
+      "clip": 23,
+      "text": "Con la herramienta Seleccionar, arrastra un rectángulo sobre varias notas para elegirlas todas. Con Mayúsculas o Control agregas más notas a la selección.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Seleccionar"
+          },
+          "atWord": {
+            "word": "seleccionar",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "marquee",
+          "atWord": {
+            "word": "rectangulo",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "view": "staff"
+        },
+        {
+          "op": "badge",
+          "atWord": {
+            "word": "mayusculas",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "text": "Mayús o Ctrl · agregar a la selección"
+        }
+      ],
+      "prepare": [
+        {
+          "op": "loadProject",
+          "file": "secuenciador-v5-seleccion.json"
+        },
+        {
+          "op": "key",
+          "key": "Home"
+        },
+        {
+          "op": "key",
+          "key": "3"
+        }
+      ]
+    },
+    {
+      "clip": 24,
+      "text": "Ahora toma cualquiera de las notas seleccionadas y arrástrala: todas se mueven juntas, la misma distancia, y cada una con la alteración que pide la armadura.",
+      "actions": [
+        {
+          "op": "drag",
+          "target": {
+            "note": {
+              "index": 1,
+              "view": "staff"
+            }
+          },
+          "atWord": {
+            "word": "arrastrala",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "dy": -10,
+          "group": true,
+          "durationMs": 750
+        }
+      ]
+    },
+    {
+      "clip": 25,
+      "text": "Con Control C copias, con Control V pegas donde está el cursor, y con Control D duplicas justo después. Las flechas arriba y abajo suben o bajan la selección un semitono; con Mayúsculas, una octava.",
+      "actions": [
+        {
+          "op": "key",
+          "atWord": {
+            "word": "c",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "Control+c"
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "v",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "Control+v",
+          "toEnd": true
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "d",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "Control+d"
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "arriba",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "ArrowUp"
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "abajo",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "ArrowDown"
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "mayusculas",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "Shift+ArrowUp"
+        },
+        {
+          "op": "key",
+          "atWord": {
+            "word": "octava",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "Shift+ArrowDown"
+        }
+      ],
+      "cleanup": [
+        {
+          "op": "key",
+          "key": "Escape"
+        }
+      ]
+    },
+    {
+      "clip": 26,
+      "text": "Además de la partitura, puedes ver tu música en el editor de teclas. Presiona «Teclas».",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Teclas"
+          },
+          "atWord": {
+            "word": "teclas",
+            "occurrence": 2,
+            "offset": -0.55
+          }
+        }
+      ]
+    },
+    {
+      "clip": 27,
+      "text": "Cada nota es una barra: su altura dice qué nota es, y su largo, cuánto dura. Haz clic en una fila para escribir, arrastra una barra para moverla, y estira su borde derecho para cambiar su duración. Una nota ligada aparece como una sola barra, aunque pase al compás siguiente.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "roll": {
+              "pitch": "D4",
+              "measure": 4,
+              "beat": 1
+            }
+          },
+          "atWord": {
+            "word": "clic",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "drag",
+          "target": {
+            "css": "[data-pitch=\"D4\"] [data-roll-note]:last-child"
+          },
+          "atWord": {
+            "word": "arrastra",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "dx": 48,
+          "dy": -52,
+          "durationMs": 650
+        },
+        {
+          "op": "drag",
+          "target": {
+            "css": "[data-pitch=\"E4\"] [data-roll-note] span"
+          },
+          "atWord": {
+            "word": "estira",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "dx": 48,
+          "durationMs": 700
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-roll-note][data-tie]",
+            "all": true
+          },
+          "atWord": {
+            "word": "ligada",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 3300,
+          "capture": "clip-27-ligada.png"
+        }
+      ],
+      "prepare": [
+        {
+          "op": "prepareTie"
+        },
+        {
+          "op": "key",
+          "key": "Home"
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Escribir"
+          }
+        },
+        {
+          "op": "key",
+          "key": "3"
+        }
+      ]
+    },
+    {
+      "clip": 28,
+      "text": "Aquí también seleccionas con un rectángulo y mueves todo el grupo, en altura y en el tiempo.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Seleccionar"
+          },
+          "atWord": {
+            "word": "seleccionas",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "marquee",
+          "atWord": {
+            "word": "rectangulo",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "view": "roll",
+          "durationMs": 320
+        },
+        {
+          "op": "drag",
+          "target": {
+            "css": "[data-roll-note][aria-pressed=true]",
+            "fx": 0.35
+          },
+          "atWord": {
+            "word": "mueves",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "dx": 48,
+          "dy": -26,
+          "group": true,
+          "durationMs": 650
+        }
+      ]
+    },
+    {
+      "clip": 29,
+      "text": "Todo lo que cambias aquí se ve en la partitura, y al revés. Son dos maneras de ver la misma música.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Partitura"
+          },
+          "atWord": {
+            "word": "partitura",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        }
+      ]
+    },
+    {
+      "clip": 30,
+      "text": "En el inspector cambias la armadura y la métrica desde el compás donde está el cursor. Con «más compás» añades un compás vacío al final. Con «Insertar aquí» pones uno donde está el cursor, y con «menos compás» lo quitas; en esos dos casos, lo que sigue se recorre solo.",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "role": "combobox",
+            "nameRegex": "^Armadura"
+          },
+          "atWord": {
+            "word": "armadura",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 800
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "role": "combobox",
+            "nameRegex": "^Compás"
+          },
+          "atWord": {
+            "word": "metrica",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1000
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "+ Compás"
+          },
+          "atWord": {
+            "word": "compas",
+            "occurrence": 2,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "assert",
+          "measures": 5,
+          "at": 6.4,
+          "starts": [
+            0,
+            960,
+            1920,
+            2880,
+            3840,
+            4800,
+            5760,
+            6720,
+            7680,
+            8640,
+            9600,
+            10560,
+            11520,
+            12480,
+            13440,
+            14400
+          ]
+        },
+        {
+          "op": "showMeasure",
+          "atWord": {
+            "word": "final",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "measure": "last"
+        },
+        {
+          "op": "showMeasure",
+          "measure": 2,
+          "atWord": {
+            "word": "con",
+            "occurrence": 2,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Insertar aquí"
+          },
+          "atWord": {
+            "word": "insertar",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "capture": "clip-30-insertar.png"
+        },
+        {
+          "op": "assert",
+          "measures": 6,
+          "emptyMeasure": 2,
+          "at": 11,
+          "starts": [
+            0,
+            960,
+            1920,
+            2880,
+            7680,
+            8640,
+            9600,
+            10560,
+            11520,
+            12480,
+            13440,
+            14400,
+            15360,
+            16320,
+            17280,
+            18240
+          ]
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "− Compás"
+          },
+          "atWord": {
+            "word": "menos",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "capture": "clip-30-quitar.png"
+        },
+        {
+          "op": "assert",
+          "measures": 5,
+          "at": 14.6,
+          "starts": [
+            0,
+            960,
+            1920,
+            2880,
+            3840,
+            4800,
+            5760,
+            6720,
+            7680,
+            8640,
+            9600,
+            10560,
+            11520,
+            12480,
+            13440,
+            14400
+          ]
+        }
+      ],
+      "prepare": [
+        {
+          "op": "loadProject",
+          "file": "secuenciador-v5-compases.json"
+        },
+        {
+          "op": "key",
+          "key": "Home"
+        },
+        {
+          "op": "setField",
+          "target": {
+            "role": "spinbutton",
+            "name": "Compás"
+          },
+          "text": "2"
+        }
+      ]
+    },
+    {
+      "clip": 31,
+      "text": "Puedes ver la partitura en una línea continua o por páginas, como una partitura impresa.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Continua"
+          },
+          "atWord": {
+            "word": "continua",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Páginas"
+          },
+          "atWord": {
+            "word": "paginas",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        }
+      ],
+      "prepare": [
+        {
+          "op": "loadProject",
+          "file": "secuenciador-v5-seleccion.json"
+        },
+        {
+          "op": "key",
+          "key": "Home"
+        }
+      ],
+      "cleanup": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Continua"
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "tab",
+            "name": "Marcadores"
+          }
+        }
+      ]
+    },
+    {
+      "clip": 32,
+      "text": "Abajo, en la pista de acordes, escribes el cifrado de tu ejercicio. Puedes escribir toda la progresión de una vez, en números romanos como en el curso, o con letras, y elegir cada cuántos pulsos cambia el acorde.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "role": "tab",
+            "name": "Pista de acordes"
+          },
+          "atWord": {
+            "word": "acordes",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "setField",
+          "target": {
+            "css": "[data-testid=\"progression-input\"]"
+          },
+          "atWord": {
+            "word": "progresion",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "text": "I IV V I"
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Escribir desde el compás 1"
+          },
+          "atWord": {
+            "word": "romanos",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "role": "combobox",
+            "nameRegex": "^Un acorde cada"
+          },
+          "atWord": {
+            "word": "pulsos",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1200
+        }
+      ],
+      "prepare": [
+        {
+          "op": "key",
+          "key": "Home"
+        }
+      ]
+    },
+    {
+      "clip": 33,
+      "text": "El cifrado aparece debajo de la partitura, y también puedes escribirlo directamente bajo cada pulso. La pista no escribe notas por ti: las voces las escribes tú. Su trabajo es ayudarte a pensar la armonía mientras escribes.",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-measure=\"1\"]"
+          },
+          "atWord": {
+            "word": "cifrado",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 2300
+        },
+        {
+          "op": "type",
+          "target": {
+            "label": "Cifrado compás 1, pulso 2"
+          },
+          "atWord": {
+            "word": "pulso",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "text": "V6"
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"chord-lane\"]"
+          },
+          "atWord": {
+            "word": "armonia",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1500
+        }
+      ]
+    },
+    {
+      "clip": 34,
+      "text": "El secuenciador guarda tu trabajo automáticamente en este navegador. Pero ese borrador solo vive aquí: para conservarlo de verdad, abre el menú Archivo y elige «Guardar proyecto».",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"studio-v5\"] footer [class*=\"phase\"]"
+          },
+          "atWord": {
+            "word": "automaticamente",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1700,
+          "capture": "clip-34-guardado.png"
+        },
+        {
+          "op": "click",
+          "target": {
+            "css": "summary:has-text(\"Archivo\")"
+          },
+          "atWord": {
+            "word": "archivo",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "download",
+          "target": {
+            "role": "menuitem",
+            "name": "Guardar proyecto Ctrl S"
+          },
+          "atWord": {
+            "word": "guardar",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        }
+      ]
+    },
+    {
+      "clip": 35,
+      "text": "Desde el mismo menú abres tus proyectos, y exportas a MIDI, a MusicXML para otros programas de partituras, a audio WAV, o como imagen.",
+      "actions": [
+        {
+          "op": "move",
+          "target": {
+            "role": "menuitem",
+            "name": "Abrir… (JSON, MusicXML)"
+          },
+          "atWord": {
+            "word": "abres",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "menuitem",
+            "name": "Exportar MIDI"
+          },
+          "atWord": {
+            "word": "midi",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "menuitem",
+            "name": "Exportar MusicXML"
+          },
+          "atWord": {
+            "word": "musicxml",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "menuitem",
+            "name": "Exportar audio WAV"
+          },
+          "atWord": {
+            "word": "wav",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "menuitem",
+            "name": "Exportar imagen PNG"
+          },
+          "atWord": {
+            "word": "imagen",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        }
+      ],
+      "cleanup": [
+        {
+          "op": "click",
+          "target": {
+            "css": "summary:has-text(\"Archivo\")"
+          }
+        }
+      ]
+    },
+    {
+      "clip": 36,
+      "text": "Y con «Presentar» muestras tu partitura sola, en pantalla completa, sin herramientas alrededor. Es ideal para explicar un ejercicio en clase.",
+      "actions": [
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"present\"]"
+          },
+          "atWord": {
+            "word": "presentar",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "capture": "clip-36-presentar.png"
+        }
+      ],
+      "cleanup": [
+        {
+          "op": "key",
+          "key": "Escape"
+        }
+      ]
+    },
+    {
+      "clip": 37,
+      "text": "Eso es lo esencial de la versión cinco. Te recomiendo empezar por algo sencillo: escribe una escala con el teclado, cántala con el micrófono y escúchala.",
+      "actions": [
+        {
+          "op": "keys",
+          "atWord": {
+            "word": "escala",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "keys": [
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "a",
+            "b",
+            "c"
+          ],
+          "intervalMs": 100
+        },
+        {
+          "op": "micSequence",
+          "atWord": {
+            "word": "cantala",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "frequencies": [
+            261.625565,
+            293.664768,
+            329.627557
+          ],
+          "noteMs": 400
+        },
+        {
+          "op": "play",
+          "atWord": {
+            "word": "escuchala",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": true
+        }
+      ],
+      "prepare": [
+        {
+          "op": "loadProject",
+          "file": "secuenciador-v5-inicio.json"
+        },
+        {
+          "op": "key",
+          "key": "Home"
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Escribir"
+          }
+        },
+        {
+          "op": "key",
+          "key": "3"
+        },
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"mic-toggle\"]"
+          }
+        }
+      ],
+      "extraMusic": 10,
+      "cleanupDelay": 9.5,
+      "cleanup": [
+        {
+          "op": "stop",
+          "key": true
+        },
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"mic-toggle\"]"
+          }
+        }
+      ]
+    },
+    {
+      "clip": 38,
+      "text": "Si estás siguiendo un video hecho con una versión anterior, puedes seguir usándola: las tres siguen disponibles en la página del curso.",
+      "actions": [
+        {
+          "op": "badge",
+          "atWord": {
+            "word": "tres",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "text": "Versiones 3 · 4 · 5 disponibles en el Curso de Armonía"
+        }
+      ]
+    },
+    {
+      "clip": 39,
+      "text": "Nos vemos en la siguiente lección.",
+      "actions": [
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"studio-v5\"]"
+          },
+          "atWord": {
+            "word": "leccion",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 700
+        }
+      ]
+    }
+  ],
+  "wordAnchorContract": "El objetivo es el inicio de palabra; offset negativo anticipa la aproximación, offset positivo demora el gesto. Las restauraciones no narradas están en prepare/cleanup."
+}

@@ -1,0 +1,150 @@
+{
+  "version": 1,
+  "title": "Cómo usar Storm Sequencer v5",
+  "tempo": 72,
+  "masterVolume": 0.8,
+  "mode": "single",
+  "annotations": [],
+  "measures": [
+    {
+      "id": "measure-1",
+      "time": [
+        4,
+        4
+      ],
+      "key": "C"
+    },
+    {
+      "id": "measure-2",
+      "time": [
+        4,
+        4
+      ],
+      "key": "C"
+    },
+    {
+      "id": "measure-3",
+      "time": [
+        4,
+        4
+      ],
+      "key": "C"
+    },
+    {
+      "id": "measure-4",
+      "time": [
+        4,
+        4
+      ],
+      "key": "C"
+    }
+  ],
+  "voices": [
+    {
+      "id": "melody",
+      "name": "Melodía",
+      "clef": "treble",
+      "instrument": "Piano",
+      "volume": 0.8,
+      "mute": false,
+      "solo": false,
+      "events": [
+        {
+          "id": "v5-demo-0",
+          "start": 0,
+          "pitches": [
+            "C4"
+          ],
+          "duration": "q",
+          "dotted": false,
+          "triplet": false,
+          "tie": false
+        },
+        {
+          "id": "v5-demo-1",
+          "start": 960,
+          "pitches": [
+            "E4"
+          ],
+          "duration": "q",
+          "dotted": false,
+          "triplet": false,
+          "tie": false
+        },
+        {
+          "id": "v5-demo-2",
+          "start": 1920,
+          "pitches": [
+            "G4"
+          ],
+          "duration": "q",
+          "dotted": false,
+          "triplet": false,
+          "tie": false
+        },
+        {
+          "id": "v5-demo-3",
+          "start": 2880,
+          "pitches": [
+            "C5"
+          ],
+          "duration": "q",
+          "dotted": false,
+          "triplet": false,
+          "tie": false
+        }
+      ]
+    },
+    {
+      "id": "soprano",
+      "name": "Soprano",
+      "clef": "treble",
+      "instrument": "Piano",
+      "volume": 0.8,
+      "mute": false,
+      "solo": false,
+      "events": []
+    },
+    {
+      "id": "alto",
+      "name": "Alto",
+      "clef": "treble",
+      "instrument": "Piano",
+      "volume": 0.8,
+      "mute": false,
+      "solo": false,
+      "events": []
+    },
+    {
+      "id": "tenor",
+      "name": "Tenor",
+      "clef": "bass",
+      "instrument": "Piano",
+      "volume": 0.8,
+      "mute": false,
+      "solo": false,
+      "events": []
+    },
+    {
+      "id": "bass",
+      "name": "Bajo",
+      "clef": "bass",
+      "instrument": "Piano",
+      "volume": 0.8,
+      "mute": false,
+      "solo": false,
+      "events": []
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene-1",
+      "title": "Ejemplo de melodía",
+      "caption": "",
+      "startMeasure": 1,
+      "endMeasure": 4,
+      "aspect": "16:9",
+      "highlightVoice": "all"
+    }
+  ]
+}
