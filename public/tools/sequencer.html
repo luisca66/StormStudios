@@ -639,7 +639,8 @@
                 masterGain.gain.value = 0.8; // Default volume 80%
                 masterGain.connect(audioCtx.destination);
             }
-            // Samples are loaded on demand, only for the selected instrument.
+            // Warm the selected instrument's register in the background.
+            setTimeout(() => warmSamples(projectData.instrument), 600);
             syncModeUI();
             renderCurrentView();
             updateMetronomeBpmDisplay();
@@ -668,6 +669,7 @@
             projectData.instrument = sel.value;
             failedSamples.clear();
             updateSampleStatus();
+            warmSamples(projectData.instrument);
         }
 
         function updateSampleStatus() {
@@ -738,6 +740,54 @@
             return `${BASE_URL}/${encodeURIComponent(instrument)}/${encodeURIComponent(sampleKey)}.mp3`;
         }
 
+        // Samples are immutable and served with a one-year Cache-Control, so the browser's
+        // disk cache answers repeat visits. A stale pre-CORS cache entry (R2 migration)
+        // fails as a network error; only then is the network asked again, bypassing it.
+        async function downloadSample(url, signal) {
+            try {
+                return await fetch(url, { cache: 'default', signal });
+            } catch (error) {
+                if (signal.aborted) throw error;
+                return fetch(url, { cache: 'reload', signal });
+            }
+        }
+
+        // Download, in the background, the register a student writes in (E2–C6), nearest
+        // to the middle first, so the first clicked note already sits in the disk cache.
+        // Files are only cached, not decoded, to keep memory low.
+        const warmingSamples = new Map();
+        const warmedSamples = new Set();
+        let warmGeneration = 0;
+        function warmSamples(instrument) {
+            const generation = ++warmGeneration;
+            if (!INSTRUMENTS.includes(instrument)) return;
+            const queue = [];
+            for (let midi = 40; midi <= 84; midi++) queue.push(midi);
+            queue.sort((a, b) => Math.abs(a - 62) - Math.abs(b - 62));
+            const worker = async () => {
+                while (queue.length && generation === warmGeneration) {
+                    const sampleKey = getSampleKey(keyFromMidi(queue.shift()));
+                    const cacheKey = `${instrument}_${sampleKey}`;
+                    if (sampleCache[cacheKey] || warmedSamples.has(cacheKey) || warmingSamples.has(cacheKey)) continue;
+                    const task = (async () => {
+                        const controller = new AbortController();
+                        const timeout = setTimeout(() => controller.abort(), 15000);
+                        try {
+                            const response = await downloadSample(getSampleUrl(instrument, sampleKey), controller.signal);
+                            if (response.ok) { await response.arrayBuffer(); warmedSamples.add(cacheKey); }
+                        } catch (error) {
+                            // Clicking the note loads it again and reports any failure.
+                        } finally {
+                            clearTimeout(timeout);
+                        }
+                    })();
+                    warmingSamples.set(cacheKey, task);
+                    try { await task; } finally { warmingSamples.delete(cacheKey); }
+                }
+            };
+            for (let i = 0; i < 3; i++) worker();
+        }
+
         async function loadSample(instrument, sampleKey) {
             const cacheKey = `${instrument}_${sampleKey}`;
             if (sampleCache[cacheKey]) return sampleCache[cacheKey];
@@ -750,8 +800,10 @@
                 sampleLoadingCount++;
                 updateSampleStatus();
                 try {
-                    // Revalidate old non-CORS browser cache entries (R2 migration).
-                    const response = await fetch(url, { cache: 'no-cache', signal: controller.signal });
+                    // A background warm-up of this file is already on its way into the disk cache.
+                    const warming = warmingSamples.get(cacheKey);
+                    if (warming) await warming;
+                    const response = await downloadSample(url, controller.signal);
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
                     const arrayBuffer = await response.arrayBuffer();
                     if (!audioCtx) initAudio();
@@ -1120,6 +1172,7 @@
             document.getElementById('mode-select').value = projectData.mode;
             document.getElementById('instrument-select').value = projectData.instrument;
             updateSampleStatus();
+            warmSamples(projectData.instrument);
             syncModeUI();
             selectedTick = null; selectedTrackName = null;
             renderCurrentView();

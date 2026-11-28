@@ -12,7 +12,7 @@ import { SequencerAudio, type AudioState } from "@/lib/sequencer/audio-engine";
 import { downloadBlob, exportGraphic } from "@/lib/sequencer/graphics";
 import { SEQUENCER_EXAMPLES } from "@/lib/sequencer/examples";
 import { installAgentApi } from "@/lib/sequencer/agent-api";
-import { INSTRUMENTS, PPQ, type Duration, type NoteEvent, type ParseResult, type Scene, type Score, type VoiceId } from "@/lib/sequencer/types";
+import { INSTRUMENTS, PPQ, type Duration, type NoteEvent, type ParseResult, type Scene, type Score, type Voice, type VoiceId } from "@/lib/sequencer/types";
 import ScoreView,{type MouseEditing} from "./ScoreView";
 import PianoRoll from "./PianoRoll";
 import styles from "./sequencer.module.css";
@@ -74,6 +74,17 @@ export default function SequencerStudio({ locale }: { locale: string }) {
     });
     return () => { audio.current?.dispose(); };
   }, [es]);
+
+  // Warm each voice's register in the background so the first clicked note sounds at once.
+  const warmKey = activeVoices(score).map(v => v.id + ":" + v.instrument).join(",");
+  useEffect(() => {
+    if (!ready) return;
+    const timer = setTimeout(() => audio.current?.warm(warmKey.split(",").map(entry => {
+      const [id, instrument] = entry.split(":");
+      return { id: id as VoiceId, instrument: instrument as Voice["instrument"] };
+    })), 600);
+    return () => clearTimeout(timer);
+  }, [warmKey, ready]);
 
   useEffect(() => {
     if (!ready) return;

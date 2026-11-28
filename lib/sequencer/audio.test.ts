@@ -63,7 +63,7 @@ for (const file of ["secuenciador.html", "sequencer.html"]) {
       expect(e.fetcher).toHaveBeenCalledTimes(1);
       expect(e.fetcher.mock.calls[0]).toEqual([
         "https://samples.stormstudios.com.mx/Piano/F%234.mp3",
-        expect.objectContaining({ cache: "no-cache", signal: expect.any(AbortSignal) }),
+        expect.objectContaining({ cache: "default", signal: expect.any(AbortSignal) }),
       ]);
       await e.run("loadSample('Piano','F#4')");
       expect(e.fetcher).toHaveBeenCalledTimes(1);
@@ -166,6 +166,35 @@ for (const file of ["secuenciador.html", "sequencer.html"]) {
       expect(e.run("PIANO_ROLL_CONFIG.MIN_MIDI")).toBe(24);
       expect(e.run("PIANO_ROLL_CONFIG.MAX_MIDI")).toBe(96);
       expect(e.run("PIANO_ROLL_CONFIG.SEMITONES")).toBe(73);
+    });
+  });
+}
+
+for (const file of ["secuenciador.html", "sequencer.html"]) {
+  describe(file + " background warm-up", () => {
+    it("downloads the writing register once, middle first, without decoding", async () => {
+      const e = engine(file);
+      e.run("warmSamples('Piano')");
+      for (let turn = 0; turn < 400; turn++) await Promise.resolve();
+      const urls = e.fetcher.mock.calls.map(call => call[0]);
+      expect(urls).toHaveLength(45); // E2..C6
+      expect(new Set(urls).size).toBe(45);
+      expect(urls[0]).toBe("https://samples.stormstudios.com.mx/Piano/D4.mp3");
+      expect(e.fetcher.mock.calls.every(call => call[1].cache === "default")).toBe(true);
+      expect(e.audio.decodeAudioData).not.toHaveBeenCalled();
+      e.run("warmSamples('Piano'); warmSamples('Sinte')");
+      for (let turn = 0; turn < 50; turn++) await Promise.resolve();
+      expect(e.fetcher).toHaveBeenCalledTimes(45);
+    });
+
+    it("asks the network again only when a stale cache entry fails", async () => {
+      const fetcher = vi.fn(async (_url: string, init: any) => {
+        if (init.cache === "default") throw new TypeError("Failed to fetch");
+        return { ok: true, arrayBuffer: async () => new ArrayBuffer(8) };
+      });
+      const e = engine(file, fetcher);
+      expect(await e.run("loadSample('Piano','C4')")).toBeTruthy();
+      expect(fetcher.mock.calls.map(call => call[1].cache)).toEqual(["default", "reload"]);
     });
   });
 }
