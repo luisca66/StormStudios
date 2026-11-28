@@ -12,11 +12,14 @@ export default function Stage({ s, locale }: { s: Studio; locale: string }) {
   const { t, score, scene } = s;
   const stage = useRef<HTMLDivElement>(null), paper = useRef<HTMLDivElement>(null);
   if (!scene) return null;
+  // Big enough to read on a video: up to 8 measures in two lines (16:9), two per line when vertical.
+  const count = scene.endMeasure - scene.startMeasure + 1;
+  const systemSize = scene.aspect === "9:16" ? 2 : Math.min(4, Math.max(2, Math.ceil(count / 2)));
   const playing = s.audioState === "playing" || s.audioState === "loading";
   const save = async (png: boolean) => {
     try {
       if (!paper.current) return;
-      const blob = await exportGraphic(paper.current, { title: scene.title, caption: scene.caption, aspect: scene.aspect, png });
+      const blob = await exportGraphic(paper.current, { title: scene.title, caption: scene.caption, aspect: scene.aspect, png, layout: "screen" });
       downloadBlob(blob, (scene.title.trim().replace(/[\\/:*?"<>|]+/g, "-") || "storm-scene") + (png ? ".png" : ".svg"));
       s.setMessage(t("Imagen exportada.", "Image exported."));
     } catch (error) { s.setError(error instanceof Error ? error.message : "Export failed"); }
@@ -35,7 +38,9 @@ export default function Stage({ s, locale }: { s: Studio; locale: string }) {
     <div className={styles.stage} data-aspect={scene.aspect} ref={stage} data-testid="presentation-stage">
       <header><span>Storm Studios Learning</span><h2>{scene.title || score.title}</h2>{scene.caption && <p>{scene.caption}</p>}</header>
       <div className={styles.stagePaper} ref={paper}>
-        <ScoreView pitchStems score={score} selected={[]} locale={locale} onSelect={noop} tick={s.tick} showAnnotations={s.cipherVisible}
+        {/* Systems as in the page view: clef and key only at the start of each line, empty measures with a centered rest. */}
+        <ScoreView pitchStems measureRests barTies layout="page" pageTitle={false} systemSize={systemSize}
+          score={score} selected={[]} locale={locale} onSelect={noop} tick={s.tick} showAnnotations={s.cipherVisible}
           from={scene.startMeasure} to={scene.endMeasure} focusVoice={scene.highlightVoice} />
       </div>
       <footer><span>Storm Sequencer</span><span>{score.tempo} BPM</span></footer>

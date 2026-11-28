@@ -1,6 +1,6 @@
-import {expect,it} from "vitest";
+import {describe,expect,it} from "vitest";
 import {createScore,newId,durationTicks} from "./model";
-import {staffPitch,writeWithMouse,moveWithMouse,rollTick} from "./mouse-editing";
+import {staffPitch,writeWithMouse,moveWithMouse,rollTick,snapTick,snapWriteTick} from "./mouse-editing";
 import type {NoteEvent} from "./types";
 const note=(start=0,duration:NoteEvent["duration"]="q",pitches=["C4"]):NoteEvent=>({id:newId(),start,duration,pitches,dotted:false,triplet:false,tie:false});
 
@@ -57,4 +57,21 @@ it("snaps piano-roll positions within the score and each measure",()=>{
   expect(rollTick(score,-300,960)).toBe(0);
   expect(rollTick(score,4000,960)).toBe(3840);
   expect(rollTick(score,999999,120)).toBe(15240);
+});
+
+describe("snap de la v5",()=>{
+  it("al mover, lo que redondea a la barra cae en el tiempo 1 del compás siguiente",()=>{
+    const score=createScore();
+    expect(snapTick(score,3500,1920)).toBe(3840); // antes quedaba en 3720 (pulso 4.875)
+    expect(snapTick(score,2500,1920)).toBe(1920);
+    expect(snapTick(score,4000,1920)).toBe(3840);
+    expect(snapTick(score,-50,960)).toBe(0);
+    expect(snapTick(score,3840+700,640)).toBe(3840+640); // tresillo de negra, contado desde la barra
+  });
+  it("al escribir, el punto de la rejilla dentro del compás donde se hizo clic",()=>{
+    const score=createScore();
+    expect(snapWriteTick(score,3500,1920)).toBe(1920);
+    expect(snapWriteTick(score,3500,960)).toBe(2880);
+    expect(snapWriteTick(score,3900,960)).toBe(3840);
+  });
 });

@@ -37,9 +37,16 @@ import DurationIcon from "./DurationIcon";
 const AUTHOR = process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_SEQUENCER_AUTHOR === "1";
 const AuthorPanel = AUTHOR ? dynamic(() => import("./AuthorPanel"), { ssr: false }) : null;
 
+/** Valores de snap, como en Cubase. Los tresillos dividen la figura en tres. */
+const SNAPS: ReadonlyArray<readonly ["note" | number, string, string]> = [
+  ["note", "Figura activa", "Active value"],
+  [3840, "Entera", "Whole"], [1920, "Mitad", "Half"], [960, "Cuarto", "Quarter"], [480, "Octavo", "Eighth"],
+  [240, "Dieciseisavo", "Sixteenth"], [120, "Treintaidosavo (libre)", "32nd (free)"],
+  [640, "Cuarto de tresillo", "Quarter triplet"], [320, "Octavo de tresillo", "Eighth triplet"], [160, "Dieciseisavo de tresillo", "Sixteenth triplet"],
+];
 const DURATIONS: Array<[Duration, string, string]> = [
-  ["w", "Redonda", "Whole"], ["h", "Blanca", "Half"], ["q", "Negra", "Quarter"],
-  ["8", "Corchea", "Eighth"], ["16", "Semicorchea", "Sixteenth"], ["32", "Fusa", "Thirty-second"],
+  ["w", "Entera", "Whole"], ["h", "Mitad", "Half"], ["q", "Cuarto", "Quarter"],
+  ["8", "Octavo", "Eighth"], ["16", "Dieciseisavo", "Sixteenth"], ["32", "Treintaidosavo", "Thirty-second"],
 ];
 const ACCIDENTALS: Array<[MouseEditing["accidental"], string, string, string]> = [
   ["key", "Según la armadura", "Follow the key signature", "𝄞"], ["#", "Sostenido", "Sharp", "♯"], ["b", "Bemol", "Flat", "♭"], ["", "Becuadro", "Natural", "♮"], ["##", "Doble sostenido", "Double sharp", "𝄪"], ["bb", "Doble bemol", "Double flat", "𝄫"],
@@ -125,7 +132,8 @@ export default function StudioV5({ locale }: { locale: string }) {
   const saveGraphic = async (png: boolean) => {
     try {
       if (!paper.current) return;
-      const blob = await exportGraphic(paper.current, { title: score.title, caption: "", aspect: "16:9", png });
+      // Page view: the image keeps the systems as seen. The continuous line keeps the old grid of measures.
+      const blob = await exportGraphic(paper.current, { title: score.title, caption: "", aspect: "16:9", png, layout: layout === "page" ? "screen" : "grid" });
       downloadBlob(blob, (score.title.trim().replace(/[\\/:*?"<>|]+/g, "-") || "storm-sequencer") + (png ? ".png" : ".svg"));
       s.setMessage(t("Imagen exportada.", "Image exported."));
     } catch (error) { s.setError(error instanceof Error ? error.message : "Export failed"); }
@@ -267,6 +275,12 @@ export default function StudioV5({ locale }: { locale: string }) {
           {ACCIDENTALS.map(([value, es, en, glyph]) =>
             <button key={value || "natural"} className={styles.glyph} aria-pressed={s.accidental === value} onClick={() => s.applyAccidental(value)} aria-label={t(es, en)} title={t(es, en)}>{glyph}</button>)}
         </div>
+        <label className={styles.group} title={t("Snap: la rejilla a la que caen las notas al escribir y al moverlas", "Snap: the grid notes land on when you write or move them")}>
+          {t("Snap", "Snap")}
+          <select data-testid="snap" value={String(s.snap)} onChange={event => s.setSnap(event.target.value === "note" ? "note" : Number(event.target.value))}>
+            {SNAPS.map(([value, es, en]) => <option key={value} value={String(value)}>{t(es, en)}</option>)}
+          </select>
+        </label>
         <div className={styles.group}>
           <button onClick={s.undo} disabled={!s.availability.undo} aria-label={t("Deshacer", "Undo")} title="Ctrl Z"><Icon name="undo" /></button>
           <button onClick={s.redo} disabled={!s.availability.redo} aria-label={t("Rehacer", "Redo")} title="Ctrl Y"><Icon name="redo" /></button>
@@ -308,7 +322,7 @@ export default function StudioV5({ locale }: { locale: string }) {
         <ToolMenu tool={s.tool} onTool={s.setTool} onEraseNote={id => s.mouse.onErase(id)} t={t}
           icons={{ write: <Icon name="pencil" />, select: <Icon name="pointer" />, erase: <Icon name="eraser" /> }}>
         {view === "staff"
-          ? <div ref={paper}><ScoreView pitchStems score={score} selected={s.selected} locale={locale} onSelect={s.selectNote} mouse={s.mouse} tick={s.tick} cursorTick={s.positionTick} focusVoice="all" layout={layout}
+          ? <div ref={paper}><ScoreView pitchStems measureRests barTies score={score} selected={s.selected} locale={locale} onSelect={s.selectNote} mouse={s.mouse} tick={s.tick} cursorTick={s.positionTick} focusVoice="all" layout={layout}
               systemSize={SYSTEM_SIZE} pageInfo={{ index: shownPage + 1, total: pageCount }}
               from={layout === "page" ? shownPage * barsPerPage + 1 : 1} to={layout === "page" ? Math.min(score.measures.length, (shownPage + 1) * barsPerPage) : score.measures.length}
               showAnnotations={s.cipherVisible} onAnnotation={(measure, beat, text) => s.attempt(() => s.commit(setChordAt(score, measure, beat, text)))}
@@ -363,7 +377,8 @@ export default function StudioV5({ locale }: { locale: string }) {
         <select value={clefAt(score, draft.voice, Math.min(draft.measure, score.measures.length))} onChange={event => s.changeClef(event.target.value as "treble" | "bass")}>
           <option value="treble">{t("Clave de Sol", "Treble clef")}</option><option value="bass">{t("Clave de Fa", "Bass clef")}</option></select></label>
       <div className={styles.row}>
-        <button onClick={s.insertMeasure} title={t("Inserta un compás vacío después de este", "Insert an empty measure after this one")}>{t("+ Compás", "+ Measure")}</button>
+        <button onClick={s.addMeasure} title={t("Añade un compás vacío al final de la partitura", "Add an empty measure at the end of the score")}>{t("+ Compás", "+ Measure")}</button>
+        <button onClick={s.insertMeasure} title={t("Pone un compás vacío donde está el cursor; este compás y lo que sigue se recorren a la derecha", "Put an empty measure at the cursor; this measure and what follows shift right")}>{t("Insertar aquí", "Insert here")}</button>
         <button onClick={s.removeMeasureAt} disabled={score.measures.length < 2} title={t("Quita este compás y recorre lo que sigue", "Remove this measure and shift what follows")}>{t("− Compás", "− Measure")}</button>
       </div>
       <div className={styles.row}>

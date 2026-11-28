@@ -4,12 +4,13 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { activeVoices, clefAt, durationTicks, locateTick, measureStart, measureTicks, pitchToMidi, pitchToVex, scoreTicks } from "@/lib/sequencer/model";
 import { PPQ, type NoteEvent, type Score, type VoiceId } from "@/lib/sequencer/types";
 import styles from "./sequencer.module.css";
-import {staffPitch} from "@/lib/sequencer/mouse-editing";
+import {snapTick,staffPitch} from "@/lib/sequencer/mouse-editing";
 import type { Still } from "@/lib/sequencer/storyboard";
 import { STILL_COLORS } from "@/lib/sequencer/storyboard-resolve";
 import { captureX, decorateCapture, type CaptureRow } from "@/lib/sequencer/capture-decoration";
 import type { CaptureLayout } from "@/lib/sequencer/capture-layout";
 import { noteKey } from "@/lib/sequencer/note-selection";
+import { tieChain } from "@/lib/sequencer/tie-chain";
 
 export type MouseEditing={tool:"write"|"select"|"erase";step:number;accidental:"key"|"#"|"b"|""|"##"|"bb";
   onWrite:(voice:VoiceId,start:number,pitch:string,chord?:boolean)=>void;
@@ -23,7 +24,16 @@ export type MouseEditing={tool:"write"|"select"|"erase";step:number;accidental:"
   beginMarquee?:(e:PointerEvent,click?:()=>void)=>void;
   /** v5: with the select tool, dragging an already selected note moves it (and the rest of the selection).
    *  Off in v4, whose select tool only selects. */
-  dragWithSelect?:boolean};
+  dragWithSelect?:boolean;
+  /** v5: snap grid in ticks for writing and moving. When set, dragging a note on the staff also moves it in time. */
+  snap?:number;
+  /** v5: staff drag that changes time: `steps` staff steps and `ticks` of time (whole selection when the note is part of it). */
+  onMoveStaff?:(id:string,grabbed:string,steps:number,ticks:number,single:boolean)=>void;
+  /** v5: tied notes are one note while editing (the pieces of a tie follow the drag together). */
+  joinTies?:boolean};
+/** One entry per drawn measure: lets a drag that leaves its measure find the time under the pointer in another one. */
+type StaffMap={tickAt:(clientX:number)=>number;xAt:(tick:number)=>number;rowTop:(voice:VoiceId)=>number|undefined};
+const staffMaps=new WeakMap<Element,StaffMap>();
 const SELECTED = "#7c5cff";
 /** VexFlow receives the keys low to high, so notehead i (DOM and setKeyStyle) is pitch i of this list. */
 const sortedPitches = (event: NoteEvent) => [...event.pitches].sort((a, b) => pitchToMidi(a) - pitchToMidi(b));
@@ -64,9 +74,15 @@ type MeasureProps = {
   captureLayout?: CaptureLayout;
   /** V5: each voice has its own staff, so stems follow pitch rather than SATB voice. */
   pitchStems?: boolean;
+  /** V5: an empty measure shows one centered whole rest, whatever the meter (engraving convention). */
+  measureRests?: boolean;
+  /** V5: a tie over a barline on the same line is one arc, drawn by the measure it leaves; half ties only at line breaks. */
+  barTies?: boolean;
+  /** The next measure starts a new line (or is not shown): an outgoing tie is drawn as a half tie. */
+  systemEnd?: boolean;
 };
 
-const MeasureView = memo(function MeasureView({ score, measure, selected, locale, focusVoice, onSelect,mouse,continuous=false,systemStart:startsSystem,renderWidth,showAnnotations=true,capture,captureLayout,pitchStems=false }: MeasureProps) {
+const MeasureView = memo(function MeasureView({ score, measure, selected, locale, focusVoice, onSelect,mouse,continuous=false,systemStart:startsSystem,renderWidth,showAnnotations=true,capture,captureLayout,pitchStems=false,measureRests=false,barTies=false,systemEnd=false }: MeasureProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [error, setError] = useState("");
   useEffect(() => {
@@ -88,6 +104,8 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
         const systemStart = captureLayout ? measure === captureLayout.from : startsSystem ?? (!continuous || measure === 1);
         const end = start + measureTicks(meta);
         const ties: Array<{ event: NoteEvent; note: InstanceType<typeof V.StaveNote> }> = [];
+        // V5: ties into the next measure of the same line, drawn once both measures are on screen.
+        const crossTies: Array<{ note: InstanceType<typeof V.StaveNote>; following: NoteEvent; indexes: number[] }> = [];
         const annotationX = new Map<number,number>();
         const captureRows: CaptureRow[] = [];
         const positionTick = (m: number, beat = 1) => measureStart(score, m) + (beat - 1) * PPQ;
@@ -118,7 +136,8 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
               : voice.name;
             context.setFont("Academico", captureLayout ? 18 : 14).fillText(name, 8, row * rowHeight + (captureLayout ? 90 : 79));
           }
-          const events = displayEvents(voice.events, start, end);
+          const wholeRest = measureRests && !voice.events.some(e => e.start >= start && e.start < end);
+          const events = wholeRest ? [{ id: "", start, duration: "w" as const, dotted: false, triplet: false, pitches: [], tie: false }] : displayEvents(voice.events, start, end);
           const notes = events.map(event => {
             const gap = event.id.startsWith("gap:");
             const note = new V.StaveNote({
@@ -128,6 +147,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
               dots: event.dotted ? 1 : 0, autoStem: pitchStems || score.mode!=="satb",
               ...(score.mode==="satb" && !pitchStems?{stemDirection:voice.id==="soprano"||voice.id==="tenor"?V.Stem.UP:V.Stem.DOWN}:{}),
               ...(gap ? { durationOverride: new V.Fraction(Number(event.id.slice(4)), PPQ * 4) } : {}),
+              ...(wholeRest ? { durationOverride: new V.Fraction(end - start, PPQ * 4), alignCenter: true } : {}),
             });
             if (event.dotted) V.Dot.buildAndAttach([note], { all: true });
             const color = event.ornament ? "#dc2626" : selected.includes(event.id) ? SELECTED : capture ? "#182030" : "#17273a";
@@ -154,7 +174,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
           const vexVoice = new V.Voice({ numBeats: meta.time[0], beatValue: meta.time[1] }).setMode(V.Voice.Mode.SOFT);
           vexVoice.addTickables(notes);
           V.Accidental.applyAccidentals([vexVoice], meta.key);
-          return {voice,row,stave,events,notes,tuplets,vexVoice};
+          return {voice,row,stave,events,notes,tuplets,vexVoice,wholeRest};
         });
         const formatter=new V.Formatter();
         prepared.forEach(({vexVoice})=>formatter.joinVoices([vexVoice]));
@@ -274,11 +294,21 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
             const indexes=entry.event.pitches.map((_,i)=>i);
             if(entry.event.pitches.length && entry.event.tie && following?.start===end
               && entry.event.start+durationTicks(entry.event)===end && following.pitches.join()===entry.event.pitches.join()) {
-              new V.StaveTie({firstNote:entry.note,firstIndexes:indexes,lastIndexes:indexes}).setContext(context).draw();
+              if(barTies&&!systemEnd)crossTies.push({note:entry.note,following,indexes});
+              else new V.StaveTie({firstNote:entry.note,firstIndexes:indexes,lastIndexes:indexes}).setContext(context).draw();
             }
             if(entry.event.pitches.length && entry.event.start===start && previous?.tie
               && previous.start+durationTicks(previous)===start && previous.pitches.join()===entry.event.pitches.join()) {
-              new V.StaveTie({lastNote:entry.note,firstIndexes:indexes,lastIndexes:indexes}).setContext(context).draw();
+              if(barTies){
+                // Where the arc from the previous measure lands (this measure's own coordinates).
+                const group=entry.note.getSVGElement();
+                group?.setAttribute("data-tie-in","true");
+                group?.setAttribute("data-tie-x",String(entry.note.getTieLeftX()));
+                group?.setAttribute("data-tie-ys",entry.note.getYs().join(","));
+                group?.setAttribute("data-tie-stem",String(entry.note.getStemDirection()));
+              }
+              // Same line: the previous measure draws the whole arc. A line start gets the half tie.
+              if(!barTies||systemStart)new V.StaveTie({lastNote:entry.note,firstIndexes:indexes,lastIndexes:indexes}).setContext(context).draw();
             }
           }));
         });
@@ -306,6 +336,25 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
           svg.setAttribute("pointer-events","all");
           svg.setAttribute("data-mouse-staff","true");
           const point=(e:PointerEvent|MouseEvent)=>{const rect=svg.getBoundingClientRect();return {x:(e.clientX-rect.left)*width/rect.width,y:(e.clientY-rect.top)*height/rect.height};};
+          {
+            // Time <-> x for this measure: the noteheads of every voice share the formatter's columns.
+            const points=prepared.filter(p=>!p.wholeRest).flatMap(({events,notes})=>events.map((event,i)=>({tick:event.start,x:notes[i].getAbsoluteX()})))
+              .concat({tick:start,x:prepared[0].stave.getNoteStartX()},{tick:end,x:prepared[0].stave.getNoteEndX()})
+              .sort((a,b)=>a.tick-b.tick||a.x-b.x);
+            const columns:typeof points=[];
+            for(const point of points)if(!columns.length||(point.tick>columns.at(-1)!.tick&&point.x>columns.at(-1)!.x))columns.push(point);
+            const lerp=(value:number,from:"x"|"tick",to:"x"|"tick")=>{
+              const right=columns.findIndex(c=>c[from]>value);
+              if(right<=0)return columns[right<0?columns.length-1:0][to];
+              const a=columns[right-1],b=columns[right];
+              return a[to]+(b[to]-a[to])*(value-a[from])/Math.max(1,b[from]-a[from]);
+            };
+            staffMaps.set(svg,{
+              tickAt:clientX=>{const rect=svg.getBoundingClientRect();return lerp((clientX-rect.left)*width/rect.width,"x","tick");},
+              xAt:tick=>lerp(tick,"tick","x"),
+              rowTop:id=>prepared.find(p=>p.voice.id===id)?.stave.getYForLine(0),
+            });
+          }
           const pitchAt=(voice:typeof voices[number],y:number,top:number)=>{
             const pitch=staffPitch(voice.clef,y-top,meta.key);
             return mouse.accidental==="key"?pitch:pitch.replace(/(##|bb|#|b)?(-?\d+)$/,mouse.accidental+"$2");
@@ -313,19 +362,22 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
           const down=(e:PointerEvent)=>{
             if(e.button!==0)return;e.preventDefault();
             const p=point(e),row=Math.max(0,Math.min(prepared.length-1,Math.floor((p.y-14)/rowHeight)));
-            const data=prepared[row],{voice,stave,events,notes}=data;
+            const data=prepared[row],{voice,stave,events,notes,wholeRest}=data;
             if(p.x<stave.getNoteStartX()-12||p.y<stave.getYForLine(0)-40||p.y>stave.getYForLine(4)+45){if(mouse.tool==="select")mouse.beginMarquee?.(e);return;}
             let index=notes.findIndex(n=>Math.abs(n.getAbsoluteX()-p.x)<18);
             const dom=(e.target as Element).closest("[data-event-start]");
             if(dom?.getAttribute("data-event-voice")===voice.id)index=events.findIndex(event=>String(event.start)===dom.getAttribute("data-event-start"));
-            const hit=index>=0?events[index]:null;
+            // A centered measure rest is not a position: clicks in an empty measure land by x, like on blank staff.
+            const hit=index>=0&&!wholeRest?events[index]:null;
             if(mouse.tool==="erase"){if(hit?.id&&!hit.id.startsWith("gap:"))mouse.onErase(hit.id);return;}
             const positionAt=()=>{
               if(hit)return hit.start;
-              const anchors=events.map((event,i)=>({x:notes[i].getAbsoluteX(),tick:event.start})).concat({x:stave.getNoteEndX(),tick:end}).sort((a,b)=>a.x-b.x);
+              const anchors=(wholeRest?[]:events.map((event,i)=>({x:notes[i].getAbsoluteX(),tick:event.start}))).concat({x:stave.getNoteEndX(),tick:end}).sort((a,b)=>a.x-b.x);
               const left=[...anchors].reverse().find(a=>a.x<=p.x)??{x:stave.getNoteStartX(),tick:start};
               const right=anchors.find(a=>a.x>p.x)??anchors.at(-1)!;
               const raw=left.tick+(right.tick-left.tick)*Math.max(0,Math.min(1,(p.x-left.x)/Math.max(1,right.x-left.x)));
+              // v5 snap: the last grid point of the measure, never an off-grid 32nd before the barline.
+              if(mouse.snap)return start+Math.min(Math.floor((end-start-1)/mouse.snap)*mouse.snap,Math.max(0,Math.round((raw-start)/mouse.snap)*mouse.snap));
               return start+Math.min(end-start-PPQ/8,Math.max(0,Math.round((raw-start)/mouse.step)*mouse.step));
             };
             const extend=e.shiftKey||e.ctrlKey||e.metaKey;
@@ -361,30 +413,62 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
               const noteX=notes[index].getAbsoluteX()+6,noteY=stave.getYForLine(0)+(top-anchor)*5;
               // The rest of the selection (other notes, other measures) follows the drag on screen.
               const together=selected.length>1&&(selected.includes(hit.id)||selected.includes(noteKey(hit.id,grabbed)));
-              const companions=()=>together?[...(svg.closest("[data-testid=score-view]")??svg).querySelectorAll<SVGGElement>("[data-note-id]")]
-                .filter(el=>{const id=el.getAttribute("data-note-id")!;return id!==hit.id&&selected.some(k=>k===id||k.startsWith(id+"@"));}):[];
-              let heardPitch=lowest,steps=0,moved=false;mouse.onPreview(hit.id,heardPitch,single?grabbed:undefined);
+              // v5: the other pieces of a tied note always follow, selected or not.
+              const tied=mouse.joinTies?tieChain(score,hit.id).filter(id=>id!==hit.id):[];
+              const companions=()=>together||tied.length?[...(svg.closest("[data-testid=score-view]")??svg).querySelectorAll<SVGGElement>("[data-note-id]")]
+                .filter(el=>{const id=el.getAttribute("data-note-id")!;return id!==hit.id&&(tied.includes(id)||(together&&selected.some(k=>k===id||k.startsWith(id+"@"))));}):[];
+              let heardPitch=lowest,steps=0,moved=false,ticks=0;mouse.onPreview(hit.id,heardPitch,single?grabbed:undefined);
+              // v5: a horizontal drag also moves the note in time, on the snap grid; a dashed line marks where it lands (in any measure).
+              const inTime=mouse.snap!==undefined&&!!mouse.onMoveStaff;
+              const pressOffset=inTime?staffMaps.get(svg)!.tickAt(e.clientX)-hit.start:0;
+              const drop=document.createElementNS("http://www.w3.org/2000/svg","line");
+              drop.setAttribute("stroke","#7c5cff");drop.setAttribute("stroke-width","2");drop.setAttribute("stroke-dasharray","4 3");
+              drop.setAttribute("data-testid","drop-line");
+              let host:Element=svg;
+              const timeFor=(event:PointerEvent):{ticks:number;target:Element}|"keep"|null=>{
+                if(!inTime||Math.abs(event.clientX-e.clientX)<8)return null;
+                // Time is read on the row where the drag began, so moving up or down only changes the pitch.
+                const target=document.elementsFromPoint(event.clientX,e.clientY).map(el=>el.closest("svg[data-mouse-staff]")).find(el=>!!el&&staffMaps.has(el));
+                if(!target)return "keep";
+                return {ticks:snapTick(score,staffMaps.get(target)!.tickAt(event.clientX)-pressOffset,mouse.snap!)-hit.start,target};
+              };
+              const pretty=(pitch:string)=>pitch.replace(/##/,"𝄪").replace(/bb(?=-?\d)/,"𝄫").replace(/#/,"♯").replace(/(?<=[A-G])b/,"♭");
               const move=(event:PointerEvent)=>{
-                if(!moved&&Math.abs(event.clientY-e.clientY)<3)return;
-                const next=stepsFor(event);if(next===steps&&moved)return;
+                if(!moved&&Math.abs(event.clientY-e.clientY)<3&&Math.abs(event.clientX-e.clientX)<8)return;
+                const next=stepsFor(event);
                 let pitch:string;try{pitch=pitchFor(next);}catch{return;/* Outside MIDI range: stay on the last valid step. */}
+                const time=timeFor(event);
+                if(time===null){ticks=0;host=svg;}
+                else if(time!=="keep"){ticks=time.ticks;host=ticks?time.target:svg;}
                 steps=next;moved=true;
                 group?.setAttribute("transform","translate(0 "+(-steps*5)+")");
-                if(mouse.dragWithSelect)companions().forEach(el=>el.setAttribute("transform","translate(0 "+(-steps*5)+")"));
-                if(!label.isConnected)svg.appendChild(label);
-                label.setAttribute("x",String(noteX));label.setAttribute("y",String(noteY-steps*5-16));
-                label.textContent=pitch.replace(/##/,"𝄪").replace(/bb(?=-?\d)/,"𝄫").replace(/#/,"♯").replace(/(?<=[A-G])b/,"♭");
+                if(group){if(ticks)group.setAttribute("opacity","0.35");else group.removeAttribute("opacity");}
+                if(mouse.dragWithSelect)companions().forEach(el=>{el.setAttribute("transform","translate(0 "+(-steps*5)+")");if(ticks)el.setAttribute("opacity","0.35");else el.removeAttribute("opacity");});
+                const map=staffMaps.get(host)!;
+                const rowTop=map.rowTop(voice.id)??stave.getYForLine(0);
+                const x=ticks?map.xAt(hit.start+ticks)+6:noteX;
+                const y=ticks?rowTop+(top-anchor-steps)*5:noteY-steps*5;
+                if(label.ownerSVGElement!==host)host.appendChild(label);
+                label.setAttribute("x",String(x));label.setAttribute("y",String(y-16));
+                const at=locateTick(score,hit.start+ticks);
+                label.textContent=pretty(pitch)+(ticks?" · "+at.measure+":"+Math.round(at.beat*100)/100:"");
+                if(ticks){
+                  if(drop.ownerSVGElement!==host)host.appendChild(drop);
+                  drop.setAttribute("x1",String(x-6));drop.setAttribute("x2",String(x-6));
+                  drop.setAttribute("y1",String(rowTop-10));drop.setAttribute("y2",String(rowTop+50));
+                }else drop.remove();
                 if(pitch!==heardPitch){heardPitch=pitch;mouse.onPreview(hit.id,pitch,single?grabbed:undefined);}
               };
               const cleanup=()=>{
                 window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",finish);window.removeEventListener("pointercancel",abort);
-                mouse.onPreviewEnd();label.remove();
-                if(group){if(original)group.setAttribute("transform",original);else group.removeAttribute("transform");}
-                if(mouse.dragWithSelect)companions().forEach(el=>el.removeAttribute("transform"));
+                mouse.onPreviewEnd();label.remove();drop.remove();
+                if(group){if(original)group.setAttribute("transform",original);else group.removeAttribute("transform");group.removeAttribute("opacity");}
+                if(mouse.dragWithSelect)companions().forEach(el=>{el.removeAttribute("transform");el.removeAttribute("opacity");});
               };
               const finish=()=>{
                 cleanup();
-                if(moved&&steps!==0){if(single)mouse.onMovePitch!(hit.id,grabbed,pitchFor(steps));else mouse.onMove(hit.id,pitchFor(steps));}
+                if(moved&&ticks!==0&&mouse.onMoveStaff)mouse.onMoveStaff(hit.id,grabbed,steps,ticks,single);
+                else if(moved&&steps!==0){if(single)mouse.onMovePitch!(hit.id,grabbed,pitchFor(steps));else mouse.onMove(hit.id,pitchFor(steps));}
                 else onSelect(single?noteKey(hit.id,grabbed):hit.id,e.shiftKey);
               };
               const abort=()=>cleanup();
@@ -408,14 +492,44 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
           svg.addEventListener("pointerdown",down);svg.addEventListener("contextmenu",erase);
           cleanups.push(()=>{svg.removeEventListener("pointerdown",down);svg.removeEventListener("contextmenu",erase);});
         }
+        if (svg && barTies && crossTies.length) {
+          const surface = target.closest("[data-testid=score-view]");
+          // One arc from this note to the tied note at the start of the next measure (the SVG overflows into it).
+          const drawCross = () => {
+            svg.querySelectorAll("[data-cross-tie]").forEach(element => element.remove());
+            const next = surface?.querySelector<SVGSVGElement>('section[data-measure="' + (measure + 1) + '"] svg');
+            if (!next) return;
+            const here = svg.getBoundingClientRect(), there = next.getBoundingClientRect(), box = next.viewBox.baseVal;
+            const placed = here.width > 0 && there.width > 0 && box.width > 0 && box.height > 0;
+            const toX = (x: number) => placed ? (there.left + x * there.width / box.width - here.left) * width / here.width : width + x;
+            const toY = (y: number) => placed ? (there.top + y * there.height / box.height - here.top) * height / here.height : y;
+            for (const { note, following, indexes } of crossTies) {
+              const landing = next.querySelector('[data-note-id="' + following.id + '"][data-tie-in]');
+              if (!landing) continue;
+              const x = toX(Number(landing.getAttribute("data-tie-x"))), ys = landing.getAttribute("data-tie-ys")!.split(",").map(Number).map(toY);
+              const stem = Number(landing.getAttribute("data-tie-stem"));
+              const group = context.openGroup("cross-tie");
+              group?.setAttribute("data-cross-tie", following.id);
+              const lastNote = { getTieLeftX: () => x, getYs: () => ys, getStemDirection: () => stem } as unknown as InstanceType<typeof V.StaveNote>;
+              new V.StaveTie({ firstNote: note, lastNote, firstIndexes: indexes, lastIndexes: indexes }).setContext(context).draw();
+              context.closeGroup();
+            }
+          };
+          drawCross();
+          // The next measure renders on its own: redraw when it is ready (or changes).
+          const redraw = (event: Event) => { if ((event as CustomEvent<number>).detail === measure + 1) drawCross(); };
+          surface?.addEventListener("sequencer-measure-drawn", redraw);
+          cleanups.push(() => surface?.removeEventListener("sequencer-measure-drawn", redraw));
+        }
         if (svg && capture) decorateCapture(svg, capture, measure, captureRows, positionTick, captureLayout?.scale ?? 1, showAnnotations ? score.annotations : [], !!captureLayout && captureLayout.from === captureLayout.to);
         setError("");
+        if (barTies) target.dispatchEvent(new CustomEvent("sequencer-measure-drawn", { bubbles: true, detail: measure }));
       } catch (error) {
         setError(error instanceof Error ? error.message : "Notation error");
       }
     })();
     return () => { cancelled = true;cleanups.forEach(clean=>clean()); };
-  }, [score, measure, selected, locale, focusVoice, onSelect,mouse,continuous,startsSystem,renderWidth,showAnnotations,capture,captureLayout,pitchStems]);
+  }, [score, measure, selected, locale, focusVoice, onSelect,mouse,continuous,startsSystem,renderWidth,showAnnotations,capture,captureLayout,pitchStems,measureRests,barTies,systemEnd]);
   return <><div ref={ref} className={styles.notation} />{error && <p role="alert" className={styles.renderError}>{error}</p>}</>;
 });
 
@@ -431,7 +545,9 @@ function headBox(element: Element) {
 
 const PAGE_FIRST_WIDTH = 540, PAGE_WIDTH = 420; // SVG units; equal scale keeps staves aligned across a system
 
-export default function ScoreView({ score, selected, locale, onSelect, mouse,tick,cursorTick, focusVoice = "all", from = 1, to = score.measures.length,layout="scene",showAnnotations=true,onAnnotation,capture,captureLayout,systemSize=3,pageInfo,onSelectMany,onMeasure,pitchStems=false }: Omit<MeasureProps, "measure"> & {
+export default function ScoreView({ score, selected, locale, onSelect, mouse,tick,cursorTick, focusVoice = "all", from = 1, to = score.measures.length,layout="scene",showAnnotations=true,onAnnotation,capture,captureLayout,systemSize=3,pageInfo,onSelectMany,onMeasure,pitchStems=false,measureRests=false,barTies=false,pageTitle=true }: Omit<MeasureProps, "measure"> & {
+  /** Page layout: show the score title on the first page (off when the host already shows a heading). */
+  pageTitle?: boolean;
   tick: number | null; from?: number; to?: number;layout?:"line"|"page"|"scene";
   cursorTick?:number;
   onAnnotation?:(measure:number,beat:number,text:string)=>void;
@@ -495,7 +611,7 @@ export default function ScoreView({ score, selected, locale, onSelect, mouse,tic
       container.scrollTo({left:Math.max(0,bar.offsetLeft-container.clientWidth/4),behavior:"auto"});
   },[layout,playingMeasure]);
 
-  const renderMeasure=(n:number,page?:{systemStart:boolean;width:number})=>{
+  const renderMeasure=(n:number,page?:{systemStart:boolean;systemEnd:boolean;width:number})=>{
     const index=n-1,measure=score.measures[index];
     const start = measureStart(score, n), length = measureTicks(measure);
     const displayedTick=tick??cursorTick;
@@ -506,7 +622,8 @@ export default function ScoreView({ score, selected, locale, onSelect, mouse,tic
         ? <div className={styles.measureHeading}>{page.systemStart ? (onMeasure ? <button type="button" className={styles.measureNumber} onClick={()=>onMeasure(n)} aria-label={(es?"Ir al compás ":"Go to measure ")+n}>{n}</button> : <span>{n}</span>) : <span/>}</div>
         : <div className={styles.measureHeading}>{onMeasure?<button type="button" className={styles.measureNumber} onClick={()=>onMeasure(n)} aria-label={(es?"Ir al compás ":"Go to measure ")+n}>{String(n).padStart(2, "0")}</button>:<span>{String(n).padStart(2, "0")}</span>}{(layout!=="line" || signatureChanged) && <span>{measure.key} / {measure.time.join("/")}</span>}</div>)}
       <MeasureView score={score} measure={n} selected={selected} locale={locale} focusVoice={focusVoice} onSelect={onSelect} mouse={editing} continuous={layout==="line" || layout==="page" || !!captureLayout}
-        systemStart={page?.systemStart} renderWidth={page?.width} showAnnotations={showAnnotations} capture={capture} captureLayout={captureLayout} pitchStems={pitchStems} />
+        systemStart={page?.systemStart} renderWidth={page?.width} showAnnotations={showAnnotations} capture={capture} captureLayout={captureLayout} pitchStems={pitchStems} measureRests={measureRests}
+        barTies={barTies} systemEnd={page ? page.systemEnd : n === Math.min(to, score.measures.length)} />
       {showAnnotations&&onAnnotation&&<div className={styles.inlineCiphers} style={{gridTemplateColumns:`repeat(${Math.ceil(length/PPQ)},minmax(0,1fr))`}}>
         {Array.from({length:Math.ceil(length/PPQ)},(_,i)=>{const annotation=score.annotations?.find(a=>a.kind==="roman"&&a.measure===n&&a.beat===i+1);return <input key={annotation?.id+":"+(annotation?.text??"")+":"+i} defaultValue={annotation?.text??""} aria-label={(es?"Cifrado compás ":"Cipher measure ")+n+(es?", pulso ":", beat ")+(i+1)} placeholder="—" maxLength={200} onBlur={e=>{if(e.target.value!==(annotation?.text??""))onAnnotation(n,i+1,e.target.value);}} onKeyDown={e=>{if(e.key==="Enter")e.currentTarget.blur();}}/>;})}
       </div>}
@@ -522,10 +639,10 @@ export default function ScoreView({ score, selected, locale, onSelect, mouse,tic
     const columns=Array.from({length:systemSize},(_,i)=>`${i===0?PAGE_FIRST_WIDTH:PAGE_WIDTH}fr`).join(" ");
     return <div ref={surface} className={styles.scoreSurface} data-layout="page" data-testid="score-view">
       <article key={from} className={styles.pageSheet} aria-label={(es?"Página ":"Page ")+(pageInfo?.index??1)}>
-        {from===1&&<header className={styles.pageTitle}><h3>{score.title||(es?"Sin título":"Untitled")}</h3><span>♩ = {score.tempo}</span></header>}
+        {from===1&&pageTitle&&<header className={styles.pageTitle}><h3>{score.title||(es?"Sin título":"Untitled")}</h3><span>♩ = {score.tempo}</span></header>}
         <div className={styles.measures}>
           {systems.map(system=><div key={system[0]} className={styles.system} style={{gridTemplateColumns:columns}}>
-            {system.map((n,i)=>renderMeasure(n,{systemStart:i===0,width:i===0?PAGE_FIRST_WIDTH:PAGE_WIDTH}))}
+            {system.map((n,i)=>renderMeasure(n,{systemStart:i===0,systemEnd:i===system.length-1,width:i===0?PAGE_FIRST_WIDTH:PAGE_WIDTH}))}
           </div>)}
         </div>
         {pageInfo&&<footer className={styles.pageNumber}>{pageInfo.index} / {pageInfo.total}</footer>}
