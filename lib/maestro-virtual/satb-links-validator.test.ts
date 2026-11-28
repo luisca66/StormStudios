@@ -36,7 +36,7 @@ describe('Lesson 8 independent SATB links', () => {
     ]);
     expect(feedback.some(f => f.rule === 'LINK_REPEATED_KEY')).toBe(false);
   });
-  it('warns about repeated keys as information without reducing the score', () => {
+  it('warns about repeated keys as information without counting as an error', () => {
     const feedback = validateLesson8SatbLinks(load());
     expect(errors(load())).toEqual([]);
     expect(feedback.find(f => f.rule === 'LINK_REPEATED_KEY')).toMatchObject({ severity: 'info', position: 3 });

@@ -9,6 +9,9 @@ const escape = (text: string) => text.replace(/[<>&"']/g, c => ({ "<": "&lt;", "
 /** Portable graphics include the exact notation fonts; no remote fonts or raster screenshots. */
 export async function exportGraphic(element: HTMLElement, options: {
   title: string; caption: string; aspect: "16:9" | "9:16"; png: boolean;
+  /** "grid" (default, v4): measures in a grid of cells. "screen" (v5): measures where they are on screen, so systems,
+   *  clefs at line starts and ties over the barline come out exactly as seen. */
+  layout?: "grid" | "screen";
 }): Promise<Blob> {
   const svgs = [...element.querySelectorAll("svg")];
   if (!svgs.length) throw new Error("La partitura aún no está lista.");
@@ -25,7 +28,20 @@ export async function exportGraphic(element: HTMLElement, options: {
   const cellWidth = (width - 140) / columns, available = height - 300;
   const naturalHeight = Math.max(...svgs.map(svg => svg.viewBox.baseVal.height || 200));
   const scale = Math.min((cellWidth - 22) / 620, available / (rows * (naturalHeight + 25)));
-  const content = svgs.map((svg, index) => {
+  const placed = options.layout === "screen" ? svgs.map(svg => ({ svg, rect: svg.getBoundingClientRect(), view: svg.viewBox.baseVal })).filter(item => item.rect.width > 0 && item.view.width > 0) : [];
+  const screen = placed.length ? (() => {
+    const left = Math.min(...placed.map(p => p.rect.left)), top = Math.min(...placed.map(p => p.rect.top));
+    const right = Math.max(...placed.map(p => p.rect.right)), bottom = Math.max(...placed.map(p => p.rect.bottom));
+    const fit = Math.min((width - 140) / (right - left), available / (bottom - top));
+    return placed.map(({ svg, rect, view }) => {
+      const clone = svg.cloneNode(true) as SVGSVGElement;
+      clone.removeAttribute("width"); clone.removeAttribute("height"); clone.removeAttribute("style");
+      clone.setAttribute("overflow", "visible"); // a tie over the barline reaches into the next measure
+      return '<g transform="translate(' + (70 + (rect.left - left) * fit) + " " + (170 + (rect.top - top) * fit) + ') scale(' + (fit * rect.width / view.width) + ')">'
+        + clone.outerHTML.replace("<svg", '<svg width="' + view.width + '" height="' + view.height + '"') + "</g>";
+    }).join("");
+  })() : null;
+  const content = screen ?? svgs.map((svg, index) => {
     const x = 70 + (index % columns) * cellWidth, y = 170 + Math.floor(index / columns) * (naturalHeight + 25) * scale;
     const clone = svg.cloneNode(true) as SVGSVGElement;
     clone.removeAttribute("width"); clone.removeAttribute("height");

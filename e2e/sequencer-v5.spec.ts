@@ -99,23 +99,31 @@ test("the chord track stores plain chord symbols and writes no notes", async ({ 
   await expect(page.getByTestId("lcd-chord")).toHaveText("I");
 });
 
-test("measures can be inserted, copied and removed around the cursor", async ({ page }) => {
+test("measures are added at the end, inserted, copied and removed around the cursor", async ({ page }) => {
   await open(page);
   await page.getByRole("tab", { name: "Entrada por texto", exact: true }).click();
   await page.getByTestId("text-input").fill("voz melody\ncompas 1\nC4 redonda\ncompas 2\nD4 redonda");
   await page.getByTestId("text-apply").click();
   expect(await melody(page)).toEqual(["C4", "D4"]);
+  // "+ Compás" always appends: nothing moves, wherever the cursor is.
   await page.getByRole("button", { name: "+ Compás", exact: true }).click();
   let score = await api(page);
   expect(score.measures).toHaveLength(5);
+  expect(score.voices.find(v => v.id === "melody")!.events.map(e => e.start)).toEqual([0, 3840]);
+  // "Insertar aquí" puts the empty measure at the cursor: measure 2 (D4) and what follows shift right.
+  await page.getByRole("button", { name: "Ir al compás 2", exact: true }).click();
+  await page.getByRole("button", { name: "Insertar aquí", exact: true }).click();
+  score = await api(page);
+  expect(score.measures).toHaveLength(6);
   expect(score.voices.find(v => v.id === "melody")!.events.map(e => e.start)).toEqual([0, 7680]);
+  await page.getByRole("button", { name: "Ir al compás 1", exact: true }).click();
   await page.getByLabel("Copiar al compás").fill("2");
   await page.getByRole("button", { name: "Copiar", exact: true }).click();
   expect(await melody(page)).toEqual(["C4", "C4", "D4"]);
   page.once("dialog", dialog => void dialog.accept());
   await page.getByRole("button", { name: "− Compás", exact: true }).click();
   score = await api(page);
-  expect(score.measures).toHaveLength(4);
+  expect(score.measures).toHaveLength(5);
   expect(await melody(page)).toEqual(["C4", "D4"]);
 });
 
@@ -131,6 +139,9 @@ test("page view, markers and presentation", async ({ page }) => {
   await page.getByLabel("Título", { exact: true }).fill("Cadencia");
   await page.getByTestId("present-scene").click();
   await expect(page.getByTestId("presentation-stage")).toContainText("Cadencia");
+  // The stage draws systems like the page view (clef only at each line start), not one card per measure.
+  await expect(page.getByTestId("presentation-stage").getByTestId("score-view")).toHaveAttribute("data-layout", "page");
+  await expect(page.getByTestId("presentation-stage").locator("h3")).toHaveCount(0);
   await page.keyboard.press("Escape");
   await expect(page.getByTestId("presentation")).toHaveCount(0);
 });
@@ -229,6 +240,103 @@ test("dragging one selected note moves the whole selection", async ({ page }) =>
   expect(moved[0]).toBeLessThan(0);
   expect(new Set(moved).size).toBe(1);
   expect(after.some(pitch => pitch.includes("#"))).toBe(false); // Do mayor: el Fa# baja a una nota natural
+});
+
+test("notes move in time on the staff and every edit follows the snap", async ({ page }) => {
+  await open(page);
+  await page.getByRole("tab", { name: "Entrada por texto", exact: true }).click();
+  await page.getByTestId("text-input").fill("voz melody\ncompas 1\nC4 negra; E4 negra");
+  await page.getByTestId("text-apply").click();
+  await page.getByTestId("snap").selectOption("960");
+  await expect(page.locator("[data-note-id] .vf-notehead").first()).toBeVisible();
+  const head = await page.locator("[data-note-id] .vf-notehead").first().evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x + b.width / 2, y: b.y + b.height / 2 }; });
+  const second = await page.locator("section[data-measure='2'] svg").first().boundingBox();
+  // Write tool: drag C4 to the right, into the middle of measure 2; the pitch stays.
+  await page.mouse.move(head.x, head.y);
+  await page.mouse.down();
+  await page.mouse.move(second!.x + second!.width * 0.55, head.y, { steps: 12 });
+  await expect(page.getByTestId("drop-line")).toBeAttached(); // a vertical line has no width, so it never counts as "visible"
+  await page.mouse.up();
+  await expect(page.getByTestId("drop-line")).toHaveCount(0);
+  const events = (await api(page)).voices.find(v => v.id === "melody")!.events.filter(e => e.pitches.length);
+  const moved = events.find(e => e.pitches[0] === "C4")!;
+  expect(moved.start).toBeGreaterThanOrEqual(3840);
+  expect(moved.start).toBeLessThan(7680);
+  expect(moved.start % 960).toBe(0);
+  expect(events.find(e => e.pitches[0] === "E4")!.start).toBe(960);
+  // Key editor: with a half-note snap, 70 px (≈1.5 quarters) lands on beat 3, not on a 32nd.
+  await page.getByRole("button", { name: "Teclas", exact: true }).click();
+  await page.getByTestId("snap").selectOption("1920");
+  await page.locator('[data-pitch="E4"]').evaluate(row => row.scrollIntoView({ block: "center" }));
+  const note = (await page.locator('[data-pitch="E4"] [data-roll-note]').first().boundingBox())!;
+  await page.mouse.move(note.x + 10, note.y + note.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(note.x + 10 + 70, note.y + note.height / 2, { steps: 8 });
+  await page.mouse.up();
+  expect((await api(page)).voices.find(v => v.id === "melody")!.events.find(e => e.pitches[0] === "E4")!.start).toBe(1920);
+});
+
+test("a tied note is one note: one bar in the key editor, selected, moved and erased whole", async ({ page }) => {
+  await open(page);
+  // E4 on beat 1, then C5: a half on beat 3 tied over the barline to a quarter.
+  await page.evaluate(() => {
+    const agent = (window as unknown as { stormSequencer: SequencerAgentApi }).stormSequencer;
+    const score = agent.getScore();
+    const note = (id: string, start: number, pitch: string, duration: "h" | "q", tie: boolean) => ({ id, start, duration, dotted: false, triplet: false, tie, pitches: [pitch] });
+    score.voices.find(v => v.id === "melody")!.events = [note("x", 0, "E4", "q", false), note("a", 1920, "C5", "h", true), note("b", 3840, "C5", "q", false)];
+    agent.loadScore(score);
+  });
+  const melodyEvents = async () => (await page.evaluate(() => (window as unknown as { stormSequencer: SequencerAgentApi }).stormSequencer.getScore()))
+    .voices.find(v => v.id === "melody")!.events.map(e => ({ id: e.id, at: `${e.start}:${e.pitches.join("+")}` }));
+  await page.getByRole("button", { name: "Teclas", exact: true }).click();
+  await page.locator('[data-pitch="C5"]').evaluate(row => row.scrollIntoView({ block: "center" }));
+  // Drawn as one bar: only the first piece is labelled; only the last one has the resize grip.
+  await expect(page.locator('[data-roll-note="a"]')).toHaveAttribute("data-tie", "start");
+  await expect(page.locator('[data-roll-note="b"]')).toHaveAttribute("data-tie", "end");
+  await expect(page.locator('[data-roll-note="b"]')).toHaveText(/^\W*$/);
+  // A click on the second piece selects the whole note.
+  await page.locator('[data-roll-note="b"]').click({ position: { x: 4, y: 10 } });
+  await expect(page.locator('[data-roll-note="a"]')).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator('[data-roll-note="b"]')).toHaveAttribute("aria-pressed", "true");
+  // Dragging one piece up a whole tone moves the whole tied note.
+  const box = (await page.locator('[data-roll-note="b"]').boundingBox())!;
+  await page.mouse.move(box.x + 4, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 4, box.y + box.height / 2 - 52, { steps: 8 });
+  await page.mouse.up();
+  expect((await melodyEvents()).map(e => e.at)).toEqual(["0:E4", "1920:D5", "3840:D5"]);
+  // Score + eraser: clicking the tied-to (second) piece erases the whole note.
+  await page.getByRole("button", { name: "Partitura", exact: true }).click();
+  await page.getByRole("button", { name: "Borrar", exact: true }).click();
+  const second = (await melodyEvents()).find(e => e.at === "3840:D5")!.id;
+  await expect(page.locator(`[data-note-id="${second}"] .vf-notehead`)).toBeVisible();
+  await page.locator(`[data-note-id="${second}"] .vf-notehead`).click();
+  expect((await melodyEvents()).map(e => e.at)).toEqual(["0:E4"]);
+});
+
+test("a tie over the barline is one arc on the same line, two halves only at a line break", async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => {
+    const agent = (window as unknown as { stormSequencer: SequencerAgentApi }).stormSequencer;
+    const score = agent.getScore();
+    const note = (id: string, start: number, pitch: string, duration: "h" | "q", tie: boolean) => ({ id, start, duration, dotted: false, triplet: false, tie, pitches: [pitch] });
+    // C5 tied from measure 1 into 2 (same line), G4 tied from measure 3 into 4 (a line break in the page view).
+    score.voices.find(v => v.id === "melody")!.events = [note("a", 1920, "C5", "h", true), note("b", 3840, "C5", "q", false), note("g", 9600, "G4", "h", true), note("h", 11520, "G4", "q", false)];
+    agent.loadScore(score);
+  });
+  // Continuous: measure 1 draws one arc that ends at the tied note; measure 2 draws no second tie.
+  await expect(page.locator('section[data-measure="1"] [data-cross-tie]')).toHaveCount(1);
+  await expect(page.locator('section[data-measure="2"] .vf-stavetie')).toHaveCount(0);
+  const arc = (await page.locator('section[data-measure="1"] [data-cross-tie]').boundingBox())!;
+  const head = (await page.locator('[data-note-id="b"] .vf-notehead').boundingBox())!;
+  expect(Math.abs(arc.x + arc.width - head.x)).toBeLessThan(8);
+  // Pages, three measures per line: 1→2 is still one arc; 3→4 crosses the line break, so each line shows its half.
+  await page.getByRole("button", { name: "Páginas", exact: true }).click();
+  await expect(page.locator('section[data-measure="1"] [data-cross-tie]')).toHaveCount(1);
+  await expect(page.locator('section[data-measure="2"] .vf-stavetie')).toHaveCount(0);
+  await expect(page.locator('section[data-measure="3"] [data-cross-tie]')).toHaveCount(0);
+  await expect(page.locator('section[data-measure="3"] .vf-stavetie')).toHaveCount(1);
+  await expect(page.locator('section[data-measure="4"] .vf-stavetie')).toHaveCount(1);
 });
 
 test("a MIDI keyboard writes notes and chords spelled by the key", async ({ page }) => {

@@ -79,3 +79,22 @@ export function rollTick(score:Score,raw:number,step:number) {
   const location=locateTick(score,Math.max(0,raw)),start=measureStart(score,location.measure);
   return start+Math.min(measureTicks(score.measures[location.measure-1])-Math.min(step,PPQ/8),Math.max(0,Math.round((raw-start)/step)*step));
 }
+
+/**
+ * v5 snap for moving notes: the grid counts from the barline of the measure under `raw`, and a value
+ * that rounds up to the barline lands on the next downbeat (rollTick, made for writing, clamps it
+ * to the last 32nd of the measure instead, which leaves the note off the grid).
+ */
+export function snapTick(score:Score,raw:number,step:number) {
+  const total=scoreTicks(score),clamped=Math.max(0,Math.min(total,raw));
+  const location=locateTick(score,Math.min(clamped,Math.max(0,total-1))),start=measureStart(score,location.measure);
+  const length=measureTicks(score.measures[location.measure-1]);
+  return start+Math.min(length,Math.max(0,Math.round((clamped-start)/step)*step));
+}
+
+/** v5 snap for writing with a click: the nearest grid point inside the clicked measure (never past its last one). */
+export function snapWriteTick(score:Score,raw:number,step:number) {
+  const location=locateTick(score,Math.max(0,Math.min(raw,Math.max(0,scoreTicks(score)-1)))),start=measureStart(score,location.measure);
+  const length=measureTicks(score.measures[location.measure-1]),last=Math.floor((length-1)/step)*step;
+  return start+Math.min(last,Math.max(0,Math.round((raw-start)/step)*step));
+}

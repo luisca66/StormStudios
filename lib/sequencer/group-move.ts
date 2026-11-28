@@ -6,8 +6,8 @@
  * - En la partitura, por grados del pentagrama: cada nota sube o baja los
  *   mismos pasos (línea/espacio) y toma la alteración de la armadura de su
  *   compás, igual que cuando se arrastra una sola.
- * - En el editor de teclas, por semitonos y en el tiempo: todas se corren el
- *   mismo intervalo y la misma distancia.
+ * - En el editor de teclas, por semitonos; en el tiempo (en los dos editores)
+ *   todas se corren la misma distancia.
  *
  * Una nota de acorde seleccionada sola mueve solo esa altura; en el tiempo se
  * mueve el acorde completo (un acorde no se parte al desplazarlo).
@@ -39,7 +39,7 @@ export function staffSteps(from: string, to: string): number {
 }
 
 export type GroupMove =
-  | { kind: "steps"; steps: number }
+  | { kind: "steps"; steps: number; ticks?: number }
   | { kind: "keys"; semitones: number; ticks: number };
 
 /** ¿Hay más de una nota en la selección y `id` es una de ellas? */
@@ -76,14 +76,15 @@ export function moveSelection(score: Score, keys: string[], move: GroupMove): { 
     next = edit.score; current = edit.keys;
   }
   // 2. Tiempo: se corren los eventos completos que tienen algo seleccionado.
-  if (move.kind === "keys" && move.ticks) {
+  const shift = move.ticks ?? 0;
+  if (shift) {
     const ids = new Set(current.map(key => parseKey(key).id));
     const moving: { voice: VoiceId; event: NoteEvent }[] = [];
     const working = structuredClone(next);
     for (const voice of working.voices) {
       voice.events = voice.events.filter(event => {
         if (!ids.has(event.id)) return true;
-        moving.push({ voice: voice.id, event: { ...event, start: event.start + move.ticks } });
+        moving.push({ voice: voice.id, event: { ...event, start: event.start + shift } });
         return false;
       });
     }

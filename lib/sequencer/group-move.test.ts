@@ -45,6 +45,17 @@ describe("mover la selección", () => {
     expect(keys).toHaveLength(2);
     expect(moved.voices[0].events.filter(e => keys.includes(e.id)).map(e => e.pitches[0])).toEqual(["D4", "F#4"]);
   });
+  it("en la partitura, grados y tiempo a la vez (arrastre en diagonal)", () => {
+    const score = melody([note("a", 0, ["E4"]), note("b", 960, ["G4"])], "G");
+    const { score: moved, keys } = moveSelection(score, ["a", "b"], { kind: "steps", steps: 1, ticks: 3840 });
+    // Pasan al compás 2 un grado más arriba, con el F# de la armadura.
+    expect(notes(moved)).toEqual(["3840:F#4", "4800:A4"]);
+    expect(keys).toHaveLength(2);
+  });
+  it("una sola nota se corre en el tiempo al otro compás", () => {
+    const score = melody([note("a", 0, ["C4"]), note("b", 960, ["D4"])]);
+    expect(notes(moveSelection(score, ["a"], { kind: "steps", steps: 0, ticks: 3840 + 480 }).score)).toEqual(["960:D4", "4320:C4"]);
+  });
   it("las notas movidas no se pisan entre sí", () => {
     const score = melody([note("a", 0, ["C4"]), note("b", 960, ["D4"]), note("c", 1920, ["E4"])]);
     expect(notes(moveSelection(score, ["a", "b", "c"], { kind: "keys", semitones: 0, ticks: 960 }).score)).toEqual(["960:C4", "1920:D4", "2880:E4"]);

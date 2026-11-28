@@ -18,6 +18,7 @@ import { moveWithMouse, writeWithMouse } from "@/lib/sequencer/mouse-editing";
 import { duplicateMeasure, insertMeasureAfter, removeMeasure } from "@/lib/sequencer/measure-edit";
 import { spellMidi } from "@/lib/sequencer/midi-input";
 import { moveSelection, movesAsGroup, staffSteps } from "@/lib/sequencer/group-move";
+import { tieChain, withTieChains } from "@/lib/sequencer/tie-chain";
 import { SequencerAudio, type AudioState } from "@/lib/sequencer/audio-engine";
 import { downloadBlob } from "@/lib/sequencer/graphics";
 import { installAgentApi } from "@/lib/sequencer/agent-api";
@@ -47,6 +48,8 @@ export function useStudio(locale: string) {
   const [metronome, setMetronome] = useState(false), [loop, setLoop] = useState(false);
   const [tool, setTool] = useState<MouseEditing["tool"]>("write"), [accidental, setAccidental] = useState<MouseEditing["accidental"]>("key");
   const [cipherVisible, setCipherVisible] = useState(true);
+  /** Snap (como en Cubase): la rejilla a la que caen las notas al escribir y al moverlas. "note" = la figura activa. */
+  const [snap, setSnap] = useState<"note" | number>("note");
   const [sceneId, setSceneId] = useState(""), [presentation, setPresentation] = useState(false);
   const [availability, setAvailability] = useState({ undo: 0, redo: 0, clipboard: 0 });
   const history = useRef<Score[]>([]), future = useRef<Score[]>([]), clipboard = useRef<Clip[]>([]);
@@ -122,30 +125,50 @@ export function useStudio(locale: string) {
       hear(next, voice, event.pitches);
     }
   }), [score, commit, attempt, hear, draft.duration, draft.dotted, draft.triplet, draft.tie]);
+  /** Borrar con el mouse: una nota ligada se borra completa, sea cual sea el pedazo. */
   const eraseMouse = useCallback((id: string) => {
-    const next = clone(score); next.voices.forEach(v => { v.events = v.events.filter(e => e.id !== id); });
-    if (commit(next)) setSelected(prev => prev.filter(item => parseKey(item).id !== id));
+    const ids = new Set(tieChain(score, id));
+    const next = clone(score); next.voices.forEach(v => { v.events = v.events.filter(e => !ids.has(e.id)); });
+    if (commit(next)) setSelected(prev => prev.filter(item => !ids.has(parseKey(item).id)));
   }, [score, commit]);
-  /** Arrastre de una nota que es parte de una selección: se mueve todo el grupo. */
-  const moveGroup = useCallback((id: string, from: string, pitch: string, start?: number) => {
+  /** Cuántas notas (no pedazos de una ligadura) hay en una selección. */
+  const countNotes = (target: Score, keys: string[]) => new Set(keys.map(key => tieChain(target, parseKey(key).id)[0])).size;
+  /** Arrastre de una nota que es parte de una selección (o de una nota ligada): se mueve todo junto. */
+  const moveGroup = useCallback((id: string, from: string, pitch: string, start?: number, keys: string[] = selected) => {
     const event = score.voices.flatMap(v => v.events).find(e => e.id === id)!;
+    const moving = withTieChains(score, keys);
     // Sin `start` el arrastre vino de la partitura (por grados); con `start`, del editor de teclas.
     const result = start === undefined
-      ? moveSelection(score, selected, { kind: "steps", steps: staffSteps(from, pitch) })
-      : moveSelection(score, selected, { kind: "keys", semitones: pitchToMidi(pitch) - pitchToMidi(from), ticks: start - event.start });
-    if (commit(result.score, t(`${result.keys.length} notas movidas juntas.`, `${result.keys.length} notes moved together.`))) setSelected(result.keys);
+      ? moveSelection(score, moving, { kind: "steps", steps: staffSteps(from, pitch) })
+      : moveSelection(score, moving, { kind: "keys", semitones: pitchToMidi(pitch) - pitchToMidi(from), ticks: start - event.start });
+    const notes = countNotes(result.score, result.keys);
+    if (commit(result.score, notes > 1 ? t(`${notes} notas movidas juntas.`, `${notes} notes moved together.`) : "")) setSelected(result.keys);
   }, [score, selected, commit, t]);
   const moveMouse = useCallback((id: string, pitch: string, start?: number, ticks?: number) => attempt(() => {
     const event = score.voices.flatMap(v => v.events).find(e => e.id === id);
     if (ticks === undefined && event?.pitches.length && movesAsGroup(score, selected, id)) { moveGroup(id, event.pitches[0], pitch, start); return; }
+    // Una nota ligada se mueve completa (todos sus pedazos), aunque no esté seleccionada.
+    if (ticks === undefined && event?.pitches.length && tieChain(score, id).length > 1) { moveGroup(id, event.pitches[0], pitch, start, [id]); return; }
     const next = moveWithMouse(score, id, pitch, start, ticks);
     if (commit(next)) {
       const voice = next.voices.find(v => v.events.some(e => e.id === id))!, event = voice.events.find(e => e.id === id)!, at = locateTick(next, event.start);
       setSelected([id]); setDraft(prev => ({ ...prev, voice: voice.id, measure: at.measure, beat: at.beat, pitches: event.pitches.join(" "), duration: event.duration, dotted: event.dotted, triplet: event.triplet }));
     }
   }), [score, selected, commit, attempt, moveGroup]);
+  /** Arrastre en la partitura que también cambia el tiempo: grados del pentagrama + distancia en ticks. */
+  const moveStaffMouse = useCallback((id: string, grabbed: string, steps: number, ticks: number, single: boolean) => attempt(() => {
+    const keys = withTieChains(score, movesAsGroup(score, selected, id) ? selected : [single ? noteKey(id, grabbed) : id]);
+    const result = moveSelection(score, keys, { kind: "steps", steps, ticks });
+    const notes = countNotes(result.score, result.keys);
+    if (commit(result.score, notes > 1 ? t(`${notes} notas movidas juntas.`, `${notes} notes moved together.`) : "")) {
+      setSelected(result.keys);
+      const moved = result.score.voices.flatMap(v => v.events.map(event => ({ voice: v.id, event }))).find(({ event }) => result.keys.some(k => parseKey(k).id === event.id));
+      if (moved) { const at = locateTick(result.score, moved.event.start); setDraft(prev => ({ ...prev, voice: moved.voice, measure: at.measure, beat: at.beat })); }
+    }
+  }), [score, selected, commit, attempt, t]);
   const movePitchMouse = useCallback((id: string, from: string, to: string) => attempt(() => {
     if (movesAsGroup(score, selected, id)) { moveGroup(id, from, to); return; }
+    if (tieChain(score, id).length > 1) { moveGroup(id, from, to, undefined, [noteKey(id, from)]); return; }
     const next = movePitch(score, id, from, to);
     if (commit(next)) setSelected(normalizeSelection(next, [noteKey(id, to)]));
   }), [score, selected, commit, attempt, moveGroup]);
@@ -160,23 +183,33 @@ export function useStudio(locale: string) {
   const positionMouse = useCallback((voice: VoiceId, start: number) => {
     const at = locateTick(score, start); setDraft(prev => ({ ...prev, voice, measure: at.measure, beat: at.beat })); setSelected([]);
   }, [score]);
-  const mouse = useMemo<MouseEditing>(() => ({ tool, accidental, step: durationTicks(draft), onWrite: writeMouse, onErase: eraseMouse, onMove: moveMouse,
-    onMovePitch: movePitchMouse, onPreview: previewMouse, onPreviewEnd: () => audio.current?.stopPreview(), onPosition: positionMouse, dragWithSelect: true }),
+  const snapTicks = snap === "note" ? durationTicks(draft) : snap;
+  const mouse = useMemo<MouseEditing>(() => ({ tool, accidental, step: durationTicks(draft), snap: snapTicks, onWrite: writeMouse, onErase: eraseMouse, onMove: moveMouse,
+    onMovePitch: movePitchMouse, onMoveStaff: moveStaffMouse, onPreview: previewMouse, onPreviewEnd: () => audio.current?.stopPreview(), onPosition: positionMouse, dragWithSelect: true, joinTies: true }),
   // eslint-disable-next-line react-hooks/exhaustive-deps -- `draft` solo aporta la figura
-  [tool, accidental, draft.duration, draft.dotted, draft.triplet, writeMouse, eraseMouse, moveMouse, movePitchMouse, previewMouse, positionMouse]);
+  [tool, accidental, snapTicks, draft.duration, draft.dotted, draft.triplet, writeMouse, eraseMouse, moveMouse, movePitchMouse, moveStaffMouse, previewMouse, positionMouse]);
 
   // ── Selección ───────────────────────────────────────────────────────────
   const selectNote = useCallback((key: string, extend = false) => {
     const { id } = parseKey(key);
     const voice = score.voices.find(v => v.events.some(e => e.id === id)), event = voice?.events.find(e => e.id === id);
     if (!voice || !event) return;
-    setSelected(prev => extend ? toggleKey(score, prev, key) : normalizeSelection(score, [key]));
+    setSelected(prev => {
+      const chain = withTieChains(score, [key]);
+      if (!extend) return chain;
+      // Shift/Ctrl+clic: la nota ligada completa entra o sale de la selección.
+      const isOn = (keys: string[], k: string) => { const { id: kid, pitch } = parseKey(k); return keys.includes(kid) || (pitch !== undefined && keys.includes(k)); };
+      let next = toggleKey(score, prev, key);
+      const want = isOn(next, key);
+      for (const member of chain) if (isOn(next, member) !== want) next = toggleKey(score, next, member);
+      return next;
+    });
     const at = locateTick(score, event.start);
     setDraft({ voice: voice.id, measure: at.measure, beat: round(at.beat), pitches: event.pitches.join(" "), duration: event.duration, dotted: event.dotted, triplet: event.triplet, tie: event.tie });
     setError("");
   }, [score]);
   const selectMany = useCallback((keys: string[], additive: boolean) => {
-    setSelected(prev => normalizeSelection(score, additive ? [...prev, ...keys] : keys));
+    setSelected(prev => withTieChains(score, additive ? [...prev, ...keys] : keys));
   }, [score]);
   const selectAll = () => selectMany(voices.flatMap(v => v.events.map(e => e.id)), false);
 
@@ -198,7 +231,7 @@ export function useStudio(locale: string) {
     patchDraft({ pitches: first.event.pitches.join(" ") }); hear(edit.score, first.voice, first.pitches);
   };
   const shiftSelection = (semitones: number) => attempt(() => commitPitchEdit(mapSelectedPitches(score, selected, pitch => transposePitches([pitch], semitones)[0])));
-  const removeSelection = () => { if (selected.length && commit(removeSelectedPitches(score, selected))) setSelected([]); };
+  const removeSelection = () => { if (selected.length && commit(removeSelectedPitches(score, withTieChains(score, selected)))) setSelected([]); };
   const applyNoteValue = (value: Partial<Pick<Draft, "duration" | "dotted" | "triplet" | "tie">>) => {
     patchDraft(value);
     if (!selectedIds.length) return;
@@ -302,8 +335,10 @@ export function useStudio(locale: string) {
     }
   };
   const changeClef = (clef: "treble" | "bass") => patchScore(next => { next.measures[draft.measure - 1].clefs = { ...next.measures[draft.measure - 1].clefs, [draft.voice]: clef }; });
+  /** Siempre al final, sin importar dónde esté el cursor: no recorre ninguna nota. */
   const addMeasure = () => patchScore(next => { const last = next.measures.at(-1)!; next.measures.push({ id: newId(), key: last.key, time: [...last.time] }); });
-  const insertMeasure = () => attempt(() => { commit(insertMeasureAfter(score, draft.measure), t(`Compás nuevo después del ${draft.measure}.`, `New measure after ${draft.measure}.`)); });
+  /** Un compás vacío donde está el cursor: el compás actual y lo que sigue se recorren uno a la derecha. */
+  const insertMeasure = () => attempt(() => { if (commit(insertMeasureAfter(score, draft.measure - 1), t(`Compás vacío insertado en el ${draft.measure}.`, `Empty measure inserted at ${draft.measure}.`))) patchDraft({ beat: 1 }); });
   const removeMeasureAt = () => attempt(() => {
     const start = measureStart(score, draft.measure), end = start + measureTicks(score.measures[draft.measure - 1]);
     const busy = score.voices.some(v => v.events.some(e => e.pitches.length && e.start >= start && e.start < end));
@@ -370,7 +405,7 @@ export function useStudio(locale: string) {
 
   return {
     es, t, score, ready, saved, selected, selectedIds, selection, draft, voices, positionTick, cursor, measure,
-    message, error, warning, audioState, tick, metronome, loop, tool, accidental, availability, mouse,
+    message, error, warning, audioState, tick, metronome, loop, tool, accidental, availability, mouse, snap, setSnap,
     setMessage, setError, setMetronome, setLoop, setTool, patchDraft, commit, attempt,
     selectNote, selectMany, selectAll, setSelected,
     insert, shiftSelection, removeSelection, applyNoteValue, applyAccidental, undo, redo, copy, cut, paste, duplicateSelection,

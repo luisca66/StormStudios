@@ -48,7 +48,7 @@ export function setChordAt(score: Score, measure: number, beat: number, text: st
 
 /**
  * Escribe una progresión de texto («I IV V I», «C – F – G – C») a partir de un
- * compás, un acorde cada `beats` pulsos de negra. Reemplaza el cifrado que
+ * compás, un acorde cada `beats` pulsos de cuarto. Reemplaza el cifrado que
  * hubiera en ese tramo y añade los compases que falten.
  */
 const MAX_PROGRESSION_TOKENS = 512;
