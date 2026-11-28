@@ -230,7 +230,7 @@ describe("SequencerAudio playback", () => {
     expect(h.contexts).toHaveLength(1);
     expect(h.urls()).toEqual([`${SAMPLES}/Piano/C4.mp3`, `${SAMPLES}/Piano/E4.mp3`, `${SAMPLES}/Piano/G%234.mp3`, `${SAMPLES}/Piano/C2.mp3`]);
     for (const [, init] of h.fetcher.mock.calls) {
-      expect(init.cache).toBe("no-cache");
+      expect(init.cache).toBe("default");
       expect(init.signal).toBeInstanceOf(AbortSignal);
       expect(init.signal.aborted).toBe(false);
     }
@@ -262,7 +262,7 @@ describe("SequencerAudio playback", () => {
       const h = harness({ hostname });
       await h.audio.play(scoreWith("single", { melody: [note(0, ["Bb3"])] }));
       expect(h.urls(), hostname).toEqual([`${base}/Piano/A%233.mp3`]);
-      expect(h.fetcher.mock.calls[0][1].cache).toBe("no-cache");
+      expect(h.fetcher.mock.calls[0][1].cache).toBe("default");
       vi.unstubAllGlobals();
     }
   });
@@ -772,5 +772,62 @@ describe("SequencerAudio WAV export", () => {
     expect(h.contexts[0].close).toHaveBeenCalledTimes(1);
     expect(h.states.at(-1)).toBe("stopped");
     expect(() => harness().audio.dispose()).not.toThrow();
+  });
+});
+
+describe("SequencerAudio background warm-up", () => {
+  it("downloads each voice's register once, middle first, without decoding or starting audio", async () => {
+    const h = harness();
+    h.audio.warm([{ id: "soprano", instrument: "Piano" }, { id: "alto", instrument: "Piano" }, { id: "tenor", instrument: "Synth" }]);
+    for (let turn = 0; turn < 20; turn++) await flush();
+    const urls = h.urls();
+    // Soprano C4–A5 and alto F3–D5 share one Piano file per pitch: F3..A5 is 29 files.
+    expect(urls).toHaveLength(29);
+    expect(new Set(urls).size).toBe(29);
+    expect(urls.every(url => url.startsWith(`${SAMPLES}/Piano/`))).toBe(true);
+    // Ranked by the nearest voice middle: alto (D#4/E4) and soprano (A#4/B4) first.
+    expect(urls.slice(0, 4)).toEqual([`${SAMPLES}/Piano/D%234.mp3`, `${SAMPLES}/Piano/E4.mp3`, `${SAMPLES}/Piano/A%234.mp3`, `${SAMPLES}/Piano/B4.mp3`]);
+    expect(h.fetcher.mock.calls.every(call => call[1].cache === "default")).toBe(true);
+    expect(h.contexts).toHaveLength(0);
+    h.audio.warm([{ id: "soprano", instrument: "Piano" }]);
+    await flush();
+    expect(h.urls()).toHaveLength(29);
+  });
+
+  it("lets a clicked note wait for its warm download instead of starting a second one", async () => {
+    const d = deferredFetch();
+    const h = harness({ fetcher: d.fetcher });
+    h.audio.warm([{ id: "bass", instrument: "Cello" }]);
+    await flush();
+    const first = d.pending[0].url;
+    const name = decodeURIComponent(first.split("/").pop()!.replace(".mp3", ""));
+    const audition = h.audio.preview({ ...voiceOf(createScore("satb"), "bass"), instrument: "Cello" }, [name], 1);
+    await flush();
+    expect(h.urls().filter(url => url === first)).toHaveLength(1);
+    d.deliver(); await flush(); d.deliver(); await audition;
+    expect(h.started().map(source => source.kind)).toEqual(["sample"]);
+  });
+
+  it("asks the network again only when a stale cache entry fails", async () => {
+    const fetcher = vi.fn<Fetcher>(async (url, init) => {
+      if (init.cache === "default") throw new TypeError("Failed to fetch");
+      return response(url);
+    });
+    const h = harness({ fetcher });
+    await h.audio.play(scoreWith("single", { melody: [note(0, ["C4"])] }));
+    expect(fetcher.mock.calls.map(call => call[1].cache)).toEqual(["default", "reload"]);
+    expect(h.started().map(source => source.kind)).toEqual(["sample"]);
+    expect(h.warnings).toEqual([""]);
+  });
+
+  it("stops warming once disposed", async () => {
+    const d = deferredFetch();
+    const h = harness({ fetcher: d.fetcher });
+    h.audio.warm([{ id: "melody", instrument: "Piano" }]);
+    await flush();
+    expect(d.pending).toHaveLength(3);
+    h.audio.dispose();
+    d.deliver(); for (let turn = 0; turn < 5; turn++) await flush();
+    expect(d.pending).toHaveLength(0);
   });
 });

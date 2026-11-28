@@ -33,10 +33,19 @@ export function sampleForPitch(pitch: string) {
   return { name: midiToPitch(sampled), rate: 2 ** ((midi - sampled) / 12) };
 }
 
+/** Registers warmed in the background, as MIDI [low, high]: each voice's usual range. */
+const WARM_RANGES: Record<Voice["id"], [number, number]> = {
+  melody: [48, 84], soprano: [60, 81], alto: [53, 74], tenor: [48, 69], bass: [40, 62],
+};
+
 export class SequencerAudio {
   private context: AudioContext | null = null;
   private buffers = new Map<string, AudioBuffer>();
   private pending = new Map<string, Promise<AudioBuffer | null>>();
+  private warming = new Map<string, Promise<void>>();
+  private warmed = new Set<string>();
+  private warmGeneration = 0;
+  private disposed = false;
   private nodes: AudioScheduledSourceNode[] = [];
   private master: GainNode | null = null;
   private masterVolume = 1;
@@ -58,22 +67,40 @@ export class SequencerAudio {
     return this.context;
   }
 
+  private sampleUrl(instrument: Instrument, name: string) {
+    // Local preview uses the existing same-origin proxy; production uses R2 directly.
+    const base = ["localhost", "127.0.0.1", "::1"].includes(location.hostname)
+      ? "/api/audio" : "https://samples.stormstudios.com.mx";
+    return base + "/" + instrument + "/" + encodeURIComponent(name) + ".mp3";
+  }
+
+  /** Samples are immutable and served with a one-year Cache-Control, so the browser's
+   *  disk cache answers repeat visits. A stale pre-CORS cache entry fails as a network
+   *  error; only then is the network asked again, bypassing that entry. */
+  private async download(url: string, signal: AbortSignal) {
+    try { return await fetch(url, { cache: "default", signal }); }
+    catch (error) {
+      if (signal.aborted) throw error;
+      return fetch(url, { cache: "reload", signal });
+    }
+  }
+
   private async load(instrument: Instrument, pitch: string): Promise<AudioBuffer | null> {
     if (instrument === "Synth") return null;
     const { name } = sampleForPitch(pitch), key = instrument + "/" + name;
     if (this.buffers.has(key)) return this.buffers.get(key)!;
     if (this.pending.has(key)) return this.pending.get(key)!;
     const task = (async () => {
+      // A background warm-up of this file is already on its way into the disk cache.
+      const warming = this.warming.get(key);
+      if (warming) await warming;
       const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 10000);
       try {
-        // Local preview uses the existing same-origin proxy; production uses R2 directly.
-        const base = ["localhost", "127.0.0.1", "::1"].includes(location.hostname)
-          ? "/api/audio" : "https://samples.stormstudios.com.mx";
-        const response = await fetch(base + "/" + instrument + "/" + encodeURIComponent(name) + ".mp3",
-          { cache: "no-cache", signal: controller.signal });
+        const response = await this.download(this.sampleUrl(instrument, name), controller.signal);
         if (!response.ok) throw new Error("HTTP " + response.status);
         const bytes = await response.arrayBuffer();
-        const context = this.context ?? await this.initialize();
+        // Decoding works on a not-yet-resumed context; play/preview resume it on a gesture.
+        const context = this.context ?? (this.context = new AudioContext());
         const buffer = await context.decodeAudioData(bytes);
         this.buffers.set(key, buffer);
         return buffer;
@@ -84,6 +111,46 @@ export class SequencerAudio {
     })();
     this.pending.set(key, task);
     try { return await task; } finally { this.pending.delete(key); }
+  }
+
+  /**
+   * Download, in the background, the samples each voice is likely to touch while
+   * writing, nearest to the middle of its register first, so the first clicked
+   * note already sits in the browser's disk cache. Files are only cached, not
+   * decoded: a whole register of decoded audio would weigh hundreds of MB.
+   */
+  warm(voices: Pick<Voice, "id" | "instrument">[]) {
+    // One entry per file, ranked by its distance to the middle of the nearest voice.
+    const ranked = new Map<string, { instrument: Instrument; name: string; distance: number }>();
+    for (const voice of voices) {
+      if (voice.instrument === "Synth") continue;
+      const [low, high] = WARM_RANGES[voice.id], middle = (low + high) / 2;
+      for (let midi = low; midi <= high; midi++) {
+        const name = midiToPitch(midi), key = voice.instrument + "/" + name, distance = Math.abs(midi - middle);
+        if (this.buffers.has(key) || this.warmed.has(key)) continue;
+        const known = ranked.get(key);
+        if (!known || distance < known.distance) ranked.set(key, { instrument: voice.instrument, name, distance });
+      }
+    }
+    const wanted = [...ranked.values()].sort((a, b) => a.distance - b.distance);
+    const generation = ++this.warmGeneration;
+    const worker = async () => {
+      while (wanted.length && generation === this.warmGeneration && !this.disposed) {
+        const { instrument, name } = wanted.shift()!, key = instrument + "/" + name;
+        if (this.buffers.has(key) || this.warming.has(key) || this.warmed.has(key)) continue;
+        const task = (async () => {
+          const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 15000);
+          try {
+            const response = await this.download(this.sampleUrl(instrument, name), controller.signal);
+            if (response.ok) { await response.arrayBuffer(); this.warmed.add(key); }
+          } catch { /* Clicking the note loads it again and reports any failure. */ }
+          finally { clearTimeout(timer); }
+        })();
+        this.warming.set(key, task);
+        try { await task; } finally { this.warming.delete(key); }
+      }
+    };
+    for (let i = 0; i < Math.min(3, wanted.length); i++) void worker();
   }
 
   private async preload(sounds: Sound[], request: number) {
@@ -267,5 +334,5 @@ export class SequencerAudio {
     } catch { if (request === this.epoch) { this.stop(); this.warning("audio"); } return null; }
   }
 
-  dispose() { this.stop(); void this.context?.close(); }
+  dispose() { this.disposed = true; this.warmGeneration++; this.stop(); void this.context?.close(); }
 }

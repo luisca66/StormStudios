@@ -76,6 +76,17 @@ export function useStudio(locale: string) {
     return () => clearTimeout(timer);
   }, [score, ready, es]);
 
+  // Warm each voice's register in the background so the first clicked note sounds at once.
+  const warmKey = activeVoices(score).map(v => v.id + ":" + v.instrument).join(",");
+  useEffect(() => {
+    if (!ready) return;
+    const timer = setTimeout(() => audio.current?.warm(warmKey.split(",").map(entry => {
+      const [id, instrument] = entry.split(":");
+      return { id: id as VoiceId, instrument: instrument as Voice["instrument"] };
+    })), 600);
+    return () => clearTimeout(timer);
+  }, [warmKey, ready]);
+
   const resolved = useMemo(() => resolveSelection(score, selected), [score, selected]);
   const selection: Clip[] = resolved.map(s => ({ voice: s.voice, event: s.whole ? s.event : { ...s.event, pitches: s.pitches } }));
   const selectedIds = useMemo(() => resolved.map(s => s.event.id), [resolved]);
