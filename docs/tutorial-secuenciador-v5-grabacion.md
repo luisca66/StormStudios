@@ -57,7 +57,7 @@ Salidas: `tutorial-secuenciador-v5.mp4`, `tutorial-secuenciador-v5.srt` (39 entr
 - `marquee`: `view: staff | roll`; usa geometría real de las primeras notas, captura el rectángulo y exige al menos dos notas seleccionadas.
 - Antes de los atajos se desenfoca el campo activo. Los clics, arrastres y sonidos pasan por la aplicación real.
 
-## Pendiente de revisión en navegador
+## Preparación inicial (histórico; sustituida por la ronda 4)
 
 Los tiempos `at` son una primera colocación editorial. Falta verificarlos con la voz real y ajustar cualquier selector/geometría que falle en el ensayo. Especial atención a escritura por pulsos, selección y movimiento de grupos, duración en Teclas, pausa del micrófono durante reproducción y encuadre de los menús. La tolerancia de sincronía permanece en ±40 ms; no se ha medido todavía en esta preparación.
 
@@ -103,3 +103,25 @@ Los 39 WAV de la grabación final antigua contienen únicamente ceros y no hay a
 - El contexto del motor siguió siendo el número 1 y registró tres reanudaciones con cambios de ancla de aproximadamente 17.375, 1.679 y 13.018 s. El micrófono quedó excluido.
 - El PCM continuo y su índice coinciden en tamaño y posiciones. Las pruebas de regresión y ESLint pasan.
 - --assemble se probó con la captura antigua y se detuvo ante el WAV mudo del clip 10, sin sustituir la voz ni reconstruir música.
+
+## Ronda 4: palabras y colas
+
+El plan usa `atWord` en todas las acciones habladas. Se leen exclusivamente los 39 archivos `N_Chapter_1.words.json` de la carpeta indicada con `--clips`. La comparación elimina acentos, mayúsculas y puntuación. Una palabra repetida exige `occurrence` (desde 1); una palabra ausente detiene la preparación.
+
+`offset` negativo reserva movimiento previo del puntero; el clic o inicio de arrastre sigue teniendo como objetivo el inicio de la palabra. Un offset positivo retrasa el gesto. Los eventos reales se registran en el navegador, con su reloj de performance, incluyendo pointerdown, keydown, input y change. No se usa la hora de finalización de Playwright como medida. El revisor exige ±150 ms y entrega `sincronia-palabras.csv`, `.md` y `.json`.
+
+Los dos ensayos conservan ahora los tiempos reales de voz, también `--rehearse`, para comprobar estas anclas. El ensayo rápido omite la captura de video. `--rehearse-video` captura y codifica el video y comprueba las marcas de vistas previas. Se ejecutan uno después del otro y el revisor lleva `--rehearse` en ambos casos.
+
+Antes de terminar cada captura se exige salida por debajo de −55 dBFS durante 250 ms continuos, con PCM reciente y tope de 4 s; se excluye el micrófono. El WAV original se conserva. Su copia de entrega aplica 96 ms de caída al detener reproducción, 40 ms de fundido en fronteras y 80 ms finales de silencio. El montaje vuelve a proteger el final después de desplazar/normalizar. El revisor exige picos por debajo de −50 dBFS en los 80 ms anteriores a cada frontera, tanto en el original capturado como en la copia y la música mezclada cuando existe. `revision-colas.json` y `.csv` conservan la evidencia.
+
+Se actualizan las figuras matemáticas, el arrastre temporal con línea de destino y Snap (11), la barra ligada que cruza de compás (27), y la demostración de añadir al final/insertar/quitar (30). Las restauraciones de ejemplos se hacen fuera de la voz. El clip 37 reserva la escucha completa antes de detener. `--samples .local-work/piano-samples --reuse-build` permite ensayar sin red contra el build de producción existente; el servidor propio se cierra al terminar o fallar.
+
+### Resultado de la ronda 4 (2026-11-28)
+
+El ensayo rápido completó los 39 clips: 124 gestos a ±150 ms, máximo 22.0 ms; 39 marcas de vista previa a ±40 ms; Piano original sin fallos de muestras. La pasada con video corregida completó los 39 clips en 484.100 s, con 425.680 s de voz; máximo de palabras 26.6 ms, 35 marcas codificadas con máximo 31.03 ms y tres escuchas con máximo 33.33 ms. Ambos revisores terminaron con código 0.
+
+La primera pasada con video descubrió siete gestos tardíos: 24 comandos de mouse no cabían en las aproximaciones cortas. Se amplió la preparación de Ctrl/clic derecho y Reproducir, se acortó el rectángulo del clip 28 y se adaptó el número de pasos al tiempo disponible. Los metadatos del diagnóstico están en ronda4-video-diagnostico; no son una entrega aprobada.
+
+Las 39 fronteras tienen silencio digital en los últimos 80 ms tanto en los WAV originales como en la copia de entrega y en el AAC decodificado de ensayo-con-voz.mp4. El suelo de medición de los informes es −300 dB para ceros. El clip 22 usa una caída de 96 ms al detener; los otros finales de nota ya habían decaído. Todas las copias conservan fundido de frontera de 40 ms. La espera de silencio se verificó en cada captura (máximo observado de espera adicional: 7 ms; el margen de voz ya dejaba decaer las notas).
+
+Evidencia: .local-work/tutorial-v5-ensayo/ronda4-resultados.json, sincronia-palabras.md/.csv/.json (124 filas), revision-colas.json, revision-fronteras-mp4.json, revision-rehearsal.json, hoja-contactos-ensayo.png y ensayo-con-voz.mp4. La carpeta ronda4-rapido conserva la revisión del ensayo sin video. Dos fixtures separados prueban que el revisor rechaza un gesto tardío y una frontera con audio; las seis pruebas unitarias y ESLint pasan. Puerto 3100 confirmado libre al terminar. La grabación final queda para Luis.

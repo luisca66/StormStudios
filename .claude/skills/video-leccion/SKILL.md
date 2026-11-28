@@ -123,6 +123,8 @@ No se puede «ver» el MP4: se revisa por partes, con `ffprobe`/`ffmpeg`.
 
 - **L8 v2 ES/EN (2026-10-07)**: los highlights por voz deben incluir cabezas, plicas y líneas adicionales del rango visible, usando límites de VexFlow por evento; mantener rellenos detrás de la música, bordes por encima y etiquetas centradas en el recuadro extendido. Probar también focusVoice. Cambiaron 13 stills por idioma; 358/358 fotogramas correctos, 839.067 s / 810.333 s, 30 escuchas entre −2.4 y −2.7 dB RMS tras AAC y mezclas −16 LUFS / −1.3 dBTP. Reemplazar bytes y nombres en Drive con files.update conserva IDs; verificar reemplazos antes de borrar v1 de H:.
 
+- **Tutorial v5, ronda 4 (2026-11-28)**: anclar los gestos al alineamiento por palabra y registrar eventos reales del navegador. Separar la aproximación del clic y adaptar los pasos CDP al tiempo disponible: 24 pasos fijos retrasaban los clics con solo 80 ms de preparación. Esperar silencio PCM durante 250 ms antes de cerrar cada captura; conservar el original y aplicar caídas suaves al detener y en fronteras. Revisar también los últimos 80 ms del AAC decodificado.
+
 ## Mejoras pendientes de las herramientas
 
 - El montaje ya acepta `partialText` en el mapa para clips repartidos. Pendiente: que `mapa-audio` lo genere automáticamente (el generador inglés de L4 ya lo incluye).

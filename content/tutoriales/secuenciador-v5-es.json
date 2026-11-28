@@ -6,7 +6,6 @@
     10,
     11,
     12,
-    14,
     15,
     17,
     20,
@@ -25,7 +24,9 @@
   "substitutions": [
     "MIDI y micrófono simulados: entradas reales de la aplicación; el tono del micrófono no se mezcla con la salida.",
     "Los clips 23 y 37 preparan ejemplos limpios fuera de la voz.",
-    "No se ejecutan exportaciones largas durante su enumeración: el menú muestra las opciones reales."
+    "No se ejecutan exportaciones largas durante su enumeración: el menú muestra las opciones reales.",
+    "Borrar/deshacer/rehacer no generan sonido: el clip 14 no exige una audición artificial.",
+    "El ensayo sin video conserva los tiempos por palabra para auditar los gestos con el mismo reloj que la voz."
   ],
   "clips": [
     {
@@ -42,16 +43,24 @@
           "target": {
             "css": "div.ss-glass:has(a[href=\"/es/sequencer/v5\"])"
           },
-          "at": 12,
-          "ms": 2500
+          "atWord": {
+            "word": "grabacion",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1200
         },
         {
           "op": "highlight",
           "target": {
             "css": "div.ss-glass:has(a[href=\"/es/sequencer/v5\"])"
           },
-          "at": 15,
-          "ms": 4000
+          "atWord": {
+            "word": "midi",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1800
         }
       ]
     },
@@ -64,8 +73,12 @@
           "target": {
             "css": "div.ss-glass:has(a[href=\"/es/sequencer/v5\"])"
           },
-          "at": 1,
-          "ms": 4500
+          "atWord": {
+            "word": "recuadros",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 4200
         },
         {
           "op": "goto",
@@ -73,7 +86,11 @@
             "role": "link",
             "name": "Abrir v5.0 →"
           },
-          "at": 11.7
+          "atWord": {
+            "word": "abrir",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         }
       ]
     },
@@ -101,8 +118,12 @@
             "role": "group",
             "name": "Transporte"
           },
-          "at": 0,
-          "ms": 4500
+          "atWord": {
+            "word": "transporte",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 5000
         },
         {
           "op": "move",
@@ -110,7 +131,11 @@
             "role": "button",
             "name": "Reproducir"
           },
-          "at": 1.2
+          "atWord": {
+            "word": "reproducir",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "move",
@@ -118,31 +143,47 @@
             "role": "button",
             "name": "Detener"
           },
-          "at": 2.4
+          "atWord": {
+            "word": "detener",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "highlight",
           "target": {
             "css": "[data-testid=\"lcd-position\"]"
           },
-          "at": 6.2,
-          "ms": 2500
+          "atWord": {
+            "word": "cursor",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 900
         },
         {
           "op": "highlight",
           "target": {
             "label": "Tempo"
           },
-          "at": 9,
-          "ms": 2500
+          "atWord": {
+            "word": "tempo",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1000
         },
         {
           "op": "highlight",
           "target": {
             "css": "[data-testid=\"lcd-chord\"]"
           },
-          "at": 13.8,
-          "ms": 2500
+          "atWord": {
+            "word": "acorde",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1100
         }
       ]
     },
@@ -156,8 +197,24 @@
             "role": "complementary",
             "name": "Pistas"
           },
-          "at": 0,
-          "ms": 12000
+          "atWord": {
+            "word": "pistas",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 6500
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Melodía"
+          },
+          "atWord": {
+            "word": "melodia",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "click",
@@ -165,15 +222,68 @@
             "role": "button",
             "name": "SATB"
           },
-          "at": 5
+          "atWord": {
+            "word": "cuatro",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
+        {
+          "op": "highlight",
+          "target": {
+            "label": "Instrumento de Soprano"
+          },
+          "atWord": {
+            "word": "instrumento",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 800
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "label": "Volumen de Soprano"
+          },
+          "atWord": {
+            "word": "volumen",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 800
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Silenciar Soprano"
+          },
+          "atWord": {
+            "word": "m",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "button",
+            "name": "Solo de Soprano"
+          },
+          "atWord": {
+            "word": "s",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        }
+      ],
+      "cleanup": [
         {
           "op": "click",
           "target": {
             "role": "button",
             "name": "Melodía"
-          },
-          "at": 11
+          }
         }
       ]
     },
@@ -186,8 +296,12 @@
           "target": {
             "css": "[data-testid=\"score-view\"]"
           },
-          "at": 0,
-          "ms": 3500
+          "atWord": {
+            "word": "partitura",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1800
         },
         {
           "op": "highlight",
@@ -195,8 +309,12 @@
             "role": "toolbar",
             "name": "Herramientas de escritura"
           },
-          "at": 4,
-          "ms": 4000
+          "atWord": {
+            "word": "herramientas",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 5000
         }
       ]
     },
@@ -210,8 +328,12 @@
             "role": "complementary",
             "name": "Inspector"
           },
-          "at": 0,
-          "ms": 6500
+          "atWord": {
+            "word": "inspector",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 8000
         }
       ]
     },
@@ -224,8 +346,24 @@
           "target": {
             "role": "tablist"
           },
-          "at": 0,
-          "ms": 3000
+          "atWord": {
+            "word": "pestanas",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 900
+        },
+        {
+          "op": "move",
+          "target": {
+            "role": "tab",
+            "name": "Pista de acordes"
+          },
+          "atWord": {
+            "word": "acordes",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "click",
@@ -233,7 +371,11 @@
             "role": "tab",
             "name": "Marcadores"
           },
-          "at": 3
+          "atWord": {
+            "word": "marcadores",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "click",
@@ -241,7 +383,11 @@
             "role": "tab",
             "name": "Lista de notas"
           },
-          "at": 4.5
+          "atWord": {
+            "word": "lista",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "click",
@@ -249,15 +395,11 @@
             "role": "tab",
             "name": "Entrada por texto"
           },
-          "at": 6
-        },
-        {
-          "op": "click",
-          "target": {
-            "role": "tab",
-            "name": "Pista de acordes"
-          },
-          "at": 7.5
+          "atWord": {
+            "word": "entrada",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "drag",
@@ -265,8 +407,22 @@
             "role": "separator",
             "name": "Cambiar el alto de la zona inferior"
           },
-          "at": 10,
-          "dy": 90
+          "atWord": {
+            "word": "arrastra",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "dy": 60,
+          "durationMs": 650
+        }
+      ],
+      "cleanup": [
+        {
+          "op": "click",
+          "target": {
+            "role": "tab",
+            "name": "Pista de acordes"
+          }
         }
       ]
     },
@@ -280,15 +436,23 @@
             "role": "button",
             "name": "Escribir"
           },
-          "at": 0
+          "atWord": {
+            "word": "escribir",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "click",
           "target": {
             "role": "button",
-            "name": "Negra"
+            "name": "Cuarto"
           },
-          "at": 2
+          "atWord": {
+            "word": "figura",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "click",
@@ -299,7 +463,11 @@
               "beat": 1
             }
           },
-          "at": 5
+          "atWord": {
+            "word": "pentagrama",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "click",
@@ -310,7 +478,11 @@
               "beat": 2
             }
           },
-          "at": 7
+          "atWord": {
+            "word": "espacio",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "click",
@@ -321,7 +493,11 @@
               "beat": 3
             }
           },
-          "at": 9
+          "atWord": {
+            "word": "suena",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "assert",
@@ -330,13 +506,13 @@
             "E4",
             "G4"
           ],
-          "at": 10
+          "at": 10.6
         }
       ]
     },
     {
       "clip": 11,
-      "text": "Si una nota no quedó en su lugar, arrástrala hacia arriba o hacia abajo. Mientras la mueves, ves y escuchas a qué nota va.",
+      "text": "Si una nota no quedó en su lugar, arrástrala hacia arriba o hacia abajo. Mientras la mueves, ves y escuchas a qué nota va. Y si la arrastras hacia los lados, la cambias de lugar en el tiempo. El Snap, arriba en la barra, decide en qué puntos puede caer.",
       "actions": [
         {
           "op": "drag",
@@ -346,8 +522,50 @@
               "view": "staff"
             }
           },
-          "at": 3,
-          "dy": -10
+          "atWord": {
+            "word": "arrastrala",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "dy": -10,
+          "durationMs": 700
+        },
+        {
+          "op": "drag",
+          "target": {
+            "note": {
+              "index": 2,
+              "view": "staff"
+            }
+          },
+          "atWord": {
+            "word": "lados",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "to": {
+            "staff": {
+              "measure": 2,
+              "pitch": "G4",
+              "beat": 1
+            }
+          },
+          "dropLine": true,
+          "holdMs": 350,
+          "durationMs": 750
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-testid=\"snap\"]"
+          },
+          "atWord": {
+            "word": "snap",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 2600,
+          "capture": "clip-11-snap.png"
         }
       ]
     },
@@ -364,7 +582,11 @@
               "beat": 1
             }
           },
-          "at": 3.3
+          "atWord": {
+            "word": "clic",
+            "occurrence": 1,
+            "offset": -0.65
+          }
         },
         {
           "op": "ctrlClick",
@@ -375,7 +597,11 @@
               "beat": 1
             }
           },
-          "at": 5
+          "atWord": {
+            "word": "agregar",
+            "occurrence": 1,
+            "offset": -0.65
+          }
         }
       ]
     },
@@ -388,15 +614,23 @@
           "target": {
             "css": "[data-testid=\"score-view\"]"
           },
-          "at": 6.5
+          "atWord": {
+            "word": "derecho",
+            "occurrence": 1,
+            "offset": -0.65
+          }
         },
         {
           "op": "highlight",
           "target": {
             "css": "[data-testid=\"tool-menu\"]"
           },
-          "at": 7.3,
-          "ms": 2500
+          "atWord": {
+            "word": "menu",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 2100
         },
         {
           "op": "click",
@@ -404,7 +638,20 @@
             "role": "menuitemradio",
             "name": "Seleccionar S"
           },
-          "at": 12
+          "atWord": {
+            "word": "seleccionar",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "badge",
+          "atWord": {
+            "word": "letras",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "text": "E · S · B"
         }
       ]
     },
@@ -420,7 +667,11 @@
               "view": "staff"
             }
           },
-          "at": 0.8
+          "atWord": {
+            "word": "derecho",
+            "occurrence": 1,
+            "offset": -0.65
+          }
         },
         {
           "op": "click",
@@ -428,40 +679,35 @@
             "role": "menuitem",
             "name": "Borrar esta nota"
           },
-          "at": 2.5
+          "atWord": {
+            "word": "borrarla",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "key",
-          "key": "Control+z",
-          "at": 5.5
-        },
-        {
-          "op": "click",
-          "target": {
-            "role": "button",
-            "name": "Escribir"
+          "atWord": {
+            "word": "z",
+            "occurrence": 1,
+            "offset": -0.08
           },
-          "at": 5.8
+          "key": "Control+z"
         },
         {
-          "op": "audition",
-          "target": {
-            "note": {
-              "index": 2,
-              "view": "staff"
-            }
+          "op": "key",
+          "atWord": {
+            "word": "rehace",
+            "occurrence": 1,
+            "offset": -0.08
           },
-          "at": 6.4
-        },
+          "key": "Control+y"
+        }
+      ],
+      "cleanup": [
         {
           "op": "key",
-          "key": "Control+y",
-          "at": 8
-        },
-        {
-          "op": "key",
-          "key": "Control+z",
-          "at": 8.7
+          "key": "Control+z"
         }
       ]
     },
@@ -471,14 +717,30 @@
       "actions": [
         {
           "op": "play",
-          "key": true,
-          "at": 0,
-          "afterVoice": true,
-          "listen": 5,
-          "stop": "Space"
+          "atWord": {
+            "word": "espaciadora",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": true
+        },
+        {
+          "op": "stop",
+          "atWord": {
+            "word": "detienes",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": true
         }
       ],
-      "extraMusic": 7
+      "extraMusic": 0,
+      "prepare": [
+        {
+          "op": "key",
+          "key": "Home"
+        }
+      ]
     },
     {
       "clip": 16,
@@ -489,7 +751,11 @@
           "target": {
             "label": "Tempo"
           },
-          "at": 1,
+          "atWord": {
+            "word": "tempo",
+            "occurrence": 1,
+            "offset": -0.55
+          },
           "text": "84"
         },
         {
@@ -498,7 +764,11 @@
             "role": "button",
             "name": "Repetir"
           },
-          "at": 4.3
+          "atWord": {
+            "word": "repetir",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "click",
@@ -506,30 +776,33 @@
             "role": "button",
             "name": "Metrónomo"
           },
-          "at": 5.4
-        },
+          "atWord": {
+            "word": "metronomo",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        }
+      ],
+      "cleanup": [
         {
           "op": "click",
           "target": {
             "role": "button",
             "name": "Repetir"
-          },
-          "at": 6.5
+          }
         },
         {
           "op": "click",
           "target": {
             "role": "button",
             "name": "Metrónomo"
-          },
-          "at": 7.2
+          }
         },
         {
           "op": "setField",
           "target": {
             "label": "Tempo"
           },
-          "at": 7.9,
           "text": "72"
         }
       ]
@@ -540,28 +813,40 @@
       "actions": [
         {
           "op": "key",
-          "key": "Home",
-          "at": 3
+          "atWord": {
+            "word": "c",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "c"
         },
         {
           "op": "key",
-          "key": "3",
-          "at": 4
+          "atWord": {
+            "word": "d",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "d"
         },
         {
           "op": "key",
-          "key": "c",
-          "at": 6
+          "atWord": {
+            "word": "e",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "e"
+        }
+      ],
+      "prepare": [
+        {
+          "op": "key",
+          "key": "Home"
         },
         {
           "op": "key",
-          "key": "d",
-          "at": 7.5
-        },
-        {
-          "op": "key",
-          "key": "e",
-          "at": 9
+          "key": "3"
         }
       ]
     },
@@ -570,74 +855,89 @@
       "text": "Los números del uno al seis cambian la figura, el punto agrega puntillo, la T liga, y la R escribe un silencio. Las flechas izquierda y derecha mueven el cursor.",
       "actions": [
         {
-          "op": "key",
-          "key": "1",
-          "at": 0.3
+          "op": "keys",
+          "atWord": {
+            "word": "uno",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "keys": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "intervalMs": 180
         },
         {
           "op": "key",
-          "key": "2",
-          "at": 0.8
+          "atWord": {
+            "word": "figura",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "3"
         },
         {
           "op": "key",
-          "key": "3",
-          "at": 1.3
+          "atWord": {
+            "word": "punto",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "."
         },
         {
           "op": "key",
-          "key": "4",
-          "at": 1.8
+          "atWord": {
+            "word": "t",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "t"
         },
         {
           "op": "key",
-          "key": "5",
-          "at": 2.3
+          "atWord": {
+            "word": "r",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "r"
         },
         {
           "op": "key",
-          "key": "6",
-          "at": 2.8
+          "atWord": {
+            "word": "izquierda",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "ArrowLeft"
         },
         {
           "op": "key",
-          "key": "3",
-          "at": 3.5
+          "atWord": {
+            "word": "derecha",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "ArrowRight"
+        }
+      ],
+      "cleanup": [
+        {
+          "op": "key",
+          "key": "."
         },
         {
           "op": "key",
-          "key": ".",
-          "at": 4.5
+          "key": "t"
         },
         {
           "op": "key",
-          "key": "t",
-          "at": 6
-        },
-        {
-          "op": "key",
-          "key": "r",
-          "at": 7.5
-        },
-        {
-          "op": "key",
-          "key": "ArrowLeft",
-          "at": 9.6
-        },
-        {
-          "op": "key",
-          "key": "ArrowRight",
-          "at": 10.3
-        },
-        {
-          "op": "key",
-          "key": ".",
-          "at": 11
-        },
-        {
-          "op": "key",
-          "key": "t",
-          "at": 11.6
+          "key": "3"
         }
       ]
     },
@@ -650,22 +950,31 @@
           "target": {
             "css": "aside details summary"
           },
-          "at": 0.3
+          "atWord": {
+            "word": "atajos",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "highlight",
           "target": {
             "css": "aside details[open]"
           },
-          "at": 1,
-          "ms": 3000
-        },
+          "atWord": {
+            "word": "lista",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1000
+        }
+      ],
+      "cleanup": [
         {
           "op": "click",
           "target": {
             "css": "aside details summary"
-          },
-          "at": 3.8
+          }
         }
       ]
     },
@@ -678,37 +987,57 @@
           "target": {
             "css": "[data-testid=\"midi-toggle\"]"
           },
-          "at": 2.5
+          "atWord": {
+            "word": "midi",
+            "occurrence": 2,
+            "offset": -0.55
+          }
         },
         {
           "op": "midi",
+          "atWord": {
+            "word": "tocas",
+            "occurrence": 1,
+            "offset": -0.08
+          },
           "notes": [
             60
           ],
-          "at": 5
+          "seconds": 0.3
         },
         {
           "op": "midi",
+          "atWord": {
+            "word": "cursor",
+            "occurrence": 1,
+            "offset": -0.08
+          },
           "notes": [
             64
           ],
-          "at": 7
+          "seconds": 0.3
         },
         {
           "op": "midi",
+          "atWord": {
+            "word": "vez",
+            "occurrence": 1,
+            "offset": -0.08
+          },
           "notes": [
             60,
             64,
             67
           ],
-          "at": 11.6
-        },
+          "seconds": 0.4
+        }
+      ],
+      "cleanup": [
         {
           "op": "click",
           "target": {
             "css": "[data-testid=\"midi-toggle\"]"
-          },
-          "at": 13.3
+          }
         }
       ]
     },
@@ -721,21 +1050,40 @@
           "target": {
             "css": "[data-testid=\"mic-toggle\"]"
           },
-          "at": 3
+          "atWord": {
+            "word": "mic",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
-          "op": "micTone",
-          "frequency": 261.625565,
-          "seconds": 1.8,
-          "at": 8
+          "op": "micStart",
+          "atWord": {
+            "word": "canta",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "frequency": 261.625565
         },
         {
           "op": "highlight",
           "target": {
             "css": "[data-testid=\"mic-pitch\"]"
           },
-          "at": 10,
-          "ms": 2500
+          "atWord": {
+            "word": "reconoce",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 900
+        },
+        {
+          "op": "micStop",
+          "atWord": {
+            "word": "escribe",
+            "occurrence": 1,
+            "offset": -0.08
+          }
         }
       ]
     },
@@ -749,14 +1097,23 @@
             "role": "combobox",
             "nameRegex": "^Escribir a"
           },
-          "at": 1.5,
+          "atWord": {
+            "word": "escribir",
+            "occurrence": 1,
+            "offset": -0.55
+          },
           "value": "12"
         },
         {
           "op": "micTone",
+          "atWord": {
+            "word": "cantar",
+            "occurrence": 1,
+            "offset": -0.08
+          },
           "frequency": 220,
-          "seconds": 1.8,
-          "at": 3
+          "seconds": 0.6,
+          "releaseMs": 120
         },
         {
           "op": "select",
@@ -764,14 +1121,37 @@
             "role": "combobox",
             "nameRegex": "^Escribir a"
           },
-          "at": 6,
+          "atWord": {
+            "word": "abajo",
+            "occurrence": 1,
+            "offset": -0.55
+          },
           "value": "-12"
         },
         {
           "op": "micTone",
+          "atWord": {
+            "word": "abajo",
+            "occurrence": 1,
+            "offset": 0.3
+          },
           "frequency": 440,
-          "seconds": 1.8,
-          "at": 7.2
+          "seconds": 0.6,
+          "releaseMs": 120
+        },
+        {
+          "op": "play",
+          "atWord": {
+            "word": "musica",
+            "occurrence": 1,
+            "offset": -0.65
+          }
+        }
+      ],
+      "cleanup": [
+        {
+          "op": "stop",
+          "key": true
         },
         {
           "op": "select",
@@ -779,21 +1159,13 @@
             "role": "combobox",
             "nameRegex": "^Escribir a"
           },
-          "at": 9.6,
           "value": "0"
-        },
-        {
-          "op": "play",
-          "at": 10.3,
-          "listen": 1.5,
-          "stop": "Space"
         },
         {
           "op": "click",
           "target": {
             "css": "[data-testid=\"mic-toggle\"]"
-          },
-          "at": 14.6
+          }
         }
       ]
     },
@@ -807,12 +1179,29 @@
             "role": "button",
             "name": "Seleccionar"
           },
-          "at": 1
+          "atWord": {
+            "word": "seleccionar",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "marquee",
-          "view": "staff",
-          "at": 4
+          "atWord": {
+            "word": "rectangulo",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "view": "staff"
+        },
+        {
+          "op": "badge",
+          "atWord": {
+            "word": "mayusculas",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "text": "Mayús o Ctrl · agregar a la selección"
         }
       ],
       "prepare": [
@@ -822,8 +1211,11 @@
         },
         {
           "op": "key",
-          "key": "Home",
-          "at": 0
+          "key": "Home"
+        },
+        {
+          "op": "key",
+          "key": "3"
         }
       ]
     },
@@ -839,9 +1231,14 @@
               "view": "staff"
             }
           },
-          "at": 3,
+          "atWord": {
+            "word": "arrastrala",
+            "occurrence": 1,
+            "offset": -0.55
+          },
           "dy": -10,
-          "group": true
+          "group": true,
+          "durationMs": 750
         }
       ]
     },
@@ -851,48 +1248,73 @@
       "actions": [
         {
           "op": "key",
-          "key": "Control+c",
-          "at": 0.8
+          "atWord": {
+            "word": "c",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "Control+c"
         },
         {
           "op": "key",
-          "key": "End",
-          "at": 2.5
-        },
-        {
-          "op": "key",
+          "atWord": {
+            "word": "v",
+            "occurrence": 1,
+            "offset": -0.08
+          },
           "key": "Control+v",
-          "at": 3.3
+          "toEnd": true
         },
         {
           "op": "key",
-          "key": "Control+d",
-          "at": 5.4
+          "atWord": {
+            "word": "d",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "Control+d"
         },
         {
           "op": "key",
-          "key": "ArrowUp",
-          "at": 8
+          "atWord": {
+            "word": "arriba",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "ArrowUp"
         },
         {
           "op": "key",
-          "key": "ArrowDown",
-          "at": 9
+          "atWord": {
+            "word": "abajo",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "ArrowDown"
         },
         {
           "op": "key",
-          "key": "Shift+ArrowUp",
-          "at": 10.5
+          "atWord": {
+            "word": "mayusculas",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "Shift+ArrowUp"
         },
         {
           "op": "key",
-          "key": "Shift+ArrowDown",
-          "at": 11.7
-        },
+          "atWord": {
+            "word": "octava",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": "Shift+ArrowDown"
+        }
+      ],
+      "cleanup": [
         {
           "op": "key",
-          "key": "Escape",
-          "at": 13.4
+          "key": "Escape"
         }
       ]
     },
@@ -906,22 +1328,18 @@
             "role": "button",
             "name": "Teclas"
           },
-          "at": 4
+          "atWord": {
+            "word": "teclas",
+            "occurrence": 2,
+            "offset": -0.55
+          }
         }
       ]
     },
     {
       "clip": 27,
-      "text": "Cada nota es una barra: su altura dice qué nota es, y su largo, cuánto dura. Haz clic en una fila para escribir, arrastra una barra para moverla, y estira su borde derecho para cambiar su duración.",
+      "text": "Cada nota es una barra: su altura dice qué nota es, y su largo, cuánto dura. Haz clic en una fila para escribir, arrastra una barra para moverla, y estira su borde derecho para cambiar su duración. Una nota ligada aparece como una sola barra, aunque pase al compás siguiente.",
       "actions": [
-        {
-          "op": "click",
-          "target": {
-            "role": "button",
-            "name": "Escribir"
-          },
-          "at": 1
-        },
         {
           "op": "click",
           "target": {
@@ -931,24 +1349,72 @@
               "beat": 1
             }
           },
-          "at": 4
+          "atWord": {
+            "word": "clic",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "drag",
           "target": {
             "css": "[data-pitch=\"D4\"] [data-roll-note]:last-child"
           },
-          "at": 7,
+          "atWord": {
+            "word": "arrastra",
+            "occurrence": 1,
+            "offset": -0.55
+          },
           "dx": 48,
-          "dy": -52
+          "dy": -52,
+          "durationMs": 650
         },
         {
           "op": "drag",
           "target": {
             "css": "[data-pitch=\"E4\"] [data-roll-note] span"
           },
-          "at": 10,
-          "dx": 48
+          "atWord": {
+            "word": "estira",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "dx": 48,
+          "durationMs": 700
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "css": "[data-roll-note][data-tie]",
+            "all": true
+          },
+          "atWord": {
+            "word": "ligada",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 3300,
+          "capture": "clip-27-ligada.png"
+        }
+      ],
+      "prepare": [
+        {
+          "op": "prepareTie"
+        },
+        {
+          "op": "key",
+          "key": "Home"
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Escribir"
+          }
+        },
+        {
+          "op": "key",
+          "key": "3"
         }
       ]
     },
@@ -962,12 +1428,21 @@
             "role": "button",
             "name": "Seleccionar"
           },
-          "at": 0
+          "atWord": {
+            "word": "seleccionas",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "marquee",
+          "atWord": {
+            "word": "rectangulo",
+            "occurrence": 1,
+            "offset": -0.55
+          },
           "view": "roll",
-          "at": 1.5
+          "durationMs": 320
         },
         {
           "op": "drag",
@@ -975,10 +1450,15 @@
             "css": "[data-roll-note][aria-pressed=true]",
             "fx": 0.35
           },
-          "at": 4,
+          "atWord": {
+            "word": "mueves",
+            "occurrence": 1,
+            "offset": -0.55
+          },
           "dx": 48,
           "dy": -26,
-          "group": true
+          "group": true,
+          "durationMs": 650
         }
       ]
     },
@@ -992,36 +1472,43 @@
             "role": "button",
             "name": "Partitura"
           },
-          "at": 3
+          "atWord": {
+            "word": "partitura",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         }
       ]
     },
     {
       "clip": 30,
-      "text": "En el inspector cambias la armadura y la métrica desde el compás donde está el cursor. Con «más compás» insertas un compás vacío después de ese, y con «menos compás» lo quitas; lo que sigue se recorre solo.",
+      "text": "En el inspector cambias la armadura y la métrica desde el compás donde está el cursor. Con «más compás» añades un compás vacío al final. Con «Insertar aquí» pones uno donde está el cursor, y con «menos compás» lo quitas; en esos dos casos, lo que sigue se recorre solo.",
       "actions": [
         {
-          "op": "key",
-          "key": "Home",
-          "at": 0
-        },
-        {
-          "op": "select",
+          "op": "highlight",
           "target": {
             "role": "combobox",
             "nameRegex": "^Armadura"
           },
-          "at": 1.5,
-          "value": "G"
+          "atWord": {
+            "word": "armadura",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 800
         },
         {
-          "op": "select",
+          "op": "highlight",
           "target": {
             "role": "combobox",
             "nameRegex": "^Compás"
           },
-          "at": 3.6,
-          "value": "3/4"
+          "atWord": {
+            "word": "metrica",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1000
         },
         {
           "op": "click",
@@ -1029,16 +1516,89 @@
             "role": "button",
             "name": "+ Compás"
           },
-          "at": 6.2
+          "atWord": {
+            "word": "compas",
+            "occurrence": 2,
+            "offset": -0.55
+          }
         },
         {
-          "op": "setField",
-          "target": {
-            "role": "spinbutton",
-            "name": "Compás"
+          "op": "assert",
+          "measures": 5,
+          "at": 6.4,
+          "starts": [
+            0,
+            960,
+            1920,
+            2880,
+            3840,
+            4800,
+            5760,
+            6720,
+            7680,
+            8640,
+            9600,
+            10560,
+            11520,
+            12480,
+            13440,
+            14400
+          ]
+        },
+        {
+          "op": "showMeasure",
+          "atWord": {
+            "word": "final",
+            "occurrence": 1,
+            "offset": -0.08
           },
-          "text": "2",
-          "at": 7.6
+          "measure": "last"
+        },
+        {
+          "op": "showMeasure",
+          "measure": 2,
+          "atWord": {
+            "word": "con",
+            "occurrence": 2,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Insertar aquí"
+          },
+          "atWord": {
+            "word": "insertar",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "capture": "clip-30-insertar.png"
+        },
+        {
+          "op": "assert",
+          "measures": 6,
+          "emptyMeasure": 2,
+          "at": 11,
+          "starts": [
+            0,
+            960,
+            1920,
+            2880,
+            7680,
+            8640,
+            9600,
+            10560,
+            11520,
+            12480,
+            13440,
+            14400,
+            15360,
+            16320,
+            17280,
+            18240
+          ]
         },
         {
           "op": "click",
@@ -1046,30 +1606,53 @@
             "role": "button",
             "name": "− Compás"
           },
-          "at": 9.2
+          "atWord": {
+            "word": "menos",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "capture": "clip-30-quitar.png"
+        },
+        {
+          "op": "assert",
+          "measures": 5,
+          "at": 14.6,
+          "starts": [
+            0,
+            960,
+            1920,
+            2880,
+            3840,
+            4800,
+            5760,
+            6720,
+            7680,
+            8640,
+            9600,
+            10560,
+            11520,
+            12480,
+            13440,
+            14400
+          ]
+        }
+      ],
+      "prepare": [
+        {
+          "op": "loadProject",
+          "file": "secuenciador-v5-compases.json"
         },
         {
           "op": "key",
-          "key": "Home",
-          "at": 10.2
+          "key": "Home"
         },
         {
-          "op": "select",
+          "op": "setField",
           "target": {
-            "role": "combobox",
-            "nameRegex": "^Armadura"
+            "role": "spinbutton",
+            "name": "Compás"
           },
-          "at": 11.1,
-          "value": "C"
-        },
-        {
-          "op": "select",
-          "target": {
-            "role": "combobox",
-            "nameRegex": "^Compás"
-          },
-          "at": 12,
-          "value": "4/4"
+          "text": "2"
         }
       ]
     },
@@ -1081,17 +1664,25 @@
           "op": "click",
           "target": {
             "role": "button",
-            "name": "Páginas"
+            "name": "Continua"
           },
-          "at": 1.5
+          "atWord": {
+            "word": "continua",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "click",
           "target": {
             "role": "button",
-            "name": "Continua"
+            "name": "Páginas"
           },
-          "at": 4.6
+          "atWord": {
+            "word": "paginas",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         }
       ],
       "prepare": [
@@ -1103,6 +1694,22 @@
           "op": "key",
           "key": "Home"
         }
+      ],
+      "cleanup": [
+        {
+          "op": "click",
+          "target": {
+            "role": "button",
+            "name": "Continua"
+          }
+        },
+        {
+          "op": "click",
+          "target": {
+            "role": "tab",
+            "name": "Marcadores"
+          }
+        }
       ]
     },
     {
@@ -1110,34 +1717,28 @@
       "text": "Abajo, en la pista de acordes, escribes el cifrado de tu ejercicio. Puedes escribir toda la progresión de una vez, en números romanos como en el curso, o con letras, y elegir cada cuántos pulsos cambia el acorde.",
       "actions": [
         {
-          "op": "key",
-          "key": "Home",
-          "at": 0
-        },
-        {
           "op": "click",
           "target": {
             "role": "tab",
             "name": "Pista de acordes"
           },
-          "at": 1
+          "atWord": {
+            "word": "acordes",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "setField",
           "target": {
             "css": "[data-testid=\"progression-input\"]"
           },
-          "at": 4,
-          "text": "I IV V I"
-        },
-        {
-          "op": "highlight",
-          "target": {
-            "role": "combobox",
-            "nameRegex": "^Un acorde cada"
+          "atWord": {
+            "word": "progresion",
+            "occurrence": 1,
+            "offset": -0.55
           },
-          "at": 8,
-          "ms": 2500
+          "text": "I IV V I"
         },
         {
           "op": "click",
@@ -1145,7 +1746,30 @@
             "role": "button",
             "name": "Escribir desde el compás 1"
           },
-          "at": 10
+          "atWord": {
+            "word": "romanos",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        },
+        {
+          "op": "highlight",
+          "target": {
+            "role": "combobox",
+            "nameRegex": "^Un acorde cada"
+          },
+          "atWord": {
+            "word": "pulsos",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1200
+        }
+      ],
+      "prepare": [
+        {
+          "op": "key",
+          "key": "Home"
         }
       ]
     },
@@ -1158,15 +1782,23 @@
           "target": {
             "css": "[data-measure=\"1\"]"
           },
-          "at": 0,
-          "ms": 3000
+          "atWord": {
+            "word": "cifrado",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 2300
         },
         {
           "op": "type",
           "target": {
             "label": "Cifrado compás 1, pulso 2"
           },
-          "at": 5,
+          "atWord": {
+            "word": "pulso",
+            "occurrence": 1,
+            "offset": -0.55
+          },
           "text": "V6"
         },
         {
@@ -1174,8 +1806,12 @@
           "target": {
             "css": "[data-testid=\"chord-lane\"]"
           },
-          "at": 8,
-          "ms": 4000
+          "atWord": {
+            "word": "armonia",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1500
         }
       ]
     },
@@ -1186,17 +1822,26 @@
         {
           "op": "highlight",
           "target": {
-            "css": "[data-testid=\"status-message\"]"
+            "css": "[data-testid=\"studio-v5\"] footer [class*=\"phase\"]"
           },
-          "at": 1,
-          "ms": 3000
+          "atWord": {
+            "word": "automaticamente",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 1700,
+          "capture": "clip-34-guardado.png"
         },
         {
           "op": "click",
           "target": {
             "css": "summary:has-text(\"Archivo\")"
           },
-          "at": 6
+          "atWord": {
+            "word": "archivo",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "download",
@@ -1204,7 +1849,11 @@
             "role": "menuitem",
             "name": "Guardar proyecto Ctrl S"
           },
-          "at": 9
+          "atWord": {
+            "word": "guardar",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         }
       ]
     },
@@ -1218,7 +1867,11 @@
             "role": "menuitem",
             "name": "Abrir… (JSON, MusicXML)"
           },
-          "at": 0.6
+          "atWord": {
+            "word": "abres",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "move",
@@ -1226,7 +1879,11 @@
             "role": "menuitem",
             "name": "Exportar MIDI"
           },
-          "at": 2.2
+          "atWord": {
+            "word": "midi",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "move",
@@ -1234,7 +1891,11 @@
             "role": "menuitem",
             "name": "Exportar MusicXML"
           },
-          "at": 4
+          "atWord": {
+            "word": "musicxml",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "move",
@@ -1242,7 +1903,11 @@
             "role": "menuitem",
             "name": "Exportar audio WAV"
           },
-          "at": 5.7
+          "atWord": {
+            "word": "wav",
+            "occurrence": 1,
+            "offset": -0.55
+          }
         },
         {
           "op": "move",
@@ -1250,14 +1915,19 @@
             "role": "menuitem",
             "name": "Exportar imagen PNG"
           },
-          "at": 7.5
-        },
+          "atWord": {
+            "word": "imagen",
+            "occurrence": 1,
+            "offset": -0.55
+          }
+        }
+      ],
+      "cleanup": [
         {
           "op": "click",
           "target": {
             "css": "summary:has-text(\"Archivo\")"
-          },
-          "at": 9.3
+          }
         }
       ]
     },
@@ -1270,12 +1940,18 @@
           "target": {
             "css": "[data-testid=\"present\"]"
           },
-          "at": 2
-        },
+          "atWord": {
+            "word": "presentar",
+            "occurrence": 1,
+            "offset": -0.55
+          },
+          "capture": "clip-36-presentar.png"
+        }
+      ],
+      "cleanup": [
         {
           "op": "key",
-          "key": "Escape",
-          "at": 8
+          "key": "Escape"
         }
       ]
     },
@@ -1284,83 +1960,46 @@
       "text": "Eso es lo esencial de la versión cinco. Te recomiendo empezar por algo sencillo: escribe una escala con el teclado, cántala con el micrófono y escúchala.",
       "actions": [
         {
-          "op": "key",
-          "key": "c",
-          "at": 4
-        },
-        {
-          "op": "key",
-          "key": "d",
-          "at": 4.22
-        },
-        {
-          "op": "key",
-          "key": "e",
-          "at": 4.44
-        },
-        {
-          "op": "key",
-          "key": "f",
-          "at": 4.66
-        },
-        {
-          "op": "key",
-          "key": "g",
-          "at": 4.88
-        },
-        {
-          "op": "key",
-          "key": "a",
-          "at": 5.1
-        },
-        {
-          "op": "key",
-          "key": "b",
-          "at": 5.32
-        },
-        {
-          "op": "key",
-          "key": "c",
-          "at": 5.54
-        },
-        {
-          "op": "click",
-          "target": {
-            "css": "[data-testid=\"mic-toggle\"]"
+          "op": "keys",
+          "atWord": {
+            "word": "escala",
+            "occurrence": 1,
+            "offset": -0.08
           },
-          "at": 6.1
+          "keys": [
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "a",
+            "b",
+            "c"
+          ],
+          "intervalMs": 100
         },
         {
-          "op": "micTone",
-          "frequency": 261.625565,
-          "seconds": 0.6,
-          "at": 7
-        },
-        {
-          "op": "micTone",
-          "frequency": 293.664768,
-          "seconds": 0.6,
-          "at": 8.05
-        },
-        {
-          "op": "micTone",
-          "frequency": 329.627557,
-          "seconds": 0.6,
-          "at": 9.1
-        },
-        {
-          "op": "click",
-          "target": {
-            "css": "[data-testid=\"mic-toggle\"]"
+          "op": "micSequence",
+          "atWord": {
+            "word": "cantala",
+            "occurrence": 1,
+            "offset": -0.08
           },
-          "at": 10.2
+          "frequencies": [
+            261.625565,
+            293.664768,
+            329.627557
+          ],
+          "noteMs": 400
         },
         {
           "op": "play",
-          "afterVoice": true,
-          "listen": 6,
-          "stop": "Space",
-          "at": 1.2
+          "atWord": {
+            "word": "escuchala",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "key": true
         }
       ],
       "prepare": [
@@ -1370,24 +2009,40 @@
         },
         {
           "op": "key",
-          "key": "Home",
-          "at": 0
+          "key": "Home"
         },
         {
           "op": "click",
           "target": {
             "role": "button",
             "name": "Escribir"
-          },
-          "at": 0
+          }
         },
         {
           "op": "key",
-          "key": "3",
-          "at": 0
+          "key": "3"
+        },
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"mic-toggle\"]"
+          }
         }
       ],
-      "extraMusic": 10
+      "extraMusic": 10,
+      "cleanupDelay": 9.5,
+      "cleanup": [
+        {
+          "op": "stop",
+          "key": true
+        },
+        {
+          "op": "click",
+          "target": {
+            "css": "[data-testid=\"mic-toggle\"]"
+          }
+        }
+      ]
     },
     {
       "clip": 38,
@@ -1395,7 +2050,11 @@
       "actions": [
         {
           "op": "badge",
-          "at": 1,
+          "atWord": {
+            "word": "tres",
+            "occurrence": 1,
+            "offset": -0.08
+          },
           "text": "Versiones 3 · 4 · 5 disponibles en el Curso de Armonía"
         }
       ]
@@ -1409,10 +2068,15 @@
           "target": {
             "css": "[data-testid=\"studio-v5\"]"
           },
-          "at": 0,
-          "ms": 1500
+          "atWord": {
+            "word": "leccion",
+            "occurrence": 1,
+            "offset": -0.08
+          },
+          "ms": 700
         }
       ]
     }
-  ]
+  ],
+  "wordAnchorContract": "El objetivo es el inicio de palabra; offset negativo anticipa la aproximación, offset positivo demora el gesto. Las restauraciones no narradas están en prepare/cleanup."
 }

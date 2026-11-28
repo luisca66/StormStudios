@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { readFile, writeFile, mkdir, access, stat, unlink, open } from 'node:fs/promises';
 import path from 'node:path';
+import {resolveAtWord,loadWordTimes,LiveSilenceMeter,safeMusicCopy,wordSyncReport,boundaryReport} from './tutorial-quality-v5.mjs';
 import {pathToFileURL} from 'node:url';
 import { spawn } from 'node:child_process';
 import {startProduction,stopProduction,assertFreePort,installDevices,audioGroups,findChromium} from './tutorial-v5-support.mjs';
@@ -37,9 +38,14 @@ function decorations(locale='es') {
     badge(text, ms = 1200) { document.querySelectorAll('.tutorial-badge').forEach(e=>e.remove());const d = document.createElement('div'); d.className = 'tutorial-badge'; d.textContent = text; document.body.append(d); setTimeout(() => d.remove(), ms); },
     ring(x,y,right) { const d = document.createElement('div'); d.className = 'tutorial-ring'; Object.assign(d.style,{left:x+'px',top:y+'px',borderColor:right?'#f59e0b':'#8b5cf6'}); document.body.append(d); setTimeout(()=>d.remove(),500); },
     highlight(box,ms) { const d=document.createElement('div'); d.className='tutorial-highlight';Object.assign(d.style,{left:box.x-7+'px',top:box.y-7+'px',width:box.width+14+'px',height:box.height+14+'px'});document.body.append(d);setTimeout(()=>{d.style.opacity='0';setTimeout(()=>d.remove(),300);},ms); },
-    armed:false, onset:null,events:[],nextBadge:null,lastGesture:null,
+    armed:false, onset:null,events:[],nextBadge:null,lastGesture:null,activeAction:null,actionEvents:[],
+    measure(kind){if(this.activeAction)this.actionEvents.push({id:this.activeAction,kind,time:performance.timeOrigin+performance.now()});},
     cue(gesture,at){clearTimeout(gesture.timer);gesture.timer=setTimeout(()=>{gesture.visualTime=performance.timeOrigin+performance.now();if(gesture.kind==='key')window.tutorial.badge(gesture.badge);else{window.tutorial.ring(gesture.x,gesture.y,gesture.right);if(gesture.ctrl)window.tutorial.badge(locale==='en'?'Ctrl + click':'Ctrl + clic');}},Math.max(0,at-performance.timeOrigin-performance.now()));},
   };
+  for(const type of ['pointerdown','keydown','input','change','pointermove'])document.addEventListener(type,event=>{
+    if(type==='keydown'&&['Control','Shift','Alt','Meta'].includes(event.key))return;
+    window.tutorial.measure(type);
+  },true);
   // Musical gestures are cued from the output sample clock; silent controls use a 100 ms fallback.
   document.addEventListener('pointerdown',e=>{const gesture={kind:'pointer',time:performance.timeOrigin+performance.now(),x:e.clientX,y:e.clientY,right:e.button===2,ctrl:e.ctrlKey};window.tutorial.lastGesture=gesture;window.tutorial.events.push(gesture);window.tutorial.cue(gesture,gesture.time+100);},true);
   document.addEventListener('pointermove',e=>{if(e.buttons){const gesture={kind:'drag',time:performance.timeOrigin+performance.now(),x:e.clientX,y:e.clientY};window.tutorial.lastGesture=gesture;window.tutorial.events.push(gesture);}},true);
@@ -59,9 +65,12 @@ function decorations(locale='es') {
 }
 
 export async function calibrateCapture(timeline,work,{previewsOnly=false}={}){
-  for(const s of timeline.clips){const errors=[],seen=new Set();s.previewVisualSync=[];
+  for(const s of timeline.clips){const errors=[],seen=new Set();s.previewVisualSync=[];let lastKey=-Infinity;
     for(const preview of s.previewSync??[]){if(seen.has(preview.gestureTime))continue;seen.add(preview.gestureTime);
       const gesture=s.browserEvents.find(e=>e.time===preview.gestureTime&&e.kind!=='sound');
+      // In a fast run of keys the badge of the previous key is still on screen, so a new one cannot "appear":
+      // the first key of the run is measured on the image; the rest keep their audio-clock check (previewSync).
+      if(gesture?.kind==='key'){const burst=preview.gestureTime-lastKey<400;lastKey=preview.gestureTime;if(burst)continue;}
       const marker=await measureTutorialMarker(path.join(work,`segment-${s.clip}.mp4`),gesture,s.captureEpoch);
       if(marker.visualTime===null)throw new Error(`Clip ${s.clip}: no se ve la marca de la vista previa`);
       const errorMs=marker.visualTime-preview.audioTime;errors.push(errorMs);s.previewVisualSync.push({...preview,marker,rawErrorMs:errorMs});
@@ -105,17 +114,19 @@ async function main() {
   if(texts.some((text,i)=>text.trim().replace(/\s+/g,' ')!==plan.clips[i]?.text.trim().replace(/\s+/g,' ')))throw new Error('La narración no corresponde al texto aprobado de cada clip');
   const table=new Map([...(await readFile(path.join(clips,'Duraciones_Video_Secuenciador.txt'),'utf8')).matchAll(/^\s*\d+\s+(\d+)_Chapter_1\.mp3\s+([\d.]+)/gm)].map(m=>[+m[1],+m[2]]));
   if(texts.length!==plan.clips.length||table.size!==plan.clips.length)throw new Error('Texto, plan y duraciones no coinciden');
-  const timeline={audioClockVersion:2,pcmArchive:[],duration:0,voiceSeconds:0,clips:[],music:[],capture:'CDP JPEG quality 100, compositor timestamps → CFR 30; static frames held only between compositor updates',substitutions:plan.substitutions,sampleFailures:[],requiredAudio:plan.requiredAudio??[],continuousPlayback:plan.continuousPlayback??[]};
+  const timeline={audioClockVersion:2,wordAnchorsVersion:1,tailProtectionVersion:1,pcmArchive:[],duration:0,voiceSeconds:0,clips:[],music:[],capture:'CDP JPEG quality 100, compositor timestamps → CFR 30; static frames held only between compositor updates',substitutions:plan.substitutions,sampleFailures:[],requiredAudio:plan.requiredAudio??[],continuousPlayback:plan.continuousPlayback??[]};
   for(const entry of plan.clips) {
     const file=path.join(work,`voice-${entry.clip}.wav`);
     if(!opt['--assemble']&&(!await exists(file)||(await stat(file)).mtimeMs<(await stat(path.join(clips,`${entry.clip}_Chapter_1.mp3`))).mtimeMs))await ff(['-i',path.join(clips,`${entry.clip}_Chapter_1.mp3`),'-ar','48000','-ac','2','-c:a','pcm_s16le',file]);
     entry.voice=Number((await probe(file)).format.duration);
+    entry.wordTimes=await loadWordTimes(clips,entry.clip);
+    for(const [index,a] of entry.actions.entries())if(a.atWord)a.resolvedWord=resolveAtWord(a.atWord,entry.wordTimes,'Clip '+entry.clip+', acción '+(index+1));
     if(Math.abs(entry.voice-table.get(entry.clip))>.002)throw new Error(`Duración clip ${entry.clip}`);
     timeline.voiceSeconds+=entry.voice;
     if(!opt['--assemble']&&(!await exists(path.join(work,`normalized-${entry.clip}.wav`))||(await stat(path.join(work,`normalized-${entry.clip}.wav`))).mtimeMs<(await stat(file)).mtimeMs))await ff(['-i',file,'-af',`loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,apad,atrim=end_sample=${Math.round(entry.voice*48000)}`,'-ac','2','-c:a','pcm_s16le',path.join(work,`normalized-${entry.clip}.wav`)]);
   }
   let server, browser, workletFile;
-  const audioArchives=new Map();
+  const audioArchives=new Map(),silenceMeter=new LiveSilenceMeter();
   try {
     if(!opt['--assemble']) {
       const workletName=`tutorial-pcm-${process.pid}.js`;workletFile=path.resolve('public/vendor',workletName);
@@ -141,7 +152,7 @@ async function main() {
       await page.route('**/api/events',route=>route.fulfill({status:204}));
       const audioChunks=[];
       await page.exposeBinding('tutorialPCM',async(_source,data)=>{
-        const chunk={...data,pcm:Buffer.from(data.pcm,'base64')};audioChunks.push(chunk);
+        const chunk={...data,pcm:Buffer.from(data.pcm,'base64')};audioChunks.push(chunk);silenceMeter.ingest(chunk);
         if(!audioArchives.has(data.contextId))audioArchives.set(data.contextId,(async()=>{
           const pcm=path.join(work,'context-'+data.contextId+'.f32'),index=path.join(work,'context-'+data.contextId+'.jsonl');
           timeline.pcmArchive.push({contextId:data.contextId,pcm,index});
@@ -195,8 +206,12 @@ async function main() {
         },ui.transport);const b=await l.boundingBox();if(!b)throw new Error(`Sin geometría ${JSON.stringify(t)}`);
         return{x:b.x+(t.fx??.5)*b.width,y:b.y+(t.fy??.5)*b.height};
       }
-      async function move(p,duration=420) {
-        const from={...cursor},fast=opt['--rehearse']&&!opt['--rehearse-video'],steps=fast?1:24;
+      let currentCue=null;
+      async function moment(kind,run){if(currentCue){await sleep(currentCue.targetEpoch-Date.now());await page.evaluate(id=>{window.tutorial.activeAction=id;},currentCue.id);}const value=await run();if(!['pointerdown','keydown','input','change','pointermove'].includes(kind))await page.evaluate(k=>window.tutorial.measure(k),kind);return value;}
+      async function audioSilence(notBefore){const began=Date.now();let status;while(Date.now()-began<=4000){const ids=await page.evaluate(()=>window.tutorialAudio.snapshot().filter(c=>c.state==='running').map(c=>c.contextId));const filtered=new Map([...silenceMeter.contexts].filter(([id])=>ids.includes(id)));const meter=new LiveSilenceMeter();meter.contexts=filtered;status=meter.status(Date.now(),notBefore);if(status.silent)return {...status,waitMs:Date.now()-began};await sleep(25);}throw new Error('La salida no quedó en silencio en 4 s: '+JSON.stringify(status));}
+      async function move(p,duration=420,approach=false) {
+        if(approach&&currentCue)duration=Math.min(duration,Math.max(1,currentCue.targetEpoch-Date.now()-20));
+        const from={...cursor},fast=opt['--rehearse']&&!opt['--rehearse-video'],steps=fast?1:Math.max(1,Math.min(24,Math.floor(duration/18)));
         const positions=Array.from({length:steps+1},(_,i)=>{const u=i/steps,s=u*u*(3-2*u);return{x:from.x+(p.x-from.x)*s,y:from.y+(p.y-from.y)*s,offset:u};});
         await page.evaluate(({positions,duration})=>{
           const el=document.getElementById('tutorial-cursor');el.getAnimations().forEach(a=>a.cancel());
@@ -207,69 +222,80 @@ async function main() {
         await page.evaluate(p=>{const el=document.getElementById('tutorial-cursor');el.style.transform=`translate(${p.x}px,${p.y}px)`;el.getAnimations().forEach(a=>a.cancel());},p);
       }
       async function click(t,right=false,ctrl=false) {
-        const p=await point(t);await move(p);if(ctrl)await page.keyboard.down('Control');
-        if(t.role||t.label)await loc(t).click({button:right?'right':'left'});else await page.mouse.click(p.x,p.y,{button:right?'right':'left'});
+        const p=await point(t);await move(p,420,true);if(ctrl)await page.keyboard.down('Control');
+        await moment('pointerdown',()=>page.mouse.click(p.x,p.y,{button:right?'right':'left'}));
         if(ctrl)await page.keyboard.up('Control');
       }
       async function key(k,badge) {
         await page.evaluate(()=>document.activeElement?.blur());
         await page.evaluate(s=>{window.tutorial.nextBadge=s;},badge??({'Space':plan.locale==='en'?'Space':'Espacio','PageUp':plan.locale==='en'?'Page Up':'Re Pág','PageDown':plan.locale==='en'?'Page Down':'Av Pág','ArrowLeft':'←','ArrowRight':'→','ArrowUp':'↑','ArrowDown':'↓'}[k]??k.replace('Control','Ctrl').replaceAll('+',' + ')));
-        await page.keyboard.press(k);
+        await moment('keydown',()=>page.keyboard.press(k));
       }
-      let activeMusic, continuityEpoch;
+      let activeMusic;
       for(const entry of plan.clips) {
         const n=entry.clip,prefix=n===1?1.5:.4;
         const stall=opt['--clock-stalls']?({5:17350,19:1660,36:13000}[n]):0;
         if(stall){(timeline.clockTestStalls??=[]).push({clip:n,ms:stall,time:Date.now()});await page.evaluate(ms=>{void window.tutorialAudio.pauseForTest(ms);},stall);}
         await page.evaluate(()=>document.querySelectorAll('.tutorial-highlight').forEach(el=>el.remove()));
         if(await page.getByTestId('author-panel').count()||await page.getByRole('tab',{name:'Modo autor',exact:true}).count())throw new Error('Modo autor visible');
-        const group=plan.continuousPlayback?.find(g=>g.includes(n)),continued=group&&group[0]!==n,continues=group&&group.at(-1)!==n;
+        const continued=false;
+        currentCue=null;await page.evaluate(()=>{window.tutorial.activeAction=null;});
         if(entry.prepare)for(const a of entry.prepare)await action(a);
+        await audioSilence(Date.now()-250);
         const dir=path.join(work,`capture-${n}`);await mkdir(dir,{recursive:true});
-        const start=continuityEpoch??Date.now();continuityEpoch=undefined;
+        const start=Date.now();
         if(!continued){frame=0;writes=[];record={dir,frames:[]};}
         if((!opt['--rehearse']||opt['--rehearse-video'])&&!continued) {
           await page.screenshot({path:path.join(dir,'initial.jpg'),type:'jpeg',quality:100});record.frames.push({file:path.join(dir,'initial.jpg'),time:start});
           await cdp.send('Page.startScreencast',{format:'jpeg',quality:100,maxWidth:1920,maxHeight:1080,everyNthFrame:1});
         }
-        const seg={clip:n,start:timeline.duration,voiceStart:timeline.duration+prefix,voiceEnd:timeline.duration+prefix+entry.voice,actions:[],music:[],captureEpoch:start,source:path.join(clips,`${n}_Chapter_1.mp3`)};
+        const seg={clip:n,start:timeline.duration,voiceStart:timeline.duration+prefix,voiceEnd:timeline.duration+prefix+entry.voice,actions:[],music:[],stops:[],actionEvents:[],captureEpoch:start,source:path.join(clips,`${n}_Chapter_1.mp3`)};
         async function action(a) {
-          if(a.op==='click'||a.op==='ctrlClick'||a.op==='rightClick'){if(!(a.op==='click'&&a.target.role==='tab'&&await loc(a.target).getAttribute('aria-selected')==='true'))await click(a.target,a.op==='rightClick',a.op==='ctrlClick');if(a.op==='rightClick')await page.screenshot({path:path.join(work,`clip-${n}-menu.png`)});}
-          else if(a.op==='audition'){const p=await point(a.target);await move(p);await page.mouse.down();await sleep(350);await page.mouse.up();}
-          else if(a.op==='setField'){await loc(a.target).fill(a.text);await loc(a.target).blur();}
+          if(a.op==='click'||a.op==='ctrlClick'||a.op==='rightClick'){if(!(a.op==='click'&&a.target.role==='tab'&&await loc(a.target).getAttribute('aria-selected')==='true'))await click(a.target,a.op==='rightClick',a.op==='ctrlClick');if(a.op==='rightClick')await page.screenshot({path:path.join(work,`clip-${n}-menu.png`)});if(a.capture)await page.screenshot({path:path.join(work,a.capture)});}
+          else if(a.op==='audition'){const p=await point(a.target);await move(p,420,true);await moment('pointerdown',()=>page.mouse.down());await sleep(350);await page.mouse.up();}
+          else if(a.op==='setField'){await move(await point(a.target),420,true);await moment('input',()=>loc(a.target).fill(a.text));await loc(a.target).blur();}
           else if(a.op==='warmAudio'){
             const original=await page.evaluate(()=>window.stormSequencer.getScore()),warm=structuredClone(original);
             warm.voices[0].events=[['B3','C4','C#4','D4','Eb4','E4','F4'],['F#4','G4','G#4','A4','Bb4','B4','C5']].map((pitches,i)=>({id:`tutorial-warm-${i}`,start:i*960,duration:'q',dotted:false,triplet:false,tie:false,pitches}));
-            await page.evaluate(s=>window.stormSequencer.loadScore(s),warm);await page.waitForTimeout(100);
+            await page.evaluate(s=>window.stormSequencer.loadScore(s),warm);await page.waitForTimeout(50);
             await page.evaluate(()=>{window.tutorial.armed=true;window.tutorial.onset=null;});
             await page.getByRole('button',{name:ui.play,exact:true}).click();
             await page.waitForFunction(()=>window.tutorial.onset!==null,{},{timeout:90000});
             await page.getByRole('button',{name:ui.stop,exact:true}).click();
             await page.evaluate(s=>{window.tutorial.armed=false;window.stormSequencer.loadScore(s);},original);
-            await page.evaluate(()=>window.tutorialAudio.flush());await page.waitForTimeout(100);
+            await page.evaluate(()=>window.tutorialAudio.flush());await page.waitForTimeout(50);
           }
           else if(a.op==='assert'){
             const actual=await page.evaluate(()=>window.stormSequencer.getScore());
             const notes=actual.voices.find(v=>v.id==='melody').events;
+            if(a.measures&&actual.measures.length!==a.measures)throw new Error('Compases: '+actual.measures.length+', se esperaban '+a.measures);
+            if(a.emptyMeasure&&notes.some(e=>e.start>=(a.emptyMeasure-1)*3840&&e.start<a.emptyMeasure*3840))throw new Error('El compás insertado no está vacío');
+            if(a.starts&&JSON.stringify(notes.map(e=>e.start).sort((a,b)=>a-b))!==JSON.stringify([...a.starts].sort((a,b)=>a-b)))throw new Error('Las notas no conservaron o recorrieron sus posiciones como se esperaba');
             if(a.pitches&&JSON.stringify(notes.map(e=>e.pitches.join('+')))!==JSON.stringify(a.pitches))throw new Error('Notas inesperadas: '+JSON.stringify(notes));
             if(a.selected){const count=await page.locator('[data-roll-note][aria-pressed=true]').count();if(count!==a.selected)throw new Error('Selección inesperada: '+count);}
           }
+          else if(a.op==='keys'){for(const [index,k] of a.keys.entries()){if(index)await sleep(a.intervalMs??120);await key(k);}}
           else if(a.op==='midi'){
             await page.waitForFunction(()=>document.querySelector('[data-testid="midi-toggle"]')?.dataset.midi==='ready');
-            await page.evaluate(a=>{const t=window.tutorial,g={kind:'key',badge:'MIDI · '+a.notes.join(' + '),time:performance.timeOrigin+performance.now()};t.events.push(g);t.lastGesture=g;t.cue(g,g.time+100);window.tutorialDevices.midi(a.notes,a.velocity);},a);
+            await moment('midi',()=>page.evaluate(a=>{const t=window.tutorial,g={kind:'key',badge:'MIDI · '+a.notes.join(' + '),time:performance.timeOrigin+performance.now()};t.events.push(g);t.lastGesture=g;t.cue(g,g.time+100);window.tutorialDevices.midi(a.notes,a.velocity);},a));
             await sleep((a.seconds??.5)*1000);await page.evaluate(notes=>window.tutorialDevices.release(notes),a.notes);
           }
           else if(a.op==='micTone'){
             await page.waitForFunction(()=>document.querySelector('[data-testid="mic-toggle"]')?.dataset.mic==='listening');
             const before=await page.evaluate(()=>window.stormSequencer.getScore().voices.find(v=>v.id==='melody').events.map(e=>e.id));
-            await page.evaluate(hz=>window.tutorialDevices.tone(hz),a.frequency);
+            await moment('mic',()=>page.evaluate(hz=>window.tutorialDevices.tone(hz),a.frequency));
             await sleep(a.seconds*1000);
             await page.screenshot({path:path.join(work,`clip-${n}-mic-${Math.round(a.frequency)}.png`)});
-            await page.evaluate(()=>window.tutorialDevices.tone(0));await sleep(300);
+            await page.evaluate(()=>window.tutorialDevices.tone(0));await sleep(a.releaseMs??150);
             const after=await page.evaluate(()=>window.stormSequencer.getScore().voices.find(v=>v.id==='melody').events);
             const added=after.filter(e=>!before.includes(e.id));
             if(!added.length||added.filter(e=>!e.tie).length!==1||added.some(e=>e.pitches.length!==1||e.pitches[0]!==added[0].pitches[0]))throw new Error('Mic no escribió exactamente una nota sostenida: '+JSON.stringify(added));
           }
+          else if(a.op==='micStart'){await page.waitForFunction(()=>document.querySelector('[data-testid="mic-toggle"]')?.dataset.mic==='listening');await moment('mic',()=>page.evaluate(hz=>window.tutorialDevices.tone(hz),a.frequency));}
+          else if(a.op==='micStop'){await moment('mic',()=>page.evaluate(()=>window.tutorialDevices.tone(0)));}
+          else if(a.op==='micSequence'){await page.waitForFunction(()=>document.querySelector('[data-testid="mic-toggle"]')?.dataset.mic==='listening');for(const [index,hz] of a.frequencies.entries()){if(index)await page.evaluate(hz=>window.tutorialDevices.tone(hz),hz);else await moment('mic',()=>page.evaluate(hz=>window.tutorialDevices.tone(hz),hz));await sleep(a.noteMs??400);}await page.evaluate(()=>window.tutorialDevices.tone(0));await sleep(100);}
+          else if(a.op==='prepareTie'){await page.evaluate(()=>{const score=window.stormSequencer.getScore();while(score.measures.length<6)score.measures.push({id:'r4-measure-'+score.measures.length,time:[4,4],key:'C'});const voice=score.voices.find(v=>v.id==='melody');voice.events=voice.events.filter(e=>!e.id.startsWith('r4-tie-'));voice.events.push({id:'r4-tie-start',start:18240,pitches:['G4'],duration:'q',dotted:false,triplet:false,tie:true},{id:'r4-tie-end',start:19200,pitches:['G4'],duration:'q',dotted:false,triplet:false,tie:false});window.stormSequencer.loadScore(score);});}
+          else if(a.op==='showMeasure'){const number=a.measure==='last'?await page.evaluate(()=>window.stormSequencer.getScore().measures.length):a.measure;await moment('scroll',()=>page.locator('[data-measure="'+number+'"]').evaluate(el=>el.scrollIntoView({inline:'center',block:'nearest',behavior:'instant'})));await page.screenshot({path:path.join(work,'clip-'+n+'-compas-'+number+'.png')});}
           else if(a.op==='marquee'){
             const selector=a.view==='roll'?'[data-roll-note]':'[data-note-id] .vf-notehead';
             if(a.view==='roll')await page.locator(selector).first().evaluate(el=>{const scroller=el.closest('[data-testid=piano-roll]');scroller.scrollTop+=el.getBoundingClientRect().top-scroller.getBoundingClientRect().top-90;});
@@ -277,73 +303,82 @@ async function main() {
             const boxes=await page.locator(selector).evaluateAll(els=>els.slice(0,3).map(el=>{const b=el.getBoundingClientRect();return {x:b.x,y:b.y,w:b.width,h:b.height};}));
             if(boxes.length<3)throw new Error('Faltan notas para seleccionar');
             const p={x:Math.min(...boxes.map(b=>b.x))-12,y:Math.min(...boxes.map(b=>b.y))-25},q={x:Math.max(...boxes.map(b=>b.x+b.w))+8,y:Math.max(...boxes.map(b=>b.y+b.h))+12};
-            await move(p);await page.mouse.down();await move(q,900);await page.screenshot({path:path.join(work,`clip-${n}-rectangulo.png`)});await page.mouse.up();
+            await move(p,420,true);await moment('pointerdown',()=>page.mouse.down());await move(q,a.durationMs??700);await page.screenshot({path:path.join(work,`clip-${n}-rectangulo.png`)});await page.mouse.up();
             if(await page.locator(a.view==='roll'?'[data-roll-note][aria-pressed=true]':'[data-note-id][aria-pressed=true]').count()<2)throw new Error('El rectángulo no seleccionó varias notas');
             await page.screenshot({path:path.join(work,`clip-${n}-seleccion.png`)});
           }
-          else if(a.op==='move')await move(await point(a.target));
-          else if(a.op==='key')await key(a.key,a.badge);
-          else if(a.op==='badge')await page.evaluate(s=>window.tutorial.badge(s),a.text);
-          else if(a.op==='highlight'){const l=loc(a.target);let box=await l.boundingBox();if(a.align==='bottom'){await l.evaluate(e=>scrollBy(0,e.getBoundingClientRect().bottom-innerHeight+30));box=await l.boundingBox();}else if(box.y>1050||box.y<80){await l.evaluate(e=>e.scrollIntoView({block:'center'}));box=await l.boundingBox();}box.height=Math.min(box.height,1040-box.y);await page.evaluate(({box,ms})=>window.tutorial.highlight(box,ms),{box,ms:a.ms??2400});}
-          else if(a.op==='type'){await click(a.target);await loc(a.target).fill(a.text);await page.keyboard.press('Enter');}
-          else if(a.op==='select'){await click(a.target);await loc(a.target).selectOption(a.value);}
+          else if(a.op==='move'){const p=await point(a.target);await move(p,420,true);await moment('pointermove',()=>page.mouse.move(p.x+.05,p.y+.05));}
+          else if(a.op==='key'){if(a.toEnd){await page.evaluate(()=>{document.activeElement?.blur();window.tutorial.activeAction=null;});await page.keyboard.press('End');}await key(a.key,a.badge);}
+          else if(a.op==='badge')await moment('badge',()=>page.evaluate(s=>window.tutorial.badge(s),a.text));
+          else if(a.op==='highlight'){const l=loc(a.target);let box=await l.boundingBox();if(a.target.all)box=await page.locator(a.target.css).evaluateAll(els=>{const bs=els.map(el=>el.getBoundingClientRect());const x=Math.min(...bs.map(b=>b.x)),y=Math.min(...bs.map(b=>b.y));return {x,y,width:Math.max(...bs.map(b=>b.right))-x,height:Math.max(...bs.map(b=>b.bottom))-y};});if(a.align==='bottom'){await l.evaluate(e=>scrollBy(0,e.getBoundingClientRect().bottom-innerHeight+30));box=await l.boundingBox();}else if(box.y>1050||box.y<80){await l.evaluate(e=>e.scrollIntoView({block:'center'}));box=await l.boundingBox();}box.height=Math.max(2,Math.min(box.height,1076-box.y));await moment('highlight',()=>page.evaluate(({box,ms})=>window.tutorial.highlight(box,ms),{box,ms:a.ms??2400}));if(a.capture)await page.screenshot({path:path.join(work,a.capture)});}
+          else if(a.op==='type'){await move(await point(a.target),420,true);await moment('input',()=>loc(a.target).fill(a.text));await page.keyboard.press('Enter');}
+          else if(a.op==='select'){await move(await point(a.target),420,true);await moment('change',()=>loc(a.target).selectOption(a.value));}
           else if(a.op==='drag'){
             const selectedEvents=()=>page.evaluate(()=>{const ids=[...document.querySelectorAll('[data-roll-note][aria-pressed=true],[data-note-id][aria-pressed=true]')].map(el=>el.getAttribute('data-roll-note')??el.getAttribute('data-note-id'));return window.stormSequencer.getScore().voices.flatMap(v=>v.events).filter(e=>ids.includes(e.id)).map(e=>JSON.stringify([e.start,e.pitches]));});
             const before=a.group?await selectedEvents():null;
             const p=await point(a.target),q=a.to?await point(a.to):{x:p.x+(a.dx??0),y:p.y+(a.dy??0)};
-            await move(p);await page.mouse.down();if(opt['--rehearse']&&!opt['--rehearse-video'])await sleep(200);await move(q,550);if(a.group)await page.screenshot({path:path.join(work,`clip-${n}-grupo-arrastre.png`)});if(opt['--rehearse']&&!opt['--rehearse-video'])await sleep(200);await page.mouse.up();
+            await move(p,420,true);await moment('pointerdown',()=>page.mouse.down());if(opt['--rehearse']&&!opt['--rehearse-video'])await sleep(200);await move(q,a.durationMs??700);if(a.dropLine){await page.getByTestId('drop-line').waitFor({state:'attached'});await page.getByTestId('drop-line').evaluate(el=>{const b=el.getBoundingClientRect();if(b.height<20||getComputedStyle(el).display==='none')throw new Error('Línea de destino oculta');});await page.screenshot({path:path.join(work,'clip-'+n+'-drop-line.png')});await sleep(a.holdMs??300);}if(a.group)await page.screenshot({path:path.join(work,`clip-${n}-grupo-arrastre.png`)});if(opt['--rehearse']&&!opt['--rehearse-video'])await sleep(200);await page.mouse.up();
             if(before){const after=await selectedEvents();if(before.length<2||after.length!==before.length||before.filter(e=>!after.includes(e)).length<2)throw new Error('El arrastre no movió el grupo');}
           }
           else if(a.op==='scroll'){
             const y=a.target?await loc(a.target).evaluate((e,block)=>{const b=e.getBoundingClientRect();return scrollY+b.top-(block==='end'?innerHeight-b.height:block==='start'?0:(innerHeight-b.height)/2);},a.block??'center'):a.y;
-            await page.evaluate(({y,ms})=>new Promise(r=>{const from=scrollY,start=performance.now(),to=Math.max(0,y==='bottom'?document.documentElement.scrollHeight-innerHeight:Number(y));function step(t){const u=Math.min(1,(t-start)/ms);scrollTo(0,from+(to-from)*(u*u*(3-2*u)));if(u<1)requestAnimationFrame(step);else r();}requestAnimationFrame(step);}),{y,ms:opt['--rehearse']&&!opt['--rehearse-video']?1:a.ms??2000});
+            await moment('scroll',()=>page.evaluate(({y,ms})=>new Promise(r=>{const from=scrollY,start=performance.now(),to=Math.max(0,y==='bottom'?document.documentElement.scrollHeight-innerHeight:Number(y));let measured=false;function step(t){if(!measured){window.tutorial.measure('scroll');measured=true;}const u=Math.min(1,(t-start)/ms);scrollTo(0,from+(to-from)*(u*u*(3-2*u)));if(u<1)requestAnimationFrame(step);else r();}requestAnimationFrame(step);}),{y,ms:a.ms??1200}));
           }
           else if(a.op==='goto'){await click(a.target);await page.waitForFunction(()=>!!window.stormSequencer);await page.evaluate(decorations,plan.locale);await page.evaluate(instrument=>{const s=window.stormSequencer.getScore();s.tempo=72;s.voices[0].instrument=instrument??'Piano';window.stormSequencer.loadScore(s);},opt['--instrument']??null);await page.waitForTimeout(300);}
           else if(a.op==='loadProject'){const project=JSON.parse(await readFile(path.resolve(path.dirname(input),a.file),'utf8'));if(opt['--instrument'])for(const v of project.voices)v.instrument=opt['--instrument'];await page.evaluate(s=>window.stormSequencer.loadScore(s),project);await page.waitForTimeout(250);if(a.fade)await page.evaluate(()=>{const d=document.createElement('div');Object.assign(d.style,{position:'fixed',inset:'0',background:'black',zIndex:2147483645,transition:'opacity .3s'});document.body.append(d);requestAnimationFrame(()=>{d.style.opacity='0';setTimeout(()=>d.remove(),350);});});}
           else if(a.op==='download'){const pending=page.waitForEvent('download');await click(a.target);const d=await pending;await d.saveAs(path.join(work,d.suggestedFilename()));await page.evaluate(({name,locale})=>window.tutorial.badge(name+(locale==='en'?' downloaded':' descargado'),1800),{name:d.suggestedFilename(),locale:plan.locale});}
           else if(a.op==='open'){const pending=page.waitForEvent('filechooser');await click(a.target);const chooser=await pending;await chooser.setFiles(path.join(work,'storm-project.json'));await page.evaluate(()=>window.tutorial.badge('storm-project.json',1800));}
           else if(a.op==='play'){
-            await click({role:'button',name:ui.start});
+            if(a.fromStart!==false){await page.evaluate(()=>{document.activeElement?.blur();window.tutorial.activeAction=null;});await page.keyboard.press('Home');}
             await page.evaluate(()=>{window.tutorial.armed=true;window.tutorial.onset=null;});
             if(a.key)await key('Space');else await click({role:'button',name:ui.play});
             await page.waitForFunction(()=>window.tutorial.onset!==null,{},{timeout:90000});
             const onset=await page.evaluate(()=>{window.tutorial.armed=false;return window.tutorial.onset;});
             activeMusic={start:timeline.duration+(onset-start)/1000,sourceStart:0,clip:n};timeline.music.push(activeMusic);seg.music.push(activeMusic);
             if(a.highlight)await action({op:'highlight',target:a.highlight,ms:Math.max(1000,(a.listen??3)*1000-300)});
-            if(a.listen)await sleep((opt['--rehearse']&&!opt['--rehearse-video']?Math.min(a.listen,.5):a.listen)*1000);
-            if(a.stop){if(a.stop==='Space')await key('Space');else await click({role:'button',name:ui.stop});activeMusic.end=timeline.duration+(Date.now()-start)/1000;activeMusic=null;}
+            if(a.listen)await sleep(a.listen*1000);
+            if(a.stop){currentCue=null;seg.stops.push({time:Date.now(),kind:a.stop});if(a.stop==='Space')await key('Space');else await click({role:'button',name:ui.stop});activeMusic.end=timeline.duration+(Date.now()-start)/1000;activeMusic=null;}
           }
-          else if(a.op==='stop'){await click({role:'button',name:ui.stop});if(activeMusic){activeMusic.end=timeline.duration+(Date.now()-start)/1000;activeMusic=null;}}
+          else if(a.op==='stop'){if(a.key)await key('Space');else await click({role:'button',name:ui.stop});seg.stops.push({time:Date.now(),kind:a.key?'Space':'Detener'});if(activeMusic){activeMusic.end=timeline.duration+(Date.now()-start)/1000;activeMusic=null;}}
           else if(a.op==='wait')await sleep(opt['--rehearse']&&!opt['--rehearse-video']?10:a.ms);
           else throw new Error(`Acción desconocida: ${a.op}`);
-          await page.waitForTimeout(100);
+          await page.waitForTimeout(50);
         }
-        for(const a of entry.actions) {
-          const at=prefix+(a.afterVoice?entry.voice+(a.at??0)+(a.delay??0):a.at??0);
-          if(!opt['--rehearse']||opt['--rehearse-video'])await sleep(start+at*1000-Date.now());
+        for(const [index,a] of entry.actions.entries()) {
+          const resolved=a.resolvedWord;
+          const at=prefix+(resolved?resolved.target:(a.afterVoice?entry.voice+(a.at??0)+(a.delay??0):a.at??0));
+          const lead=resolved?Math.max(.06,resolved.target-resolved.approach):0;
+          currentCue=resolved?{id:n+'-'+(index+1),targetEpoch:start+at*1000}:null;
+          await page.evaluate(()=>{window.tutorial.activeAction=null;});
+          await sleep(start+(at-lead)*1000-Date.now());
           await action(a);
+          const eventKind=['play','stop'].includes(a.op)?(a.key?'keydown':'pointerdown'):({click:'pointerdown',ctrlClick:'pointerdown',rightClick:'pointerdown',goto:'pointerdown',download:'pointerdown',audition:'pointerdown',drag:'pointerdown',marquee:'pointerdown',key:'keydown',keys:'keydown',type:'input',setField:'input',select:'change',move:'pointermove',showMeasure:'scroll',micTone:'mic',micStart:'mic',micStop:'mic',micSequence:'mic'})[a.op]??a.op;
           const state=await page.evaluate(()=>window.stormSequencer?.getScore()??null);
-          seg.actions.push({...a,completed:(Date.now()-start)/1000,state});
+          seg.actions.push({...a,actionId:currentCue?.id,eventKind,completed:(Date.now()-start)/1000,state});
+          currentCue=null;await page.evaluate(()=>{window.tutorial.activeAction=null;});
           const alerts=await page.getByTestId('status-error').allTextContents();
-          if(await page.getByTestId('author-panel').count()||await page.getByRole('tab',{name:'Modo autor',exact:true}).count())throw new Error('Modo autor visible: grabación cancelada');
-          if(!opt['--rehearse']&&timeline.sampleFailures.length)throw new Error('Piano no cargó sus muestras originales; no se admite el sonido de reserva en la entrega');
-          if(alerts.length)throw new Error(`Clip ${n}, ${a.op}: ${alerts.join(' ')}`);
+          if(await page.getByTestId('author-panel').count()||await page.getByRole('tab',{name:'Modo autor',exact:true}).count())throw new Error('Modo autor visible');
+          if(alerts.length)throw new Error('Clip '+n+': '+alerts.join(' '));
         }
-        if(opt['--rehearse']&&!opt['--rehearse-video']) {await sleep(250);await page.screenshot({path:path.join(work,`rehearsal-${n}.png`)});seg.end=timeline.duration+(Date.now()-start)/1000;}
-        else {
-          const baseLength=prefix+entry.voice+.6,elapsed=(Date.now()-start)/1000;
-          const musicAllowance=entry.extraMusic??0;
-          if(elapsed>baseLength+musicAllowance+2)throw new Error(`Clip ${n}: acciones exceden el máximo (${elapsed.toFixed(2)} s)`);
-          const length=Math.ceil(Math.max(baseLength+musicAllowance,elapsed+.25)*30)/30+(n===plan.clips.at(-1).clip?(plan.finalFade??1):0);
-          await sleep(start+length*1000-Date.now());const captured=record;
-          if(continues)continuityEpoch=start+length*1000;
-          else {await cdp.send('Page.stopScreencast');record=null;await Promise.all(writes);}
-          seg.end=seg.start+length;seg.extension=Math.max(0,length-baseLength-musicAllowance);seg.captureFrames=captured.frames.length;
+        await sleep(start+(prefix+entry.voice+(entry.cleanupDelay??.1))*1000-Date.now());
+        currentCue=null;await page.evaluate(()=>{window.tutorial.activeAction=null;});
+        for(const a of entry.cleanup??[])await action(a);
+        const baseLength=prefix+entry.voice+.6+(entry.extraMusic??0);
+        await sleep(start+baseLength*1000-Date.now());
+        seg.audioTail=await audioSilence(start);
+        const length=Math.ceil(Math.max(baseLength,(Date.now()-start)/1000+.10)*30)/30+(n===plan.clips.at(-1).clip?(plan.finalFade??1):0);
+        await sleep(start+length*1000-Date.now());
+        seg.end=seg.start+length;seg.extension=length-baseLength;
+        if(!opt['--rehearse']||opt['--rehearse-video']){
+          const captured=record;
+          await cdp.send('Page.stopScreencast');record=null;await Promise.all(writes);
           const frames=captured.frames.filter(f=>f.time>=start&&f.time<start+length*1000).sort((a,b)=>a.time-b.time);
-          frames.unshift({file:continued?captured.frames.filter(f=>f.time<=start).at(-1).file:path.join(dir,'initial.jpg'),time:start});
-          const list=path.join(dir,'frames.txt');await writeFile(list,'ffconcat version 1.0\n'+frames.map((f,i)=>`${concatFile(f.file)}\noption framerate 1000\nduration ${Math.max(.000001,((frames[i+1]?.time??start+length*1000)-f.time)/1000)}`).join('\n')+'\n'+concatFile(frames.at(-1).file)+'\noption framerate 1000\n');
-          seg.frameList=list;
+          frames.unshift({file:path.join(dir,'initial.jpg'),time:start});
+          const list=path.join(dir,'frames.txt');
+          await writeFile(list,'ffconcat version 1.0\n'+frames.map((f,i)=>concatFile(f.file)+'\noption framerate 1000\nduration '+Math.max(.000001,((frames[i+1]?.time??start+length*1000)-f.time)/1000)).join('\n')+'\n'+concatFile(frames.at(-1).file)+'\noption framerate 1000\n');
+          seg.frameList=list;seg.captureFrames=captured.frames.length;
         }
+        seg.actionEvents=await page.evaluate(()=>window.tutorial.actionEvents);
         await page.screenshot({path:path.join(work,`clip-${n}.png`)});
         seg.state=await page.evaluate(()=>window.stormSequencer?.getScore()??null);
         seg.browserEvents=await page.evaluate(({start,end})=>window.tutorial?.events.filter(e=>e.time>=start&&e.time<end).map(e=>{const copy={...e};delete copy.timer;return copy;})??[],{start,end:start+(seg.end-seg.start)*1000});
@@ -355,15 +390,18 @@ async function main() {
         await writeCapturedPCM(raw,audioChunks,start,start+(seg.end-seg.start)*1000);
         await ff(['-f','f32le','-ar','48000','-ac','2','-i',raw,'-c:a','pcm_s16le',seg.sequencerAudio]);
         seg.audioCheck=await inspectAudio(seg.sequencerAudio,run);
+        seg.safeMusicAudio=path.join(work,'sequencer-safe-'+n+'.wav');
+        seg.musicFades=await safeMusicCopy(seg.sequencerAudio,seg.safeMusicAudio,seg);
         audioChunks.splice(0,audioChunks.findLastIndex(c=>c.time<start+(seg.end-seg.start)*1000-100)+1);
         timeline.clips.push(seg);timeline.duration=seg.end;
         await writeFile(path.join(work,opt['--rehearse']?'rehearsal.json':'recording.json'),JSON.stringify(timeline,null,2));
         console.log(`Clip ${n}/${plan.clips.length}: ${timeline.duration.toFixed(3)} s; ${seg.state?.voices[0].events.length??0} eventos`);
         if(plan.requiredAudio?.includes(n)&&!seg.audioCheck.aboveMinus45)throw new Error('Clip '+n+': PCM capturado sin audio; consultar relojes y archivo PCM por contexto');
       }
+      const wordsChecked=await wordSyncReport(timeline,out),tailsChecked=await boundaryReport(timeline,out);if(wordsChecked.some(r=>!r.pass)||tailsChecked.some(r=>!r.pass))throw new Error('Comprobaciones de palabras o colas fallidas: consultar sincronia-palabras.json y revision-colas.json');
       await browser.close();browser=null;
       if(opt['--rehearse']){const failed=timeline.clips.filter(s=>(plan.requiredAudio??[]).includes(s.clip)&&!s.audioCheck.aboveMinus45);if(failed.length)throw new Error(`Falta audio > −45 dB: clips ${failed.map(s=>s.clip)}`);if(timeline.clips.some(s=>s.previewSync.some(p=>!p.within40ms)))throw new Error('Vista previa fuera de ±40 ms: consultar rehearsal.json');
-        if(opt['--rehearse-video']){for(const s of timeline.clips)await ff(['-f','concat','-safe','0','-i',s.frameList,'-t',String(s.end-s.start),'-vf','fps=30,scale=in_range=pc:out_range=tv,format=yuv420p','-c:v','libx264','-preset','veryfast','-crf','18','-an',path.join(work,`segment-${s.clip}.mp4`)]);await calibrateCapture(timeline,work,{previewsOnly:true});await writeFile(path.join(work,'rehearsal.json'),JSON.stringify(timeline,null,2));}
+        if(opt['--rehearse-video']){for(const s of timeline.clips)await ff(['-f','concat','-safe','0','-i',s.frameList,'-t',String(s.end-s.start),'-vf','fps=30,scale=in_range=pc:out_range=tv,format=yuv420p','-c:v','libx264','-preset','veryfast','-crf','18','-an',path.join(work,`segment-${s.clip}.mp4`)]);await calibrateCapture(timeline,work);await writeFile(path.join(work,'rehearsal.json'),JSON.stringify(timeline,null,2));}
         if(timeline.sampleFailures.length)throw new Error('Ensayo no aprobado: faltan muestras originales de Piano ('+timeline.sampleFailures.length+' peticiones fallidas)');
         return;}
     }
@@ -391,12 +429,12 @@ async function main() {
     const sequenceList=path.join(work,'sequencer.txt');
     const groups=audioGroups(saved.clips,plan.continuousPlayback),groupFiles=[];
     for(const members of groups){const first=members[0],last=members.at(-1),list=path.join(work,`sequence-group-${first.clip}.txt`),file=path.join(work,`sequencer-normalized-${first.clip}.wav`);
-      await writeFile(list,members.map(s=>concatFile(s.sequencerAudio)).join('\n'));
+      await writeFile(list,members.map(s=>concatFile(s.safeMusicAudio??s.sequencerAudio)).join('\n'));
       const delay=first.audioDelayMs??0,shift=delay>=0?`adelay=${Math.round(delay*48)}S:all=1`:`atrim=start=${-delay/1000},asetpts=PTS-STARTPTS`;
       const analysis=await run('ffmpeg',['-hide_banner','-f','concat','-safe','0','-i',list,'-af','loudnorm=I=-19:TP=-4.5:LRA=11:print_format=json','-f','null','-']);
       const level=JSON.parse(analysis.stderr.match(/\{\s*"input_i"[\s\S]*?\}/)[0]);
       const norm=Number.isFinite(Number(level.input_i))?`loudnorm=I=-19:TP=-4.5:LRA=11:measured_I=${level.input_i}:measured_TP=${level.input_tp}:measured_LRA=${level.input_lra}:measured_thresh=${level.input_thresh}:offset=${level.target_offset}:linear=true`:'anull';
-      await ff(['-f','concat','-safe','0','-i',list,'-af',`${norm},aresample=48000,${shift},apad,atrim=end_sample=${Math.round((last.end-first.start)*48000)}`,'-ar','48000','-ac','2','-c:a','pcm_s16le',file]);
+      await ff(['-f','concat','-safe','0','-i',list,'-af',`${norm},aresample=48000,${shift},apad,atrim=end_sample=${Math.max(1,Math.round((last.end-first.start-.08)*48000))},afade=t=in:d=0.03,afade=t=out:st=${Math.max(0,last.end-first.start-.12)}:d=0.04,apad,atrim=end_sample=${Math.round((last.end-first.start)*48000)}`,'-ar','48000','-ac','2','-c:a','pcm_s16le',file]);
       for(const s of members)s.sequencerNormalization=level;
       for(const s of members)s.sequencerMixAudio=file;groupFiles.push(file);}
     await writeFile(sequenceList,groupFiles.map(concatFile).join('\n'));
@@ -424,7 +462,7 @@ async function main() {
     const font=process.platform==='win32'?`fontfile='${path.join(process.env.WINDIR??'C:/Windows','Fonts','arial.ttf').replaceAll('\\','/').replace(':','\\:')}':`:'';
     for(const s of saved.clips)await ff(['-ss',String((s.voiceStart+s.voiceEnd)/2),'-i',mp4,'-frames:v','1','-vf',`scale=480:270,drawtext=${font}text='${String(s.clip).padStart(2,'0')}':x=10:y=10:fontsize=28:fontcolor=white:box=1:boxcolor=black@0.8`,path.join(contacts,`${String(s.clip).padStart(2,'0')}.png`)]);
     await ff(['-framerate','1','-i',path.join(contacts,'%02d.png'),'-vf',`tile=4x${Math.ceil(plan.clips.length/4)}:padding=6:margin=6`,'-frames:v','1',path.join(out,'hoja-contactos.png')]);
-    await writeFile(path.join(out,'timeline.json'),JSON.stringify(saved,null,2)+'\n');console.log(`MP4 verificado: ${saved.duration.toFixed(3)} s`);
+    const finalWords=await wordSyncReport(saved,out),finalTails=await boundaryReport(saved,out);if(finalWords.some(r=>!r.pass)||finalTails.some(r=>!r.pass))throw new Error('Revisión final de palabras o colas fallida');await writeFile(path.join(out,'timeline.json'),JSON.stringify(saved,null,2)+'\n');console.log(`MP4 verificado: ${saved.duration.toFixed(3)} s`);
   } catch(error) {
     const failedPage=browser?.contexts()[0]?.pages()[0];
     if(failedPage){await writeFile(path.join(work,'error-state.json'),JSON.stringify(await failedPage.evaluate(()=>window.stormSequencer?.getScore()??null),null,2));await failedPage.screenshot({path:path.join(work,'error.png')}).catch(()=>{});await writeFile(path.join(work,'error-dom.txt'),await failedPage.locator('body').innerText().catch(()=>''));}

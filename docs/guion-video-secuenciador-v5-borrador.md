@@ -38,13 +38,13 @@ Y abajo hay una zona con pestañas: la pista de acordes, los marcadores, la list
 
 3. ESCRIBIR CON EL MOUSE
 
-[EN PANTALLA: herramienta Escribir activa; elegir la negra; clic en Do, Mi, Sol]
+[EN PANTALLA: herramienta Escribir activa; elegir el cuarto; clic en Do, Mi, Sol]
 
 Con la herramienta Escribir, el lápiz, eliges la figura y haces clic en el pentagrama, en la línea o el espacio de la nota que quieres. Cada nota suena al escribirla.
 
-[EN PANTALLA: arrastrar una nota hacia arriba]
+[EN PANTALLA: arrastrar una nota hacia arriba; luego hacia la derecha, con la línea punteada de destino; señalar el selector Snap]
 
-Si una nota no quedó en su lugar, arrástrala hacia arriba o hacia abajo. Mientras la mueves, ves y escuchas a qué nota va.
+Si una nota no quedó en su lugar, arrástrala hacia arriba o hacia abajo. Mientras la mueves, ves y escuchas a qué nota va. Y si la arrastras hacia los lados, la cambias de lugar en el tiempo. El Snap, arriba en la barra, decide en qué puntos puede caer.
 
 [EN PANTALLA: Ctrl+clic sobre Mi y Sol encima de un Do]
 
@@ -115,7 +115,7 @@ Con Control C copias, con Control V pegas donde está el cursor, y con Control D
 
 Además de la partitura, puedes ver tu música en el editor de teclas. Presiona «Teclas».
 
-Cada nota es una barra: su altura dice qué nota es, y su largo, cuánto dura. Haz clic en una fila para escribir, arrastra una barra para moverla, y estira su borde derecho para cambiar su duración.
+Cada nota es una barra: su altura dice qué nota es, y su largo, cuánto dura. Haz clic en una fila para escribir, arrastra una barra para moverla, y estira su borde derecho para cambiar su duración. Una nota ligada aparece como una sola barra, aunque pase al compás siguiente.
 
 [EN PANTALLA: rectángulo de selección en teclas; mover el grupo a la derecha]
 
@@ -128,9 +128,9 @@ Todo lo que cambias aquí se ve en la partitura, y al revés. Son dos maneras de
 
 9. COMPASES, ARMADURA Y MÉTRICA
 
-[EN PANTALLA: inspector; armadura y compás; botones «+ Compás» y «− Compás»]
+[EN PANTALLA: inspector; armadura y compás; «+ Compás» añade al final; «Insertar aquí» en el cursor; «− Compás»]
 
-En el inspector cambias la armadura y la métrica desde el compás donde está el cursor. Con «más compás» insertas un compás vacío después de ese, y con «menos compás» lo quitas; lo que sigue se recorre solo.
+En el inspector cambias la armadura y la métrica desde el compás donde está el cursor. Con «más compás» añades un compás vacío al final. Con «Insertar aquí» pones uno donde está el cursor, y con «menos compás» lo quitas; en esos dos casos, lo que sigue se recorre solo.
 
 [EN PANTALLA: botón «Páginas»]
 
