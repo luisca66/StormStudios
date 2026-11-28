@@ -136,6 +136,9 @@ test("page view, markers and presentation", async ({ page }) => {
   await page.getByLabel("Título", { exact: true }).fill("Cadencia");
   await page.getByTestId("present-scene").click();
   await expect(page.getByTestId("presentation-stage")).toContainText("Cadencia");
+  // The stage draws systems like the page view (clef only at each line start), not one card per measure.
+  await expect(page.getByTestId("presentation-stage").getByTestId("score-view")).toHaveAttribute("data-layout", "page");
+  await expect(page.getByTestId("presentation-stage").locator("h3")).toHaveCount(0);
   await page.keyboard.press("Escape");
   await expect(page.getByTestId("presentation")).toHaveCount(0);
 });

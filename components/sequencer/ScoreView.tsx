@@ -71,9 +71,11 @@ type MeasureProps = {
   captureLayout?: CaptureLayout;
   /** V5: each voice has its own staff, so stems follow pitch rather than SATB voice. */
   pitchStems?: boolean;
+  /** V5: an empty measure shows one centered whole rest, whatever the meter (engraving convention). */
+  measureRests?: boolean;
 };
 
-const MeasureView = memo(function MeasureView({ score, measure, selected, locale, focusVoice, onSelect,mouse,continuous=false,systemStart:startsSystem,renderWidth,showAnnotations=true,capture,captureLayout,pitchStems=false }: MeasureProps) {
+const MeasureView = memo(function MeasureView({ score, measure, selected, locale, focusVoice, onSelect,mouse,continuous=false,systemStart:startsSystem,renderWidth,showAnnotations=true,capture,captureLayout,pitchStems=false,measureRests=false }: MeasureProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [error, setError] = useState("");
   useEffect(() => {
@@ -125,7 +127,8 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
               : voice.name;
             context.setFont("Academico", captureLayout ? 18 : 14).fillText(name, 8, row * rowHeight + (captureLayout ? 90 : 79));
           }
-          const events = displayEvents(voice.events, start, end);
+          const wholeRest = measureRests && !voice.events.some(e => e.start >= start && e.start < end);
+          const events = wholeRest ? [{ id: "", start, duration: "w" as const, dotted: false, triplet: false, pitches: [], tie: false }] : displayEvents(voice.events, start, end);
           const notes = events.map(event => {
             const gap = event.id.startsWith("gap:");
             const note = new V.StaveNote({
@@ -135,6 +138,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
               dots: event.dotted ? 1 : 0, autoStem: pitchStems || score.mode!=="satb",
               ...(score.mode==="satb" && !pitchStems?{stemDirection:voice.id==="soprano"||voice.id==="tenor"?V.Stem.UP:V.Stem.DOWN}:{}),
               ...(gap ? { durationOverride: new V.Fraction(Number(event.id.slice(4)), PPQ * 4) } : {}),
+              ...(wholeRest ? { durationOverride: new V.Fraction(end - start, PPQ * 4), alignCenter: true } : {}),
             });
             if (event.dotted) V.Dot.buildAndAttach([note], { all: true });
             const color = event.ornament ? "#dc2626" : selected.includes(event.id) ? SELECTED : capture ? "#182030" : "#17273a";
@@ -161,7 +165,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
           const vexVoice = new V.Voice({ numBeats: meta.time[0], beatValue: meta.time[1] }).setMode(V.Voice.Mode.SOFT);
           vexVoice.addTickables(notes);
           V.Accidental.applyAccidentals([vexVoice], meta.key);
-          return {voice,row,stave,events,notes,tuplets,vexVoice};
+          return {voice,row,stave,events,notes,tuplets,vexVoice,wholeRest};
         });
         const formatter=new V.Formatter();
         prepared.forEach(({vexVoice})=>formatter.joinVoices([vexVoice]));
@@ -315,7 +319,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
           const point=(e:PointerEvent|MouseEvent)=>{const rect=svg.getBoundingClientRect();return {x:(e.clientX-rect.left)*width/rect.width,y:(e.clientY-rect.top)*height/rect.height};};
           {
             // Time <-> x for this measure: the noteheads of every voice share the formatter's columns.
-            const points=prepared.flatMap(({events,notes})=>events.map((event,i)=>({tick:event.start,x:notes[i].getAbsoluteX()})))
+            const points=prepared.filter(p=>!p.wholeRest).flatMap(({events,notes})=>events.map((event,i)=>({tick:event.start,x:notes[i].getAbsoluteX()})))
               .concat({tick:start,x:prepared[0].stave.getNoteStartX()},{tick:end,x:prepared[0].stave.getNoteEndX()})
               .sort((a,b)=>a.tick-b.tick||a.x-b.x);
             const columns:typeof points=[];
@@ -339,16 +343,17 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
           const down=(e:PointerEvent)=>{
             if(e.button!==0)return;e.preventDefault();
             const p=point(e),row=Math.max(0,Math.min(prepared.length-1,Math.floor((p.y-14)/rowHeight)));
-            const data=prepared[row],{voice,stave,events,notes}=data;
+            const data=prepared[row],{voice,stave,events,notes,wholeRest}=data;
             if(p.x<stave.getNoteStartX()-12||p.y<stave.getYForLine(0)-40||p.y>stave.getYForLine(4)+45){if(mouse.tool==="select")mouse.beginMarquee?.(e);return;}
             let index=notes.findIndex(n=>Math.abs(n.getAbsoluteX()-p.x)<18);
             const dom=(e.target as Element).closest("[data-event-start]");
             if(dom?.getAttribute("data-event-voice")===voice.id)index=events.findIndex(event=>String(event.start)===dom.getAttribute("data-event-start"));
-            const hit=index>=0?events[index]:null;
+            // A centered measure rest is not a position: clicks in an empty measure land by x, like on blank staff.
+            const hit=index>=0&&!wholeRest?events[index]:null;
             if(mouse.tool==="erase"){if(hit?.id&&!hit.id.startsWith("gap:"))mouse.onErase(hit.id);return;}
             const positionAt=()=>{
               if(hit)return hit.start;
-              const anchors=events.map((event,i)=>({x:notes[i].getAbsoluteX(),tick:event.start})).concat({x:stave.getNoteEndX(),tick:end}).sort((a,b)=>a.x-b.x);
+              const anchors=(wholeRest?[]:events.map((event,i)=>({x:notes[i].getAbsoluteX(),tick:event.start}))).concat({x:stave.getNoteEndX(),tick:end}).sort((a,b)=>a.x-b.x);
               const left=[...anchors].reverse().find(a=>a.x<=p.x)??{x:stave.getNoteStartX(),tick:start};
               const right=anchors.find(a=>a.x>p.x)??anchors.at(-1)!;
               const raw=left.tick+(right.tick-left.tick)*Math.max(0,Math.min(1,(p.x-left.x)/Math.max(1,right.x-left.x)));
@@ -472,7 +477,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
       }
     })();
     return () => { cancelled = true;cleanups.forEach(clean=>clean()); };
-  }, [score, measure, selected, locale, focusVoice, onSelect,mouse,continuous,startsSystem,renderWidth,showAnnotations,capture,captureLayout,pitchStems]);
+  }, [score, measure, selected, locale, focusVoice, onSelect,mouse,continuous,startsSystem,renderWidth,showAnnotations,capture,captureLayout,pitchStems,measureRests]);
   return <><div ref={ref} className={styles.notation} />{error && <p role="alert" className={styles.renderError}>{error}</p>}</>;
 });
 
@@ -488,7 +493,9 @@ function headBox(element: Element) {
 
 const PAGE_FIRST_WIDTH = 540, PAGE_WIDTH = 420; // SVG units; equal scale keeps staves aligned across a system
 
-export default function ScoreView({ score, selected, locale, onSelect, mouse,tick,cursorTick, focusVoice = "all", from = 1, to = score.measures.length,layout="scene",showAnnotations=true,onAnnotation,capture,captureLayout,systemSize=3,pageInfo,onSelectMany,onMeasure,pitchStems=false }: Omit<MeasureProps, "measure"> & {
+export default function ScoreView({ score, selected, locale, onSelect, mouse,tick,cursorTick, focusVoice = "all", from = 1, to = score.measures.length,layout="scene",showAnnotations=true,onAnnotation,capture,captureLayout,systemSize=3,pageInfo,onSelectMany,onMeasure,pitchStems=false,measureRests=false,pageTitle=true }: Omit<MeasureProps, "measure"> & {
+  /** Page layout: show the score title on the first page (off when the host already shows a heading). */
+  pageTitle?: boolean;
   tick: number | null; from?: number; to?: number;layout?:"line"|"page"|"scene";
   cursorTick?:number;
   onAnnotation?:(measure:number,beat:number,text:string)=>void;
@@ -563,7 +570,7 @@ export default function ScoreView({ score, selected, locale, onSelect, mouse,tic
         ? <div className={styles.measureHeading}>{page.systemStart ? (onMeasure ? <button type="button" className={styles.measureNumber} onClick={()=>onMeasure(n)} aria-label={(es?"Ir al compás ":"Go to measure ")+n}>{n}</button> : <span>{n}</span>) : <span/>}</div>
         : <div className={styles.measureHeading}>{onMeasure?<button type="button" className={styles.measureNumber} onClick={()=>onMeasure(n)} aria-label={(es?"Ir al compás ":"Go to measure ")+n}>{String(n).padStart(2, "0")}</button>:<span>{String(n).padStart(2, "0")}</span>}{(layout!=="line" || signatureChanged) && <span>{measure.key} / {measure.time.join("/")}</span>}</div>)}
       <MeasureView score={score} measure={n} selected={selected} locale={locale} focusVoice={focusVoice} onSelect={onSelect} mouse={editing} continuous={layout==="line" || layout==="page" || !!captureLayout}
-        systemStart={page?.systemStart} renderWidth={page?.width} showAnnotations={showAnnotations} capture={capture} captureLayout={captureLayout} pitchStems={pitchStems} />
+        systemStart={page?.systemStart} renderWidth={page?.width} showAnnotations={showAnnotations} capture={capture} captureLayout={captureLayout} pitchStems={pitchStems} measureRests={measureRests} />
       {showAnnotations&&onAnnotation&&<div className={styles.inlineCiphers} style={{gridTemplateColumns:`repeat(${Math.ceil(length/PPQ)},minmax(0,1fr))`}}>
         {Array.from({length:Math.ceil(length/PPQ)},(_,i)=>{const annotation=score.annotations?.find(a=>a.kind==="roman"&&a.measure===n&&a.beat===i+1);return <input key={annotation?.id+":"+(annotation?.text??"")+":"+i} defaultValue={annotation?.text??""} aria-label={(es?"Cifrado compás ":"Cipher measure ")+n+(es?", pulso ":", beat ")+(i+1)} placeholder="—" maxLength={200} onBlur={e=>{if(e.target.value!==(annotation?.text??""))onAnnotation(n,i+1,e.target.value);}} onKeyDown={e=>{if(e.key==="Enter")e.currentTarget.blur();}}/>;})}
       </div>}
@@ -579,7 +586,7 @@ export default function ScoreView({ score, selected, locale, onSelect, mouse,tic
     const columns=Array.from({length:systemSize},(_,i)=>`${i===0?PAGE_FIRST_WIDTH:PAGE_WIDTH}fr`).join(" ");
     return <div ref={surface} className={styles.scoreSurface} data-layout="page" data-testid="score-view">
       <article key={from} className={styles.pageSheet} aria-label={(es?"Página ":"Page ")+(pageInfo?.index??1)}>
-        {from===1&&<header className={styles.pageTitle}><h3>{score.title||(es?"Sin título":"Untitled")}</h3><span>♩ = {score.tempo}</span></header>}
+        {from===1&&pageTitle&&<header className={styles.pageTitle}><h3>{score.title||(es?"Sin título":"Untitled")}</h3><span>♩ = {score.tempo}</span></header>}
         <div className={styles.measures}>
           {systems.map(system=><div key={system[0]} className={styles.system} style={{gridTemplateColumns:columns}}>
             {system.map((n,i)=>renderMeasure(n,{systemStart:i===0,width:i===0?PAGE_FIRST_WIDTH:PAGE_WIDTH}))}

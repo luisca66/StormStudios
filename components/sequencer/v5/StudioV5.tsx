@@ -321,7 +321,7 @@ export default function StudioV5({ locale }: { locale: string }) {
         <ToolMenu tool={s.tool} onTool={s.setTool} onEraseNote={id => s.mouse.onErase(id)} t={t}
           icons={{ write: <Icon name="pencil" />, select: <Icon name="pointer" />, erase: <Icon name="eraser" /> }}>
         {view === "staff"
-          ? <div ref={paper}><ScoreView pitchStems score={score} selected={s.selected} locale={locale} onSelect={s.selectNote} mouse={s.mouse} tick={s.tick} cursorTick={s.positionTick} focusVoice="all" layout={layout}
+          ? <div ref={paper}><ScoreView pitchStems measureRests score={score} selected={s.selected} locale={locale} onSelect={s.selectNote} mouse={s.mouse} tick={s.tick} cursorTick={s.positionTick} focusVoice="all" layout={layout}
               systemSize={SYSTEM_SIZE} pageInfo={{ index: shownPage + 1, total: pageCount }}
               from={layout === "page" ? shownPage * barsPerPage + 1 : 1} to={layout === "page" ? Math.min(score.measures.length, (shownPage + 1) * barsPerPage) : score.measures.length}
               showAnnotations={s.cipherVisible} onAnnotation={(measure, beat, text) => s.attempt(() => s.commit(setChordAt(score, measure, beat, text)))}

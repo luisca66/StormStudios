@@ -12,6 +12,9 @@ export default function Stage({ s, locale }: { s: Studio; locale: string }) {
   const { t, score, scene } = s;
   const stage = useRef<HTMLDivElement>(null), paper = useRef<HTMLDivElement>(null);
   if (!scene) return null;
+  // Big enough to read on a video: up to 8 measures in two lines (16:9), two per line when vertical.
+  const count = scene.endMeasure - scene.startMeasure + 1;
+  const systemSize = scene.aspect === "9:16" ? 2 : Math.min(4, Math.max(2, Math.ceil(count / 2)));
   const playing = s.audioState === "playing" || s.audioState === "loading";
   const save = async (png: boolean) => {
     try {
@@ -35,7 +38,9 @@ export default function Stage({ s, locale }: { s: Studio; locale: string }) {
     <div className={styles.stage} data-aspect={scene.aspect} ref={stage} data-testid="presentation-stage">
       <header><span>Storm Studios Learning</span><h2>{scene.title || score.title}</h2>{scene.caption && <p>{scene.caption}</p>}</header>
       <div className={styles.stagePaper} ref={paper}>
-        <ScoreView pitchStems score={score} selected={[]} locale={locale} onSelect={noop} tick={s.tick} showAnnotations={s.cipherVisible}
+        {/* Systems as in the page view: clef and key only at the start of each line, empty measures with a centered rest. */}
+        <ScoreView pitchStems measureRests layout="page" pageTitle={false} systemSize={systemSize}
+          score={score} selected={[]} locale={locale} onSelect={noop} tick={s.tick} showAnnotations={s.cipherVisible}
           from={scene.startMeasure} to={scene.endMeasure} focusVoice={scene.highlightVoice} />
       </div>
       <footer><span>Storm Sequencer</span><span>{score.tempo} BPM</span></footer>
