@@ -40,13 +40,13 @@ const AuthorPanel = AUTHOR ? dynamic(() => import("./AuthorPanel"), { ssr: false
 /** Valores de snap, como en Cubase. Los tresillos dividen la figura en tres. */
 const SNAPS: ReadonlyArray<readonly ["note" | number, string, string]> = [
   ["note", "Figura activa", "Active value"],
-  [3840, "Redonda", "Whole"], [1920, "Blanca", "Half"], [960, "Negra", "Quarter"], [480, "Corchea", "Eighth"],
-  [240, "Semicorchea", "Sixteenth"], [120, "Fusa (libre)", "32nd (free)"],
-  [640, "Negra de tresillo", "Quarter triplet"], [320, "Corchea de tresillo", "Eighth triplet"], [160, "Semicorchea de tresillo", "Sixteenth triplet"],
+  [3840, "Entera", "Whole"], [1920, "Mitad", "Half"], [960, "Cuarto", "Quarter"], [480, "Octavo", "Eighth"],
+  [240, "Dieciseisavo", "Sixteenth"], [120, "Treintaidosavo (libre)", "32nd (free)"],
+  [640, "Cuarto de tresillo", "Quarter triplet"], [320, "Octavo de tresillo", "Eighth triplet"], [160, "Dieciseisavo de tresillo", "Sixteenth triplet"],
 ];
 const DURATIONS: Array<[Duration, string, string]> = [
-  ["w", "Redonda", "Whole"], ["h", "Blanca", "Half"], ["q", "Negra", "Quarter"],
-  ["8", "Corchea", "Eighth"], ["16", "Semicorchea", "Sixteenth"], ["32", "Fusa", "Thirty-second"],
+  ["w", "Entera", "Whole"], ["h", "Mitad", "Half"], ["q", "Cuarto", "Quarter"],
+  ["8", "Octavo", "Eighth"], ["16", "Dieciseisavo", "Sixteenth"], ["32", "Treintaidosavo", "Thirty-second"],
 ];
 const ACCIDENTALS: Array<[MouseEditing["accidental"], string, string, string]> = [
   ["key", "Según la armadura", "Follow the key signature", "𝄞"], ["#", "Sostenido", "Sharp", "♯"], ["b", "Bemol", "Flat", "♭"], ["", "Becuadro", "Natural", "♮"], ["##", "Doble sostenido", "Double sharp", "𝄪"], ["bb", "Doble bemol", "Double flat", "𝄫"],

@@ -5,7 +5,7 @@ import { locateTick } from "@/lib/sequencer/model";
 import type { Studio } from "./useStudio";
 import styles from "./studio.module.css";
 
-const VALUE: Record<string, [string, string]> = { w: ["redonda", "whole"], h: ["blanca", "half"], q: ["negra", "quarter"], "8": ["corchea", "eighth"], "16": ["semicorchea", "sixteenth"], "32": ["fusa", "thirty-second"] };
+const VALUE: Record<string, [string, string]> = { w: ["entera", "whole"], h: ["mitad", "half"], q: ["cuarto", "quarter"], "8": ["octavo", "eighth"], "16": ["dieciseisavo", "sixteenth"], "32": ["treintaidosavo", "thirty-second"] };
 const LIMIT = 300;
 
 export default function EventsPanel({ s }: { s: Studio }) {
