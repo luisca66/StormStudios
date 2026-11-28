@@ -10,6 +10,7 @@ import { STILL_COLORS } from "@/lib/sequencer/storyboard-resolve";
 import { captureX, decorateCapture, type CaptureRow } from "@/lib/sequencer/capture-decoration";
 import type { CaptureLayout } from "@/lib/sequencer/capture-layout";
 import { noteKey } from "@/lib/sequencer/note-selection";
+import { tieChain } from "@/lib/sequencer/tie-chain";
 
 export type MouseEditing={tool:"write"|"select"|"erase";step:number;accidental:"key"|"#"|"b"|""|"##"|"bb";
   onWrite:(voice:VoiceId,start:number,pitch:string,chord?:boolean)=>void;
@@ -27,7 +28,9 @@ export type MouseEditing={tool:"write"|"select"|"erase";step:number;accidental:"
   /** v5: snap grid in ticks for writing and moving. When set, dragging a note on the staff also moves it in time. */
   snap?:number;
   /** v5: staff drag that changes time: `steps` staff steps and `ticks` of time (whole selection when the note is part of it). */
-  onMoveStaff?:(id:string,grabbed:string,steps:number,ticks:number,single:boolean)=>void};
+  onMoveStaff?:(id:string,grabbed:string,steps:number,ticks:number,single:boolean)=>void;
+  /** v5: tied notes are one note while editing (the pieces of a tie follow the drag together). */
+  joinTies?:boolean};
 /** One entry per drawn measure: lets a drag that leaves its measure find the time under the pointer in another one. */
 type StaffMap={tickAt:(clientX:number)=>number;xAt:(tick:number)=>number;rowTop:(voice:VoiceId)=>number|undefined};
 const staffMaps=new WeakMap<Element,StaffMap>();
@@ -394,8 +397,10 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
               const noteX=notes[index].getAbsoluteX()+6,noteY=stave.getYForLine(0)+(top-anchor)*5;
               // The rest of the selection (other notes, other measures) follows the drag on screen.
               const together=selected.length>1&&(selected.includes(hit.id)||selected.includes(noteKey(hit.id,grabbed)));
-              const companions=()=>together?[...(svg.closest("[data-testid=score-view]")??svg).querySelectorAll<SVGGElement>("[data-note-id]")]
-                .filter(el=>{const id=el.getAttribute("data-note-id")!;return id!==hit.id&&selected.some(k=>k===id||k.startsWith(id+"@"));}):[];
+              // v5: the other pieces of a tied note always follow, selected or not.
+              const tied=mouse.joinTies?tieChain(score,hit.id).filter(id=>id!==hit.id):[];
+              const companions=()=>together||tied.length?[...(svg.closest("[data-testid=score-view]")??svg).querySelectorAll<SVGGElement>("[data-note-id]")]
+                .filter(el=>{const id=el.getAttribute("data-note-id")!;return id!==hit.id&&(tied.includes(id)||(together&&selected.some(k=>k===id||k.startsWith(id+"@"))));}):[];
               let heardPitch=lowest,steps=0,moved=false,ticks=0;mouse.onPreview(hit.id,heardPitch,single?grabbed:undefined);
               // v5: a horizontal drag also moves the note in time, on the snap grid; a dashed line marks where it lands (in any measure).
               const inTime=mouse.snap!==undefined&&!!mouse.onMoveStaff;
@@ -422,7 +427,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
                 steps=next;moved=true;
                 group?.setAttribute("transform","translate(0 "+(-steps*5)+")");
                 if(group){if(ticks)group.setAttribute("opacity","0.35");else group.removeAttribute("opacity");}
-                if(mouse.dragWithSelect)companions().forEach(el=>el.setAttribute("transform","translate(0 "+(-steps*5)+")"));
+                if(mouse.dragWithSelect)companions().forEach(el=>{el.setAttribute("transform","translate(0 "+(-steps*5)+")");if(ticks)el.setAttribute("opacity","0.35");else el.removeAttribute("opacity");});
                 const map=staffMaps.get(host)!;
                 const rowTop=map.rowTop(voice.id)??stave.getYForLine(0);
                 const x=ticks?map.xAt(hit.start+ticks)+6:noteX;
@@ -442,7 +447,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
                 window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",finish);window.removeEventListener("pointercancel",abort);
                 mouse.onPreviewEnd();label.remove();drop.remove();
                 if(group){if(original)group.setAttribute("transform",original);else group.removeAttribute("transform");group.removeAttribute("opacity");}
-                if(mouse.dragWithSelect)companions().forEach(el=>el.removeAttribute("transform"));
+                if(mouse.dragWithSelect)companions().forEach(el=>{el.removeAttribute("transform");el.removeAttribute("opacity");});
               };
               const finish=()=>{
                 cleanup();

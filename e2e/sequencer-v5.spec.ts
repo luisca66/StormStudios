@@ -276,6 +276,44 @@ test("notes move in time on the staff and every edit follows the snap", async ({
   expect((await api(page)).voices.find(v => v.id === "melody")!.events.find(e => e.pitches[0] === "E4")!.start).toBe(1920);
 });
 
+test("a tied note is one note: one bar in the key editor, selected, moved and erased whole", async ({ page }) => {
+  await open(page);
+  // E4 on beat 1, then C5: a half on beat 3 tied over the barline to a quarter.
+  await page.evaluate(() => {
+    const agent = (window as unknown as { stormSequencer: SequencerAgentApi }).stormSequencer;
+    const score = agent.getScore();
+    const note = (id: string, start: number, pitch: string, duration: "h" | "q", tie: boolean) => ({ id, start, duration, dotted: false, triplet: false, tie, pitches: [pitch] });
+    score.voices.find(v => v.id === "melody")!.events = [note("x", 0, "E4", "q", false), note("a", 1920, "C5", "h", true), note("b", 3840, "C5", "q", false)];
+    agent.loadScore(score);
+  });
+  const melodyEvents = async () => (await page.evaluate(() => (window as unknown as { stormSequencer: SequencerAgentApi }).stormSequencer.getScore()))
+    .voices.find(v => v.id === "melody")!.events.map(e => ({ id: e.id, at: `${e.start}:${e.pitches.join("+")}` }));
+  await page.getByRole("button", { name: "Teclas", exact: true }).click();
+  await page.locator('[data-pitch="C5"]').evaluate(row => row.scrollIntoView({ block: "center" }));
+  // Drawn as one bar: only the first piece is labelled; only the last one has the resize grip.
+  await expect(page.locator('[data-roll-note="a"]')).toHaveAttribute("data-tie", "start");
+  await expect(page.locator('[data-roll-note="b"]')).toHaveAttribute("data-tie", "end");
+  await expect(page.locator('[data-roll-note="b"]')).toHaveText(/^\W*$/);
+  // A click on the second piece selects the whole note.
+  await page.locator('[data-roll-note="b"]').click({ position: { x: 4, y: 10 } });
+  await expect(page.locator('[data-roll-note="a"]')).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator('[data-roll-note="b"]')).toHaveAttribute("aria-pressed", "true");
+  // Dragging one piece up a whole tone moves the whole tied note.
+  const box = (await page.locator('[data-roll-note="b"]').boundingBox())!;
+  await page.mouse.move(box.x + 4, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 4, box.y + box.height / 2 - 52, { steps: 8 });
+  await page.mouse.up();
+  expect((await melodyEvents()).map(e => e.at)).toEqual(["0:E4", "1920:D5", "3840:D5"]);
+  // Score + eraser: clicking the tied-to (second) piece erases the whole note.
+  await page.getByRole("button", { name: "Partitura", exact: true }).click();
+  await page.getByRole("button", { name: "Borrar", exact: true }).click();
+  const second = (await melodyEvents()).find(e => e.at === "3840:D5")!.id;
+  await expect(page.locator(`[data-note-id="${second}"] .vf-notehead`)).toBeVisible();
+  await page.locator(`[data-note-id="${second}"] .vf-notehead`).click();
+  expect((await melodyEvents()).map(e => e.at)).toEqual(["0:E4"]);
+});
+
 test("a MIDI keyboard writes notes and chords spelled by the key", async ({ page }) => {
   // Fake Web MIDI: one input whose handler the test can call.
   await page.addInitScript(() => {

@@ -2,6 +2,7 @@
 import {useEffect,useRef} from "react";
 import {durationTicks,locateTick,measureStart,measureTicks,midiToPitch,pitchToMidi,scoreTicks,activeVoices} from "@/lib/sequencer/model";
 import {rollTick,snapTick,snapWriteTick} from "@/lib/sequencer/mouse-editing";
+import {tieChain,tieLinks} from "@/lib/sequencer/tie-chain";
 import {PPQ,type NoteEvent,type Score} from "@/lib/sequencer/types";
 import type {MouseEditing} from "./ScoreView";
 import styles from "./sequencer.module.css";
@@ -10,6 +11,9 @@ export default function PianoRoll({score,selected,mouse,voiceId,onSelect,locale,
   const surface=useRef<HTMLDivElement>(null),cancelDrag=useRef<(()=>void)|null>(null);
   useEffect(()=>()=>cancelDrag.current?.(),[]);
   const events=activeVoices(score).flatMap(voice=>voice.events.map(event=>({voice,event})));
+  // v5: the pieces of a tied note are drawn as one bar (only the first one is labelled, only the last one resizes).
+  const links=mouse.joinTies?new Map(activeVoices(score).flatMap(voice=>[...tieLinks(voice.events)])):null;
+  const noteWidth=(event:NoteEvent)=>links?.get(event.id)?.toNext?durationTicks(event)/PPQ*48:Math.max(12,durationTicks(event)/PPQ*48-2);
   const pitches=events.flatMap(e=>e.event.pitches.map(pitchToMidi));
   const low=Math.min(38,...pitches),high=Math.max(84,...pitches),es=locale==="es";
   useEffect(()=>{const container=surface.current;if(!container||tick===null)return;const x=70+tick/PPQ*48;
@@ -19,14 +23,15 @@ export default function PianoRoll({score,selected,mouse,voiceId,onSelect,locale,
     if(e.button!==0)return;e.preventDefault();e.stopPropagation();
     cancelDrag.current?.();
     if(mouse.tool==="erase"){mouse.onErase(event.id);return;}
-    const button=e.currentTarget,bounds=button.getBoundingClientRect(),resize=e.clientX>bounds.right-12;
+    const button=e.currentTarget,bounds=button.getBoundingClientRect(),resize=!links?.get(event.id)?.toNext&&e.clientX>bounds.right-12;
     const x=e.clientX,y=e.clientY;
     let heardPitch=event.pitches[0];mouse.onPreview(event.id,heardPitch);
     const movedPitch=(delta:number)=>midiToPitch(Math.max(0,Math.min(127,pitchToMidi(event.pitches[0])-Math.round(delta/26))));
     const moves=mouse.tool==="write"||(!!mouse.dragWithSelect&&mouse.tool==="select");
     // v5: the other selected notes follow the drag on screen.
-    const companions=mouse.dragWithSelect&&selected.length>1&&selected.includes(event.id)&&surface.current
-      ?[...surface.current.querySelectorAll<HTMLElement>("[data-roll-note]")].filter(el=>el!==button&&selected.includes(el.dataset.rollNote!)):[];
+    const together=!!mouse.dragWithSelect&&selected.length>1&&selected.includes(event.id),tied=links?tieChain(score,event.id):[];
+    const companions=(together||tied.length>1)&&surface.current
+      ?[...surface.current.querySelectorAll<HTMLElement>("[data-roll-note]")].filter(el=>el!==button&&((together&&selected.includes(el.dataset.rollNote!))||tied.includes(el.dataset.rollNote!))):[];
     const move=(ev:PointerEvent)=>{button.style.transform="translate("+(resize?0:ev.clientX-x)+"px,"+(resize?0:ev.clientY-y)+"px)";if(resize)button.style.width=Math.max(12,bounds.width+ev.clientX-x)+"px";
       else{companions.forEach(el=>{el.style.transform=button.style.transform;});}
       if(!resize&&moves){const pitch=movedPitch(ev.clientY-y);if(pitch!==heardPitch){heardPitch=pitch;mouse.onPreview(event.id,pitch);}}
@@ -35,7 +40,7 @@ export default function PianoRoll({score,selected,mouse,voiceId,onSelect,locale,
       window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",finish);window.removeEventListener("pointercancel",cancel);
       mouse.onPreviewEnd();
       cancelDrag.current=null;
-      button.style.transform="";button.style.width=Math.max(12,durationTicks(event)/PPQ*48-2)+"px";
+      button.style.transform="";button.style.width=noteWidth(event)+"px";
       companions.forEach(el=>{el.style.transform="";});
       if(Math.abs(ev.clientX-x)<4&&Math.abs(ev.clientY-y)<4){onSelect(event.id,e.shiftKey);return;}
       // v5 snap: the new length is a whole number of grid steps (v4 keeps its free resize).
@@ -46,7 +51,7 @@ export default function PianoRoll({score,selected,mouse,voiceId,onSelect,locale,
         mouse.onMove(event.id,pitch,start);
       }
     };
-    const cancel=()=>{cancelDrag.current=null;companions.forEach(el=>{el.style.transform="";});mouse.onPreviewEnd();window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",finish);window.removeEventListener("pointercancel",cancel);button.style.transform="";button.style.width=Math.max(12,durationTicks(event)/PPQ*48-2)+"px";};
+    const cancel=()=>{cancelDrag.current=null;companions.forEach(el=>{el.style.transform="";});mouse.onPreviewEnd();window.removeEventListener("pointermove",move);window.removeEventListener("pointerup",finish);window.removeEventListener("pointercancel",cancel);button.style.transform="";button.style.width=noteWidth(event)+"px";};
     cancelDrag.current=cancel;
     window.addEventListener("pointermove",move);window.addEventListener("pointerup",finish,{once:true});window.addEventListener("pointercancel",cancel,{once:true});
   };
@@ -58,12 +63,14 @@ export default function PianoRoll({score,selected,mouse,voiceId,onSelect,locale,
       <span className={styles.rollLabel}>{midiToPitch(midi)}</span><div className={styles.rollTrack} data-pitch={midiToPitch(midi)}
         onPointerDown={e=>{if(e.button!==0||mouse.tool==="erase"||e.target!==e.currentTarget)return;e.preventDefault();const x=e.clientX-e.currentTarget.getBoundingClientRect().left,start=mouse.snap?snapWriteTick(score,x/48*PPQ,mouse.snap):rollTick(score,x/48*PPQ,mouse.step);if(mouse.tool==="select")mouse.onPosition(voiceId,start);else mouse.onWrite(voiceId,start,midiToPitch(midi));}}
         onContextMenu={e=>e.preventDefault()}>
-        {events.filter(({event})=>event.pitches.some(p=>pitchToMidi(p)===midi)).map(({voice,event})=><button key={event.id}
-          data-roll-note={event.id} className={styles.rollNote} aria-pressed={selected.includes(event.id)} aria-label={voice.name+", "+midiToPitch(midi)+", "+(es?"compás ":"measure ")+locateTick(score,event.start).measure}
+        {events.filter(({event})=>event.pitches.some(p=>pitchToMidi(p)===midi)).map(({voice,event})=>{const link=links?.get(event.id);return <button key={event.id}
+          data-roll-note={event.id} data-tie={link?(link.fromPrevious?(link.toNext?"middle":"end"):(link.toNext?"start":undefined)):undefined} className={styles.rollNote} aria-pressed={selected.includes(event.id)} aria-label={voice.name+", "+midiToPitch(midi)+", "+(es?"compás ":"measure ")+locateTick(score,event.start).measure}
           onPointerDown={e=>drag(e,event)} onClick={e=>{if(e.detail===0)onSelect(event.id,e.shiftKey);}}
           onContextMenu={e=>{e.preventDefault();e.stopPropagation();mouse.onErase(event.id);}}
-          style={{left:event.start/PPQ*48,width:Math.max(12,durationTicks(event)/PPQ*48-2),background:selected.includes(event.id)?"#f59e0b":({melody:"#2563eb",soprano:"#ec4899",alto:"#f59e0b",tenor:"#10b981",bass:"#8b5cf6"}[voice.id])}}>
-          {midiToPitch(midi)}<span className={styles.resizeGrip} aria-hidden="true">⋮</span></button>)}
+          style={{left:event.start/PPQ*48,width:noteWidth(event),background:selected.includes(event.id)?"#f59e0b":({melody:"#2563eb",soprano:"#ec4899",alto:"#f59e0b",tenor:"#10b981",bass:"#8b5cf6"}[voice.id]),
+            ...(link?.fromPrevious?{borderTopLeftRadius:0,borderBottomLeftRadius:0,borderLeftWidth:0}:{}),
+            ...(link?.toNext?{borderTopRightRadius:0,borderBottomRightRadius:0,borderRightWidth:0,paddingRight:0}:{})}}>
+          {link?.fromPrevious?"":midiToPitch(midi)}{!link?.toNext&&<span className={styles.resizeGrip} aria-hidden="true">⋮</span>}</button>;})}
       </div></div>)}
   </div></div>;
 }
