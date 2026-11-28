@@ -314,6 +314,31 @@ test("a tied note is one note: one bar in the key editor, selected, moved and er
   expect((await melodyEvents()).map(e => e.at)).toEqual(["0:E4"]);
 });
 
+test("a tie over the barline is one arc on the same line, two halves only at a line break", async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => {
+    const agent = (window as unknown as { stormSequencer: SequencerAgentApi }).stormSequencer;
+    const score = agent.getScore();
+    const note = (id: string, start: number, pitch: string, duration: "h" | "q", tie: boolean) => ({ id, start, duration, dotted: false, triplet: false, tie, pitches: [pitch] });
+    // C5 tied from measure 1 into 2 (same line), G4 tied from measure 3 into 4 (a line break in the page view).
+    score.voices.find(v => v.id === "melody")!.events = [note("a", 1920, "C5", "h", true), note("b", 3840, "C5", "q", false), note("g", 9600, "G4", "h", true), note("h", 11520, "G4", "q", false)];
+    agent.loadScore(score);
+  });
+  // Continuous: measure 1 draws one arc that ends at the tied note; measure 2 draws no second tie.
+  await expect(page.locator('section[data-measure="1"] [data-cross-tie]')).toHaveCount(1);
+  await expect(page.locator('section[data-measure="2"] .vf-stavetie')).toHaveCount(0);
+  const arc = (await page.locator('section[data-measure="1"] [data-cross-tie]').boundingBox())!;
+  const head = (await page.locator('[data-note-id="b"] .vf-notehead').boundingBox())!;
+  expect(Math.abs(arc.x + arc.width - head.x)).toBeLessThan(8);
+  // Pages, three measures per line: 1→2 is still one arc; 3→4 crosses the line break, so each line shows its half.
+  await page.getByRole("button", { name: "Páginas", exact: true }).click();
+  await expect(page.locator('section[data-measure="1"] [data-cross-tie]')).toHaveCount(1);
+  await expect(page.locator('section[data-measure="2"] .vf-stavetie')).toHaveCount(0);
+  await expect(page.locator('section[data-measure="3"] [data-cross-tie]')).toHaveCount(0);
+  await expect(page.locator('section[data-measure="3"] .vf-stavetie')).toHaveCount(1);
+  await expect(page.locator('section[data-measure="4"] .vf-stavetie')).toHaveCount(1);
+});
+
 test("a MIDI keyboard writes notes and chords spelled by the key", async ({ page }) => {
   // Fake Web MIDI: one input whose handler the test can call.
   await page.addInitScript(() => {

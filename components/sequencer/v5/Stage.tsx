@@ -19,7 +19,7 @@ export default function Stage({ s, locale }: { s: Studio; locale: string }) {
   const save = async (png: boolean) => {
     try {
       if (!paper.current) return;
-      const blob = await exportGraphic(paper.current, { title: scene.title, caption: scene.caption, aspect: scene.aspect, png });
+      const blob = await exportGraphic(paper.current, { title: scene.title, caption: scene.caption, aspect: scene.aspect, png, layout: "screen" });
       downloadBlob(blob, (scene.title.trim().replace(/[\\/:*?"<>|]+/g, "-") || "storm-scene") + (png ? ".png" : ".svg"));
       s.setMessage(t("Imagen exportada.", "Image exported."));
     } catch (error) { s.setError(error instanceof Error ? error.message : "Export failed"); }
@@ -39,7 +39,7 @@ export default function Stage({ s, locale }: { s: Studio; locale: string }) {
       <header><span>Storm Studios Learning</span><h2>{scene.title || score.title}</h2>{scene.caption && <p>{scene.caption}</p>}</header>
       <div className={styles.stagePaper} ref={paper}>
         {/* Systems as in the page view: clef and key only at the start of each line, empty measures with a centered rest. */}
-        <ScoreView pitchStems measureRests layout="page" pageTitle={false} systemSize={systemSize}
+        <ScoreView pitchStems measureRests barTies layout="page" pageTitle={false} systemSize={systemSize}
           score={score} selected={[]} locale={locale} onSelect={noop} tick={s.tick} showAnnotations={s.cipherVisible}
           from={scene.startMeasure} to={scene.endMeasure} focusVoice={scene.highlightVoice} />
       </div>

@@ -76,9 +76,13 @@ type MeasureProps = {
   pitchStems?: boolean;
   /** V5: an empty measure shows one centered whole rest, whatever the meter (engraving convention). */
   measureRests?: boolean;
+  /** V5: a tie over a barline on the same line is one arc, drawn by the measure it leaves; half ties only at line breaks. */
+  barTies?: boolean;
+  /** The next measure starts a new line (or is not shown): an outgoing tie is drawn as a half tie. */
+  systemEnd?: boolean;
 };
 
-const MeasureView = memo(function MeasureView({ score, measure, selected, locale, focusVoice, onSelect,mouse,continuous=false,systemStart:startsSystem,renderWidth,showAnnotations=true,capture,captureLayout,pitchStems=false,measureRests=false }: MeasureProps) {
+const MeasureView = memo(function MeasureView({ score, measure, selected, locale, focusVoice, onSelect,mouse,continuous=false,systemStart:startsSystem,renderWidth,showAnnotations=true,capture,captureLayout,pitchStems=false,measureRests=false,barTies=false,systemEnd=false }: MeasureProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [error, setError] = useState("");
   useEffect(() => {
@@ -100,6 +104,8 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
         const systemStart = captureLayout ? measure === captureLayout.from : startsSystem ?? (!continuous || measure === 1);
         const end = start + measureTicks(meta);
         const ties: Array<{ event: NoteEvent; note: InstanceType<typeof V.StaveNote> }> = [];
+        // V5: ties into the next measure of the same line, drawn once both measures are on screen.
+        const crossTies: Array<{ note: InstanceType<typeof V.StaveNote>; following: NoteEvent; indexes: number[] }> = [];
         const annotationX = new Map<number,number>();
         const captureRows: CaptureRow[] = [];
         const positionTick = (m: number, beat = 1) => measureStart(score, m) + (beat - 1) * PPQ;
@@ -288,11 +294,21 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
             const indexes=entry.event.pitches.map((_,i)=>i);
             if(entry.event.pitches.length && entry.event.tie && following?.start===end
               && entry.event.start+durationTicks(entry.event)===end && following.pitches.join()===entry.event.pitches.join()) {
-              new V.StaveTie({firstNote:entry.note,firstIndexes:indexes,lastIndexes:indexes}).setContext(context).draw();
+              if(barTies&&!systemEnd)crossTies.push({note:entry.note,following,indexes});
+              else new V.StaveTie({firstNote:entry.note,firstIndexes:indexes,lastIndexes:indexes}).setContext(context).draw();
             }
             if(entry.event.pitches.length && entry.event.start===start && previous?.tie
               && previous.start+durationTicks(previous)===start && previous.pitches.join()===entry.event.pitches.join()) {
-              new V.StaveTie({lastNote:entry.note,firstIndexes:indexes,lastIndexes:indexes}).setContext(context).draw();
+              if(barTies){
+                // Where the arc from the previous measure lands (this measure's own coordinates).
+                const group=entry.note.getSVGElement();
+                group?.setAttribute("data-tie-in","true");
+                group?.setAttribute("data-tie-x",String(entry.note.getTieLeftX()));
+                group?.setAttribute("data-tie-ys",entry.note.getYs().join(","));
+                group?.setAttribute("data-tie-stem",String(entry.note.getStemDirection()));
+              }
+              // Same line: the previous measure draws the whole arc. A line start gets the half tie.
+              if(!barTies||systemStart)new V.StaveTie({lastNote:entry.note,firstIndexes:indexes,lastIndexes:indexes}).setContext(context).draw();
             }
           }));
         });
@@ -476,14 +492,44 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
           svg.addEventListener("pointerdown",down);svg.addEventListener("contextmenu",erase);
           cleanups.push(()=>{svg.removeEventListener("pointerdown",down);svg.removeEventListener("contextmenu",erase);});
         }
+        if (svg && barTies && crossTies.length) {
+          const surface = target.closest("[data-testid=score-view]");
+          // One arc from this note to the tied note at the start of the next measure (the SVG overflows into it).
+          const drawCross = () => {
+            svg.querySelectorAll("[data-cross-tie]").forEach(element => element.remove());
+            const next = surface?.querySelector<SVGSVGElement>('section[data-measure="' + (measure + 1) + '"] svg');
+            if (!next) return;
+            const here = svg.getBoundingClientRect(), there = next.getBoundingClientRect(), box = next.viewBox.baseVal;
+            const placed = here.width > 0 && there.width > 0 && box.width > 0 && box.height > 0;
+            const toX = (x: number) => placed ? (there.left + x * there.width / box.width - here.left) * width / here.width : width + x;
+            const toY = (y: number) => placed ? (there.top + y * there.height / box.height - here.top) * height / here.height : y;
+            for (const { note, following, indexes } of crossTies) {
+              const landing = next.querySelector('[data-note-id="' + following.id + '"][data-tie-in]');
+              if (!landing) continue;
+              const x = toX(Number(landing.getAttribute("data-tie-x"))), ys = landing.getAttribute("data-tie-ys")!.split(",").map(Number).map(toY);
+              const stem = Number(landing.getAttribute("data-tie-stem"));
+              const group = context.openGroup("cross-tie");
+              group?.setAttribute("data-cross-tie", following.id);
+              const lastNote = { getTieLeftX: () => x, getYs: () => ys, getStemDirection: () => stem } as unknown as InstanceType<typeof V.StaveNote>;
+              new V.StaveTie({ firstNote: note, lastNote, firstIndexes: indexes, lastIndexes: indexes }).setContext(context).draw();
+              context.closeGroup();
+            }
+          };
+          drawCross();
+          // The next measure renders on its own: redraw when it is ready (or changes).
+          const redraw = (event: Event) => { if ((event as CustomEvent<number>).detail === measure + 1) drawCross(); };
+          surface?.addEventListener("sequencer-measure-drawn", redraw);
+          cleanups.push(() => surface?.removeEventListener("sequencer-measure-drawn", redraw));
+        }
         if (svg && capture) decorateCapture(svg, capture, measure, captureRows, positionTick, captureLayout?.scale ?? 1, showAnnotations ? score.annotations : [], !!captureLayout && captureLayout.from === captureLayout.to);
         setError("");
+        if (barTies) target.dispatchEvent(new CustomEvent("sequencer-measure-drawn", { bubbles: true, detail: measure }));
       } catch (error) {
         setError(error instanceof Error ? error.message : "Notation error");
       }
     })();
     return () => { cancelled = true;cleanups.forEach(clean=>clean()); };
-  }, [score, measure, selected, locale, focusVoice, onSelect,mouse,continuous,startsSystem,renderWidth,showAnnotations,capture,captureLayout,pitchStems,measureRests]);
+  }, [score, measure, selected, locale, focusVoice, onSelect,mouse,continuous,startsSystem,renderWidth,showAnnotations,capture,captureLayout,pitchStems,measureRests,barTies,systemEnd]);
   return <><div ref={ref} className={styles.notation} />{error && <p role="alert" className={styles.renderError}>{error}</p>}</>;
 });
 
@@ -499,7 +545,7 @@ function headBox(element: Element) {
 
 const PAGE_FIRST_WIDTH = 540, PAGE_WIDTH = 420; // SVG units; equal scale keeps staves aligned across a system
 
-export default function ScoreView({ score, selected, locale, onSelect, mouse,tick,cursorTick, focusVoice = "all", from = 1, to = score.measures.length,layout="scene",showAnnotations=true,onAnnotation,capture,captureLayout,systemSize=3,pageInfo,onSelectMany,onMeasure,pitchStems=false,measureRests=false,pageTitle=true }: Omit<MeasureProps, "measure"> & {
+export default function ScoreView({ score, selected, locale, onSelect, mouse,tick,cursorTick, focusVoice = "all", from = 1, to = score.measures.length,layout="scene",showAnnotations=true,onAnnotation,capture,captureLayout,systemSize=3,pageInfo,onSelectMany,onMeasure,pitchStems=false,measureRests=false,barTies=false,pageTitle=true }: Omit<MeasureProps, "measure"> & {
   /** Page layout: show the score title on the first page (off when the host already shows a heading). */
   pageTitle?: boolean;
   tick: number | null; from?: number; to?: number;layout?:"line"|"page"|"scene";
@@ -565,7 +611,7 @@ export default function ScoreView({ score, selected, locale, onSelect, mouse,tic
       container.scrollTo({left:Math.max(0,bar.offsetLeft-container.clientWidth/4),behavior:"auto"});
   },[layout,playingMeasure]);
 
-  const renderMeasure=(n:number,page?:{systemStart:boolean;width:number})=>{
+  const renderMeasure=(n:number,page?:{systemStart:boolean;systemEnd:boolean;width:number})=>{
     const index=n-1,measure=score.measures[index];
     const start = measureStart(score, n), length = measureTicks(measure);
     const displayedTick=tick??cursorTick;
@@ -576,7 +622,8 @@ export default function ScoreView({ score, selected, locale, onSelect, mouse,tic
         ? <div className={styles.measureHeading}>{page.systemStart ? (onMeasure ? <button type="button" className={styles.measureNumber} onClick={()=>onMeasure(n)} aria-label={(es?"Ir al compás ":"Go to measure ")+n}>{n}</button> : <span>{n}</span>) : <span/>}</div>
         : <div className={styles.measureHeading}>{onMeasure?<button type="button" className={styles.measureNumber} onClick={()=>onMeasure(n)} aria-label={(es?"Ir al compás ":"Go to measure ")+n}>{String(n).padStart(2, "0")}</button>:<span>{String(n).padStart(2, "0")}</span>}{(layout!=="line" || signatureChanged) && <span>{measure.key} / {measure.time.join("/")}</span>}</div>)}
       <MeasureView score={score} measure={n} selected={selected} locale={locale} focusVoice={focusVoice} onSelect={onSelect} mouse={editing} continuous={layout==="line" || layout==="page" || !!captureLayout}
-        systemStart={page?.systemStart} renderWidth={page?.width} showAnnotations={showAnnotations} capture={capture} captureLayout={captureLayout} pitchStems={pitchStems} measureRests={measureRests} />
+        systemStart={page?.systemStart} renderWidth={page?.width} showAnnotations={showAnnotations} capture={capture} captureLayout={captureLayout} pitchStems={pitchStems} measureRests={measureRests}
+        barTies={barTies} systemEnd={page ? page.systemEnd : n === Math.min(to, score.measures.length)} />
       {showAnnotations&&onAnnotation&&<div className={styles.inlineCiphers} style={{gridTemplateColumns:`repeat(${Math.ceil(length/PPQ)},minmax(0,1fr))`}}>
         {Array.from({length:Math.ceil(length/PPQ)},(_,i)=>{const annotation=score.annotations?.find(a=>a.kind==="roman"&&a.measure===n&&a.beat===i+1);return <input key={annotation?.id+":"+(annotation?.text??"")+":"+i} defaultValue={annotation?.text??""} aria-label={(es?"Cifrado compás ":"Cipher measure ")+n+(es?", pulso ":", beat ")+(i+1)} placeholder="—" maxLength={200} onBlur={e=>{if(e.target.value!==(annotation?.text??""))onAnnotation(n,i+1,e.target.value);}} onKeyDown={e=>{if(e.key==="Enter")e.currentTarget.blur();}}/>;})}
       </div>}
@@ -595,7 +642,7 @@ export default function ScoreView({ score, selected, locale, onSelect, mouse,tic
         {from===1&&pageTitle&&<header className={styles.pageTitle}><h3>{score.title||(es?"Sin título":"Untitled")}</h3><span>♩ = {score.tempo}</span></header>}
         <div className={styles.measures}>
           {systems.map(system=><div key={system[0]} className={styles.system} style={{gridTemplateColumns:columns}}>
-            {system.map((n,i)=>renderMeasure(n,{systemStart:i===0,width:i===0?PAGE_FIRST_WIDTH:PAGE_WIDTH}))}
+            {system.map((n,i)=>renderMeasure(n,{systemStart:i===0,systemEnd:i===system.length-1,width:i===0?PAGE_FIRST_WIDTH:PAGE_WIDTH}))}
           </div>)}
         </div>
         {pageInfo&&<footer className={styles.pageNumber}>{pageInfo.index} / {pageInfo.total}</footer>}
