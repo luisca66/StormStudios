@@ -110,10 +110,13 @@ test("measures are added at the end, inserted, copied and removed around the cur
   let score = await api(page);
   expect(score.measures).toHaveLength(5);
   expect(score.voices.find(v => v.id === "melody")!.events.map(e => e.start)).toEqual([0, 3840]);
+  // "Insertar aquí" puts the empty measure at the cursor: measure 2 (D4) and what follows shift right.
+  await page.getByRole("button", { name: "Ir al compás 2", exact: true }).click();
   await page.getByRole("button", { name: "Insertar aquí", exact: true }).click();
   score = await api(page);
   expect(score.measures).toHaveLength(6);
   expect(score.voices.find(v => v.id === "melody")!.events.map(e => e.start)).toEqual([0, 7680]);
+  await page.getByRole("button", { name: "Ir al compás 1", exact: true }).click();
   await page.getByLabel("Copiar al compás").fill("2");
   await page.getByRole("button", { name: "Copiar", exact: true }).click();
   expect(await melody(page)).toEqual(["C4", "C4", "D4"]);

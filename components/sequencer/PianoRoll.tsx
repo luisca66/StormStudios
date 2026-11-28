@@ -1,7 +1,7 @@
 "use client";
 import {useEffect,useRef} from "react";
 import {durationTicks,locateTick,measureStart,measureTicks,midiToPitch,pitchToMidi,scoreTicks,activeVoices} from "@/lib/sequencer/model";
-import {rollTick} from "@/lib/sequencer/mouse-editing";
+import {rollTick,snapTick,snapWriteTick} from "@/lib/sequencer/mouse-editing";
 import {PPQ,type NoteEvent,type Score} from "@/lib/sequencer/types";
 import type {MouseEditing} from "./ScoreView";
 import styles from "./sequencer.module.css";
@@ -42,7 +42,7 @@ export default function PianoRoll({score,selected,mouse,voiceId,onSelect,locale,
       if(resize){const raw=durationTicks(event)+(ev.clientX-x)/48*PPQ;mouse.onMove(event.id,event.pitches[0],undefined,mouse.snap?Math.max(mouse.snap,Math.round(raw/mouse.snap)*mouse.snap):Math.max(PPQ/8,raw));}
       else if(moves){
         const pitch=movedPitch(ev.clientY-y);
-        const start=rollTick(score,event.start+(ev.clientX-x)/48*PPQ,mouse.snap??PPQ/8);
+        const raw=event.start+(ev.clientX-x)/48*PPQ,start=mouse.snap?snapTick(score,raw,mouse.snap):rollTick(score,raw,PPQ/8);
         mouse.onMove(event.id,pitch,start);
       }
     };
@@ -56,7 +56,7 @@ export default function PianoRoll({score,selected,mouse,voiceId,onSelect,locale,
     <div data-testid="roll-cursor" className={styles.rollCursor} style={{left:70+(tick??positionTick)/PPQ*48,background:tick===null?"#2563eb":"#e11d48"}}/>
     {Array.from({length:high-low+1},(_,i)=>high-i).map(midi=><div className={styles.rollRow} style={{background:[1,3,6,8,10].includes(midi%12)?"#f1f5f9":"#fff"}} key={midi}>
       <span className={styles.rollLabel}>{midiToPitch(midi)}</span><div className={styles.rollTrack} data-pitch={midiToPitch(midi)}
-        onPointerDown={e=>{if(e.button!==0||mouse.tool==="erase"||e.target!==e.currentTarget)return;e.preventDefault();const x=e.clientX-e.currentTarget.getBoundingClientRect().left,start=rollTick(score,x/48*PPQ,mouse.snap??mouse.step);if(mouse.tool==="select")mouse.onPosition(voiceId,start);else mouse.onWrite(voiceId,start,midiToPitch(midi));}}
+        onPointerDown={e=>{if(e.button!==0||mouse.tool==="erase"||e.target!==e.currentTarget)return;e.preventDefault();const x=e.clientX-e.currentTarget.getBoundingClientRect().left,start=mouse.snap?snapWriteTick(score,x/48*PPQ,mouse.snap):rollTick(score,x/48*PPQ,mouse.step);if(mouse.tool==="select")mouse.onPosition(voiceId,start);else mouse.onWrite(voiceId,start,midiToPitch(midi));}}
         onContextMenu={e=>e.preventDefault()}>
         {events.filter(({event})=>event.pitches.some(p=>pitchToMidi(p)===midi)).map(({voice,event})=><button key={event.id}
           data-roll-note={event.id} className={styles.rollNote} aria-pressed={selected.includes(event.id)} aria-label={voice.name+", "+midiToPitch(midi)+", "+(es?"compás ":"measure ")+locateTick(score,event.start).measure}

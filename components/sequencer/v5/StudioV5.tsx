@@ -377,7 +377,7 @@ export default function StudioV5({ locale }: { locale: string }) {
           <option value="treble">{t("Clave de Sol", "Treble clef")}</option><option value="bass">{t("Clave de Fa", "Bass clef")}</option></select></label>
       <div className={styles.row}>
         <button onClick={s.addMeasure} title={t("Añade un compás vacío al final de la partitura", "Add an empty measure at the end of the score")}>{t("+ Compás", "+ Measure")}</button>
-        <button onClick={s.insertMeasure} title={t("Inserta un compás vacío después de este y recorre lo que sigue", "Insert an empty measure after this one and shift what follows")}>{t("Insertar aquí", "Insert here")}</button>
+        <button onClick={s.insertMeasure} title={t("Pone un compás vacío donde está el cursor; este compás y lo que sigue se recorren a la derecha", "Put an empty measure at the cursor; this measure and what follows shift right")}>{t("Insertar aquí", "Insert here")}</button>
         <button onClick={s.removeMeasureAt} disabled={score.measures.length < 2} title={t("Quita este compás y recorre lo que sigue", "Remove this measure and shift what follows")}>{t("− Compás", "− Measure")}</button>
       </div>
       <div className={styles.row}>

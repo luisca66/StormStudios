@@ -4,7 +4,7 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { activeVoices, clefAt, durationTicks, locateTick, measureStart, measureTicks, pitchToMidi, pitchToVex, scoreTicks } from "@/lib/sequencer/model";
 import { PPQ, type NoteEvent, type Score, type VoiceId } from "@/lib/sequencer/types";
 import styles from "./sequencer.module.css";
-import {rollTick,staffPitch} from "@/lib/sequencer/mouse-editing";
+import {snapTick,staffPitch} from "@/lib/sequencer/mouse-editing";
 import type { Still } from "@/lib/sequencer/storyboard";
 import { STILL_COLORS } from "@/lib/sequencer/storyboard-resolve";
 import { captureX, decorateCapture, type CaptureRow } from "@/lib/sequencer/capture-decoration";
@@ -357,8 +357,9 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
               const left=[...anchors].reverse().find(a=>a.x<=p.x)??{x:stave.getNoteStartX(),tick:start};
               const right=anchors.find(a=>a.x>p.x)??anchors.at(-1)!;
               const raw=left.tick+(right.tick-left.tick)*Math.max(0,Math.min(1,(p.x-left.x)/Math.max(1,right.x-left.x)));
-              const grid=mouse.snap??mouse.step;
-              return start+Math.min(end-start-PPQ/8,Math.max(0,Math.round((raw-start)/grid)*grid));
+              // v5 snap: the last grid point of the measure, never an off-grid 32nd before the barline.
+              if(mouse.snap)return start+Math.min(Math.floor((end-start-1)/mouse.snap)*mouse.snap,Math.max(0,Math.round((raw-start)/mouse.snap)*mouse.snap));
+              return start+Math.min(end-start-PPQ/8,Math.max(0,Math.round((raw-start)/mouse.step)*mouse.step));
             };
             const extend=e.shiftKey||e.ctrlKey||e.metaKey;
             const head=(e.target as Element).closest("[data-note-key]"),onNote=(e.target as Element).closest("[data-note-id]");
@@ -408,7 +409,7 @@ const MeasureView = memo(function MeasureView({ score, measure, selected, locale
                 // Time is read on the row where the drag began, so moving up or down only changes the pitch.
                 const target=document.elementsFromPoint(event.clientX,e.clientY).map(el=>el.closest("svg[data-mouse-staff]")).find(el=>!!el&&staffMaps.has(el));
                 if(!target)return "keep";
-                return {ticks:rollTick(score,staffMaps.get(target)!.tickAt(event.clientX)-pressOffset,mouse.snap!)-hit.start,target};
+                return {ticks:snapTick(score,staffMaps.get(target)!.tickAt(event.clientX)-pressOffset,mouse.snap!)-hit.start,target};
               };
               const pretty=(pitch:string)=>pitch.replace(/##/,"𝄪").replace(/bb(?=-?\d)/,"𝄫").replace(/#/,"♯").replace(/(?<=[A-G])b/,"♭");
               const move=(event:PointerEvent)=>{

@@ -317,7 +317,8 @@ export function useStudio(locale: string) {
   const changeClef = (clef: "treble" | "bass") => patchScore(next => { next.measures[draft.measure - 1].clefs = { ...next.measures[draft.measure - 1].clefs, [draft.voice]: clef }; });
   /** Siempre al final, sin importar dónde esté el cursor: no recorre ninguna nota. */
   const addMeasure = () => patchScore(next => { const last = next.measures.at(-1)!; next.measures.push({ id: newId(), key: last.key, time: [...last.time] }); });
-  const insertMeasure = () => attempt(() => { commit(insertMeasureAfter(score, draft.measure), t(`Compás nuevo después del ${draft.measure}.`, `New measure after ${draft.measure}.`)); });
+  /** Un compás vacío donde está el cursor: el compás actual y lo que sigue se recorren uno a la derecha. */
+  const insertMeasure = () => attempt(() => { if (commit(insertMeasureAfter(score, draft.measure - 1), t(`Compás vacío insertado en el ${draft.measure}.`, `Empty measure inserted at ${draft.measure}.`))) patchDraft({ beat: 1 }); });
   const removeMeasureAt = () => attempt(() => {
     const start = measureStart(score, draft.measure), end = start + measureTicks(score.measures[draft.measure - 1]);
     const busy = score.voices.some(v => v.events.some(e => e.pitches.length && e.start >= start && e.start < end));
