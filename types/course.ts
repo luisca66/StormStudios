@@ -91,12 +91,13 @@ export type FeedbackItem = {
   message: BilingualText; // mensaje localizado para el estudiante
 };
 
-/** Información del análisis; nunca cuenta como error ni reduce la puntuación. */
+/** Información del análisis; nunca cuenta como error. */
 export type FeedbackDescription = Omit<FeedbackItem, "severity"> & { severity: "info" };
 
 export type MaestroFeedback = {
   lessonId: string;
-  score: number; // 0-100
+  /** Cosas por corregir (errores), incluidas las que no se muestran por el límite. */
+  errorCount: number;
   passed: boolean;
   violations: FeedbackItem[];
   suggestions: FeedbackItem[];

@@ -227,10 +227,10 @@ test("SATB is grouped and time-aligned; page mode shows one page while continuou
   await page.screenshot({path:".local-work/sequencer-v4-satb.png"});
 });
 
-test("v3 keeps the videos' URL and links to v4 without replacing the legacy editor",async({page})=>{
+test("v3 keeps the videos' URL and links to v5 without replacing the legacy editor",async({page})=>{
   await page.goto("/es/sequencer");
   await expect(page.locator('iframe[src="/tools/secuenciador.html"]')).toBeVisible();
-  await expect(page.locator('a[href="/es/sequencer/v4"]')).toBeVisible();
+  await expect(page.locator('a[href="/es/sequencer/v5"]')).toBeVisible();
   await expect(page.frameLocator('iframe').locator('#canvas-container')).toBeVisible();
 });
 

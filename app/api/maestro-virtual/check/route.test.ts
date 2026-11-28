@@ -47,7 +47,7 @@ describe('Lesson 8 SATB link review', () => {
     const response = await POST(request(fixture, locale));
     expect(response.status).toBe(200);
     const feedback: MaestroFeedback = await response.json();
-    expect(feedback).toMatchObject({ lessonId: '09-leccion-8', passed: true, score: 100, violations: [], suggestions: [] });
+    expect(feedback).toMatchObject({ lessonId: '09-leccion-8', passed: true, errorCount: 0, violations: [], suggestions: [] });
     expect(feedback.descriptions).toHaveLength(fixture.includes('Do_mayor') ? 10 : 9);
     expect(feedback.descriptions![0].ruleName[locale as 'es' | 'en']).toBe(title);
     expect(feedback.descriptions!.filter(d => d.ruleId === 'LINK_INFO')).toHaveLength(8);
@@ -56,14 +56,14 @@ describe('Lesson 8 SATB link review', () => {
   it('resolves the initial-G-only MIDI without false construction errors', async () => {
     const response = await POST(request('Leccion_8_sin_armaduras_ambiguo.mid', 'es'));
     const feedback: MaestroFeedback = await response.json();
-    expect(feedback).toMatchObject({ passed: true, score: 100, violations: [] });
+    expect(feedback).toMatchObject({ passed: true, errorCount: 0, violations: [] });
     expect(feedback.descriptions!.find(d => d.measure === 5 && d.ruleId === 'LINK_INFO')!.ruleName.es).toContain('Fa mayor, V–I');
   });
   it('reports unresolved key ambiguity by POST without guessing construction errors', async () => {
     const response = await POST(request('Leccion_8_sin_armaduras_ambiguo.mid', 'es', true));
     expect(response.status).toBe(200);
     const feedback: MaestroFeedback = await response.json();
-    expect(feedback).toMatchObject({ passed: false, score: 55 });
+    expect(feedback).toMatchObject({ passed: false, errorCount: 3 });
     expect(feedback.violations.map(v => [v.ruleId, v.measure])).toEqual([
       ['LINK_MISSING', 0], ['LINK_AMBIGUOUS_KEY', 2], ['LINK_AMBIGUOUS_KEY', 6],
     ]);
@@ -73,7 +73,7 @@ describe('Lesson 8 SATB link review', () => {
     const response = await POST(request('Leccion_8_Re_mayor_errores.mid', 'es'));
     expect(response.status).toBe(200);
     const feedback: MaestroFeedback = await response.json();
-    expect(feedback).toMatchObject({ passed: false, score: 0 });
+    expect(feedback).toMatchObject({ passed: false, errorCount: LESSON8_EXPECTED_ERRORS.length });
     expect(feedback.violations.map(v => [v.ruleId, v.measure])).toEqual(LESSON8_EXPECTED_ERRORS);
     expect(feedback.descriptions).toHaveLength(9);
   });
@@ -118,7 +118,7 @@ describe('POST /api/maestro-virtual/check', () => {
   it('evaluates Lesson 4 through the real MIDI parser and triad validator', async () => {
     const response = await POST(triadRequest());
     expect(response.status).toBe(200);
-    expect(await response.json()).toMatchObject({ lessonId: '05-leccion-4', score: 100, passed: true, violations: [] });
+    expect(await response.json()).toMatchObject({ lessonId: '05-leccion-4', errorCount: 0, passed: true, violations: [] });
   });
   it('returns pedagogical errors for a wrong triad note', async () => {
     const response = await POST(triadRequest(true));
@@ -207,7 +207,7 @@ describe('Lesson 7 melodic line review', () => {
     const response = await POST(request(fixture, locale));
     expect(response.status).toBe(200);
     const feedback: MaestroFeedback = await response.json();
-    expect(feedback).toMatchObject({ lessonId: '08-leccion-7', passed: true, score: 100, violations: [], suggestions: [] });
+    expect(feedback).toMatchObject({ lessonId: '08-leccion-7', passed: true, errorCount: 0, violations: [], suggestions: [] });
     expect(feedback.descriptions?.map(item => item.ruleId)).toEqual(['MELODY_KEY', 'MELODY_SUMMARY']);
     expect(feedback.descriptions![0].ruleName[locale]).toBe(title);
     expect(feedback.descriptions![1].message.es).toBeTruthy();
@@ -215,18 +215,18 @@ describe('Lesson 7 melodic line review', () => {
   });
 
   it.each([
-    ['Leccion_7_Soprano_Do_mayor_errores.mid', 25, [
+    ['Leccion_7_Soprano_Do_mayor_errores.mid', 5, [
       ['MELODIC_FORBIDDEN_INTERVAL', 3], ['MELODIC_REPEATED_NOTE', 4],
       ['MELODY_RANGE', 7], ['MELODIC_SUCCESSIVE_LEAPS', 7], ['MELODY_END_TONIC', 8],
     ]],
-    ['Leccion_7_Tenor_Re_mayor_errores.mid', 55, [
+    ['Leccion_7_Tenor_Re_mayor_errores.mid', 3, [
       ['MELODIC_LEADING_TONE_OCTAVE', 3], ['MELODY_ENHARMONIC', 6], ['MELODIC_DIMINISHED_UNRESOLVED', 6],
     ]],
-  ] as const)('reports the expected errors in %s', async (fixture, score, errors) => {
+  ] as const)('reports the expected errors in %s', async (fixture, errorCount, errors) => {
     const response = await POST(request(fixture, 'es'));
     expect(response.status).toBe(200);
     const feedback: MaestroFeedback = await response.json();
-    expect(feedback).toMatchObject({ passed: false, score });
+    expect(feedback).toMatchObject({ passed: false, errorCount });
     expect(feedback.violations.map(item => [item.ruleId, item.measure])).toEqual(errors);
     expect(feedback.descriptions?.map(item => item.ruleId)).toEqual(['MELODY_KEY', 'MELODY_SUMMARY']);
   });
@@ -251,7 +251,7 @@ describe('Lesson 6 SATB chord review', () => {
     const response = await POST(request(fixture, locale));
     expect(response.status).toBe(200);
     const feedback: MaestroFeedback = await response.json();
-    expect(feedback).toMatchObject({ lessonId: '07-leccion-6', passed: true, score: 100, violations: [], suggestions: [] });
+    expect(feedback).toMatchObject({ lessonId: '07-leccion-6', passed: true, errorCount: 0, violations: [], suggestions: [] });
     expect(feedback.descriptions).toHaveLength(8);
     expect(feedback.descriptions![0].ruleName[locale as 'es' | 'en']).toBe(title);
     expect(feedback.descriptions!.every(item => item.severity === 'info')).toBe(true);
@@ -260,14 +260,14 @@ describe('Lesson 6 SATB chord review', () => {
     expect(feedback.descriptions![1].message.en).toContain('State:');
   });
 
-  it('scores only the eight errors and also returns the analysis', async () => {
+  it('counts only the eight errors and also returns the analysis', async () => {
     const response = await POST(request('Leccion_6_Do_mayor_errores.mid'));
     expect(response.status).toBe(200);
     const feedback: MaestroFeedback = await response.json();
-    expect(feedback).toMatchObject({ passed: false, score: 0 });
+    expect(feedback).toMatchObject({ passed: false, errorCount: 8 });
     expect(feedback.violations).toHaveLength(8);
     expect(feedback.violations.every(item => item.severity === 'error')).toBe(true);
-    expect(feedback.summary.es).toContain('8 errores');
+    expect(feedback.summary.es).toContain('Hay 8 cosas por corregir');
     expect(feedback.descriptions!.length).toBeGreaterThan(0);
   });
 
@@ -286,7 +286,7 @@ describe('Lesson 6 SATB chord review', () => {
       const feedback: MaestroFeedback = await response.json();
       expect(feedback.violations).toHaveLength(Math.min(count, 100));
       expect(feedback.descriptions).toHaveLength(Math.min(8, Math.max(0, 100 - count)));
-      expect(feedback.score).toBe(Math.max(0, 100 - count * 15));
+      expect(feedback.errorCount).toBe(count);
       expect(feedback.passed).toBe(false);
       expect(feedback.suggestions.some(item => item.ruleId === 'FEEDBACK_TRUNCATED')).toBe(count > 100);
       expect(feedback.suggestions.some(item => item.ruleId === 'DESCRIPTIONS_TRUNCATED')).toBe(count > 92 && count <= 100);

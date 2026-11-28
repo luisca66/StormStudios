@@ -88,7 +88,7 @@ test("Virtual Teacher checks the sample MIDI", async ({ page }) => {
   await page
     .locator('input[type="file"][accept=".mid,.midi"]')
     .setInputFiles(path.join(__dirname, "../lib/maestro-virtual/__fixtures__/leccion3-correcta.mid"));
-  await expect(page.getByText("Puntuación: 100/100")).toBeVisible();
+  await expect(page.getByText("¡Excelente! Tu ejercicio está correcto.")).toBeVisible();
 });
 
 test("an embedded app loads without errors", async ({ page }) => {
